@@ -5,6 +5,17 @@ All notable changes to invoice-generator will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-31
+
+### Changed
+- Complete redesign to Design System v1.2.0 (TypeTogether Catalogue Style)
+- Font: Google Sans Flex + Noto Sans KR
+- Background: light gray (#f8f8f8)
+- Layout: 1170px max-width, centered
+- Header: 56px height with breadcrumb navigation
+- Buttons: primary (black), secondary (transparent with border)
+- Added site footer with copyright
+
 ## [1.2.0] - 2026-01-31
 
 ### Changed

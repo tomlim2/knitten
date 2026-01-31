@@ -98,6 +98,7 @@ Access user-provided arguments via $ARGUMENTS variable.
 2. **Use dynamic execution** (`!backtick`) to provide fresh context
 3. **Include examples** of expected input/output formats
 4. **Handle edge cases** gracefully (no staged changes, missing files, etc.)
+5. **Missing required arguments**: If a command requires arguments and none are provided, show a generic example (e.g., `/command <argument>`) and stop. Do not proceed with any additional actions.
 
 ### Example: Minimal Command
 

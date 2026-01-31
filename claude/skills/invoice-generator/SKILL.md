@@ -1,6 +1,6 @@
 # invoice-generator
 
-**Version:** 1.2.0 | [CHANGELOG](./CHANGELOG.md)
+**Version:** 1.3.0 | [CHANGELOG](./CHANGELOG.md)
 
 Web-based monthly tuition invoice generator with automatic calculation and PDF export.
 

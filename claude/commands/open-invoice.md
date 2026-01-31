@@ -1,28 +1,29 @@
 ---
 allowed-tools: Bash
-description: Open invoice generator web app in browser
+description: Open invoice generator via skill server
 ---
 
 # Open Invoice Generator
 
-Open the monthly tuition invoice generator web application.
-
-## What it does
-
-Opens the invoice generator web app where you can:
-- Select student name from preset list
-- Hourly rate and bank info auto-filled from `presets.json`
-- Add lesson dates and generate invoice
+Open the monthly tuition invoice generator through the skill server.
 
 ## Execution
 
 ```bash
-open ~/.claude/skills/invoice-generator/index.html
-```
+cd ~/.claude/skills/skill-server
 
-## Example
+# Install if needed
+if [ ! -d "node_modules" ]; then
+    npm install
+fi
 
-```
-/open-invoice
-→ Opens web app, user enters all information manually
+# Check if server already running
+if ! curl -s http://localhost:972 > /dev/null 2>&1; then
+    # Start in background
+    npm start &
+    sleep 2
+fi
+
+# Open invoice generator
+open http://localhost:972/skills/invoice-generator
 ```

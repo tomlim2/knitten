@@ -4,6 +4,9 @@ const fs = require('fs');
 const { WebSocketServer } = require('ws');
 const http = require('http');
 
+// Load config
+const config = require('./config.json');
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -79,9 +82,21 @@ function discoverSkills() {
 // Routes
 app.get('/', (req, res) => {
     const skills = discoverSkills();
-    res.render('dashboard', { skills });
+    res.render('dashboard', { skills, config, activePage: '/' });
 });
 
+// Serve skill static files (CSS, JS, etc.)
+app.get('/skills/:id/:file', (req, res, next) => {
+    const skillPath = path.join(SKILLS_DIR, req.params.id);
+    const filePath = path.join(skillPath, req.params.file);
+
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        return res.sendFile(filePath);
+    }
+    next();
+});
+
+// Serve skill index page
 app.get('/skills/:id', (req, res) => {
     const skills = discoverSkills();
     const skill = skills.find(s => s.id === req.params.id);
@@ -91,16 +106,14 @@ app.get('/skills/:id', (req, res) => {
     }
 
     if (skill.type === 'web') {
-        res.render('skill-web', { skill });
-    } else {
-        res.render('skill-cli', { skill });
+        const indexPath = path.join(skill.path, 'index.html');
+        if (fs.existsSync(indexPath)) {
+            return res.sendFile(indexPath);
+        }
+        return res.status(404).send('index.html not found');
     }
-});
 
-// Serve web skill static files
-app.use('/skill-assets/:id', (req, res, next) => {
-    const skillPath = path.join(SKILLS_DIR, req.params.id);
-    express.static(skillPath)(req, res, next);
+    res.render('skill-cli', { skill, config, activePage: null });
 });
 
 // File browser API
@@ -138,7 +151,37 @@ app.get('/api/files', (req, res) => {
 });
 
 app.get('/files', (req, res) => {
-    res.render('files', { basePath: PRIVATE_DIR });
+    res.render('files', { basePath: PRIVATE_DIR, config, activePage: '/files' });
+});
+
+// Save invoice PDF
+app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10mb' }), (req, res) => {
+    const { studentName, year, month } = req.query;
+
+    if (!studentName || !year || !month) {
+        return res.status(400).json({ error: 'Missing studentName, year, or month' });
+    }
+
+    const invoicesDir = path.join(PRIVATE_DIR, 'tutoring', 'invoices');
+
+    // Create directory if not exists
+    if (!fs.existsSync(invoicesDir)) {
+        fs.mkdirSync(invoicesDir, { recursive: true });
+    }
+
+    const filename = `${year}-${String(month).padStart(2, '0')}_${studentName}.pdf`;
+    const filePath = path.join(invoicesDir, filename);
+
+    try {
+        fs.writeFileSync(filePath, req.body);
+        res.json({
+            success: true,
+            path: filePath,
+            filename
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // WebSocket for CLI skills

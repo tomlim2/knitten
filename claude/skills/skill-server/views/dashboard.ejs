@@ -1,42 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skill Server</title>
-    <link rel="stylesheet" href="/static/styles/main.css">
+    <%- include('partials/head', {config}) %>
 </head>
 <body>
-    <header class="header">
-        <a href="/" class="logo">SKILL SERVER</a>
-        <nav class="nav">
-            <a href="/" class="active">SKILLS</a>
-            <a href="/files">FILES</a>
-        </nav>
-    </header>
+    <%- include('partials/header', {config, activePage}) %>
     <main class="main">
-        <div class="dashboard">
-            <h1>SKILLS</h1>
-            <div class="skill-grid">
-                <% skills.forEach(skill => { %>
-                <div class="skill-card">
-                    <div class="skill-header">
-                        <span class="skill-name"><%= skill.name %></span>
-                        <span class="skill-badge"><%= skill.type.toUpperCase() %></span>
-                    </div>
+        <div class="skill-grid">
+            <% skills.forEach(skill => { %>
+            <a href="/skills/<%= skill.id %>" class="skill-card">
+                <div class="skill-content">
+                    <h3 class="skill-name"><%= skill.name %></h3>
                     <p class="skill-description"><%= skill.description %></p>
-                    <div class="skill-footer">
+                    <div class="skill-meta">
+                        <span class="skill-badge"><%= skill.type %></span>
                         <span class="skill-version">v<%= skill.version %></span>
-                        <a href="/skills/<%= skill.id %>" class="skill-button">OPEN</a>
                     </div>
                 </div>
-                <% }); %>
-            </div>
-
-            <% if (skills.length === 0) { %>
-            <p class="empty-state">No skills found in ~/.claude/skills/</p>
-            <% } %>
+            </a>
+            <% }); %>
         </div>
+
+        <% if (skills.length === 0) { %>
+        <p class="empty-state">No skills found in ~/.claude/skills/</p>
+        <% } %>
     </main>
+    <%- include('partials/footer', {config}) %>
 </body>
 </html>

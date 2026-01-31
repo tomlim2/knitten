@@ -1,54 +1,46 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= skill.name %> - Skill Server</title>
-    <link rel="stylesheet" href="/static/styles/main.css">
+    <% const pageTitle = skill.name %>
+    <%- include('partials/head', {config, pageTitle}) %>
 </head>
 <body>
-    <header class="header">
-        <a href="/" class="logo">SKILL SERVER</a>
-        <nav class="nav">
-            <a href="/">SKILLS</a>
-            <a href="/files">FILES</a>
-        </nav>
-    </header>
+    <%- include('partials/header', {config, activePage}) %>
     <main class="main">
         <div class="skill-toolbar">
             <span class="skill-title"><%= skill.name %></span>
-            <span class="skill-badge">CLI</span>
-            <a href="/" class="back-button">BACK</a>
+            <span class="skill-badge">cli</span>
+            <a href="/" class="back-button">Back</a>
         </div>
 
         <% if (skill.id === 'git-commit-collector') { %>
         <div class="cli-form">
-            <h2>COLLECT COMMITS</h2>
+            <h2>Collect Commits</h2>
             <form id="collectForm">
                 <div class="form-group">
-                    <label>REPOSITORY PATH</label>
+                    <label>Repository Path</label>
                     <input type="text" id="repoPath" placeholder="/path/to/repo" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>SINCE</label>
+                        <label>Since</label>
                         <input type="text" id="since" placeholder="1 month ago">
                     </div>
                     <div class="form-group">
-                        <label>LIMIT</label>
+                        <label>Limit</label>
                         <input type="number" id="limit" placeholder="100" value="100">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>AUTHOR</label>
+                    <label>Author</label>
                     <input type="text" id="author" placeholder="Filter by author name">
                 </div>
-                <button type="submit" class="submit-button">COLLECT</button>
+                <button type="submit" class="submit-button">Collect</button>
             </form>
         </div>
 
         <div class="output-section" id="outputSection" style="display: none;">
-            <h2>OUTPUT</h2>
+            <h2>Output</h2>
             <div class="status-bar" id="statusBar"></div>
             <pre class="output" id="output"></pre>
         </div>
@@ -56,6 +48,7 @@
         <p class="empty-state">CLI execution not configured for this skill.</p>
         <% } %>
     </main>
+    <%- include('partials/footer', {config}) %>
 
     <script>
         const ws = new WebSocket(`ws://${location.host}`);

@@ -1,13 +1,13 @@
 // Version
-const VERSION = '1.2.0';
+const VERSION = '1.3.0';
 
 // Display version on load
 document.addEventListener('DOMContentLoaded', () => {
     const versionEl = document.getElementById('version');
-    if (versionEl) versionEl.textContent = `v${VERSION}`;
+    if (versionEl) versionEl.textContent = `Invoice Generator v${VERSION}`;
 
-    const invoiceVersionEl = document.getElementById('invoiceVersion');
-    if (invoiceVersionEl) invoiceVersionEl.textContent = `v${VERSION}`;
+    const versionFormEl = document.getElementById('versionForm');
+    if (versionFormEl) versionFormEl.textContent = `Invoice Generator v${VERSION}`;
 });
 
 // Add new class entry
@@ -77,6 +77,15 @@ function generateInvoiceNumber() {
     return `${year}${month}-${random}`;
 }
 
+// Format current date (e.g., "2026-01-31")
+function formatCurrentDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // Generate invoice
 document.getElementById('invoiceForm').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -106,11 +115,16 @@ document.getElementById('invoiceForm').addEventListener('submit', (e) => {
     // Sort classes by date
     classes.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // Determine month from first class date
-    const month = classes.length > 0 ? new Date(classes[0].date).getMonth() + 1 : new Date().getMonth() + 1;
+    // Determine year and month from first class date
+    const firstDate = classes.length > 0 ? new Date(classes[0].date) : new Date();
+    const year = firstDate.getFullYear();
+    const month = firstDate.getMonth() + 1;
+
+    // Update invoice date
+    document.getElementById('invoiceDate').textContent = formatCurrentDate();
 
     // Update invoice title
-    document.getElementById('invoiceTitle').textContent = `${month}월 수업료 청구`;
+    document.getElementById('invoiceTitle').textContent = `${year}년 ${month}월 수업료 청구`;
     document.getElementById('studentNameDisplay').textContent = studentName;
 
     // Generate and display invoice number
@@ -119,39 +133,25 @@ document.getElementById('invoiceForm').addEventListener('submit', (e) => {
 
     // Update hourly rate
     document.getElementById('displayRate').textContent = formatNumber(hourlyRate);
-    document.getElementById('calcRate').textContent = formatNumber(hourlyRate);
 
-    // Update class table
-    const tableBody = document.getElementById('classTable');
-    tableBody.innerHTML = '';
+    // Update class list (simple text format)
+    const classList = document.getElementById('classListSimple');
+    classList.innerHTML = '';
 
     classes.forEach(cls => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${formatDate(cls.date)}</td>
-            <td>${formatTime(cls.hours, cls.minutes)}</td>
-            <td>${cls.note || ''}</td>
-        `;
-        tableBody.appendChild(row);
+        const p = document.createElement('p');
+        const timeStr = formatTime(cls.hours, cls.minutes);
+        const noteStr = cls.note ? ` - ${cls.note}` : '';
+        p.textContent = `${formatDate(cls.date)} ${timeStr}${noteStr}`;
+        classList.appendChild(p);
     });
 
-    // Add total row
-    const totalRow = document.createElement('tr');
-    const totalMinutes = Math.round((totalHours % 1) * 60);
-    const totalWholeHours = Math.floor(totalHours);
-    totalRow.innerHTML = `
-        <td><strong>총계</strong></td>
-        <td><strong>${formatTime(totalWholeHours, totalMinutes)}</strong></td>
-        <td></td>
-    `;
-    tableBody.appendChild(totalRow);
-
-    // Update calculation
+    // Update total hours
     document.getElementById('totalHours').textContent = totalHours.toFixed(1);
 
+    // Calculate and display total amount
     const totalAmount = Math.round(totalHours * hourlyRate);
-    document.getElementById('formula').textContent = `${totalHours.toFixed(1)}시간 × ${formatNumber(hourlyRate)}원 = ${formatNumber(totalAmount)}원`;
-    document.getElementById('totalAmount').textContent = formatNumber(totalAmount);
+    document.getElementById('totalAmount').textContent = `${formatNumber(totalAmount)}원`;
 
     // Update bank info
     document.getElementById('displayBank').textContent = bankName;
@@ -165,6 +165,7 @@ document.getElementById('invoiceForm').addEventListener('submit', (e) => {
     // Store data for PDF filename
     window.invoiceData = {
         studentName,
+        year,
         month
     };
 });
@@ -178,14 +179,16 @@ document.getElementById('editInvoice').addEventListener('click', () => {
 // Download PDF
 document.getElementById('downloadPDF').addEventListener('click', async () => {
     const element = document.getElementById('invoice');
-    const data = window.invoiceData || { studentName: '수강생', month: new Date().getMonth() + 1 };
-    const filename = `${data.studentName}_${data.month}월_수업료청구서.pdf`;
+    const now = new Date();
+    const data = window.invoiceData || { studentName: '수강생', year: now.getFullYear(), month: now.getMonth() + 1 };
 
-    // Hide buttons temporarily
+    // Hide buttons and version temporarily
     const downloadBtn = document.getElementById('downloadPDF');
     const editBtn = document.getElementById('editInvoice');
+    const versionEl = document.getElementById('version');
     downloadBtn.style.display = 'none';
     editBtn.style.display = 'none';
+    if (versionEl) versionEl.style.display = 'none';
 
     try {
         // Generate canvas from HTML
@@ -233,27 +236,32 @@ document.getElementById('downloadPDF').addEventListener('click', async () => {
             }
         }
 
-        // Save PDF
-        pdf.save(filename);
+        // Get PDF as blob
+        const pdfBlob = pdf.output('blob');
 
-        // Copy move command to clipboard
-        const studentName = data.studentName;
-        const moveCommand = `/move-invoice ${studentName}`;
+        // Save to server
+        const response = await fetch(`/api/invoice/save?studentName=${encodeURIComponent(data.studentName)}&year=${data.year}&month=${data.month}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/pdf'
+            },
+            body: pdfBlob
+        });
 
-        try {
-            await navigator.clipboard.writeText(moveCommand);
-            alert(`✅ PDF 저장 완료!\n\n명령이 클립보드에 복사되었습니다:\n${moveCommand}\n\nClaude Code에 붙여넣기하세요.`);
-        } catch (clipboardError) {
-            // Fallback if clipboard fails
-            console.error('클립보드 복사 실패:', clipboardError);
-            alert(`✅ PDF 저장 완료!\n\n다음 명령을 실행하세요:\n${moveCommand}`);
+        const result = await response.json();
+
+        if (result.success) {
+            alert(`✅ PDF 저장 완료!\n\n저장 위치:\n${result.path}`);
+        } else {
+            throw new Error(result.error || 'Server error');
         }
     } catch (error) {
-        console.error('PDF 생성 중 오류:', error);
-        alert('PDF 생성에 실패했습니다.');
+        console.error('PDF 저장 중 오류:', error);
+        alert('PDF 저장에 실패했습니다: ' + error.message);
     } finally {
-        // Show buttons again
+        // Show buttons and version again
         downloadBtn.style.display = 'block';
         editBtn.style.display = 'block';
+        if (versionEl) versionEl.style.display = 'block';
     }
 });

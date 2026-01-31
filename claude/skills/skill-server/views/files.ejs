@@ -1,22 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Files - Skill Server</title>
-    <link rel="stylesheet" href="/static/styles/main.css">
+    <% const pageTitle = 'Files' %>
+    <%- include('partials/head', {config, pageTitle}) %>
 </head>
 <body>
-    <header class="header">
-        <a href="/" class="logo">SKILL SERVER</a>
-        <nav class="nav">
-            <a href="/">SKILLS</a>
-            <a href="/files" class="active">FILES</a>
-        </nav>
-    </header>
+    <%- include('partials/header', {config, activePage}) %>
     <main class="main">
         <div class="file-browser">
-            <h1>FILES</h1>
             <p class="path-display">~/.claude/private/<span id="currentPath"></span></p>
 
             <div class="file-list" id="fileList">
@@ -26,12 +17,13 @@
             <div class="file-preview" id="filePreview" style="display: none;">
                 <div class="preview-header">
                     <span id="previewName"></span>
-                    <button id="closePreview" class="close-button">CLOSE</button>
+                    <button id="closePreview" class="close-button">Close</button>
                 </div>
                 <pre class="preview-content" id="previewContent"></pre>
             </div>
         </div>
     </main>
+    <%- include('partials/footer', {config}) %>
 
     <script>
         let currentPath = '';
@@ -51,7 +43,7 @@
                 const parentPath = path.split('/').slice(0, -1).join('/');
                 const backItem = document.createElement('div');
                 backItem.className = 'file-item directory';
-                backItem.innerHTML = '<span class="file-icon">..</span><span class="file-name">[BACK]</span>';
+                backItem.innerHTML = '<span class="file-icon">..</span><span class="file-name">[Back]</span>';
                 backItem.onclick = () => loadFiles(parentPath);
                 fileList.appendChild(backItem);
             }
@@ -89,7 +81,7 @@
             preview.style.display = 'block';
 
             if (filePath.endsWith('.pdf')) {
-                content.innerHTML = '<a href="/api/files?path=' + encodeURIComponent(filePath) + '" target="_blank" class="pdf-link">OPEN PDF</a>';
+                content.innerHTML = '<a href="/api/files?path=' + encodeURIComponent(filePath) + '" target="_blank" class="pdf-link">Open PDF</a>';
             } else {
                 const res = await fetch(`/api/files?path=${encodeURIComponent(filePath)}`);
                 const text = await res.text();

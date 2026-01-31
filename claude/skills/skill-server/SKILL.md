@@ -1,6 +1,6 @@
 # skill-server
 
-**Version:** 1.0.0
+**Version:** 1.2.0
 
 Unified GUI dashboard for all Claude Code skills.
 
@@ -23,7 +23,7 @@ Or manually:
 cd ~/.claude/skills/skill-server
 npm install  # first time only
 npm start
-# Open http://localhost:3000
+# Open http://localhost:972
 ```
 
 ## Features
@@ -37,6 +37,59 @@ npm start
 
 Default: `972`
 
-## Design
+## Design System v1.2.0
 
-Follows Design System v1.1.0 (brutalist B&W)
+TypeTogether Catalogue-inspired editorial design.
+
+### Layout
+- **Max width**: 1170px, centered
+- **Grid**: 4 columns, 24px gap
+- **Padding**: 24px horizontal
+
+### Typography
+- **Font family**: `'Google Sans Flex', 'Noto Sans KR', sans-serif`
+- **Base size**: 15px
+- **Skill name**: 22px, weight 400, letter-spacing -0.02em
+- **Description**: 14px, 3-line clamp
+- **Meta/Badge**: 12px
+
+### Colors
+```css
+--color-black: #000000
+--color-text: #1a1a1a
+--color-white: #ffffff
+--color-bg: #f8f8f8
+--color-border: #e5e5e5
+--color-gray-mid: #888888
+--color-gray-dark: #555555
+```
+
+### Card Style
+- **Height**: 146px fixed
+- **Background**: transparent (no card background)
+- **Border**: none
+- **Hover**: title color changes to `#0066cc`
+
+### Header/Footer
+- **Height**: 56px (header)
+- **Border**: 1px solid border color (bottom for header, top for footer)
+- **Max width**: 1170px, centered
+- **Content**: flex layout, space-between
+
+## Centralized Config
+
+All shared UI elements are managed in `config.json`:
+
+```json
+{
+  "version": "1.2.0",
+  "copyright": "© 2026 Skill Server",
+  "title": "Skill Server",
+  "nav": [...]
+}
+```
+
+EJS partials in `views/partials/`:
+- `head.ejs` - Common head (fonts, CSS)
+- `header.ejs` - Navigation header
+- `footer.ejs` - Site footer

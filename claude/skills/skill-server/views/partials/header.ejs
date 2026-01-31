@@ -1,0 +1,8 @@
+<header class="header">
+    <a href="/" class="logo"><%= config.title %></a>
+    <nav class="nav">
+        <% config.nav.forEach(item => { %>
+        <a href="<%= item.href %>" <% if (typeof activePage !== 'undefined' && activePage === item.href) { %>class="active"<% } %>><%= item.label %></a>
+        <% }); %>
+    </nav>
+</header>
