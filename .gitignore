@@ -28,6 +28,10 @@ claude/logs/
 claude/temp/
 claude/tmp/
 
+# Skill server runtime
+claude/skills/skill-server/node_modules/
+claude/skills/skill-server/package-lock.json
+
 # OS files
 .DS_Store
 Thumbs.db

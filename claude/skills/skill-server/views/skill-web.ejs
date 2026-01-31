@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= skill.name %> - Skill Server</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">SKILL SERVER</a>
+        <nav class="nav">
+            <a href="/">SKILLS</a>
+            <a href="/files">FILES</a>
+        </nav>
+    </header>
+    <main class="main skill-frame-container">
+        <div class="skill-toolbar">
+            <span class="skill-title"><%= skill.name %></span>
+            <span class="skill-badge"><%= skill.type.toUpperCase() %></span>
+            <a href="/" class="back-button">BACK</a>
+        </div>
+        <iframe
+            src="/skill-assets/<%= skill.id %>/index.html"
+            class="skill-iframe"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-downloads allow-popups"
+        ></iframe>
+    </main>
+</body>
+</html>

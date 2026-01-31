@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Server</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">SKILL SERVER</a>
+        <nav class="nav">
+            <a href="/" class="active">SKILLS</a>
+            <a href="/files">FILES</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="dashboard">
+            <h1>SKILLS</h1>
+            <div class="skill-grid">
+                <% skills.forEach(skill => { %>
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <span class="skill-name"><%= skill.name %></span>
+                        <span class="skill-badge"><%= skill.type.toUpperCase() %></span>
+                    </div>
+                    <p class="skill-description"><%= skill.description %></p>
+                    <div class="skill-footer">
+                        <span class="skill-version">v<%= skill.version %></span>
+                        <a href="/skills/<%= skill.id %>" class="skill-button">OPEN</a>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+
+            <% if (skills.length === 0) { %>
+            <p class="empty-state">No skills found in ~/.claude/skills/</p>
+            <% } %>
+        </div>
+    </main>
+</body>
+</html>

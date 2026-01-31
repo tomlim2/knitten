@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= skill.name %> - Skill Server</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">SKILL SERVER</a>
+        <nav class="nav">
+            <a href="/">SKILLS</a>
+            <a href="/files">FILES</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="skill-toolbar">
+            <span class="skill-title"><%= skill.name %></span>
+            <span class="skill-badge">CLI</span>
+            <a href="/" class="back-button">BACK</a>
+        </div>
+
+        <% if (skill.id === 'git-commit-collector') { %>
+        <div class="cli-form">
+            <h2>COLLECT COMMITS</h2>
+            <form id="collectForm">
+                <div class="form-group">
+                    <label>REPOSITORY PATH</label>
+                    <input type="text" id="repoPath" placeholder="/path/to/repo" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>SINCE</label>
+                        <input type="text" id="since" placeholder="1 month ago">
+                    </div>
+                    <div class="form-group">
+                        <label>LIMIT</label>
+                        <input type="number" id="limit" placeholder="100" value="100">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>AUTHOR</label>
+                    <input type="text" id="author" placeholder="Filter by author name">
+                </div>
+                <button type="submit" class="submit-button">COLLECT</button>
+            </form>
+        </div>
+
+        <div class="output-section" id="outputSection" style="display: none;">
+            <h2>OUTPUT</h2>
+            <div class="status-bar" id="statusBar"></div>
+            <pre class="output" id="output"></pre>
+        </div>
+        <% } else { %>
+        <p class="empty-state">CLI execution not configured for this skill.</p>
+        <% } %>
+    </main>
+
+    <script>
+        const ws = new WebSocket(`ws://${location.host}`);
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const outputSection = document.getElementById('outputSection');
+            const output = document.getElementById('output');
+            const statusBar = document.getElementById('statusBar');
+
+            outputSection.style.display = 'block';
+
+            if (data.type === 'status') {
+                statusBar.textContent = data.message;
+            } else if (data.type === 'complete') {
+                statusBar.textContent = `Complete: ${data.count} commits`;
+                output.textContent = JSON.stringify(data.commits, null, 2);
+            } else if (data.type === 'error') {
+                statusBar.textContent = 'Error: ' + data.message;
+                statusBar.classList.add('error');
+            }
+        };
+
+        document.getElementById('collectForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const repoPath = document.getElementById('repoPath').value;
+            const since = document.getElementById('since').value;
+            const limit = parseInt(document.getElementById('limit').value) || 100;
+            const author = document.getElementById('author').value;
+
+            ws.send(JSON.stringify({
+                action: 'collect-commits',
+                repoPath,
+                options: { since, limit, author }
+            }));
+        });
+    </script>
+</body>
+</html>
