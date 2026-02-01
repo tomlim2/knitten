@@ -6,17 +6,19 @@ argument-hint: "<message>"
 
 # Send Art Notice
 
-슬랙 아트 채널에 메시지를 전송합니다.
+Send a notification message to the Slack art channel.
 
-## 사용법
+## Arguments
 
-**If $ARGUMENTS is empty, stop immediately and show:**
+$ARGUMENTS
+
+**If no argument is provided, stop immediately and show:**
 ```
 Usage: /send-art-notice <message>
-Example: /send-art-notice 새 빌드가 준비되었습니다!
+Example: /send-art-notice New build is ready!
 ```
 
-## 실행
+## Execution
 
 Run the art notice sender script:
 
