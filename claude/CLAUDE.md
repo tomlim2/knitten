@@ -240,6 +240,10 @@ Each command should include all context needed via dynamic execution (`!backtick
 - **Commit**: Commands, skills, CLAUDE.md, README.md
 - **Gitignore**: private/, history.jsonl, settings.json, todos/, projects/
 
+### 6. Git Commit vs Push
+- **커밋 요청시 푸시 없이 커밋만 합니다** (명시적 푸시 요청 제외)
+- Only commit when asked; do NOT auto-push unless explicitly requested
+
 ---
 
 ## Common Patterns
