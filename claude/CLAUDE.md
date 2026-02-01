@@ -244,6 +244,10 @@ Each command should include all context needed via dynamic execution (`!backtick
 - **커밋 요청시 푸시 없이 커밋만 합니다** (명시적 푸시 요청 제외)
 - Only commit when asked; do NOT auto-push unless explicitly requested
 
+### 7. Git Author (caol-ila)
+- **본 레포는 tomlim2 계정으로만 커밋합니다**
+- Git config: `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
+
 ---
 
 ## Common Patterns
