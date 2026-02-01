@@ -240,13 +240,12 @@ Each command should include all context needed via dynamic execution (`!backtick
 - **Commit**: Commands, skills, CLAUDE.md, README.md
 - **Gitignore**: private/, history.jsonl, settings.json, todos/, projects/
 
-### 6. Git Commit vs Push
-- **커밋 요청시 푸시 없이 커밋만 합니다** (명시적 푸시 요청 제외)
-- Only commit when asked; do NOT auto-push unless explicitly requested
+### 6. Git Workflow (caol-ila)
+- **Commit only**: Do NOT auto-push unless explicitly requested
+- **Author**: Always use `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
 
-### 7. Git Author (caol-ila)
-- **본 레포는 tomlim2 계정으로만 커밋합니다**
-- Git config: `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
+### 7. Documentation Language
+- **All rules and documentation in this file must be written in English only**
 
 ---
 
