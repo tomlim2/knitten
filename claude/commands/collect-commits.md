@@ -12,7 +12,7 @@ Extract commit history from a git repository for portfolio use.
 
 $ARGUMENTS
 
-**If no argument is provided, stop immediately and show:**
+**If no argument is provided, show usage and ask the user for the repo path. NEVER auto-execute.**
 ```
 Usage: /collect-commits <repo_path> [--author name] [--since date] [-n limit]
 ```

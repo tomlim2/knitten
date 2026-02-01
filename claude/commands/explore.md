@@ -12,7 +12,7 @@ Fast, parallel exploration of the codebase from multiple angles.
 
 $ARGUMENTS
 
-**If no argument is provided, stop immediately and show:**
+**If no argument is provided, show usage and ask the user for the topic. NEVER auto-execute.**
 ```
 Usage: /explore <topic or pattern>
 ```

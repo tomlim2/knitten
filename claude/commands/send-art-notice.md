@@ -12,7 +12,7 @@ Send a notification message to the Slack art channel.
 
 $ARGUMENTS
 
-**If no argument is provided, stop immediately and show:**
+**If no argument is provided, show usage and ask the user for the message. NEVER auto-execute.**
 ```
 Usage: /send-art-notice <message>
 Example: /send-art-notice New build is ready!

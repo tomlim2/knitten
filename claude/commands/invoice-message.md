@@ -12,10 +12,10 @@ Generate a KakaoTalk message for sending tuition invoice to parents.
 
 `$ARGUMENTS` = PDF invoice path
 
-**If no argument is provided, show example below and stop. Do not proceed.**
+**If no argument is provided, show usage and ask the user for the path. NEVER auto-execute.**
 
 ```
-/invoice-message <pdf-path>
+Usage: /invoice-message <pdf-path>
 ```
 
 ## Execution

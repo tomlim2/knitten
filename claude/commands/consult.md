@@ -20,7 +20,7 @@ You will NOT:
 
 $ARGUMENTS
 
-**If no argument is provided, stop immediately and show:**
+**If no argument is provided, show usage and ask the user for the question. NEVER auto-execute.**
 ```
 Usage: /consult <question or topic>
 ```

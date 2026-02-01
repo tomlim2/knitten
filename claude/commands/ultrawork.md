@@ -12,7 +12,7 @@ You are entering **ultrawork mode** - maximum intensity, zero shortcuts.
 
 $ARGUMENTS
 
-**If no argument is provided, stop immediately and show:**
+**If no argument is provided, show usage and ask the user for the task. NEVER auto-execute.**
 ```
 Usage: /ultrawork <task description>
 ```

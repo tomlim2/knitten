@@ -12,7 +12,7 @@ Add a new learning to the project wisdom vault.
 
 $ARGUMENTS
 
-**If no argument is provided, stop immediately and show:**
+**If no argument is provided, show usage and ask the user for project and category. NEVER auto-execute.**
 ```
 Usage: /learn <project> <category>
 Categories: convention, worked, failed, gotcha
