@@ -27,7 +27,7 @@ def load_env():
 
 load_env()
 
-# Load config
+# Load local config
 def load_config():
     config_path = Path(__file__).parent / "config.json"
     if config_path.exists():
@@ -35,12 +35,21 @@ def load_config():
             return json.load(f)
     return {}
 
+# Load shared Slack config
+def load_slack_config():
+    config_path = Path(__file__).parent.parent.parent / "config" / "slack.json"
+    if config_path.exists():
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
 CONFIG = load_config()
+SLACK_CONFIG = load_slack_config()
 
 # Configuration
 REPO_PATH = CONFIG.get("repo_path", r"E:\Second\CINEVStudio")
-SLACK_CHANNEL = CONFIG.get("slack_channel", "")
-NOTIFICATION_MESSAGE = CONFIG.get("notification_message", "@here 아트 새브렌치가 나왔습니다~ {branch_name}")
+SLACK_CHANNEL = SLACK_CONFIG.get("art_channel", "")
+NOTIFICATION_MESSAGE = SLACK_CONFIG.get("art_notice_message", "@here 아트 새브렌치가 나왔습니다~ {branch_name}")
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", "")
 KST = ZoneInfo("Asia/Seoul")
 

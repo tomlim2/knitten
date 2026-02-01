@@ -1,5 +1,3 @@
 {
-  "repo_path": "E:\\Second\\CINEVStudio",
-  "slack_channel": "YOUR_SLACK_CHANNEL_ID",
-  "notification_message": "@here 아트 새브렌치가 나왔습니다~ {branch_name}  **브렌치 이동후 다운로드 바이너리스 해주세요"
+  "repo_path": "E:\\Second\\CINEVStudio"
 }
