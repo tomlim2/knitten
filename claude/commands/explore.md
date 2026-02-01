@@ -12,6 +12,11 @@ Fast, parallel exploration of the codebase from multiple angles.
 
 $ARGUMENTS
 
+**If no argument is provided, stop immediately and show:**
+```
+Usage: /explore <topic or pattern>
+```
+
 ## Exploration Strategy
 
 Execute these searches **in parallel** where possible:

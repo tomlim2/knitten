@@ -10,9 +10,10 @@ CINEV 아트팀용 브랜치 생성 자동화.
 
 ## 사용법
 
+**If $ARGUMENTS is empty, stop immediately and show:**
 ```
-/create-art-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
-/create-art-branch art/art-main-1.5.0-r1  (체리픽 없이 브랜치만 생성)
+Usage: /create-art-branch <new_branch> [source_branch]
+Example: /create-art-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
 ```
 
 ## 실행

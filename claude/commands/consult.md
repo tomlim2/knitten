@@ -20,6 +20,11 @@ You will NOT:
 
 $ARGUMENTS
 
+**If no argument is provided, stop immediately and show:**
+```
+Usage: /consult <question or topic>
+```
+
 ## Your Role
 
 You are a senior architect providing consultation. Your job is to:

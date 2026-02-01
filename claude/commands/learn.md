@@ -12,6 +12,12 @@ Add a new learning to the project wisdom vault.
 
 $ARGUMENTS
 
+**If no argument is provided, stop immediately and show:**
+```
+Usage: /learn <project> <category>
+Categories: convention, worked, failed, gotcha
+```
+
 Parse as: `<project_name> <category>`
 
 Categories:

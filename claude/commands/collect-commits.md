@@ -12,6 +12,11 @@ Extract commit history from a git repository for portfolio use.
 
 $ARGUMENTS
 
+**If no argument is provided, stop immediately and show:**
+```
+Usage: /collect-commits <repo_path> [--author name] [--since date] [-n limit]
+```
+
 ## Instructions
 
 Run the git commit collector script with the provided arguments.

@@ -12,6 +12,11 @@ You are entering **ultrawork mode** - maximum intensity, zero shortcuts.
 
 $ARGUMENTS
 
+**If no argument is provided, stop immediately and show:**
+```
+Usage: /ultrawork <task description>
+```
+
 ## Rules (Non-Negotiable)
 
 ### 1. Mandatory Todo Tracking
