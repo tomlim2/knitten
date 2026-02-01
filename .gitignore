@@ -1,5 +1,7 @@
 # Personal data
-claude/private/
+claude/private/*
+!claude/private/learnings/
+!claude/private/learnings/**
 
 # Secrets
 *.env
