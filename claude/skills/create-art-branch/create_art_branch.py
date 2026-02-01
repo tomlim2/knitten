@@ -27,9 +27,20 @@ def load_env():
 
 load_env()
 
+# Load config
+def load_config():
+    config_path = Path(__file__).parent / "config.json"
+    if config_path.exists():
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+CONFIG = load_config()
+
 # Configuration
-REPO_PATH = r"E:\Second\CINEVStudio"
-SLACK_CHANNEL = "C05CS9N5E69"
+REPO_PATH = CONFIG.get("repo_path", r"E:\Second\CINEVStudio")
+SLACK_CHANNEL = CONFIG.get("slack_channel", "")
+NOTIFICATION_MESSAGE = CONFIG.get("notification_message", "@here 아트 새브렌치가 나왔습니다~ {branch_name}")
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", "")
 KST = ZoneInfo("Asia/Seoul")
 
@@ -90,11 +101,15 @@ def send_slack_notification(branch_name: str, commit_count: int) -> bool:
         print("  [WARN] SLACK_BOT_TOKEN not set, skipping notification")
         return False
 
+    if not SLACK_CHANNEL:
+        print("  [WARN] slack_channel not set in config.json, skipping notification")
+        return False
+
     try:
         import urllib.request
         import urllib.error
 
-        message = f"@here 아트 새브렌치가 나왔습니다~ {branch_name}  **브렌치 이동후 다운로드 바이너리스 해주세요"
+        message = NOTIFICATION_MESSAGE.format(branch_name=branch_name, commit_count=commit_count)
 
         payload = json.dumps({
             "channel": SLACK_CHANNEL,
