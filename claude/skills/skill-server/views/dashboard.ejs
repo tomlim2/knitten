@@ -8,7 +8,6 @@
     <main class="main">
         <% groupedSkills.forEach(group => { %>
         <section class="skill-section">
-            <h2 class="section-title"><%= group.category %></h2>
             <div class="skill-grid">
                 <% group.skills.forEach(skill => { %>
                 <a href="/skills/<%= skill.id %>" class="skill-card">

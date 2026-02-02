@@ -18,39 +18,58 @@
         </nav>
     </header>
     <main class="main">
-        <section class="page-hero">
-            <h1 class="page-hero-name">Commands</h1>
-            <div class="page-hero-meta">
-                <span>v0.2.0</span>
-                <span>web</span>
+        <section class="page-hero page-hero--single">
+            <div class="page-hero-content">
+                <h1 class="page-hero-name">Commands</h1>
+                <p class="page-hero-desc">Claude Code에 등록된 모든 슬래시 커맨드를 한눈에 확인하고 빠르게 복사할 수 있습니다.</p>
             </div>
-            <p class="page-hero-desc">Claude Code에 등록된 모든 슬래시 커맨드 목록</p>
         </section>
 
         <div class="page-layout">
             <article class="page-main">
                 <div class="content-section">
-                    <input type="text" class="input" id="searchInput" placeholder="Search commands..." style="max-width:400px;margin-bottom:24px;">
-                    <p id="commandsCount" style="font-size:13px;color:var(--color-gray-mid);margin-bottom:24px;">Loading...</p>
+                    <input type="text" class="input" id="searchInput" placeholder="Search commands..." style="max-width:400px;">
+                    <p id="commandsCount" style="font-size:13px;color:var(--color-gray-mid);margin-top:16px;">Loading...</p>
                 </div>
-                <ul class="item-list" id="commandsGrid"></ul>
+
+                <div class="content-section">
+                    <ul class="item-list" id="commandsGrid"></ul>
+                </div>
             </article>
 
             <aside class="page-sidebar">
                 <div class="page-sidebar-item">
                     <div class="page-sidebar-label">Location</div>
                     <div class="page-sidebar-value">
-                        ~/.claude/commands/
+                        <code>~/.claude/commands/</code>
                     </div>
                 </div>
                 <div class="page-sidebar-item">
                     <div class="page-sidebar-label">Format</div>
                     <div class="page-sidebar-value">
-                        Markdown with frontmatter
+                        Markdown with YAML frontmatter
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Frontmatter</div>
+                    <div class="page-sidebar-value">
+                        <code>description</code><br>
+                        <code>allowed-tools</code><br>
+                        <code>argument-hint</code>
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Usage</div>
+                    <div class="page-sidebar-value">
+                        Type <code>/command</code> in Claude Code
                     </div>
                 </div>
             </aside>
         </div>
+
+        <section class="related-section">
+            <div class="related-grid" id="relatedSkills"></div>
+        </section>
     </main>
     <footer class="site-footer">
         <div class="footer-content">
@@ -76,7 +95,7 @@
             const grid = document.getElementById('commandsGrid');
             const count = document.getElementById('commandsCount');
 
-            count.textContent = `${commands.length} commands`;
+            count.textContent = `${commands.length} commands found`;
             grid.innerHTML = '';
 
             commands.forEach(cmd => {
@@ -108,7 +127,37 @@
             renderCommands(filtered);
         });
 
+        async function loadRelatedSkills() {
+            try {
+                const res = await fetch('/api/skills');
+                const data = await res.json();
+                const browseSkills = data.skills.filter(s =>
+                    s.category === 'Browse' && s.id !== 'browse-commands'
+                ).slice(0, 3);
+
+                const grid = document.getElementById('relatedSkills');
+                if (browseSkills.length === 0) {
+                    grid.parentElement.style.display = 'none';
+                    return;
+                }
+
+                browseSkills.forEach(skill => {
+                    const card = document.createElement('a');
+                    card.href = `/skills/${skill.id}`;
+                    card.className = 'related-card';
+                    card.innerHTML = `
+                        <div class="related-card-name">${skill.name}</div>
+                        <div class="related-card-desc">${skill.description}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (e) {
+                document.getElementById('relatedSkills').parentElement.style.display = 'none';
+            }
+        }
+
         loadCommands();
+        loadRelatedSkills();
     </script>
 </body>
 </html>

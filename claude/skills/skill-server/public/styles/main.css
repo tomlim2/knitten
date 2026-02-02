@@ -16,6 +16,7 @@
     --color-gray-light: #f5f5f5;
     --color-gray-mid: #888888;
     --color-gray-dark: #555555;
+    --color-accent: #e84a3b;
 }
 
 body {
@@ -38,7 +39,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 3px solid var(--color-black);
 }
 
 .logo {
@@ -72,7 +73,7 @@ body {
 .main {
     max-width: 1170px;
     margin: 0 auto;
-    padding: 48px 24px 120px;
+    padding: 32px 24px 16px;
 }
 
 h1, h2 {
@@ -85,7 +86,9 @@ h1, h2 {
 
 /* Skill Section */
 .skill-section {
-    margin-bottom: 56px;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 40px;
 }
 
 .skill-section:last-child {
@@ -124,7 +127,7 @@ h1, h2 {
 
 /* Card Content */
 .skill-content {
-    height: 146px;
+    height: auto;
     display: flex;
     flex-direction: column;
 }
@@ -518,30 +521,64 @@ h1, h2 {
    Detail Page - TypeTogether Style
    ======================================== */
 
-/* Hero Section */
+/* Hero Section - TypeTogether Font-Intro Style */
 .page-hero {
-    padding: 80px 0 48px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 60px;
+    padding: 50px 0;
     border-bottom: 1px solid var(--color-border);
 }
 
+.page-hero--single {
+    grid-template-columns: 1fr;
+}
+
+.page-hero-content {
+    /* Left column: title, credits, description */
+}
+
+.page-hero-category {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gray-mid);
+    margin-bottom: 12px;
+}
+
 .page-hero-name {
-    font-size: 48px;
-    font-weight: 400;
+    font-size: 24px;
+    font-weight: 500;
     color: var(--color-black);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 .page-hero-name--mono {
     font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-size: 36px;
+    letter-spacing: -0.01em;
+    text-transform: none;
 }
 
 .page-hero-meta {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--color-gray-mid);
-    letter-spacing: 0.02em;
-    margin-bottom: 32px;
+    letter-spacing: 0.01em;
+    margin-bottom: 20px;
+}
+
+.page-hero-meta a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.page-hero-meta a:hover {
+    color: var(--color-black);
 }
 
 .page-hero-meta span {
@@ -554,19 +591,72 @@ h1, h2 {
 }
 
 .page-hero-desc {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
     color: var(--color-text);
-    line-height: 1.5;
-    max-width: 640px;
+    line-height: 1.6;
+    max-width: 560px;
+    letter-spacing: -0.005em;
+}
+
+/* Hero Action Area - Right column */
+.page-hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.page-hero-cta {
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 20px 24px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.15s ease;
+}
+
+.page-hero-cta:hover {
+    background: var(--color-text);
+}
+
+.page-hero-cta-price {
+    display: block;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    margin-top: 4px;
+}
+
+.page-hero-action-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border);
+    transition: color 0.15s ease;
+}
+
+.page-hero-action-link:hover {
+    color: var(--color-black);
+}
+
+.page-hero-action-link:last-child {
+    border-bottom: none;
 }
 
 /* Two Column Layout */
 .page-layout {
     display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: 80px;
-    padding: 56px 0 80px;
+    grid-template-columns: 1fr 280px;
+    gap: 100px;
+    padding: 48px 0 64px;
 }
 
 /* Main Content */
@@ -653,31 +743,40 @@ h1, h2 {
 
 /* Sidebar */
 .page-sidebar {
-    padding-top: 4px;
+    padding-top: 8px;
 }
 
 .page-sidebar-item {
-    margin-bottom: 36px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.page-sidebar-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
 .page-sidebar-label {
     font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-weight: 600;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--color-gray-mid);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .page-sidebar-value {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--color-text);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .page-sidebar-value code {
     font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 13px;
+    background: var(--color-gray-light);
+    padding: 2px 6px;
 }
 
 .page-sidebar-link {
@@ -689,24 +788,67 @@ h1, h2 {
 
 .page-sidebar-link:hover {
     border-bottom-color: var(--color-black);
+    color: #0066cc;
 }
 
 /* Content Sections */
 .content-section {
-    margin-bottom: 48px;
+    margin-bottom: 56px;
 }
 
 .content-section:last-child {
     margin-bottom: 0;
 }
 
-.section-title {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-gray-mid);
-    margin-bottom: 24px;
+
+/* Related Skills Section */
+.related-section {
+    margin-top: 0;
+    padding: 48px 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.related-section .section-title {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 32px;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.related-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    transition: border-color 0.15s ease;
+}
+
+.related-card:hover {
+    border-color: var(--color-black);
+}
+
+.related-card:hover .related-card-name {
+    color: #0066cc;
+}
+
+.related-card-name {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--color-black);
+    margin-bottom: 8px;
+    transition: color 0.15s ease;
+}
+
+.related-card-desc {
+    font-size: 13px;
+    color: var(--color-gray-dark);
+    line-height: 1.5;
 }
 
 /* List Items */
@@ -780,15 +922,31 @@ h1, h2 {
     }
 
     .page-hero {
-        padding: 48px 0 32px;
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 32px 0;
+    }
+
+    .page-hero-category {
+        margin-bottom: 10px;
     }
 
     .page-hero-name {
-        font-size: 32px;
+        font-size: 20px;
     }
 
     .page-hero-desc {
-        font-size: 17px;
+        font-size: 15px;
+    }
+
+    .page-hero-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .page-hero-cta {
+        flex: 1;
+        min-width: 200px;
     }
 
     .page-sidebar {
@@ -801,6 +959,17 @@ h1, h2 {
 
     .page-sidebar-item {
         margin-bottom: 0;
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .related-section {
+        margin-top: 48px;
+        padding-top: 40px;
+    }
+
+    .related-grid {
+        grid-template-columns: 1fr;
     }
 }
 

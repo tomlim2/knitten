@@ -1,5 +1,13 @@
 # Skill Server Changelog
 
+## [1.4.0] - 2026-02-02
+
+### Changed
+- Simplified dashboard layout (removed category headers)
+- Updated card style: border on skill-meta only
+- Adjusted spacing: main padding 32px top, 16px bottom
+- Subpages updated to page-hero--single style
+
 ## [1.0.0] - 2026-01-31
 
 ### Added

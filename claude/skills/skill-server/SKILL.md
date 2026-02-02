@@ -1,6 +1,6 @@
 # skill-server
 
-**Version:** 1.3.0
+**Version:** 1.4.0
 
 Unified GUI dashboard for all Claude Code skills.
 

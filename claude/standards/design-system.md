@@ -27,6 +27,7 @@
 │  Max width: 1170px       │  Grid: 4 columns, 24px gap           │
 │  Font: Google Sans Flex  │  Korean: Noto Sans KR                │
 │  Hover: #0066cc (blue)   │  Borders: minimal, #e5e5e5           │
+│  Spacing max: 40px       │  All padding/margin ≤ 40px           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

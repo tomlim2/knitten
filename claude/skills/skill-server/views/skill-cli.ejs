@@ -7,13 +7,11 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
-        <section class="page-hero">
-            <h1 class="page-hero-name page-hero-name--mono">/<%= skill.name %></h1>
-            <div class="page-hero-meta">
-                <span>v<%= skill.version %></span>
-                <span><%= skill.type %></span>
+        <section class="page-hero page-hero--single">
+            <div class="page-hero-content">
+                <h1 class="page-hero-name">/<%= skill.name %></h1>
+                <p class="page-hero-desc"><%= skill.description %></p>
             </div>
-            <p class="page-hero-desc"><%= skill.description %></p>
         </section>
 
         <div class="page-layout">
@@ -26,15 +24,21 @@
                     </div>
                 </div>
                 <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Path</div>
+                    <div class="page-sidebar-label">Version</div>
                     <div class="page-sidebar-value">
-                        ~/.claude/skills/<%= skill.id %>/
+                        v<%= skill.version %>
                     </div>
                 </div>
                 <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Navigation</div>
+                    <div class="page-sidebar-label">Type</div>
                     <div class="page-sidebar-value">
-                        <a href="/" class="page-sidebar-link">Back to Skills</a>
+                        <%= skill.type %>
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Path</div>
+                    <div class="page-sidebar-value">
+                        <code>~/.claude/skills/<%= skill.id %>/</code>
                     </div>
                 </div>
             </aside>
