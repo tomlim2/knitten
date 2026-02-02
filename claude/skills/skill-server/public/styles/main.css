@@ -119,6 +119,12 @@ h1, h2 {
     transition: color 0.15s ease;
 }
 
+.skill-name--cli {
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-size: 16px;
+    letter-spacing: 0;
+}
+
 .skill-description {
     font-size: 14px;
     color: var(--color-gray-dark);

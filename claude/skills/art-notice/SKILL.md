@@ -1,4 +1,4 @@
-# Send Art Notice
+# art-notice
 
 **Version:** 0.2.0
 
