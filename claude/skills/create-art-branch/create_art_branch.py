@@ -14,9 +14,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-# Load environment variables from .env file
+# Load environment variables from shared .env file
 def load_env():
-    env_path = Path(__file__).parent / ".env"
+    # Load from shared config location
+    env_path = Path(__file__).parent.parent.parent / "config" / ".env"
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
