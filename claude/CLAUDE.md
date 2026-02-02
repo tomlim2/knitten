@@ -276,6 +276,7 @@ Each command should include all context needed via dynamic execution (`!backtick
 ### 6. Git Workflow (caol-ila)
 - **Commit only**: Do NOT auto-push unless explicitly requested
 - **Author**: Always use `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
+- **No Co-Authored-By**: Do NOT add `Co-Authored-By: Claude` lines to commit messages
 
 ### 7. Documentation Language
 - **All rules and documentation in this file must be written in English only**
