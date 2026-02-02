@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnings Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <style>
+        .learnings-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 200px);
+        }
+        .project-list {
+            border-right: 1px solid var(--color-border);
+            padding-right: 24px;
+        }
+        .project-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--color-gray-dark);
+            transition: color 0.15s ease;
+        }
+        .project-item:hover,
+        .project-item.active {
+            color: var(--color-black);
+        }
+        .learning-content {
+            padding: 0 24px;
+        }
+        .learning-content h1 {
+            font-size: 22px;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: var(--color-black);
+            margin-bottom: 24px;
+        }
+        .learning-section {
+            margin-bottom: 32px;
+        }
+        .learning-section h2 {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--color-gray-mid);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        .learning-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .learning-table th,
+        .learning-table td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 14px;
+        }
+        .learning-table th {
+            font-weight: 500;
+            color: var(--color-gray-mid);
+            background: var(--color-gray-light);
+        }
+        .learning-table td {
+            color: var(--color-text);
+        }
+        .empty-content {
+            color: var(--color-gray-mid);
+            font-size: 14px;
+            padding: 40px 0;
+        }
+        @media (max-width: 768px) {
+            .learnings-container {
+                grid-template-columns: 1fr;
+            }
+            .project-list {
+                border-right: none;
+                border-bottom: 1px solid var(--color-border);
+                padding-right: 0;
+                padding-bottom: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">Skill Server</a>
+        <nav class="nav">
+            <a href="/">Skills</a>
+            <a href="/files">Files</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="skill-toolbar">
+            <span class="skill-title">Learnings Viewer</span>
+            <span class="skill-badge">web</span>
+            <a href="/" class="back-button">Back</a>
+        </div>
+        <div class="learnings-container">
+            <div class="project-list" id="projectList">
+                <div class="project-item" onclick="loadLearning('_template')">_template</div>
+            </div>
+            <div class="learning-content" id="learningContent">
+                <p class="empty-content">Select a project to view learnings</p>
+            </div>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <span class="footer-copyright">Learnings Viewer v0.1.0</span>
+        </div>
+    </footer>
+    <script>
+        let currentProject = null;
+
+        async function loadProjects() {
+            try {
+                const res = await fetch('/api/files?path=learnings/projects');
+                const data = await res.json();
+                const projectList = document.getElementById('projectList');
+                projectList.innerHTML = '';
+
+                // Add template
+                const templateItem = document.createElement('div');
+                templateItem.className = 'project-item';
+                templateItem.textContent = '_template';
+                templateItem.onclick = () => loadLearning('_template.md', templateItem);
+                projectList.appendChild(templateItem);
+
+                // Add projects
+                if (data.entries) {
+                    data.entries.forEach(entry => {
+                        if (entry.name.endsWith('.md')) {
+                            const item = document.createElement('div');
+                            item.className = 'project-item';
+                            item.textContent = entry.name.replace('.md', '');
+                            item.onclick = () => loadLearning('projects/' + entry.name, item);
+                            projectList.appendChild(item);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to load projects:', e);
+            }
+        }
+
+        async function loadLearning(filename, element) {
+            // Update active state
+            document.querySelectorAll('.project-item').forEach(el => el.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            try {
+                const res = await fetch('/api/files?path=learnings/' + filename);
+                const text = await res.text();
+                renderLearning(text);
+            } catch (e) {
+                document.getElementById('learningContent').innerHTML = '<p class="empty-content">Failed to load learning</p>';
+            }
+        }
+
+        function renderLearning(markdown) {
+            const content = document.getElementById('learningContent');
+            const lines = markdown.split('\n');
+            let html = '';
+            let currentSection = '';
+            let inTable = false;
+            let tableRows = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+
+                if (line.startsWith('# ')) {
+                    html += `<h1>${line.slice(2)}</h1>`;
+                } else if (line.startsWith('## ')) {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        tableRows = [];
+                        inTable = false;
+                    }
+                    currentSection = line.slice(3);
+                    html += `<div class="learning-section"><h2>${currentSection}</h2>`;
+                } else if (line.startsWith('| ') && line.includes(' | ')) {
+                    inTable = true;
+                    tableRows.push(line);
+                } else if (line.startsWith('---') && inTable) {
+                    // Skip table separator
+                } else if (inTable && line.trim() === '') {
+                    html += renderTable(tableRows);
+                    tableRows = [];
+                    inTable = false;
+                    html += '</div>';
+                }
+            }
+
+            if (inTable) {
+                html += renderTable(tableRows);
+                html += '</div>';
+            }
+
+            content.innerHTML = html || '<p class="empty-content">No content</p>';
+        }
+
+        function renderTable(rows) {
+            if (rows.length < 2) return '';
+
+            const headers = rows[0].split('|').filter(c => c.trim()).map(c => c.trim());
+            let html = '<table class="learning-table"><thead><tr>';
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += '</tr></thead><tbody>';
+
+            for (let i = 2; i < rows.length; i++) {
+                const cells = rows[i].split('|').filter(c => c.trim()).map(c => c.trim());
+                html += '<tr>';
+                cells.forEach(c => html += `<td>${c.replace(/\*\*/g, '')}</td>`);
+                html += '</tr>';
+            }
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        loadProjects();
+    </script>
+</body>
+</html>

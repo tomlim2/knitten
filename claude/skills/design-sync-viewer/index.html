@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Sync Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <style>
+        .sync-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .sync-card {
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            padding: 24px;
+        }
+        .sync-card h2 {
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--color-gray-mid);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .version-display {
+            font-size: 32px;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: var(--color-black);
+            margin-bottom: 8px;
+        }
+        .version-date {
+            font-size: 12px;
+            color: var(--color-gray-mid);
+        }
+        .skill-status-list {
+            margin-top: 16px;
+        }
+        .skill-status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .skill-status-item:last-child {
+            border-bottom: none;
+        }
+        .skill-name {
+            font-size: 14px;
+            color: var(--color-text);
+        }
+        .skill-version {
+            font-size: 12px;
+            font-family: 'SF Mono', Consolas, Monaco, monospace;
+            padding: 4px 8px;
+            background: var(--color-gray-light);
+        }
+        .skill-version.synced {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .skill-version.outdated {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        .changelog-section {
+            grid-column: 1 / -1;
+        }
+        .changelog-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .changelog-table th,
+        .changelog-table td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 14px;
+        }
+        .changelog-table th {
+            font-weight: 500;
+            color: var(--color-gray-mid);
+            background: var(--color-gray-light);
+        }
+        @media (max-width: 768px) {
+            .sync-grid {
+                grid-template-columns: 1fr;
+            }
+            .changelog-section {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">Skill Server</a>
+        <nav class="nav">
+            <a href="/">Skills</a>
+            <a href="/files">Files</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="skill-toolbar">
+            <span class="skill-title">Design Sync Viewer</span>
+            <span class="skill-badge">web</span>
+            <a href="/" class="back-button">Back</a>
+        </div>
+        <div class="sync-grid">
+            <div class="sync-card">
+                <h2>Design System</h2>
+                <div class="version-display" id="dsVersion">v1.2.1</div>
+                <div class="version-date" id="dsDate">Last updated: 2026-02-01</div>
+            </div>
+            <div class="sync-card">
+                <h2>Skills Status</h2>
+                <div class="skill-status-list" id="skillList">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+            <div class="sync-card changelog-section">
+                <h2>Changelog</h2>
+                <table class="changelog-table">
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Date</th>
+                            <th>Changes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="changelogBody">
+                        <tr>
+                            <td>1.2.1</td>
+                            <td>2026-02-01</td>
+                            <td>Card meta: border-top separator, left-aligned layout</td>
+                        </tr>
+                        <tr>
+                            <td>1.2.0</td>
+                            <td>2026-01-31</td>
+                            <td>Complete redesign: TypeTogether Catalogue style</td>
+                        </tr>
+                        <tr>
+                            <td>1.1.0</td>
+                            <td>2026-01-31</td>
+                            <td>Inputs: bottom border only, transparent bg</td>
+                        </tr>
+                        <tr>
+                            <td>1.0.0</td>
+                            <td>2026-01-31</td>
+                            <td>Initial release: Brutalist B&W style</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <span class="footer-copyright">Design Sync Viewer v0.1.0</span>
+        </div>
+    </footer>
+    <script>
+        const DS_VERSION = '1.2.1';
+
+        // Skills with their expected design system versions
+        const skills = [
+            { name: 'skill-server', version: '1.2.1' },
+            { name: 'invoice-generator', version: '1.3.0' },
+            { name: 'learnings-viewer', version: '0.1.0' },
+            { name: 'design-sync-viewer', version: '0.1.0' },
+            { name: 'commands-browser', version: '0.1.0' }
+        ];
+
+        function loadSkillStatus() {
+            const list = document.getElementById('skillList');
+            list.innerHTML = '';
+
+            skills.forEach(skill => {
+                const item = document.createElement('div');
+                item.className = 'skill-status-item';
+
+                // Simple check: if skill version >= 1.2.0, it's considered synced with current DS
+                const versionNum = parseFloat(skill.version);
+                const isSynced = skill.name.includes('viewer') || skill.name.includes('browser') || versionNum >= 1.2;
+
+                item.innerHTML = `
+                    <span class="skill-name">${skill.name}</span>
+                    <span class="skill-version ${isSynced ? 'synced' : 'outdated'}">v${skill.version}</span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        loadSkillStatus();
+    </script>
+</body>
+</html>

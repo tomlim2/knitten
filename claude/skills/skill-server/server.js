@@ -15,6 +15,7 @@ const PORT = process.env.PORT || 972;
 const CLAUDE_DIR = path.join(require('os').homedir(), '.claude');
 const SKILLS_DIR = path.join(CLAUDE_DIR, 'skills');
 const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
+const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 
 // View engine
 app.set('view engine', 'ejs');
@@ -152,6 +153,47 @@ app.get('/api/files', (req, res) => {
 
 app.get('/files', (req, res) => {
     res.render('files', { basePath: PRIVATE_DIR, config, activePage: '/files' });
+});
+
+// Commands API
+app.get('/api/commands', (req, res) => {
+    if (!fs.existsSync(COMMANDS_DIR)) {
+        return res.json({ commands: [] });
+    }
+
+    const files = fs.readdirSync(COMMANDS_DIR).filter(f => f.endsWith('.md'));
+    const commands = files.map(file => {
+        const content = fs.readFileSync(path.join(COMMANDS_DIR, file), 'utf-8');
+        const lines = content.split('\n');
+
+        // Parse frontmatter
+        let description = '';
+        let allowedTools = '';
+        let inFrontmatter = false;
+
+        for (const line of lines) {
+            if (line.trim() === '---') {
+                inFrontmatter = !inFrontmatter;
+                continue;
+            }
+            if (inFrontmatter) {
+                if (line.startsWith('description:')) {
+                    description = line.replace('description:', '').trim();
+                }
+                if (line.startsWith('allowed-tools:')) {
+                    allowedTools = line.replace('allowed-tools:', '').trim();
+                }
+            }
+        }
+
+        return {
+            name: file.replace('.md', ''),
+            description,
+            allowedTools
+        };
+    });
+
+    res.json({ commands });
 });
 
 // Save invoice PDF
