@@ -113,7 +113,7 @@ function groupByCategory(skills) {
 
 // Routes
 app.get('/', (req, res) => {
-    const skills = discoverSkills().filter(s => s.type === 'web');
+    const skills = discoverSkills();
     const groupedSkills = groupByCategory(skills);
     res.render('dashboard', { groupedSkills, config, activePage: '/' });
 });
