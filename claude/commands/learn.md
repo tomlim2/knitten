@@ -28,10 +28,12 @@ Categories:
 
 ## Execution
 
+**IMPORTANT:** Always use the absolute path `D:\vs\caol-ila\claude\private\learnings\` (not symlink).
+
 1. **Parse arguments** - Extract project name and category
-2. **Check/create directory**: `claude/private/learnings/projects/`
-3. **Read or create** project file: `claude/private/learnings/projects/<project>.md`
-   - If new, copy from `claude/private/learnings/_template.md`
+2. **Check/create directory**: `D:\vs\caol-ila\claude\private\learnings\projects\`
+3. **Read or create** project file: `D:\vs\caol-ila\claude\private\learnings\projects\<project>.md`
+   - If new, copy from `D:\vs\caol-ila\claude\private\learnings\_template.md`
 4. **Ask user** to describe the learning
 5. **Append** to appropriate section with today's date
 6. **Confirm** the addition
@@ -39,11 +41,11 @@ Categories:
 ## Current Learnings
 
 Projects with learnings:
-!`ls claude/private/learnings/projects/ 2>/dev/null || echo "No learnings yet - this will be the first!"`
+!`ls "D:\vs\caol-ila\claude\private\learnings\projects" 2>/dev/null || echo "No learnings yet - this will be the first!"`
 
 ## Template Location
 
-!`cat claude/private/learnings/_template.md 2>/dev/null || echo "Template not found - will create project file from scratch"`
+!`cat "D:\vs\caol-ila\claude\private\learnings\_template.md" 2>/dev/null || echo "Template not found - will create project file from scratch"`
 
 ## Today's Date
 
