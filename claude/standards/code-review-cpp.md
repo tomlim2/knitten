@@ -1,5 +1,11 @@
 # C++ and Unreal Engine Coding Standards
 
+**Version:** 0.1.0
+
+## Changelog
+
+- **0.1.0** - Initial release
+
 ## Core Review Checklist
 
 ### General Code Quality

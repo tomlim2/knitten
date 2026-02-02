@@ -1,6 +1,12 @@
 # CLAUDE.md
 
+**Version:** 0.1.0
+
 This file provides guidance for Claude Code when working with the global `claude` configuration system.
+
+## Changelog
+
+- **0.1.0** - Initial release
 
 ## What Is This?
 

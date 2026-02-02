@@ -1,6 +1,12 @@
 # Delegation Template
 
+**Version:** 0.1.0
+
 Standard 7-section structure for delegating tasks to Claude or sub-agents.
+
+## Changelog
+
+- **0.1.0** - Initial release
 
 ---
 
