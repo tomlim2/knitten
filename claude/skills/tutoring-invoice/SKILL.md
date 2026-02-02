@@ -1,4 +1,4 @@
-# invoice-generator
+# tutoring-invoice
 
 **Version:** 1.3.0 | [CHANGELOG](./CHANGELOG.md)
 

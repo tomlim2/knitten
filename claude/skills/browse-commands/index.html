@@ -49,12 +49,6 @@
                         Markdown with frontmatter
                     </div>
                 </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Navigation</div>
-                    <div class="page-sidebar-value">
-                        <a href="/" class="page-sidebar-link">Back to Skills</a>
-                    </div>
-                </div>
             </aside>
         </div>
     </main>
@@ -90,8 +84,17 @@
                 li.innerHTML = `
                     <span class="item-name--mono">/${cmd.name}</span>
                     <span class="item-meta">${cmd.description || 'No description'}</span>
+                    <button class="copy-btn" onclick="copyCommand('/${cmd.name}')" title="Copy command">Copy</button>
                 `;
                 grid.appendChild(li);
+            });
+        }
+
+        function copyCommand(command) {
+            navigator.clipboard.writeText(command).then(() => {
+                const btn = event.target;
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 1500);
             });
         }
 

@@ -1,4 +1,4 @@
-# commands-browser
+# browse-commands
 
 **Version:** 0.1.0
 

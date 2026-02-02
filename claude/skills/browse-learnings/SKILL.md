@@ -1,4 +1,4 @@
-# learnings-viewer
+# browse-learnings
 
 **Version:** 0.1.0
 

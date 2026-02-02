@@ -64,6 +64,16 @@ function discoverSkills() {
             const hasPy = files.some(f => f.endsWith('.py'));
             const type = hasHtml ? 'web' : (hasPy ? 'cli' : 'unknown');
 
+            // Detect category from prefix
+            const prefix = dir.split('-')[0];
+            const categoryMap = {
+                'art': 'Art',
+                'tutoring': 'Tutoring',
+                'browse': 'Browse',
+                'dev': 'Dev Tools'
+            };
+            const category = categoryMap[prefix] || 'Other';
+
             // Skip self
             if (dir === 'skill-server') continue;
 
@@ -73,6 +83,7 @@ function discoverSkills() {
                 version,
                 description,
                 type,
+                category,
                 path: skillPath,
                 markdown: content
             });
@@ -82,10 +93,29 @@ function discoverSkills() {
     return skills;
 }
 
+// Group skills by category
+function groupByCategory(skills) {
+    const groups = {};
+    const order = ['Art', 'Tutoring', 'Browse', 'Dev Tools', 'Other'];
+
+    skills.forEach(skill => {
+        if (!groups[skill.category]) {
+            groups[skill.category] = [];
+        }
+        groups[skill.category].push(skill);
+    });
+
+    // Return ordered array of { category, skills }
+    return order
+        .filter(cat => groups[cat])
+        .map(cat => ({ category: cat, skills: groups[cat] }));
+}
+
 // Routes
 app.get('/', (req, res) => {
-    const skills = discoverSkills();
-    res.render('dashboard', { skills, config, activePage: '/' });
+    const skills = discoverSkills().filter(s => s.type === 'web');
+    const groupedSkills = groupByCategory(skills);
+    res.render('dashboard', { groupedSkills, config, activePage: '/' });
 });
 
 // Serve skill static files (CSS, JS, etc.)

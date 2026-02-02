@@ -1,4 +1,4 @@
-# standards-browser
+# browse-standards
 
 **Version:** 0.1.0
 

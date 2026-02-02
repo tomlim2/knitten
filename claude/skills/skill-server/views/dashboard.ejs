@@ -6,22 +6,26 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
-        <div class="skill-grid">
-            <% skills.forEach(skill => { %>
-            <a href="/skills/<%= skill.id %>" class="skill-card">
-                <div class="skill-content">
-                    <h3 class="skill-name skill-name--<%= skill.type %>"><% if (skill.type === 'cli') { %>/<% } %><%= skill.name %></h3>
-                    <div class="skill-meta">
-                        <span class="skill-badge"><%= skill.type %></span>
-                        <span class="skill-version">v<%= skill.version %></span>
+        <% groupedSkills.forEach(group => { %>
+        <section class="skill-section">
+            <h2 class="section-title"><%= group.category %></h2>
+            <div class="skill-grid">
+                <% group.skills.forEach(skill => { %>
+                <a href="/skills/<%= skill.id %>" class="skill-card">
+                    <div class="skill-content">
+                        <h3 class="skill-name"><%= skill.name %></h3>
+                        <div class="skill-meta">
+                            <span class="skill-version">v<%= skill.version %></span>
+                        </div>
+                        <p class="skill-description"><%= skill.description %></p>
                     </div>
-                    <p class="skill-description"><%= skill.description %></p>
-                </div>
-            </a>
-            <% }); %>
-        </div>
+                </a>
+                <% }); %>
+            </div>
+        </section>
+        <% }); %>
 
-        <% if (skills.length === 0) { %>
+        <% if (groupedSkills.length === 0) { %>
         <p class="empty-state">No skills found in ~/.claude/skills/</p>
         <% } %>
     </main>

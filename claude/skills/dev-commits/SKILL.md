@@ -1,4 +1,4 @@
-# git-commit-collector
+# dev-commits
 
 **Version:** 0.1.0
 

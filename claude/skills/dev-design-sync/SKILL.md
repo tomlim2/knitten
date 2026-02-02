@@ -1,4 +1,4 @@
-# design-sync-viewer
+# dev-design-sync
 
 **Version:** 0.1.0
 

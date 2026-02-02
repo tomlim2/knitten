@@ -1,4 +1,4 @@
-# tutoring
+# tutoring-log
 
 **Version:** 0.1.0
 
