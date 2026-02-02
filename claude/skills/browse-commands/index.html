@@ -21,7 +21,7 @@
         <section class="page-hero">
             <h1 class="page-hero-name">Commands</h1>
             <div class="page-hero-meta">
-                <span>v0.1.0</span>
+                <span>v0.2.0</span>
                 <span>web</span>
             </div>
             <p class="page-hero-desc">Claude Code에 등록된 모든 슬래시 커맨드 목록</p>
@@ -54,7 +54,7 @@
     </main>
     <footer class="site-footer">
         <div class="footer-content">
-            <span class="footer-copyright">Commands Browser v0.1.0</span>
+            <span class="footer-copyright">Commands Browser v0.2.0</span>
         </div>
     </footer>
     <script>
@@ -81,8 +81,9 @@
 
             commands.forEach(cmd => {
                 const li = document.createElement('li');
+                const argHint = cmd.argumentHint ? `<span class="arg-hint">${cmd.argumentHint}</span>` : '';
                 li.innerHTML = `
-                    <span class="item-name--mono">/${cmd.name}</span>
+                    <span class="item-name--mono">/${cmd.name}</span>${argHint}
                     <span class="item-meta">${cmd.description || 'No description'}</span>
                     <button class="copy-btn" onclick="copyCommand('/${cmd.name}')" title="Copy command">Copy</button>
                 `;

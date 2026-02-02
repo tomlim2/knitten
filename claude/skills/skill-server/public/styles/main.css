@@ -745,6 +745,14 @@ h1, h2 {
     margin: 0 16px;
 }
 
+/* Argument Hint */
+.arg-hint {
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    margin-left: 8px;
+}
+
 /* Copy Button */
 .copy-btn {
     font-size: 11px;

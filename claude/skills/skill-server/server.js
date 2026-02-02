@@ -201,6 +201,7 @@ app.get('/api/commands', (req, res) => {
         // Parse frontmatter
         let description = '';
         let allowedTools = '';
+        let argumentHint = '';
         let inFrontmatter = false;
 
         for (const line of lines) {
@@ -215,13 +216,17 @@ app.get('/api/commands', (req, res) => {
                 if (line.startsWith('allowed-tools:')) {
                     allowedTools = line.replace('allowed-tools:', '').trim();
                 }
+                if (line.startsWith('argument-hint:')) {
+                    argumentHint = line.replace('argument-hint:', '').trim().replace(/^["']|["']$/g, '');
+                }
             }
         }
 
         return {
             name: file.replace('.md', ''),
             description,
-            allowedTools
+            allowedTools,
+            argumentHint
         };
     });
 
