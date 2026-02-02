@@ -8,132 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
-    <style>
-        .standards-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 24px;
-            min-height: calc(100vh - 200px);
-        }
-        .standards-list {
-            border-right: 1px solid var(--color-border);
-            padding-right: 24px;
-        }
-        .standard-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--color-border);
-            cursor: pointer;
-            transition: color 0.15s ease;
-        }
-        .standard-item:hover,
-        .standard-item.active {
-            color: var(--color-black);
-        }
-        .standard-name {
-            font-size: 14px;
-            color: var(--color-text);
-            font-weight: 500;
-        }
-        .standard-version {
-            font-size: 11px;
-            color: var(--color-gray-mid);
-            margin-top: 4px;
-        }
-        .standard-content {
-            padding: 0 24px;
-            max-width: 800px;
-        }
-        .standard-content h1 {
-            font-size: 28px;
-            font-weight: 400;
-            letter-spacing: -0.02em;
-            color: var(--color-black);
-            margin-bottom: 8px;
-        }
-        .standard-content h2 {
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--color-black);
-            margin: 32px 0 16px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .standard-content h3 {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--color-gray-dark);
-            margin: 24px 0 12px;
-        }
-        .standard-content p {
-            font-size: 14px;
-            line-height: 1.7;
-            color: var(--color-text);
-            margin-bottom: 16px;
-        }
-        .standard-content pre {
-            background: var(--color-gray-light);
-            padding: 16px;
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            font-size: 12px;
-            overflow-x: auto;
-            margin: 16px 0;
-            line-height: 1.6;
-        }
-        .standard-content code {
-            background: var(--color-gray-light);
-            padding: 2px 6px;
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            font-size: 12px;
-        }
-        .standard-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 16px 0;
-        }
-        .standard-content th,
-        .standard-content td {
-            text-align: left;
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--color-border);
-            font-size: 13px;
-        }
-        .standard-content th {
-            font-weight: 500;
-            background: var(--color-gray-light);
-        }
-        .standard-content ul,
-        .standard-content ol {
-            margin: 16px 0;
-            padding-left: 24px;
-        }
-        .standard-content li {
-            font-size: 14px;
-            line-height: 1.7;
-            margin-bottom: 8px;
-        }
-        .version-badge {
-            display: inline-block;
-            font-size: 12px;
-            color: var(--color-gray-mid);
-            margin-bottom: 24px;
-        }
-        .empty-content {
-            color: var(--color-gray-mid);
-            font-size: 14px;
-            padding: 40px 0;
-        }
-        @media (max-width: 768px) {
-            .standards-container {
-                grid-template-columns: 1fr;
-            }
-            .standards-list {
-                border-right: none;
-                border-bottom: 1px solid var(--color-border);
-                padding-right: 0;
-                padding-bottom: 16px;
-            }
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -144,18 +18,40 @@
         </nav>
     </header>
     <main class="main">
-        <div class="skill-toolbar">
-            <span class="skill-title">Standards Browser</span>
-            <span class="skill-badge">web</span>
-            <a href="/" class="back-button">Back</a>
-        </div>
-        <div class="standards-container">
-            <div class="standards-list" id="standardsList">
-                <!-- Loaded dynamically -->
+        <section class="page-hero">
+            <h1 class="page-hero-name">Standards</h1>
+            <div class="page-hero-meta">
+                <span>v0.1.0</span>
+                <span>web</span>
             </div>
-            <div class="standard-content" id="standardContent">
-                <p class="empty-content">Select a standard to view</p>
-            </div>
+            <p class="page-hero-desc">프로젝트 표준 문서 브라우저</p>
+        </section>
+
+        <div class="page-layout">
+            <article class="page-main" id="standardContent">
+                <p style="color:var(--color-gray-mid);font-size:14px;">Select a standard to view</p>
+            </article>
+
+            <aside class="page-sidebar">
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Standards</div>
+                    <div class="page-sidebar-value" id="standardsList">
+                        Loading...
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Location</div>
+                    <div class="page-sidebar-value">
+                        ~/.claude/standards/
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Navigation</div>
+                    <div class="page-sidebar-value">
+                        <a href="/" class="page-sidebar-link">Back to Skills</a>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
     <footer class="site-footer">
@@ -172,67 +68,53 @@
                 list.innerHTML = '';
 
                 data.standards.forEach(std => {
-                    const item = document.createElement('div');
-                    item.className = 'standard-item';
-                    item.innerHTML = `
-                        <div class="standard-name">${std.name}</div>
-                        <div class="standard-version">v${std.version}</div>
-                    `;
-                    item.onclick = () => loadStandard(std.name, item);
-                    list.appendChild(item);
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.className = 'page-sidebar-link';
+                    link.style.display = 'block';
+                    link.style.marginBottom = '8px';
+                    link.textContent = std.name;
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        loadStandard(std.name);
+                    };
+                    list.appendChild(link);
                 });
             } catch (e) {
                 console.error('Failed to load standards:', e);
             }
         }
 
-        async function loadStandard(name, element) {
-            document.querySelectorAll('.standard-item').forEach(el => el.classList.remove('active'));
-            if (element) element.classList.add('active');
-
+        async function loadStandard(name) {
             try {
                 const res = await fetch(`/api/standards/${name}`);
                 const text = await res.text();
                 renderMarkdown(text);
             } catch (e) {
-                document.getElementById('standardContent').innerHTML = '<p class="empty-content">Failed to load standard</p>';
+                document.getElementById('standardContent').innerHTML = '<p style="color:var(--color-gray-mid);">Failed to load standard</p>';
             }
         }
 
         function renderMarkdown(md) {
             const content = document.getElementById('standardContent');
             let html = md
-                // Code blocks
                 .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                // Inline code
                 .replace(/`([^`]+)`/g, '<code>$1</code>')
-                // Headers
                 .replace(/^### (.*$)/gm, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-                // Bold
+                .replace(/^# (.*$)/gm, '<h2>$1</h2>')
                 .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                // Lists
                 .replace(/^\- (.*$)/gm, '<li>$1</li>')
-                // Tables (simplified)
-                .replace(/\|([^|]+)\|/g, (match, content) => {
-                    const cells = content.split('|').map(c => c.trim());
-                    return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
-                })
-                // Paragraphs
                 .replace(/\n\n/g, '</p><p>')
-                // Line breaks
                 .replace(/\n/g, '<br>');
 
-            // Wrap in paragraph
             html = '<p>' + html + '</p>';
-
-            // Clean up
             html = html.replace(/<p><h/g, '<h').replace(/<\/h(\d)><\/p>/g, '</h$1>');
             html = html.replace(/<p><pre>/g, '<pre>').replace(/<\/pre><\/p>/g, '</pre>');
             html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
-            html = html.replace(/<p>---<\/p>/g, '<hr>');
+            html = html.replace(/<\/li><br><li>/g, '</li><li>');
             html = html.replace(/<p><br><\/p>/g, '');
+            html = html.replace(/<p><\/p>/g, '');
 
             content.innerHTML = html;
         }

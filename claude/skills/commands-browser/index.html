@@ -8,80 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
-    <style>
-        .commands-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-        .command-card {
-            background: var(--color-white);
-            border: 1px solid var(--color-border);
-            padding: 20px;
-            transition: border-color 0.15s ease;
-        }
-        .command-card:hover {
-            border-color: var(--color-border-hover);
-        }
-        .command-name {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--color-black);
-            margin-bottom: 8px;
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-        }
-        .command-name::before {
-            content: '/';
-            color: var(--color-gray-mid);
-        }
-        .command-description {
-            font-size: 14px;
-            color: var(--color-gray-dark);
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-        .command-tools {
-            font-size: 11px;
-            color: var(--color-gray-mid);
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            background: var(--color-gray-light);
-            padding: 8px 10px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        .commands-count {
-            font-size: 13px;
-            color: var(--color-gray-mid);
-            margin-bottom: 24px;
-        }
-        .search-box {
-            margin-bottom: 24px;
-        }
-        .search-input {
-            width: 100%;
-            max-width: 400px;
-            padding: 10px 0;
-            border: none;
-            border-bottom: 1px solid var(--color-border);
-            font-size: 14px;
-            font-family: inherit;
-            background: transparent;
-        }
-        .search-input:focus {
-            outline: none;
-            border-bottom-color: var(--color-black);
-        }
-        @media (max-width: 1024px) {
-            .commands-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 768px) {
-            .commands-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -92,17 +18,44 @@
         </nav>
     </header>
     <main class="main">
-        <div class="skill-toolbar">
-            <span class="skill-title">Commands Browser</span>
-            <span class="skill-badge">web</span>
-            <a href="/" class="back-button">Back</a>
-        </div>
-        <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="Search commands...">
-        </div>
-        <p class="commands-count" id="commandsCount">Loading...</p>
-        <div class="commands-grid" id="commandsGrid">
-            <!-- Commands loaded dynamically -->
+        <section class="page-hero">
+            <h1 class="page-hero-name">Commands</h1>
+            <div class="page-hero-meta">
+                <span>v0.1.0</span>
+                <span>web</span>
+            </div>
+            <p class="page-hero-desc">Claude Code에 등록된 모든 슬래시 커맨드 목록</p>
+        </section>
+
+        <div class="page-layout">
+            <article class="page-main">
+                <div class="content-section">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search commands..." style="width:100%;max-width:400px;padding:10px 0;border:none;border-bottom:1px solid var(--color-border);font-size:14px;font-family:inherit;background:transparent;margin-bottom:24px;">
+                    <p id="commandsCount" style="font-size:13px;color:var(--color-gray-mid);margin-bottom:24px;">Loading...</p>
+                </div>
+                <ul class="item-list" id="commandsGrid"></ul>
+            </article>
+
+            <aside class="page-sidebar">
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Location</div>
+                    <div class="page-sidebar-value">
+                        ~/.claude/commands/
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Format</div>
+                    <div class="page-sidebar-value">
+                        Markdown with frontmatter
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Navigation</div>
+                    <div class="page-sidebar-value">
+                        <a href="/" class="page-sidebar-link">Back to Skills</a>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
     <footer class="site-footer">
@@ -129,18 +82,16 @@
             const grid = document.getElementById('commandsGrid');
             const count = document.getElementById('commandsCount');
 
-            count.textContent = `${commands.length} commands registered`;
+            count.textContent = `${commands.length} commands`;
             grid.innerHTML = '';
 
             commands.forEach(cmd => {
-                const card = document.createElement('div');
-                card.className = 'command-card';
-                card.innerHTML = `
-                    <div class="command-name">${cmd.name}</div>
-                    <p class="command-description">${cmd.description || 'No description'}</p>
-                    ${cmd.allowedTools ? `<div class="command-tools">${cmd.allowedTools}</div>` : ''}
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span class="item-name--mono">/${cmd.name}</span>
+                    <span class="item-meta">${cmd.description || 'No description'}</span>
                 `;
-                grid.appendChild(card);
+                grid.appendChild(li);
             });
         }
 
@@ -151,6 +102,13 @@
                 (cmd.description && cmd.description.toLowerCase().includes(query))
             );
             renderCommands(filtered);
+        });
+
+        document.getElementById('searchInput').addEventListener('focus', function() {
+            this.style.borderBottomColor = 'var(--color-black)';
+        });
+        document.getElementById('searchInput').addEventListener('blur', function() {
+            this.style.borderBottomColor = 'var(--color-border)';
         });
 
         loadCommands();

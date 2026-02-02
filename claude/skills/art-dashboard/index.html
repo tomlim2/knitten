@@ -8,120 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
-    <style>
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-        .dashboard-card {
-            background: var(--color-white);
-            border: 1px solid var(--color-border);
-            padding: 24px;
-        }
-        .dashboard-card h2 {
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            color: var(--color-gray-mid);
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-        .workflow-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .workflow-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 16px;
-            background: var(--color-gray-light);
-            border-left: 3px solid var(--color-black);
-        }
-        .step-number {
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--color-gray-mid);
-            min-width: 32px;
-        }
-        .step-content h3 {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--color-black);
-            margin-bottom: 4px;
-        }
-        .step-content p {
-            font-size: 13px;
-            color: var(--color-gray-dark);
-            line-height: 1.5;
-        }
-        .step-command {
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            font-size: 12px;
-            color: var(--color-gray-mid);
-            margin-top: 8px;
-        }
-        .command-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .command-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .command-item:last-child {
-            border-bottom: none;
-        }
-        .command-name {
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            font-size: 13px;
-            color: var(--color-black);
-        }
-        .command-desc {
-            font-size: 12px;
-            color: var(--color-gray-mid);
-        }
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        .status-ready { background: #4caf50; }
-        .status-pending { background: #ff9800; }
-        .full-width {
-            grid-column: 1 / -1;
-        }
-        .info-box {
-            background: var(--color-gray-light);
-            padding: 16px;
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--color-gray-dark);
-            border-left: 3px solid var(--color-black);
-        }
-        .info-box code {
-            background: var(--color-white);
-            padding: 2px 6px;
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            font-size: 12px;
-        }
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            .full-width {
-                grid-column: 1;
-            }
-        }
-    </style>
 </head>
 <body>
     <header class="header">
@@ -132,90 +18,85 @@
         </nav>
     </header>
     <main class="main">
-        <div class="skill-toolbar">
-            <span class="skill-title">Art Dashboard</span>
-            <span class="skill-badge">web</span>
-            <a href="/" class="back-button">Back</a>
-        </div>
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
+        <section class="page-hero">
+            <h1 class="page-hero-name">Art Dashboard</h1>
+            <div class="page-hero-meta">
+                <span>v0.1.0</span>
+                <span>web</span>
+            </div>
+            <p class="page-hero-desc">CINEV art 브랜치 관리 워크플로우 대시보드</p>
+        </section>
+
+        <div class="page-layout">
+            <article class="page-main">
                 <h2>Workflow</h2>
-                <div class="workflow-steps">
-                    <div class="workflow-step">
-                        <span class="step-number">1</span>
-                        <div class="step-content">
-                            <h3>Create Art Branch</h3>
-                            <p>develop에서 art 브랜치 생성, 커밋 cherry-pick</p>
-                            <div class="step-command">/art-create</div>
-                        </div>
-                    </div>
-                    <div class="workflow-step">
-                        <span class="step-number">2</span>
-                        <div class="step-content">
-                            <h3>Send Notice</h3>
-                            <p>Slack art 채널에 브랜치 생성 알림</p>
-                            <div class="step-command">/art-notice</div>
-                        </div>
-                    </div>
-                    <div class="workflow-step">
-                        <span class="step-number">3</span>
-                        <div class="step-content">
-                            <h3>Merge Notice</h3>
-                            <p>머지 진행 시 스레드로 알림</p>
-                            <div class="step-command">/art-merge-notice</div>
-                        </div>
-                    </div>
-                    <div class="workflow-step">
-                        <span class="step-number">4</span>
-                        <div class="step-content">
-                            <h3>Merge Done</h3>
-                            <p>머지 완료 확인 및 완료 알림</p>
-                            <div class="step-command">/art-merge-done</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="dashboard-card">
+                <ul class="item-list">
+                    <li>
+                        <span class="item-name"><strong>1.</strong> Create Art Branch</span>
+                        <span class="item-name--mono">/art-create</span>
+                    </li>
+                    <li>
+                        <span class="item-name"><strong>2.</strong> Send Notice</span>
+                        <span class="item-name--mono">/art-notice</span>
+                    </li>
+                    <li>
+                        <span class="item-name"><strong>3.</strong> Merge Notice</span>
+                        <span class="item-name--mono">/art-merge-notice</span>
+                    </li>
+                    <li>
+                        <span class="item-name"><strong>4.</strong> Merge Done</span>
+                        <span class="item-name--mono">/art-merge-done</span>
+                    </li>
+                </ul>
+
                 <h2>Commands</h2>
-                <div class="command-list">
-                    <div class="command-item">
-                        <div>
-                            <span class="status-indicator status-ready"></span>
-                            <span class="command-name">/art-create</span>
-                        </div>
-                        <span class="command-desc">브랜치 생성</span>
-                    </div>
-                    <div class="command-item">
-                        <div>
-                            <span class="status-indicator status-ready"></span>
-                            <span class="command-name">/art-notice</span>
-                        </div>
-                        <span class="command-desc">Slack 알림</span>
-                    </div>
-                    <div class="command-item">
-                        <div>
-                            <span class="status-indicator status-ready"></span>
-                            <span class="command-name">/art-merge-notice</span>
-                        </div>
-                        <span class="command-desc">머지 알림</span>
-                    </div>
-                    <div class="command-item">
-                        <div>
-                            <span class="status-indicator status-ready"></span>
-                            <span class="command-name">/art-merge-done</span>
-                        </div>
-                        <span class="command-desc">완료 알림</span>
+                <ul class="item-list">
+                    <li>
+                        <span class="item-name--mono">/art-create</span>
+                        <span class="item-meta">브랜치 생성</span>
+                    </li>
+                    <li>
+                        <span class="item-name--mono">/art-notice</span>
+                        <span class="item-meta">Slack 알림</span>
+                    </li>
+                    <li>
+                        <span class="item-name--mono">/art-merge-notice</span>
+                        <span class="item-meta">머지 알림</span>
+                    </li>
+                    <li>
+                        <span class="item-name--mono">/art-merge-done</span>
+                        <span class="item-meta">완료 알림</span>
+                    </li>
+                </ul>
+            </article>
+
+            <aside class="page-sidebar">
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Branch Naming</div>
+                    <div class="page-sidebar-value">
+                        <code>art/YYYYMMDD</code>
                     </div>
                 </div>
-            </div>
-            <div class="dashboard-card full-width">
-                <h2>Quick Reference</h2>
-                <div class="info-box">
-                    <strong>Art Branch Naming:</strong> <code>art/YYYYMMDD</code><br><br>
-                    <strong>Config Location:</strong> <code>~/.claude/config/slack.json</code><br><br>
-                    <strong>Required:</strong> SLACK_TOKEN, SLACK_ART_CHANNEL in config
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Config</div>
+                    <div class="page-sidebar-value">
+                        ~/.claude/config/slack.json
+                    </div>
                 </div>
-            </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Required</div>
+                    <div class="page-sidebar-value">
+                        SLACK_TOKEN<br>
+                        SLACK_ART_CHANNEL
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Navigation</div>
+                    <div class="page-sidebar-value">
+                        <a href="/" class="page-sidebar-link">Back to Skills</a>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
     <footer class="site-footer">

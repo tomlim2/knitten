@@ -7,85 +7,75 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
-        <div class="skill-toolbar">
-            <span class="skill-title"><%= skill.name %></span>
-            <span class="skill-badge">cli</span>
-            <a href="/" class="back-button">Back</a>
-        </div>
+        <section class="page-hero">
+            <h1 class="page-hero-name page-hero-name--mono">/<%= skill.name %></h1>
+            <div class="page-hero-meta">
+                <span>v<%= skill.version %></span>
+                <span><%= skill.type %></span>
+            </div>
+            <p class="page-hero-desc"><%= skill.description %></p>
+        </section>
 
-        <% if (skill.id === 'git-commit-collector') { %>
-        <div class="cli-form">
-            <h2>Collect Commits</h2>
-            <form id="collectForm">
-                <div class="form-group">
-                    <label>Repository Path</label>
-                    <input type="text" id="repoPath" placeholder="/path/to/repo" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Since</label>
-                        <input type="text" id="since" placeholder="1 month ago">
-                    </div>
-                    <div class="form-group">
-                        <label>Limit</label>
-                        <input type="number" id="limit" placeholder="100" value="100">
+        <div class="page-layout">
+            <article class="page-main" id="skillContent"></article>
+            <aside class="page-sidebar">
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Command</div>
+                    <div class="page-sidebar-value">
+                        <code>/<%= skill.id %></code>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Author</label>
-                    <input type="text" id="author" placeholder="Filter by author name">
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Path</div>
+                    <div class="page-sidebar-value">
+                        ~/.claude/skills/<%= skill.id %>/
+                    </div>
                 </div>
-                <button type="submit" class="submit-button">Collect</button>
-            </form>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Navigation</div>
+                    <div class="page-sidebar-value">
+                        <a href="/" class="page-sidebar-link">Back to Skills</a>
+                    </div>
+                </div>
+            </aside>
         </div>
-
-        <div class="output-section" id="outputSection" style="display: none;">
-            <h2>Output</h2>
-            <div class="status-bar" id="statusBar"></div>
-            <pre class="output" id="output"></pre>
-        </div>
-        <% } else { %>
-        <p class="empty-state">CLI execution not configured for this skill.</p>
-        <% } %>
     </main>
     <%- include('partials/footer', {config}) %>
 
     <script>
-        const ws = new WebSocket(`ws://${location.host}`);
+        const markdown = `<%- skill.markdown.replace(/`/g, '\\`').replace(/\$/g, '\\$') %>`;
 
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            const outputSection = document.getElementById('outputSection');
-            const output = document.getElementById('output');
-            const statusBar = document.getElementById('statusBar');
+        function renderMarkdown(md) {
+            let content = md
+                .replace(/^# .+\n/m, '')
+                .replace(/\*\*Version:\*\* .+\n/m, '')
+                .trim();
 
-            outputSection.style.display = 'block';
+            let html = content
+                .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/^- (.*$)/gm, '<li>$1</li>')
+                .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
 
-            if (data.type === 'status') {
-                statusBar.textContent = data.message;
-            } else if (data.type === 'complete') {
-                statusBar.textContent = `Complete: ${data.count} commits`;
-                output.textContent = JSON.stringify(data.commits, null, 2);
-            } else if (data.type === 'error') {
-                statusBar.textContent = 'Error: ' + data.message;
-                statusBar.classList.add('error');
-            }
-        };
+            html = '<p>' + html + '</p>';
+            html = html.replace(/<p><h/g, '<h').replace(/<\/h(\d)><\/p>/g, '</h$1>');
+            html = html.replace(/<p><pre>/g, '<pre>').replace(/<\/pre><\/p>/g, '</pre>');
+            html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
+            html = html.replace(/<\/li><br><li>/g, '</li><li>');
+            html = html.replace(/<p><br><\/p>/g, '');
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<br><h/g, '<h');
+            html = html.replace(/<\/ul><br>/g, '</ul>');
 
-        document.getElementById('collectForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
+            return html;
+        }
 
-            const repoPath = document.getElementById('repoPath').value;
-            const since = document.getElementById('since').value;
-            const limit = parseInt(document.getElementById('limit').value) || 100;
-            const author = document.getElementById('author').value;
-
-            ws.send(JSON.stringify({
-                action: 'collect-commits',
-                repoPath,
-                options: { since, limit, author }
-            }));
-        });
+        document.getElementById('skillContent').innerHTML = renderMarkdown(markdown);
     </script>
 </body>
 </html>

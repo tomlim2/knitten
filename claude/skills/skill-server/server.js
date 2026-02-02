@@ -73,7 +73,8 @@ function discoverSkills() {
                 version,
                 description,
                 type,
-                path: skillPath
+                path: skillPath,
+                markdown: content
             });
         }
     }

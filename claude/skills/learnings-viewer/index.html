@@ -9,52 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
     <style>
-        .learnings-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-            min-height: calc(100vh - 200px);
-        }
-        .project-list {
-            border-right: 1px solid var(--color-border);
-            padding-right: 24px;
-        }
-        .project-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--color-border);
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--color-gray-dark);
-            transition: color 0.15s ease;
-        }
-        .project-item:hover,
-        .project-item.active {
-            color: var(--color-black);
-        }
-        .learning-content {
-            padding: 0 24px;
-        }
-        .learning-content h1 {
-            font-size: 22px;
-            font-weight: 400;
-            letter-spacing: -0.02em;
-            color: var(--color-black);
-            margin-bottom: 24px;
-        }
-        .learning-section {
-            margin-bottom: 32px;
-        }
-        .learning-section h2 {
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            color: var(--color-gray-mid);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
         .learning-table {
             width: 100%;
             border-collapse: collapse;
+            margin: 16px 0;
         }
         .learning-table th,
         .learning-table td {
@@ -68,25 +26,6 @@
             color: var(--color-gray-mid);
             background: var(--color-gray-light);
         }
-        .learning-table td {
-            color: var(--color-text);
-        }
-        .empty-content {
-            color: var(--color-gray-mid);
-            font-size: 14px;
-            padding: 40px 0;
-        }
-        @media (max-width: 768px) {
-            .learnings-container {
-                grid-template-columns: 1fr;
-            }
-            .project-list {
-                border-right: none;
-                border-bottom: 1px solid var(--color-border);
-                padding-right: 0;
-                padding-bottom: 16px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -98,18 +37,40 @@
         </nav>
     </header>
     <main class="main">
-        <div class="skill-toolbar">
-            <span class="skill-title">Learnings Viewer</span>
-            <span class="skill-badge">web</span>
-            <a href="/" class="back-button">Back</a>
-        </div>
-        <div class="learnings-container">
-            <div class="project-list" id="projectList">
-                <div class="project-item" onclick="loadLearning('_template')">_template</div>
+        <section class="page-hero">
+            <h1 class="page-hero-name">Learnings</h1>
+            <div class="page-hero-meta">
+                <span>v0.1.0</span>
+                <span>web</span>
             </div>
-            <div class="learning-content" id="learningContent">
-                <p class="empty-content">Select a project to view learnings</p>
-            </div>
+            <p class="page-hero-desc">프로젝트별 학습 기록 및 인사이트</p>
+        </section>
+
+        <div class="page-layout">
+            <article class="page-main" id="learningContent">
+                <p style="color:var(--color-gray-mid);font-size:14px;">Select a project to view learnings</p>
+            </article>
+
+            <aside class="page-sidebar">
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Projects</div>
+                    <div class="page-sidebar-value" id="projectList">
+                        Loading...
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Location</div>
+                    <div class="page-sidebar-value">
+                        ~/.claude/private/learnings/
+                    </div>
+                </div>
+                <div class="page-sidebar-item">
+                    <div class="page-sidebar-label">Navigation</div>
+                    <div class="page-sidebar-value">
+                        <a href="/" class="page-sidebar-link">Back to Skills</a>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
     <footer class="site-footer">
@@ -118,8 +79,6 @@
         </div>
     </footer>
     <script>
-        let currentProject = null;
-
         async function loadProjects() {
             try {
                 const res = await fetch('/api/files?path=learnings/projects');
@@ -128,21 +87,33 @@
                 projectList.innerHTML = '';
 
                 // Add template
-                const templateItem = document.createElement('div');
-                templateItem.className = 'project-item';
-                templateItem.textContent = '_template';
-                templateItem.onclick = () => loadLearning('_template.md', templateItem);
-                projectList.appendChild(templateItem);
+                const templateLink = document.createElement('a');
+                templateLink.href = '#';
+                templateLink.className = 'page-sidebar-link';
+                templateLink.style.display = 'block';
+                templateLink.style.marginBottom = '8px';
+                templateLink.textContent = '_template';
+                templateLink.onclick = (e) => {
+                    e.preventDefault();
+                    loadLearning('_template.md');
+                };
+                projectList.appendChild(templateLink);
 
                 // Add projects
                 if (data.entries) {
                     data.entries.forEach(entry => {
                         if (entry.name.endsWith('.md')) {
-                            const item = document.createElement('div');
-                            item.className = 'project-item';
-                            item.textContent = entry.name.replace('.md', '');
-                            item.onclick = () => loadLearning('projects/' + entry.name, item);
-                            projectList.appendChild(item);
+                            const link = document.createElement('a');
+                            link.href = '#';
+                            link.className = 'page-sidebar-link';
+                            link.style.display = 'block';
+                            link.style.marginBottom = '8px';
+                            link.textContent = entry.name.replace('.md', '');
+                            link.onclick = (e) => {
+                                e.preventDefault();
+                                loadLearning('projects/' + entry.name);
+                            };
+                            projectList.appendChild(link);
                         }
                     });
                 }
@@ -151,17 +122,13 @@
             }
         }
 
-        async function loadLearning(filename, element) {
-            // Update active state
-            document.querySelectorAll('.project-item').forEach(el => el.classList.remove('active'));
-            if (element) element.classList.add('active');
-
+        async function loadLearning(filename) {
             try {
                 const res = await fetch('/api/files?path=learnings/' + filename);
                 const text = await res.text();
                 renderLearning(text);
             } catch (e) {
-                document.getElementById('learningContent').innerHTML = '<p class="empty-content">Failed to load learning</p>';
+                document.getElementById('learningContent').innerHTML = '<p style="color:var(--color-gray-mid);">Failed to load learning</p>';
             }
         }
 
@@ -169,7 +136,6 @@
             const content = document.getElementById('learningContent');
             const lines = markdown.split('\n');
             let html = '';
-            let currentSection = '';
             let inTable = false;
             let tableRows = [];
 
@@ -177,34 +143,31 @@
                 const line = lines[i];
 
                 if (line.startsWith('# ')) {
-                    html += `<h1>${line.slice(2)}</h1>`;
+                    html += `<h2 style="font-size:28px;font-weight:400;letter-spacing:-0.02em;margin-bottom:24px;">${line.slice(2)}</h2>`;
                 } else if (line.startsWith('## ')) {
                     if (inTable) {
                         html += renderTable(tableRows);
                         tableRows = [];
                         inTable = false;
                     }
-                    currentSection = line.slice(3);
-                    html += `<div class="learning-section"><h2>${currentSection}</h2>`;
+                    html += `<h2>${line.slice(3)}</h2>`;
                 } else if (line.startsWith('| ') && line.includes(' | ')) {
                     inTable = true;
                     tableRows.push(line);
                 } else if (line.startsWith('---') && inTable) {
-                    // Skip table separator
+                    // Skip
                 } else if (inTable && line.trim() === '') {
                     html += renderTable(tableRows);
                     tableRows = [];
                     inTable = false;
-                    html += '</div>';
                 }
             }
 
             if (inTable) {
                 html += renderTable(tableRows);
-                html += '</div>';
             }
 
-            content.innerHTML = html || '<p class="empty-content">No content</p>';
+            content.innerHTML = html || '<p style="color:var(--color-gray-mid);">No content</p>';
         }
 
         function renderTable(rows) {
