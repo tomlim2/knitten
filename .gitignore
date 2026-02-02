@@ -1,6 +1,7 @@
-# Personal data (learnings are tracked)
+# Personal data (learnings and specs are tracked)
 claude/private/*
 !claude/private/learnings/
+!claude/private/specs/
 
 # Secrets
 *.env
