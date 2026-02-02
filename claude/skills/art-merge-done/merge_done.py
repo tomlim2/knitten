@@ -22,8 +22,8 @@ def load_env():
 
 
 def load_config():
-    """Load local config (repo path from create-art-branch)."""
-    config_path = Path(__file__).parent.parent / "create-art-branch" / "config.json"
+    """Load local config (repo path from art-create)."""
+    config_path = Path(__file__).parent.parent / "art-create" / "config.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)

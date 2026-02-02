@@ -14,8 +14,8 @@ $ARGUMENTS
 
 **If no argument is provided, show usage and ask the user for the message. NEVER auto-execute.**
 ```
-Usage: /send-art-notice <message>
-Example: /send-art-notice New build is ready!
+Usage: /art-notice <message>
+Example: /art-notice New build is ready!
 ```
 
 ## Execution
@@ -23,5 +23,5 @@ Example: /send-art-notice New build is ready!
 Run the art notice sender script:
 
 ```bash
-python "C:\Users\TA_yeonsu\.claude\skills\send-art-notice\send_notice.py" $ARGUMENTS
+python "C:\Users\TA_yeonsu\.claude\skills\art-notice\send_notice.py" $ARGUMENTS
 ```

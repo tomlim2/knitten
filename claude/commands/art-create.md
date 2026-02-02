@@ -12,8 +12,8 @@ CINEV 아트팀용 브랜치 생성 자동화.
 
 **If $ARGUMENTS is empty, show usage and ask the user for the branch name. NEVER auto-execute.**
 ```
-Usage: /create-art-branch <new_branch> [source_branch]
-Example: /create-art-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
+Usage: /art-create <new_branch> [source_branch]
+Example: /art-create art/art-main-1.5.0-r1 art/art-main-1.5.0
 ```
 
 ## 실행
@@ -21,7 +21,7 @@ Example: /create-art-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
 Run the art branch creator script:
 
 ```bash
-python "C:\Users\TA_yeonsu\.claude\skills\create-art-branch\create_art_branch.py" $ARGUMENTS
+python "C:\Users\TA_yeonsu\.claude\skills\art-create\create_art_branch.py" $ARGUMENTS
 ```
 
 ## 프로세스
