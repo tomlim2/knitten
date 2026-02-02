@@ -105,6 +105,28 @@ def get_commits_in_range(branch: str, since: datetime, until: datetime) -> list[
     return commits
 
 
+def save_thread_info(branch_name: str, channel: str, ts: str) -> None:
+    """Save thread info for later replies."""
+    threads_path = Path(__file__).parent.parent.parent / "private" / "slack_threads.json"
+    threads_path.parent.mkdir(parents=True, exist_ok=True)
+
+    threads = {}
+    if threads_path.exists():
+        with open(threads_path, "r", encoding="utf-8") as f:
+            threads = json.load(f)
+
+    threads[branch_name] = {
+        "channel": channel,
+        "ts": ts,
+        "created_at": datetime.now(KST).isoformat(),
+    }
+
+    with open(threads_path, "w", encoding="utf-8") as f:
+        json.dump(threads, f, indent=2, ensure_ascii=False)
+
+    print(f"  [OK] Thread info saved for {branch_name}")
+
+
 def send_slack_notification(branch_name: str, commit_count: int) -> bool:
     """Send Slack notification to the art channel."""
     if not SLACK_BOT_TOKEN:
@@ -142,6 +164,10 @@ def send_slack_notification(branch_name: str, commit_count: int) -> bool:
             result = json.loads(resp.read().decode("utf-8"))
             if result.get("ok"):
                 print(f"  [OK] Slack notification sent")
+                # Save thread info for later replies
+                ts = result.get("ts")
+                if ts:
+                    save_thread_info(branch_name, SLACK_CHANNEL, ts)
                 return True
             else:
                 print(f"  [ERROR] Slack API error: {result.get('error')}")
