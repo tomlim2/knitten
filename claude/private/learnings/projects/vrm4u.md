@@ -86,6 +86,60 @@ VRM 1.0 (신규 표준):
 
 **참조**: `CinevVrmReferencePoints.h:12-62`
 
+### 2026-02-02: VRM 파일 vs VRM4U ModelScale
+
+**핵심**: VRM 파일 자체에는 "ModelScale" 개념이 **없다**.
+
+**VRM/glTF 스펙**:
+- glTF 2.0: 모든 선형 거리 단위는 **미터(meters)**
+- VRM: 1.00 = 1미터 (glTF 상속), Y-up, -Z forward
+- 파일 내 스케일 정보 없음 - 항상 미터 단위로 저장
+
+**데이터 흐름**:
+```
+┌─────────────────────────────────────────────────────────┐
+│ .vrm 파일 (glTF + VRM extensions)                       │
+│ - 정점/본 좌표: 미터 단위                                │
+│ - 스케일 정보: 없음 (항상 1.0 = 1m)                      │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ Assimp 파싱                                             │
+│ - aiScene 구조로 변환                                    │
+│ - 좌표 그대로 미터 유지                                  │
+│ - 결과: FReturnedData.meshInfo[].Vertices (미터)        │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ VRM4U Import UI                                         │
+│ - ModelScale: 기본값 1.0f (사용자 설정 가능)            │
+│ - 저장: FImportOptionData.ModelScale                    │
+└─────────────────────────────────────────────────────────┘
+                        ↓
+┌─────────────────────────────────────────────────────────┐
+│ VrmConvertModel.cpp 변환                                │
+│                                                         │
+│   vertices * 100.f      ← 미터→센티미터 (하드코딩)      │
+│   vertices *= ModelScale ← 사용자 스케일 적용           │
+│                                                         │
+│ 예시 (키 1.7m 캐릭터):                                  │
+│   ModelScale=1.0: 1.7m → 170cm (×100) → 170cm (×1.0)   │
+│   ModelScale=2.0: 1.7m → 170cm (×100) → 340cm (×2.0)   │
+└─────────────────────────────────────────────────────────┘
+```
+
+**ModelScale의 정체**:
+| 출처 | 스케일 개념 | 목적 |
+|------|-------------|------|
+| VRM/glTF 스펙 | 없음 (항상 미터) | 표준화된 단위 |
+| VRM4U 플러그인 | `ModelScale` (기본 1.0) | Unreal 환경 맞춤 + 사용자 커스텀 |
+
+**최종 Unreal 좌표** = (VRM 미터) × 100 × ModelScale = 센티미터 × 사용자스케일
+
+**참조**:
+- [glTF 2.0 Specification](https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html)
+- [VRM Specification](https://github.com/vrm-c/vrm-specification/blob/master/specification/0.0/README.md)
+
 ---
 
 ## Worked
