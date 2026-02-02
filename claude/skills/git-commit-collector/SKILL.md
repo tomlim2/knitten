@@ -1,6 +1,12 @@
 # git-commit-collector
 
+**Version:** 0.1.0
+
 Git commit history extraction skill for Claude Code.
+
+## Changelog
+
+- **0.1.0** - Initial release
 
 ## Usage
 

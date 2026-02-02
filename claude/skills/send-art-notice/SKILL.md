@@ -1,6 +1,13 @@
 # Send Art Notice
 
-슬랙 아트 채널에 메시지를 전송하는 스킬입니다.
+**Version:** 0.2.0
+
+Send messages to Slack art channel.
+
+## Changelog
+
+- **0.2.0** - Use shared config location (`~/.claude/config/`)
+- **0.1.0** - Initial release
 
 ## 설정
 

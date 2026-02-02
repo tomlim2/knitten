@@ -1,6 +1,13 @@
 # create-art-branch
 
-CINEV 아트팀용 브랜치 생성 자동화 스킬.
+**Version:** 0.2.0
+
+Automated branch creation for CINEV art team.
+
+## Changelog
+
+- **0.2.0** - Use shared config location (`~/.claude/config/`)
+- **0.1.0** - Initial release
 
 ## 기능
 
