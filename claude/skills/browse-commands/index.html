@@ -30,7 +30,7 @@
         <div class="page-layout">
             <article class="page-main">
                 <div class="content-section">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search commands..." style="width:100%;max-width:400px;padding:10px 0;border:none;border-bottom:1px solid var(--color-border);font-size:14px;font-family:inherit;background:transparent;margin-bottom:24px;">
+                    <input type="text" class="input" id="searchInput" placeholder="Search commands..." style="max-width:400px;margin-bottom:24px;">
                     <p id="commandsCount" style="font-size:13px;color:var(--color-gray-mid);margin-bottom:24px;">Loading...</p>
                 </div>
                 <ul class="item-list" id="commandsGrid"></ul>
@@ -105,13 +105,6 @@
                 (cmd.description && cmd.description.toLowerCase().includes(query))
             );
             renderCommands(filtered);
-        });
-
-        document.getElementById('searchInput').addEventListener('focus', function() {
-            this.style.borderBottomColor = 'var(--color-black)';
-        });
-        document.getElementById('searchInput').addEventListener('blur', function() {
-            this.style.borderBottomColor = 'var(--color-border)';
         });
 
         loadCommands();

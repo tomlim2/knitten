@@ -1,6 +1,6 @@
 # Design System - TypeTogether Catalogue Style
 
-**Version**: 1.3.0
+**Version**: 1.3.1
 **Last Updated**: 2026-02-02
 
 ---
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.1 | 2026-02-02 | Standardized input/button classes with transitions (.input, .btn, .btn-primary, .btn-secondary, .btn-small) |
 | 1.3.0 | 2026-02-02 | Category sections, detail page layout, item-list with copy button, middle dot separators |
 | 1.2.1 | 2026-02-01 | Card meta: border-top separator, left-aligned layout |
 | 1.2.0 | 2026-01-31 | Complete redesign: TypeTogether Catalogue style, Google Sans Flex + Noto Sans KR, 1170px centered layout, transparent card backgrounds |
@@ -236,35 +237,50 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 |---------|-------|
 | Primary | Black bg, white text, full width |
 | Secondary | Transparent bg, gray-dark text, border |
+| Small | Reduced padding for compact buttons |
 
 ```css
-.button-primary {
-    background: var(--color-black);
-    color: var(--color-white);
-    border: none;
+/* Base button styles */
+.btn, .submit-button {
     padding: 12px 24px;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+}
+
+/* Primary - full width black */
+.btn-primary, .submit-button {
+    background: var(--color-black);
+    color: var(--color-white);
     width: 100%;
 }
 
-.button-secondary {
+.btn-primary:hover, .submit-button:hover {
+    background: var(--color-text);
+}
+
+/* Secondary - outlined */
+.btn-secondary {
     background: transparent;
     color: var(--color-gray-dark);
+    border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--color-black);
+    color: var(--color-black);
+}
+
+/* Small variant */
+.btn-small {
     padding: 8px 14px;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.05em;
-    text-transform: uppercase;
-    border: 1px solid var(--color-border);
-}
-
-.button-secondary:hover {
-    border-color: var(--color-black);
-    color: var(--color-black);
 }
 ```
 
@@ -275,6 +291,8 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 | Border | Bottom only, 1px solid border |
 | Padding | 10px 0 |
 | Background | Transparent |
+| Transition | 0.15s ease |
+| Hover | Border-color border-hover |
 | Focus | Border-color black |
 
 ```css
@@ -286,6 +304,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
     font-size: 14px;
     font-family: inherit;
     background: transparent;
+    transition: border-color 0.15s ease;
 }
 
 .input:hover {
@@ -295,6 +314,10 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 .input:focus {
     outline: none;
     border-bottom-color: var(--color-black);
+}
+
+.input::placeholder {
+    color: var(--color-gray-mid);
 }
 ```
 
