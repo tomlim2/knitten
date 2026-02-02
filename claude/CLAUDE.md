@@ -1,12 +1,36 @@
 # CLAUDE.md
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
 This file provides guidance for Claude Code when working with the global `claude` configuration system.
 
 ## Changelog
 
+- **0.2.0** - Add setup instructions and Slack message format reference
 - **0.1.0** - Initial release
+
+---
+
+## Setup
+
+**This repo (`caol-ila`) is the global Claude Code configuration for this machine.**
+
+```
+D:\vs\caol-ila\claude  →  symlinked to  →  C:\Users\TA_yeonsu\.claude
+```
+
+All skills, commands, and standards are stored here and version-controlled.
+
+### Slack Message Format Reference
+
+When sending Slack messages with formatting:
+```
+<@U04MCMGPN05>           # User mention
+:arnyang_ugly:           # Custom emoji
+`code format`            # Inline code
+```
+
+---
 
 ## What Is This?
 
