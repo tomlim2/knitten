@@ -16,6 +16,7 @@ const CLAUDE_DIR = path.join(require('os').homedir(), '.claude');
 const SKILLS_DIR = path.join(CLAUDE_DIR, 'skills');
 const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
 const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
+const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
 
 // View engine
 app.set('view engine', 'ejs');
@@ -194,6 +195,49 @@ app.get('/api/commands', (req, res) => {
     });
 
     res.json({ commands });
+});
+
+// Skills API
+app.get('/api/skills', (req, res) => {
+    const skills = discoverSkills();
+    res.json({ skills });
+});
+
+// Standards API
+app.get('/api/standards', (req, res) => {
+    if (!fs.existsSync(STANDARDS_DIR)) {
+        return res.json({ standards: [] });
+    }
+
+    const files = fs.readdirSync(STANDARDS_DIR).filter(f => f.endsWith('.md'));
+    const standards = files.map(file => {
+        const content = fs.readFileSync(path.join(STANDARDS_DIR, file), 'utf-8');
+        const lines = content.split('\n');
+
+        // Parse title
+        const titleLine = lines.find(l => l.startsWith('# '));
+        const name = file.replace('.md', '');
+        const title = titleLine ? titleLine.replace('# ', '').trim() : name;
+
+        // Parse version
+        const versionLine = lines.find(l => l.includes('Version'));
+        const version = versionLine ? versionLine.match(/[\d.]+/)?.[0] || '0.1.0' : '0.1.0';
+
+        return { name, title, version };
+    });
+
+    res.json({ standards });
+});
+
+app.get('/api/standards/:name', (req, res) => {
+    const filePath = path.join(STANDARDS_DIR, `${req.params.name}.md`);
+
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send('Standard not found');
+    }
+
+    const content = fs.readFileSync(filePath, 'utf-8');
+    res.type('text/plain').send(content);
 });
 
 // Save invoice PDF
