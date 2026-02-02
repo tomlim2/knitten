@@ -1,7 +1,7 @@
 # Design System - TypeTogether Catalogue Style
 
-**Version**: 1.2.1
-**Last Updated**: 2026-02-01
+**Version**: 1.3.0
+**Last Updated**: 2026-02-02
 
 ---
 
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.0 | 2026-02-02 | Category sections, detail page layout, item-list with copy button, middle dot separators |
 | 1.2.1 | 2026-02-01 | Card meta: border-top separator, left-aligned layout |
 | 1.2.0 | 2026-01-31 | Complete redesign: TypeTogether Catalogue style, Google Sans Flex + Noto Sans KR, 1170px centered layout, transparent card backgrounds |
 | 1.1.0 | 2026-01-31 | Inputs: bottom border only, subtle gray-300 default, transparent bg |
@@ -294,6 +295,115 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 .input:focus {
     outline: none;
     border-bottom-color: var(--color-black);
+}
+```
+
+### Category Section (Dashboard)
+
+| Property | Value |
+|----------|-------|
+| Margin bottom | 56px |
+| Title | 11px, uppercase, letter-spacing 0.1em |
+| Title border | 1px solid bottom |
+
+```css
+.skill-section {
+    margin-bottom: 56px;
+}
+
+.skill-section .section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gray-mid);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+```
+
+### Detail Page (Two-Column Layout)
+
+| Property | Value |
+|----------|-------|
+| Grid | 1fr 240px, gap 80px |
+| Hero padding | 80px top, 48px bottom |
+| Hero title | 48px, weight 400 |
+| Sidebar label | 10px uppercase |
+
+```css
+.page-hero {
+    padding: 80px 0 48px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.page-hero-name {
+    font-size: 48px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+}
+
+.page-layout {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 80px;
+    padding: 56px 0 80px;
+}
+```
+
+### Item List
+
+| Property | Value |
+|----------|-------|
+| Padding | 16px vertical |
+| Border | 1px solid bottom |
+| Display | flex, space-between |
+
+```css
+.item-list li {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+```
+
+### Copy Button
+
+| Property | Value |
+|----------|-------|
+| Font size | 11px |
+| Padding | 6px 12px |
+| Border | 1px solid border |
+| Hover | Black border and text |
+
+```css
+.copy-btn {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-gray-mid);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    color: var(--color-black);
+    border-color: var(--color-black);
+}
+```
+
+### Middle Dot Separator
+
+Meta 정보 구분에 사용:
+
+```css
+.meta span:not(:last-child)::after {
+    content: ' · ';
+    color: var(--color-gray-mid);
 }
 ```
 

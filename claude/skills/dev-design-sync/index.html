@@ -30,14 +30,18 @@
         <div class="page-layout">
             <article class="page-main">
                 <h2>Current Version</h2>
-                <p style="font-size:32px;font-weight:400;letter-spacing:-0.02em;margin-bottom:8px;">v1.2.1</p>
-                <p style="font-size:13px;color:var(--color-gray-mid);">Last updated: 2026-02-01</p>
+                <p style="font-size:32px;font-weight:400;letter-spacing:-0.02em;margin-bottom:8px;">v1.3.0</p>
+                <p style="font-size:13px;color:var(--color-gray-mid);">Last updated: 2026-02-02</p>
 
                 <h2>Skills Status</h2>
                 <ul class="item-list" id="skillList"></ul>
 
                 <h2>Changelog</h2>
                 <ul class="item-list">
+                    <li>
+                        <span class="item-name"><strong>1.3.0</strong> — Category sections, detail page, item-list, copy button</span>
+                        <span class="item-meta">2026-02-02</span>
+                    </li>
                     <li>
                         <span class="item-name"><strong>1.2.1</strong> — Card meta border-top separator</span>
                         <span class="item-meta">2026-02-01</span>
@@ -86,11 +90,13 @@
     </footer>
     <script>
         const skills = [
-            { name: 'skill-server', version: '1.2.1' },
-            { name: 'invoice-generator', version: '1.3.0' },
-            { name: 'art-dashboard', version: '0.1.0' },
-            { name: 'commands-browser', version: '0.1.0' },
-            { name: 'standards-browser', version: '0.1.0' }
+            { name: 'skill-server', version: '1.3.0' },
+            { name: 'tutoring-invoice', version: '1.3.0' },
+            { name: 'art-dashboard', version: '1.3.0' },
+            { name: 'browse-commands', version: '1.3.0' },
+            { name: 'browse-standards', version: '1.3.0' },
+            { name: 'browse-learnings', version: '1.3.0' },
+            { name: 'dev-design-sync', version: '1.3.0' }
         ];
 
         function loadSkillStatus() {
@@ -100,7 +106,7 @@
             skills.forEach(skill => {
                 const li = document.createElement('li');
                 const versionNum = parseFloat(skill.version);
-                const isSynced = versionNum >= 1.2 || skill.version === '0.1.0';
+                const isSynced = versionNum >= 1.3;
 
                 li.innerHTML = `
                     <span class="item-name">${skill.name}</span>
