@@ -1,6 +1,6 @@
 # skill-server
 
-**Version:** 1.2.0
+**Version:** 1.2.1
 
 Unified GUI dashboard for all Claude Code skills.
 
@@ -37,7 +37,7 @@ npm start
 
 Default: `972`
 
-## Design System v1.2.0
+## Design System v1.2.1
 
 TypeTogether Catalogue-inspired editorial design.
 
@@ -69,6 +69,7 @@ TypeTogether Catalogue-inspired editorial design.
 - **Background**: transparent (no card background)
 - **Border**: none
 - **Hover**: title color changes to `#0066cc`
+- **Meta separator**: border-top on `.skill-meta`
 
 ### Header/Footer
 - **Height**: 56px (header)

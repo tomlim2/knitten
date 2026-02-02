@@ -128,6 +128,7 @@ h1, h2 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    padding-top: 10px;
 }
 
 .skill-badge {
@@ -140,7 +141,7 @@ h1, h2 {
 /* Card Meta */
 .skill-meta {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
     align-items: center;
     padding-top: 8px;
     border-top: 1px solid var(--color-border);

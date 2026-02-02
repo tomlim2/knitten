@@ -1,7 +1,7 @@
 # Design System - TypeTogether Catalogue Style
 
-**Version**: 1.2.0
-**Last Updated**: 2026-01-31
+**Version**: 1.2.1
+**Last Updated**: 2026-02-01
 
 ---
 
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.1 | 2026-02-01 | Card meta: border-top separator, left-aligned layout |
 | 1.2.0 | 2026-01-31 | Complete redesign: TypeTogether Catalogue style, Google Sans Flex + Noto Sans KR, 1170px centered layout, transparent card backgrounds |
 | 1.1.0 | 2026-01-31 | Inputs: bottom border only, subtle gray-300 default, transparent bg |
 | 1.0.0 | 2026-01-31 | Initial release: Brutalist B&W style |
@@ -205,7 +206,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 |---------|-------|
 | Title | 22px, weight 400, letter-spacing -0.02em |
 | Description | 14px, color gray-dark, 3-line clamp |
-| Meta | flex row, space-between, border-top |
+| Meta | flex row, gap 12px, border-top separator |
 
 ```css
 .card-description {
@@ -221,7 +222,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 
 .card-meta {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
     align-items: center;
     padding-top: 8px;
     border-top: 1px solid var(--color-border);
