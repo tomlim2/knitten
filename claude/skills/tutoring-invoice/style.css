@@ -178,63 +178,18 @@ input[type="number"] {
     width: 100%;
 }
 
-/* Buttons */
-.remove-btn {
-    background: transparent;
-    color: var(--color-gray-dark);
-    border: 1px solid var(--color-border);
-    padding: 8px 14px;
-    cursor: pointer;
+/* Button overrides (base styles from main.css) */
+.class-entry .btn {
     white-space: nowrap;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: all 0.15s ease;
-}
-
-.remove-btn:hover {
-    border-color: var(--color-black);
-    color: var(--color-black);
 }
 
 #addEntry {
-    background: transparent;
-    color: var(--color-gray-dark);
-    border: 1px solid var(--color-border);
-    padding: 12px 24px;
-    cursor: pointer;
     width: 100%;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: all 0.15s ease;
     margin-top: 8px;
 }
 
-#addEntry:hover {
-    border-color: var(--color-black);
-    color: var(--color-black);
-}
-
 button[type="submit"] {
-    width: 100%;
-    padding: 12px 24px;
-    background: var(--color-black);
-    color: var(--color-white);
-    border: none;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
     margin-top: 16px;
-    transition: background-color 0.15s ease;
-}
-
-button[type="submit"]:hover {
-    background: var(--color-text);
 }
 
 /* Invoice Preview */
@@ -398,35 +353,7 @@ button[type="submit"]:hover {
 
 #downloadPDF, #editInvoice {
     width: 100%;
-    padding: 12px 24px;
     margin-top: 16px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-#downloadPDF {
-    background: var(--color-black);
-    color: var(--color-white);
-    border: none;
-}
-
-#downloadPDF:hover {
-    background: var(--color-text);
-}
-
-#editInvoice {
-    background: transparent;
-    color: var(--color-gray-dark);
-    border: 1px solid var(--color-border);
-}
-
-#editInvoice:hover {
-    border-color: var(--color-black);
-    color: var(--color-black);
 }
 
 .version-footer {

@@ -1,5 +1,5 @@
 // Version
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 
 // Display version on load
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +20,7 @@ document.getElementById('addEntry').addEventListener('click', () => {
         <input type="number" class="class-hours" placeholder="0" step="0.5" required>
         <input type="number" class="class-minutes" placeholder="0" step="15">
         <input type="text" class="class-note" placeholder="비고">
-        <button type="button" class="remove-btn" onclick="removeEntry(this)">삭제</button>
+        <button type="button" class="btn btn-secondary btn-small" onclick="removeEntry(this)">삭제</button>
     `;
     container.appendChild(newEntry);
 });

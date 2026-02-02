@@ -5,6 +5,13 @@ All notable changes to invoice-generator will be documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-02-02
+
+### Changed
+- Migrated to centralized button classes (.btn, .btn-primary, .btn-secondary, .btn-small) from main.css
+- Fixed CSS/JS paths after folder rename (invoice-generator → tutoring-invoice)
+- Removed duplicate button styles from style.css (77 lines → 9 lines)
+
 ## [1.3.0] - 2026-01-31
 
 ### Changed
