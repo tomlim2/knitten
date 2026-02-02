@@ -124,6 +124,7 @@ def send_slack_notification(branch_name: str, commit_count: int) -> bool:
         payload = json.dumps({
             "channel": SLACK_CHANNEL,
             "text": message,
+            "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
             "link_names": True,
         }).encode("utf-8")
 

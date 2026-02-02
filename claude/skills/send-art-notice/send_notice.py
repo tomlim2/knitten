@@ -48,6 +48,7 @@ def send_slack_message(message: str) -> bool:
         payload = json.dumps({
             "channel": ART_CHANNEL,
             "text": message,
+            "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
             "link_names": True,
         }).encode("utf-8")
 
