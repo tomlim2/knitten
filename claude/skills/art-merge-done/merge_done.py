@@ -129,7 +129,7 @@ def get_merge_details(branch_name: str) -> str:
     return result.stdout.strip() if result.returncode == 0 else "머지 내역을 가져올 수 없습니다."
 
 
-def send_thread_reply(channel: str, thread_ts: str, message: str) -> bool:
+def send_thread_reply(channel: str, thread_ts: str, message: str, broadcast: bool = False) -> bool:
     """Send a threaded reply to a Slack message."""
     if not SLACK_BOT_TOKEN:
         print("[ERROR] SLACK_BOT_TOKEN not set in .env")
@@ -142,6 +142,7 @@ def send_thread_reply(channel: str, thread_ts: str, message: str) -> bool:
             "channel": channel,
             "text": message,
             "thread_ts": thread_ts,
+            "reply_broadcast": broadcast,
             "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
             "link_names": True,
         }).encode("utf-8")
@@ -231,7 +232,7 @@ def main():
     # Send first message: merge complete
     print("\nSending merge complete notification...")
     msg1 = "디벨롭에 머지 완료되었습니다!"
-    if not send_thread_reply(channel, thread_ts, msg1):
+    if not send_thread_reply(channel, thread_ts, msg1, broadcast=True):
         sys.exit(1)
 
     # Get merge details and send second message

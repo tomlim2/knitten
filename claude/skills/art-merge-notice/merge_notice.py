@@ -61,6 +61,7 @@ def send_thread_reply(channel: str, thread_ts: str, message: str) -> bool:
             "channel": channel,
             "text": message,
             "thread_ts": thread_ts,
+            "reply_broadcast": True,
             "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
             "link_names": True,
         }).encode("utf-8")
