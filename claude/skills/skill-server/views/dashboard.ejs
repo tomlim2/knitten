@@ -12,7 +12,7 @@
                 <% group.skills.forEach(skill => { %>
                 <a href="/skills/<%= skill.id %>" class="skill-card">
                     <div class="skill-content">
-                        <h3 class="skill-name"><%= skill.name %></h3>
+                        <h3 class="skill-name<%= skill.type === 'cli' ? ' skill-name--cli' : '' %>"><%= skill.type === 'cli' ? '/' : '' %><%= skill.name %></h3>
                         <div class="skill-meta">
                             <span class="skill-version">v<%= skill.version %></span>
                         </div>
