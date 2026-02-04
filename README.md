@@ -1,79 +1,79 @@
 # caol-ila
 
-Global Claude Code configuration system for command/skill workflow automation and data management.
+This is my global Claude Code setup—where I keep commands, reusable scripts, and coding standards all in one place.
 
-## System Overview
+## What's Inside
 
 ### Commands
-**Slash commands** that appear in Claude Code's command palette. Commands automate common workflows by combining tool calls, dynamic context injection, and task-specific logic. They enforce the "right way" to do things.
+Slash commands that pop up in Claude Code's palette. These automate my most common workflows and make sure I'm doing things the right way every time.
 
 ### Skills
-**Reusable utilities** (Python scripts, shell scripts) that commands invoke. Skills contain the actual implementation logic that can be called directly or wrapped by commands for user-facing workflows.
+Python and shell scripts that do the heavy lifting. Commands call these when they need to actually execute something. You can also run them directly if you want.
 
 ### Standards
-**Technical standards and coding conventions** organized by domain. When working on a task, consult relevant standards to ensure consistency and quality. Multiple standards can apply to a single task.
+Coding conventions and technical guidelines, organized by what I'm working on. If I'm writing Unreal C++, I check the relevant standards. If I'm building UI, there's a design system to follow.
 
 ### Private
-**Personal data storage** for Claude-collected information (commit histories, notes, cached data). Gitignored by default to protect sensitive information.
+Where Claude stores personal stuff—commit histories for my portfolio, project notes, cached data. This folder's gitignored so nothing sensitive leaks out.
 
 ---
 
 ## Standards by Task Type
 
 ### Unreal C++ Development
-When working with Unreal Engine C++ code, consult **both** standards:
+If I'm writing Unreal Engine C++ code, I need to check **both** of these:
 
 - **`unreal-engine.md`** - Naming conventions (PascalCase, U/A/F/E/I prefixes), brace style, loop variables
 - **`code-review-cpp.md`** - Code quality checklist (memory management, UObject system, threading, performance, Blueprint integration, networking)
 
-**Example workflow**: Writing a new UActorComponent
+**Example**: Writing a new UActorComponent
 1. Check `unreal-engine.md` for naming (prefix with `U`, use PascalCase)
 2. Check `code-review-cpp.md` for UObject best practices (UPROPERTY, GENERATED_BODY, etc.)
 
 ### Python Scripting
-- *(Future: python-standards.md)*
+- *(Coming soon: python-standards.md)*
 
 ### Git Workflow
-- Automated via `/commit-m` and `/collect-commits` commands
-- *(Future: git-standards.md for branch naming, PR conventions)*
+- Mostly automated with `/commit-m` and `/collect-commits` commands
+- *(Coming soon: git-standards.md for branch naming, PR conventions)*
 
 ### General C++ (Non-Unreal)
-- **`code-review-cpp.md`** - Memory management, best practices, performance (ignore Unreal-specific sections)
+- **`code-review-cpp.md`** - Memory management, best practices, performance (just skip the Unreal-specific parts)
 
 ### GUI/UI Development
-**MANDATORY**: GUI/UI 작업 시작 전 반드시 디자인 시스템 참조
+**MANDATORY**: Always check the design system before starting any GUI/UI work
 
-- **`design-system.md`** - 색상, 간격, 타이포그래피, 컴포넌트, 상태, 아이콘, z-index 등 모든 UI 토큰
-- **핵심 원칙**: Brutalist B&W, 패딩 최소화 (8px 12px), border-radius = 0
+- **`design-system.md`** - All UI tokens: colors, spacing, typography, components, states, icons, z-index, etc.
+- **Core principles**: Brutalist B&W, minimal padding (8px 12px), border-radius = 0
 
-**Example workflow**: 새 버튼 컴포넌트 작성
-1. `design-system.md` 읽기 (버전 확인)
-2. **파일 상단에 버전 주석 추가**: `// Design System: v1.0.0`
-3. Buttons 섹션 참조 (2px border, 8px 12px padding, UPPERCASE)
-4. Component States 참조 (Default, Hover, Focus, Disabled)
+**Example**: Writing a new button component
+1. Read `design-system.md` (check version)
+2. **Add version comment at top of file**: `// Design System: v1.0.0`
+3. Reference Buttons section (2px border, 8px 12px padding, UPPERCASE)
+4. Reference Component States (Default, Hover, Focus, Disabled)
 
-**버전 스탬프** (첫 GUI 작업 시 필수):
+**Version stamp** (required for first GUI work):
 ```tsx
 // Design System: v1.0.0
 ```
 
-**버전 동기화**: `/design-sync` 명령어로 작업물과 디자인 시스템 버전 일치 확인
+**Version sync**: Use `/design-sync` to verify your work matches the design system version
 
 ---
 
 ## Quick Reference
 
-### Available Commands
-- **`/commit-m`** - Generate conventional commit messages from staged changes
-- **`/clean-up`** - Update CLAUDE.md project overview based on codebase analysis
-- **`/collect-commits`** - Extract git commit history for portfolio use
-- **`/open-invoice`** - Open invoice generator web app (manual entry)
-- **`/move-invoice <student_name>`** - Move latest PDF from Downloads to private/tutoring/invoices
-- **`/design-sync [version]`** - 디자인 시스템 버전 확인 및 작업물 동기화
+### Commands I Use
+- **`/commit-m`** - Write commit messages for me based on what's staged
+- **`/clean-up`** - Update the project's CLAUDE.md after analyzing the codebase
+- **`/collect-commits`** - Pull git history for portfolio work
+- **`/open-invoice`** - Launch the invoice generator web app
+- **`/move-invoice <student_name>`** - Move the latest PDF from Downloads to my tutoring invoices folder
+- **`/design-sync [version]`** - Check design system version and sync my work with it
 
-### Available Skills
-- **`git-commit-collector`** - Git commit history extraction and analysis tool
-- **`invoice-generator`** - Web-based invoice generator for tuition billing
+### Skills Available
+- **`git-commit-collector`** - Extracts and analyzes git commit history
+- **`invoice-generator`** - Web app for generating tuition invoices
 
 ---
 
@@ -109,4 +109,4 @@ caol-ila/
 
 ---
 
-For detailed information on creating commands, writing skills, and extending this system, see **[CLAUDE.md](claude/CLAUDE.md)**.
+For more details on creating commands, writing skills, and extending this system, check out **[CLAUDE.md](claude/CLAUDE.md)**.
