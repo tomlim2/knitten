@@ -373,13 +373,13 @@ button[type="submit"] {
 }
 
 /* Site Footer */
-.site-footer {
+.footer {
     max-width: 1170px;
     margin: 0 auto;
     padding: 14px 24px;
     font-size: 12px;
     color: var(--color-gray-mid);
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     border-top: 1px solid var(--color-border);
 }
 
