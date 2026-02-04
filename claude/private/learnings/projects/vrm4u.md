@@ -156,4 +156,41 @@ VRM 1.0 (신규 표준):
 
 ## Gotcha
 
-(비직관적인 이슈 기록)
+### 2026-02-04: UniGLTF-2.35.0 "extensionUsed" 오타 버그
+
+**증상**: VRM 파일 임포트 시 "read failure" 오류 발생. Blender로 import/export하면 정상 작동.
+
+**원인**: UniGLTF-2.35.0이 GLB JSON에 잘못된 필드명 추가
+```json
+// 버그 있는 VRM (UniGLTF-2.35.0)
+{
+  "extensionsUsed": ["VRM", "KHR_materials_unlit", ...],  // 정상
+  "extensionUsed": ["VRM", "KHR_materials_unlit", ...],   // 오타! (s 누락)
+  ...
+}
+```
+
+**왜 문제인가**:
+- Assimp glTF 파서가 중복된 잘못된 키로 인해 파싱 실패
+- Blender re-export 시 오타 필드가 제거되어 정상 작동
+
+**해결책**: VRM4U LoaderBPFunctionLibrary.cpp에 GLB 전처리 함수 추가
+```cpp
+bool FixGlbJsonTypo(const uint8* pData, size_t dataSize, TArray<uint8>& OutFixedData)
+{
+    // GLB 헤더 검증 후 JSON 청크 추출
+    // "extensionUsed" -> "extensionsUsed_fixed" 로 변경
+    // GLB 재구성하여 반환
+}
+```
+
+적용 위치:
+- `LoadVRMFileFromMemory()` - 동기 로딩
+- `GetVRMMeta()` - 메타데이터 조회
+- `VrmAsyncLoadAction` - 비동기 로딩
+
+**영향받는 버전**: UniGLTF-2.35.0 (UniVRM)으로 export된 VRM 파일
+
+**참조**:
+- [LoaderBPFunctionLibrary.cpp:157-238](Plugins/VRM4U/Source/VRM4ULoader/Private/LoaderBPFunctionLibrary.cpp#L157-L238)
+- [VrmAsyncLoadAction.cpp](Plugins/VRM4U/Source/VRM4ULoader/Private/VrmAsyncLoadAction.cpp)
