@@ -1,7 +1,7 @@
-# Design System - TypeTogether Catalogue Style
+# Design System - Typo-base
 
-**Version**: 1.3.1
-**Last Updated**: 2026-02-02
+**Version**: 1.5.1
+**Last Updated**: 2026-02-04
 
 ---
 
@@ -9,10 +9,14 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.1 | 2026-02-04 | Added rule: No `<strong>` tags (use CSS font-weight) |
+| 1.5.0 | 2026-02-04 | Dashboard pattern: skill cards with meta-first layout, letter-spacing 0 |
+| 1.4.1 | 2026-02-04 | Standardized all font sizes to 4px multiples |
+| 1.4.0 | 2026-02-04 | Rebranded to Typo-base style |
 | 1.3.1 | 2026-02-02 | Standardized input/button classes with transitions (.input, .btn, .btn-primary, .btn-secondary, .btn-small) |
 | 1.3.0 | 2026-02-02 | Category sections, detail page layout, item-list with copy button, middle dot separators |
 | 1.2.1 | 2026-02-01 | Card meta: border-top separator, left-aligned layout |
-| 1.2.0 | 2026-01-31 | Complete redesign: TypeTogether Catalogue style, Google Sans Flex + Noto Sans KR, 1170px centered layout, transparent card backgrounds |
+| 1.2.0 | 2026-01-31 | Complete redesign: Typo-base style, Google Sans Flex + Noto Sans KR, 1170px centered layout, transparent card backgrounds |
 | 1.1.0 | 2026-01-31 | Inputs: bottom border only, subtle gray-300 default, transparent bg |
 | 1.0.0 | 2026-01-31 | Initial release: Brutalist B&W style |
 
@@ -22,7 +26,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  TYPETOGETHER CATALOGUE  │  Editorial minimalism  │  radius = 0 │
+│  TYPO-BASE               │  Editorial minimalism  │  radius = 0 │
 ├─────────────────────────────────────────────────────────────────┤
 │  Max width: 1170px       │  Grid: 4 columns, 24px gap           │
 │  Font: Google Sans Flex  │  Korean: Noto Sans KR                │
@@ -128,13 +132,13 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 
 | Element | Size | Weight | Line Height | Letter Spacing |
 |---------|------|--------|-------------|----------------|
-| Card Title | 22px | 400 | 1.2 | -0.02em |
-| Body | 15px | 400 | 1.5 | 0 |
-| Description | 14px | 400 | 1.5 | 0 |
-| Navigation | 14px | 400 | 1.5 | 0.02em |
-| Logo | 14px | 400 | 1.5 | 0.02em |
-| Badge/Meta | 12px | 400 | 1.5 | 0.02em |
-| Label (uppercase) | 10px | 600 | 1.2 | 0.1em |
+| Card Title | 16px | 400 | 1.2 | 0 |
+| Body | 16px | 400 | 1.5 | 0 |
+| Description | 12px | 400 | 1.5 | 0 |
+| Navigation | 16px | 400 | 1.5 | 0 |
+| Logo | 16px | 400 | 1.5 | 0 |
+| Badge/Meta | 12px | 400 | 1.5 | 0 |
+| Label (uppercase) | 12px | 600 | 1.2 | 0 |
 | Code | 12px | 400 | 1.6 | 0 |
 
 ---
@@ -172,48 +176,136 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 | Hover | `--color-black` |
 | Active | `--color-black` |
 
-### Cards (Catalogue Style)
+### Dashboard Pattern (Skill Cards)
+
+**Structure**: Section → Grid → Cards
+
+#### Skill Section
 
 | Property | Value |
 |----------|-------|
-| Height | 146px (fixed) |
-| Background | **transparent** (no card background) |
-| Border | **none** |
-| Display | flex, column |
-| Cursor | pointer |
-
-**Hover Behavior**: Title color changes to `#0066cc`
+| Padding bottom | 40px |
+| Last section margin | 0 |
 
 ```css
-.card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
+.skill-section {
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 40px;
 }
 
-.card:hover .card-title {
-    color: #0066cc;
-}
-
-.card-content {
-    height: 146px;
-    display: flex;
-    flex-direction: column;
+.skill-section:last-child {
+    margin-bottom: 0;
 }
 ```
 
-### Card Content
+#### Skill Grid
 
-| Element | Style |
-|---------|-------|
-| Title | 22px, weight 400, letter-spacing -0.02em |
-| Description | 14px, color gray-dark, 3-line clamp |
-| Meta | flex row, gap 12px, border-top separator |
+| Property | Value |
+|----------|-------|
+| Columns | 4 (1fr each) |
+| Gap | 24px |
+| Responsive | 1 column on ≤768px |
 
 ```css
-.card-description {
-    font-size: 14px;
+.skill-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .skill-grid {
+        grid-template-columns: 1fr;
+    }
+}
+```
+
+#### Skill Card
+
+| Property | Value |
+|----------|-------|
+| Height | **auto** (no fixed height) |
+| Background | **transparent** |
+| Border | **none** |
+| Display | flex, column |
+
+**Content Order**: Title → Meta (bordered) → Description
+
+**Hover Behavior**: Title link color changes to `#0066cc`
+
+```css
+.skill-card {
+    display: block;
+}
+
+.skill-content {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.skill-name {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    margin-bottom: 10px;
+}
+
+.skill-name a {
+    color: var(--color-black);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.skill-name a:hover {
+    color: #0066cc;
+}
+```
+
+#### Skill Meta (Border-Top Pattern)
+
+| Property | Value |
+|----------|-------|
+| Position | After title, before description |
+| Border | 1px solid top |
+| Padding | 8px top |
+| Display | flex row |
+| Items | Version, platform badge |
+
+```css
+.skill-meta {
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
+}
+
+.skill-version {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+}
+
+.skill-platform {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    margin-left: 8px;
+}
+```
+
+#### Skill Description
+
+| Property | Value |
+|----------|-------|
+| Font size | 12px |
+| Color | gray-dark |
+| Line clamp | 3 lines |
+| Padding | 10px top |
+
+```css
+.skill-description {
+    font-size: 12px;
     color: var(--color-gray-dark);
     line-height: 1.5;
     flex: 1;
@@ -221,15 +313,27 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    padding-top: 10px;
 }
+```
 
-.card-meta {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding-top: 8px;
-    border-top: 1px solid var(--color-border);
-}
+#### HTML Structure
+
+```html
+<section class="skill-section">
+    <div class="skill-grid">
+        <div class="skill-card">
+            <div class="skill-content">
+                <h3 class="skill-name"><a href="#">Title</a></h3>
+                <div class="skill-meta">
+                    <span class="skill-version">v1.0.0</span>
+                    <span class="skill-platform">Mac</span>
+                </div>
+                <p class="skill-description">Description text...</p>
+            </div>
+        </div>
+    </div>
+</section>
 ```
 
 ### Buttons
@@ -244,7 +348,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 /* Base button styles */
 .btn, .submit-button {
     padding: 12px 24px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -278,8 +382,8 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 
 /* Small variant */
 .btn-small {
-    padding: 8px 14px;
-    font-size: 11px;
+    padding: 8px 16px;
+    font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.05em;
 }
@@ -302,7 +406,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
     padding: 10px 0;
     border: none;
     border-bottom: 1px solid var(--color-border);
-    font-size: 14px;
+    font-size: 16px;
     font-family: inherit;
     background: transparent;
     transition: border-color 0.15s ease;
@@ -322,23 +426,23 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 }
 ```
 
-### Category Section (Dashboard)
+### Section Title (Optional)
+
+**Note**: Dashboard pattern does NOT use section titles by default. If needed:
 
 | Property | Value |
 |----------|-------|
-| Margin bottom | 56px |
-| Title | 11px, uppercase, letter-spacing 0.1em |
-| Title border | 1px solid bottom |
+| Font size | 12px |
+| Weight | 500 |
+| Transform | uppercase |
+| Letter spacing | 0 |
+| Border | 1px solid bottom |
 
 ```css
-.skill-section {
-    margin-bottom: 56px;
-}
-
 .skill-section .section-title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-gray-mid);
     margin-bottom: 20px;
@@ -354,7 +458,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 | Grid | 1fr 240px, gap 80px |
 | Hero padding | 80px top, 48px bottom |
 | Hero title | 48px, weight 400 |
-| Sidebar label | 10px uppercase |
+| Sidebar label | 12px uppercase |
 
 ```css
 .page-hero {
@@ -398,14 +502,14 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 
 | Property | Value |
 |----------|-------|
-| Font size | 11px |
+| Font size | 12px |
 | Padding | 6px 12px |
 | Border | 1px solid border |
 | Hover | Black border and text |
 
 ```css
 .copy-btn {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--color-gray-mid);
     background: transparent;
@@ -570,11 +674,18 @@ Meta 정보 구분에 사용:
 - No rounded corners
 - No gradients
 
+### Typography First
+- **Letter spacing: 0** for all text (no tracking)
+- **No `<strong>` tags** - use font-weight via CSS instead
+- Multiples of 4px for font sizes (12px, 16px, 20px, 24px, 36px, 48px)
+- Line height: 1.2 for titles, 1.5-1.6 for body
+- Font weight: 400 (regular), 500 (medium), 600 (semibold)
+
 ### Interactive Feedback
-- Color change on hover (blue for links/titles)
+- Color change on hover (blue #0066cc for links/titles)
 - Border color change for inputs
 - Cursor changes for clickable elements
-- Instant transitions (15ms ease)
+- Instant transitions (0.15s ease)
 
 ### Accessibility
 - High contrast text (black/white)

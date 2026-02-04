@@ -1,3 +1,4 @@
+<!-- Design System: v1.5.1 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -60,7 +61,7 @@
                 .replace(/`([^`]+)`/g, '<code>$1</code>')
                 .replace(/^### (.*$)/gm, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*\*([^*]+)\*\*/g, '<span class="text-semibold">$1</span>')
                 .replace(/^- (.*$)/gm, '<li>$1</li>')
                 .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
                 .replace(/\n\n/g, '</p><p>')

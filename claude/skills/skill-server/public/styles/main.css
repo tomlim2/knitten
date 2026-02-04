@@ -1,4 +1,5 @@
-/* Skill Server - TypeTogether Catalogue Style */
+/* Design System: v1.5.1 */
+/* Skill Server - Typo-base Style */
 
 * {
     margin: 0;
@@ -39,13 +40,13 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 3px solid var(--color-black);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .logo {
     font-size: 16px;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     color: var(--color-black);
     text-decoration: none;
 }
@@ -60,7 +61,7 @@ body {
     text-decoration: none;
     font-size: 16px;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     transition: color 0.15s ease;
 }
 
@@ -79,7 +80,7 @@ body {
 h1, h2 {
     font-size: 12px;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     margin-bottom: 24px;
     color: var(--color-gray-mid);
 }
@@ -98,7 +99,7 @@ h1, h2 {
 .skill-section .section-title {
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-gray-mid);
     margin-bottom: 20px;
@@ -128,7 +129,7 @@ h1, h2 {
 .skill-name {
     font-size: 16px;
     font-weight: 400;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     line-height: 1.2;
     margin-bottom: 10px;
 }
@@ -162,7 +163,7 @@ h1, h2 {
 .skill-badge {
     font-size: 12px;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     color: var(--color-gray-mid);
 }
 
@@ -214,7 +215,7 @@ h1, h2 {
     text-decoration: none;
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     text-transform: uppercase;
     border: 1px solid var(--color-border);
     transition: all 0.15s ease;
@@ -258,7 +259,7 @@ h1, h2 {
     display: block;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     text-transform: uppercase;
     margin-bottom: 12px;
     color: var(--color-gray-mid);
@@ -266,7 +267,7 @@ h1, h2 {
 
 .form-group input {
     width: 100%;
-    padding: 12px 0;
+    padding: 10px 0;
     border: none;
     border-bottom: 1px solid var(--color-border);
     font-size: 16px;
@@ -291,7 +292,7 @@ h1, h2 {
 /* Generic Input */
 .input {
     width: 100%;
-    padding: 12px 0;
+    padding: 10px 0;
     border: none;
     border-bottom: 1px solid var(--color-border);
     font-size: 16px;
@@ -324,7 +325,7 @@ h1, h2 {
     padding: 12px 24px;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -356,7 +357,25 @@ h1, h2 {
     padding: 8px 16px;
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
+}
+
+/* Button aliases */
+.close-button {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    background: transparent;
+    color: var(--color-gray-dark);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.close-button:hover {
+    border-color: var(--color-black);
+    color: var(--color-black);
 }
 
 /* Output section */
@@ -370,7 +389,7 @@ h1, h2 {
     background: var(--color-gray-light);
     padding: 10px 14px;
     font-size: 12px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     margin-bottom: 16px;
     border-left: 3px solid var(--color-black);
 }
@@ -380,10 +399,10 @@ h1, h2 {
     background: #ffebee;
 }
 
-.output {
+.output, .preview-content {
     background: var(--color-gray-light);
     padding: 16px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     overflow-x: auto;
     max-height: 400px;
@@ -400,7 +419,7 @@ h1, h2 {
 }
 
 .path-display {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     color: var(--color-gray-dark);
     margin-bottom: 24px;
@@ -432,7 +451,7 @@ h1, h2 {
 }
 
 .file-icon {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     width: 24px;
     text-align: center;
@@ -447,7 +466,7 @@ h1, h2 {
 .file-size {
     font-size: 12px;
     color: var(--color-gray-mid);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
 }
 
 /* File preview */
@@ -466,36 +485,12 @@ h1, h2 {
 }
 
 .preview-header span {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
 }
 
-.close-button {
-    background: var(--color-white);
-    color: var(--color-black);
-    border: none;
-    padding: 4px 12px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.1s ease;
-}
-
-.close-button:hover {
-    background: var(--color-gray-light);
-}
-
-.preview-content {
-    padding: 18px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    background: var(--color-gray-light);
-    overflow-x: auto;
-    max-height: 500px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    line-height: 1.6;
-}
+/* Removed duplicate .close-button - now defined in Buttons section above */
+/* Removed duplicate .preview-content - now combined with .output above */
 
 .pdf-link {
     display: inline-block;
@@ -505,7 +500,7 @@ h1, h2 {
     text-decoration: none;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     text-transform: uppercase;
     transition: background-color 0.15s ease;
 }
@@ -546,7 +541,7 @@ h1, h2 {
 .page-hero-category {
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-gray-mid);
     margin-bottom: 12px;
@@ -556,23 +551,23 @@ h1, h2 {
     font-size: 24px;
     font-weight: 500;
     color: var(--color-black);
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     line-height: 1.2;
     margin-bottom: 8px;
     text-transform: lowercase;
 }
 
 .page-hero-name--mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 36px;
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
     text-transform: none;
 }
 
 .page-hero-meta {
     font-size: 16px;
     color: var(--color-gray-mid);
-    letter-spacing: 0.01em;
+    letter-spacing: 0;
     margin-bottom: 20px;
 }
 
@@ -601,7 +596,7 @@ h1, h2 {
     color: var(--color-text);
     line-height: 1.6;
     max-width: 560px;
-    letter-spacing: -0.005em;
+    letter-spacing: 0;
 }
 
 /* Hero Action Area - Right column */
@@ -618,7 +613,7 @@ h1, h2 {
     text-decoration: none;
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     text-transform: uppercase;
     transition: background 0.15s ease;
 }
@@ -668,7 +663,7 @@ h1, h2 {
 .page-main h2 {
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-gray-mid);
     margin: 48px 0 24px;
@@ -695,7 +690,7 @@ h1, h2 {
 .page-main pre {
     background: var(--color-gray-light);
     padding: 20px 24px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     line-height: 1.7;
     overflow-x: auto;
@@ -703,7 +698,7 @@ h1, h2 {
 }
 
 .page-main code {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     background: var(--color-gray-light);
     padding: 4px 8px;
@@ -739,6 +734,10 @@ h1, h2 {
     content: none;
 }
 
+.text-semibold {
+    font-weight: 600;
+}
+
 /* Section Divider */
 .page-divider {
     border: none;
@@ -765,7 +764,7 @@ h1, h2 {
 .page-sidebar-label {
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-gray-mid);
     margin-bottom: 12px;
@@ -778,7 +777,7 @@ h1, h2 {
 }
 
 .page-sidebar-value code {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     background: var(--color-gray-light);
     padding: 4px 8px;
@@ -881,7 +880,7 @@ h1, h2 {
 }
 
 .item-name--mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
 }
 
@@ -894,7 +893,7 @@ h1, h2 {
 
 /* Argument Hint */
 .arg-hint {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     color: var(--color-gray-mid);
     margin-left: 8px;
@@ -904,7 +903,7 @@ h1, h2 {
 .copy-btn {
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     color: var(--color-gray-mid);
     background: transparent;
     border: none;
@@ -978,13 +977,13 @@ h1, h2 {
 }
 
 /* Site footer */
-.site-footer {
+.footer {
     max-width: 1170px;
     margin: 0 auto;
     padding: 14px 24px;
     font-size: 12px;
     color: var(--color-gray-mid);
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     border-top: 1px solid var(--color-border);
 }
 
