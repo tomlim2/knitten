@@ -10,7 +10,7 @@ GUI/UI 작업물과 디자인 시스템 버전을 동기화합니다.
 
 ## Current Design System
 
-!`head -5 ~/.claude/standards/design-system.md 2>/dev/null || head -5 ~/Desktop/www/anju/anju-claude/standards/design-system.md`
+**Read** the design system file at `~/.claude/standards/design-system.md` to check the current version and last updated date.
 
 ## Task
 
