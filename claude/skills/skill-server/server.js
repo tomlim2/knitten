@@ -252,11 +252,36 @@ app.get('/api/commands', (req, res) => {
             }
         }
 
+        // Detect platform
+        const platformLine = lines.find(l => l.toLowerCase().includes('platform:'));
+        let platform = 'all'; // default
+        if (platformLine) {
+            const platformValue = platformLine.toLowerCase();
+            if (platformValue.includes('windows') && platformValue.includes('mac')) {
+                platform = 'all';
+            } else if (platformValue.includes('windows')) {
+                platform = 'win';
+            } else if (platformValue.includes('mac')) {
+                platform = 'mac';
+            }
+        } else {
+            // Auto-detect from content
+            const hasWindowsDrive = /[A-Z]:\\/.test(content);
+            const hasMacAbsPath = content.includes('/Users/');
+
+            if (hasWindowsDrive) {
+                platform = 'win';
+            } else if (hasMacAbsPath) {
+                platform = 'mac';
+            }
+        }
+
         return {
             name: file.replace('.md', ''),
             description,
             allowedTools,
-            argumentHint
+            argumentHint,
+            platform
         };
     });
 

@@ -6,7 +6,7 @@
     <title>Commands Browser</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
 </head>
 <body>
@@ -101,8 +101,11 @@
             commands.forEach(cmd => {
                 const li = document.createElement('li');
                 const argHint = cmd.argumentHint ? `<span class="arg-hint">${cmd.argumentHint}</span>` : '';
+                const platform = cmd.platform && cmd.platform !== 'all'
+                    ? `<span class="skill-platform skill-platform--${cmd.platform}">${cmd.platform === 'win' ? 'Win' : 'Mac'}</span>`
+                    : '';
                 li.innerHTML = `
-                    <span class="item-name--mono">/${cmd.name}</span>${argHint}
+                    <span class="item-name--mono">/${cmd.name}</span>${argHint}${platform}
                     <span class="item-meta">${cmd.description || 'No description'}</span>
                     <button class="copy-btn" onclick="copyCommand('/${cmd.name}')" title="Copy command">Copy</button>
                 `;
