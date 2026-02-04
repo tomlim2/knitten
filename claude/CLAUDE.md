@@ -263,6 +263,7 @@ Each command should include all context needed via dynamic execution (`!backtick
 - **Think Different**: Before creating a command, ask if there's a simpler way
 - **Obsess Over Details**: Test edge cases, handle errors, write clear descriptions
 - **Simplify Ruthlessly**: Remove any complexity that doesn't add value
+- **Senior Engineer Test**: Would a senior engineer say this is overcomplicated? If yes, simplify.
 
 ### 4. Document Generously
 - Commands should explain what they do and why
