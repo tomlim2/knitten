@@ -151,8 +151,20 @@ Version comment by file type:
 
 ## Rules
 
-1. **No version comment** = Target for processing
-2. **New files first** priority
-3. **Parallel agents** (single message, multiple Tasks)
-4. **Unified report** generated at the end
-5. **Auto version stamp** added
+1. **Comprehensive grep first** - Always search ALL files before making changes
+   - Don't assume template changes propagate to standalone files
+   - Search across ALL file types (*.html, *.css, *.ejs, *.tsx, *.jsx)
+   - Example: When updating `.site-footer` → `.footer`, grep entire skills directory first
+2. **No version comment** = Target for processing
+3. **New files first** priority
+4. **Parallel agents** (single message, multiple Tasks)
+5. **Unified report** generated at the end
+6. **Auto version stamp** added
+
+## Common Pitfalls
+
+❌ **Don't:** Update only EJS templates and assume standalone HTML files inherit changes
+✅ **Do:** `grep -r "site-footer" claude/skills/ --include="*.html" --include="*.css"` before editing
+
+❌ **Don't:** Make partial updates across file types
+✅ **Do:** Find all occurrences first, update all at once, single commit
