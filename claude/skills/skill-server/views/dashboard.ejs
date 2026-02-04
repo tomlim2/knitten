@@ -10,15 +10,18 @@
         <section class="skill-section">
             <div class="skill-grid">
                 <% group.skills.forEach(skill => { %>
-                <a href="/skills/<%= skill.id %>" class="skill-card">
+                <div class="skill-card">
                     <div class="skill-content">
-                        <h3 class="skill-name<%= skill.type === 'cli' ? ' skill-name--cli' : '' %>"><%= skill.type === 'cli' ? '/' : '' %><%= skill.name %></h3>
+                        <h3 class="skill-name<%= skill.type === 'cli' ? ' skill-name--cli' : '' %>"><a href="/skills/<%= skill.id %>"><%= skill.type === 'cli' ? '/' : '' %><%= skill.name %></a></h3>
                         <div class="skill-meta">
                             <span class="skill-version">v<%= skill.version %></span>
+                            <% if (skill.platform && skill.platform !== 'all') { %>
+                            <span class="skill-platform skill-platform--<%= skill.platform %>"><%= skill.platform === 'win' ? 'Win' : 'Mac' %></span>
+                            <% } %>
                         </div>
                         <p class="skill-description"><%= skill.description %></p>
                     </div>
-                </a>
+                </div>
                 <% }); %>
             </div>
         </section>

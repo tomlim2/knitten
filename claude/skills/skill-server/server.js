@@ -64,6 +64,35 @@ function discoverSkills() {
             const hasPy = files.some(f => f.endsWith('.py'));
             const type = hasHtml ? 'web' : (hasPy ? 'cli' : 'unknown');
 
+            // Detect platform
+            const platformLine = lines.find(l => l.toLowerCase().includes('platform:'));
+            let platform = 'all'; // default
+            if (platformLine) {
+                const platformValue = platformLine.toLowerCase();
+                if (platformValue.includes('windows') && platformValue.includes('mac')) {
+                    platform = 'all';
+                } else if (platformValue.includes('windows')) {
+                    platform = 'win';
+                } else if (platformValue.includes('mac')) {
+                    platform = 'mac';
+                }
+            } else {
+                // Auto-detect from content
+                // Windows-specific: drive letters, .bat/.ps1 files
+                const hasWindowsDrive = /[A-Z]:\\/.test(content);
+                const hasBatFile = files.some(f => f.endsWith('.bat') || f.endsWith('.ps1'));
+                // Mac-specific: /Users/ path (not ~/. which is cross-platform)
+                const hasMacAbsPath = content.includes('/Users/');
+                const hasShFile = files.some(f => f.endsWith('.sh'));
+
+                if (hasWindowsDrive || hasBatFile) {
+                    platform = 'win';
+                } else if (hasMacAbsPath || hasShFile) {
+                    platform = 'mac';
+                }
+                // ~/. paths are cross-platform, so 'all' remains default
+            }
+
             // Detect category from prefix
             const prefix = dir.split('-')[0];
             const categoryMap = {
@@ -84,6 +113,7 @@ function discoverSkills() {
                 description,
                 type,
                 category,
+                platform,
                 path: skillPath,
                 markdown: content
             });

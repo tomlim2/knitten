@@ -20,7 +20,7 @@
 }
 
 body {
-    font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100vh;
@@ -199,7 +199,7 @@ button[type="submit"] {
     max-width: 210mm;
     width: 210mm;
     box-sizing: border-box;
-    font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 11px;
     line-height: 1.6;
     color: var(--color-black);
@@ -342,7 +342,7 @@ button[type="submit"] {
     font-size: 10px;
     color: var(--color-gray-mid);
     margin-top: 8px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 @media print {
@@ -357,7 +357,7 @@ button[type="submit"] {
 }
 
 .version-footer {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: var(--color-gray-mid);
     margin-top: 16px;
@@ -369,7 +369,7 @@ button[type="submit"] {
     font-size: 10px;
     color: var(--color-gray-mid);
     margin-top: 4mm;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* Site Footer */

@@ -20,7 +20,7 @@
 }
 
 body {
-    font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100vh;
@@ -113,16 +113,9 @@ h1, h2 {
     gap: 24px;
 }
 
-/* Clickable Card */
+/* Card */
 .skill-card {
     display: block;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-}
-
-.skill-card:hover .skill-name {
-    color: #0066cc;
 }
 
 /* Card Content */
@@ -135,17 +128,23 @@ h1, h2 {
 .skill-name {
     font-size: 16px;
     font-weight: 400;
-    color: var(--color-black);
     letter-spacing: -0.02em;
     line-height: 1.2;
     margin-bottom: 10px;
+}
+
+.skill-name a {
+    color: var(--color-black);
+    text-decoration: none;
     transition: color 0.15s ease;
 }
 
+.skill-name a:hover {
+    color: #0066cc;
+}
+
 .skill-name--cli {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 16px;
-    letter-spacing: 0;
 }
 
 .skill-description {
@@ -183,6 +182,12 @@ h1, h2 {
 .skill-version {
     font-size: 12px;
     color: var(--color-gray-mid);
+}
+
+.skill-platform {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    margin-left: 8px;
 }
 
 /* Skill toolbar */
@@ -365,7 +370,7 @@ h1, h2 {
     background: var(--color-gray-light);
     padding: 10px 14px;
     font-size: 12px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     margin-bottom: 16px;
     border-left: 3px solid var(--color-black);
 }
@@ -378,7 +383,7 @@ h1, h2 {
 .output {
     background: var(--color-gray-light);
     padding: 16px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     overflow-x: auto;
     max-height: 400px;
@@ -395,7 +400,7 @@ h1, h2 {
 }
 
 .path-display {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: var(--color-gray-dark);
     margin-bottom: 24px;
@@ -427,7 +432,7 @@ h1, h2 {
 }
 
 .file-icon {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     width: 24px;
     text-align: center;
@@ -442,7 +447,7 @@ h1, h2 {
 .file-size {
     font-size: 12px;
     color: var(--color-gray-mid);
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* File preview */
@@ -461,7 +466,7 @@ h1, h2 {
 }
 
 .preview-header span {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
 }
 
@@ -482,7 +487,7 @@ h1, h2 {
 
 .preview-content {
     padding: 18px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     background: var(--color-gray-light);
     overflow-x: auto;
@@ -526,7 +531,7 @@ h1, h2 {
     display: grid;
     grid-template-columns: 1fr 320px;
     gap: 60px;
-    padding: 50px 0;
+    padding: 0 0 32px 0;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -558,7 +563,7 @@ h1, h2 {
 }
 
 .page-hero-name--mono {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 36px;
     letter-spacing: -0.01em;
     text-transform: none;
@@ -624,7 +629,7 @@ h1, h2 {
 
 .page-hero-cta-price {
     display: block;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;
@@ -656,7 +661,7 @@ h1, h2 {
     display: grid;
     grid-template-columns: 1fr 280px;
     gap: 100px;
-    padding: 48px 0 64px;
+    padding: 32px 0 64px;
 }
 
 /* Main Content */
@@ -690,7 +695,7 @@ h1, h2 {
 .page-main pre {
     background: var(--color-gray-light);
     padding: 20px 24px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     line-height: 1.7;
     overflow-x: auto;
@@ -698,7 +703,7 @@ h1, h2 {
 }
 
 .page-main code {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     background: var(--color-gray-light);
     padding: 4px 8px;
@@ -743,7 +748,7 @@ h1, h2 {
 
 /* Sidebar */
 .page-sidebar {
-    padding-top: 8px;
+    padding-top: 0;
 }
 
 .page-sidebar-item {
@@ -773,7 +778,7 @@ h1, h2 {
 }
 
 .page-sidebar-value code {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     background: var(--color-gray-light);
     padding: 4px 8px;
@@ -838,7 +843,7 @@ h1, h2 {
 }
 
 .related-card-name {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 400;
     color: var(--color-black);
     margin-bottom: 8px;
@@ -876,7 +881,7 @@ h1, h2 {
 }
 
 .item-name--mono {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
 }
 
@@ -889,7 +894,7 @@ h1, h2 {
 
 /* Argument Hint */
 .arg-hint {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: var(--color-gray-mid);
     margin-left: 8px;
@@ -932,7 +937,7 @@ h1, h2 {
     }
 
     .page-hero-name {
-        font-size: 20px;
+        font-size: 24px;
     }
 
     .page-hero-desc {
