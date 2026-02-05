@@ -1,6 +1,6 @@
 # browse-learnings
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
 Web-based viewer for project learnings stored in private/learnings/.
 

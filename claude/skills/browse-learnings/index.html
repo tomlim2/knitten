@@ -67,7 +67,7 @@
     </main>
     <footer class="footer">
         <div class="footer-content">
-            <span class="footer-copyright">Learnings Viewer v0.1.0</span>
+            <span class="footer-copyright">Learnings Viewer v0.2.0</span>
         </div>
     </footer>
     <script>
@@ -135,23 +135,50 @@
                 const line = lines[i];
 
                 if (line.startsWith('# ')) {
-                    html += `<h2 style="font-size:28px;font-weight:400;letter-spacing:-0.02em;margin-bottom:24px;">${line.slice(2)}</h2>`;
+                    html += `<h1 style="font-size:28px;font-weight:400;letter-spacing:-0.02em;margin:0 0 8px 0;">${line.slice(2)}</h1>`;
+                } else if (line.startsWith('### ')) {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        tableRows = [];
+                        inTable = false;
+                    }
+                    html += `<h3 style="font-size:16px;font-weight:500;margin:24px 0 8px 0;">${line.slice(4)}</h3>`;
                 } else if (line.startsWith('## ')) {
                     if (inTable) {
                         html += renderTable(tableRows);
                         tableRows = [];
                         inTable = false;
                     }
-                    html += `<h2>${line.slice(3)}</h2>`;
+                    html += `<h2 style="font-size:20px;font-weight:500;margin:32px 0 16px 0;color:var(--color-text);">${line.slice(3)}</h2>`;
                 } else if (line.startsWith('| ') && line.includes(' | ')) {
                     inTable = true;
                     tableRows.push(line);
-                } else if (line.startsWith('---') && inTable) {
-                    // Skip
-                } else if (inTable && line.trim() === '') {
-                    html += renderTable(tableRows);
-                    tableRows = [];
-                    inTable = false;
+                } else if (line.startsWith('|---') && inTable) {
+                    // Skip separator
+                } else if (line.startsWith('---')) {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        tableRows = [];
+                        inTable = false;
+                    }
+                    html += '<hr style="border:none;border-top:1px solid var(--color-border);margin:24px 0;">';
+                } else if (line.startsWith('- ')) {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        tableRows = [];
+                        inTable = false;
+                    }
+                    const text = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    html += `<li style="margin-left:20px;margin-bottom:8px;font-size:14px;line-height:1.6;">${text}</li>`;
+                } else if (line.trim() === '') {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        tableRows = [];
+                        inTable = false;
+                    }
+                } else if (line.trim() && !inTable) {
+                    const text = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code style="background:var(--color-bg);padding:2px 6px;border-radius:3px;font-size:13px;">$1</code>');
+                    html += `<p style="font-size:14px;line-height:1.6;margin:8px 0;color:var(--color-gray-dark);">${text}</p>`;
                 }
             }
 
