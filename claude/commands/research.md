@@ -1,5 +1,5 @@
 ---
-allowed-tools: WebSearch, WebFetch, Read, Write, Glob
+allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob
 description: Deep web research on technical topics with structured findings
 argument-hint: "<topic or concept>"
 ---
@@ -21,7 +21,34 @@ Example: /research Unreal Engine material instancing best practices
 Example: /research WebAssembly SIMD performance 2025
 ```
 
-## Search Strategy
+## Execution Strategy
+
+Launch **two agents in parallel** for comprehensive coverage:
+
+### Agent 1: Official Documentation & Authority
+Research official sources, specifications, and authoritative content.
+
+**Task**: Search for and analyze:
+- Official documentation (docs sites, API references)
+- Authoritative blogs (Mozilla, Google Developers, AWS, etc.)
+- Specifications and standards
+- Recent version updates and changelogs
+
+**Output**: Return official guidance, key concepts, and authoritative best practices with source URLs.
+
+### Agent 2: Practical Implementation & Community
+Research real-world usage, gotchas, and implementation examples.
+
+**Task**: Search for and analyze:
+- Tutorials and implementation guides
+- Production usage examples and case studies
+- Common gotchas and mistakes (Stack Overflow, forums, GitHub issues)
+- Code examples and demos
+- Comparative analysis (X vs Y articles)
+
+**Output**: Return practical insights, common pitfalls, implementation patterns, and real-world examples with source URLs.
+
+## Search Strategy (for agents)
 
 Execute searches from **multiple angles** to get comprehensive coverage:
 
@@ -71,36 +98,49 @@ For specific topics, prefer authoritative domains:
 - Languages: official language docs (python.org, rust-lang.org)
 - Cloud: aws.amazon.com/docs, cloud.google.com/docs
 
+## Synthesis Process
+
+After both agents complete:
+
+1. **Combine findings** from both agents
+2. **Cross-reference** official guidance with practical implementation
+3. **Resolve conflicts** if official docs and community practice differ
+4. **Identify gaps** where more research is needed
+
 ## Output Format
 
 ### Topic Overview
 [1-2 paragraphs explaining what this is and why it matters]
 
-### Key Findings
+### Official Guidance
+- **Source**: [URLs from Agent 1]
+- **Key Concepts**: [Core principles from official docs]
+- **Current Status**: [Latest version, recent updates]
 
-#### Official Documentation
-- **Source**: [URL]
-- **Summary**: [Key points from official docs]
-
-#### Best Practices
-- **Pattern 1**: [Description with rationale]
-- **Pattern 2**: [Description with rationale]
+### Best Practices
+- **Pattern 1**: [Description with rationale from both agents]
+- **Pattern 2**: [Description with rationale from both agents]
 - [Continue as needed]
 
-#### Common Gotchas
-- **Issue 1**: [What to watch out for]
-- **Issue 2**: [What to watch out for]
+### Common Gotchas
+- **Issue 1**: [What to watch out for - cite source]
+- **Issue 2**: [What to watch out for - cite source]
+- [Continue as needed]
 
-#### When to Use
+### When to Use
 [Decision framework - when this approach makes sense vs alternatives]
 
-#### Implementation Guide
-[Step-by-step approach or key implementation points]
+### Implementation Guide
+[Step-by-step approach combining official guidance and practical examples]
 
 ### Sources Consulted
-1. [Title] - [URL] (Official/Tutorial/Discussion)
-2. [Title] - [URL] (Official/Tutorial/Discussion)
-[List all sources checked, mark type]
+#### Official & Authoritative
+1. [Title] - [URL]
+2. [Title] - [URL]
+
+#### Practical & Community
+1. [Title] - [URL]
+2. [Title] - [URL]
 
 ### Related Topics
 [Topics to explore next that came up during research]
@@ -109,6 +149,7 @@ For specific topics, prefer authoritative domains:
 - **High**: Verified across official docs and multiple authoritative sources
 - **Medium**: Found in tutorials/blogs but not explicitly in official docs
 - **Low**: Limited sources, conflicting information, or rapidly evolving area
+- **Note any conflicts** between official and community sources
 
 ## Optional: Save to Private
 

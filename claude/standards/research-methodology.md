@@ -1,11 +1,12 @@
 # Research Methodology
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
 Standards for conducting web research on technical topics.
 
 ## Changelog
 
+- **0.2.0** - Add dual-agent parallel execution model
 - **0.1.0** - Initial release
 
 ---
@@ -259,6 +260,22 @@ Don't save:
 
 ### `/research <topic>`
 Primary research command. Uses all strategies in this document.
+
+**Execution model**: Launches two agents in parallel:
+- **Agent 1**: Official documentation and authoritative sources
+- **Agent 2**: Practical implementation and community insights
+
+After both agents complete, synthesize findings by:
+1. Combining results from both perspectives
+2. Cross-referencing official guidance with real-world practice
+3. Resolving conflicts (e.g., official docs vs community consensus)
+4. Identifying gaps for further investigation
+
+**Benefits of dual-agent approach**:
+- **Speed**: Parallel execution reduces research time
+- **Coverage**: Official and practical perspectives covered simultaneously
+- **Quality**: Cross-referencing reveals discrepancies and validates claims
+- **Depth**: Each agent can focus on their domain expertise
 
 ### `/consult <question>`
 For codebase questions, but can include web research if needed.
