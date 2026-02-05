@@ -1,6 +1,6 @@
 # browse-learnings
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 Web-based viewer for project learnings stored in private/learnings/.
 
@@ -8,7 +8,8 @@ Web-based viewer for project learnings stored in private/learnings/.
 
 - Browse projects with learnings
 - View conventions, gotchas, and notes
-- Markdown rendering
+- Full markdown rendering (headings, paragraphs, bullets, tables, code blocks, inline code)
+- Minimal, accessible code styling following GitHub/WCAG best practices
 
 ## Usage
 

@@ -9,6 +9,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
     <style>
+        /* Code styling - based on research best practices */
+        code {
+            font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+                         "Roboto Mono", "Courier New", monospace;
+            font-size: 0.85em;
+        }
+
+        /* Inline code - minimal GitHub-inspired style */
+        :not(pre) > code {
+            background: rgba(175, 184, 193, 0.2);
+            padding: 0.2em 0.4em;
+            border-radius: 6px;
+            word-wrap: break-word;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #f6f8fa;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow: auto;
+            line-height: 1.45;
+            margin: 16px 0;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 100%;
+            white-space: pre;
+        }
+
         .learning-table {
             width: 100%;
             border-collapse: collapse;
@@ -67,7 +99,7 @@
     </main>
     <footer class="footer">
         <div class="footer-content">
-            <span class="footer-copyright">Learnings Viewer v0.2.0</span>
+            <span class="footer-copyright">Learnings Viewer v0.3.0</span>
         </div>
     </footer>
     <script>
@@ -130,9 +162,35 @@
             let html = '';
             let inTable = false;
             let tableRows = [];
+            let inCodeBlock = false;
+            let codeLines = [];
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
+
+                // Handle code blocks
+                if (line.startsWith('```')) {
+                    if (inCodeBlock) {
+                        // End code block
+                        html += '<pre><code>' + codeLines.join('\n') + '</code></pre>';
+                        codeLines = [];
+                        inCodeBlock = false;
+                    } else {
+                        // Start code block
+                        if (inTable) {
+                            html += renderTable(tableRows);
+                            tableRows = [];
+                            inTable = false;
+                        }
+                        inCodeBlock = true;
+                    }
+                    continue;
+                }
+
+                if (inCodeBlock) {
+                    codeLines.push(escapeHtml(line));
+                    continue;
+                }
 
                 if (line.startsWith('# ')) {
                     html += `<h1 style="font-size:28px;font-weight:400;letter-spacing:-0.02em;margin:0 0 8px 0;">${line.slice(2)}</h1>`;
@@ -168,7 +226,7 @@
                         tableRows = [];
                         inTable = false;
                     }
-                    const text = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    const text = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code>$1</code>');
                     html += `<li style="margin-left:20px;margin-bottom:8px;font-size:14px;line-height:1.6;">${text}</li>`;
                 } else if (line.trim() === '') {
                     if (inTable) {
@@ -177,7 +235,7 @@
                         inTable = false;
                     }
                 } else if (line.trim() && !inTable) {
-                    const text = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code style="background:var(--color-bg);padding:2px 6px;border-radius:3px;font-size:13px;">$1</code>');
+                    const text = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code>$1</code>');
                     html += `<p style="font-size:14px;line-height:1.6;margin:8px 0;color:var(--color-gray-dark);">${text}</p>`;
                 }
             }
@@ -187,6 +245,12 @@
             }
 
             content.innerHTML = html || '<p style="color:var(--color-gray-mid);">No content</p>';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function renderTable(rows) {
