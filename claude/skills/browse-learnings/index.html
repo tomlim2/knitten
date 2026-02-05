@@ -24,6 +24,7 @@
             border-radius: 6px;
             border: 1px solid #d1d9e0;
             word-wrap: break-word;
+            white-space: nowrap;
         }
 
         /* Code blocks - stronger visual distinction */
@@ -232,7 +233,7 @@
                         inTable = false;
                     }
                     const text = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code>$1</code>');
-                    html += `<li style="margin-left:20px;margin-bottom:8px;font-size:14px;line-height:1.6;">${text}</li>`;
+                    html += `<li style="margin-left:20px;margin-bottom:12px;font-size:14px;line-height:1.8;">${text}</li>`;
                 } else if (line.trim() === '') {
                     if (inTable) {
                         html += renderTable(tableRows);
@@ -241,7 +242,7 @@
                     }
                 } else if (line.trim() && !inTable) {
                     const text = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code>$1</code>');
-                    html += `<p style="font-size:14px;line-height:1.6;margin:8px 0;color:var(--color-gray-dark);">${text}</p>`;
+                    html += `<p style="font-size:14px;line-height:1.8;margin:10px 0;color:var(--color-gray-dark);">${text}</p>`;
                 }
             }
 
