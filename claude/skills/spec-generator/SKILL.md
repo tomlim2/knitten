@@ -1,35 +1,36 @@
 # spec-generator
 
-**Version:** 0.1.0
+**Version:** 0.1.1
 
 Technical specification document generator for Claude Code.
 
 ## Changelog
 
+- **0.1.1** - Clarify parameter docs and input modes
 - **0.1.0** - Initial release
 
 ## Purpose
 
 Analyzes code (plugin, module, or directory) and generates a technical specification document following the standard template defined in `standards/tech-spec-template.md`.
 
+**Note:** This is a Claude-driven workflow skill with no standalone script. It is invoked exclusively via the `/spec` command.
+
 ## Usage
 
-### Input Modes
+```
+/spec <path>           # Analyze a directory or file(s)
+/spec --diff           # Analyze current branch vs develop
+```
 
-1. **Directory Path**: Analyze all code in a directory
-   ```
-   /spec Plugins/MyPlugin/
-   ```
+### Input Modes (mutually exclusive)
 
-2. **Branch Diff** (optional): Compare against develop branch
-   ```
-   /spec --diff
-   ```
+| Mode | Argument | Example |
+|------|----------|---------|
+| **Directory** | Path to directory | `/spec Plugins/MyPlugin/` |
+| **Specific Files** | One or more file paths | `/spec path/to/file1.h path/to/file2.cpp` |
+| **Branch Diff** | `--diff` flag | `/spec --diff` |
 
-3. **Specific Files**: Analyze specific files
-   ```
-   /spec path/to/file1.h path/to/file2.cpp
-   ```
+Modes cannot be combined. If no argument is provided, the command shows usage and stops.
 
 ## Workflow
 
@@ -72,9 +73,9 @@ Read the template from `~/.claude/standards/tech-spec-template.md` and fill each
 Output path: `~/.claude/private/specs/{name}.md`
 
 Naming convention:
-- Directory: `{directory-name}.md`
-- Branch: `{branch-name-sanitized}.md`
-- Custom: Use provided argument
+- **Directory mode**: `{directory-name}.md` (e.g., `MyPlugin.md`)
+- **File mode**: `{first-file-stem}.md` (e.g., `file1.md`)
+- **Branch diff mode**: `{branch-name-sanitized}.md` (slashes replaced with dashes, e.g., `feat-my-feature.md`)
 
 ## Output Requirements
 
@@ -86,5 +87,6 @@ Naming convention:
 
 ## Related Files
 
+- Command: `~/.claude/commands/spec.md`
 - Template: `~/.claude/standards/tech-spec-template.md`
 - Output: `~/.claude/private/specs/`
