@@ -623,6 +623,7 @@ font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
 | Border | 1px solid #d1d9e0 |
 | Border radius | 6px |
 | White-space | nowrap (prevent mid-word breaks) |
+| Vertical-align | baseline (align with text) |
 
 ```css
 /* Inline code - GitHub-inspired minimal style */
@@ -640,6 +641,7 @@ code {
     border: 1px solid #d1d9e0;
     word-wrap: break-word;
     white-space: nowrap;
+    vertical-align: baseline;
 }
 ```
 
