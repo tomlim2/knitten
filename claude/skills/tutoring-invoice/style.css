@@ -1,4 +1,4 @@
-/* Invoice Generator - Design System v1.6.0 (Typo-base) */
+/* Invoice Generator - Design System v1.6.1 (Typo-base) */
 
 * {
     margin: 0;
@@ -20,7 +20,7 @@
 }
 
 body {
-    font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100vh;

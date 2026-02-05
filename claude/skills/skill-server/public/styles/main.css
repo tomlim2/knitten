@@ -1,4 +1,4 @@
-/* Design System: v1.5.1 */
+/* Design System: v1.6.1 */
 /* Skill Server - Typo-base Style */
 
 * {
@@ -21,7 +21,7 @@
 }
 
 body {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100vh;

@@ -1,6 +1,6 @@
 # Design System - Typo-base
 
-**Version**: 1.6.0
+**Version**: 1.6.1
 **Last Updated**: 2026-02-05
 
 ---
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6.1 | 2026-02-05 | Font hierarchy change: Noto Sans KR primary, Inter fallback (removed Google Sans Flex) |
 | 1.6.0 | 2026-02-05 | Added Code Blocks (Documentation) pattern: inline code + code block styling with GitHub-inspired minimal design |
 | 1.5.1 | 2026-02-04 | Added rule: No `<strong>` tags (use CSS font-weight) |
 | 1.5.0 | 2026-02-04 | Dashboard pattern: skill cards with meta-first layout, letter-spacing 0 |
@@ -111,13 +112,13 @@
 ### Font Families
 
 ```css
-font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
+font-family: 'Noto Sans KR', 'Inter', sans-serif;
 ```
 
 | Purpose | Font |
 |---------|------|
-| Primary (Latin) | Google Sans Flex |
-| Korean fallback | Noto Sans KR |
+| Primary | Noto Sans KR |
+| Fallback | Inter |
 | System fallback | sans-serif |
 | Monospace | 'SF Mono', Consolas, Monaco, monospace |
 
@@ -126,7 +127,7 @@ font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 ```
 
 ### Type Scale
