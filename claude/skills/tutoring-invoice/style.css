@@ -1,4 +1,4 @@
-/* Invoice Generator - Design System v1.2.0 (TypeTogether Catalogue Style) */
+/* Invoice Generator - Design System v1.6.0 (Typo-base) */
 
 * {
     margin: 0;
@@ -20,12 +20,12 @@
 }
 
 body {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Google Sans Flex', 'Noto Sans KR', sans-serif;
     background: var(--color-bg);
     color: var(--color-text);
     min-height: 100vh;
     line-height: 1.5;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
 }
@@ -43,9 +43,9 @@ body {
 }
 
 .nav-brand {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     color: var(--color-black);
     text-decoration: none;
     transition: color 0.15s ease;
@@ -57,14 +57,14 @@ body {
 
 .nav-separator {
     color: var(--color-gray-mid);
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .nav-current {
     color: var(--color-gray-mid);
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
 }
 
 /* Container */
@@ -92,9 +92,9 @@ body {
 }
 
 .form-section h2 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 400;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
     color: var(--color-black);
     margin-bottom: 24px;
 }
@@ -221,7 +221,7 @@ button[type="submit"] {
 
 .sender-name {
     font-weight: 500;
-    font-size: 13px !important;
+    font-size: 12px !important;
     margin-bottom: 2px !important;
 }
 
@@ -255,7 +255,7 @@ button[type="submit"] {
 
 .recipient-name {
     font-weight: 500;
-    font-size: 13px;
+    font-size: 12px;
     margin: 0;
 }
 
@@ -303,11 +303,11 @@ button[type="submit"] {
 
 .total-label {
     font-weight: 500;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .total-amount {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
 }
 
@@ -342,7 +342,7 @@ button[type="submit"] {
     font-size: 10px;
     color: var(--color-gray-mid);
     margin-top: 8px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
 }
 
 @media print {
@@ -357,7 +357,7 @@ button[type="submit"] {
 }
 
 .version-footer {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     color: var(--color-gray-mid);
     margin-top: 16px;
@@ -369,7 +369,7 @@ button[type="submit"] {
     font-size: 10px;
     color: var(--color-gray-mid);
     margin-top: 4mm;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
 }
 
 /* Site Footer */
