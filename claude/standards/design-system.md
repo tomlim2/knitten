@@ -1,7 +1,7 @@
 # Design System - Typo-base
 
-**Version**: 1.5.1
-**Last Updated**: 2026-02-04
+**Version**: 1.6.0
+**Last Updated**: 2026-02-05
 
 ---
 
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6.0 | 2026-02-05 | Added Code Blocks (Documentation) pattern: inline code + code block styling with GitHub-inspired minimal design |
 | 1.5.1 | 2026-02-04 | Added rule: No `<strong>` tags (use CSS font-weight) |
 | 1.5.0 | 2026-02-04 | Dashboard pattern: skill cards with meta-first layout, letter-spacing 0 |
 | 1.4.1 | 2026-02-04 | Standardized all font sizes to 4px multiples |
@@ -599,6 +600,95 @@ Meta 정보 구분에 사용:
     background: #ffebee;
 }
 ```
+
+### Code Blocks (Documentation)
+
+**Use**: Inline code and code blocks in content (learnings, docs, articles)
+
+**Font Stack** (Modern monospace with comprehensive fallbacks):
+```css
+font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+             "Roboto Mono", "Courier New", monospace;
+```
+
+#### Inline Code
+
+| Property | Value |
+|----------|-------|
+| Font size | 0.85em (relative to parent) |
+| Background | #eff1f3 (solid light gray) |
+| Color | #24292f (dark gray) |
+| Padding | 0.2em 0.4em (relative) |
+| Border | 1px solid #d1d9e0 |
+| Border radius | 6px |
+| White-space | nowrap (prevent mid-word breaks) |
+
+```css
+/* Inline code - GitHub-inspired minimal style */
+code {
+    font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+                 "Roboto Mono", "Courier New", monospace;
+    font-size: 0.85em;
+}
+
+:not(pre) > code {
+    background: #eff1f3;
+    color: #24292f;
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    border: 1px solid #d1d9e0;
+    word-wrap: break-word;
+    white-space: nowrap;
+}
+```
+
+#### Code Blocks
+
+| Property | Value |
+|----------|-------|
+| Background | #f6f8fa (GitHub light gray) |
+| Padding | 1rem (16px) |
+| Border | 1px solid #d0d7de |
+| Border radius | 6px |
+| Line height | 1.45 (tighter for code) |
+| Overflow | auto (both axes) |
+| Margin | 16px vertical |
+
+```css
+/* Code blocks - stronger visual distinction */
+pre {
+    background: #f6f8fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    overflow: auto;
+    line-height: 1.45;
+    margin: 16px 0;
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 100%;
+    white-space: pre;
+    border: none;
+    color: #1f2328;
+}
+```
+
+**Design Rationale**:
+- **Borders provide clarity** - Makes code immediately distinguishable from text
+- **Subtle backgrounds** - #eff1f3 for inline, #f6f8fa for blocks (GitHub-inspired)
+- **Contrast** - Explicit text colors ensure WCAG AA compliance (4.5:1 minimum)
+- **Relative sizing** - `0.85em` and `em` units scale with parent font size
+- **Line height** - 1.45 for code (vs 1.6 for prose) optimizes vertical density
+- **nowrap on inline** - Prevents awkward mid-function breaks like `get_outer().get_pa` `th_name()`
+
+**Research Sources**:
+- GitHub Primer Design System
+- Material Design 3 code typography
+- WCAG 2.1 contrast guidelines
+- CSS-Tricks code styling best practices
 
 ---
 
