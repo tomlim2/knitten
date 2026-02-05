@@ -1017,7 +1017,7 @@ code {
     border: 1px solid #d1d9e0;
     word-wrap: break-word;
     white-space: nowrap;
-    vertical-align: middle;
+    vertical-align: 0.125em;
 }
 
 /* Code blocks - stronger visual distinction */
