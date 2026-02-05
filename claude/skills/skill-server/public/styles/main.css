@@ -117,6 +117,7 @@ h1, h2 {
 /* Card */
 .skill-card {
     display: block;
+    min-height: 140px;
 }
 
 /* Card Content */
