@@ -57,7 +57,9 @@
             text-align: left;
             padding: 12px 16px;
             border-bottom: 1px solid var(--color-border);
-            font-size: 14px;
+            font-size: 16px;
+            line-height: 1.5;
+            letter-spacing: 0;
         }
         .learning-table th {
             font-weight: 500;
@@ -199,21 +201,21 @@
                 }
 
                 if (line.startsWith('# ')) {
-                    html += `<h1 style="font-size:28px;font-weight:400;letter-spacing:-0.02em;margin:0 0 8px 0;">${line.slice(2)}</h1>`;
+                    html += `<h1 style="font-size:28px;font-weight:400;letter-spacing:0;margin:0 0 8px 0;">${line.slice(2)}</h1>`;
                 } else if (line.startsWith('### ')) {
                     if (inTable) {
                         html += renderTable(tableRows);
                         tableRows = [];
                         inTable = false;
                     }
-                    html += `<h3 style="font-size:16px;font-weight:500;margin:24px 0 8px 0;">${line.slice(4)}</h3>`;
+                    html += `<h3 style="font-size:16px;font-weight:500;letter-spacing:0;margin:24px 0 8px 0;">${line.slice(4)}</h3>`;
                 } else if (line.startsWith('## ')) {
                     if (inTable) {
                         html += renderTable(tableRows);
                         tableRows = [];
                         inTable = false;
                     }
-                    html += `<h2 style="font-size:20px;font-weight:500;margin:32px 0 16px 0;color:var(--color-text);">${line.slice(3)}</h2>`;
+                    html += `<h2 style="font-size:20px;font-weight:500;letter-spacing:0;margin:32px 0 16px 0;color:var(--color-text);">${line.slice(3)}</h2>`;
                 } else if (line.startsWith('| ') && line.includes(' | ')) {
                     inTable = true;
                     tableRows.push(line);
@@ -232,8 +234,8 @@
                         tableRows = [];
                         inTable = false;
                     }
-                    const text = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code>$1</code>');
-                    html += `<li style="margin-left:20px;margin-bottom:12px;font-size:14px;line-height:1.8;">${text}</li>`;
+                    const text = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<span style="font-weight:500">$1</span>').replace(/`(.*?)`/g, '<code>$1</code>');
+                    html += `<li style="margin-left:20px;margin-bottom:12px;font-size:16px;line-height:1.6;letter-spacing:0;">${text}</li>`;
                 } else if (line.trim() === '') {
                     if (inTable) {
                         html += renderTable(tableRows);
@@ -241,8 +243,8 @@
                         inTable = false;
                     }
                 } else if (line.trim() && !inTable) {
-                    const text = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/`(.*?)`/g, '<code>$1</code>');
-                    html += `<p style="font-size:14px;line-height:1.8;margin:10px 0;color:var(--color-gray-dark);">${text}</p>`;
+                    const text = line.replace(/\*\*(.*?)\*\*/g, '<span style="font-weight:500">$1</span>').replace(/`(.*?)`/g, '<code>$1</code>');
+                    html += `<p style="font-size:16px;line-height:1.6;letter-spacing:0;margin:10px 0;color:var(--color-text);">${text}</p>`;
                 }
             }
 
