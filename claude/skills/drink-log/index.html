@@ -144,6 +144,7 @@
                 li.innerHTML = `
                     <div style="flex: 1;">
                         <div style="font-size: 16px; font-weight: 500; margin-bottom: 4px;">${drink.name}</div>
+                        ${drink.description ? `<div style="font-size: 13px; color: var(--color-gray-mid); line-height: 1.5; margin-bottom: 8px;">${drink.description}</div>` : ''}
                         <div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 8px;">
                             ${drink.type || 'Unknown'} · ${drink.region || 'N/A'} · ${drink.date || 'N/A'}
                         </div>

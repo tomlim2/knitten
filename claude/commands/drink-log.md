@@ -58,16 +58,20 @@ Show the 5 most recent drinks from the database.
 
 2. **Search for drink info**
    - Use WebSearch to find:
+     - **Description** (1-2 sentence summary from product pages)
      - Type (wine/whisky/scotch/bourbon/etc.)
      - Region/distillery
      - Average price
      - Alcohol %
      - Tasting notes/profile
    - Fetch top 2-3 results from wine/whisky retailers or review sites
+   - Extract description from search results (e.g., "A classic Speyside single malt known for its smooth character")
 
 3. **Present findings**
    ```
    ## Found: Macallan 12 Year Old
+
+   A classic Speyside single malt aged in sherry-seasoned oak casks, known for its rich, smooth character.
 
    **Type:** Single Malt Scotch Whisky
    **Region:** Speyside, Scotland
@@ -100,6 +104,7 @@ Show the 5 most recent drinks from the database.
    {
      "id": "macallan-12-2026-02-06",
      "name": "Macallan 12 Year Old",
+     "description": "A classic Speyside single malt aged in sherry-seasoned oak casks, known for its rich, smooth character.",
      "type": "Scotch Whisky",
      "region": "Speyside, Scotland",
      "price": 89,
@@ -122,6 +127,7 @@ Show the 5 most recent drinks from the database.
     {
       "id": "string (slug-date)",
       "name": "string",
+      "description": "string (1-2 sentence summary from web search)",
       "type": "wine|whisky|scotch|bourbon|rum|etc",
       "region": "string (optional)",
       "producer": "string (optional)",
