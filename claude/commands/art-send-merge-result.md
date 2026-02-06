@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git:*), Bash(python:*)
 description: Send merge completion with Korean MR summary as thread reply
 argument-hint: "<branch_name> | --list"
+allowed-tools: Bash(git:*), Bash(python:*)
 ---
 
 # Art Send Merge Result

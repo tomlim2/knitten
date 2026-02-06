@@ -1,7 +1,7 @@
 ---
-allowed-tools: Read, Edit, Write, Bash(mkdir:*), Bash(ls:*), Bash(date:*)
 description: Update project learnings with new insight
 argument-hint: "<project> <category: convention|worked|failed|gotcha>"
+allowed-tools: Read, Edit, Write, Bash(mkdir:*), Bash(ls:*), Bash(date:*)
 ---
 
 # Update Learnings

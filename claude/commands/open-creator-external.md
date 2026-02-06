@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash
 description: Open CINEV Creator Launcher
+allowed-tools: Bash(python:*)
 ---
 
 # Open CINEV Creator Launcher

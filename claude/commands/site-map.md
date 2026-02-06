@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash(node:*), Read, Write
 description: Generate sitemap of skill server routes
+allowed-tools: Bash(node:*), Read, Write
 ---
 
 # Site Map Generator

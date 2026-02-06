@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Extract git commits for portfolio
 argument-hint: "<repo_path> [--author name]"
+allowed-tools: Bash(python:*)
 ---
 
 # Git Commit Collector

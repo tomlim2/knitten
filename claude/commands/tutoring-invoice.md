@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Generate invoice from pending lessons
 argument-hint: "<student> [--rate 150000] [--open]"
+allowed-tools: Bash(python:*)
 ---
 
 # Tutoring Invoice

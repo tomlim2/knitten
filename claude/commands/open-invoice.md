@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash
 description: Open invoice generator via skill server
+allowed-tools: Bash(open:*)
 ---
 
 # Open Invoice Generator

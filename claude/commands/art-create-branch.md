@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Create art branch from develop with cherry-picked commits
 argument-hint: "<new_branch> [source_branch]"
+allowed-tools: Bash(python:*)
 ---
 
 # Create Art Branch

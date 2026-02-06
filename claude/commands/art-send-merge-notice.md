@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Send merge notice as thread reply to art branch announcement
 argument-hint: "<branch_name> | --list"
+allowed-tools: Bash(python:*)
 ---
 
 # Art Merge Notice

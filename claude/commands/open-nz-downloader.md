@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash
 description: Open NZ Downloader in browser
+allowed-tools: Bash(open:*)
 ---
 
 # Open NZ Downloader

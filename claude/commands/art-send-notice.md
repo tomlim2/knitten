@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Send message to Slack art channel
 argument-hint: "<message>"
+allowed-tools: Bash(python:*)
 ---
 
 # Send Art Notice

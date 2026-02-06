@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Mark pending lessons as paid
 argument-hint: "<student> [--dry-run] [--list]"
+allowed-tools: Bash(python:*)
 ---
 
 # Tutoring Paid

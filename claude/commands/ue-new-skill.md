@@ -1,7 +1,7 @@
 ---
-allowed-tools: Read, Write, Bash(mkdir:*), Bash(copy:*), Bash(cp:*), Glob, Grep, Task
 description: Generate a new UE Editor skill from template
 argument-hint: "<verb> <noun>"
+allowed-tools: Read, Write, Bash(mkdir:*), Bash(copy:*), Bash(cp:*), Glob, Grep, Task
 ---
 
 # Generate New UE Editor Skill

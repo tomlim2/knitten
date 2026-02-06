@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash
 description: Generate KakaoTalk message from invoice PDF path
 argument-hint: "<invoice_pdf_path>"
+allowed-tools: Bash(python:*)
 ---
 
 # Invoice Message Generator

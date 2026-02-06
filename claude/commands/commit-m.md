@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git log:*)
 description: Generate a git commit message based on staged changes
 argument-hint: "[type]"
+allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git log:*)
 ---
 
 # Generate Commit Message

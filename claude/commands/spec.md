@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(date:*), Glob, Grep, Read, Task, Write
 description: Generate technical specification document from code
 argument-hint: "<path> | --diff"
+allowed-tools: Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(date:*), Glob, Grep, Read, Task, Write
 ---
 
 # Generate Technical Specification

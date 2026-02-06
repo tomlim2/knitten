@@ -1,7 +1,7 @@
 ---
-allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 description: Analyze exported UE material node graph
 argument-hint: "[material_name | --export]"
+allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 ---
 
 # Analyze UE Material

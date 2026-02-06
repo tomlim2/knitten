@@ -1,6 +1,6 @@
 ---
-allowed-tools: Glob, Grep, Read, Edit, Bash(git log:*), Bash(git diff:*)
 description: Update CLAUDE.md project overview and language conventions
+allowed-tools: Glob, Grep, Read, Edit, Bash(git log:*), Bash(git diff:*)
 ---
 
 # Clean Up CLAUDE.md

@@ -1,7 +1,7 @@
 ---
-allowed-tools: Task, Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(pytest:*), Bash(jest:*)
 description: Fix bugs with test-first prove-it pattern
 argument-hint: "[bug description or issue number]"
+allowed-tools: Task, Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(pytest:*), Bash(jest:*)
 ---
 
 # Bug Fix: Prove It Pattern

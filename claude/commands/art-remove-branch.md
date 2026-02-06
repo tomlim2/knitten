@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(git:*)
 description: Clean up old art branch after new one takes over
 argument-hint: "<old_art_branch> <latest_art_branch>"
+allowed-tools: Bash(git:*)
 ---
 
 # Art Remove Branch

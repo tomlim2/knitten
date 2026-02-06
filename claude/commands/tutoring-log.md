@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash(python:*)
 description: Log a tutoring lesson
 argument-hint: "<student> --start HH:MM --end HH:MM --location \"place\" --topic \"topic\""
+allowed-tools: Bash(python:*)
 ---
 
 # Tutoring Log

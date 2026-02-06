@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash
 description: Open the skill server dashboard
+allowed-tools: Bash(open:*)
 ---
 
 # Open Skill Server

@@ -1,7 +1,7 @@
 ---
-allowed-tools: Read, Glob, Grep, Edit, Task
 description: Verify design system version and sync work artifacts
 argument-hint: "[version or file path]"
+allowed-tools: Read, Glob, Grep, Edit, Task
 ---
 
 # Design System Sync

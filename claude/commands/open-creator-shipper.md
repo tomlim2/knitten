@@ -1,6 +1,6 @@
 ---
-allowed-tools: Bash
 description: Open CINEV Creator Shipper GUI
+allowed-tools: Bash(python:*)
 ---
 
 # Open CINEV Creator Shipper

@@ -1,7 +1,7 @@
 ---
-allowed-tools: Bash
 description: Move latest PDF from Downloads to private/tutoring/invoices
 argument-hint: "<student_name>"
+allowed-tools: Bash(mv:*), Bash(ls:*)
 ---
 
 # Move Invoice
@@ -11,6 +11,11 @@ Move the latest invoice PDF from Downloads folder to `~/.claude/private/tutoring
 ## Arguments
 
 User provides: $ARGUMENTS (student name)
+
+**If no argument is provided, show usage and stop. NEVER auto-execute.**
+```
+Usage: /move-invoice <student_name>
+```
 
 ## What it does
 

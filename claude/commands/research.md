@@ -1,7 +1,7 @@
 ---
-allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob
 description: Deep web research on technical topics with structured findings
 argument-hint: "<topic or concept>"
+allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob
 ---
 
 # Research Mode

@@ -1,7 +1,7 @@
 ---
-allowed-tools: Glob, Grep, Read, Edit, Write, Bash, TodoWrite, Task
 description: Maximum intensity mode - aggressive exploration, mandatory tracking, complete until done
 argument-hint: "<task description>"
+allowed-tools: Glob, Grep, Read, Edit, Write, Bash, TodoWrite, Task
 ---
 
 # ultrawork Mode
