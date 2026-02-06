@@ -25,7 +25,7 @@ Supports both base `Material` and `MaterialInstance` assets.
 Select a material in the Content Browser, then from Claude Code:
 
 ```
-/unreal-analyze-material --export
+/ue-analyze-material --export
 ```
 
 This remotely executes the export script in UE Editor and immediately analyzes the result.
@@ -49,8 +49,8 @@ JSON is saved to `~/.claude/private/unreal/material-analyze/{name}.json`.
 #### Step 2: Analyze in Claude Code
 
 ```
-/unreal-analyze-material M_VrmSimple       # Analyze specific material
-/unreal-analyze-material                    # List available exports
+/ue-analyze-material M_VrmSimple       # Analyze specific material
+/ue-analyze-material                    # List available exports
 ```
 
 ## Remote Execution
@@ -106,5 +106,5 @@ python run_in_editor.py --list-nodes       # List running UE instances
 
 - Export script: `~/.claude/skills/ue-analyze-material/export_material_data.py`
 - Remote sender: `~/.claude/skills/ue-analyze-material/run_in_editor.py`
-- Command: `~/.claude/commands/unreal-analyze-material.md`
+- Command: `~/.claude/commands/ue-analyze-material.md`
 - Output: `~/.claude/private/unreal/material-analyze/`

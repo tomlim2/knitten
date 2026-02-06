@@ -51,9 +51,9 @@ If no files found, show:
 No validation results found.
 
 Usage:
-  /unreal-validate-asset-name --export     Validate selected assets in UE Editor
-  /unreal-validate-asset-name batch_xxx    Review a specific validation batch
-  /unreal-validate-asset-name --rename     Apply renames from latest batch
+  /ue-validate-asset-name --export     Validate selected assets in UE Editor
+  /ue-validate-asset-name batch_xxx    Review a specific validation batch
+  /ue-validate-asset-name --rename     Apply renames from latest batch
 ```
 
 **Stop here if no argument. Let the user pick from the list.**

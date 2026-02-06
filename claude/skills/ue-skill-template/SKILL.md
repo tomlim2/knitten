@@ -159,11 +159,11 @@ Sections in order:
     [ ] save_json() with correct subdirectory
     [ ] main() with isinstance dispatch
 [ ] Copy:   run_in_editor.py (verbatim)
-[ ] Write:  commands/unreal-{verb}-{noun}.md
+[ ] Write:  commands/ue-{verb}-{noun}.md
     [ ] --export triggers remote execution
     [ ] No-arg lists available exports
     [ ] Named arg reads and analyzes JSON
-[ ] Test:   Select asset → /unreal-{verb}-{noun} --export → verify JSON → verify analysis
+[ ] Test:   Select asset → /ue-{verb}-{noun} --export → verify JSON → verify analysis
 ```
 
 ## Reference Implementation

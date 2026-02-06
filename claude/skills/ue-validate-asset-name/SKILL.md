@@ -38,7 +38,7 @@ Supports all asset types selectable in the Content Browser.
 Select assets in the Content Browser, then from Claude Code:
 
 ```
-/unreal-validate-asset-name --export
+/ue-validate-asset-name --export
 ```
 
 This remotely validates and immediately shows results with fix suggestions.
@@ -62,8 +62,8 @@ JSON is saved to `~/.claude/private/unreal/name-validate/batch_YYYYMMDD_HHMMSS.j
 #### Step 2: Review in Claude Code
 
 ```
-/unreal-validate-asset-name                # List available validation results
-/unreal-validate-asset-name batch_xxx      # Review a specific batch
+/ue-validate-asset-name                # List available validation results
+/ue-validate-asset-name batch_xxx      # Review a specific batch
 ```
 
 ### Renaming
@@ -71,7 +71,7 @@ JSON is saved to `~/.claude/private/unreal/name-validate/batch_YYYYMMDD_HHMMSS.j
 After reviewing validation results, apply renames:
 
 ```
-/unreal-validate-asset-name --rename
+/ue-validate-asset-name --rename
 ```
 
 This remotely executes `rename_assets.py` which reads the latest batch and applies `suggested_name` for each asset.
@@ -137,5 +137,5 @@ When suggesting names for assets with CJK (Chinese/Japanese/Korean) characters:
 - Validate script: `~/.claude/skills/ue-validate-asset-name/validate_name.py`
 - Rename script: `~/.claude/skills/ue-validate-asset-name/rename_assets.py`
 - Remote sender: `~/.claude/skills/ue-validate-asset-name/run_in_editor.py`
-- Command: `~/.claude/commands/unreal-validate-asset-name.md`
+- Command: `~/.claude/commands/ue-validate-asset-name.md`
 - Output: `~/.claude/private/unreal/name-validate/`

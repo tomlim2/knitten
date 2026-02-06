@@ -41,8 +41,8 @@ If no files found, show:
 No exported materials found.
 
 Options:
-  /unreal-analyze-material --export    Export selected material from UE Editor + analyze
-  /unreal-analyze-material M_Name      Analyze a previously exported material
+  /ue-analyze-material --export    Export selected material from UE Editor + analyze
+  /ue-analyze-material M_Name      Analyze a previously exported material
 ```
 
 **Stop here if no argument. Let the user pick from the list.**

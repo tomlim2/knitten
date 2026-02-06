@@ -56,7 +56,7 @@ From the verb and noun arguments, compute:
 |---|---|---|
 | Skill dir | `ue-{verb}-{noun}` | `ue-analyze-mesh` |
 | Script | `export_{noun}_data.py` | `export_mesh_data.py` |
-| Command | `unreal-{verb}-{noun}.md` | `unreal-analyze-mesh.md` |
+| Command | `ue-{verb}-{noun}.md` | `ue-analyze-mesh.md` |
 | Output dir | `{noun}-{verb}` | `mesh-analyze` |
 | Log tag | `{Noun}{Verb}` PascalCase | `MeshAnalyze` |
 | Description | `{Verb} exported UE {noun} data` | `Analyze exported UE mesh data` |
@@ -106,7 +106,7 @@ Follow the exact section order from the template:
 6. JSON Schema (matching what the script actually outputs)
 7. Related Files
 
-### 3e. Write unreal-{verb}-{noun}.md
+### 3e. Write ue-{verb}-{noun}.md
 
 Follow the command pattern:
 - Frontmatter: `allowed-tools: Read, Glob, Task, Grep, Bash(python:*)`
@@ -119,7 +119,7 @@ Follow the command pattern:
 After generating all files, show the user:
 1. List of created files
 2. JSON schema that will be exported
-3. How to test: "Select a {noun} in Content Browser, then run `/unreal-{verb}-{noun} --export`"
+3. How to test: "Select a {noun} in Content Browser, then run `/ue-{verb}-{noun} --export`"
 
 ## Paths
 
