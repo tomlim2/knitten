@@ -1,6 +1,6 @@
-# browse-learnings
+# learn-browse-entries
 
-**Version:** 0.4.0
+**Version:** 0.5.0
 
 Web-based viewer for project learnings stored in private/learnings/.
 

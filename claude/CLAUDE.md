@@ -64,13 +64,17 @@ caol-ila/
 └── claude/            # Claude Code configuration (symlinked to ~/.claude)
     ├── CLAUDE.md      # This file
     ├── commands/      # Slash commands for Claude Code
-    │   ├── commit-m.md
+    │   ├── git-make-message.md
     │   ├── clean-up.md
-    │   └── collect-commits.md
+    │   └── git-collect-commits.md
     ├── skills/        # Reusable Python/shell utilities
-    │   └── git-commit-collector/
-    │       ├── SKILL.md
-    │       └── extract_commits.py
+    │   ├── git-commit-collector/
+    │   │   ├── SKILL.md
+    │   │   └── extract_commits.py
+    │   ├── meta-new-command/
+    │   │   └── SKILL.md
+    │   └── meta-new-skill/
+    │       └── SKILL.md
     ├── standards/     # Domain-specific standards
     └── private/       # Personal data storage (gitignored)
         ├── commits/   # Extracted commit histories
@@ -225,7 +229,7 @@ Extract commits from a repository and save to the private commits folder.
 
 | Feature | Command | Skill |
 |---------|---------|-------|
-| Invoked via | Slash command (`/commit-m`) | Called by commands or directly |
+| Invoked via | Slash command (`/git-make-message`) | Called by commands or directly |
 | Defined in | Markdown frontmatter | Python/shell + SKILL.md |
 | Purpose | User-facing workflow | Reusable logic |
 | Tools | Restricted by `allowed-tools` | Full system access |
@@ -321,7 +325,7 @@ Each command should include all context needed via dynamic execution (`!backtick
 
 ### Pattern: Command Invokes Skill
 
-**Command** (`commands/collect-commits.md`):
+**Command** (`commands/git-collect-commits.md`):
 ```markdown
 ---
 allowed-tools: Bash(python:*)
@@ -360,7 +364,7 @@ description: Update CLAUDE.md based on codebase analysis
 
 ### Pattern: Dynamic Context Injection
 
-**Command** (`commands/commit-m.md`):
+**Command** (`commands/git-make-message.md`):
 ```markdown
 ---
 allowed-tools: Bash(git:*)
