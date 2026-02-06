@@ -70,21 +70,5 @@
         <% } %>
     </main>
     <%- include('partials/footer', {config}) %>
-
-    <script>
-    // Track skill usage
-    document.querySelectorAll('.skill-name a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            const skillId = this.getAttribute('href').split('/skills/')[1];
-            if (skillId) {
-                fetch('/api/usage/track', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: 'skills', id: skillId })
-                }).catch(err => console.error('Failed to track usage:', err));
-            }
-        });
-    });
-    </script>
 </body>
 </html>

@@ -130,14 +130,6 @@
                     btn.title = originalTitle;
                     btn.style.opacity = '1';
                 }, 1500);
-
-                // Track command usage
-                const commandId = command.replace('/', '');
-                fetch('/api/usage/track', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: 'commands', id: commandId })
-                }).catch(err => console.error('Failed to track usage:', err));
             });
         }
 
