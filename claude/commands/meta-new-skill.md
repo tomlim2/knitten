@@ -41,6 +41,28 @@ This file contains:
 - Testing patterns
 - Skill vs Command decision guide
 
+## Special Case: Unreal Engine Skills
+
+**If user asks to create a `ue-*` skill (Unreal Engine related), point them to:**
+
+```
+~/.claude/skills/ue-skill-template/SKILL.md
+```
+
+Or use the dedicated command:
+```
+/ue-new-skill <verb> <noun>
+```
+
+**Why?**
+- UE skills have specific patterns (Python scripts, Unreal Editor integration, JSON export)
+- ue-skill-template contains UE-specific templates and conventions
+- ue-new-skill command generates all required files automatically
+
+**Example:**
+- User: "Create a ue-validate-texture skill"
+- Response: "For Unreal Engine skills, please use `/ue-new-skill validate texture` which follows the UE-specific template and conventions."
+
 ## Execution
 
 1. **Parse arguments**: Extract category, verb, subject

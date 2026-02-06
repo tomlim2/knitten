@@ -60,6 +60,43 @@ This is the SAME pattern as commands. See `meta-new-command` skill for complete 
 
 ---
 
+## Special Case: Unreal Engine Skills
+
+**For `ue-*` (Unreal Engine) skills, use the dedicated template and command:**
+
+**Template Location:**
+```
+~/.claude/skills/ue-skill-template/SKILL.md
+```
+
+**Command:**
+```
+/ue-new-skill <verb> <noun>
+```
+
+**Why UE skills are special:**
+- Require specific Python patterns for Unreal Editor integration
+- Need `run_in_editor.py` wrapper for remote execution
+- Export JSON data to `~/.claude/private/unreal/{noun}-{verb}/`
+- Follow strict logging conventions with `[LogTag]` prefixes
+- Use `export_{noun}_data.py` naming pattern
+- Have specific error handling for `get_editor_property()` calls
+
+**When to use ue-new-skill:**
+- Any skill that exports data from Unreal Editor
+- Any skill that analyzes UE assets (materials, meshes, blueprints, etc.)
+- Any skill that validates UE naming conventions
+- Any skill that requires running Python inside UE Editor
+
+**Example:**
+```
+User request: "Create a ue-analyze-texture skill"
+→ Use: /ue-new-skill analyze texture
+→ NOT: /meta-new-skill ue analyze texture
+```
+
+---
+
 ## SKILL.md Structure (Required)
 
 Every skill MUST have a `SKILL.md` file with this exact structure:
