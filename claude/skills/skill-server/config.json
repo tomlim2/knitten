@@ -4,6 +4,9 @@
   "title": "Skill Server",
   "nav": [
     { "label": "Skills", "href": "/" },
+    { "label": "Commands", "href": "/skills/browse-commands" },
+    { "label": "Learnings", "href": "/skills/browse-learnings" },
+    { "label": "Standards", "href": "/skills/browse-standards" },
     { "label": "Files", "href": "/files" }
   ]
 }
