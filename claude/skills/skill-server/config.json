@@ -7,6 +7,7 @@
     { "label": "Commands", "href": "/skills/browse-commands" },
     { "label": "Learnings", "href": "/skills/learn-browse-entries" },
     { "label": "Standards", "href": "/skills/browse-standards" },
+    { "label": "Usage", "href": "/skills/browse-usage" },
     { "label": "Files", "href": "/files" }
   ]
 }

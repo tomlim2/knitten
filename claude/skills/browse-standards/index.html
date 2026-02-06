@@ -1,4 +1,4 @@
-<!-- Design System: v1.5.1 -->
+<!-- Design System: v1.7.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
+    <script src="/static/scripts/markdown-renderer.js"></script>
 </head>
 <body>
     <header class="header">
@@ -18,6 +19,7 @@
             <a href="/skills/browse-commands">Commands</a>
             <a href="/skills/learn-browse-entries">Learnings</a>
             <a href="/skills/browse-standards" class="active">Standards</a>
+            <a href="/skills/browse-usage">Usage</a>
             <a href="/files">Files</a>
         </nav>
     </header>
@@ -30,7 +32,7 @@
         </section>
 
         <div class="page-layout">
-            <article class="page-main" id="standardContent">
+            <article class="page-main markdown-body" id="standardContent">
                 <p style="color:var(--color-gray-mid);font-size:14px;">Select a standard to view</p>
             </article>
 
@@ -86,33 +88,11 @@
             try {
                 const res = await fetch(`/api/standards/${name}`);
                 const text = await res.text();
-                renderMarkdown(text);
+                const html = MarkdownRenderer.render(text);
+                document.getElementById('standardContent').innerHTML = html;
             } catch (e) {
                 document.getElementById('standardContent').innerHTML = '<p style="color:var(--color-gray-mid);">Failed to load standard</p>';
             }
-        }
-
-        function renderMarkdown(md) {
-            const content = document.getElementById('standardContent');
-            let html = md
-                .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                .replace(/`([^`]+)`/g, '<code>$1</code>')
-                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gm, '<h2>$1</h2>')
-                .replace(/^\- (.*$)/gm, '<li>$1</li>')
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>');
-
-            html = '<p>' + html + '</p>';
-            html = html.replace(/<p><h/g, '<h').replace(/<\/h(\d)><\/p>/g, '</h$1>');
-            html = html.replace(/<p><pre>/g, '<pre>').replace(/<\/pre><\/p>/g, '</pre>');
-            html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
-            html = html.replace(/<\/li><br><li>/g, '</li><li>');
-            html = html.replace(/<p><br><\/p>/g, '');
-            html = html.replace(/<p><\/p>/g, '');
-
-            content.innerHTML = html;
         }
 
         loadStandards();
