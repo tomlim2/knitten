@@ -146,7 +146,8 @@ function groupByCategory(skills) {
 app.get('/', (req, res) => {
     const skills = discoverSkills();
     const groupedSkills = groupByCategory(skills);
-    res.render('dashboard', { groupedSkills, config, activePage: '/' });
+    const skillCount = skills.length;
+    res.render('dashboard', { groupedSkills, skillCount, config, activePage: '/' });
 });
 
 // Serve skill static files (CSS, JS, etc.)

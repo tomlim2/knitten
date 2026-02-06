@@ -7,6 +7,9 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
+        <div class="skill-count">
+            <span class="skill-count-number"><%= skillCount %></span> skill<%= skillCount !== 1 ? 's' : '' %> registered
+        </div>
         <% groupedSkills.forEach(group => { %>
         <section class="skill-section">
             <div class="skill-grid">
