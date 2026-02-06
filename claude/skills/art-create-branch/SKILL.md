@@ -1,23 +1,23 @@
-# art-create
+# art-create-branch
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 Automated branch creation for CINEV art team.
 
 ## Changelog
 
+- **0.3.0** - Fix git flow: fetch → ff develop → branch (no reset --hard)
 - **0.2.0** - Use shared config location (`~/.claude/config/`)
 - **0.1.0** - Initial release
 
 ## 기능
 
-1. `E:\Second\CINEVStudio` 레포의 git 상태 확인
-2. `git reset --hard && git fetch --all` 실행
-3. `origin/develop`에서 새 브랜치 생성
-4. 새 브랜치로 체크아웃
-5. 소스 브랜치에서 지정 기간 커밋 체리픽
+1. `git fetch --all`
+2. `git checkout develop && git pull --ff-only` (fast-forward)
+3. `git checkout -b <새브랜치>` (develop에서 분기)
+4. 소스 브랜치에서 지정 기간 커밋 체리픽 (선택)
    - 기간: 전주 금요일 08:00 KST ~ 이번주 월요일 08:00 KST
-6. 푸시 후 Slack art 채널에 알림
+5. 푸시 후 Slack art 채널에 알림
 
 ## 사용법
 

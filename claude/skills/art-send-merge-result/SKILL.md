@@ -1,4 +1,4 @@
-# art-merge-done
+# art-send-merge-result
 
 **Version:** 0.1.0
 
@@ -48,9 +48,9 @@ python merge_done.py art/art-main-1.5.0-r2
 
 ## Dependencies
 
-- Requires `/art-create` to be run first (saves thread info)
+- Requires `/art-create-branch` to be run first (saves thread info)
 - Thread info stored in `~/.claude/private/slack_threads.json`
-- Uses repo path from `art-create/config.json`
+- Uses repo path from `art-create-branch/config.json`
 
 ## Configuration
 

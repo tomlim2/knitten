@@ -11,16 +11,30 @@ Send a threaded reply to an art branch announcement notifying that the branch wi
 ## Usage
 
 ```
-/art-merge-notice <branch_name>
-/art-merge-notice --list
+/art-send-merge-notice <branch_name>
+/art-send-merge-notice --list
 ```
+
+## 실행 전 확인
+
+**Before executing, show the user the Slack message that will be sent and ask for confirmation:**
+
+> **채널:** art 채널 (thread reply, broadcast)
+> **메시지:**
+> ```
+> {branch_name} 아트 브렌치 디벨롭에 머지합니다.
+>
+> 반드시 리다이렉터 업데이트, 커밋, 푸시 및 언락 부탁드립니다!
+> ```
+
+Only proceed after user confirms.
 
 ## Execute
 
 Run the merge notice script:
 
 ```bash
-cd ~/.claude/skills/art-merge-notice && python merge_notice.py $ARGUMENTS
+python "C:\Users\TA_yeonsu\.claude\skills\art-send-merge-notice\merge_notice.py" $ARGUMENTS
 ```
 
 ## Options
@@ -31,7 +45,7 @@ cd ~/.claude/skills/art-merge-notice && python merge_notice.py $ARGUMENTS
 ## Example
 
 ```
-/art-merge-notice art/art-main-1.5.0-r2
+/art-send-merge-notice art/art-main-1.5.0-r2
 ```
 
 ## Message Sent

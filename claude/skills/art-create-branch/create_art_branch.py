@@ -196,37 +196,37 @@ def main():
     print(f"Repo: {REPO_PATH}")
     print(f"{'='*60}\n")
 
-    # Step 1: Check git works
-    print("[1/6] Checking git repository...")
+    # Step 1: Fetch all remotes
+    print("[1/5] Fetching all remotes...")
     if not Path(REPO_PATH).exists():
         print(f"  [CONFLICT] Repository path does not exist: {REPO_PATH}")
         sys.exit(1)
 
-    result = run_git(["status"], check=False)
-    if result.returncode != 0:
-        print(f"  [CONFLICT] Step 1 - Git is not working properly in {REPO_PATH}")
-        print(f"  Error: {result.stderr}")
-        sys.exit(1)
-    print("  [OK] Git repository is working")
-
-    # Step 2: Reset and fetch
-    print("\n[2/6] Resetting and fetching...")
-    result = run_git(["reset", "--hard"], check=False)
-    if result.returncode != 0:
-        print(f"  [CONFLICT] Step 2 - git reset --hard failed")
-        print(f"  Error: {result.stderr}")
-        sys.exit(1)
-
     result = run_git(["fetch", "--all"], check=False)
     if result.returncode != 0:
-        print(f"  [CONFLICT] Step 2 - git fetch --all failed")
+        print(f"  [CONFLICT] Step 1 - git fetch --all failed")
         print(f"  Error: {result.stderr}")
         sys.exit(1)
-    print("  [OK] Reset and fetch completed")
+    print("  [OK] Fetch completed")
 
-    # Step 3: Create branch from origin/develop
-    print("\n[3/6] Creating branch from origin/develop...")
-    result = run_git(["branch", new_branch, "origin/develop"], check=False)
+    # Step 2: Fast-forward develop
+    print("\n[2/5] Fast-forwarding develop...")
+    result = run_git(["checkout", "develop"], check=False)
+    if result.returncode != 0:
+        print(f"  [CONFLICT] Step 2 - Failed to checkout develop")
+        print(f"  Error: {result.stderr}")
+        sys.exit(1)
+
+    result = run_git(["pull", "--ff-only", "origin", "develop"], check=False)
+    if result.returncode != 0:
+        print(f"  [CONFLICT] Step 2 - Failed to fast-forward develop")
+        print(f"  Error: {result.stderr}")
+        sys.exit(1)
+    print("  [OK] develop is up to date")
+
+    # Step 3: Create and checkout new branch from develop
+    print(f"\n[3/5] Creating branch '{new_branch}' from develop...")
+    result = run_git(["checkout", "-b", new_branch], check=False)
     if result.returncode != 0:
         if "already exists" in result.stderr:
             print(f"  [CONFLICT] Step 3 - Branch '{new_branch}' already exists")
@@ -234,21 +234,12 @@ def main():
             print(f"  [CONFLICT] Step 3 - Failed to create branch")
         print(f"  Error: {result.stderr}")
         sys.exit(1)
-    print(f"  [OK] Branch '{new_branch}' created from origin/develop")
+    print(f"  [OK] Branch '{new_branch}' created and checked out")
 
-    # Step 4: Checkout
-    print("\n[4/6] Checking out new branch...")
-    result = run_git(["checkout", new_branch], check=False)
-    if result.returncode != 0:
-        print(f"  [CONFLICT] Step 4 - Failed to checkout branch")
-        print(f"  Error: {result.stderr}")
-        sys.exit(1)
-    print(f"  [OK] Checked out '{new_branch}'")
-
-    # Step 5: Cherry-pick commits (optional)
+    # Step 4: Cherry-pick commits (optional)
     commits = []
     if source_branch:
-        print("\n[5/6] Cherry-picking commits...")
+        print("\n[4/5] Cherry-picking commits...")
         friday_8am, monday_8am = get_time_window()
         print(f"  Time window: {friday_8am.strftime('%Y-%m-%d %H:%M')} ~ {monday_8am.strftime('%Y-%m-%d %H:%M')} KST")
 
@@ -259,7 +250,7 @@ def main():
             for i, commit_hash in enumerate(commits, 1):
                 result = run_git(["cherry-pick", commit_hash], check=False)
                 if result.returncode != 0:
-                    print(f"\n  [CONFLICT] Step 5 - Cherry-pick failed at commit {i}/{len(commits)}")
+                    print(f"\n  [CONFLICT] Step 4 - Cherry-pick failed at commit {i}/{len(commits)}")
                     print(f"  Commit: {commit_hash}")
                     print(f"  Error: {result.stderr}")
                     print(f"\n  To resolve:")
@@ -273,10 +264,10 @@ def main():
         else:
             print("  [OK] No commits to cherry-pick in the time window")
     else:
-        print("\n[5/6] Skipping cherry-pick (no source branch specified)")
+        print("\n[4/5] Skipping cherry-pick (no source branch specified)")
 
-    # Step 6: Push and notify
-    print("\n[6/6] Pushing and sending notification...")
+    # Step 5: Push and notify
+    print("\n[5/5] Pushing and sending notification...")
     result = run_git(["push", "-u", "origin", new_branch], check=False)
     if result.returncode != 0:
         print(f"  [CONFLICT] Step 6 - Push failed")

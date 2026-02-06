@@ -4,23 +4,33 @@ description: Check merge status and send completion notifications
 argument-hint: "<branch_name> | --list"
 ---
 
-# Art Merge Done
+# Art Send Merge Result
 
 Check if an art branch was merged to develop and send completion notifications as thread replies.
 
 ## Usage
 
 ```
-/art-merge-done <branch_name>
-/art-merge-done --list
+/art-send-merge-result <branch_name>
+/art-send-merge-result --list
 ```
+
+## 실행 전 확인
+
+**Before executing, show the user the Slack messages that will be sent and ask for confirmation:**
+
+> **채널:** art 채널 (thread reply)
+> **메시지 1 (broadcast):** `디벨롭에 머지 완료되었습니다!`
+> **메시지 2 (thread only):** 머지 내역 (커밋 목록)
+
+Only proceed after user confirms.
 
 ## Execute
 
 Run the merge done script:
 
 ```bash
-cd ~/.claude/skills/art-merge-done && python merge_done.py $ARGUMENTS
+python "C:\Users\TA_yeonsu\.claude\skills\art-send-merge-result\merge_done.py" $ARGUMENTS
 ```
 
 ## Options
@@ -31,7 +41,7 @@ cd ~/.claude/skills/art-merge-done && python merge_done.py $ARGUMENTS
 ## Example
 
 ```
-/art-merge-done art/art-main-1.5.0-r2
+/art-send-merge-result art/art-main-1.5.0-r2
 ```
 
 ## What It Does
