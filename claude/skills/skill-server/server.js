@@ -393,6 +393,27 @@ app.get('/api/usage/stats', (req, res) => {
     res.json(stats);
 });
 
+app.delete('/api/usage/track', (req, res) => {
+    const { type, id } = req.body;
+
+    if (!type || !id) {
+        return res.status(400).json({ error: 'Missing type or id' });
+    }
+
+    if (type !== 'skills' && type !== 'commands') {
+        return res.status(400).json({ error: 'Invalid type. Must be "skills" or "commands"' });
+    }
+
+    const stats = readUsageStats();
+    if (stats[type] && stats[type][id]) {
+        delete stats[type][id];
+        writeUsageStats(stats);
+        res.json({ success: true, message: `Deleted ${type}/${id}` });
+    } else {
+        res.status(404).json({ error: `Entry ${type}/${id} not found` });
+    }
+});
+
 // Save invoice PDF
 app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10mb' }), (req, res) => {
     const { studentName, year, month } = req.query;
