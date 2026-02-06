@@ -91,6 +91,56 @@ body {
     color: var(--color-black);
 }
 
+/* Most Used Section */
+.most-used {
+    margin-bottom: 40px;
+}
+
+.most-used-title {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--color-gray-mid);
+    margin-bottom: 20px;
+}
+
+.most-used-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+.most-used-item {
+    background: var(--color-white);
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    transition: border-color 0.15s ease;
+}
+
+.most-used-item:hover {
+    border-color: var(--color-black);
+}
+
+.most-used-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-black);
+    margin-bottom: 8px;
+    word-break: break-word;
+}
+
+.most-used-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.most-used-count {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+}
+
 h1, h2 {
     font-size: 12px;
     font-weight: 400;

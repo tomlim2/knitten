@@ -10,6 +10,40 @@
         <div class="skill-count">
             <span class="skill-count-number"><%= skillCount %></span> skill<%= skillCount !== 1 ? 's' : '' %> registered
         </div>
+
+        <%
+        // Calculate most used items
+        const mostUsed = [];
+        if (usageStats.skills) {
+            Object.entries(usageStats.skills).forEach(([id, data]) => {
+                mostUsed.push({ type: 'skill', id, name: id, count: data.count, lastUsed: data.lastUsed });
+            });
+        }
+        if (usageStats.commands) {
+            Object.entries(usageStats.commands).forEach(([id, data]) => {
+                mostUsed.push({ type: 'command', id, name: `/${id}`, count: data.count, lastUsed: data.lastUsed });
+            });
+        }
+        mostUsed.sort((a, b) => b.count - a.count);
+        const topUsed = mostUsed.slice(0, 5);
+        %>
+
+        <% if (topUsed.length > 0) { %>
+        <section class="most-used">
+            <h2 class="most-used-title">Most Used</h2>
+            <div class="most-used-grid">
+                <% topUsed.forEach(item => { %>
+                <div class="most-used-item">
+                    <div class="most-used-name"><%= item.name %></div>
+                    <div class="most-used-meta">
+                        <span class="most-used-count"><%= item.count %> use<%= item.count !== 1 ? 's' : '' %></span>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </section>
+        <% } %>
+
         <% groupedSkills.forEach(group => { %>
         <section class="skill-section">
             <div class="skill-grid">
@@ -36,5 +70,21 @@
         <% } %>
     </main>
     <%- include('partials/footer', {config}) %>
+
+    <script>
+    // Track skill usage
+    document.querySelectorAll('.skill-name a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const skillId = this.getAttribute('href').split('/skills/')[1];
+            if (skillId) {
+                fetch('/api/usage/track', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'skills', id: skillId })
+                }).catch(err => console.error('Failed to track usage:', err));
+            }
+        });
+    });
+    </script>
 </body>
 </html>

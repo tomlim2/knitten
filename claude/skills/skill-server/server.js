@@ -17,6 +17,7 @@ const SKILLS_DIR = path.join(CLAUDE_DIR, 'skills');
 const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
 const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
+const USAGE_STATS_FILE = path.join(PRIVATE_DIR, 'usage-stats.json');
 
 // View engine
 app.set('view engine', 'ejs');
@@ -25,6 +26,40 @@ app.set('views', path.join(__dirname, 'views'));
 // Static files
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+
+// Usage tracking helpers
+function readUsageStats() {
+    if (!fs.existsSync(USAGE_STATS_FILE)) {
+        return { skills: {}, commands: {} };
+    }
+    try {
+        const content = fs.readFileSync(USAGE_STATS_FILE, 'utf-8');
+        return JSON.parse(content);
+    } catch (error) {
+        return { skills: {}, commands: {} };
+    }
+}
+
+function writeUsageStats(stats) {
+    try {
+        fs.writeFileSync(USAGE_STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
+    } catch (error) {
+        console.error('Failed to write usage stats:', error);
+    }
+}
+
+function recordUsage(type, id) {
+    const stats = readUsageStats();
+    if (!stats[type]) {
+        stats[type] = {};
+    }
+    if (!stats[type][id]) {
+        stats[type][id] = { count: 0, lastUsed: null };
+    }
+    stats[type][id].count++;
+    stats[type][id].lastUsed = new Date().toISOString();
+    writeUsageStats(stats);
+}
 
 // Skill registry
 function discoverSkills() {
@@ -147,7 +182,8 @@ app.get('/', (req, res) => {
     const skills = discoverSkills();
     const groupedSkills = groupByCategory(skills);
     const skillCount = skills.length;
-    res.render('dashboard', { groupedSkills, skillCount, config, activePage: '/' });
+    const usageStats = readUsageStats();
+    res.render('dashboard', { groupedSkills, skillCount, usageStats, config, activePage: '/' });
 });
 
 // Serve skill static files (CSS, JS, etc.)
@@ -331,6 +367,27 @@ app.get('/api/standards/:name', (req, res) => {
 
     const content = fs.readFileSync(filePath, 'utf-8');
     res.type('text/plain').send(content);
+});
+
+// Usage tracking API
+app.post('/api/usage/track', (req, res) => {
+    const { type, id } = req.body;
+
+    if (!type || !id) {
+        return res.status(400).json({ error: 'Missing type or id' });
+    }
+
+    if (type !== 'skills' && type !== 'commands') {
+        return res.status(400).json({ error: 'Invalid type. Must be "skills" or "commands"' });
+    }
+
+    recordUsage(type, id);
+    res.json({ success: true });
+});
+
+app.get('/api/usage/stats', (req, res) => {
+    const stats = readUsageStats();
+    res.json(stats);
 });
 
 // Save invoice PDF
