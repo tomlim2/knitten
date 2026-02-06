@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<!-- Design System: v1.7.0 -->
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Showcase - Skill Server</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <style>
+        .example-box {
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        .example-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-gray-mid);
+            margin-bottom: 16px;
+        }
+        .code-example {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 16px;
+            font-family: 'SF Mono', Consolas, Monaco, monospace;
+            font-size: 11px;
+            overflow-x: auto;
+        }
+        .copy-code-btn {
+            float: right;
+            font-size: 11px;
+            padding: 4px 8px;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        .copy-code-btn:hover {
+            background: var(--color-gray-light);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo">Skill Server</a>
+        <nav class="nav">
+            <a href="/">Skills</a>
+            <a href="/skills/browse-commands">Commands</a>
+            <a href="/skills/learn-browse-entries">Learnings</a>
+            <a href="/skills/browse-standards">Standards</a>
+            <a href="/skills/browse-usage">Usage</a>
+            <a href="/files">Files</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="page-hero page-hero--single">
+            <div class="page-hero-content">
+                <h1 class="page-hero-name">Design Showcase</h1>
+                <p class="page-hero-desc">All Design System v1.7.0 components with copyable HTML examples</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">VERSION</div>
+                        <div class="page-hero-meta-value">v1.7.0 (Typo-base)</div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">STANDARD</div>
+                        <div class="page-hero-meta-value"><code>design-system.md</code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">COMPONENTS</div>
+                        <div class="page-hero-meta-value">8 patterns</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="page-layout">
+            <article class="page-main">
+                <!-- Hero Meta Grid -->
+                <div class="content-section">
+                    <h2>Hero Meta Grid</h2>
+                    <p style="margin-bottom: 16px;">Display metadata in the hero section (replaces sidebar pattern)</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <div class="page-hero-meta-grid">
+                            <div class="page-hero-meta-item">
+                                <div class="page-hero-meta-label">COMMAND</div>
+                                <div class="page-hero-meta-value"><code>/example</code></div>
+                            </div>
+                            <div class="page-hero-meta-item">
+                                <div class="page-hero-meta-label">VERSION</div>
+                                <div class="page-hero-meta-value">v1.0.0</div>
+                            </div>
+                            <div class="page-hero-meta-item">
+                                <div class="page-hero-meta-label">TYPE</div>
+                                <div class="page-hero-meta-value">Command</div>
+                            </div>
+                        </div>
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;div class="page-hero-meta-grid"&gt;
+    &lt;div class="page-hero-meta-item"&gt;
+        &lt;div class="page-hero-meta-label"&gt;COMMAND&lt;/div&gt;
+        &lt;div class="page-hero-meta-value"&gt;&lt;code&gt;/example&lt;/code&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="page-hero-meta-item"&gt;
+        &lt;div class="page-hero-meta-label"&gt;VERSION&lt;/div&gt;
+        &lt;div class="page-hero-meta-value"&gt;v1.0.0&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="content-section">
+                    <h2>Typography</h2>
+                    <p style="margin-bottom: 16px;">All heading and text styles (semibold/bold only for headers)</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Headings</div>
+                        <h1 style="font-size: 48px; margin-bottom: 16px;">Heading 1 (48px, weight 400)</h1>
+                        <h2 style="font-size: 16px; margin-bottom: 12px;">Heading 2 (16px, weight 500)</h2>
+                        <h3 style="font-size: 16px; margin-bottom: 12px;">Heading 3 (16px, weight 500)</h3>
+                        <p style="margin-bottom: 16px;">Body text (16px, weight 400, line-height 1.5)</p>
+                        <p style="font-size: 12px; color: var(--color-gray-mid);">Small text (12px, gray-mid)</p>
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;h1 class="page-hero-name"&gt;Heading 1&lt;/h1&gt;
+&lt;h2&gt;Heading 2&lt;/h2&gt;
+&lt;h3&gt;Heading 3&lt;/h3&gt;
+&lt;p&gt;Body text&lt;/p&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Tables -->
+                <div class="content-section">
+                    <h2>Tables</h2>
+                    <p style="margin-bottom: 16px;">Tables with headers and alternating row colors</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Version</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Example Skill</td>
+                                    <td>Web</td>
+                                    <td>v1.0.0</td>
+                                    <td>2026-02-07</td>
+                                </tr>
+                                <tr>
+                                    <td>Another Skill</td>
+                                    <td>CLI</td>
+                                    <td>v2.1.0</td>
+                                    <td>2026-02-06</td>
+                                </tr>
+                                <tr>
+                                    <td>Third Item</td>
+                                    <td>Web</td>
+                                    <td>v0.5.0</td>
+                                    <td>2026-02-05</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Name&lt;/th&gt;
+            &lt;th&gt;Type&lt;/th&gt;
+            &lt;th&gt;Version&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Example Skill&lt;/td&gt;
+            &lt;td&gt;Web&lt;/td&gt;
+            &lt;td&gt;v1.0.0&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Lists -->
+                <div class="content-section">
+                    <h2>Lists</h2>
+                    <p style="margin-bottom: 16px;">Item lists with border separators</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Item List</div>
+                        <ul class="item-list">
+                            <li>
+                                <span class="item-name">First Item</span>
+                                <span class="item-meta">Meta info</span>
+                            </li>
+                            <li>
+                                <span class="item-name">Second Item</span>
+                                <span class="item-meta">More meta</span>
+                            </li>
+                            <li>
+                                <span class="item-name">Third Item</span>
+                                <span class="item-meta">Additional data</span>
+                            </li>
+                        </ul>
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;ul class="item-list"&gt;
+    &lt;li&gt;
+        &lt;span class="item-name"&gt;First Item&lt;/span&gt;
+        &lt;span class="item-meta"&gt;Meta info&lt;/span&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Forms -->
+                <div class="content-section">
+                    <h2>Forms</h2>
+                    <p style="margin-bottom: 16px;">Inputs and buttons with proper styling</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Input</div>
+                        <input type="text" class="input" placeholder="Search..." style="max-width: 400px; margin-bottom: 24px;">
+
+                        <div class="example-label">Buttons</div>
+                        <button class="btn btn-primary" style="width: auto; margin-right: 12px;">Primary Button</button>
+                        <button class="btn btn-secondary" style="margin-right: 12px;">Secondary Button</button>
+                        <button class="btn btn-small">Small Button</button>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;input type="text" class="input" placeholder="Search..."&gt;
+&lt;button class="btn btn-primary"&gt;Primary Button&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary Button&lt;/button&gt;
+&lt;button class="btn btn-small"&gt;Small Button&lt;/button&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Code Blocks -->
+                <div class="content-section">
+                    <h2>Code Blocks</h2>
+                    <p style="margin-bottom: 16px;">Inline code and code blocks with GitHub-inspired styling</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Examples</div>
+                        <p>Inline code: <code>const example = "value"</code></p>
+                        <p style="margin: 16px 0;">Block code:</p>
+                        <pre><code>function example() {
+    return "Hello World";
+}
+
+console.log(example());</code></pre>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;code&gt;inline code&lt;/code&gt;
+&lt;pre&gt;&lt;code&gt;function example() {
+    return "Hello World";
+}&lt;/code&gt;&lt;/pre&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="content-section">
+                    <h2>Stat Cards</h2>
+                    <p style="margin-bottom: 16px;">Large number display cards (used in browse-usage)</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example Grid</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <div style="background: var(--color-white); border: 1px solid var(--color-border); padding: 24px; text-align: center;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: var(--color-gray-mid); margin-bottom: 12px; font-weight: 500;">Total Items</div>
+                                <div style="font-size: 48px; font-weight: 400; color: var(--color-black);">127</div>
+                            </div>
+                            <div style="background: var(--color-white); border: 1px solid var(--color-border); padding: 24px; text-align: center;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: var(--color-gray-mid); margin-bottom: 12px; font-weight: 500;">Active</div>
+                                <div style="font-size: 48px; font-weight: 400; color: var(--color-black);">89</div>
+                            </div>
+                            <div style="background: var(--color-white); border: 1px solid var(--color-border); padding: 24px; text-align: center;">
+                                <div style="font-size: 12px; text-transform: uppercase; color: var(--color-gray-mid); margin-bottom: 12px; font-weight: 500;">Archived</div>
+                                <div style="font-size: 48px; font-weight: 400; color: var(--color-black);">38</div>
+                            </div>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;div class="stat-card"&gt;
+    &lt;div class="stat-label"&gt;Total Items&lt;/div&gt;
+    &lt;div class="stat-value"&gt;127&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Colors -->
+                <div class="content-section">
+                    <h2>Colors</h2>
+                    <p style="margin-bottom: 16px;">CSS variables from Design System v1.7.0</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Color Palette</div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <div>
+                                <div style="width: 100%; height: 60px; background: var(--color-black); border: 1px solid var(--color-border);"></div>
+                                <p style="margin-top: 8px; font-size: 12px;"><code>--color-black</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: var(--color-text); border: 1px solid var(--color-border);"></div>
+                                <p style="margin-top: 8px; font-size: 12px;"><code>--color-text</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: var(--color-gray-mid); border: 1px solid var(--color-border);"></div>
+                                <p style="margin-top: 8px; font-size: 12px;"><code>--color-gray-mid</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: var(--color-gray-dark); border: 1px solid var(--color-border);"></div>
+                                <p style="margin-top: 8px; font-size: 12px;"><code>--color-gray-dark</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: var(--color-link-hover); border: 1px solid var(--color-border);"></div>
+                                <p style="margin-top: 8px; font-size: 12px;"><code>--color-link-hover</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: var(--color-border); border: 1px solid var(--color-gray-mid);"></div>
+                                <p style="margin-top: 8px; font-size: 12px;"><code>--color-border</code></p>
+                            </div>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy CSS</button>
+                        <pre class="code-example"><code>:root {
+    --color-black: #000000;
+    --color-text: #1a1a1a;
+    --color-gray-mid: #888888;
+    --color-gray-dark: #555555;
+    --color-link-hover: #0066cc;
+    --color-border: #e5e5e5;
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Complete Page Template -->
+                <div class="content-section">
+                    <h2>Complete Page Template</h2>
+                    <p style="margin-bottom: 16px;">Full HTML structure for a new skill page</p>
+
+                    <div class="example-box">
+                        <button class="copy-code-btn" onclick="copyCode(this)">Copy HTML</button>
+                        <pre class="code-example"><code>&lt;!DOCTYPE html&gt;
+&lt;!-- Design System: v1.7.0 --&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Skill Name&lt;/title&gt;
+    &lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+    &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+    &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="/static/styles/main.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header class="header"&gt;
+        &lt;a href="/" class="logo"&gt;Skill Server&lt;/a&gt;
+        &lt;nav class="nav"&gt;
+            &lt;a href="/"&gt;Skills&lt;/a&gt;
+            &lt;a href="/files"&gt;Files&lt;/a&gt;
+        &lt;/nav&gt;
+    &lt;/header&gt;
+
+    &lt;main class="main"&gt;
+        &lt;section class="page-hero page-hero--single"&gt;
+            &lt;div class="page-hero-content"&gt;
+                &lt;h1 class="page-hero-name"&gt;Skill Name&lt;/h1&gt;
+                &lt;p class="page-hero-desc"&gt;Description&lt;/p&gt;
+                &lt;div class="page-hero-meta-grid"&gt;
+                    &lt;div class="page-hero-meta-item"&gt;
+                        &lt;div class="page-hero-meta-label"&gt;VERSION&lt;/div&gt;
+                        &lt;div class="page-hero-meta-value"&gt;v1.0.0&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;div class="page-layout"&gt;
+            &lt;article class="page-main"&gt;
+                &lt;!-- Your content here --&gt;
+            &lt;/article&gt;
+        &lt;/div&gt;
+    &lt;/main&gt;
+
+    &lt;footer class="footer"&gt;
+        &lt;div class="footer-content"&gt;
+            &lt;span class="footer-copyright"&gt;© 2026 Skill Server&lt;/span&gt;
+            &lt;span class="footer-version"&gt;v1.7.0&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span class="footer-copyright">© 2026 Skill Server</span>
+            <span class="footer-version">v1.7.0</span>
+        </div>
+    </footer>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--color-gray-light)';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--color-white)';
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
