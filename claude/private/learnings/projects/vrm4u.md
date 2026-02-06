@@ -218,6 +218,20 @@ VRM4U는 Assimp을 **프리빌트 DLL**(`assimp-vc141-mt.dll`)로 링크. 소스
 - `CinevGlbSanitizer.h` / `CinevGlbSanitizer.cpp`
 - 3개 호출부에서 `CinevGlbSanitizer::SanitizeGlbData()` 사용
 
+**오타 키 치환 전략 — 삭제가 아닌 조건부 교체** (2026-02-06):
+
+단순 삭제(`"extensionUsed"` 키-값 제거)는 JSON 파싱이 필요하고,
+만약 오타 키만 존재하는 파일이면 extensions 정보 자체가 사라짐.
+단순 교체(`"extensionUsed"` → `"extensionsUsed"`)는 정상 키가 이미 있을 때 중복 키 발생.
+
+→ **조건부 교체가 정답**:
+| `extensionsUsed` | `extensionUsed` | 동작 |
+|:-:|:-:|---|
+| O | O | 오타 → `"extensionsUsed_fixed"` (무력화) |
+| O | X | 변경 없음 |
+| X | O | 오타 → `"extensionsUsed"` (수정) |
+| X | X | 변경 없음 |
+
 **참조**:
 - [CinevGlbSanitizer.cpp](Plugins/VRM4U/Source/VRM4ULoader/Private/CinevGlbSanitizer.cpp)
 - [Assimp glTF2Asset.inl](https://codebrowser.dev/qt6/qtquick3d/src/3rdparty/assimp/src/code/AssetLib/glTF2/glTF2Asset.inl.html)

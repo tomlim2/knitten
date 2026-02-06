@@ -1,8 +1,5 @@
-# Personal data (learnings, specs, projects are tracked)
-claude/private/*
-!claude/private/learnings/
-!claude/private/specs/
-!claude/private/projects/
+# Tutoring data (invoices, lesson logs — personal)
+claude/private/tutoring/
 
 # Secrets
 *.env
