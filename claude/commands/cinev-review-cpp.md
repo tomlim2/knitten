@@ -59,20 +59,20 @@ Present findings grouped by file, with severity counts and a final verdict.
 
 **Review all uncommitted changes:**
 ```
-/review
+/cinev-review-cpp
 ```
 
 **Review a specific file:**
 ```
-/review Plugins/VRM4U/Source/VRM4ULoader/Private/CinevGlbSanitizer.cpp
+/cinev-review-cpp Plugins/VRM4U/Source/VRM4ULoader/Private/CinevGlbSanitizer.cpp
 ```
 
 **Review changes in last 3 commits:**
 ```
-/review HEAD~3
+/cinev-review-cpp HEAD~3
 ```
 
 **Review staged changes only:**
 ```
-/review staged
+/cinev-review-cpp staged
 ```
