@@ -144,13 +144,21 @@ VRM 1.0 (신규 표준):
 
 ## Worked
 
-(성공한 접근법 기록)
+### GLB 재구성 방식의 extensionUsed 오타 수정
+- **Date**: 2026-02-06
+- **Context**: 구버전 UniGLTF/UniVRM이 export한 VRM 파일의 `"extensionUsed"` 오타를 Assimp 파싱 전에 수정
+- **Solution**: FString 기반 검색/치환 + 전체 GLB 재구성 (헤더 재작성, JSON 청크 패딩, 바이너리 청크 복사)
+- **Why it worked**: GLB 포맷의 모든 정합성(청크 길이, 4바이트 정렬, 전체 길이)을 보장하기 때문. `CinevGlbSanitizer`로 분리하여 3개 호출부 코드 단순화.
 
 ---
 
 ## Failed
 
-(실패한 접근법 기록)
+### GLB JSON 청크 in-place 바이트 교체
+- **Date**: 2026-02-06
+- **What we tried**: `"extensionUsed"` (15 bytes) → `"_xtensionUsed"` (15 bytes) 동일 길이 in-place 교체. GLB 재구성 없이 JSON 청크 내 바이트만 교체하여 성능 최적화 시도.
+- **Why it failed**: 바이트 교체 후에도 Assimp이 파일 임포트에 실패. 정확한 원인 불명이나, Assimp 내부에서 GLB를 파싱할 때 단순 바이트 교체만으로는 충분하지 않은 것으로 추정. 원래의 GLB 재구성 방식으로 복원하면 즉시 해결됨.
+- **Better approach**: FString 검색/치환 + 전체 GLB 재구성. 바이너리 포맷 조작은 통합 테스트 없이 최적화하지 말 것.
 
 ---
 
@@ -189,8 +197,28 @@ bool FixGlbJsonTypo(const uint8* pData, size_t dataSize, TArray<uint8>& OutFixed
 - `GetVRMMeta()` - 메타데이터 조회
 - `VrmAsyncLoadAction` - 비동기 로딩
 
-**영향받는 버전**: UniGLTF-2.35.0 (UniVRM)으로 export된 VRM 파일
+**영향받는 버전**: UniGLTF-2.35.0 / UniVRM-0.99.0으로 export된 VRM 파일
+
+**업계 대응 현황** (2026-02-06 조사):
+- 모든 주요 glTF 임포터(Assimp, three.js, Babylon.js, Blender, Godot)는 `"extensionsUsed"` **정확한 문자열 매칭**으로 검색 → 오타 키는 무시됨
+- Assimp: `FindArray(doc, "extensionsUsed")` → null이면 extensions 미감지 (silent failure)
+- glTF 스펙: root schema에 `additionalProperties: false`가 없어서 unknown key는 스키마 위반이 아님
+- **업계 표준 GLB JSON sanitizer 패턴은 존재하지 않음** — `CinevGlbSanitizer`는 프로젝트 고유 솔루션
+- vrm-c/UniVRM 리포에 해당 오타 버그의 공개 이슈 없음 (조용히 수정된 것으로 추정)
+
+**왜 Assimp 내부 수정이 아닌 전처리 방식인가**:
+VRM4U는 Assimp을 **프리빌트 DLL**(`assimp-vc141-mt.dll`)로 링크. 소스 코드 없이 헤더 + 바이너리만 포함(`ThirdParty/assimp/`). 따라서 glTF 파서 내부(`glTF2Asset.inl`의 `ReadExtensionsUsed` 등)를 수정할 수 없음. Assimp 소스를 직접 빌드하는 대안은:
+- 커스텀 빌드 유지 부담
+- VRM4U 업스트림 업데이트 시 충돌 위험
+- 플랫폼별(Win/Mac/iOS/Android) 바이너리 재빌드 필요
+
+→ **Assimp 앞단에서 GLB 데이터를 정제하는 전처리 방식이 가장 현실적**
+
+**현재 구현**: `CinevGlbSanitizer` (별도 파일로 분리)
+- `CinevGlbSanitizer.h` / `CinevGlbSanitizer.cpp`
+- 3개 호출부에서 `CinevGlbSanitizer::SanitizeGlbData()` 사용
 
 **참조**:
-- [LoaderBPFunctionLibrary.cpp:157-238](Plugins/VRM4U/Source/VRM4ULoader/Private/LoaderBPFunctionLibrary.cpp#L157-L238)
-- [VrmAsyncLoadAction.cpp](Plugins/VRM4U/Source/VRM4ULoader/Private/VrmAsyncLoadAction.cpp)
+- [CinevGlbSanitizer.cpp](Plugins/VRM4U/Source/VRM4ULoader/Private/CinevGlbSanitizer.cpp)
+- [Assimp glTF2Asset.inl](https://codebrowser.dev/qt6/qtquick3d/src/3rdparty/assimp/src/code/AssetLib/glTF2/glTF2Asset.inl.html)
+- [glTF Issue #695 - Handling unsupported extensions](https://github.com/KhronosGroup/glTF/issues/695)
