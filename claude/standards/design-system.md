@@ -1,7 +1,7 @@
 # Design System - Typo-base
 
-**Version**: 1.6.2
-**Last Updated**: 2026-02-06
+**Version**: 1.7.0
+**Last Updated**: 2026-02-07
 
 ---
 
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.7.0 | 2026-02-07 | Added Markdown Reading Typography pattern: compact 12px reading style with table styling |
 | 1.6.2 | 2026-02-06 | Added rule: Semibold (500) and bold (600) font weights only for headers, never body text |
 | 1.6.1 | 2026-02-05 | Font hierarchy change: Noto Sans KR primary, Inter fallback (removed Google Sans Flex) |
 | 1.6.0 | 2026-02-05 | Added Code Blocks (Documentation) pattern: inline code + code block styling with GitHub-inspired minimal design |
@@ -693,6 +694,200 @@ pre code {
 - Material Design 3 code typography
 - WCAG 2.1 contrast guidelines
 - CSS-Tricks code styling best practices
+
+---
+
+## Markdown Reading Typography
+
+**Use**: Long-form markdown content (standards, learnings, documentation)
+
+**Purpose**: Optimized reading experience with compact 12px typography for maximum readability in narrow columns
+
+### Container
+
+| Property | Value |
+|----------|-------|
+| Max width | 700px |
+| Font size | 12px (base) |
+| Line height | 1.6 |
+
+```css
+.page-main {
+    max-width: 700px;
+    font-size: 12px;
+    line-height: 1.6;
+}
+```
+
+### Headings
+
+| Element | Size | Weight | Line Height | Margin |
+|---------|------|--------|-------------|--------|
+| h1 | 20px | 500 | 1.3 | 0 0 20px 0 |
+| h2 | 16px | 500 | 1.4 | 32px 0 12px 0 |
+| h3 | 14px | 500 | 1.4 | 24px 0 8px 0 |
+
+```css
+.page-main h1 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0 0 20px 0;
+    letter-spacing: 0;
+}
+
+.page-main h2 {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 32px 0 12px 0;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--color-black);
+}
+
+.page-main h3 {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 24px 0 8px 0;
+    letter-spacing: 0;
+}
+```
+
+### Body Text
+
+| Element | Size | Line Height | Margin |
+|---------|------|-------------|--------|
+| p | 12px | 1.6 | 0 0 16px 0 |
+| ul, ol | 12px | 1.6 | 0 0 16px 0 |
+| li | 12px | 1.6 | 0 0 6px 0 |
+
+```css
+.page-main p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    color: var(--color-text);
+}
+
+.page-main ul, .page-main ol {
+    font-size: 12px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    padding-left: 24px;
+}
+
+.page-main li {
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+```
+
+### Code
+
+| Element | Size | Padding | Background |
+|---------|------|---------|------------|
+| code | 11px | 2px 4px | var(--color-gray-light) |
+| pre | 11px | 16px | var(--color-gray-light) |
+
+```css
+.page-main code {
+    font-size: 11px;
+    padding: 2px 4px;
+    background: var(--color-gray-light);
+    border-radius: 2px;
+    vertical-align: middle;
+}
+
+.page-main pre {
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--color-gray-light);
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+.page-main pre code {
+    font-size: 11px;
+    padding: 0;
+    background: transparent;
+}
+```
+
+### Blockquotes
+
+| Property | Value |
+|----------|-------|
+| Font size | 12px |
+| Line height | 1.6 |
+| Padding | 0 0 0 16px |
+| Border | 2px solid left |
+| Color | var(--color-gray-mid) |
+
+```css
+.page-main blockquote {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 16px 0;
+    padding-left: 16px;
+    border-left: 2px solid var(--color-border);
+    color: var(--color-gray-mid);
+}
+```
+
+### Tables
+
+| Property | Value |
+|----------|-------|
+| Font size | 12px |
+| Line height | 1.5 |
+| Cell padding | 8px 12px |
+| Border | 1px solid |
+| Border collapse | collapse |
+
+```css
+.page-main table {
+    font-size: 12px;
+    line-height: 1.5;
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 16px 0;
+}
+
+.page-main table th,
+.page-main table td {
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    text-align: left;
+}
+
+.page-main table th {
+    font-weight: 500;
+    background: var(--color-gray-light);
+}
+
+.page-main table tr:nth-child(even) {
+    background: var(--color-bg);
+}
+```
+
+**Design Rationale**:
+- **12px base** - Compact reading optimized for 700px width column
+- **1.6 line height** - Balanced spacing for continuous reading
+- **11px code** - Slightly smaller for inline code and blocks
+- **Minimal margins** - Tighter spacing (6px-20px) for documentation flow
+- **Table styling** - GitHub-inspired with alternating rows and header background
+- **Vertical rhythm** - 16px bottom margins create consistent spacing
+
+**Research Sources**:
+- iA Writer typography system
+- Medium article reading experience
+- GitHub markdown rendering
+- Butterick's Practical Typography
 
 ---
 

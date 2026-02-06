@@ -185,8 +185,17 @@ app.get('/', (req, res) => {
     const skills = discoverSkills();
     const groupedSkills = groupByCategory(skills);
     const skillCount = skills.length;
+
+    // Count commands
+    let commandCount = 0;
+    if (fs.existsSync(COMMANDS_DIR)) {
+        commandCount = fs.readdirSync(COMMANDS_DIR)
+            .filter(file => file.endsWith('.md'))
+            .length;
+    }
+
     const usageStats = readUsageStats();
-    res.render('dashboard', { groupedSkills, skillCount, usageStats, config, activePage: '/' });
+    res.render('dashboard', { groupedSkills, skillCount, commandCount, usageStats, config, activePage: '/' });
 });
 
 // Serve skill static files (CSS, JS, etc.)
