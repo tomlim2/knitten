@@ -1,0 +1,17 @@
+{
+  "drinks": [
+    {
+      "id": "caol-ila-12-2026-02-06",
+      "name": "Caol Ila 12 Year Old",
+      "type": "Single Malt Scotch Whisky",
+      "region": "Islay, Scotland",
+      "price": 69,
+      "currency": "USD",
+      "rating": 4.0,
+      "notes": "위트향? 몰트향? 이게 너무 좋았습니다. (Wheat/malt aroma was really good)",
+      "date": "2026-02-06",
+      "abv": 43,
+      "searched_at": "2026-02-06T11:45:00Z"
+    }
+  ]
+}

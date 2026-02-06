@@ -4,7 +4,7 @@ argument-hint: "<invoice_pdf_path>"
 allowed-tools: Bash(python:*)
 ---
 
-# Invoice Message Generator
+# Tutoring Invoice KakaoTalk Message
 
 Generate a KakaoTalk message for sending tuition invoice to parents.
 
@@ -15,7 +15,7 @@ Generate a KakaoTalk message for sending tuition invoice to parents.
 **If no argument is provided, show usage and ask the user for the path. NEVER auto-execute.**
 
 ```
-Usage: /invoice-message <pdf-path>
+Usage: /tutoring-invoice-kakaotalk <pdf-path>
 ```
 
 ## Execution
