@@ -148,6 +148,32 @@ Run: !`ls *.py`
 Show the user the list of Python files found.
 ```
 
+### Naming Convention
+
+**MANDATORY: All commands and skills MUST follow the `{category}-{verb}-{subject}` pattern.**
+
+Examples:
+- `git-collect-commits` - Collects git commits
+- `tutoring-open-invoice` - Opens tutoring invoice
+- `ue-analyze-material` - Analyzes UE material
+- `meta-new-command` - Creates new command
+
+**Complete naming rules and examples:**
+
+```
+~/.claude/skills/meta-new-command/SKILL.md
+```
+
+This rulebook contains:
+- Pattern structure and naming rules
+- All standard categories (git, tutoring, cinev, ue, art, learn, meta)
+- Frontmatter format rules
+- Content structure rules
+- Common mistakes to avoid
+- Creation workflow
+
+**To create a new command:** Use `/meta-new-command <category> <verb> <subject>`
+
 ---
 
 ## Writing Skills

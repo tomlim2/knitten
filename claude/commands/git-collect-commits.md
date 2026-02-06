@@ -14,7 +14,7 @@ $ARGUMENTS
 
 **If no argument is provided, show usage and ask the user for the repo path. NEVER auto-execute.**
 ```
-Usage: /collect-commits <repo_path> [--author name] [--since date] [-n limit]
+Usage: /git-collect-commits <repo_path> [--author name] [--since date] [-n limit]
 ```
 
 ## Instructions

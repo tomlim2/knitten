@@ -14,7 +14,7 @@ $ARGUMENTS
 
 **If no argument is provided, show usage and ask the user for project and category. NEVER auto-execute.**
 ```
-Usage: /learn <project> <category>
+Usage: /learn-add-log <project> <category>
 Categories: convention, worked, failed, gotcha
 ```
 

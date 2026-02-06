@@ -14,7 +14,7 @@ User provides: $ARGUMENTS (student name)
 
 **If no argument is provided, show usage and stop. NEVER auto-execute.**
 ```
-Usage: /move-invoice <student_name>
+Usage: /tutoring-move-invoice <student_name>
 ```
 
 ## What it does
@@ -31,7 +31,7 @@ STUDENT_NAME="$ARGUMENTS"
 
 if [ -z "$STUDENT_NAME" ]; then
   echo "❌ 에러: 학생 이름이 필요합니다."
-  echo "사용법: /move-invoice <학생이름>"
+  echo "사용법: /tutoring-move-invoice <학생이름>"
   exit 1
 fi
 
@@ -65,7 +65,7 @@ echo "   To: $TARGET_PATH"
 ## Example
 
 ```
-/move-invoice 학생1
+/tutoring-move-invoice 학생1
 → Downloads/학생1_1월_수업료청구서.pdf
 → private/tutoring/invoices/2026-01_학생1.pdf
 ```
@@ -75,5 +75,5 @@ echo "   To: $TARGET_PATH"
 1. `/open-invoice 학생1` - Open web app
 2. Add lesson dates → Click "PDF로 저장"
 3. Alert shows: "명령이 클립보드에 복사되었습니다"
-4. `Cmd+V` to paste: `/move-invoice 학생1`
+4. `Cmd+V` to paste: `/tutoring-move-invoice 학생1`
 5. Done!
