@@ -1,7 +1,7 @@
 # Design System - Typo-base
 
-**Version**: 1.6.1
-**Last Updated**: 2026-02-05
+**Version**: 1.6.2
+**Last Updated**: 2026-02-06
 
 ---
 
@@ -9,6 +9,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6.2 | 2026-02-06 | Added rule: Semibold (500) and bold (600) font weights only for headers, never body text |
 | 1.6.1 | 2026-02-05 | Font hierarchy change: Noto Sans KR primary, Inter fallback (removed Google Sans Flex) |
 | 1.6.0 | 2026-02-05 | Added Code Blocks (Documentation) pattern: inline code + code block styling with GitHub-inspired minimal design |
 | 1.5.1 | 2026-02-04 | Added rule: No `<strong>` tags (use CSS font-weight) |
@@ -773,6 +774,7 @@ pre code {
 - Multiples of 4px for font sizes (12px, 16px, 20px, 24px, 36px, 48px)
 - Line height: 1.2 for titles, 1.5-1.6 for body
 - Font weight: 400 (regular), 500 (medium), 600 (semibold)
+- **Semibold (500) and bold (600) only for headers** - Never use font-weight 500 or 600 in body text, paragraphs, or inline text. These weights are reserved exclusively for headings (h1-h6)
 
 ### Interactive Feedback
 - Color change on hover (blue #0066cc for links/titles)
