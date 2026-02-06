@@ -94,63 +94,26 @@ caol-ila/
 
 ## Writing Commands
 
-Commands are **slash commands** that appear in Claude Code's command palette. They're defined using markdown files with frontmatter.
+Commands are **slash commands** that appear in Claude Code's command palette.
+They're defined using markdown files with frontmatter.
 
-### Anatomy of a Command
+**What is a command?**
+- User-facing workflow automation
+- Restricted to specific allowed-tools
+- Uses `!backtick` for dynamic execution
+- Accesses arguments via `$ARGUMENTS`
 
-```markdown
----
-allowed-tools: Bash(git diff:*), Bash(git status:*), Read, Edit
-description: Generate a git commit message based on staged changes
-argument-hint: "[type]"
----
+**Basic structure:**
+- Frontmatter (YAML): `description`, `argument-hint`, `allowed-tools`
+- Content: Instructions for Claude on what to do
+- Examples: Show expected usage patterns
 
-# Command Title
-
-Instructions for Claude on how to execute this command.
-
-## Dynamic Execution
-
-Use !`command` to execute shell commands and inject results:
-- Current status: !`git status`
-- Staged changes: !`git diff --cached`
-
-## Arguments
-
-Access user-provided arguments via $ARGUMENTS variable.
+**For complete command creation guide, see:**
+```
+~/.claude/skills/meta-new-command/SKILL.md
 ```
 
-### Frontmatter Fields
-
-- **`allowed-tools`**: Whitelist of tools Claude can use (e.g., `Bash(git:*)`, `Read`, `Edit`, `Grep`)
-- **`description`**: One-line summary shown in command palette
-- **`argument-hint`**: Placeholder text for arguments (optional)
-
-### Best Practices
-
-1. **Be specific with allowed-tools**: `Bash(git:*)` is safer than `Bash`
-2. **Use dynamic execution** (`!backtick`) to provide fresh context
-3. **Include examples** of expected input/output formats
-4. **Handle edge cases** gracefully (no staged changes, missing files, etc.)
-5. **Missing required arguments**: If a command requires arguments and none are provided:
-   - Show usage example (e.g., `/command <argument>`)
-   - **Ask the user** what value to use
-   - **NEVER auto-execute** with assumed or default values
-
-### Example: Minimal Command
-
-```markdown
----
-allowed-tools: Bash(ls:*)
-description: List Python files in current directory
----
-
-# List Python Files
-
-Run: !`ls *.py`
-
-Show the user the list of Python files found.
-```
+Or use: `/meta-new-command <category> <verb> <subject>`
 
 ### Naming Convention
 
@@ -189,41 +152,28 @@ For complete skill structure rules:
 
 ## Writing Skills
 
-Skills are **reusable utilities** that commands invoke. They typically consist of:
-1. A `SKILL.md` describing what the skill does
-2. An implementation (Python script, shell script, etc.)
+Skills are **reusable utilities** that commands invoke.
 
-### Directory Structure
+**What is a skill?**
+- Complex logic that commands delegate to
+- Full system access (not restricted to allowed-tools)
+- Version-tracked with SKILL.md
+- Can be invoked by multiple commands
 
+**Basic structure:**
 ```
-skills/
-└── my-skill-name/
-    ├── SKILL.md           # Skill documentation
-    ├── script.py          # Implementation
-    └── config.json        # Optional configuration
-```
-
-### Example: Git Commit Collector
-
-**`skills/git-commit-collector/SKILL.md`**:
-```markdown
-# git-commit-collector
-
-Git commit history extraction skill for Claude Code.
-
-## Usage
-
-Extract commits from a repository and save to the private commits folder.
-
-## Files
-
-- `extract_commits.py` - Main extraction script
+skills/{category}-{verb}-{subject}/
+├── SKILL.md     # Documentation with version
+├── script.py    # Main implementation
+└── config.json  # Optional configuration
 ```
 
-**`skills/git-commit-collector/extract_commits.py`**:
-- Well-documented Python script
-- Accepts CLI arguments via `argparse`
-- Outputs to `~/.claude/private/commits/` by default
+**For complete skill creation guide, see:**
+```
+~/.claude/skills/meta-new-skill/SKILL.md
+```
+
+Or use: `/meta-new-skill <category> <verb> <subject>`
 
 ### Skills vs Commands
 
@@ -240,48 +190,31 @@ Extract commits from a repository and save to the private commits folder.
 
 ## Private Folder Rules
 
-The `private/` directory is for **personal data only**. It's gitignored to protect sensitive information.
+The `private/` directory is your **personal data vault**. It's gitignored to protect sensitive information.
 
-### What Goes in Private?
+**What is private/?**
+- Location for all personal/generated data
+- Never committed to version control
+- Organized by skill/command category
+- Accessible from both commands and skills
 
-✅ **Yes:**
-- Extracted commit histories for portfolio
-- Project-specific notes and analysis
-- Cached API responses or expensive computations
-- Personal TODO lists or research notes
+**Common uses:**
+- Extracted data (commits, UE assets, analysis)
+- Personal notes and research
+- Business data (invoices, logs)
+- Cached computations
 
-❌ **No:**
-- Source code (belongs in project repos)
-- Shared configuration (use `commands/` or `skills/`)
-- Secrets (use environment variables or password managers)
-
-### Structure Recommendations
-
+**For complete private folder guide, see:**
 ```
-private/
-├── commits/           # Git history extractions
-│   ├── anju_commits.json
-│   └── other_project_commits.json
-├── notes/             # Project research and notes
-│   └── unreal-optimization-ideas.md
-└── cache/             # Temporary data
-    └── texture-analysis.json
+~/.claude/skills/meta-private-guide/SKILL.md
 ```
 
-### Accessing Private Data
-
-From commands:
-```markdown
-Read the commits: !`cat ~/.claude/private/commits/anju_commits.json`
-```
-
-From skills:
-```python
-from pathlib import Path
-
-PRIVATE_DIR = Path.home() / ".claude" / "private"
-commits_file = PRIVATE_DIR / "commits" / "repo_commits.json"
-```
+This guide covers:
+- What goes in private/ (✅ Yes / ❌ No lists)
+- Directory structure recommendations
+- Accessing private data from commands/skills
+- File naming conventions
+- Security considerations
 
 ---
 
@@ -323,61 +256,25 @@ Each command should include all context needed via dynamic execution (`!backtick
 
 ## Common Patterns
 
-### Pattern: Command Invokes Skill
+Commands and skills often follow established design patterns:
 
-**Command** (`commands/git-collect-commits.md`):
-```markdown
----
-allowed-tools: Bash(python:*)
-description: Extract git commits for portfolio
----
+1. **Command Invokes Skill** - Command delegates to skill for complex logic
+2. **Multi-Step Workflow** - Sequential steps with clear progress
+3. **Dynamic Context Injection** - Use `!backtick` for fresh system state
+4. **Conditional Execution** - Different behavior based on arguments
+5. **Template Generation** - Create files from templates with user input
 
-Run the git commit collector:
-!`python ~/.claude/skills/git-commit-collector/extract_commits.py $ARGUMENTS`
+**For detailed pattern documentation with examples, see:**
+```
+~/.claude/skills/meta-patterns-guide/SKILL.md
 ```
 
-**Skill** (`skills/git-commit-collector/extract_commits.py`):
-- Handles parsing, extraction, output
-- Saves to `~/.claude/private/commits/`
-
-### Pattern: Multi-Step Workflow
-
-**Command** (`commands/clean-up.md`):
-```markdown
----
-allowed-tools: Glob, Grep, Read, Edit
-description: Update CLAUDE.md based on codebase analysis
----
-
-## Step 1: Scan
-- Glob: `**/*.py`
-- Grep: Common patterns
-
-## Step 2: Analyze
-- Read representative files
-- Identify conventions
-
-## Step 3: Update
-- Edit CLAUDE.md sections
-- Show diff before writing
-```
-
-### Pattern: Dynamic Context Injection
-
-**Command** (`commands/git-make-message.md`):
-```markdown
----
-allowed-tools: Bash(git:*)
-description: Generate commit message
----
-
-## Context
-- Status: !`git status`
-- Diff: !`git diff --cached`
-- Recent commits: !`git log --oneline -10`
-
-Now generate a message following conventional commit format...
-```
+This guide includes:
+- When to use each pattern
+- Complete code examples
+- Best practices and anti-patterns
+- How to combine patterns
+- Choosing the right pattern for your use case
 
 ---
 

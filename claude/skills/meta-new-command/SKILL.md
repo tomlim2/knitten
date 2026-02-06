@@ -335,8 +335,50 @@ How to use this skill, with examples.
 
 ---
 
+## Special Case: Unreal Engine Commands
+
+**For `ue-*` (Unreal Engine) commands, use the dedicated skill generator:**
+
+**Command:**
+```
+/ue-new-skill <verb> <noun>
+```
+
+This creates BOTH the skill AND the command automatically.
+
+**Why?**
+- Most UE commands need a UE skill to do the actual work
+- UE skills require specific patterns (Editor integration, JSON export, logging)
+- `/ue-new-skill` ensures consistency and creates the complete package
+
+**What `/ue-new-skill` generates:**
+1. Skill: `ue-{verb}-{noun}/` with Python scripts
+2. Command: `ue-{verb}-{noun}.md` that calls the skill
+3. All necessary templates and wrappers
+
+**When to use meta-new-command for UE:**
+- Simple wrapper commands for existing UE skills
+- Commands that only orchestrate existing UE tools
+- Commands without new Editor integration needs
+
+**Example:**
+```
+User: "Create ue-analyze-texture command"
+→ Use: /ue-new-skill analyze texture
+→ Creates: ue-analyze-texture skill + command
+→ NOT: /meta-new-command ue analyze texture
+```
+
+**Reference:**
+- Template: `~/.claude/skills/ue-skill-template/SKILL.md`
+- Command: `~/.claude/commands/ue-new-skill.md`
+
+---
+
 ## Related Files
 
 - `commands/meta-new-command.md` - Command wrapper for this skill
 - `skills/meta-new-skill/SKILL.md` - Skill structure rules (use for creating skills)
+- `commands/ue-new-skill.md` - UE-specific skill/command generator
+- `skills/ue-skill-template/SKILL.md` - UE skill template
 - `CLAUDE.md` - Main workflow guidance (points to this skill)

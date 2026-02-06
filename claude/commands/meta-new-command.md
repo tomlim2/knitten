@@ -41,6 +41,35 @@ This file contains:
 - Common mistakes
 - Examples by category
 
+## Special Case: Unreal Engine Commands
+
+**If user asks to create a `ue-*` command (Unreal Engine related), check if it needs a skill first:**
+
+**For UE commands that export/analyze UE assets:**
+
+Use the UE skill generator instead:
+```
+/ue-new-skill <verb> <noun>
+```
+
+This automatically creates both the skill AND the command.
+
+**Why?**
+- UE commands typically need UE skills to do the actual work
+- `/ue-new-skill` creates the complete package: skill + command + templates
+- Ensures consistency with UE-specific patterns
+
+**Example:**
+```
+User: "Create a ue-analyze-texture command"
+→ Response: "For Unreal Engine export/analysis commands, use /ue-new-skill analyze texture which creates both the skill and command automatically."
+```
+
+**When to use meta-new-command for UE:**
+- Simple wrapper commands that call existing UE skills
+- Commands that don't need new UE Editor integration
+- Commands that only orchestrate existing UE tools
+
 ## Execution
 
 1. **Parse arguments**: Extract category, verb, subject
