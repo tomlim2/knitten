@@ -1,0 +1,74 @@
+SKILL SERVER SITEMAP
+====================
+
+Generated: 2026-02-04
+
+## Core Pages
+http://localhost:972/                    Dashboard (Skills by Category)
+http://localhost:972/files               File Browser (Private Data)
+
+## Skills (14 total)
+
+### Art (4 skills)
+http://localhost:972/skills/art-create           Create art branch workflow
+http://localhost:972/skills/art-notice           Send Slack art branch notice
+http://localhost:972/skills/art-merge-notice     Send merge notice
+http://localhost:972/skills/art-merge-done       Send merge completion notice
+http://localhost:972/skills/art-dashboard        Art workflow dashboard
+
+### Tutoring (2 skills)
+http://localhost:972/skills/tutoring-invoice     Invoice generator
+http://localhost:972/skills/tutoring-log         Lesson logging
+
+### Browse (3 skills)
+http://localhost:972/skills/browse-standards     Standards documentation browser
+http://localhost:972/skills/browse-commands      Command reference browser
+http://localhost:972/skills/browse-learnings     Project learnings browser
+
+### Dev Tools (3 skills)
+http://localhost:972/skills/dev-design-sync      Design system sync viewer
+http://localhost:972/skills/dev-commits          Git commit collector
+http://localhost:972/skills/spec-generator       Technical specification generator
+
+### Other (1 skill)
+http://localhost:972/skills/writing-voice        Apply human writing voice
+
+## Standards (5 total)
+http://localhost:972/api/standards/code-review-cpp    C++ Code Review Guidelines
+http://localhost:972/api/standards/delegation         Delegation Standards
+http://localhost:972/api/standards/design-system      Design System (Typo-base v1.5.1)
+http://localhost:972/api/standards/tech-spec-template Technical Specification Template
+http://localhost:972/api/standards/unreal-engine      Unreal Engine Standards
+
+## API Endpoints
+
+### Discovery
+GET  http://localhost:972/api/skills              List all skills (JSON)
+GET  http://localhost:972/api/commands            List all commands (JSON)
+GET  http://localhost:972/api/standards           List all standards (JSON)
+
+### Content
+GET  http://localhost:972/api/standards/:name     Get standard markdown content
+GET  http://localhost:972/api/files?path=:path    Browse private files
+
+### Actions
+POST http://localhost:972/api/invoice/save        Save generated invoice PDF
+     Query params: studentName, year, month
+     Body: application/pdf
+
+## Static Assets
+GET  http://localhost:972/static/styles/main.css  Main stylesheet (Design System v1.5.1)
+GET  http://localhost:972/static/scripts/app.js   Client-side JavaScript
+
+## WebSocket
+WS   ws://localhost:972/                          Real-time CLI skill execution
+     Actions: collect-commits
+
+## Notes
+- Server: Express.js + EJS templates
+- Port: 972 (configurable via PORT env)
+- Config: ~/.claude/skills/skill-server/config.json
+- Skills dir: ~/.claude/skills/
+- Private dir: ~/.claude/private/
+- Commands dir: ~/.claude/commands/
+- Standards dir: ~/.claude/standards/

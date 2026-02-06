@@ -1,5 +1,6 @@
 # Tutoring data (invoices, lesson logs — personal)
 claude/private/tutoring/
+claude/private/projects/
 
 # Secrets
 *.env
