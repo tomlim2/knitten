@@ -30,6 +30,17 @@ When sending Slack messages with formatting:
 `code format`            # Inline code
 ```
 
+### Skill Server (Usage Tracking)
+
+**Server Port:** 972 (not 3000)
+
+Track command/skill usage:
+```bash
+curl -X POST http://localhost:972/api/usage/track \
+  -H "Content-Type: application/json" \
+  -d '{"type":"commands","id":"command-name"}'
+```
+
 ---
 
 ## What Is This?

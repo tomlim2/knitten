@@ -3,6 +3,8 @@
 **Version**: 1.7.0
 **Last Updated**: 2026-02-07
 
+**Live Component Examples**: http://localhost:972/skills/design-showcase
+
 ---
 
 ## Changelog
@@ -93,20 +95,6 @@
 | Gap | **24px** |
 | Responsive | 1 column on mobile (768px) |
 
-```css
-.grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-}
-
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-}
-```
-
 ---
 
 ## Typography
@@ -123,14 +111,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Fallback | Inter |
 | System fallback | sans-serif |
 | Monospace | 'SF Mono', Consolas, Monaco, monospace |
-
-### Google Fonts Import
-
-```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
-```
 
 ### Type Scale
 
@@ -159,19 +139,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Border | 1px solid `--color-border` (bottom) |
 | Display | flex, space-between |
 
-```css
-.header {
-    max-width: 1170px;
-    margin: 0 auto;
-    padding: 0 24px;
-    height: 56px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--color-border);
-}
-```
-
 ### Navigation
 
 | State | Color |
@@ -191,18 +158,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Padding bottom | 40px |
 | Last section margin | 0 |
 
-```css
-.skill-section {
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 40px;
-}
-
-.skill-section:last-child {
-    margin-bottom: 0;
-}
-```
-
 #### Skill Grid
 
 | Property | Value |
@@ -210,20 +165,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Columns | 4 (1fr each) |
 | Gap | 24px |
 | Responsive | 1 column on ≤768px |
-
-```css
-.skill-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-}
-
-@media (max-width: 768px) {
-    .skill-grid {
-        grid-template-columns: 1fr;
-    }
-}
-```
 
 #### Skill Card
 
@@ -238,36 +179,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 
 **Hover Behavior**: Title link color changes to `#0066cc`
 
-```css
-.skill-card {
-    display: block;
-}
-
-.skill-content {
-    height: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-.skill-name {
-    font-size: 16px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: 1.2;
-    margin-bottom: 10px;
-}
-
-.skill-name a {
-    color: var(--color-black);
-    text-decoration: none;
-    transition: color 0.15s ease;
-}
-
-.skill-name a:hover {
-    color: #0066cc;
-}
-```
-
 #### Skill Meta (Border-Top Pattern)
 
 | Property | Value |
@@ -278,26 +189,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Display | flex row |
 | Items | Version, platform badge |
 
-```css
-.skill-meta {
-    display: flex;
-    align-items: center;
-    padding-top: 8px;
-    border-top: 1px solid var(--color-border);
-}
-
-.skill-version {
-    font-size: 12px;
-    color: var(--color-gray-mid);
-}
-
-.skill-platform {
-    font-size: 12px;
-    color: var(--color-gray-mid);
-    margin-left: 8px;
-}
-```
-
 #### Skill Description
 
 | Property | Value |
@@ -307,39 +198,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Line clamp | 3 lines |
 | Padding | 10px top |
 
-```css
-.skill-description {
-    font-size: 12px;
-    color: var(--color-gray-dark);
-    line-height: 1.5;
-    flex: 1;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    padding-top: 10px;
-}
-```
-
-#### HTML Structure
-
-```html
-<section class="skill-section">
-    <div class="skill-grid">
-        <div class="skill-card">
-            <div class="skill-content">
-                <h3 class="skill-name"><a href="#">Title</a></h3>
-                <div class="skill-meta">
-                    <span class="skill-version">v1.0.0</span>
-                    <span class="skill-platform">Mac</span>
-                </div>
-                <p class="skill-description">Description text...</p>
-            </div>
-        </div>
-    </div>
-</section>
-```
-
 ### Buttons
 
 | Variant | Style |
@@ -347,51 +205,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Primary | Black bg, white text, full width |
 | Secondary | Transparent bg, gray-dark text, border |
 | Small | Reduced padding for compact buttons |
-
-```css
-/* Base button styles */
-.btn, .submit-button {
-    padding: 12px 24px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    border: none;
-}
-
-/* Primary - full width black */
-.btn-primary, .submit-button {
-    background: var(--color-black);
-    color: var(--color-white);
-    width: 100%;
-}
-
-.btn-primary:hover, .submit-button:hover {
-    background: var(--color-text);
-}
-
-/* Secondary - outlined */
-.btn-secondary {
-    background: transparent;
-    color: var(--color-gray-dark);
-    border: 1px solid var(--color-border);
-}
-
-.btn-secondary:hover {
-    border-color: var(--color-black);
-    color: var(--color-black);
-}
-
-/* Small variant */
-.btn-small {
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-}
-```
 
 ### Inputs
 
@@ -403,32 +216,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Transition | 0.15s ease |
 | Hover | Border-color border-hover |
 | Focus | Border-color black |
-
-```css
-.input {
-    width: 100%;
-    padding: 10px 0;
-    border: none;
-    border-bottom: 1px solid var(--color-border);
-    font-size: 16px;
-    font-family: inherit;
-    background: transparent;
-    transition: border-color 0.15s ease;
-}
-
-.input:hover {
-    border-bottom-color: var(--color-border-hover);
-}
-
-.input:focus {
-    outline: none;
-    border-bottom-color: var(--color-black);
-}
-
-.input::placeholder {
-    color: var(--color-gray-mid);
-}
-```
 
 ### Section Title (Optional)
 
@@ -442,19 +229,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Letter spacing | 0 |
 | Border | 1px solid bottom |
 
-```css
-.skill-section .section-title {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    color: var(--color-gray-mid);
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--color-border);
-}
-```
-
 ### Detail Page (Two-Column Layout)
 
 | Property | Value |
@@ -464,26 +238,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Hero title | 48px, weight 400 |
 | Sidebar label | 12px uppercase |
 
-```css
-.page-hero {
-    padding: 80px 0 48px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.page-hero-name {
-    font-size: 48px;
-    font-weight: 400;
-    letter-spacing: -0.02em;
-}
-
-.page-layout {
-    display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: 80px;
-    padding: 56px 0 80px;
-}
-```
-
 ### Item List
 
 | Property | Value |
@@ -491,16 +245,6 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Padding | 16px vertical |
 | Border | 1px solid bottom |
 | Display | flex, space-between |
-
-```css
-.item-list li {
-    padding: 16px 0;
-    border-bottom: 1px solid var(--color-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-```
 
 ### Copy Button
 
@@ -511,33 +255,9 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Border | 1px solid border |
 | Hover | Black border and text |
 
-```css
-.copy-btn {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--color-gray-mid);
-    background: transparent;
-    border: 1px solid var(--color-border);
-    padding: 6px 12px;
-    cursor: pointer;
-}
-
-.copy-btn:hover {
-    color: var(--color-black);
-    border-color: var(--color-black);
-}
-```
-
 ### Middle Dot Separator
 
-Meta 정보 구분에 사용:
-
-```css
-.meta span:not(:last-child)::after {
-    content: ' · ';
-    color: var(--color-gray-mid);
-}
-```
+Meta 정보 구분에 사용
 
 ### Footer
 
@@ -547,24 +267,6 @@ Meta 정보 구분에 사용:
 | Padding | 14px 24px |
 | Border | 1px solid `--color-border` (top) |
 | Display | flex, space-between |
-
-```css
-.footer {
-    max-width: 1170px;
-    margin: 0 auto;
-    padding: 14px 24px;
-    font-size: 12px;
-    color: var(--color-gray-mid);
-    letter-spacing: 0.02em;
-    border-top: 1px solid var(--color-border);
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-```
 
 ### Toolbar
 
@@ -577,42 +279,13 @@ Meta 정보 구분에 사용:
 
 ### Code Output
 
-```css
-.output {
-    background: var(--color-gray-light);
-    padding: 16px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
-    font-size: 12px;
-    overflow-x: auto;
-    max-height: 400px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    line-height: 1.6;
-}
-
-.status-bar {
-    background: var(--color-gray-light);
-    padding: 10px 14px;
-    font-size: 12px;
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
-    border-left: 3px solid var(--color-black);
-}
-
-.status-bar.error {
-    border-left-color: #d32f2f;
-    background: #ffebee;
-}
-```
+Terminal output display with optional status bars
 
 ### Code Blocks (Documentation)
 
 **Use**: Inline code and code blocks in content (learnings, docs, articles)
 
-**Font Stack** (Modern monospace with comprehensive fallbacks):
-```css
-font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-             "Roboto Mono", "Courier New", monospace;
-```
+**Font Stack**: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Courier New", monospace
 
 #### Inline Code
 
@@ -627,26 +300,6 @@ font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
 | White-space | nowrap (prevent mid-word breaks) |
 | Vertical-align | 0.125em (fine-tuned centering) |
 
-```css
-/* Inline code - GitHub-inspired minimal style */
-code {
-    font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-                 "Roboto Mono", "Courier New", monospace;
-    font-size: 0.85em;
-}
-
-:not(pre) > code {
-    background: #eff1f3;
-    color: #24292f;
-    padding: 0.2em 0.4em;
-    border-radius: 6px;
-    border: 1px solid #d1d9e0;
-    word-wrap: break-word;
-    white-space: nowrap;
-    vertical-align: 0.125em;
-}
-```
-
 #### Code Blocks
 
 | Property | Value |
@@ -658,28 +311,6 @@ code {
 | Line height | 1.45 (tighter for code) |
 | Overflow | auto (both axes) |
 | Margin | 16px vertical |
-
-```css
-/* Code blocks - stronger visual distinction */
-pre {
-    background: #f6f8fa;
-    padding: 1rem;
-    border-radius: 6px;
-    border: 1px solid #d0d7de;
-    overflow: auto;
-    line-height: 1.45;
-    margin: 16px 0;
-}
-
-pre code {
-    background: transparent;
-    padding: 0;
-    font-size: 100%;
-    white-space: pre;
-    border: none;
-    color: #1f2328;
-}
-```
 
 **Design Rationale**:
 - **Borders provide clarity** - Makes code immediately distinguishable from text
@@ -711,14 +342,6 @@ pre code {
 | Font size | 12px (base) |
 | Line height | 1.6 |
 
-```css
-.page-main {
-    max-width: 700px;
-    font-size: 12px;
-    line-height: 1.6;
-}
-```
-
 ### Headings
 
 | Element | Size | Weight | Line Height | Margin |
@@ -726,34 +349,6 @@ pre code {
 | h1 | 20px | 500 | 1.3 | 0 0 20px 0 |
 | h2 | 16px | 500 | 1.4 | 32px 0 12px 0 |
 | h3 | 14px | 500 | 1.4 | 24px 0 8px 0 |
-
-```css
-.page-main h1 {
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 1.3;
-    margin: 0 0 20px 0;
-    letter-spacing: 0;
-}
-
-.page-main h2 {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.4;
-    margin: 32px 0 12px 0;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--color-black);
-}
-
-.page-main h3 {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.4;
-    margin: 24px 0 8px 0;
-    letter-spacing: 0;
-}
-```
 
 ### Body Text
 
@@ -763,59 +358,12 @@ pre code {
 | ul, ol | 12px | 1.6 | 0 0 16px 0 |
 | li | 12px | 1.6 | 0 0 6px 0 |
 
-```css
-.page-main p {
-    font-size: 12px;
-    line-height: 1.6;
-    margin-bottom: 16px;
-    color: var(--color-text);
-}
-
-.page-main ul, .page-main ol {
-    font-size: 12px;
-    line-height: 1.6;
-    margin-bottom: 16px;
-    padding-left: 24px;
-}
-
-.page-main li {
-    font-size: 12px;
-    margin-bottom: 6px;
-}
-```
-
 ### Code
 
 | Element | Size | Padding | Background |
 |---------|------|---------|------------|
 | code | 11px | 2px 4px | var(--color-gray-light) |
 | pre | 11px | 16px | var(--color-gray-light) |
-
-```css
-.page-main code {
-    font-size: 11px;
-    padding: 2px 4px;
-    background: var(--color-gray-light);
-    border-radius: 2px;
-    vertical-align: middle;
-}
-
-.page-main pre {
-    font-size: 11px;
-    line-height: 1.5;
-    padding: 16px;
-    margin: 16px 0;
-    background: var(--color-gray-light);
-    border-radius: 4px;
-    overflow-x: auto;
-}
-
-.page-main pre code {
-    font-size: 11px;
-    padding: 0;
-    background: transparent;
-}
-```
 
 ### Blockquotes
 
@@ -827,17 +375,6 @@ pre code {
 | Border | 2px solid left |
 | Color | var(--color-gray-mid) |
 
-```css
-.page-main blockquote {
-    font-size: 12px;
-    line-height: 1.6;
-    margin: 16px 0;
-    padding-left: 16px;
-    border-left: 2px solid var(--color-border);
-    color: var(--color-gray-mid);
-}
-```
-
 ### Tables
 
 | Property | Value |
@@ -847,33 +384,6 @@ pre code {
 | Cell padding | 8px 12px |
 | Border | 1px solid |
 | Border collapse | collapse |
-
-```css
-.page-main table {
-    font-size: 12px;
-    line-height: 1.5;
-    border-spacing: 0;
-    border-collapse: collapse;
-    width: 100%;
-    margin: 16px 0;
-}
-
-.page-main table th,
-.page-main table td {
-    padding: 8px 12px;
-    border: 1px solid var(--color-border);
-    text-align: left;
-}
-
-.page-main table th {
-    font-weight: 500;
-    background: var(--color-gray-light);
-}
-
-.page-main table tr:nth-child(even) {
-    background: var(--color-bg);
-}
-```
 
 **Design Rationale**:
 - **12px base** - Compact reading optimized for 700px width column
@@ -926,26 +436,6 @@ pre code {
 |------|-------|---------|
 | Mobile | ≤768px | 1-column grid, reduced padding |
 | Desktop | >768px | 4-column grid, full padding |
-
-```css
-@media (max-width: 768px) {
-    .header {
-        padding: 0 20px;
-    }
-
-    .main {
-        padding: 32px 20px 100px;
-    }
-
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-}
-```
 
 ---
 
