@@ -2,7 +2,7 @@
 Validate and rename selected UE assets based on naming conventions.
 
 Run inside UE Editor Python console:
-    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\ue-validate-name\\validate_name.py").read())
+    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\ue-validate-asset-name\\validate_name.py").read())
 
 Supported: All asset types selectable in Content Browser.
 Output: ~/.claude/private/unreal/name-validate/{name}.json

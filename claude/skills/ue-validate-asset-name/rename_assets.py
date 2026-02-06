@@ -2,7 +2,7 @@
 Apply suggested renames from a validation batch JSON.
 
 Run inside UE Editor Python console:
-    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\ue-validate-name\\rename_assets.py").read())
+    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\ue-validate-asset-name\\rename_assets.py").read())
 
 Reads the LATEST batch JSON from ~/.claude/private/unreal/name-validate/
 and renames assets that have suggested_name != null.

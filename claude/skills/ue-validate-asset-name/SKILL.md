@@ -1,4 +1,4 @@
-# ue-validate-name
+# ue-validate-asset-name
 
 **Version:** 0.1.0
 
@@ -38,7 +38,7 @@ Supports all asset types selectable in the Content Browser.
 Select assets in the Content Browser, then from Claude Code:
 
 ```
-/unreal-validate-name --export
+/unreal-validate-asset-name --export
 ```
 
 This remotely validates and immediately shows results with fix suggestions.
@@ -49,12 +49,12 @@ This remotely validates and immediately shows results with fix suggestions.
 
 Option A - Remote execution:
 ```bash
-python "D:\vs\caol-ila\claude\skills\ue-validate-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-name\validate_name.py"
+python "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\validate_name.py"
 ```
 
 Option B - Paste in UE Python console:
 ```python
-exec(open(r"D:\vs\caol-ila\claude\skills\ue-validate-name\validate_name.py").read())
+exec(open(r"D:\vs\caol-ila\claude\skills\ue-validate-asset-name\validate_name.py").read())
 ```
 
 JSON is saved to `~/.claude/private/unreal/name-validate/batch_YYYYMMDD_HHMMSS.json`.
@@ -62,8 +62,8 @@ JSON is saved to `~/.claude/private/unreal/name-validate/batch_YYYYMMDD_HHMMSS.j
 #### Step 2: Review in Claude Code
 
 ```
-/unreal-validate-name                # List available validation results
-/unreal-validate-name batch_xxx      # Review a specific batch
+/unreal-validate-asset-name                # List available validation results
+/unreal-validate-asset-name batch_xxx      # Review a specific batch
 ```
 
 ### Renaming
@@ -71,7 +71,7 @@ JSON is saved to `~/.claude/private/unreal/name-validate/batch_YYYYMMDD_HHMMSS.j
 After reviewing validation results, apply renames:
 
 ```
-/unreal-validate-name --rename
+/unreal-validate-asset-name --rename
 ```
 
 This remotely executes `rename_assets.py` which reads the latest batch and applies `suggested_name` for each asset.
@@ -134,8 +134,8 @@ When suggesting names for assets with CJK (Chinese/Japanese/Korean) characters:
 
 ## Related Files
 
-- Validate script: `~/.claude/skills/ue-validate-name/validate_name.py`
-- Rename script: `~/.claude/skills/ue-validate-name/rename_assets.py`
-- Remote sender: `~/.claude/skills/ue-validate-name/run_in_editor.py`
-- Command: `~/.claude/commands/unreal-validate-name.md`
+- Validate script: `~/.claude/skills/ue-validate-asset-name/validate_name.py`
+- Rename script: `~/.claude/skills/ue-validate-asset-name/rename_assets.py`
+- Remote sender: `~/.claude/skills/ue-validate-asset-name/run_in_editor.py`
+- Command: `~/.claude/commands/unreal-validate-asset-name.md`
 - Output: `~/.claude/private/unreal/name-validate/`

@@ -23,7 +23,7 @@ Output directory: `~/.claude/private/unreal/name-validate/`
 Validate the currently selected assets in UE Editor remotely, then show results:
 
 ```
-python "D:\vs\caol-ila\claude\skills\ue-validate-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-name\validate_name.py"
+python "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\validate_name.py"
 ```
 
 After validation succeeds, find the newly created batch JSON and proceed to analysis.
@@ -35,7 +35,7 @@ If validation fails (no UE Editor found, no selection, etc.), show the error and
 Apply renames from the latest validation batch:
 
 ```
-python "D:\vs\caol-ila\claude\skills\ue-validate-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-name\rename_assets.py"
+python "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\rename_assets.py"
 ```
 
 **Before executing, show the user what will be renamed and ask for confirmation.**
@@ -51,9 +51,9 @@ If no files found, show:
 No validation results found.
 
 Usage:
-  /unreal-validate-name --export     Validate selected assets in UE Editor
-  /unreal-validate-name batch_xxx    Review a specific validation batch
-  /unreal-validate-name --rename     Apply renames from latest batch
+  /unreal-validate-asset-name --export     Validate selected assets in UE Editor
+  /unreal-validate-asset-name batch_xxx    Review a specific validation batch
+  /unreal-validate-asset-name --rename     Apply renames from latest batch
 ```
 
 **Stop here if no argument. Let the user pick from the list.**
