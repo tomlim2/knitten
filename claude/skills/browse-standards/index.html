@@ -7,7 +7,7 @@
     <title>Standards Browser</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
     <script src="/static/scripts/marked.js"></script>
     <style>
@@ -56,25 +56,31 @@
             font-size: 12px;
             margin-bottom: 6px;
         }
-        .page-main code {
+        .page-main :not(pre) > code {
             font-size: 11px;
-            padding: 2px 4px;
-            background: var(--color-gray-light);
-            border-radius: 2px;
+            padding: 0.2em 0.4em;
+            background: #eff1f3;
+            color: #24292f;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            vertical-align: 0.125em;
         }
         .page-main pre {
             font-size: 11px;
             line-height: 1.5;
-            padding: 16px;
+            padding: 1rem;
             margin: 16px 0;
-            background: var(--color-gray-light);
-            border-radius: 4px;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
             overflow-x: auto;
         }
         .page-main pre code {
             font-size: 11px;
             padding: 0;
             background: transparent;
+            color: #1f2328;
+            border: none;
         }
         .page-main blockquote {
             font-size: 12px;
@@ -124,28 +130,25 @@
             <div class="page-hero-content">
                 <h1 class="page-hero-name">Standards</h1>
                 <p class="page-hero-desc">프로젝트 표준 문서 브라우저</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">LOCATION</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/standards/</code></div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <div class="page-layout">
-            <article class="page-main markdown-body" id="standardContent">
-                <p style="color:var(--color-gray-mid);font-size:14px;">Select a standard to view</p>
+            <article class="page-main">
+                <div class="content-section">
+                    <h2 style="font-size:16px;font-weight:500;margin-bottom:16px;letter-spacing:0;">Standards</h2>
+                    <div id="standardsList">Loading...</div>
+                </div>
+                <div class="content-section markdown-body" id="standardContent">
+                    <p style="color:var(--color-gray-mid);font-size:14px;">Select a standard to view</p>
+                </div>
             </article>
-
-            <aside class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Standards</div>
-                    <div class="page-sidebar-value" id="standardsList">
-                        Loading...
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Location</div>
-                    <div class="page-sidebar-value">
-                        <code>~/.claude/standards/</code>
-                    </div>
-                </div>
-            </aside>
         </div>
     </main>
     <footer class="footer">
@@ -162,19 +165,23 @@
                 const list = document.getElementById('standardsList');
                 list.innerHTML = '';
 
+                const ul = document.createElement('ul');
+                ul.className = 'item-list';
                 data.standards.forEach(std => {
+                    const li = document.createElement('li');
                     const link = document.createElement('a');
                     link.href = '#';
-                    link.className = 'page-sidebar-link';
-                    link.style.display = 'block';
-                    link.style.marginBottom = '8px';
+                    link.style.color = 'var(--color-black)';
+                    link.style.textDecoration = 'none';
                     link.textContent = std.name;
                     link.onclick = (e) => {
                         e.preventDefault();
                         loadStandard(std.name);
                     };
-                    list.appendChild(link);
+                    li.appendChild(link);
+                    ul.appendChild(li);
                 });
+                list.appendChild(ul);
             } catch (e) {
                 console.error('Failed to load standards:', e);
             }

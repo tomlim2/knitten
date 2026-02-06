@@ -1,4 +1,4 @@
-<!-- Design System: v1.5.1 -->
+<!-- Design System: v1.7.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,7 +7,7 @@
     <title>Art Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
 </head>
 <body>
@@ -23,6 +23,20 @@
             <div class="page-hero-content">
                 <h1 class="page-hero-name">Art Dashboard</h1>
                 <p class="page-hero-desc">CINEV art 브랜치 관리 워크플로우 대시보드</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">BRANCH NAMING</div>
+                        <div class="page-hero-meta-value"><code>art/&lt;art-versioning&gt;</code>, <code>art/merge/&lt;art-versioning&gt;</code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">CONFIG</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/config/slack.json</code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">REQUIRED</div>
+                        <div class="page-hero-meta-value"><code>SLACK_TOKEN</code>, <code>SLACK_ART_CHANNEL</code></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -84,29 +98,6 @@
                     </li>
                 </ul>
             </article>
-
-            <aside class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Branch Naming</div>
-                    <div class="page-sidebar-value">
-                        <code>art/&lt;art-versioning&gt;</code><br>
-                        <code>art/merge/&lt;art-versioning&gt;</code>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Config</div>
-                    <div class="page-sidebar-value">
-                        <code>~/.claude/config/slack.json</code>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Required</div>
-                    <div class="page-sidebar-value">
-                        <code>SLACK_TOKEN</code><br>
-                        <code>SLACK_ART_CHANNEL</code>
-                    </div>
-                </div>
-            </aside>
         </div>
     </main>
     <footer class="footer">

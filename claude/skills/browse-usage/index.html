@@ -1,4 +1,4 @@
-<!-- Design System: v1.6.2 -->
+<!-- Design System: v1.7.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,7 +7,7 @@
     <title>Usage Statistics</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
     <style>
         /* Stats Cards */
@@ -129,6 +129,12 @@
             <div class="page-hero-content">
                 <h1 class="page-hero-name">Usage Statistics</h1>
                 <p class="page-hero-desc">실제 사용 빈도 기반 통계 및 시각화</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">DATA LOCATION</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/private/usage-stats.json</code></div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -161,22 +167,13 @@
                     <h2 style="font-size:16px;font-weight:500;margin-bottom:16px;letter-spacing:0;">Most Used Commands</h2>
                     <div id="commandsTableContainer"></div>
                 </div>
-            </article>
 
-            <aside class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Recent Activity</div>
-                    <div class="page-sidebar-value">
-                        <ul class="activity-list" id="recentActivity"></ul>
-                    </div>
+                <!-- Recent Activity -->
+                <div class="content-section">
+                    <h2 style="font-size:16px;font-weight:500;margin-bottom:16px;letter-spacing:0;">Recent Activity</h2>
+                    <ul class="activity-list" id="recentActivity"></ul>
                 </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Data Location</div>
-                    <div class="page-sidebar-value">
-                        <code>~/.claude/private/<br>usage-stats.json</code>
-                    </div>
-                </div>
-            </aside>
+            </article>
         </div>
     </main>
     <footer class="footer">
@@ -253,7 +250,7 @@
             items.forEach(item => {
                 const percentage = (item.count / maxCount) * 100;
                 html += '<tr>';
-                html += `<td><strong>${item.name}</strong></td>`;
+                html += `<td style="font-weight:500;">${item.name}</td>`;
                 html += `<td>${item.count}</td>`;
                 html += `<td><div class="usage-bar-container"><div class="usage-bar-fill" style="width:${percentage}%"></div></div></td>`;
                 html += `<td style="color:var(--color-gray-mid);font-size:12px;">${formatTime(item.lastUsed)}</td>`;

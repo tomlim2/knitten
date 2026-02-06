@@ -1,4 +1,4 @@
-<!-- Design System: v1.5.1 -->
+<!-- Design System: v1.7.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,7 +7,7 @@
     <title>Design Sync Viewer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
 </head>
 <body>
@@ -23,14 +23,24 @@
             <div class="page-hero-content">
                 <h1 class="page-hero-name">Design Sync</h1>
                 <p class="page-hero-desc">디자인 시스템 버전 현황 및 스킬 동기화 상태</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">STANDARD</div>
+                        <div class="page-hero-meta-value"><code>design-system.md</code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">LOCATION</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/standards/</code></div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <div class="page-layout">
             <article class="page-main">
                 <h2>Current Version</h2>
-                <p style="font-size:32px;font-weight:400;letter-spacing:-0.02em;margin-bottom:8px;">v1.3.0</p>
-                <p style="font-size:13px;color:var(--color-gray-mid);">Last updated: 2026-02-02</p>
+                <p style="font-size:32px;font-weight:400;letter-spacing:-0.02em;margin-bottom:8px;">v1.7.0</p>
+                <p style="font-size:13px;color:var(--color-gray-mid);">Last updated: 2026-02-07</p>
 
                 <h2>Skills Status</h2>
                 <ul class="item-list" id="skillList"></ul>
@@ -59,21 +69,6 @@
                     </li>
                 </ul>
             </article>
-
-            <aside class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Standard</div>
-                    <div class="page-sidebar-value">
-                        <code>design-system.md</code>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Location</div>
-                    <div class="page-sidebar-value">
-                        <code>~/.claude/standards/</code>
-                    </div>
-                </div>
-            </aside>
         </div>
     </main>
     <footer class="footer">
@@ -83,13 +78,13 @@
     </footer>
     <script>
         const skills = [
-            { name: 'skill-server', version: '1.3.0' },
-            { name: 'tutoring-invoice', version: '1.3.0' },
-            { name: 'art-dashboard', version: '1.3.0' },
-            { name: 'browse-commands', version: '1.3.0' },
-            { name: 'browse-standards', version: '1.3.0' },
-            { name: 'learn-browse-entries', version: '1.3.0' },
-            { name: 'dev-design-sync', version: '1.3.0' }
+            { name: 'skill-server', version: '1.7.0' },
+            { name: 'tutoring-invoice', version: '1.7.0' },
+            { name: 'art-dashboard', version: '1.7.0' },
+            { name: 'browse-commands', version: '1.7.0' },
+            { name: 'browse-standards', version: '1.7.0' },
+            { name: 'learn-browse-entries', version: '1.7.0' },
+            { name: 'dev-design-sync', version: '1.7.0' }
         ];
 
         function loadSkillStatus() {
@@ -99,7 +94,7 @@
             skills.forEach(skill => {
                 const li = document.createElement('li');
                 const versionNum = parseFloat(skill.version);
-                const isSynced = versionNum >= 1.3;
+                const isSynced = versionNum >= 1.7;
 
                 li.innerHTML = `
                     <span class="item-name">${skill.name}</span>

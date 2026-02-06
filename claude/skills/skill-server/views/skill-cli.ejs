@@ -1,9 +1,10 @@
-<!-- Design System: v1.5.1 -->
+<!-- Design System: v1.7.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <% const pageTitle = skill.name %>
     <%- include('partials/head', {config, pageTitle}) %>
+    <script src="/static/scripts/marked.js"></script>
 </head>
 <body>
     <%- include('partials/header', {config, activePage}) %>
@@ -12,37 +13,37 @@
             <div class="page-hero-content">
                 <h1 class="page-hero-name">/<%= skill.name %></h1>
                 <p class="page-hero-desc"><%= skill.description %></p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Command</div>
+                        <div class="page-hero-meta-value">
+                            <code>/<%= skill.id %></code>
+                        </div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Version</div>
+                        <div class="page-hero-meta-value">
+                            v<%= skill.version %>
+                        </div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Type</div>
+                        <div class="page-hero-meta-value">
+                            <%= skill.type %>
+                        </div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Path</div>
+                        <div class="page-hero-meta-value">
+                            <code>~/.claude/skills/<%= skill.id %>/</code>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <div class="page-layout">
             <article class="page-main" id="skillContent"></article>
-            <aside class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Command</div>
-                    <div class="page-sidebar-value">
-                        <code>/<%= skill.id %></code>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Version</div>
-                    <div class="page-sidebar-value">
-                        v<%= skill.version %>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Type</div>
-                    <div class="page-sidebar-value">
-                        <%= skill.type %>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Path</div>
-                    <div class="page-sidebar-value">
-                        <code>~/.claude/skills/<%= skill.id %>/</code>
-                    </div>
-                </div>
-            </aside>
         </div>
     </main>
     <%- include('partials/footer', {config}) %>
@@ -50,37 +51,15 @@
     <script>
         const markdown = `<%- skill.markdown.replace(/`/g, '\\`').replace(/\$/g, '\\$') %>`;
 
-        function renderMarkdown(md) {
-            let content = md
-                .replace(/^# .+\n/m, '')
-                .replace(/\*\*Version:\*\* .+\n/m, '')
-                .trim();
+        // Remove title and version from markdown
+        let content = markdown
+            .replace(/^# .+\n/m, '')
+            .replace(/\*\*Version:\*\* .+\n/m, '')
+            .trim();
 
-            let html = content
-                .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                .replace(/`([^`]+)`/g, '<code>$1</code>')
-                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                .replace(/\*\*([^*]+)\*\*/g, '<span class="text-semibold">$1</span>')
-                .replace(/^- (.*$)/gm, '<li>$1</li>')
-                .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>');
-
-            html = '<p>' + html + '</p>';
-            html = html.replace(/<p><h/g, '<h').replace(/<\/h(\d)><\/p>/g, '</h$1>');
-            html = html.replace(/<p><pre>/g, '<pre>').replace(/<\/pre><\/p>/g, '</pre>');
-            html = html.replace(/<p><li>/g, '<ul><li>').replace(/<\/li><\/p>/g, '</li></ul>');
-            html = html.replace(/<\/li><br><li>/g, '</li><li>');
-            html = html.replace(/<p><br><\/p>/g, '');
-            html = html.replace(/<p><\/p>/g, '');
-            html = html.replace(/<br><h/g, '<h');
-            html = html.replace(/<\/ul><br>/g, '</ul>');
-
-            return html;
-        }
-
-        document.getElementById('skillContent').innerHTML = renderMarkdown(markdown);
+        // Parse markdown with marked.js
+        const html = marked.parse(content);
+        document.getElementById('skillContent').innerHTML = html;
     </script>
 </body>
 </html>

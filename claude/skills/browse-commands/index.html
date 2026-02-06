@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Design System: v1.6.1 -->
+<!-- Design System: v1.7.0 -->
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <title>Commands Browser</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
 </head>
 <body>
@@ -27,6 +27,24 @@
             <div class="page-hero-content">
                 <h1 class="page-hero-name">Commands</h1>
                 <p class="page-hero-desc">Claude Code에 등록된 모든 슬래시 커맨드를 한눈에 확인하고 빠르게 복사할 수 있습니다.</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">LOCATION</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/commands/</code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">FORMAT</div>
+                        <div class="page-hero-meta-value">Markdown with YAML frontmatter</div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">FRONTMATTER</div>
+                        <div class="page-hero-meta-value"><code>description</code>, <code>allowed-tools</code>, <code>argument-hint</code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">USAGE</div>
+                        <div class="page-hero-meta-value">Type <code>/command</code> in Claude Code</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -41,35 +59,6 @@
                     <ul class="item-list" id="commandsGrid"></ul>
                 </div>
             </article>
-
-            <aside class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Location</div>
-                    <div class="page-sidebar-value">
-                        <code>~/.claude/commands/</code>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Format</div>
-                    <div class="page-sidebar-value">
-                        Markdown with YAML frontmatter
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Frontmatter</div>
-                    <div class="page-sidebar-value">
-                        <code>description</code><br>
-                        <code>allowed-tools</code><br>
-                        <code>argument-hint</code>
-                    </div>
-                </div>
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Usage</div>
-                    <div class="page-sidebar-value">
-                        Type <code>/command</code> in Claude Code
-                    </div>
-                </div>
-            </aside>
         </div>
 
         <section class="related-section">

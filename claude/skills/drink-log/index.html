@@ -1,4 +1,4 @@
-<!-- Design System: v1.6.1 -->
+<!-- Design System: v1.7.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -31,6 +31,12 @@
                     <span id="drinksCount">Loading...</span>
                 </div>
                 <p class="page-hero-desc">Your wine and whisky collection with tasting notes and ratings.</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">COMMAND</div>
+                        <div class="page-hero-meta-value"><code>/drink-log</code></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -46,43 +52,38 @@
                     <p>No drinks logged yet.</p>
                     <p style="margin-top: 12px; font-size: 12px;">Use <code>/drink-log "Drink Name"</code> to add your first drink.</p>
                 </div>
-            </div>
 
-            <div class="page-sidebar">
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Filter by Type</div>
-                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="radio" name="typeFilter" value="all" checked>
-                            <span style="font-size: 14px;">All</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="radio" name="typeFilter" value="whisky">
-                            <span style="font-size: 14px;">Whisky</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="radio" name="typeFilter" value="wine">
-                            <span style="font-size: 14px;">Wine</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Sort By</div>
-                    <select id="sortSelect" style="width: 100%; padding: 8px; border: 1px solid var(--color-border); background: var(--color-white); font-family: inherit; font-size: 14px; margin-top: 12px;">
-                        <option value="date-desc">Date (Newest)</option>
-                        <option value="date-asc">Date (Oldest)</option>
-                        <option value="rating-desc">Rating (Highest)</option>
-                        <option value="rating-asc">Rating (Lowest)</option>
-                        <option value="name-asc">Name (A-Z)</option>
-                        <option value="name-desc">Name (Z-A)</option>
-                    </select>
-                </div>
-
-                <div class="page-sidebar-item">
-                    <div class="page-sidebar-label">Command</div>
-                    <div class="page-sidebar-value">
-                        <code>/drink-log</code>
+                <div class="content-section">
+                    <h2 style="font-size:16px;font-weight:500;margin-bottom:16px;letter-spacing:0;">Filter and Sort</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <div>
+                            <h3 style="font-size:12px;font-weight:500;margin-bottom:12px;color:var(--color-gray-mid);text-transform:uppercase;">Filter by Type</h3>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="radio" name="typeFilter" value="all" checked>
+                                    <span style="font-size: 14px;">All</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="radio" name="typeFilter" value="whisky">
+                                    <span style="font-size: 14px;">Whisky</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input type="radio" name="typeFilter" value="wine">
+                                    <span style="font-size: 14px;">Wine</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 style="font-size:12px;font-weight:500;margin-bottom:12px;color:var(--color-gray-mid);text-transform:uppercase;">Sort By</h3>
+                            <select id="sortSelect" style="width: 100%; padding: 8px; border: 1px solid var(--color-border); background: var(--color-white); font-family: inherit; font-size: 14px;">
+                                <option value="date-desc">Date (Newest)</option>
+                                <option value="date-asc">Date (Oldest)</option>
+                                <option value="rating-desc">Rating (Highest)</option>
+                                <option value="rating-asc">Rating (Lowest)</option>
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
