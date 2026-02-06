@@ -174,6 +174,13 @@ This rulebook contains:
 
 **To create a new command:** Use `/meta-new-command <category> <verb> <subject>`
 
+**To create a new skill:** Use `/meta-new-skill <category> <verb> <subject>`
+
+For complete skill structure rules:
+```
+~/.claude/skills/meta-new-skill/SKILL.md
+```
+
 ---
 
 ## Writing Skills

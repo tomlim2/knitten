@@ -338,4 +338,5 @@ How to use this skill, with examples.
 ## Related Files
 
 - `commands/meta-new-command.md` - Command wrapper for this skill
+- `skills/meta-new-skill/SKILL.md` - Skill structure rules (use for creating skills)
 - `CLAUDE.md` - Main workflow guidance (points to this skill)
