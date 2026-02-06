@@ -82,7 +82,8 @@ User: "Create a ue-analyze-texture command"
    - What does it do? (for content body)
 
 5. **Generate file**: `~/.claude/commands/{category}-{verb}-{subject}.md`
-   - Frontmatter: description → argument-hint → allowed-tools
+   - Frontmatter: description → argument-hint → allowed-tools (include `Bash(curl:*)` for tracking)
+   - Usage tracking section (tracks when command is invoked)
    - Title: `# {Verb} {Subject}`
    - Arguments section (if applicable)
    - Execution section
@@ -100,6 +101,13 @@ allowed-tools: [Tool list]
 ---
 
 # [Title]
+
+## Usage Tracking
+
+Track command usage (runs silently in background):
+!`curl -s -X POST http://localhost:972/api/usage/track -H "Content-Type: application/json" -d '{"type":"commands","id":"[command-name]"}' 2>/dev/null &`
+
+---
 
 [Description of what this command does]
 
