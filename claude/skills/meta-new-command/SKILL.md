@@ -288,10 +288,11 @@ How to use this skill, with examples.
 3. **Identify target** → Choose subject
 4. **Combine**: `{category}-{verb}-{subject}`
 5. **Create file**: `commands/{category}-{verb}-{subject}.md`
-6. **Write frontmatter**: description → argument-hint → allowed-tools
-7. **Add content**: Title, Arguments, Execution, Examples
-8. **Include guard**: If using `$ARGUMENTS`
-9. **Test**: Verify command works as expected
+6. **Write frontmatter**: description → argument-hint → allowed-tools (include `Bash(curl:*)`)
+7. **Add usage tracking**: Include tracking section at start of command (see template)
+8. **Add content**: Title, Arguments, Execution, Examples
+9. **Include guard**: If using `$ARGUMENTS`
+10. **Test**: Verify command works as expected
 
 ### For Skills
 
@@ -299,9 +300,10 @@ How to use this skill, with examples.
 2. **Create**: `skills/{category}-{verb}-{subject}/`
 3. **Write SKILL.md**: Version, changelog, purpose, usage, files
 4. **Implement scripts**: With descriptive filenames
-5. **Add config** (if needed)
-6. **Document dependencies**: In SKILL.md
-7. **Test**: Verify skill works standalone
+5. **Add usage tracking**: Import `_shared.track_usage` and call at start of main()
+6. **Add config** (if needed)
+7. **Document dependencies**: In SKILL.md
+8. **Test**: Verify skill works standalone
 
 ---
 

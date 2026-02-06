@@ -72,6 +72,8 @@ User: "Create a ue-analyze-texture command"
 
 ## Execution
 
+**IMPORTANT: All new commands MUST include usage tracking. See template for tracking section.**
+
 1. **Parse arguments**: Extract category, verb, subject
 2. **Validate naming**: Check against rules in SKILL.md
 3. **Construct filename**: `{category}-{verb}-{subject}.md`
