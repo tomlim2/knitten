@@ -111,6 +111,37 @@
         .page-main table tr:nth-child(even) {
             background: var(--color-bg);
         }
+
+        /* Copy button for code blocks */
+        .page-main pre {
+            position: relative;
+        }
+        .copy-code-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            background: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            opacity: 0.7;
+        }
+        .copy-code-btn:hover {
+            opacity: 1;
+            background: var(--color-gray-light);
+            border-color: var(--color-gray-mid);
+        }
+        .copy-code-btn svg {
+            width: 14px;
+            height: 14px;
+        }
     </style>
 </head>
 <body>
@@ -214,9 +245,29 @@
                 const text = await res.text();
                 const html = marked.parse(text);
                 document.getElementById('learningContent').innerHTML = html;
+                addCopyButtonsToCodeBlocks();
             } catch (e) {
                 document.getElementById('learningContent').innerHTML = '<p style="color:var(--color-gray-mid);">Failed to load learning</p>';
             }
+        }
+
+        function addCopyButtonsToCodeBlocks() {
+            const codeBlocks = document.querySelectorAll('#learningContent pre code');
+            codeBlocks.forEach(code => {
+                const pre = code.parentElement;
+                if (pre && !pre.querySelector('.copy-code-btn')) {
+                    const button = document.createElement('button');
+                    button.className = 'copy-code-btn';
+                    button.innerHTML = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="5" y="5" width="9" height="9" rx="1"/>
+                        <path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+                    </svg>`;
+                    button.onclick = () => {
+                        navigator.clipboard.writeText(code.textContent);
+                    };
+                    pre.appendChild(button);
+                }
+            });
         }
 
         loadProjects();
