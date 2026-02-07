@@ -101,6 +101,9 @@
 
 ### Font Families
 
+**Primary Font**: Noto Sans KR (Korean)
+**Fallback Font**: Inter (Latin)
+
 ```css
 font-family: 'Noto Sans KR', 'Inter', sans-serif;
 ```
@@ -425,6 +428,14 @@ Terminal output display with optional status bars
 | Focus | 1px solid `--color-black` |
 | Accent | 3px solid `--color-black` (left border) |
 | Radius | **0** (no rounded corners) |
+
+### Horizontal Rule (hr)
+
+| Property | Value |
+|----------|-------|
+| Border | 1px solid `--color-border` |
+| Margin | 32px 0 |
+| Background | transparent |
 
 ---
 
