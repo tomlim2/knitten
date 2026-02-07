@@ -22,8 +22,9 @@ Displays all available UI patterns and components from the Typo-base design syst
 - Cards (stat-card, skill-card)
 - Code blocks (inline and pre)
 - Middle dot separators
-- Footer
 - Color palette
+- Status colors (emotion-based alerts and comfortable states)
+- Footer
 - Complete page template
 
 ## Use Cases

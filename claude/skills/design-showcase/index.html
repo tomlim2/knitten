@@ -90,7 +90,7 @@
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">COMPONENTS</div>
-                        <div class="page-hero-meta-value">17 patterns</div>
+                        <div class="page-hero-meta-value">18 patterns</div>
                     </div>
                 </div>
             </div>
@@ -636,6 +636,81 @@ console.log(example());</code></pre>
     --color-gray-dark: #555555;
     --color-link-hover: #0066cc;
     --color-border: #e5e5e5;
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Status Colors -->
+                <div class="content-section">
+                    <h2>Status Colors</h2>
+                    <p style="margin-bottom: 16px;">Emotion-based status indicators for user feedback (use sparingly)</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Alert States (조심/경고)</div>
+                        <p style="font-size: 11px; color: var(--color-gray-mid); margin-bottom: 16px;">Use when user needs caution or warning feedback</p>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
+                            <div>
+                                <div style="width: 100%; height: 60px; background: #E88CA8; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                                <p style="margin-top: 8px; font-size: 12px; font-weight: 500;">Anger</p>
+                                <p style="font-size: 11px; color: var(--color-gray-mid);"><code>#E88CA8</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: #B4A8D6; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                                <p style="margin-top: 8px; font-size: 12px; font-weight: 500;">Anxiety</p>
+                                <p style="font-size: 11px; color: var(--color-gray-mid);"><code>#B4A8D6</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: #D6A8A8; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                                <p style="margin-top: 8px; font-size: 12px; font-weight: 500;">Stress</p>
+                                <p style="font-size: 11px; color: var(--color-gray-mid);"><code>#D6A8A8</code></p>
+                            </div>
+                        </div>
+
+                        <div class="example-label">Comfortable States (편안함/긍정)</div>
+                        <p style="font-size: 11px; color: var(--color-gray-mid); margin-bottom: 16px;">Use when user feels safe or positive feedback</p>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <div>
+                                <div style="width: 100%; height: 60px; background: #E8B4B8; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                                <p style="margin-top: 8px; font-size: 12px; font-weight: 500;">Happy</p>
+                                <p style="font-size: 11px; color: var(--color-gray-mid);"><code>#E8B4B8</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: #B4D6B4; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                                <p style="margin-top: 8px; font-size: 12px; font-weight: 500;">Peaceful</p>
+                                <p style="font-size: 11px; color: var(--color-gray-mid);"><code>#B4D6B4</code></p>
+                            </div>
+                            <div>
+                                <div style="width: 100%; height: 60px; background: #E8B4D6; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                                <p style="margin-top: 8px; font-size: 12px; font-weight: 500;">Pleasure</p>
+                                <p style="font-size: 11px; color: var(--color-gray-mid);"><code>#E8B4D6</code></p>
+                            </div>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>/* Alert States */
+--status-anger: #E88CA8;
+--status-anxiety: #B4A8D6;
+--status-stress: #D6A8A8;
+
+/* Comfortable States */
+--status-happy: #E8B4B8;
+--status-peaceful: #B4D6B4;
+--status-pleasure: #E8B4D6;
+
+/* Example Usage */
+.alert-message {
+    background: var(--status-anger);
+    padding: 16px;
+    border-radius: 6px;
+}
+
+.success-message {
+    background: var(--status-peaceful);
+    padding: 16px;
+    border-radius: 6px;
 }</code></pre>
                     </div>
                 </div>

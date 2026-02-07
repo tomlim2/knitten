@@ -70,6 +70,15 @@ body {
     color: var(--color-black);
 }
 
+.nav-link-disabled {
+    color: var(--color-gray-light);
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* Main */
 .main {
     max-width: 1170px;
@@ -88,6 +97,15 @@ body {
 
 .skill-count-number {
     font-weight: 500;
+    color: var(--color-black);
+}
+
+.tracking-status {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+}
+
+.tracking-status-active {
     color: var(--color-black);
 }
 

@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { WebSocketServer } = require('ws');
 const http = require('http');
+const { createClient } = require('@supabase/supabase-js');
 
 // Load config
 const config = require('./config.json');
@@ -17,7 +19,22 @@ const SKILLS_DIR = path.join(CLAUDE_DIR, 'skills');
 const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
 const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
-const USAGE_STATS_FILE = path.join(PRIVATE_DIR, 'usage-stats.json');
+
+// Initialize Supabase client (graceful degradation)
+let supabase = null;
+try {
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+        supabase = createClient(
+            process.env.SUPABASE_URL,
+            process.env.SUPABASE_ANON_KEY
+        );
+        console.log('✓ Supabase connected - tracking enabled');
+    } else {
+        console.log('⚠ Supabase credentials not found - tracking disabled');
+    }
+} catch (error) {
+    console.log('⚠ Supabase initialization failed - tracking disabled');
+}
 
 // View engine
 app.set('view engine', 'ejs');
@@ -28,37 +45,50 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 // Usage tracking helpers
-function readUsageStats() {
-    if (!fs.existsSync(USAGE_STATS_FILE)) {
+async function readUsageStats() {
+    if (!supabase) {
         return { skills: {}, commands: {} };
     }
+
     try {
-        const content = fs.readFileSync(USAGE_STATS_FILE, 'utf-8');
-        return JSON.parse(content);
+        const { data, error } = await supabase
+            .from('usage_tracking')
+            .select('*');
+
+        if (error) throw error;
+
+        // Convert to old format for compatibility
+        const stats = { skills: {}, commands: {} };
+        data.forEach(row => {
+            stats[row.type][row.item_id] = {
+                count: row.count,
+                lastUsed: row.last_used
+            };
+        });
+
+        return stats;
     } catch (error) {
+        console.error('Failed to read usage stats:', error.message);
         return { skills: {}, commands: {} };
     }
 }
 
-function writeUsageStats(stats) {
-    try {
-        fs.writeFileSync(USAGE_STATS_FILE, JSON.stringify(stats, null, 2), 'utf-8');
-    } catch (error) {
-        console.error('Failed to write usage stats:', error);
-    }
-}
+async function recordUsage(type, id) {
+    if (!supabase) return; // Graceful degradation
 
-function recordUsage(type, id) {
-    const stats = readUsageStats();
-    if (!stats[type]) {
-        stats[type] = {};
+    try {
+        const { error } = await supabase.rpc('increment_usage', {
+            p_type: type,
+            p_item_id: id
+        });
+
+        if (error) {
+            console.error('Tracking error:', error.message);
+        }
+    } catch (error) {
+        // Fail silently - tracking is optional
+        console.error('Tracking error:', error.message);
     }
-    if (!stats[type][id]) {
-        stats[type][id] = { count: 0, lastUsed: null };
-    }
-    stats[type][id].count++;
-    stats[type][id].lastUsed = new Date().toISOString();
-    writeUsageStats(stats);
 }
 
 // Skill registry
@@ -181,7 +211,7 @@ function groupByCategory(skills) {
 }
 
 // Routes
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     const skills = discoverSkills();
     const groupedSkills = groupByCategory(skills);
     const skillCount = skills.length;
@@ -194,7 +224,7 @@ app.get('/', (req, res) => {
             .length;
     }
 
-    const usageStats = readUsageStats();
+    const usageStats = await readUsageStats();
     res.render('dashboard', { groupedSkills, skillCount, commandCount, usageStats, config, activePage: '/' });
 });
 
@@ -382,7 +412,7 @@ app.get('/api/standards/:name', (req, res) => {
 });
 
 // Usage tracking API
-app.post('/api/usage/track', (req, res) => {
+app.post('/api/usage/track', async (req, res) => {
     const { type, id } = req.body;
 
     if (!type || !id) {
@@ -393,16 +423,16 @@ app.post('/api/usage/track', (req, res) => {
         return res.status(400).json({ error: 'Invalid type. Must be "skills" or "commands"' });
     }
 
-    recordUsage(type, id);
+    await recordUsage(type, id);
     res.json({ success: true });
 });
 
-app.get('/api/usage/stats', (req, res) => {
-    const stats = readUsageStats();
+app.get('/api/usage/stats', async (req, res) => {
+    const stats = await readUsageStats();
     res.json(stats);
 });
 
-app.delete('/api/usage/track', (req, res) => {
+app.delete('/api/usage/track', async (req, res) => {
     const { type, id } = req.body;
 
     if (!type || !id) {
@@ -413,13 +443,22 @@ app.delete('/api/usage/track', (req, res) => {
         return res.status(400).json({ error: 'Invalid type. Must be "skills" or "commands"' });
     }
 
-    const stats = readUsageStats();
-    if (stats[type] && stats[type][id]) {
-        delete stats[type][id];
-        writeUsageStats(stats);
+    if (!supabase) {
+        return res.status(503).json({ error: 'Tracking service unavailable' });
+    }
+
+    try {
+        const { error } = await supabase
+            .from('usage_tracking')
+            .delete()
+            .eq('type', type)
+            .eq('item_id', id);
+
+        if (error) throw error;
+
         res.json({ success: true, message: `Deleted ${type}/${id}` });
-    } else {
-        res.status(404).json({ error: `Entry ${type}/${id} not found` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 

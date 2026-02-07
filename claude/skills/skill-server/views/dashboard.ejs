@@ -8,7 +8,7 @@
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
         <div class="skill-count">
-            <span class="skill-count-number"><%= skillCount %></span> skill<%= skillCount !== 1 ? 's' : '' %>, <span class="skill-count-number"><%= commandCount %></span> command<%= commandCount !== 1 ? 's' : '' %> registered
+            <%= skillCount %> skill<%= skillCount !== 1 ? 's' : '' %>, <%= commandCount %> command<%= commandCount !== 1 ? 's' : '' %> registered · Server connected
         </div>
 
         <% groupedSkills.forEach(group => { %>
