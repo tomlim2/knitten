@@ -59,6 +59,34 @@
             width: 14px;
             height: 14px;
         }
+
+        /* Showcase Headings */
+        .page-main h1 {
+            font-size: 20px;
+            color: var(--color-black);
+            font-weight: 400;
+            text-transform: none;
+        }
+        .page-main h2 {
+            font-size: 18px;
+            color: var(--color-black);
+            font-weight: 400;
+            text-transform: none;
+            margin-top: 20px;
+        }
+        .page-main h3 {
+            font-size: 16px;
+            color: var(--color-black);
+            font-weight: 400;
+            text-transform: none;
+            margin-top: 18px;
+        }
+        .page-main h4 {
+            font-size: 14px;
+            color: var(--color-black);
+            font-weight: 400;
+            text-transform: none;
+        }
     </style>
 </head>
 <body>
@@ -186,18 +214,20 @@ font-family: 'SF Mono', Consolas, Monaco, monospace;</code></pre>
 
                     <div class="example-box">
                         <div class="example-label">Headings</div>
-                        <h1 style="font-size: 48px; margin-bottom: 16px;">Heading 1 (48px, weight 400)</h1>
-                        <h2 style="font-size: 16px; margin-bottom: 12px;">Heading 2 (16px, weight 500)</h2>
-                        <h3 style="font-size: 16px; margin-bottom: 12px;">Heading 3 (16px, weight 500)</h3>
-                        <p style="margin-bottom: 16px;">Body text (16px, weight 400, line-height 1.5)</p>
+                        <h1 style="font-size: 20px; color: var(--color-black); font-weight: 400; margin-bottom: 16px;">Heading 1 (20px, weight 400, black)</h1>
+                        <h2 style="font-size: 18px; color: var(--color-black); font-weight: 400; margin-bottom: 12px;">Heading 2 (18px, weight 400, black)</h2>
+                        <h3 style="font-size: 16px; color: var(--color-black); font-weight: 400; margin-bottom: 12px;">Heading 3 (16px, weight 400, black)</h3>
+                        <h4 style="font-size: 14px; color: var(--color-black); font-weight: 400; margin-bottom: 12px;">Heading 4 (14px, weight 400, black)</h4>
+                        <p style="font-size: 14px; margin-bottom: 16px;">Body text (14px, weight 400, line-height 1.5)</p>
                         <p style="font-size: 12px; color: var(--color-gray-mid);">Small text (12px, gray-mid)</p>
                         <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
 <rect x="5" y="5" width="9" height="9" rx="1"/>
 <path d="M3 10V3a1 1 0 0 1 1-1h7"/>
 </svg></button>
-                        <pre class="code-example"><code>&lt;h1 class="page-hero-name"&gt;Heading 1&lt;/h1&gt;
+                        <pre class="code-example"><code>&lt;h1&gt;Heading 1&lt;/h1&gt;
 &lt;h2&gt;Heading 2&lt;/h2&gt;
 &lt;h3&gt;Heading 3&lt;/h3&gt;
+&lt;h4&gt;Heading 4&lt;/h4&gt;
 &lt;p&gt;Body text&lt;/p&gt;</code></pre>
                     </div>
                 </div>

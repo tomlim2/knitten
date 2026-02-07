@@ -129,6 +129,18 @@ font-family: 'Noto Sans KR', 'Inter', sans-serif;
 | Label (uppercase) | 12px | 600 | 1.2 | 0 |
 | Code | 12px | 400 | 1.6 | 0 |
 
+### Showcase Headings
+
+For design-showcase page only (no text-transform):
+
+| Element | Size | Weight | Color |
+|---------|------|--------|-------|
+| h1 | 20px | 400 | black |
+| h2 | 18px | 400 | black |
+| h3 | 16px | 400 | black |
+| h4 | 14px | 400 | black |
+| body (p) | 14px | 400 | text |
+
 ---
 
 ## Components
