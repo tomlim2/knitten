@@ -90,7 +90,7 @@
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">COMPONENTS</div>
-                        <div class="page-hero-meta-value">16 patterns</div>
+                        <div class="page-hero-meta-value">17 patterns</div>
                     </div>
                 </div>
             </div>
@@ -386,6 +386,84 @@ background: transparent;
 &lt;button class="btn btn-primary"&gt;Primary Button&lt;/button&gt;
 &lt;button class="btn btn-secondary"&gt;Secondary Button&lt;/button&gt;
 &lt;button class="btn btn-small"&gt;Small Button&lt;/button&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Copy Button -->
+                <div class="content-section">
+                    <h2>Copy Button</h2>
+                    <p style="margin-bottom: 16px;">Icon-only copy button positioned in top-right corner of code blocks</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Live Example</div>
+                        <div style="position: relative; background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 16px; margin-bottom: 24px;">
+                            <button class="copy-code-btn" onclick="alert('Copy functionality triggered!')">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="5" y="5" width="9" height="9" rx="1"/>
+                                    <path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+                                </svg>
+                            </button>
+                            <p style="margin: 0; font-size: 12px;">Hover over the icon in the top-right corner</p>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;!-- HTML: Icon-only button --&gt;
+&lt;button class="copy-code-btn" onclick="copyCode(this)"&gt;
+    &lt;svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"&gt;
+        &lt;rect x="5" y="5" width="9" height="9" rx="1"/&gt;
+        &lt;path d="M3 10V3a1 1 0 0 1 1-1h7"/&gt;
+    &lt;/svg&gt;
+&lt;/button&gt;</code></pre>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>/* CSS: Absolute positioning in top-right */
+.code-example {
+    position: relative;  /* Required for absolute child */
+}
+
+.copy-code-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.copy-code-btn:hover {
+    background: var(--color-gray-light);
+    border-color: var(--color-gray-mid);
+}
+
+.copy-code-btn svg {
+    width: 14px;
+    height: 14px;
+}</code></pre>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>// JavaScript: Copy code to clipboard
+function copyCode(button) {
+    const pre = button.nextElementSibling;
+    const code = pre.querySelector('code');
+    navigator.clipboard.writeText(code.textContent);
+}</code></pre>
                     </div>
                 </div>
 

@@ -18,6 +18,7 @@ Displays all available UI patterns and components from the Typo-base design syst
 - Horizontal rules (hr)
 - Item lists (dashboard pattern)
 - Forms (inputs, buttons)
+- Copy button (icon-only, absolute positioned)
 - Cards (stat-card, skill-card)
 - Code blocks (inline and pre)
 - Middle dot separators
