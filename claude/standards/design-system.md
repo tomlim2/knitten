@@ -1,6 +1,6 @@
 # Design System - Typo-base
 
-**Version**: 1.7.0
+**Version**: 1.8.0
 **Last Updated**: 2026-02-07
 
 **Live Component Examples**: http://localhost:972/skills/design-showcase
@@ -11,6 +11,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8.0 | 2026-02-07 | Added UX Writing guidelines: Two-mode writing system (Empathetic for UI/status, Professional for technical content) |
 | 1.7.0 | 2026-02-07 | Added Markdown Reading Typography pattern: compact 12px reading style with table styling |
 | 1.6.2 | 2026-02-06 | Added rule: Semibold (500) and bold (600) font weights only for headers, never body text |
 | 1.6.1 | 2026-02-05 | Font hierarchy change: Noto Sans KR primary, Inter fallback (removed Google Sans Flex) |
@@ -483,6 +484,126 @@ Terminal output display with optional status bars
 - Clear focus states
 - Keyboard navigable
 - Semantic HTML
+
+---
+
+## UX Writing
+
+### Voice and Tone
+
+**Two writing modes based on context:**
+
+#### Infographics and Status Messages (Empathetic)
+Server-generated UI feedback should feel **human and considerate**. Use complete sentences that acknowledge the user's emotional state.
+
+**Characteristics:**
+- Complete sentences with proper grammar
+- Active voice describing what's happening
+- Considerate of user's time and attention
+- Korean-friendly phrasing when applicable
+
+**Examples:**
+
+| Context | ❌ Avoid | ✅ Preferred |
+|---------|---------|-------------|
+| Loading | "Loading..." | "서버 연결중" |
+| Processing | "Processing data" | "데이터를 불러오는 중입니다" |
+| Success | "Saved" | "저장 완료!" |
+| Empty state | "No results" | "아직 사용 기록이 없습니다" |
+| Error | "Error 404" | "페이지를 찾을 수 없습니다" |
+| Progress | "50%" | "절반 정도 완료했습니다" |
+
+**Status Message Patterns:**
+```
+[Subject] + [Action] + [State/Context]
+- "서버 연결중"
+- "파일을 저장하는 중입니다"
+- "모든 변경사항이 저장되었습니다"
+```
+
+#### Technical Content (Professional)
+Skill descriptions, command documentation, and developer-facing content should prioritize **clarity, precision, and brevity**.
+
+**Characteristics:**
+- Imperative mood for instructions
+- Technical accuracy over friendliness
+- Scannable with consistent structure
+- No unnecessary adjectives or filler
+
+**Examples:**
+
+| Context | ❌ Avoid | ✅ Preferred |
+|---------|---------|-------------|
+| Skill description | "This amazing skill helps you create..." | "Create git commits from staged changes" |
+| Command arg | "Please provide the file name" | "File name (required)" |
+| Button label | "Click here to download" | "Download" |
+| Error message | "Oops! Something went wrong" | "Invalid file path" |
+| Documentation | "You might want to try..." | "Use --force to override" |
+
+**Technical Writing Patterns:**
+```
+[Action verb] + [Object] + [Optional: Context]
+- "Execute git commands"
+- "Generate invoice from pending lessons"
+- "Track skill usage (optional: --dry-run)"
+```
+
+### Writing Guidelines
+
+#### General Rules
+1. **Be specific**: "3 files updated" not "Files updated"
+2. **Use present tense**: "Saving..." not "Save in progress"
+3. **Avoid jargon in UI**: "연결중" not "Establishing TCP connection"
+4. **Never use placeholder text**: No "Lorem ipsum" or "Example text here"
+5. **Bilingual when needed**: Status messages can use Korean for warmth
+
+#### When to Use Each Mode
+
+| Content Type | Mode | Reason |
+|-------------|------|--------|
+| Loading states | Empathetic | User is waiting, acknowledge their time |
+| Error messages | Empathetic | User is frustrated, be considerate |
+| Success confirmations | Empathetic | User accomplished something, celebrate |
+| Empty states | Empathetic | User might feel uncertain, guide them |
+| Skill descriptions | Professional | Developer needs quick understanding |
+| Command arguments | Professional | Technical accuracy is critical |
+| Documentation | Professional | Reference material, not conversation |
+| API responses | Professional | Machine-readable, consistent format |
+
+#### Word Choice
+
+**Empathetic Mode (Infographics):**
+- 완료 (completed) over Done
+- 불러오는 중 (loading) over Loading
+- 저장되었습니다 (saved) over Saved
+- 아직 없습니다 (not yet available) over Empty
+
+**Professional Mode (Technical):**
+- Execute, Run, Generate (imperative)
+- Path, File, Directory (precise nouns)
+- Required, Optional, Default (clear states)
+- Success, Failed, Pending (status codes)
+
+### Anti-Patterns
+
+❌ **Don't mix modes:**
+```
+Bad: "데이터를 execute하는 중입니다"
+Good: "데이터를 처리하는 중입니다" (Empathetic)
+Good: "Execute data processing" (Professional)
+```
+
+❌ **Don't over-explain in technical content:**
+```
+Bad: "This command will help you create a new branch"
+Good: "Create new branch"
+```
+
+❌ **Don't be cold in status messages:**
+```
+Bad: "Operation pending"
+Good: "작업을 진행하고 있습니다"
+```
 
 ---
 
