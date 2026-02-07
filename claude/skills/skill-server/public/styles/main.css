@@ -86,23 +86,13 @@ body {
     padding: 32px 24px 16px;
 }
 
-/* Skill Count */
-.skill-count {
+/* Server Status */
+.server-status {
     font-size: 12px;
     color: var(--color-gray-mid);
     margin-bottom: 32px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--color-border);
-}
-
-.skill-count-number {
-    font-weight: 500;
-    color: var(--color-black);
-}
-
-.tracking-status {
-    font-size: 12px;
-    color: var(--color-gray-mid);
 }
 
 .tracking-status-active {
