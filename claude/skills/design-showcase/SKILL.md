@@ -9,13 +9,21 @@ Live showcase of all Design System v1.7.0 components with copyable HTML examples
 ## What It Does
 
 Displays all available UI patterns and components from the Typo-base design system:
+- Font names (Noto Sans KR, Inter, SF Mono)
 - Hero sections with metadata grids
+- Navigation with hover states
 - Typography hierarchy (h1-h3, body, code)
 - Tables with headers and alternating rows
-- Lists (item-list, activity-list)
+- Bullet points and numbered lists
+- Horizontal rules (hr)
+- Item lists (dashboard pattern)
 - Forms (inputs, buttons)
 - Cards (stat-card, skill-card)
 - Code blocks (inline and pre)
+- Middle dot separators
+- Footer
+- Color palette
+- Complete page template
 
 ## Use Cases
 
