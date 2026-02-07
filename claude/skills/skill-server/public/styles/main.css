@@ -731,7 +731,7 @@ h1, h2 {
     font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     background: var(--color-gray-light);
-    padding: 0;
+    padding: 4px 8px;
 }
 
 .page-main ul {
