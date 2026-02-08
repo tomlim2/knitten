@@ -162,10 +162,11 @@
                     <div style="flex: 1;">
                         <div style="font-size: 16px; font-weight: 500; margin-bottom: 4px;">${drink.name}${drink.vintage ? ` ${drink.vintage}` : ''}</div>
                         ${drink.description ? `<div style="font-size: 13px; color: var(--color-gray-mid); line-height: 1.5; margin-bottom: 8px;">${drink.description}</div>` : ''}
-                        <div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 8px;">
-                            ${drink.type || 'Unknown'} · ${drink.region || 'N/A'} · ${drink.date || 'N/A'}
+                        <div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 4px;">
+                            ${drink.type || 'Unknown'} · ${drink.region || 'N/A'}
                         </div>
-                        ${drink.notes ? `<div style="font-size: 14px; color: var(--color-gray-dark); line-height: 1.5; margin-top: 8px;">${drink.notes}</div>` : ''}
+                        ${drink.date ? `<div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 8px;">마신날: ${drink.date}</div>` : ''}
+                        ${drink.notes ? `<div style="font-size: 14px; color: var(--color-gray-dark); line-height: 1.5; margin-top: 8px;">개인 노트: ${drink.notes}</div>` : ''}
                         ${sourceInfo ? `<div style="margin-top: 8px;">${sourceInfo}</div>` : ''}
                     </div>
                     <div style="text-align: right; min-width: 120px;">
