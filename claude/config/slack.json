@@ -1,4 +1,8 @@
 {
   "art_channel": "C05CS9N5E69",
-  "art_notice_message": "@here\n아트 새브렌치가 나왔습니다~\n`{branch_name}`\n\n**브렌치 이동후 다운로드 바이너리스 해주세요**"
+  "bot_username": "아트 아르리므",
+  "art_notice_message": "@here\n아트 새브렌치가 나왔습니다~\n`{branch_name}`\n\n**브렌치 이동후 다운로드 바이너리스 해주세요**",
+  "art_merge_notice_message": "{branch_name} 아트 브렌치 디벨롭에 머지합니다.\n\n반드시 리다이렉터 업데이트, 커밋, 푸시 및 언락 부탁드립니다!",
+  "art_merge_result_message": "디벨롭에 머지 완료되었습니다!",
+  "art_merge_detail_message": "**머지 내역:**\n```\n{details}\n```"
 }

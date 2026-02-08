@@ -6,10 +6,12 @@ import sys
 import json
 from pathlib import Path
 
+SKILL_DIR = Path(__file__).resolve().parent
+ROOT_DIR = SKILL_DIR.parent.parent
+
 # Load environment variables from shared .env file
 def load_env():
-    # Load from shared config location
-    env_path = Path(__file__).parent.parent.parent / "config" / ".env"
+    env_path = ROOT_DIR / "config" / ".env"
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
@@ -20,7 +22,7 @@ def load_env():
 
 def load_slack_config():
     """Load shared Slack config from claude/config/slack.json"""
-    config_path = Path(__file__).parent.parent.parent / "config" / "slack.json"
+    config_path = ROOT_DIR / "config" / "slack.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -48,7 +50,7 @@ def send_slack_message(message: str) -> bool:
         payload = json.dumps({
             "channel": ART_CHANNEL,
             "text": message,
-            "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
+            "username": SLACK_CONFIG.get("bot_username"),
             "link_names": True,
         }).encode("utf-8")
 

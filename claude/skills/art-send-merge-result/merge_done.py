@@ -9,9 +9,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+SKILL_DIR = Path(__file__).resolve().parent
+ROOT_DIR = SKILL_DIR.parent.parent
+
 # Load environment variables from shared .env file
 def load_env():
-    env_path = Path(__file__).parent.parent.parent / "config" / ".env"
+    env_path = ROOT_DIR / "config" / ".env"
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
@@ -23,7 +26,7 @@ def load_env():
 
 def load_config():
     """Load local config (repo path from art-create-branch)."""
-    config_path = Path(__file__).parent.parent / "art-create-branch" / "config.json"
+    config_path = SKILL_DIR.parent / "art-create-branch" / "config.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -32,7 +35,7 @@ def load_config():
 
 def load_slack_config():
     """Load shared Slack config."""
-    config_path = Path(__file__).parent.parent.parent / "config" / "slack.json"
+    config_path = ROOT_DIR / "config" / "slack.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -41,7 +44,7 @@ def load_slack_config():
 
 def load_thread_info(branch_name: str) -> dict | None:
     """Load thread info for a branch."""
-    threads_path = Path(__file__).parent.parent.parent / "private" / "slack_threads.json"
+    threads_path = ROOT_DIR / "private" / "slack_threads.json"
     if not threads_path.exists():
         return None
 
@@ -143,7 +146,7 @@ def send_thread_reply(channel: str, thread_ts: str, message: str, broadcast: boo
             "text": message,
             "thread_ts": thread_ts,
             "reply_broadcast": broadcast,
-            "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
+            "username": SLACK_CONFIG.get("bot_username"),
             "link_names": True,
         }).encode("utf-8")
 
@@ -173,7 +176,7 @@ def send_thread_reply(channel: str, thread_ts: str, message: str, broadcast: boo
 
 def list_available_branches() -> None:
     """List all branches with saved thread info."""
-    threads_path = Path(__file__).parent.parent.parent / "private" / "slack_threads.json"
+    threads_path = ROOT_DIR / "private" / "slack_threads.json"
     if not threads_path.exists():
         print("No saved threads found.")
         return
@@ -231,7 +234,7 @@ def main():
 
     # Send first message: merge complete
     print("\nSending merge complete notification...")
-    msg1 = "디벨롭에 머지 완료되었습니다!"
+    msg1 = SLACK_CONFIG.get("art_merge_result_message")
     if not send_thread_reply(channel, thread_ts, msg1, broadcast=True):
         sys.exit(1)
 
@@ -240,7 +243,8 @@ def main():
     details = get_merge_details(branch_name)
 
     # Format as Korean summary
-    msg2 = f"**머지 내역:**\n```\n{details}\n```"
+    msg2_template = SLACK_CONFIG.get("art_merge_detail_message")
+    msg2 = msg2_template.format(details=details)
 
     print("Sending merge details...")
     if not send_thread_reply(channel, thread_ts, msg2):

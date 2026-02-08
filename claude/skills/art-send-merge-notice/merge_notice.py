@@ -6,9 +6,12 @@ import sys
 import json
 from pathlib import Path
 
+SKILL_DIR = Path(__file__).resolve().parent
+ROOT_DIR = SKILL_DIR.parent.parent
+
 # Load environment variables from shared .env file
 def load_env():
-    env_path = Path(__file__).parent.parent.parent / "config" / ".env"
+    env_path = ROOT_DIR / "config" / ".env"
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
@@ -20,7 +23,7 @@ def load_env():
 
 def load_slack_config():
     """Load shared Slack config."""
-    config_path = Path(__file__).parent.parent.parent / "config" / "slack.json"
+    config_path = ROOT_DIR / "config" / "slack.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -29,7 +32,7 @@ def load_slack_config():
 
 def load_thread_info(branch_name: str) -> dict | None:
     """Load thread info for a branch."""
-    threads_path = Path(__file__).parent.parent.parent / "private" / "slack_threads.json"
+    threads_path = ROOT_DIR / "private" / "slack_threads.json"
     if not threads_path.exists():
         return None
 
@@ -43,9 +46,7 @@ load_env()
 SLACK_CONFIG = load_slack_config()
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", "")
 
-MERGE_MESSAGE = """{branch_name} 아트 브렌치 디벨롭에 머지합니다.
-
-반드시 리다이렉터 업데이트, 커밋, 푸시 및 언락 부탁드립니다!"""
+MERGE_MESSAGE = SLACK_CONFIG.get("art_merge_notice_message")
 
 
 def send_thread_reply(channel: str, thread_ts: str, message: str) -> bool:
@@ -62,7 +63,7 @@ def send_thread_reply(channel: str, thread_ts: str, message: str) -> bool:
             "text": message,
             "thread_ts": thread_ts,
             "reply_broadcast": True,
-            "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
+            "username": SLACK_CONFIG.get("bot_username"),
             "link_names": True,
         }).encode("utf-8")
 
@@ -92,7 +93,7 @@ def send_thread_reply(channel: str, thread_ts: str, message: str) -> bool:
 
 def list_available_branches() -> None:
     """List all branches with saved thread info."""
-    threads_path = Path(__file__).parent.parent.parent / "private" / "slack_threads.json"
+    threads_path = ROOT_DIR / "private" / "slack_threads.json"
     if not threads_path.exists():
         print("No saved threads found.")
         return

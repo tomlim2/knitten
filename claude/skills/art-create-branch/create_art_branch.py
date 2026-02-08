@@ -14,10 +14,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+SKILL_DIR = Path(__file__).resolve().parent
+ROOT_DIR = SKILL_DIR.parent.parent
+
 # Load environment variables from shared .env file
 def load_env():
-    # Load from shared config location
-    env_path = Path(__file__).parent.parent.parent / "config" / ".env"
+    env_path = ROOT_DIR / "config" / ".env"
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
@@ -30,7 +32,7 @@ load_env()
 
 # Load local config
 def load_config():
-    config_path = Path(__file__).parent / "config.json"
+    config_path = SKILL_DIR / "config.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -38,7 +40,7 @@ def load_config():
 
 # Load shared Slack config
 def load_slack_config():
-    config_path = Path(__file__).parent.parent.parent / "config" / "slack.json"
+    config_path = ROOT_DIR / "config" / "slack.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -50,7 +52,7 @@ SLACK_CONFIG = load_slack_config()
 # Configuration
 REPO_PATH = CONFIG.get("repo_path", r"E:\Second\CINEVStudio")
 SLACK_CHANNEL = SLACK_CONFIG.get("art_channel", "")
-NOTIFICATION_MESSAGE = SLACK_CONFIG.get("art_notice_message", "@here 아트 새브렌치가 나왔습니다~ {branch_name}")
+NOTIFICATION_MESSAGE = SLACK_CONFIG.get("art_notice_message")
 SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", "")
 KST = ZoneInfo("Asia/Seoul")
 
@@ -107,7 +109,7 @@ def get_commits_in_range(branch: str, since: datetime, until: datetime) -> list[
 
 def save_thread_info(branch_name: str, channel: str, ts: str) -> None:
     """Save thread info for later replies."""
-    threads_path = Path(__file__).parent.parent.parent / "private" / "slack_threads.json"
+    threads_path = ROOT_DIR / "private" / "slack_threads.json"
     threads_path.parent.mkdir(parents=True, exist_ok=True)
 
     threads = {}
@@ -146,7 +148,7 @@ def send_slack_notification(branch_name: str, commit_count: int) -> bool:
         payload = json.dumps({
             "channel": SLACK_CHANNEL,
             "text": message,
-            "username": SLACK_CONFIG.get("bot_username", "아트 아르리므"),
+            "username": SLACK_CONFIG.get("bot_username"),
             "link_names": True,
         }).encode("utf-8")
 
