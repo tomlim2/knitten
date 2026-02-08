@@ -360,6 +360,7 @@ Project-specific technical standards are maintained in `standards/`:
 - **`unreal-engine-asset.md`** - Unreal Engine asset naming conventions (prefixes, suffixes, validation rules)
 - **`review-code-unreal-cpp.md`** - C++ code review guidelines for Unreal Engine projects
 - **`review-code-unreal-python.md`** - Python code review guidelines for Unreal Engine editor scripting
+- **`review-template.md`** - Code review output format template (facts-based feedback style)
 - **`research-methodology.md`** - Deep research patterns and structured findings format
 - **`tech-spec-template.md`** - Technical specification document template
 - **`delegation.md`** - Task delegation and project management patterns
@@ -372,6 +373,7 @@ These standards complement the workflow automation in this folder. Commands and 
 - Before writing UE C++ code - Read `unreal-engine-cpp.md`
 - Before creating/validating UE assets - Read `unreal-engine-asset.md`
 - Before creating UI/web pages - Read `design-system.md`
+- Before conducting code reviews - Read `review-template.md` for output format
 - When creating asset automation scripts - Read `unreal-engine-asset.md` and relevant code review standards
 - When enforcing project conventions via tooling - Reference applicable standard
 
