@@ -1,7 +1,7 @@
 ---
 description: "Summarize today's local commits across CINEVStudio repos"
 argument-hint: "[date: YYYY-MM-DD]"
-allowed-tools: "Bash(git *), Read, Grep, Glob, Write, Edit"
+allowed-tools: "Bash(git:*), Read, Grep, Glob, Write, Edit"
 ---
 
 # Cinamon Daily Commit Summary

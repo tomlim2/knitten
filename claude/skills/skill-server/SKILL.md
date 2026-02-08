@@ -4,7 +4,16 @@
 
 Unified GUI dashboard for all Claude Code skills.
 
-## Overview
+---
+
+## Changelog
+
+- **1.5.0** - Current release with dashboard, file browser, and embedded skills
+- **1.0.0** - Initial release
+
+---
+
+## Purpose
 
 Local web server that provides:
 - Skill dashboard with all available skills
@@ -94,3 +103,11 @@ EJS partials in `views/partials/`:
 - `head.ejs` - Common head (fonts, CSS)
 - `header.ejs` - Navigation header
 - `footer.ejs` - Site footer
+
+## Files
+
+- `server.js` - Express server entry point
+- `config.json` - Centralized UI configuration
+- `routes/` - Route handlers
+- `views/` - EJS templates and partials
+- `public/` - Static assets (CSS, JS, images)

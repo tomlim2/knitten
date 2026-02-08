@@ -41,7 +41,7 @@ Examples:
   /review-claude-skills all drink-*      — Review drink-related commands and skills
 ```
 
-## Command Checklist (11 checks)
+## Command Checklist (12 checks)
 
 Apply these checks to each command file (`~/.claude/commands/*.md`).
 
@@ -58,6 +58,7 @@ Apply these checks to each command file (`~/.claude/commands/*.md`).
 - **C2. Usage example:** At least one example showing how to invoke the command.
 - **C3. Output format:** Defined output structure (code block, table, or structured markdown).
 - **C4. Numbered steps:** Multi-step workflows should use numbered Steps (Step 1, Step 2, ...).
+- **C5. Pre-execution reference:** Must include the pre-execution block: `**Before executing, read and execute:** ~/.claude/standards/command-pre-execution.md` with correct `$COMMAND_NAME` replacement. FAIL if missing entirely. WARN if present but `$COMMAND_NAME` doesn't match the filename.
 
 ### Compatibility (X1–X3)
 
@@ -113,7 +114,7 @@ Read each matched file.
 ### Step 3: Analyze
 
 For each file, run the appropriate checklist:
-- Command files → Command Checklist (F1–F4, C1–C4, X1–X3)
+- Command files → Command Checklist (F1–F4, C1–C5, X1–X3)
 - Skill files → Skill Checklist (S1–S4, SC1–SC4, SF1–SF3, SX1–SX2)
 
 Record per check:

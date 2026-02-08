@@ -10,7 +10,7 @@ Automated branch creation for CINEV art team.
 - **0.2.0** - Use shared config location (`~/.claude/config/`)
 - **0.1.0** - Initial release
 
-## 기능
+## Purpose
 
 1. `git fetch --all`
 2. `git checkout develop && git pull --ff-only` (fast-forward)

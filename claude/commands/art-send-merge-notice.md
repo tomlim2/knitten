@@ -20,6 +20,8 @@ Replace `$COMMAND_NAME` with: `art-send-merge-notice`
 /art-send-merge-notice --list
 ```
 
+**If no argument is provided, show usage and ask the user. NEVER auto-execute.**
+
 ## 실행 전 확인
 
 **Before executing, show the user the Slack message that will be sent and ask for confirmation:**

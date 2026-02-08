@@ -4,6 +4,20 @@
 
 Usage statistics dashboard with infographic-style visualization.
 
+---
+
+## Changelog
+
+- **0.1.0** - Initial release
+
+---
+
+## Purpose
+
+Display skill and command usage statistics with visual bars and activity timelines.
+
+---
+
 ## Features
 
 - Overview stats (Total Uses, Skills, Commands)
@@ -19,6 +33,10 @@ Access via skill-server at `/skills/browse-usage` or through the Usage tab in na
 ## Data Source
 
 Reads from `~/.claude/private/usage-stats.json`
+
+## Files
+
+- `index.html` - Usage statistics dashboard page
 
 ## Design
 

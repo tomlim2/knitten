@@ -1,7 +1,7 @@
 ---
 description: "Review C++ code against UE coding standards"
 argument-hint: "[file or diff range]"
-allowed-tools: "Bash(git *), Read, Grep, Glob"
+allowed-tools: "Bash(git:*), Read, Grep, Glob"
 ---
 
 # Code Review
@@ -15,7 +15,7 @@ Replace `$COMMAND_NAME` with: `cinev-review-cpp`
 
 ## Instructions
 
-You are tasked with reviewing C++ code. Follow the cinev-review-code agent in `.claude/agents/cinev-review-code.md`. All review standards and checklists are embedded in that agent — no need to load external standards documents separately.
+You are tasked with reviewing C++ code. Follow the review standards in `~/.claude/standards/review-code-unreal-cpp.md`. All review standards and checklists are defined there.
 
 ### Step 1: Determine Review Scope
 
@@ -57,7 +57,7 @@ For each file in scope:
 
 ### Step 4: Output
 
-Follow the output format defined in `.claude/agents/cinev-review-code.md`.
+Follow the output format defined in `~/.claude/standards/review-template.md`.
 Present findings grouped by file, with severity counts and a final verdict.
 
 ## Example Usage

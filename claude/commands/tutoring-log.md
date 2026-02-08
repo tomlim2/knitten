@@ -19,6 +19,8 @@ Replace `$COMMAND_NAME` with: `tutoring-log`
 /tutoring-log <student> --start HH:MM --end HH:MM --location "place" --topic "topic"
 ```
 
+**If no argument is provided, show usage and ask the user. NEVER auto-execute.**
+
 ## Execute
 
 Run the tutoring log script:

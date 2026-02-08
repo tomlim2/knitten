@@ -20,6 +20,8 @@ Replace `$COMMAND_NAME` with: `tutoring-invoice`
 /tutoring-invoice <student> --open
 ```
 
+**If no argument is provided, show usage and ask the user. NEVER auto-execute.**
+
 ## Execute
 
 Run the invoice script:

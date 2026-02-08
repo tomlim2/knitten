@@ -4,6 +4,14 @@
 
 Git commit history extraction skill for Claude Code.
 
+---
+
+## Purpose
+
+Extract git commit history from repositories and save structured data for portfolio and analysis use.
+
+---
+
 ## Changelog
 
 - **0.1.0** - Initial release

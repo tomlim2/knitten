@@ -21,6 +21,8 @@ Replace `$COMMAND_NAME` with: `art-send-merge-result`
 /art-send-merge-result --list
 ```
 
+**If no argument is provided, show usage and ask the user. NEVER auto-execute.**
+
 **If `--list`, run:**
 ```bash
 python "C:\Users\TA_yeonsu\.claude\skills\art-send-merge-result\merge_done.py" --list

@@ -4,6 +4,14 @@
 
 Send messages to Slack art channel.
 
+---
+
+## Purpose
+
+Send formatted messages to the Slack art channel for team communication about art branch operations.
+
+---
+
 ## Changelog
 
 - **0.2.0** - Use shared config location (`~/.claude/config/`)

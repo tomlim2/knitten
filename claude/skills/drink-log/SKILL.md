@@ -33,6 +33,10 @@ Or visit: http://localhost:972/skills/drink-log
 
 Reads from: `~/.claude/private/drinks/drinks.json`
 
+## Files
+
+- `index.html` - Drink collection viewer page
+
 ## Related Files
 
 - Command: `~/.claude/commands/drink-log.md`

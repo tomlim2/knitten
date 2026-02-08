@@ -1,7 +1,7 @@
 ---
-allowed-tools: Glob, Grep, Read, Bash(git log:*), Bash(find:*), Bash(wc:*), Bash(ls:*), Bash(head:*), Task
 description: Fast codebase exploration - multiple angles, pattern discovery
 argument-hint: "<topic or pattern>"
+allowed-tools: Glob, Grep, Read, Bash(git log:*), Bash(find:*), Bash(wc:*), Bash(ls:*), Bash(head:*), Task
 ---
 
 # Explore Mode

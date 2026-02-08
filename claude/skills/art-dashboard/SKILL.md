@@ -4,6 +4,20 @@
 
 Web dashboard for CINEV art branch management.
 
+---
+
+## Changelog
+
+- **0.1.0** - Initial release
+
+---
+
+## Purpose
+
+Web dashboard for viewing and managing CINEV art branch workflows.
+
+---
+
 ## Features
 
 - View art branch workflow overview
@@ -13,3 +27,7 @@ Web dashboard for CINEV art branch management.
 ## Usage
 
 Access via skill-server dashboard or directly at `/skills/art-dashboard`.
+
+## Files
+
+- `index.html` - Dashboard page

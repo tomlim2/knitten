@@ -1,7 +1,7 @@
 ---
-allowed-tools: Glob, Grep, Read, Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(ls:*), Bash(find:*), Bash(wc:*), Task
 description: Read-only oracle mode - analyze without modifying
 argument-hint: "<question or topic>"
+allowed-tools: Glob, Grep, Read, Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(ls:*), Bash(find:*), Bash(wc:*), Task
 ---
 
 # Consult Mode (Oracle)

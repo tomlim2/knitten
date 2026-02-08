@@ -87,6 +87,13 @@ python paid.py "StudentName" --list     # List pending only
 - [ ] Try walk animation
 ```
 
+## Files
+
+- `log.py` - Lesson logging script
+- `invoice.py` - Invoice generation script
+- `paid.py` - Payment marking script
+- `utils.py` - Shared utilities
+
 ## Integration
 
 Works with existing invoice-generator web app for PDF creation.

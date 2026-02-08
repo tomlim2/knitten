@@ -4,7 +4,17 @@
 
 Web-based monthly tuition invoice generator with automatic calculation and PDF export.
 
-## Overview
+---
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for full history.
+
+- **1.3.1** - Current release
+
+---
+
+## Purpose
 
 A complete invoice generation system for monthly lesson billing. Features include:
 - Dynamic lesson entry (date, hours, minutes)

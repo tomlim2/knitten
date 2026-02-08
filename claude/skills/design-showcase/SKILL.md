@@ -1,6 +1,14 @@
-# Design Showcase
+# design-showcase
 
-**Version**: 0.1.0
+**Version:** 0.1.0
+
+---
+
+## Changelog
+
+- **0.1.0** - Initial release with design system component showcase
+
+---
 
 ## Purpose
 
@@ -34,9 +42,13 @@ Displays all available UI patterns and components from the Typo-base design syst
 - **Onboarding**: Show new developers the design patterns
 - **Design system documentation**: Live examples of all components
 
-## Access
+## Usage
 
 **Web UI**: `http://localhost:972/skills/design-showcase`
+
+## Files
+
+- `index.html` - Component showcase page
 
 ## Technical Details
 

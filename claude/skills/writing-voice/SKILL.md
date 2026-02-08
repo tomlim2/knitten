@@ -4,6 +4,20 @@
 
 Writing style prompt to avoid generic AI output.
 
+---
+
+## Changelog
+
+- **1.0.0** - Initial release with voice presets and banned words
+
+---
+
+## Purpose
+
+Provide writing style templates and constraints to produce human-sounding content instead of generic AI output.
+
+---
+
 ## Usage
 
 Use this skill when writing content that needs a human voice. Provide the content type, audience, and topic.
