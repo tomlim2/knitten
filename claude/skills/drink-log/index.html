@@ -138,9 +138,10 @@
 
             drinks.forEach(drink => {
                 const li = document.createElement('li');
-                // Use Vivino rating only
+                // Use source rating only - display as numeric score for all drinks
                 const rating = drink.source_rating || 0;
-                const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+                const ratingDisplay = `<span style="font-size: 18px; font-weight: 600; color: var(--color-accent);">${rating.toFixed(1)}</span><span style="font-size: 14px; color: var(--color-gray-mid);">/5.0</span>`;
+
                 const price = drink.price ? `$${drink.price}` : 'N/A';
 
                 // Build source info
@@ -168,7 +169,7 @@
                         ${sourceInfo ? `<div style="margin-top: 8px;">${sourceInfo}</div>` : ''}
                     </div>
                     <div style="text-align: right; min-width: 120px;">
-                        <div style="font-size: 16px; color: var(--color-accent);">${stars}</div>
+                        <div style="font-size: 16px; color: var(--color-accent);">${ratingDisplay}</div>
                         <div style="font-size: 14px; color: var(--color-gray-mid); margin-top: 4px;">${price}</div>
                         ${drink.abv ? `<div style="font-size: 12px; color: var(--color-gray-mid); margin-top: 2px;">${drink.abv}% ABV</div>` : ''}
                     </div>

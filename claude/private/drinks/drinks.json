@@ -1,7 +1,7 @@
 {
   "drinks": [
     {
-      "id": "caol-ila-12-2026-02-06",
+      "id": "caol-ila-12-2025-02-06",
       "name": "Caol Ila 12 Year Old",
       "description": "Perfect entry point into peaty malts with clean, crisp smoke",
       "type": "Single Malt Scotch Whisky",
@@ -9,7 +9,7 @@
       "price": 69,
       "currency": "USD",
       "notes": "위트향? 몰트향? 이게 너무 좋았습니다. 이날 마신 위스키중 제일 기억에 남고 맛났다. 피트향이 너무 좋다.",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 43,
       "source": "Whiskybase",
       "source_rating": 4.2,
@@ -17,7 +17,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "copper-dog-2026-02-06",
+      "id": "copper-dog-2025-02-06",
       "name": "Copper Dog Speyside Blended Malt",
       "description": "Eight Speyside single malts blended, approachable and smooth",
       "type": "Blended Malt Scotch Whisky",
@@ -25,7 +25,7 @@
       "price": 34,
       "currency": "USD",
       "notes": "코퍼도그",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 40,
       "source": "Multiple sources",
       "source_rating": 4.0,
@@ -33,7 +33,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "johnnie-walker-gold-label-reserve-2026-02-06",
+      "id": "johnnie-walker-gold-label-reserve-2025-02-06",
       "name": "Johnnie Walker Gold Label Reserve",
       "description": "Smooth, honeyed blended Scotch with Clynelish malt at its core",
       "type": "Blended Scotch Whisky",
@@ -41,7 +41,7 @@
       "price": 45,
       "currency": "USD",
       "notes": "죠니워커 골든 라벨",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 40,
       "source": "Multiple reviews",
       "source_rating": 4.1,
@@ -49,7 +49,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "auchentoshan-12-2026-02-06",
+      "id": "auchentoshan-12-2025-02-06",
       "name": "Auchentoshan 12 Year Old",
       "description": "Triple distilled Lowland single malt, smooth and sweet with vanilla",
       "type": "Single Malt Scotch Whisky",
@@ -57,7 +57,7 @@
       "price": 40,
       "currency": "USD",
       "notes": "로우랜드 (auchentoshan) 오켄토션 요것도 괜찮았다. 내 개인취향은 피트향이 나는것인가보다.",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 40,
       "source": "Total Wine / Whisky Exchange",
       "source_rating": 4.5,
@@ -181,7 +181,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "bruno-paillard-blanc-de-blancs-2013-2026-02-06",
+      "id": "bruno-paillard-blanc-de-blancs-2013-2025-02-06",
       "name": "Bruno Paillard Blanc de Blancs 2013",
       "description": "Sleek, elegant and statuesque wine from Grand Cru Chardonnay",
       "type": "Champagne - Blanc de Blancs",
@@ -190,7 +190,7 @@
       "price": 135,
       "currency": "USD",
       "notes": "브루노 파이야르 블랑 드 블랑 2013",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12,
       "source": "Wine Enthusiast / Jancis Robinson",
       "source_rating": 4.8,
@@ -199,7 +199,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "piper-heidsieck-rare-2013-2026-02-06",
+      "id": "piper-heidsieck-rare-2013-2025-02-06",
       "name": "Piper-Heidsieck Rare 2013",
       "description": "Exceptional prestige cuvée, 70% Chardonnay, 30% Pinot Noir",
       "type": "Champagne - Millésimé Brut",
@@ -208,7 +208,7 @@
       "price": 230,
       "currency": "USD",
       "notes": "파이퍼 하이직 레어, 2013 이게 이날의 원픽 샴페인",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12,
       "source": "James Suckling / Wine Spectator",
       "source_rating": 4.9,
@@ -216,7 +216,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "perrier-jouet-belle-epoque-2014-2026-02-06",
+      "id": "perrier-jouet-belle-epoque-2014-2025-02-06",
       "name": "Perrier-Jouët Belle Epoque 2014",
       "description": "Elegant with creamy, finely meshed texture, white peach and citrus",
       "type": "Champagne - Brut",
@@ -225,7 +225,7 @@
       "price": 176,
       "currency": "USD",
       "notes": "페리에 주에, 벨 에포크, 2014",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12.5,
       "source": "Wine Enthusiast / Tastings.com",
       "source_rating": 4.8,
@@ -234,7 +234,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "krug-grande-cuvee-171-2026-02-06",
+      "id": "krug-grande-cuvee-171-2025-02-06",
       "name": "Krug Grande Cuvée 171 Edition",
       "description": "Blend of 131 wines from 12 years, legendary complexity",
       "type": "Champagne - Non-Vintage Brut",
@@ -242,7 +242,7 @@
       "price": 250,
       "currency": "USD",
       "notes": "크룩, 그랑 뀌베 171, 2015",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12,
       "source": "James Suckling / Wine Spectator",
       "source_rating": 4.9,
@@ -250,7 +250,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "taittinger-comtes-de-champagne-2009-2026-02-06",
+      "id": "taittinger-comtes-de-champagne-2009-2025-02-06",
       "name": "Taittinger Comtes de Champagne Blanc de Blancs 2009",
       "description": "100% Grand Cru Chardonnay, 10 years on lees, excellent tension",
       "type": "Champagne - Blanc de Blancs",
@@ -259,7 +259,7 @@
       "price": 253,
       "currency": "USD",
       "notes": "떼땅져, 빈티지 브뤼, 2009",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12,
       "source": "Jancis Robinson / Wine-Searcher",
       "source_rating": 4.8,
@@ -268,7 +268,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "drappier-pinot-noir-brut-nature-2026-02-06",
+      "id": "drappier-pinot-noir-brut-nature-2025-02-06",
       "name": "Drappier Pinot Noir Brut Nature",
       "description": "100% Pinot Noir, zero dosage, crisp green-apple and tight minerality",
       "type": "Champagne - Blanc de Noirs Brut Nature",
@@ -276,7 +276,7 @@
       "price": 70,
       "currency": "USD",
       "notes": "샴페인 드라피에, 블랑 드 누아",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12,
       "source": "Vivino / Wine Enthusiast",
       "source_rating": 4.1,
@@ -285,7 +285,7 @@
       "searched_at": "2026-02-08T00:00:00Z"
     },
     {
-      "id": "henri-giraud-hommage-au-pinot-noir-2026-02-06",
+      "id": "henri-giraud-hommage-au-pinot-noir-2025-02-06",
       "name": "Henri Giraud Hommage au Pinot Noir",
       "description": "Pinot Noir-based prestige champagne from Aÿ, top 1% worldwide",
       "type": "Champagne - Pinot Noir",
@@ -293,7 +293,7 @@
       "price": 127,
       "currency": "USD",
       "notes": "앙리 지로, 오마주 오 피노 누아",
-      "date": "2026-02-06",
+      "date": "2025",
       "abv": 12,
       "source": "Vivino",
       "source_rating": 4.3,
