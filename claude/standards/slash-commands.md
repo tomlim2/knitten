@@ -1,6 +1,6 @@
 # Slash Commands Standard
 
-**Version:** 1.0.0
+**Version:** 2.0.0
 
 Common patterns, rules, and templates for all Claude Code slash commands.
 
@@ -8,6 +8,7 @@ Common patterns, rules, and templates for all Claude Code slash commands.
 
 ## Changelog
 
+- **2.0.0** - Replaced inline tracking with pre-execution pattern for centralized logic
 - **1.0.0** - Initial release with usage tracking, error handling, and common patterns
 
 ---
@@ -20,60 +21,82 @@ This document defines standard patterns that **ALL slash commands must follow**.
 
 ## Mandatory Patterns
 
-### 1. Usage Tracking
+### 1. Pre-Execution Reference (Usage Tracking & Common Logic)
 
-**Every command MUST include usage tracking** at the start of its execution flow.
+**Every command MUST include a pre-execution reference** immediately after the title and description.
+
+#### What is Pre-Execution?
+
+Pre-execution is a centralized pattern where all commands read and execute `command-pre-execution.md` before their main workflow. This file contains:
+- Usage tracking (curl POST to localhost:972)
+- Environment checks
+- Any other logic that ALL commands need
 
 #### Template
 
 ```markdown
-## Usage Tracking
+# Command Title
 
-Track this command execution for usage statistics:
+Brief description of what this command does.
 
-\`\`\`bash
-curl -X POST http://localhost:972/api/usage/track \
-  -H "Content-Type: application/json" \
-  -d '{"type":"commands","id":"COMMAND-NAME"}'
-\`\`\`
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
-Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
+Replace \`$COMMAND_NAME\` with: \`command-name\`
+
+## [Rest of command content...]
 ```
 
 #### Rules
 
-1. **Replace `COMMAND-NAME`** with the actual command name (e.g., `design-sync`, `git-make-message`)
-2. **Place at the start** of the command workflow (before main execution)
-3. **Fail silently** - Don't block command execution if tracking fails
-4. **Port 972** - Always use the skill server port (not 3000)
-5. **Type format** - Use `"type":"commands"` for slash commands, `"type":"skills"` for skills
+1. **Place immediately after title** - Before any workflow sections
+2. **Replace `command-name`** with the actual command name (e.g., `design-sync`, `git-make-message`)
+3. **NO `Bash(curl:*)` needed** in allowed-tools - Pre-execution file handles it
+4. **Centralized logic** - All tracking and pre-execution logic lives in one file
+5. **Single source of truth** - Update `command-pre-execution.md` to change all commands
 
-#### Frontmatter Requirement
+#### Frontmatter (NO curl needed)
 
-Include `Bash(curl:*)` in allowed-tools:
+**Do NOT include `Bash(curl:*)` in allowed-tools** - it's handled by pre-execution:
 
 ```yaml
 ---
 description: Command description
-allowed-tools: Read, Write, Bash(curl:*), Bash(git:*)
+allowed-tools: Read, Write, Bash(git:*)  # NO Bash(curl:*)
 ---
 ```
 
 #### Example
 
 ```markdown
-## Usage Tracking
+---
+description: Verify design system version and sync work artifacts
+allowed-tools: Read, Glob, Grep, Edit, Task
+---
 
-Track this command execution for usage statistics:
+# Design System Sync
 
-\`\`\`bash
-curl -X POST http://localhost:972/api/usage/track \
-  -H "Content-Type: application/json" \
-  -d '{"type":"commands","id":"design-sync"}'
-\`\`\`
+Synchronize GUI/UI work artifacts with the design system version.
 
-Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
+
+Replace \`$COMMAND_NAME\` with: \`design-sync\`
+
+## Workflow
+
+### Step 0: Generate Showcase Specification
+[...]
 ```
+
+#### Pre-Execution File Location
+
+The centralized pre-execution logic is defined in:
+```
+~/.claude/standards/command-pre-execution.md
+```
+
+This file contains the actual tracking curl command and any other global pre-execution logic.
 
 ---
 
@@ -139,7 +162,7 @@ If required tool is not installed, show installation instructions and exit.
 ---
 description: Brief one-line description (50 chars max)
 argument-hint: "<required> [optional]"
-allowed-tools: Read, Write, Bash(curl:*), Bash(git:*)
+allowed-tools: Read, Write, Bash(git:*)  # NO Bash(curl:*) needed
 ---
 ```
 
@@ -155,12 +178,13 @@ allowed-tools: Read, Write, Bash(curl:*), Bash(git:*)
 
 | Pattern | Use Case |
 |---------|----------|
-| `Bash(curl:*)` | Usage tracking, API calls |
 | `Bash(git:*)` | Git operations |
 | `Bash(python:*)` | Python script execution |
 | `Bash(npm:*)` | NPM commands |
 | `Bash(open:*)` | App launchers |
 | `Bash(mv:*), Bash(ls:*)` | File operations |
+
+**Note:** `Bash(curl:*)` is NO LONGER needed in allowed-tools - usage tracking is handled by `command-pre-execution.md`
 
 ---
 
@@ -174,16 +198,17 @@ allowed-tools: Read, Write, Bash(curl:*), Bash(git:*)
 ```markdown
 ---
 description: Brief description
-allowed-tools: Read, Write, Bash(curl:*)
+allowed-tools: Read, Write  # NO Bash(curl:*)
 ---
 
 # Command Name
 
 Brief explanation of what this command does.
 
-## Usage Tracking
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
-[Insert tracking template]
+Replace \`$COMMAND_NAME\` with: \`command-name\`
 
 ## Workflow
 
@@ -211,12 +236,17 @@ Brief explanation of what this command does.
 ---
 description: Brief description
 argument-hint: "<required_arg> [optional_arg]"
-allowed-tools: Read, Write, Bash(curl:*)
+allowed-tools: Read, Write  # NO Bash(curl:*)
 ---
 
 # Command Name
 
 Brief explanation.
+
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
+
+Replace \`$COMMAND_NAME\` with: \`command-name\`
 
 ## Arguments
 
@@ -226,10 +256,6 @@ Brief explanation.
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 Usage: /command-name <required_arg> [optional_arg]
-
-## Usage Tracking
-
-[Insert tracking template with actual command name]
 
 ## Workflow
 
@@ -254,29 +280,27 @@ Use $ARGUMENTS to access the provided argument.
 ```markdown
 ---
 description: Brief description
-allowed-tools: Bash(curl:*), Bash(python:*)
+allowed-tools: Bash(python:*)  # NO Bash(curl:*)
 ---
 
 # Command Name
 
 Brief explanation. This command delegates to the `skill-name` skill.
 
-## Usage Tracking
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
-[Insert tracking template]
+Replace \`$COMMAND_NAME\` with: \`command-name\`
 
 ## Workflow
 
-### Step 1: Track Usage
-- Execute usage tracking
-
-### Step 2: Delegate to Skill
+### Step 1: Delegate to Skill
 - Run skill script:
   \`\`\`bash
   python ~/.claude/skills/skill-name/script.py
   \`\`\`
 
-### Step 3: Show Results
+### Step 2: Show Results
 - Display skill output
 - Confirm completion
 ```
@@ -291,16 +315,17 @@ Brief explanation. This command delegates to the `skill-name` skill.
 ```markdown
 ---
 description: Brief description
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(curl:*)
+allowed-tools: Read, Write, Edit, Glob, Grep  # NO Bash(curl:*)
 ---
 
 # Command Name
 
 Brief explanation.
 
-## Usage Tracking
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
-[Insert tracking template]
+Replace \`$COMMAND_NAME\` with: \`command-name\`
 
 ## Workflow
 
@@ -395,45 +420,69 @@ For shared tracking utility, see `~/.claude/skills/_shared/usage_tracking.py` (i
 
 Before finalizing a command, verify:
 
-- [ ] Frontmatter includes `Bash(curl:*)` for tracking
-- [ ] Usage tracking section present and correct
-- [ ] Command name in tracking matches filename
+- [ ] Pre-execution reference present immediately after title
+- [ ] Command name in pre-execution matches filename
+- [ ] Frontmatter does NOT include `Bash(curl:*)` (handled by pre-execution)
 - [ ] Arguments validated if applicable
 - [ ] Error cases handled gracefully
 - [ ] Clear workflow steps defined
 - [ ] Documentation complete
-- [ ] Tested with skill server running
+- [ ] Tested with skill server running (tracking works)
 - [ ] Tested with skill server stopped (tracking fails silently)
 
 ---
 
 ## Migration Guide
 
-### Updating Existing Commands
+### Migrating from Old (Inline) to New (Pre-Execution) Pattern
 
-To add tracking to an existing command:
+**OLD PATTERN (deprecated):**
+```markdown
+## Usage Tracking
+curl -X POST http://localhost:972/api/usage/track...
+```
 
-1. **Add `Bash(curl:*)` to frontmatter:**
+**NEW PATTERN (current):**
+```markdown
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
+
+Replace \`$COMMAND_NAME\` with: \`command-name\`
+```
+
+### Migration Steps
+
+1. **Remove `Bash(curl:*)` from frontmatter:**
    ```yaml
-   allowed-tools: Read, Write, Bash(curl:*)
+   # OLD
+   allowed-tools: Read, Write, Bash(curl:*), Bash(git:*)
+
+   # NEW
+   allowed-tools: Read, Write, Bash(git:*)
    ```
 
-2. **Insert Usage Tracking section** after title:
+2. **Replace Usage Tracking section** with pre-execution reference:
    ```markdown
    # Command Name
 
-   ## Usage Tracking
+   Brief description.
 
-   [Insert template with correct command name]
+   **Before executing, read and execute:**
+   \`~/.claude/standards/command-pre-execution.md\`
+
+   Replace \`$COMMAND_NAME\` with: \`command-name\`
+
+   ## Workflow
+   [...]
    ```
 
 3. **Test** both scenarios (server running/stopped)
 
 4. **Commit** with message:
    ```
-   feat(command-name): add usage tracking
+   feat(command-name): migrate to pre-execution pattern
 
-   Added usage tracking integration for browse-usage statistics.
+   Replaced inline tracking with centralized pre-execution pattern.
    ```
 
 ---
@@ -445,22 +494,17 @@ To add tracking to an existing command:
 ```markdown
 ---
 description: Update CLAUDE.md project overview and language conventions
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+allowed-tools: Read, Write, Edit  # NO Bash(curl:*)
 ---
 
 # clean-up
 
-## Usage Tracking
+Scan the codebase and update the `CLAUDE.md` project overview and conventions to reflect the current state.
 
-Track this command execution for usage statistics:
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
-\`\`\`bash
-curl -X POST http://localhost:972/api/usage/track \
-  -H "Content-Type: application/json" \
-  -d '{"type":"commands","id":"clean-up"}'
-\`\`\`
-
-Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
+Replace \`$COMMAND_NAME\` with: \`clean-up\`
 
 ## Workflow
 
@@ -483,12 +527,17 @@ Note: Tracking only works when skill server is running on port 972. If server is
 ---
 description: Extract git commits for portfolio
 argument-hint: "<repo_path> [--author name]"
-allowed-tools: Read, Write, Bash(curl:*), Bash(git:*)
+allowed-tools: Read, Write, Bash(git:*)  # NO Bash(curl:*)
 ---
 
 # git-collect-commits
 
 Extract git commit history from a repository for portfolio purposes.
+
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
+
+Replace \`$COMMAND_NAME\` with: \`git-collect-commits\`
 
 ## Arguments
 
@@ -498,18 +547,6 @@ Extract git commit history from a repository for portfolio purposes.
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 Usage: /git-collect-commits <repo_path> [--author name]
-
-## Usage Tracking
-
-Track this command execution for usage statistics:
-
-\`\`\`bash
-curl -X POST http://localhost:972/api/usage/track \
-  -H "Content-Type: application/json" \
-  -d '{"type":"commands","id":"git-collect-commits"}'
-\`\`\`
-
-Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
 
 ## Workflow
 
@@ -530,6 +567,7 @@ Note: Tracking only works when skill server is running on port 972. If server is
 
 ## Related Files
 
+- `command-pre-execution.md` - Centralized pre-execution logic (usage tracking)
 - `meta-new-command/SKILL.md` - Command creation rulebook
 - `meta-new-skill/SKILL.md` - Skill creation rulebook
 - `CLAUDE.md` - Overall system guide
@@ -540,4 +578,5 @@ Note: Tracking only works when skill server is running on port 972. If server is
 
 ## Version History
 
+- **2.0.0** (2026-02-08) - Replaced inline tracking with pre-execution pattern for centralized logic
 - **1.0.0** (2026-02-08) - Initial standard with usage tracking, error handling, and common patterns

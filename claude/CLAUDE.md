@@ -1,11 +1,12 @@
 # CLAUDE.md
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 This file provides guidance for Claude Code when working with the global `claude` configuration system.
 
 ## Changelog
 
+- **0.3.0** - Add pre-execution pattern for centralized command logic
 - **0.2.0** - Add setup instructions and Slack message format reference
 - **0.1.0** - Initial release
 
@@ -131,37 +132,43 @@ Or use: `/meta-new-command <category> <verb> <subject>`
 **All commands must follow standard patterns** defined in:
 
 ```
-~/.claude/standards/slash-commands.md
+~/.claude/standards/slash-commands.md (v2.0.0)
 ```
 
 This standard includes:
-- **Mandatory usage tracking** - All commands must track execution
+- **Pre-execution pattern** - Centralized usage tracking and common logic
 - **Error handling** - Graceful failure patterns
 - **Argument validation** - Required/optional argument guards
-- **Frontmatter rules** - Proper allowed-tools specification
+- **Frontmatter rules** - Proper allowed-tools specification (NO `Bash(curl:*)` needed)
 - **Common patterns** - Templates for typical use cases
 - **Testing checklist** - Quality assurance steps
 
 **Key requirements:**
-1. Include `Bash(curl:*)` in allowed-tools for usage tracking
-2. Add usage tracking section immediately after title
-3. Validate arguments before execution
-4. Handle errors gracefully with clear messages
+1. **Add pre-execution reference** immediately after title (NO `Bash(curl:*)` in frontmatter)
+2. Validate arguments before execution
+3. Handle errors gracefully with clear messages
 
-**Quick reference - Usage Tracking Template:**
+**Quick reference - Pre-Execution Pattern:**
 ```markdown
-## Usage Tracking
+# Command Title
 
-Track this command execution for usage statistics:
+Brief description.
 
-\`\`\`bash
-curl -X POST http://localhost:972/api/usage/track \
-  -H "Content-Type: application/json" \
-  -d '{"type":"commands","id":"command-name"}'
-\`\`\`
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
-Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
+Replace \`$COMMAND_NAME\` with: \`command-name\`
+
+## Workflow
+[...]
 ```
+
+**Pre-Execution File Location:**
+```
+~/.claude/standards/command-pre-execution.md
+```
+
+This file contains centralized logic (usage tracking, environment checks, etc.) that ALL commands execute before their main workflow.
 
 ### Naming Convention
 
