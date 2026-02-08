@@ -48,7 +48,7 @@ Synchronize GUI/UI work artifacts with the design system version.
 **IMPORTANT**: When processing multiple files, use **single message with multiple Task calls** for parallel execution
 
 Each agent's tasks:
-1. Read Design System spec
+1. Read Design System standards (design-system.md + design-showcase)
 2. Read target file
 3. Compare style elements:
    - Colors (`#000`, `rgb(`, CSS variables)
@@ -63,12 +63,13 @@ Each agent's tasks:
 ```
 Analyze {file_path} against Design System v{version}.
 
-1. Read ~/.claude/standards/design-system.md
-2. Read {file_path}
-3. Compare colors, typography, spacing, borders
-4. Find mismatches
-5. Add/update version comment: /* Design System: v{version} */
-6. Return report with:
+1. Read ~/.claude/standards/design-system.md (specification)
+2. Read http://localhost:972/skills/design-showcase (live examples)
+3. Read {file_path}
+4. Compare colors, typography, spacing, borders
+5. Find mismatches
+6. Add/update version comment: /* Design System: v{version} */
+7. Return report with:
    - File path
    - Version status (NEW/UPDATED)
    - Mismatches found

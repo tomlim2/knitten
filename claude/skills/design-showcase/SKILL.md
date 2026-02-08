@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Live showcase of all Design System v1.8.0 components with copyable HTML examples.
+Live showcase of all Design System v1.8.1 components with copyable HTML examples.
 
 ## What It Does
 
@@ -43,4 +43,4 @@ Displays all available UI patterns and components from the Typo-base design syst
 - **Platform**: Web
 - **Category**: Meta
 - **Type**: Documentation
-- **Design System**: v1.8.0 (Typo-base)
+- **Design System**: v1.8.1 (Typo-base)

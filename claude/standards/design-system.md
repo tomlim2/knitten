@@ -1,6 +1,6 @@
 # Design System - Typo-base
 
-**Version**: 1.8.0
+**Version**: 1.8.1
 **Last Updated**: 2026-02-07
 
 **Live Component Examples**: http://localhost:972/skills/design-showcase
@@ -11,6 +11,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8.1 | 2026-02-07 | Updated inline code border-radius (6px → 1px), added Content Section component with invisible dividers |
 | 1.8.0 | 2026-02-07 | Added UX Writing guidelines: Two-mode writing system (Empathetic for UI/status, Professional for technical content) |
 | 1.7.0 | 2026-02-07 | Added Markdown Reading Typography pattern: compact 12px reading style with table styling |
 | 1.6.2 | 2026-02-06 | Added rule: Semibold (500) and bold (600) font weights only for headers, never body text |
@@ -275,6 +276,16 @@ For design-showcase page only (no text-transform):
 
 Meta 정보 구분에 사용
 
+### Content Section
+
+| Property | Value |
+|----------|-------|
+| Margin | 16px vertical |
+| Divider (::after) | border-bottom 1px solid, opacity 0 |
+| Divider margin | 16px vertical |
+
+**Note**: Section dividers use opacity: 0 to maintain spacing without visual clutter
+
 ### Footer
 
 | Property | Value |
@@ -312,7 +323,7 @@ Terminal output display with optional status bars
 | Color | #24292f (dark gray) |
 | Padding | 0.2em 0.4em (relative) |
 | Border | 1px solid #d1d9e0 |
-| Border radius | 6px |
+| Border radius | 1px |
 | White-space | nowrap (prevent mid-word breaks) |
 | Vertical-align | 0.125em (fine-tuned centering) |
 
