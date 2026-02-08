@@ -1,6 +1,6 @@
 # caol-ila Learnings
 
-Last updated: 2026-02-08
+Last updated: 2026-02-09
 
 ---
 
@@ -12,6 +12,11 @@ Patterns specific to this codebase.
 |---------|----------------|
 | Design system is source of truth | All tools/skills must conform to `standards/design-system.md` |
 | **New UIs must have versioning from day 1** | Add VERSION constant, display in footer, create CHANGELOG.md from the start |
+| Skills/commands are now a unified system | Official docs merged them. Skill takes precedence if both exist with same name. Skills are recommended format |
+| `standards/` ≠ `rules/` — different roles | `rules/` = auto-loaded every session (short rules). `standards/` = read on-demand (long reference docs). Don't mix them |
+| CLAUDE.md should be concise (context budget) | Loaded every session. 402→160줄 trim worked well. Move verbose content to `@import` or supporting files |
+| Use `~/.claude` not hardcoded OS paths | Cross-platform (Windows work + macOS home). Never hardcode `D:\` or `/Users/` paths in shared config |
+| Official frontmatter has 10 fields | `name`, `description`, `argument-hint`, `allowed-tools`, `disable-model-invocation`, `user-invocable`, `context`, `agent`, `model`, `hooks` |
 
 ---
 
@@ -30,6 +35,18 @@ Approaches worth repeating.
 - **Context**: Needed to trigger UE Editor Python scripts from Claude Code terminal without manual copy-paste into UE console.
 - **Solution**: Use UE's built-in `remote_execution.py` module (at `Engine/Plugins/Experimental/PythonScriptPlugin/Content/Python/`). UDP multicast discovery on port 6766, TCP commands on port 6776. Send the **file path** (not content) with `MODE_EXEC_FILE` - UE loads the file directly.
 - **Why it worked**: CINEVStudio already has `bRemoteExecution=True` in DefaultEngine.ini. Sending file path avoids the issue where `ExecuteFile` mode tries to interpret the first line of code content as a file path.
+
+### CLAUDE.md review against official docs (402→160 lines)
+- **Date**: 2026-02-09
+- **Context**: CLAUDE.md had grown to 402 lines with philosophy sections, FAQ, outdated architecture tree, and Windows-hardcoded paths. Every session loaded all of it into context.
+- **Solution**: Reviewed against official Claude Code docs (code.claude.com/docs/en/skills, /memory). Removed non-actionable content (Philosophy verbose, FAQ, "What Is This?", "Final Thought"). Reflected skills/commands merge. Updated frontmatter field table to official 10 fields. Used `@import` syntax for references. Compressed Architecture tree and Domain Standards to tables.
+- **Why it worked**: Official best practice: "Be specific", use structured bullet points. CLAUDE.md is user memory (`~/.claude/CLAUDE.md`) loaded every session — context budget matters. 60% reduction means faster session starts and more room for actual work context.
+
+### review-skills expanded to cover both commands and skills
+- **Date**: 2026-02-09
+- **Context**: `/review-skills` only reviewed command files (11 checks). Skills (SKILL.md) were not covered at all.
+- **Solution**: Added scope argument (`commands|skills|all`), added 13-check skill checklist (Structure S1-S4, Content SC1-SC4, Frontmatter SF1-SF3, Compatibility SX1-SX2). Absorbed 4 checks from official spec: description recommended (SF1), valid frontmatter fields only (SF2), name format max 64 chars (SF3), SKILL.md under 500 lines (SC4).
+- **Why it worked**: Selective absorption — took only the useful parts from official spec rather than adopting everything. Official spec is intentionally minimal; our internal standards (Version, Changelog, Usage) add value on top.
 
 ### Background execution for command pre-execution tracking (570x faster)
 - **Date**: 2026-02-08
@@ -67,4 +84,6 @@ Non-obvious issues that cause problems.
 |-------|---------------|
 | **NEVER update design-system.md without permission** | Always ask user first before making any changes to `standards/design-system.md`. Propose changes verbally, get approval, then implement. |
 | **Version bumps only on request** | Never bump versions (tags, VERSION constants) unless user explicitly asks. |
+| **Symlink causes duplicate skills in caol-ila** | `~/.claude` → `caol-ila/claude` means Claude Code reads skills from both global and project paths. Duplicates only appear when working inside caol-ila itself. Expected behavior, no fix needed. |
+| **learn-add-log has hardcoded Windows paths** | Command references `D:\vs\caol-ila\...` — should use `~/.claude/private/learnings/` for cross-platform. |
 
