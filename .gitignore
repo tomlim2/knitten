@@ -1,6 +1,8 @@
-# Tutoring data (invoices, lesson logs — personal)
+# Private data (personal, gitignored)
 claude/private/tutoring/
 claude/private/projects/
+claude/private/repo-paths.json
+claude/private/skill-reviews/
 
 # Secrets
 *.env
@@ -20,6 +22,8 @@ claude/debug/
 claude/ide/
 claude/stats-cache.json
 claude/plans/
+claude/paste-cache/
+claude/tasks/
 claude/session-env/
 claude/statsig/
 
@@ -28,6 +32,9 @@ claude/*.log
 claude/logs/
 claude/temp/
 claude/tmp/
+
+# External plugins (have own git repos)
+claude/plugins/
 
 # Skill server runtime
 claude/skills/skill-server/node_modules/
