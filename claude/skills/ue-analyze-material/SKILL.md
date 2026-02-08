@@ -9,6 +9,15 @@ Export and analyze Unreal Engine material node graphs.
 - **0.2.0** - Add remote execution via `run_in_editor.py`; one-step export+analyze from Claude Code
 - **0.1.0** - Initial release
 
+## Standards Reference
+
+**Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
+
+Materials should follow naming conventions:
+- Base materials: `M_` prefix
+- Material instances: `MI_` prefix
+- Material functions: `MF_` prefix
+
 ## Purpose
 
 Two-step workflow for inspecting UE material graphs outside the editor:

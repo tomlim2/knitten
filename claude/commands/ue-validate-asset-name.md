@@ -13,6 +13,12 @@ Validate selected assets' names and interactively fix naming convention violatio
 
 Replace `$COMMAND_NAME` with: `ue-validate-asset-name`
 
+## Standards Reference
+
+**Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
+
+Read this standard to understand the 9 validation rules, prefix table, and texture suffix conventions.
+
 ## Arguments
 
 Input: $ARGUMENTS
@@ -123,16 +129,6 @@ Ask the user (via AskUserQuestion):
 
 On "Apply all" or approved individual renames, execute `--rename`.
 
-## Validation Rules Reference
+## Notes
 
-| Rule | Severity | What it checks |
-|------|----------|----------------|
-| `ASCII_ONLY` | ERROR | No non-ASCII characters |
-| `ALLOWED_CHARS` | ERROR | Only `[A-Za-z0-9_]` |
-| `NO_DOUBLE_UNDERSCORE` | WARN | No `__` |
-| `NO_TRAILING_UNDERSCORE` | WARN | No trailing `_` |
-| `PREFIX` | ERROR | Correct type prefix |
-| `PASCAL_CASE` | WARN | Segments start uppercase |
-| `ZERO_PADDED_NUMBER` | WARN | 2-digit variant padding |
-| `TEXTURE_SUFFIX` | WARN | Texture channel suffix |
-| `SOUND_CUE_SUFFIX` | WARN | SoundCue `_Cue` suffix |
+For complete validation rules, prefix table, and examples, see `~/.claude/standards/unreal-engine-asset.md`.

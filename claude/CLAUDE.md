@@ -355,8 +355,10 @@ Project-specific technical standards are maintained in `standards/`:
 
 - **`slash-commands.md`** - **[REQUIRED FOR ALL COMMANDS]** Common patterns, usage tracking, error handling, and templates
 - **`design-system.md`** - UI/CSS design system (Typo-base v1.8.1), centralized CSS architecture, showcase-driven development
-- **`unreal-engine.md`** - Unreal Engine naming conventions, Python scripting patterns, material workflows, and performance best practices
+- **`unreal-engine-cpp.md`** - Unreal Engine C++ coding standards (brace style, naming conventions, PascalCase)
+- **`unreal-engine-asset.md`** - Unreal Engine asset naming conventions (prefixes, suffixes, validation rules)
 - **`review-code-unreal-cpp.md`** - C++ code review guidelines for Unreal Engine projects
+- **`review-code-unreal-python.md`** - Python code review guidelines for Unreal Engine editor scripting
 - **`research-methodology.md`** - Deep research patterns and structured findings format
 - **`tech-spec-template.md`** - Technical specification document template
 - **`delegation.md`** - Task delegation and project management patterns
@@ -365,9 +367,10 @@ These standards complement the workflow automation in this folder. Commands and 
 
 **When to read standards:**
 - **Always read `slash-commands.md` before creating new commands** - Contains mandatory patterns
-- Before writing UE-related commands or skills - Read `unreal-engine.md`
+- Before writing UE C++ code - Read `unreal-engine-cpp.md`
+- Before creating/validating UE assets - Read `unreal-engine-asset.md`
 - Before creating UI/web pages - Read `design-system.md`
-- When creating asset automation scripts - Read relevant domain standard
+- When creating asset automation scripts - Read `unreal-engine-asset.md` and relevant code review standards
 - When enforcing project conventions via tooling - Reference applicable standard
 
 ---

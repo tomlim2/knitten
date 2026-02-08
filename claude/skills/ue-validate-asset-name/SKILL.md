@@ -8,6 +8,16 @@ Validate and fix Unreal Engine asset names against naming conventions.
 
 - **0.1.0** - Initial release
 
+## Standards Reference
+
+**Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
+
+This skill enforces all 9 naming rules defined in the asset naming standard. See the standard for complete details on:
+- Validation rules (ASCII_ONLY, PREFIX, PASCAL_CASE, etc.)
+- Prefix table for all asset types (SM_, T_, M_, BP_, etc.)
+- Texture suffix conventions (_D, _N, _ORM, etc.)
+- CJK asset handling and translation rules
+
 ## Purpose
 
 Two-step workflow for enforcing UE asset naming conventions:
@@ -16,20 +26,6 @@ Two-step workflow for enforcing UE asset naming conventions:
 2. **Review & Rename** (in Claude Code) - Command reads JSON, shows issues interactively, triggers rename on approval
 
 Supports all asset types selectable in the Content Browser.
-
-## Validation Rules
-
-| # | Rule | Severity | Description |
-|---|------|----------|-------------|
-| 1 | `ASCII_ONLY` | ERROR | No non-ASCII characters (Korean, CJK, etc.) |
-| 2 | `ALLOWED_CHARS` | ERROR | Only `[A-Za-z0-9_]` allowed |
-| 3 | `NO_DOUBLE_UNDERSCORE` | WARN | No consecutive `__` |
-| 4 | `NO_TRAILING_UNDERSCORE` | WARN | Name must not end with `_` |
-| 5 | `PREFIX` | ERROR | Correct type prefix (`SM_`, `T_`, `M_`, etc.) |
-| 6 | `PASCAL_CASE` | WARN | Each segment starts uppercase |
-| 7 | `ZERO_PADDED_NUMBER` | WARN | Variant numbers use 2-digit padding (`_01`) |
-| 8 | `TEXTURE_SUFFIX` | WARN | Textures should have channel suffix (`_D`, `_N`, etc.) |
-| 9 | `SOUND_CUE_SUFFIX` | WARN | SoundCue should end with `_Cue` |
 
 ## Usage
 
@@ -116,21 +112,16 @@ Uses shared `run_in_editor.py` (same as ue-analyze-material).
 }
 ```
 
-## CJK Translation Rules
+## Technical Notes
 
-When suggesting names for assets with CJK (Chinese/Japanese/Korean) characters:
+### CJK Assets
+See `unreal-engine-asset.md` for CJK translation rules and API limitations.
 
-- **Do NOT guess context.** Just translate the CJK characters literally into English.
-- Do NOT prepend character/model names unless they are already in the original asset name.
-- Example: `M_下擺` → `MI_Hem` (NOT `MI_AliceSwimsuit_Hem`)
-- Example: `M_体_outline` → `MI_Body_Outline` (NOT `MI_SomeCharacter_Body_Outline`)
+**Key limitation:** `rename_asset()` fails on CJK paths. Safe workaround: `duplicate_loaded_asset()` + `consolidate_assets()`.
 
-## Known Limitations
-
-- `EditorAssetLibrary.rename_asset()` and `EditorAssetSubsystem.rename_loaded_asset()` both return `False` for CJK-named source paths.
-- **NEVER** use `duplicate_asset()` + `delete_asset()` as a rename fallback. It breaks ALL references.
-- **Safe CJK rename**: `duplicate_loaded_asset()` + `consolidate_assets()`. Consolidation redirects all references from old → new asset.
-- **When UE Python API calls fail, look up the Unreal Engine Python API documentation.** UE version: **5.7**. Reference examples in `D:\vs\anju\python\`.
+### UE Python API
+**Version:** 5.7
+**Reference examples:** `D:\vs\anju\python\`
 
 ## Related Files
 

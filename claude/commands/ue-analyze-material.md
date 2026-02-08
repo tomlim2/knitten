@@ -13,6 +13,12 @@ Analyze a material exported by the `ue-analyze-material` skill.
 
 Replace `$COMMAND_NAME` with: `ue-analyze-material`
 
+## Standards Reference
+
+**Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
+
+Materials should use correct prefixes: `M_` (Material), `MI_` (MaterialInstance), `MF_` (MaterialFunction).
+
 ## Arguments
 
 Input: $ARGUMENTS
