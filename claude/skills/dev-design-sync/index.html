@@ -39,14 +39,22 @@
         <div class="page-layout">
             <article class="page-main">
                 <h2>Current Version</h2>
-                <p style="font-size:32px;font-weight:400;letter-spacing:-0.02em;margin-bottom:8px;">v1.7.0</p>
-                <p style="font-size:13px;color:var(--color-gray-mid);">Last updated: 2026-02-07</p>
+                <p style="font-size:32px;font-weight:400;letter-spacing:-0.02em;margin-bottom:8px;">v1.8.1</p>
+                <p style="font-size:13px;color:var(--color-gray-mid);">Last updated: 2026-02-08</p>
 
                 <h2>Skills Status</h2>
                 <ul class="item-list" id="skillList"></ul>
 
                 <h2>Changelog</h2>
                 <ul class="item-list">
+                    <li>
+                        <span class="item-name"><span class="text-semibold">1.8.1</span> — Showcase headings (20/18/16/14px), inline code border-radius 1px, centralized CSS architecture</span>
+                        <span class="item-meta">2026-02-08</span>
+                    </li>
+                    <li>
+                        <span class="item-name"><span class="text-semibold">1.7.0</span> — Markdown Reading Typography v1.7.0, usage statistics dashboard</span>
+                        <span class="item-meta">2026-02-07</span>
+                    </li>
                     <li>
                         <span class="item-name"><span class="text-semibold">1.3.0</span> — Category sections, detail page, item-list, copy button</span>
                         <span class="item-meta">2026-02-02</span>
@@ -78,13 +86,16 @@
     </footer>
     <script>
         const skills = [
-            { name: 'skill-server', version: '1.7.0' },
-            { name: 'tutoring-invoice', version: '1.7.0' },
-            { name: 'art-dashboard', version: '1.7.0' },
-            { name: 'browse-commands', version: '1.7.0' },
-            { name: 'browse-standards', version: '1.7.0' },
-            { name: 'learn-browse-entries', version: '1.7.0' },
-            { name: 'dev-design-sync', version: '1.7.0' }
+            { name: 'skill-server', version: '1.8.1' },
+            { name: 'tutoring-invoice', version: '1.8.1' },
+            { name: 'art-dashboard', version: '1.8.1' },
+            { name: 'browse-commands', version: '1.8.1' },
+            { name: 'browse-standards', version: '1.8.1' },
+            { name: 'learn-browse-entries', version: '1.8.1' },
+            { name: 'browse-usage', version: '1.8.1' },
+            { name: 'drink-log', version: '1.8.1' },
+            { name: 'dev-design-sync', version: '1.8.1' },
+            { name: 'design-showcase', version: '1.8.1' }
         ];
 
         function loadSkillStatus() {
@@ -94,7 +105,7 @@
             skills.forEach(skill => {
                 const li = document.createElement('li');
                 const versionNum = parseFloat(skill.version);
-                const isSynced = versionNum >= 1.7;
+                const isSynced = versionNum >= 1.8;
 
                 li.innerHTML = `
                     <span class="item-name">${skill.name}</span>
