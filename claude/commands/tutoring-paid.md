@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 Mark all pending lessons as paid by renaming files with `_done` suffix.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `tutoring-paid`
+
 ## Usage
 
 ```

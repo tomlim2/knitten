@@ -8,6 +8,11 @@ allowed-tools: Read, Write, Bash(mkdir:*)
 
 Create a new Claude Code skill following the standardized naming convention and structure.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `meta-new-skill`
+
 ## Arguments
 
 $ARGUMENTS = `<category> <verb> <subject>`

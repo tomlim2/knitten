@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 CINEV 아트팀용 브랜치 생성 자동화.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `art-create-branch`
+
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user for the branch name. NEVER auto-execute.**

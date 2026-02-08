@@ -8,6 +8,11 @@ allowed-tools: Read, Glob, Grep, Edit, Task
 
 Synchronize GUI/UI work artifacts with the design system version.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `design-sync`
+
 ## CSS Architecture
 
 **Design System v1.8.1** uses centralized CSS with specialized overrides:
@@ -40,17 +45,7 @@ Synchronize GUI/UI work artifacts with the design system version.
 
 ## Workflow
 
-### Step 0: Track Usage
-
-**Track this command execution** for usage statistics:
-
-```bash
-curl -X POST http://localhost:972/api/usage/track \
-  -H "Content-Type: application/json" \
-  -d '{"type":"commands","id":"design-sync"}'
-```
-
-### Step 1: Generate Showcase Specification (Optional)
+### Step 0: Generate Showcase Specification (Optional)
 
 **Purpose**: Extract current design-showcase styles into JSON for programmatic comparison
 
@@ -81,7 +76,7 @@ curl -X POST http://localhost:972/api/usage/track \
 
 **When to generate**: After updating design-showcase styles
 
-### Step 2: Detect New/Unversioned UI Files
+### Step 1: Detect New/Unversioned UI Files
 
 1. **Glob** pattern search for UI files:
    - CSS: `**/*.css` (exclude node_modules)
@@ -97,7 +92,7 @@ curl -X POST http://localhost:972/api/usage/track \
    - No version comment = Target for processing
    - Has version comment = Skip (or compare version)
 
-### Step 3: Generate Processing List with Priority
+### Step 2: Generate Processing List with Priority
 
 1. **Priority sorting**:
    - New files first (git untracked)
@@ -114,7 +109,7 @@ curl -X POST http://localhost:972/api/usage/track \
    - path/to/existing-file.css
    ```
 
-### Step 4: Run Parallel Agents
+### Step 3: Run Parallel Agents
 
 **IMPORTANT**: When processing multiple files, use **single message with multiple Task calls** for parallel execution
 
@@ -172,7 +167,7 @@ Fix {file_path} to match Design System v{version} showcase.
    - Verification: all properties now match showcase
 ```
 
-### Step 5: Unified Report
+### Step 4: Unified Report
 
 Aggregate all agent results and generate final report:
 

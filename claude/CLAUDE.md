@@ -126,6 +126,43 @@ They're defined using markdown files with frontmatter.
 
 Or use: `/meta-new-command <category> <verb> <subject>`
 
+### Command Standards
+
+**All commands must follow standard patterns** defined in:
+
+```
+~/.claude/standards/slash-commands.md
+```
+
+This standard includes:
+- **Mandatory usage tracking** - All commands must track execution
+- **Error handling** - Graceful failure patterns
+- **Argument validation** - Required/optional argument guards
+- **Frontmatter rules** - Proper allowed-tools specification
+- **Common patterns** - Templates for typical use cases
+- **Testing checklist** - Quality assurance steps
+
+**Key requirements:**
+1. Include `Bash(curl:*)` in allowed-tools for usage tracking
+2. Add usage tracking section immediately after title
+3. Validate arguments before execution
+4. Handle errors gracefully with clear messages
+
+**Quick reference - Usage Tracking Template:**
+```markdown
+## Usage Tracking
+
+Track this command execution for usage statistics:
+
+\`\`\`bash
+curl -X POST http://localhost:972/api/usage/track \
+  -H "Content-Type: application/json" \
+  -d '{"type":"commands","id":"command-name"}'
+\`\`\`
+
+Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
+```
+
 ### Naming Convention
 
 **MANDATORY: All commands and skills MUST follow the `{category}-{verb}-{subject}` pattern.**
@@ -309,14 +346,22 @@ This guide includes:
 
 Project-specific technical standards are maintained in `standards/`:
 
+- **`slash-commands.md`** - **[REQUIRED FOR ALL COMMANDS]** Common patterns, usage tracking, error handling, and templates
+- **`design-system.md`** - UI/CSS design system (Typo-base v1.8.1), centralized CSS architecture, showcase-driven development
 - **`unreal-engine.md`** - Unreal Engine naming conventions, Python scripting patterns, material workflows, and performance best practices
+- **`code-review-cpp.md`** - C++ code review guidelines for Unreal Engine projects
+- **`research-methodology.md`** - Deep research patterns and structured findings format
+- **`tech-spec-template.md`** - Technical specification document template
+- **`delegation.md`** - Task delegation and project management patterns
 
 These standards complement the workflow automation in this folder. Commands and skills should follow (and enforce) the conventions defined in these documents.
 
 **When to read standards:**
-- Before writing UE-related commands or skills
-- When creating asset automation scripts
-- When enforcing project conventions via tooling
+- **Always read `slash-commands.md` before creating new commands** - Contains mandatory patterns
+- Before writing UE-related commands or skills - Read `unreal-engine.md`
+- Before creating UI/web pages - Read `design-system.md`
+- When creating asset automation scripts - Read relevant domain standard
+- When enforcing project conventions via tooling - Reference applicable standard
 
 ---
 

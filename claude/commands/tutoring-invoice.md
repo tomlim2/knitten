@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 Show pending lessons and generate invoice summary.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `tutoring-invoice`
+
 ## Usage
 
 ```

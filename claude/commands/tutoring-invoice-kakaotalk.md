@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 Generate a KakaoTalk message for sending tuition invoice to parents.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `tutoring-invoice-kakaotalk`
+
 ## Arguments
 
 `$ARGUMENTS` = PDF invoice path

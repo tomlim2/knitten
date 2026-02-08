@@ -9,6 +9,11 @@ allowed-tools: Bash(git:*)
 Remove an old art branch after cherry-picking remnant commits
 from its merge branch into the latest art branch.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `art-remove-branch`
+
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user. NEVER auto-execute.**

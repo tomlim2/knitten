@@ -8,6 +8,11 @@ allowed-tools: Task, Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(pytest:*
 
 Fix bugs using the **test-first verification pattern**: Reproduce → Fix → Confirm.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `bug-fix`
+
 ## Workflow
 
 ### Step 1: Reproduce with Test (RED)

@@ -7,6 +7,11 @@ allowed-tools: Bash(python:*)
 
 Launch the CINEV Creator Shipping Manager GUI for packaging and deploying builds.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `cinev-open-creator-shipper`
+
 ## Execution
 
 ```bash

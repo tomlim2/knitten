@@ -8,6 +8,11 @@ allowed-tools: Read, Write, Bash(ls:*)
 
 Create a new Claude Code command following the standardized naming convention.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `meta-new-command`
+
 ## Arguments
 
 $ARGUMENTS = `<category> <verb> <subject>`
@@ -72,7 +77,7 @@ User: "Create a ue-analyze-texture command"
 
 ## Execution
 
-**IMPORTANT: All new commands MUST include usage tracking. See template for tracking section.**
+**IMPORTANT: All new commands MUST include pre-execution reference. See template below.**
 
 1. **Parse arguments**: Extract category, verb, subject
 2. **Validate naming**: Check against rules in SKILL.md
@@ -80,12 +85,12 @@ User: "Create a ue-analyze-texture command"
 4. **Ask user**:
    - Description (one-line summary)
    - What arguments does it accept? (for argument-hint)
-   - What tools does it need? (for allowed-tools)
+   - What tools does it need? (for allowed-tools - NO NEED for `Bash(curl:*)`, handled by pre-execution)
    - What does it do? (for content body)
 
 5. **Generate file**: `~/.claude/commands/{category}-{verb}-{subject}.md`
-   - Frontmatter: description → argument-hint → allowed-tools (include `Bash(curl:*)` for tracking)
-   - Usage tracking section (tracks when command is invoked)
+   - Frontmatter: description → argument-hint → allowed-tools (NO `Bash(curl:*)` needed)
+   - Pre-execution reference (delegates to command-pre-execution.md)
    - Title: `# {Verb} {Subject}`
    - Arguments section (if applicable)
    - Execution section
@@ -99,19 +104,17 @@ User: "Create a ue-analyze-texture command"
 ---
 description: [One-line summary]
 argument-hint: "[<arg>]"
-allowed-tools: [Tool list]
+allowed-tools: [Tool list - NO Bash(curl:*) needed]
 ---
 
 # [Title]
 
-## Usage Tracking
+[Brief description of what this command does]
 
-Track command usage (runs silently in background):
-!`curl -s -X POST http://localhost:972/api/usage/track -H "Content-Type: application/json" -d '{"type":"commands","id":"[command-name]"}' 2>/dev/null &`
+**Before executing, read and execute:**
+\`~/.claude/standards/command-pre-execution.md\`
 
----
-
-[Description of what this command does]
+Replace \`$COMMAND_NAME\` with: \`[command-name]\`
 
 ## Arguments
 
@@ -131,6 +134,12 @@ Usage: /[command-name] <argument>
 
 [Usage examples]
 ```
+
+**Key changes from old pattern:**
+- Removed `## Usage Tracking` section
+- Added `**Before executing, read and execute:**` block
+- No need for `Bash(curl:*)` in allowed-tools (handled by pre-execution)
+- Usage tracking is now centralized in `command-pre-execution.md`
 
 ## After Creation
 

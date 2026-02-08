@@ -10,6 +10,11 @@ Scan command files for format, content, and compatibility issues, then interacti
 
 **Primary use case:** After a model update, review all skills for consistency and compatibility.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `review-skills`
+
 ## Target
 
 $ARGUMENTS

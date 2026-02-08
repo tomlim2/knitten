@@ -8,6 +8,11 @@ allowed-tools: "Read, Write, Glob, WebSearch, WebFetch, AskUserQuestion"
 
 Track wines and whiskies you've tried with pricing and tasting notes.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `drink-log`
+
 ## Arguments
 
 Input: $ARGUMENTS

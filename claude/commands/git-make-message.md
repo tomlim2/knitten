@@ -8,6 +8,11 @@ allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git log:*)
 
 You are a helpful assistant that creates clear, well-structured git commit messages.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `git-make-message`
+
 ## Staged Changes Context
 
 - Current git status: !`git status`

@@ -7,6 +7,11 @@ argument-hint: "[content type] for [audience] about [topic]"
 
 Apply a human writing style to avoid generic AI output.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `writing-voice`
+
 ## Instructions
 
 Read the skill documentation:

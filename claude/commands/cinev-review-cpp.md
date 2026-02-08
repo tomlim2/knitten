@@ -8,6 +8,11 @@ allowed-tools: "Bash(git *), Read, Grep, Glob"
 
 Review C++ code changes against Unreal Engine coding standards and project conventions.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `cinev-review-cpp`
+
 ## Instructions
 
 You are tasked with reviewing C++ code. Follow the cinev-review-code agent in `.claude/agents/cinev-review-code.md`. All review standards and checklists are embedded in that agent — no need to load external standards documents separately.

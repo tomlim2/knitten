@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 Send a notification message to the Slack art channel.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `art-send-notice`
+
 ## Arguments
 
 $ARGUMENTS

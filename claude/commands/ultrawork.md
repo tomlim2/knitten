@@ -8,6 +8,11 @@ allowed-tools: Glob, Grep, Read, Edit, Write, Bash, TodoWrite, Task
 
 You are entering **ultrawork mode** - maximum intensity, zero shortcuts.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `ultrawork`
+
 ## Task
 
 $ARGUMENTS

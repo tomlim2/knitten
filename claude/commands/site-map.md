@@ -7,6 +7,11 @@ allowed-tools: Bash(node:*), Read, Write
 
 Generate a complete sitemap of all skill server routes and pages.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `site-map`
+
 ## Current Structure
 
 **Read** the current state:

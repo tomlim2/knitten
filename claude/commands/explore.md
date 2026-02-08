@@ -8,6 +8,11 @@ argument-hint: "<topic or pattern>"
 
 Fast, parallel exploration of the codebase from multiple angles.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `explore`
+
 ## Target
 
 $ARGUMENTS

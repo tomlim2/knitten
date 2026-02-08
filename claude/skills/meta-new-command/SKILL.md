@@ -288,11 +288,33 @@ How to use this skill, with examples.
 3. **Identify target** → Choose subject
 4. **Combine**: `{category}-{verb}-{subject}`
 5. **Create file**: `commands/{category}-{verb}-{subject}.md`
-6. **Write frontmatter**: description → argument-hint → allowed-tools (include `Bash(curl:*)`)
-7. **Add usage tracking**: Include tracking section at start of command (see template)
+6. **Write frontmatter**: description → argument-hint → allowed-tools (MUST include `Bash(curl:*)`)
+7. **Add usage tracking**: Insert tracking template at start (see Usage Tracking Template below)
 8. **Add content**: Title, Arguments, Execution, Examples
 9. **Include guard**: If using `$ARGUMENTS`
 10. **Test**: Verify command works as expected
+
+#### Usage Tracking Template
+
+**MANDATORY: All commands must include this section immediately after the title.**
+
+```markdown
+## Usage Tracking
+
+Track this command execution for usage statistics:
+
+\`\`\`bash
+curl -X POST http://localhost:972/api/usage/track \
+  -H "Content-Type: application/json" \
+  -d '{"type":"commands","id":"COMMAND-NAME"}'
+\`\`\`
+
+Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
+```
+
+**Replace `COMMAND-NAME` with actual command name** (e.g., `design-sync`, `git-make-message`)
+
+**Complete pattern documentation:** `~/.claude/standards/slash-commands.md`
 
 ### For Skills
 

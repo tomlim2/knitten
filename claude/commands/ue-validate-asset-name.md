@@ -8,6 +8,11 @@ allowed-tools: "Read, Glob, Task, Grep, Bash(python:*), AskUserQuestion"
 
 Validate selected assets' names and interactively fix naming convention violations.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `ue-validate-asset-name`
+
 ## Arguments
 
 Input: $ARGUMENTS

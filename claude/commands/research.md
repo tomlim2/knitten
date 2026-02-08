@@ -10,6 +10,11 @@ Multi-angle web research with source verification and structured compilation.
 
 **Standards**: Follow `~/.claude/standards/research-methodology.md` for search strategies and source evaluation.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `research`
+
 ## Target
 
 $ARGUMENTS

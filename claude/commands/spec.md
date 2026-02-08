@@ -8,6 +8,11 @@ allowed-tools: Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(date:*), Glob, Grep,
 
 Generate a technical specification document for code or branch changes.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `spec`
+
 ## Arguments
 
 Target: $ARGUMENTS

@@ -7,6 +7,11 @@ allowed-tools: Bash(open:*)
 
 Open the NZ temporary downloader HTML tool in the default browser.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `cinev-zo-downloader`
+
 ## Execution
 
 ```bash

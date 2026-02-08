@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 Send a threaded reply to an art branch announcement notifying that the branch will be merged.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `art-send-merge-notice`
+
 ## Usage
 
 ```

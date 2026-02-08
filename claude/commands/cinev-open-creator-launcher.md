@@ -7,6 +7,11 @@ allowed-tools: Bash(python:*)
 
 Launch the CINEV Creator Launcher GUI for downloading and running the latest build.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `cinev-open-creator-launcher`
+
 ## Execution
 
 ```bash

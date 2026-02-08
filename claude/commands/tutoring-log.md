@@ -8,6 +8,11 @@ allowed-tools: Bash(python:*)
 
 Log a new tutoring lesson.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `tutoring-log`
+
 ## Usage
 
 ```

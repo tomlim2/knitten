@@ -8,6 +8,11 @@ allowed-tools: Bash(git:*), Bash(python:*)
 
 Prepare an art branch for merging into develop.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `art-prepare-merge`
+
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user for the branch name. NEVER auto-execute.**

@@ -8,6 +8,11 @@ argument-hint: "<question or topic>"
 
 You are in **read-only oracle mode**. You will analyze, advise, and explain.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `consult`
+
 ## Restrictions
 
 You will NOT:

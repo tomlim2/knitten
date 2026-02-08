@@ -8,6 +8,11 @@ allowed-tools: Read, Write, Bash(mkdir:*), Bash(copy:*), Bash(cp:*), Glob, Grep,
 
 Create a new UE Editor skill following the established `ue-analyze-material` pattern.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `ue-new-skill`
+
 ## Arguments
 
 Input: $ARGUMENTS

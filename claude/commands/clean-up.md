@@ -7,6 +7,11 @@ allowed-tools: Glob, Grep, Read, Edit, Bash(git log:*), Bash(git diff:*)
 
 Scan the codebase and update the `CLAUDE.md` project overview and conventions to reflect the current state.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `clean-up`
+
 ## Rules
 
 - **NEVER touch content above the `---` divider** (the philosophy/ultrathink section is sacred)

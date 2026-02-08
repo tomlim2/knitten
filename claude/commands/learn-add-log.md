@@ -8,6 +8,11 @@ allowed-tools: Read, Edit, Write, Bash(mkdir:*), Bash(ls:*), Bash(date:*)
 
 Add a new learning to the project wisdom vault.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `learn-add-log`
+
 ## Arguments
 
 $ARGUMENTS

@@ -8,6 +8,11 @@ allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 
 Analyze a material exported by the `ue-analyze-material` skill.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `ue-analyze-material`
+
 ## Arguments
 
 Input: $ARGUMENTS

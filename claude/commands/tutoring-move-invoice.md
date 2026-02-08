@@ -8,6 +8,11 @@ allowed-tools: Bash(mv:*), Bash(ls:*)
 
 Move the latest invoice PDF from Downloads folder to `~/.claude/private/tutoring/invoices/` with proper naming.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `tutoring-move-invoice`
+
 ## Arguments
 
 User provides: $ARGUMENTS (student name)

@@ -9,6 +9,11 @@ allowed-tools: "Bash(git *), Read, Grep, Glob, Write, Edit"
 Summarize local commits from today (or a specified date) across
 CINEVStudio repositories, providing a clear overview of the day's work.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `cinamon-summarize-commit`
+
 ## Repositories
 
 - `E:\CINEVStudio` (main)

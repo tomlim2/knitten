@@ -7,6 +7,11 @@ allowed-tools: Bash(open:*)
 
 Open the monthly tuition invoice generator through the skill server.
 
+**Before executing, read and execute:**
+`~/.claude/standards/command-pre-execution.md`
+
+Replace `$COMMAND_NAME` with: `tutoring-open-invoice`
+
 ## Execution
 
 ```bash
