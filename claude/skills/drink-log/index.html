@@ -138,17 +138,34 @@
 
             drinks.forEach(drink => {
                 const li = document.createElement('li');
-                const stars = '★'.repeat(Math.floor(drink.rating)) + '☆'.repeat(5 - Math.floor(drink.rating));
+                // Use Vivino rating only
+                const rating = drink.source_rating || 0;
+                const stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
                 const price = drink.price ? `$${drink.price}` : 'N/A';
+
+                // Build source info
+                let sourceInfo = '';
+                if (drink.source) {
+                    let sourceText = drink.source;
+                    if (drink.source_rating) {
+                        sourceText += ` ${drink.source_rating}/5`;
+                    }
+                    if (drink.vivino_url) {
+                        sourceInfo = `<a href="${drink.vivino_url}" target="_blank" style="font-size: 11px; color: var(--color-accent); text-decoration: none; border-bottom: 1px solid var(--color-accent);">${sourceText}</a>`;
+                    } else {
+                        sourceInfo = `<span style="font-size: 11px; color: var(--color-gray-mid);">${sourceText}</span>`;
+                    }
+                }
 
                 li.innerHTML = `
                     <div style="flex: 1;">
-                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 4px;">${drink.name}</div>
+                        <div style="font-size: 16px; font-weight: 500; margin-bottom: 4px;">${drink.name}${drink.vintage ? ` ${drink.vintage}` : ''}</div>
                         ${drink.description ? `<div style="font-size: 13px; color: var(--color-gray-mid); line-height: 1.5; margin-bottom: 8px;">${drink.description}</div>` : ''}
                         <div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 8px;">
                             ${drink.type || 'Unknown'} · ${drink.region || 'N/A'} · ${drink.date || 'N/A'}
                         </div>
                         ${drink.notes ? `<div style="font-size: 14px; color: var(--color-gray-dark); line-height: 1.5; margin-top: 8px;">${drink.notes}</div>` : ''}
+                        ${sourceInfo ? `<div style="margin-top: 8px;">${sourceInfo}</div>` : ''}
                     </div>
                     <div style="text-align: right; min-width: 120px;">
                         <div style="font-size: 16px; color: var(--color-accent);">${stars}</div>
@@ -189,9 +206,11 @@
                     case 'date-asc':
                         return (a.date || '').localeCompare(b.date || '');
                     case 'rating-desc':
-                        return (b.rating || 0) - (a.rating || 0);
+                        // Use Vivino rating only
+                        return (b.source_rating || 0) - (a.source_rating || 0);
                     case 'rating-asc':
-                        return (a.rating || 0) - (b.rating || 0);
+                        // Use Vivino rating only
+                        return (a.source_rating || 0) - (b.source_rating || 0);
                     case 'name-asc':
                         return (a.name || '').localeCompare(b.name || '');
                     case 'name-desc':
