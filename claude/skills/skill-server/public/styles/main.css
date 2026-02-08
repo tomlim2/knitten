@@ -830,11 +830,19 @@ h1, h2 {
 
 /* Content Sections */
 .content-section {
-    margin-bottom: 56px;
+    margin: 16px 0;
 }
 
 .content-section:last-child {
     margin-bottom: 0;
+}
+
+.content-section::after {
+    content: '';
+    display: block;
+    border-bottom: 1px solid var(--color-border);
+    opacity: 0;
+    margin: 16px 0;
 }
 
 
