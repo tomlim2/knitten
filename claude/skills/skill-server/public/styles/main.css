@@ -546,6 +546,21 @@ body {
     /* Left column: title, credits, description */
 }
 
+.page-hero h1 {
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--color-black);
+    margin-bottom: 16px;
+    letter-spacing: 0;
+}
+
+.page-hero p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-text);
+    margin-bottom: 16px;
+}
+
 .page-hero-category {
     font-size: 12px;
     font-weight: 500;
@@ -691,20 +706,25 @@ body {
 }
 
 .page-main pre {
-    background: var(--color-gray-light);
+    background: #f6f8fa;
     padding: 20px 24px;
     font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     line-height: 1.7;
     overflow-x: auto;
     margin: 20px 0;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
 }
 
 .page-main code {
     font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
-    background: var(--color-gray-light);
+    background: #eff1f3;
+    color: #24292f;
     padding: 4px 8px;
+    border: 1px solid #d1d9e0;
+    border-radius: 1px;
 }
 
 .page-main ul {
@@ -1036,7 +1056,7 @@ code {
 pre {
     background: #f6f8fa;
     padding: 1rem;
-    border-radius: 1px;
+    border-radius: 6px;
     border: 1px solid #d0d7de;
     overflow: auto;
     line-height: 1.45;
@@ -1050,6 +1070,119 @@ pre code {
     white-space: pre;
     border: none;
     color: #1f2328;
+}
+
+/* Usage Statistics Components */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 0 0 48px 0;
+    max-width: 1170px;
+}
+
+.stat-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    padding: 24px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--color-gray-mid);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--color-black);
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+/* Usage Table */
+.usage-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+}
+
+.usage-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-gray-mid);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
+
+.usage-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+    letter-spacing: 0;
+}
+
+.usage-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Usage Bar */
+.usage-bar-container {
+    width: 200px;
+    height: 20px;
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    position: relative;
+}
+
+.usage-bar-fill {
+    height: 100%;
+    background: var(--color-black);
+    transition: width 0.3s ease;
+}
+
+/* Recent Activity */
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-name {
+    color: var(--color-black);
+    margin-bottom: 4px;
+    font-weight: 400;
+}
+
+.activity-time {
+    color: var(--color-gray-mid);
+    font-size: 11px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--color-gray-mid);
+    font-size: 14px;
 }
 
 /* Responsive */

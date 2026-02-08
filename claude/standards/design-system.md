@@ -3,7 +3,9 @@
 **Version**: 1.8.1
 **Last Updated**: 2026-02-07
 
-**Live Component Examples**: http://localhost:972/skills/design-showcase
+**Canonical CSS Reference**: http://localhost:972/skills/design-showcase
+
+> **IMPORTANT**: The design-showcase page is the **single source of truth** for all CSS implementations. When implementing typography (h1-h4), code blocks, layouts, or any component, **always refer to the actual CSS in design-showcase/index.html** for exact values (font-size, line-height, margins, colors, border-radius, etc.). This document provides specifications, but the showcase contains the canonical implementation.
 
 ---
 
