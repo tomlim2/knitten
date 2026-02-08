@@ -34,8 +34,8 @@ http://localhost:972/skills/spec-generator       Technical specification generat
 http://localhost:972/skills/writing-voice        Apply human writing voice
 
 ## Standards (5 total)
-http://localhost:972/api/standards/code-review-cpp    C++ Code Review Guidelines
-http://localhost:972/api/standards/delegation         Delegation Standards
+http://localhost:972/api/standards/review-code-unreal-cpp    C++ Code Review Guidelines for Unreal Engine
+http://localhost:972/api/standards/delegation                Delegation Standards
 http://localhost:972/api/standards/design-system      Design System (Typo-base v1.5.1)
 http://localhost:972/api/standards/tech-spec-template Technical Specification Template
 http://localhost:972/api/standards/unreal-engine      Unreal Engine Standards

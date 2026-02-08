@@ -1,11 +1,218 @@
 # Design System - Typo-base
 
 **Version**: 1.8.1
-**Last Updated**: 2026-02-07
+**Last Updated**: 2026-02-08
 
 **Canonical CSS Reference**: http://localhost:972/skills/design-showcase
 
-> **IMPORTANT**: The design-showcase page is the **single source of truth** for all CSS implementations. When implementing typography (h1-h4), code blocks, layouts, or any component, **always refer to the actual CSS in design-showcase/index.html** for exact values (font-size, line-height, margins, colors, border-radius, etc.). This document provides specifications, but the showcase contains the canonical implementation.
+> **IMPORTANT**: The design-showcase page is the **single source of truth** for all CSS implementations. For exact values (font-size, line-height, margins, colors, border-radius, spacing, component specs, etc.), **always refer to design-showcase/index.html**. This document defines philosophy, principles, and design direction only.
+
+---
+
+## Philosophy
+
+### Typo-base: Editorial Minimalism
+
+A design system inspired by editorial design and typography-driven layouts. Born from the belief that good typography needs no decoration.
+
+**Core Identity:**
+- **Editorial Minimalism** - Clean layouts, generous whitespace, content-first
+- **Typography-Driven** - Hierarchy through type, not color or decoration
+- **Platform-Agnostic** - Principles apply to web, native, or any UI platform
+
+**What This Is:**
+- A philosophical framework for creating minimal, readable interfaces
+- A set of principles that guide implementation decisions
+- A vocabulary for discussing design choices
+
+**What This Is Not:**
+- A pixel-perfect specification (see design-showcase for that)
+- A component library (implementations vary by platform)
+- A rigid rulebook (adapt to your platform's constraints)
+
+---
+
+## Design Principles
+
+### 1. Typography First
+
+Typography is the primary tool for creating hierarchy and meaning.
+
+**Rules:**
+- Font sizes in multiples of 4px (12, 16, 20, 24, 36, 48...)
+- Letter spacing: 0 for all text (no tracking)
+- Line height: 1.2 for titles, 1.5-1.6 for body
+- Font weights: 400 (regular), 500 (medium), 600 (semibold)
+- **Bold weights (500, 600) only for headers** - Never in body text
+- **No `<strong>` tags** - Use CSS font-weight instead
+
+**Font Stack:**
+- Primary: Noto Sans KR (Korean)
+- Fallback: Inter (Latin)
+- Monospace: SF Mono, Consolas, Monaco
+
+### 2. No Decoration
+
+Remove visual noise. Let content speak.
+
+**Rules:**
+- No card backgrounds or shadows
+- Minimal borders (only where necessary for structure)
+- No rounded corners (border-radius: 0)
+- No gradients
+- No drop shadows
+- Transparent backgrounds for content cards
+
+**Exception:** Code blocks may have subtle backgrounds for readability.
+
+### 3. Editorial Minimalism
+
+Layouts inspired by editorial design and printed matter.
+
+**Rules:**
+- Clean, uncluttered layouts
+- Generous whitespace (breathing room around content)
+- Content-first approach (UI elements serve content)
+- Maximum spacing: 40px (no larger gaps)
+- Centered layouts with max-width constraints
+
+### 4. Interactive Feedback
+
+Clear, instant feedback for all interactions.
+
+**Rules:**
+- Hover: Color change (blue #0066cc for links/titles)
+- Focus: Border color change for inputs
+- Cursor changes for clickable elements
+- Transitions: 0.15s ease (instant, not animated)
+- No loading spinners unless absolutely necessary
+
+### 5. Accessibility
+
+Design for all users from the start.
+
+**Rules:**
+- High contrast text (black on white, white on black)
+- Clear focus states for keyboard navigation
+- Semantic HTML (proper heading hierarchy, ARIA when needed)
+- WCAG AA minimum (4.5:1 contrast ratio)
+
+---
+
+## UX Writing
+
+### Two-Mode System
+
+Different contexts require different tones. Choose the right mode for your content.
+
+#### Mode 1: Empathetic (UI/Status Messages)
+
+Use when the user is **waiting, uncertain, or needs reassurance**.
+
+**When to Use:**
+- Loading states ("서버 연결중")
+- Error messages ("페이지를 찾을 수 없습니다")
+- Success confirmations ("저장 완료!")
+- Empty states ("아직 사용 기록이 없습니다")
+
+**Characteristics:**
+- Complete sentences with proper grammar
+- Active voice describing what's happening
+- Korean-friendly phrasing (warm, human)
+- Acknowledges user's emotional state
+
+**Pattern:**
+```
+[Subject] + [Action] + [State/Context]
+"서버 연결중"
+"파일을 저장하는 중입니다"
+"모든 변경사항이 저장되었습니다"
+```
+
+#### Mode 2: Professional (Technical Content)
+
+Use when the user needs **precise information quickly**.
+
+**When to Use:**
+- Skill descriptions ("Create git commits from staged changes")
+- Command arguments ("File name (required)")
+- Button labels ("Download")
+- Documentation ("Use --force to override")
+- API responses
+
+**Characteristics:**
+- Imperative mood for instructions
+- Technical accuracy over friendliness
+- Scannable, consistent structure
+- No unnecessary words
+
+**Pattern:**
+```
+[Action verb] + [Object] + [Optional: Context]
+"Execute git commands"
+"Generate invoice from pending lessons"
+"Track skill usage (optional: --dry-run)"
+```
+
+### General Guidelines
+
+1. **Be specific**: "3 files updated" not "Files updated"
+2. **Use present tense**: "Saving..." not "Save in progress"
+3. **Avoid jargon in UI**: "연결중" not "Establishing TCP connection"
+4. **Never use placeholder text**: No "Lorem ipsum"
+5. **Bilingual when appropriate**: Korean for warmth, English for precision
+
+### Anti-Patterns
+
+❌ Don't mix modes:
+```
+Bad: "데이터를 execute하는 중입니다"
+Good: "데이터를 처리하는 중입니다" (Empathetic)
+Good: "Execute data processing" (Professional)
+```
+
+❌ Don't over-explain in technical content:
+```
+Bad: "This command will help you create a new branch"
+Good: "Create new branch"
+```
+
+❌ Don't be cold in status messages:
+```
+Bad: "Operation pending"
+Good: "작업을 진행하고 있습니다"
+```
+
+---
+
+## Implementation Notes
+
+### Platform Adaptations
+
+These principles are platform-agnostic. Adapt them to your constraints:
+
+**Web (CSS):**
+- See `design-showcase` for exact pixel values
+- Use CSS variables for colors
+- Responsive breakpoints around 768px
+
+**Python/Tkinter:**
+- Typography scales may differ (system font rendering)
+- Focus on proportions rather than exact px values
+- Maintain spacing ratios
+
+**Native Mobile:**
+- Adjust font sizes for platform conventions (iOS/Android differ)
+- Keep principles (no decoration, typography-first)
+- Platform-specific interaction patterns
+
+### When in Doubt
+
+1. Check `design-showcase` for web reference implementation
+2. Ask: "Does this serve the content or distract from it?"
+3. Remove decoration before adding it
+4. Test with real content (never Lorem Ipsum)
+5. Simplify ruthlessly
 
 ---
 
@@ -13,22 +220,22 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.8.1 | 2026-02-07 | Updated inline code border-radius (6px → 1px), added Content Section component with invisible dividers |
-| 1.8.0 | 2026-02-07 | Added UX Writing guidelines: Two-mode writing system (Empathetic for UI/status, Professional for technical content) |
-| 1.7.0 | 2026-02-07 | Added Markdown Reading Typography pattern: compact 12px reading style with table styling |
-| 1.6.2 | 2026-02-06 | Added rule: Semibold (500) and bold (600) font weights only for headers, never body text |
-| 1.6.1 | 2026-02-05 | Font hierarchy change: Noto Sans KR primary, Inter fallback (removed Google Sans Flex) |
-| 1.6.0 | 2026-02-05 | Added Code Blocks (Documentation) pattern: inline code + code block styling with GitHub-inspired minimal design |
-| 1.5.1 | 2026-02-04 | Added rule: No `<strong>` tags (use CSS font-weight) |
-| 1.5.0 | 2026-02-04 | Dashboard pattern: skill cards with meta-first layout, letter-spacing 0 |
-| 1.4.1 | 2026-02-04 | Standardized all font sizes to 4px multiples |
+| 1.8.1 | 2026-02-08 | Restructured as philosophy doc (CSS specs moved to showcase) |
+| 1.8.0 | 2026-02-07 | Added UX Writing two-mode system |
+| 1.7.0 | 2026-02-07 | Added Markdown Reading Typography pattern |
+| 1.6.2 | 2026-02-06 | Rule: Bold weights only for headers |
+| 1.6.1 | 2026-02-05 | Font hierarchy: Noto Sans KR primary, Inter fallback |
+| 1.6.0 | 2026-02-05 | Code Blocks pattern (GitHub-inspired minimal) |
+| 1.5.1 | 2026-02-04 | Rule: No `<strong>` tags (use CSS) |
+| 1.5.0 | 2026-02-04 | Dashboard pattern: skill cards meta-first |
+| 1.4.1 | 2026-02-04 | Font sizes: 4px multiples |
 | 1.4.0 | 2026-02-04 | Rebranded to Typo-base style |
-| 1.3.1 | 2026-02-02 | Standardized input/button classes with transitions (.input, .btn, .btn-primary, .btn-secondary, .btn-small) |
-| 1.3.0 | 2026-02-02 | Category sections, detail page layout, item-list with copy button, middle dot separators |
-| 1.2.1 | 2026-02-01 | Card meta: border-top separator, left-aligned layout |
-| 1.2.0 | 2026-01-31 | Complete redesign: Typo-base style, Google Sans Flex + Noto Sans KR, 1170px centered layout, transparent card backgrounds |
-| 1.1.0 | 2026-01-31 | Inputs: bottom border only, subtle gray-300 default, transparent bg |
-| 1.0.0 | 2026-01-31 | Initial release: Brutalist B&W style |
+| 1.3.1 | 2026-02-02 | Standardized input/button classes |
+| 1.3.0 | 2026-02-02 | Category sections, item-list pattern |
+| 1.2.1 | 2026-02-01 | Card meta: border-top separator |
+| 1.2.0 | 2026-01-31 | Complete redesign: Typo-base editorial style |
+| 1.1.0 | 2026-01-31 | Inputs: bottom border only |
+| 1.0.0 | 2026-01-31 | Initial release: Brutalist B&W |
 
 ---
 
@@ -38,613 +245,15 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │  TYPO-BASE               │  Editorial minimalism  │  radius = 0 │
 ├─────────────────────────────────────────────────────────────────┤
-│  Max width: 1170px       │  Grid: 4 columns, 24px gap           │
-│  Font: Google Sans Flex  │  Korean: Noto Sans KR                │
-│  Hover: #0066cc (blue)   │  Borders: minimal, #e5e5e5           │
-│  Spacing max: 40px       │  All padding/margin ≤ 40px           │
+│  Max width: ~1170px      │  Grid: 4 columns, ~24px gap          │
+│  Font: Noto Sans KR      │  Fallback: Inter                     │
+│  Hover: blue             │  Borders: minimal, light gray        │
+│  Spacing max: ~40px      │  Letter spacing: 0                   │
+│  No decoration           │  Typography-driven hierarchy         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
----
-
-## Colors
-
-### CSS Variables
-
-```css
-:root {
-    --color-black: #000000;
-    --color-text: #1a1a1a;
-    --color-white: #ffffff;
-    --color-bg: #f8f8f8;
-    --color-border: #e5e5e5;
-    --color-border-hover: #cccccc;
-    --color-gray-light: #f5f5f5;
-    --color-gray-mid: #888888;
-    --color-gray-dark: #555555;
-    --color-link-hover: #0066cc;
-}
-```
-
-### Color Palette
-
-| Name | Hex | Use |
-|------|-----|-----|
-| **Black** | `#000000` | Primary text, logo |
-| **Text** | `#1a1a1a` | Body text |
-| **White** | `#ffffff` | Backgrounds, buttons |
-| **Background** | `#f8f8f8` | Page background |
-| **Border** | `#e5e5e5` | Dividers, borders |
-| **Gray Mid** | `#888888` | Secondary text, meta |
-| **Gray Dark** | `#555555` | Descriptions |
-| **Link Hover** | `#0066cc` | Interactive hover state |
-
----
-
-## Layout
-
-### Container
-
-| Property | Value |
-|----------|-------|
-| Max width | **1170px** |
-| Alignment | Centered (`margin: 0 auto`) |
-| Padding | 24px horizontal |
-
-### Grid System
-
-| Property | Value |
-|----------|-------|
-| Columns | **4** |
-| Gap | **24px** |
-| Responsive | 1 column on mobile (768px) |
-
----
-
-## Typography
-
-### Font Families
-
-**Primary Font**: Noto Sans KR (Korean)
-**Fallback Font**: Inter (Latin)
-
-```css
-font-family: 'Noto Sans KR', 'Inter', sans-serif;
-```
-
-| Purpose | Font |
-|---------|------|
-| Primary | Noto Sans KR |
-| Fallback | Inter |
-| System fallback | sans-serif |
-| Monospace | 'SF Mono', Consolas, Monaco, monospace |
-
-### Type Scale
-
-| Element | Size | Weight | Line Height | Letter Spacing |
-|---------|------|--------|-------------|----------------|
-| Card Title | 16px | 400 | 1.2 | 0 |
-| Body | 16px | 400 | 1.5 | 0 |
-| Description | 12px | 400 | 1.5 | 0 |
-| Navigation | 16px | 400 | 1.5 | 0 |
-| Logo | 16px | 400 | 1.5 | 0 |
-| Badge/Meta | 12px | 400 | 1.5 | 0 |
-| Label (uppercase) | 12px | 600 | 1.2 | 0 |
-| Code | 12px | 400 | 1.6 | 0 |
-
-### Showcase Headings
-
-For design-showcase page only (no text-transform):
-
-| Element | Size | Weight | Color |
-|---------|------|--------|-------|
-| h1 | 20px | 400 | black |
-| h2 | 18px | 400 | black |
-| h3 | 16px | 400 | black |
-| h4 | 14px | 400 | black |
-| body (p) | 14px | 400 | text |
-
----
-
-## Components
-
-### Header
-
-| Property | Value |
-|----------|-------|
-| Height | 56px |
-| Max width | 1170px |
-| Padding | 0 24px |
-| Border | 1px solid `--color-border` (bottom) |
-| Display | flex, space-between |
-
-### Navigation
-
-| State | Color |
-|-------|-------|
-| Default | `--color-gray-mid` |
-| Hover | `--color-black` |
-| Active | `--color-black` |
-
-### Dashboard Pattern (Skill Cards)
-
-**Structure**: Section → Grid → Cards
-
-#### Skill Section
-
-| Property | Value |
-|----------|-------|
-| Padding bottom | 40px |
-| Last section margin | 0 |
-
-#### Skill Grid
-
-| Property | Value |
-|----------|-------|
-| Columns | 4 (1fr each) |
-| Gap | 24px |
-| Responsive | 1 column on ≤768px |
-
-#### Skill Card
-
-| Property | Value |
-|----------|-------|
-| Height | **auto** (no fixed height) |
-| Background | **transparent** |
-| Border | **none** |
-| Display | flex, column |
-
-**Content Order**: Title → Meta (bordered) → Description
-
-**Hover Behavior**: Title link color changes to `#0066cc`
-
-#### Skill Meta (Border-Top Pattern)
-
-| Property | Value |
-|----------|-------|
-| Position | After title, before description |
-| Border | 1px solid top |
-| Padding | 8px top |
-| Display | flex row |
-| Items | Version, platform badge |
-
-#### Skill Description
-
-| Property | Value |
-|----------|-------|
-| Font size | 12px |
-| Color | gray-dark |
-| Line clamp | 3 lines |
-| Padding | 10px top |
-
-### Buttons
-
-| Variant | Style |
-|---------|-------|
-| Primary | Black bg, white text, full width |
-| Secondary | Transparent bg, gray-dark text, border |
-| Small | Reduced padding for compact buttons |
-
-### Inputs
-
-| Property | Value |
-|----------|-------|
-| Border | Bottom only, 1px solid border |
-| Padding | 10px 0 |
-| Background | Transparent |
-| Transition | 0.15s ease |
-| Hover | Border-color border-hover |
-| Focus | Border-color black |
-
-### Section Title (Optional)
-
-**Note**: Dashboard pattern does NOT use section titles by default. If needed:
-
-| Property | Value |
-|----------|-------|
-| Font size | 12px |
-| Weight | 500 |
-| Transform | uppercase |
-| Letter spacing | 0 |
-| Border | 1px solid bottom |
-
-### Detail Page (Two-Column Layout)
-
-| Property | Value |
-|----------|-------|
-| Grid | 1fr 240px, gap 80px |
-| Hero padding | 80px top, 48px bottom |
-| Hero title | 48px, weight 400 |
-| Sidebar label | 12px uppercase |
-
-### Item List
-
-| Property | Value |
-|----------|-------|
-| Padding | 16px vertical |
-| Border | 1px solid bottom |
-| Display | flex, space-between |
-
-### Copy Button
-
-| Property | Value |
-|----------|-------|
-| Font size | 12px |
-| Padding | 6px 12px |
-| Border | 1px solid border |
-| Hover | Black border and text |
-
-### Middle Dot Separator
-
-Meta 정보 구분에 사용
-
-### Content Section
-
-| Property | Value |
-|----------|-------|
-| Margin | 16px vertical |
-| Divider (::after) | border-bottom 1px solid, opacity 0 |
-| Divider margin | 16px vertical |
-
-**Note**: Section dividers use opacity: 0 to maintain spacing without visual clutter
-
-### Footer
-
-| Property | Value |
-|----------|-------|
-| Max width | 1170px |
-| Padding | 14px 24px |
-| Border | 1px solid `--color-border` (top) |
-| Display | flex, space-between |
-
-### Toolbar
-
-| Property | Value |
-|----------|-------|
-| Background | White |
-| Border | 1px solid border |
-| Padding | 14px 20px |
-| Display | flex, gap 16px |
-
-### Code Output
-
-Terminal output display with optional status bars
-
-### Code Blocks (Documentation)
-
-**Use**: Inline code and code blocks in content (learnings, docs, articles)
-
-**Font Stack**: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Courier New", monospace
-
-#### Inline Code
-
-| Property | Value |
-|----------|-------|
-| Font size | 0.85em (relative to parent) |
-| Background | #eff1f3 (solid light gray) |
-| Color | #24292f (dark gray) |
-| Padding | 0.2em 0.4em (relative) |
-| Border | 1px solid #d1d9e0 |
-| Border radius | 1px |
-| White-space | nowrap (prevent mid-word breaks) |
-| Vertical-align | 0.125em (fine-tuned centering) |
-
-#### Code Blocks
-
-| Property | Value |
-|----------|-------|
-| Background | #f6f8fa (GitHub light gray) |
-| Padding | 1rem (16px) |
-| Border | 1px solid #d0d7de |
-| Border radius | 6px |
-| Line height | 1.45 (tighter for code) |
-| Overflow | auto (both axes) |
-| Margin | 16px vertical |
-
-**Design Rationale**:
-- **Borders provide clarity** - Makes code immediately distinguishable from text
-- **Subtle backgrounds** - #eff1f3 for inline, #f6f8fa for blocks (GitHub-inspired)
-- **Contrast** - Explicit text colors ensure WCAG AA compliance (4.5:1 minimum)
-- **Relative sizing** - `0.85em` and `em` units scale with parent font size
-- **Line height** - 1.45 for code (vs 1.6 for prose) optimizes vertical density
-- **nowrap on inline** - Prevents awkward mid-function breaks like `get_outer().get_pa` `th_name()`
-
-**Research Sources**:
-- GitHub Primer Design System
-- Material Design 3 code typography
-- WCAG 2.1 contrast guidelines
-- CSS-Tricks code styling best practices
-
----
-
-## Markdown Reading Typography
-
-**Use**: Long-form markdown content (standards, learnings, documentation)
-
-**Purpose**: Optimized reading experience with compact 12px typography for maximum readability in narrow columns
-
-### Container
-
-| Property | Value |
-|----------|-------|
-| Max width | 700px |
-| Font size | 12px (base) |
-| Line height | 1.6 |
-
-### Headings
-
-| Element | Size | Weight | Line Height | Margin |
-|---------|------|--------|-------------|--------|
-| h1 | 20px | 500 | 1.3 | 0 0 20px 0 |
-| h2 | 16px | 500 | 1.4 | 32px 0 12px 0 |
-| h3 | 14px | 500 | 1.4 | 24px 0 8px 0 |
-
-### Body Text
-
-| Element | Size | Line Height | Margin |
-|---------|------|-------------|--------|
-| p | 12px | 1.6 | 0 0 16px 0 |
-| ul, ol | 12px | 1.6 | 0 0 16px 0 |
-| li | 12px | 1.6 | 0 0 6px 0 |
-
-### Code
-
-| Element | Size | Padding | Background |
-|---------|------|---------|------------|
-| code | 11px | 2px 4px | var(--color-gray-light) |
-| pre | 11px | 16px | var(--color-gray-light) |
-
-### Blockquotes
-
-| Property | Value |
-|----------|-------|
-| Font size | 12px |
-| Line height | 1.6 |
-| Padding | 0 0 0 16px |
-| Border | 2px solid left |
-| Color | var(--color-gray-mid) |
-
-### Tables
-
-| Property | Value |
-|----------|-------|
-| Font size | 12px |
-| Line height | 1.5 |
-| Cell padding | 8px 12px |
-| Border | 1px solid |
-| Border collapse | collapse |
-
-**Design Rationale**:
-- **12px base** - Compact reading optimized for 700px width column
-- **1.6 line height** - Balanced spacing for continuous reading
-- **11px code** - Slightly smaller for inline code and blocks
-- **Minimal margins** - Tighter spacing (6px-20px) for documentation flow
-- **Table styling** - GitHub-inspired with alternating rows and header background
-- **Vertical rhythm** - 16px bottom margins create consistent spacing
-
-**Research Sources**:
-- iA Writer typography system
-- Medium article reading experience
-- GitHub markdown rendering
-- Butterick's Practical Typography
-
----
-
-## Spacing
-
-| Token | Value | Use |
-|-------|-------|-----|
-| space-2 | 8px | Small gaps, meta padding |
-| space-3 | 10px | Input padding, margins |
-| space-4 | 14px | Button padding, toolbar |
-| space-5 | 16px | Output padding |
-| space-6 | 20px | Form padding, toolbar |
-| space-8 | 24px | Grid gap, section padding |
-| space-10 | 28px | Form sections |
-| space-12 | 48px | Main content padding |
-
----
-
-## Borders
-
-| Type | Value |
-|------|-------|
-| Default | 1px solid `--color-border` |
-| Hover | 1px solid `--color-border-hover` |
-| Focus | 1px solid `--color-black` |
-| Accent | 3px solid `--color-black` (left border) |
-| Radius | **0** (no rounded corners) |
-
-### Horizontal Rule (hr)
-
-| Property | Value |
-|----------|-------|
-| Border | 1px solid `--color-border` |
-| Margin | 32px 0 |
-| Background | transparent |
-
----
-
-## Responsive
-
-### Breakpoints
-
-| Name | Width | Changes |
-|------|-------|---------|
-| Mobile | ≤768px | 1-column grid, reduced padding |
-| Desktop | >768px | 4-column grid, full padding |
-
----
-
-## Principles
-
-### Editorial Minimalism
-- Clean, uncluttered layouts
-- Typography-driven hierarchy
-- Generous whitespace
-- Content-first approach
-
-### No Decoration
-- No card backgrounds or shadows
-- Minimal borders (only where necessary)
-- No rounded corners
-- No gradients
-
-### Typography First
-- **Letter spacing: 0** for all text (no tracking)
-- **No `<strong>` tags** - use font-weight via CSS instead
-- Multiples of 4px for font sizes (12px, 16px, 20px, 24px, 36px, 48px)
-- Line height: 1.2 for titles, 1.5-1.6 for body
-- Font weight: 400 (regular), 500 (medium), 600 (semibold)
-- **Semibold (500) and bold (600) only for headers** - Never use font-weight 500 or 600 in body text, paragraphs, or inline text. These weights are reserved exclusively for headings (h1-h6)
-
-### Interactive Feedback
-- Color change on hover (blue #0066cc for links/titles)
-- Border color change for inputs
-- Cursor changes for clickable elements
-- Instant transitions (0.15s ease)
-
-### Accessibility
-- High contrast text (black/white)
-- Clear focus states
-- Keyboard navigable
-- Semantic HTML
-
----
-
-## UX Writing
-
-### Voice and Tone
-
-**Two writing modes based on context:**
-
-#### Infographics and Status Messages (Empathetic)
-Server-generated UI feedback should feel **human and considerate**. Use complete sentences that acknowledge the user's emotional state.
-
-**Characteristics:**
-- Complete sentences with proper grammar
-- Active voice describing what's happening
-- Considerate of user's time and attention
-- Korean-friendly phrasing when applicable
-
-**Examples:**
-
-| Context | ❌ Avoid | ✅ Preferred |
-|---------|---------|-------------|
-| Loading | "Loading..." | "서버 연결중" |
-| Processing | "Processing data" | "데이터를 불러오는 중입니다" |
-| Success | "Saved" | "저장 완료!" |
-| Empty state | "No results" | "아직 사용 기록이 없습니다" |
-| Error | "Error 404" | "페이지를 찾을 수 없습니다" |
-| Progress | "50%" | "절반 정도 완료했습니다" |
-
-**Status Message Patterns:**
-```
-[Subject] + [Action] + [State/Context]
-- "서버 연결중"
-- "파일을 저장하는 중입니다"
-- "모든 변경사항이 저장되었습니다"
-```
-
-#### Technical Content (Professional)
-Skill descriptions, command documentation, and developer-facing content should prioritize **clarity, precision, and brevity**.
-
-**Characteristics:**
-- Imperative mood for instructions
-- Technical accuracy over friendliness
-- Scannable with consistent structure
-- No unnecessary adjectives or filler
-
-**Examples:**
-
-| Context | ❌ Avoid | ✅ Preferred |
-|---------|---------|-------------|
-| Skill description | "This amazing skill helps you create..." | "Create git commits from staged changes" |
-| Command arg | "Please provide the file name" | "File name (required)" |
-| Button label | "Click here to download" | "Download" |
-| Error message | "Oops! Something went wrong" | "Invalid file path" |
-| Documentation | "You might want to try..." | "Use --force to override" |
-
-**Technical Writing Patterns:**
-```
-[Action verb] + [Object] + [Optional: Context]
-- "Execute git commands"
-- "Generate invoice from pending lessons"
-- "Track skill usage (optional: --dry-run)"
-```
-
-### Writing Guidelines
-
-#### General Rules
-1. **Be specific**: "3 files updated" not "Files updated"
-2. **Use present tense**: "Saving..." not "Save in progress"
-3. **Avoid jargon in UI**: "연결중" not "Establishing TCP connection"
-4. **Never use placeholder text**: No "Lorem ipsum" or "Example text here"
-5. **Bilingual when needed**: Status messages can use Korean for warmth
-
-#### When to Use Each Mode
-
-| Content Type | Mode | Reason |
-|-------------|------|--------|
-| Loading states | Empathetic | User is waiting, acknowledge their time |
-| Error messages | Empathetic | User is frustrated, be considerate |
-| Success confirmations | Empathetic | User accomplished something, celebrate |
-| Empty states | Empathetic | User might feel uncertain, guide them |
-| Skill descriptions | Professional | Developer needs quick understanding |
-| Command arguments | Professional | Technical accuracy is critical |
-| Documentation | Professional | Reference material, not conversation |
-| API responses | Professional | Machine-readable, consistent format |
-
-#### Word Choice
-
-**Empathetic Mode (Infographics):**
-- 완료 (completed) over Done
-- 불러오는 중 (loading) over Loading
-- 저장되었습니다 (saved) over Saved
-- 아직 없습니다 (not yet available) over Empty
-
-**Professional Mode (Technical):**
-- Execute, Run, Generate (imperative)
-- Path, File, Directory (precise nouns)
-- Required, Optional, Default (clear states)
-- Success, Failed, Pending (status codes)
-
-### Anti-Patterns
-
-❌ **Don't mix modes:**
-```
-Bad: "데이터를 execute하는 중입니다"
-Good: "데이터를 처리하는 중입니다" (Empathetic)
-Good: "Execute data processing" (Professional)
-```
-
-❌ **Don't over-explain in technical content:**
-```
-Bad: "This command will help you create a new branch"
-Good: "Create new branch"
-```
-
-❌ **Don't be cold in status messages:**
-```
-Bad: "Operation pending"
-Good: "작업을 진행하고 있습니다"
-```
-
----
-
-## File Structure
-
-```
-public/
-└── styles/
-    └── main.css
-
-views/
-├── dashboard.ejs
-├── skill-cli.ejs
-├── skill-web.ejs
-└── files.ejs
-```
+**For exact values, see:** http://localhost:972/skills/design-showcase
 
 ---
 

@@ -135,7 +135,7 @@
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">COMPONENTS</div>
-                        <div class="page-hero-meta-value">18 patterns</div>
+                        <div class="page-hero-meta-value">19 patterns</div>
                     </div>
                 </div>
             </div>
@@ -785,6 +785,103 @@ console.log(example());</code></pre>
         &lt;span class="footer-version"&gt;v1.7.0&lt;/span&gt;
     &lt;/div&gt;
 &lt;/footer&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Two-Column Layout -->
+                <div class="content-section">
+                    <h2>Two-Column Layout</h2>
+                    <p style="margin-bottom: 16px;">Markdown viewer with sidebar navigation (browse-standards, learn-browse-entries)</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Layout Structure</div>
+                        <div style="border: 1px solid var(--color-border); padding: 16px;">
+                            <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px;">
+                                <div style="border: 1px dashed var(--color-border); padding: 16px; max-width: 720px;">
+                                    <strong>Main Content (.page-main)</strong>
+                                    <p style="font-size: 12px; color: var(--color-gray-mid); margin-top: 8px;">
+                                        Max width: 720px<br>
+                                        Markdown viewer, content area
+                                    </p>
+                                </div>
+                                <div style="border: 1px dashed var(--color-border); padding: 16px; width: 320px;">
+                                    <strong>Sidebar (.page-sidebar)</strong>
+                                    <p style="font-size: 12px; color: var(--color-gray-mid); margin-top: 8px;">
+                                        Width: 320px<br>
+                                        Sticky positioning<br>
+                                        File selector, navigation
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;div class="page-layout page-layout--two-column"&gt;
+    &lt;article class="page-main markdown-body" id="contentViewer"&gt;
+        &lt;!-- Markdown content rendered here --&gt;
+        &lt;p&gt;Select a file to view&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;aside class="page-sidebar"&gt;
+        &lt;h2&gt;Files&lt;/h2&gt;
+        &lt;div id="fileList"&gt;
+            &lt;ul class="item-list"&gt;
+                &lt;li&gt;&lt;a href="#"&gt;file1.md&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;file2.md&lt;/a&gt;&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/aside&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 24px;">
+                        <div class="example-label">CSS Styles</div>
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>/* Two Column Layout */
+.page-layout--two-column {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding: 56px 0 80px;
+}
+
+.page-layout--two-column .page-main {
+    max-width: 720px;
+}
+
+.page-sidebar {
+    width: 320px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-layout--two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .page-sidebar {
+        width: 100%;
+        position: static;
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 24px;">
+                        <div class="example-label">Usage Notes</div>
+                        <ul style="font-size: 14px; line-height: 1.6; margin: 0; padding-left: 24px;">
+                            <li><strong>Main content:</strong> max 720px for optimal reading width</li>
+                            <li><strong>Sidebar:</strong> 320px fixed, sticky scroll (stays visible)</li>
+                            <li><strong>Gap:</strong> 24px between columns</li>
+                            <li><strong>Mobile:</strong> Stacks to single column, sidebar on top</li>
+                            <li><strong>Use cases:</strong> Standards viewer, learnings browser, documentation</li>
+                        </ul>
                     </div>
                 </div>
 

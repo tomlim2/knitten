@@ -356,7 +356,7 @@ Project-specific technical standards are maintained in `standards/`:
 - **`slash-commands.md`** - **[REQUIRED FOR ALL COMMANDS]** Common patterns, usage tracking, error handling, and templates
 - **`design-system.md`** - UI/CSS design system (Typo-base v1.8.1), centralized CSS architecture, showcase-driven development
 - **`unreal-engine.md`** - Unreal Engine naming conventions, Python scripting patterns, material workflows, and performance best practices
-- **`code-review-cpp.md`** - C++ code review guidelines for Unreal Engine projects
+- **`review-code-unreal-cpp.md`** - C++ code review guidelines for Unreal Engine projects
 - **`research-methodology.md`** - Deep research patterns and structured findings format
 - **`tech-spec-template.md`** - Technical specification document template
 - **`delegation.md`** - Task delegation and project management patterns

@@ -681,11 +681,11 @@ pre code {
 }
 
 .page-layout--two-column .page-main {
-    max-width: 800px;
+    max-width: 720px;
 }
 
 .page-sidebar {
-    width: 240px;
+    width: 320px;
     position: sticky;
     top: 24px;
     align-self: start;
