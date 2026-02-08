@@ -224,8 +224,20 @@ app.get('/', async (req, res) => {
             .length;
     }
 
+    // Check anju repo connection
+    let anjuConnected = false;
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    try {
+        if (fs.existsSync(repoPathsFile)) {
+            const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+            if (repoPaths.anju && fs.existsSync(repoPaths.anju)) {
+                anjuConnected = true;
+            }
+        }
+    } catch (e) { /* ignore */ }
+
     const usageStats = await readUsageStats();
-    res.render('dashboard', { groupedSkills, skillCount, commandCount, usageStats, config, activePage: '/' });
+    res.render('dashboard', { groupedSkills, skillCount, commandCount, usageStats, config, activePage: '/', anjuConnected });
 });
 
 // Serve skill static files (CSS, JS, etc.)
