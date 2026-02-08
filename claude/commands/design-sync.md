@@ -10,6 +10,37 @@ Synchronize GUI/UI work artifacts with the design system version.
 
 ## Workflow
 
+### Step 0: Generate Showcase Specification (Optional)
+
+**Purpose**: Extract current design-showcase styles into JSON for programmatic comparison
+
+1. **Read** `~/.claude/skills/design-showcase/index.html`
+2. **Parse** `<style>` section CSS rules:
+   - `.page-main h1, h2, h3, h4` styles
+   - `.page-main p, code` styles
+   - `:not(pre) > code, pre` styles
+   - `.content-section` and `::after` styles
+   - `:root` CSS variables
+3. **Generate** `~/.claude/private/showcase-spec.json`:
+```json
+{
+  "version": "1.8.1",
+  "typography": {
+    "h1": {"fontSize": "20px", "fontWeight": "400", "textTransform": "none"},
+    "h2": {"fontSize": "18px", "fontWeight": "400", "textTransform": "none", "marginTop": "20px"},
+    "h3": {"fontSize": "16px", "fontWeight": "400", "marginTop": "18px"},
+    "h4": {"fontSize": "14px", "fontWeight": "400"},
+    "p": {"fontSize": "14px"}
+  },
+  "codeBlocks": {
+    "inline": {"borderRadius": "1px"},
+    "pre": {"borderRadius": "1px"}
+  }
+}
+```
+
+**When to generate**: After updating design-showcase styles
+
 ### Step 1: Detect New/Unversioned UI Files
 
 1. **Glob** pattern search for UI files:
@@ -48,32 +79,56 @@ Synchronize GUI/UI work artifacts with the design system version.
 **IMPORTANT**: When processing multiple files, use **single message with multiple Task calls** for parallel execution
 
 Each agent's tasks:
-1. Read Design System standards (design-system.md + design-showcase)
+1. Read design-showcase actual CSS (single source of truth)
 2. Read target file
-3. Compare style elements:
-   - Colors (`#000`, `rgb(`, CSS variables)
-   - Typography (`font-family`, `font-size`, `font-weight`)
-   - Spacing (`padding`, `margin`, `gap`)
-   - Borders (`border`, `border-radius`)
-4. Find mismatches
-5. Add/update version comment
-6. Return individual report
+3. Compare EACH property against showcase:
+   - **h1**: fontSize 20px, fontWeight 400, textTransform none
+   - **h2**: fontSize 18px, fontWeight 400, textTransform none, marginTop 20px
+   - **h3**: fontSize 16px, fontWeight 400, marginTop 18px
+   - **h4**: fontSize 14px, fontWeight 400
+   - **p**: fontSize 14px
+   - **inline code**: borderRadius 1px (NOT 6px)
+   - **pre**: borderRadius 1px (NOT 6px)
+4. **APPLY FIXES** (not just report):
+   - Use Edit tool to update mismatched values
+   - Replace uppercase with none
+   - Update font sizes to showcase scale
+   - Update border-radius to 1px
+5. Add/update version comment AFTER fixes
+6. Return report with changes made
 
 **Agent prompt example**:
 ```
-Analyze {file_path} against Design System v{version}.
+Fix {file_path} to match Design System v{version} showcase.
 
-1. Read ~/.claude/standards/design-system.md (specification)
-2. Read http://localhost:972/skills/design-showcase (live examples)
-3. Read {file_path}
-4. Compare colors, typography, spacing, borders
-5. Find mismatches
-6. Add/update version comment: /* Design System: v{version} */
-7. Return report with:
+**Reference (Single Source of Truth):**
+1. Open http://localhost:972/skills/design-showcase
+2. Read design-showcase/index.html <style> section
+3. Extract actual values from .page-main styles
+
+**Target File:**
+4. Read {file_path}
+
+**Compare and FIX:**
+5. For each selector, compare actual vs expected:
+
+   .page-main h2 {
+     font-size: expect 18px (NOT 12px)
+     font-weight: expect 400 (NOT 500)
+     text-transform: expect none (NOT uppercase)
+     margin-top: expect 20px
+   }
+
+   :not(pre) > code {
+     border-radius: expect 1px (NOT 6px)
+   }
+
+6. Use Edit tool to fix ALL mismatches
+7. Update version stamp: /* Design System: v{version} */
+8. Return report:
    - File path
-   - Version status (NEW/UPDATED)
-   - Mismatches found
-   - Recommendations
+   - Changes applied (before → after)
+   - Verification: all properties now match showcase
 ```
 
 ### Step 4: Unified Report
@@ -152,20 +207,54 @@ Version comment by file type:
 
 ## Rules
 
-1. **Comprehensive grep first** - Always search ALL files before making changes
+1. **design-showcase is the single source of truth**
+   - design-system.md = Specification document
+   - design-showcase = Actual implementation reference
+   - When in conflict, showcase wins
+   - Always compare against showcase actual CSS values
+
+2. **"Fix" not "Report"**
+   - Don't just find mismatches - APPLY fixes immediately
+   - Use Edit tool to update files
+   - Version stamp only AFTER fixes applied
+
+3. **Comprehensive grep first** - Always search ALL files before making changes
    - Don't assume template changes propagate to standalone files
    - Search across ALL file types (*.html, *.css, *.ejs, *.tsx, *.jsx)
    - Example: When updating `.site-footer` → `.footer`, grep entire skills directory first
-2. **No version comment** = Target for processing
-3. **New files first** priority
-4. **Parallel agents** (single message, multiple Tasks)
-5. **Unified report** generated at the end
-6. **Auto version stamp** added
+
+4. **Specific property comparison**
+   - Not "check typography" (too vague)
+   - Check "h2 fontSize === 18px" (specific)
+   - Compare EACH property explicitly
+
+5. **Processing priority**
+   - New files first
+   - Files with version mismatch second
+   - Files without version stamp last
+
+6. **Parallel agents** (single message, multiple Tasks)
+
+7. **Unified report** generated at the end
+
+8. **Auto version stamp** added AFTER fixes
 
 ## Common Pitfalls
+
+❌ **Don't:** Just update version stamps without checking styles
+✅ **Do:** Compare each CSS property against showcase and fix mismatches
+
+❌ **Don't:** Only read design-system.md specification
+✅ **Do:** Read design-showcase actual CSS as the reference implementation
+
+❌ **Don't:** Report mismatches and stop
+✅ **Do:** Use Edit tool to apply fixes immediately, then report changes
 
 ❌ **Don't:** Update only EJS templates and assume standalone HTML files inherit changes
 ✅ **Do:** `grep -r "site-footer" claude/skills/ --include="*.html" --include="*.css"` before editing
 
 ❌ **Don't:** Make partial updates across file types
 ✅ **Do:** Find all occurrences first, update all at once, single commit
+
+❌ **Don't:** Check vague "typography compliance"
+✅ **Do:** Check specific values: `h2.fontSize === "18px"`, `h2.textTransform === "none"`
