@@ -99,14 +99,6 @@ body {
     color: var(--color-black);
 }
 
-h1, h2 {
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0;
-    margin-bottom: 24px;
-    color: var(--color-gray-mid);
-}
-
 /* Skill Section */
 .skill-section {
     margin-bottom: 0;
@@ -150,10 +142,7 @@ h1, h2 {
 }
 
 .skill-name {
-    font-size: 16px;
-    font-weight: 400;
     letter-spacing: 0;
-    line-height: 1.2;
     margin-bottom: 10px;
 }
 
@@ -167,14 +156,10 @@ h1, h2 {
     color: #0066cc;
 }
 
-.skill-name--cli {
-    font-size: 16px;
-}
+/* Removed skill-name--cli font-size override */
 
 .skill-description {
-    font-size: 12px;
     color: var(--color-gray-dark);
-    line-height: 1.5;
     flex: 1;
     overflow: hidden;
     display: -webkit-box;
@@ -570,25 +555,7 @@ h1, h2 {
     margin-bottom: 12px;
 }
 
-.page-hero-name {
-    font-size: 48px;
-    font-weight: 400;
-    color: var(--color-black);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 8px;
-    text-transform: lowercase;
-}
-
-.page-hero-name--mono {
-    font-family: 'SF Mono', Consolas, Monaco, monospace;
-    font-size: 36px;
-    letter-spacing: 0;
-    text-transform: none;
-}
-
 .page-hero-meta {
-    font-size: 16px;
     color: var(--color-gray-mid);
     letter-spacing: 0;
     margin-bottom: 20px;
@@ -613,14 +580,7 @@ h1, h2 {
     color: var(--color-gray-mid);
 }
 
-.page-hero-desc {
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--color-text);
-    line-height: 1.6;
-    max-width: 560px;
-    letter-spacing: 0;
-}
+/* Removed .page-hero-desc - use .page-main p */
 
 /* Hero Action Area - Right column */
 .page-hero-actions {
@@ -647,10 +607,7 @@ h1, h2 {
 
 .page-hero-cta-price {
     display: block;
-    font-size: 24px;
-    font-weight: 400;
     letter-spacing: 0;
-    text-transform: none;
     margin-top: 4px;
 }
 
@@ -902,17 +859,13 @@ h1, h2 {
 }
 
 .related-card-name {
-    font-size: 24px;
-    font-weight: 400;
     color: var(--color-black);
     margin-bottom: 8px;
     transition: color 0.15s ease;
 }
 
 .related-card-desc {
-    font-size: 12px;
     color: var(--color-gray-dark);
-    line-height: 1.5;
 }
 
 /* List Items */
@@ -935,7 +888,6 @@ h1, h2 {
 }
 
 .item-name {
-    font-size: 16px;
     color: var(--color-text);
 }
 
@@ -993,13 +945,7 @@ h1, h2 {
         margin-bottom: 10px;
     }
 
-    .page-hero-name {
-        font-size: 24px;
-    }
-
-    .page-hero-desc {
-        font-size: 16px;
-    }
+    /* Removed .page-hero-desc font-size override */
 
     .page-hero-actions {
         flex-direction: row;
