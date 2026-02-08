@@ -355,6 +355,7 @@ Project-specific technical standards are maintained in `standards/`:
 
 - **`slash-commands.md`** - **[REQUIRED FOR ALL COMMANDS]** Common patterns, usage tracking, error handling, and templates
 - **`design-system.md`** - UI/CSS design system (Typo-base v1.8.1), centralized CSS architecture, showcase-driven development
+- **`javascript.md`** - JavaScript/Node.js coding standards (Airbnb + Node.js Best Practices, ES6+, Express.js)
 - **`unreal-engine-cpp.md`** - Unreal Engine C++ coding standards (brace style, naming conventions, PascalCase)
 - **`unreal-engine-asset.md`** - Unreal Engine asset naming conventions (prefixes, suffixes, validation rules)
 - **`review-code-unreal-cpp.md`** - C++ code review guidelines for Unreal Engine projects
@@ -367,6 +368,7 @@ These standards complement the workflow automation in this folder. Commands and 
 
 **When to read standards:**
 - **Always read `slash-commands.md` before creating new commands** - Contains mandatory patterns
+- Before writing JavaScript/Node.js code - Read `javascript.md`
 - Before writing UE C++ code - Read `unreal-engine-cpp.md`
 - Before creating/validating UE assets - Read `unreal-engine-asset.md`
 - Before creating UI/web pages - Read `design-system.md`

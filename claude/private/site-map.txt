@@ -33,7 +33,8 @@ http://localhost:972/skills/spec-generator       Technical specification generat
 ### Other (1 skill)
 http://localhost:972/skills/writing-voice        Apply human writing voice
 
-## Standards (8 total)
+## Standards (9 total)
+http://localhost:972/api/standards/javascript                  JavaScript/Node.js Coding Standards (Airbnb + Best Practices)
 http://localhost:972/api/standards/review-code-unreal-cpp      C++ Code Review Guidelines for Unreal Engine
 http://localhost:972/api/standards/review-code-unreal-python   Python Code Review Guidelines for Unreal Engine
 http://localhost:972/api/standards/unreal-engine-cpp           Unreal Engine C++ Coding Standards
