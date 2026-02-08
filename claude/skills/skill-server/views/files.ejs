@@ -8,19 +8,20 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
-        <div class="file-browser">
-            <p class="path-display">~/.claude/private/<span id="currentPath"></span></p>
-
-            <div class="file-list" id="fileList">
-                <!-- Files loaded via JS -->
-            </div>
-
-            <div class="file-preview" id="filePreview" style="display: none;">
-                <div class="preview-header">
-                    <span id="previewName"></span>
-                    <button id="closePreview" class="close-button">Close</button>
+        <div class="page-layout--two-column">
+            <div class="page-main">
+                <div class="file-preview" id="filePreview">
+                    <div class="preview-header">
+                        <span id="previewName">파일을 선택하세요</span>
+                    </div>
+                    <pre class="preview-content" id="previewContent"></pre>
                 </div>
-                <pre class="preview-content" id="previewContent"></pre>
+            </div>
+            <div class="page-sidebar">
+                <p class="path-display">~/.claude/private/<span id="currentPath"></span></p>
+                <div class="file-list" id="fileList">
+                    <!-- Files loaded via JS -->
+                </div>
             </div>
         </div>
     </main>
@@ -74,12 +75,10 @@
         }
 
         async function previewFile(filePath) {
-            const preview = document.getElementById('filePreview');
             const content = document.getElementById('previewContent');
             const name = document.getElementById('previewName');
 
             name.textContent = filePath;
-            preview.style.display = 'block';
 
             if (filePath.endsWith('.pdf')) {
                 content.innerHTML = '<a href="/api/files?path=' + encodeURIComponent(filePath) + '" target="_blank" class="pdf-link">Open PDF</a>';
@@ -101,10 +100,6 @@
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / 1024 / 1024).toFixed(1) + ' MB';
         }
-
-        document.getElementById('closePreview').onclick = () => {
-            document.getElementById('filePreview').style.display = 'none';
-        };
 
         loadFiles();
     </script>

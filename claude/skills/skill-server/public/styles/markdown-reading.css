@@ -81,6 +81,8 @@
     background: transparent;
     color: #1f2328;
     border: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .page-main blockquote {
