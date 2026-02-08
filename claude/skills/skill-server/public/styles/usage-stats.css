@@ -1,0 +1,115 @@
+/* Design System: v1.8.1 */
+/* Usage Statistics Page - Custom styles for browse-usage */
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 0 0 48px 0;
+    max-width: 1170px;
+}
+
+.stat-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    padding: 24px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--color-gray-mid);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--color-black);
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+/* Usage Table */
+.usage-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+}
+
+.usage-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-gray-mid);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
+
+.usage-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+    letter-spacing: 0;
+}
+
+.usage-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Usage Bar */
+.usage-bar-container {
+    width: 200px;
+    height: 20px;
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    position: relative;
+}
+
+.usage-bar-fill {
+    height: 100%;
+    background: var(--color-black);
+    transition: width 0.3s ease;
+}
+
+/* Recent Activity */
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-name {
+    color: var(--color-black);
+    margin-bottom: 4px;
+    font-weight: 400;
+}
+
+.activity-time {
+    color: var(--color-gray-mid);
+    font-size: 11px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--color-gray-mid);
+    font-size: 14px;
+}
