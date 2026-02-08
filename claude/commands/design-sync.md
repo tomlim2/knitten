@@ -8,6 +8,36 @@ allowed-tools: Read, Glob, Grep, Edit, Task
 
 Synchronize GUI/UI work artifacts with the design system version.
 
+## CSS Architecture
+
+**Design System v1.8.1** uses centralized CSS with specialized overrides:
+
+### Base CSS (Required for all pages)
+- **main.css** - Showcase base styles for all pages
+  - `.page-main` typography (h1-h4, p, hr)
+  - UI components (.btn, .input, .form-group)
+  - Layout (.header, .footer, .nav)
+  - **NO content-specific overrides**
+
+### Custom CSS (Optional, use-case specific)
+- **markdown-reading.css** - Compact 12px for documentation
+  - Used by: browse-standards, learn-browse-entries
+  - Overrides: compact typography for reading
+
+- **usage-stats.css** - Infographic components
+  - Used by: browse-usage
+  - Custom: stats-grid, stat-card, usage-table
+
+- **tutoring-invoice/style.css** - Invoice-specific
+  - Used by: tutoring-invoice
+  - Custom: invoice layout and print styles
+
+### Architecture Rules
+1. **All pages import main.css** (required)
+2. **Custom CSS only for special cases** (optional)
+3. **No inline `<style>` tags** - use external CSS files
+4. **No content typography in main.css** - only in .page-main
+
 ## Workflow
 
 ### Step 0: Generate Showcase Specification (Optional)
@@ -87,6 +117,7 @@ Each agent's tasks:
    - **h3**: fontSize 16px, fontWeight 400, marginTop 18px
    - **h4**: fontSize 14px, fontWeight 400
    - **p**: fontSize 14px
+   - **hr**: border-top 1px solid, margin 32px 0
    - **inline code**: borderRadius 1px (NOT 6px)
    - **pre**: borderRadius 1px (NOT 6px)
 4. **APPLY FIXES** (not just report):
@@ -239,6 +270,12 @@ Version comment by file type:
 
 8. **Auto version stamp** added AFTER fixes
 
+9. **No content typography overrides in main.css**
+   - Only .page-main styles allowed
+   - Remove .skill-name, .page-hero-desc, .item-name font-sizes
+   - UI components can have font-sizes (.btn, .input labels)
+   - Content inherits from .page-main showcase
+
 ## Common Pitfalls
 
 ❌ **Don't:** Just update version stamps without checking styles
@@ -258,3 +295,9 @@ Version comment by file type:
 
 ❌ **Don't:** Check vague "typography compliance"
 ✅ **Do:** Check specific values: `h2.fontSize === "18px"`, `h2.textTransform === "none"`
+
+❌ **Don't:** Add content-specific font-sizes (.skill-name, .page-hero-desc, .item-name)
+✅ **Do:** Keep only .page-main typography styles, let content inherit
+
+❌ **Don't:** Use inline `<style>` tags for special cases
+✅ **Do:** Create separate CSS files (markdown-reading.css, usage-stats.css)
