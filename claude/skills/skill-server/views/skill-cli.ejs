@@ -51,11 +51,12 @@
     <script>
         const markdown = `<%- skill.markdown.replace(/`/g, '\\`').replace(/\$/g, '\\$') %>`;
 
-        // Remove title and version from markdown
-        let content = markdown
-            .replace(/^# .+\n/m, '')
-            .replace(/\*\*Version:\*\* .+\n/m, '')
-            .trim();
+        // Remove everything before --- (title, version, description - already in hero)
+        let content = markdown;
+        const separatorIndex = content.indexOf('---');
+        if (separatorIndex !== -1) {
+            content = content.substring(separatorIndex + 3).trim();
+        }
 
         // Parse markdown with marked.js
         const html = marked.parse(content);

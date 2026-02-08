@@ -31,6 +31,27 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+
+/* Code blocks - stronger visual distinction */
+pre {
+    background: #f6f8fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    overflow: auto;
+    line-height: 1.45;
+    margin: 16px 0;
+}
+
+pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 100%;
+    white-space: pre;
+    border: none;
+    color: #1f2328;
+}
+
 /* Header - Minimal top bar */
 .header {
     max-width: 1170px;
@@ -547,7 +568,7 @@ body {
 }
 
 .page-hero h1 {
-    font-size: 48px;
+    font-size: 20px;
     font-weight: 400;
     color: var(--color-black);
     margin-bottom: 16px;
@@ -556,7 +577,7 @@ body {
 
 .page-hero p {
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.5;
     color: var(--color-text);
     margin-bottom: 16px;
 }
@@ -595,7 +616,7 @@ body {
     color: var(--color-gray-mid);
 }
 
-/* Removed .page-hero-desc - use .page-main p */
+/* Removed .page-hero-desc - use p */
 
 /* Hero Action Area - Right column */
 .page-hero-actions {
@@ -651,8 +672,27 @@ body {
     padding: 56px 0 80px;
 }
 
+/* Two Column Layout - Markdown Viewer + Sidebar */
+.page-layout--two-column {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding: 56px 0 80px;
+}
+
+.page-layout--two-column .page-main {
+    max-width: 800px;
+}
+
+.page-sidebar {
+    width: 240px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+}
+
 /* Main Content */
-.page-main h1 {
+h1 {
     font-size: 20px;
     font-weight: 400;
     color: var(--color-black);
@@ -660,7 +700,7 @@ body {
     margin-bottom: 16px;
 }
 
-.page-main h2 {
+h2 {
     font-size: 18px;
     font-weight: 400;
     letter-spacing: 0;
@@ -670,11 +710,11 @@ body {
     margin-bottom: 12px;
 }
 
-.page-main h2:first-child {
+h2:first-child {
     margin-top: 0;
 }
 
-.page-main h3 {
+h3 {
     font-size: 16px;
     font-weight: 400;
     color: var(--color-black);
@@ -683,7 +723,7 @@ body {
     margin-bottom: 12px;
 }
 
-.page-main h4 {
+h4 {
     font-size: 14px;
     font-weight: 400;
     color: var(--color-black);
@@ -691,21 +731,21 @@ body {
     margin-bottom: 12px;
 }
 
-.page-main p {
+p {
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.5;
     color: var(--color-text);
     margin-bottom: 16px;
 }
 
-.page-main hr {
+hr {
     border: none;
     border-top: 1px solid var(--color-border);
     margin: 32px 0;
     background: transparent;
 }
 
-.page-main pre {
+pre {
     background: #f6f8fa;
     padding: 20px 24px;
     font-family: 'SF Mono', Consolas, Monaco, monospace;
@@ -717,7 +757,7 @@ body {
     border-radius: 6px;
 }
 
-.page-main code {
+code {
     font-family: 'SF Mono', Consolas, Monaco, monospace;
     font-size: 12px;
     background: #eff1f3;
@@ -727,18 +767,18 @@ body {
     border-radius: 1px;
 }
 
-.page-main ul {
+ul {
     margin: 16px 0;
     padding-left: 0;
     list-style: none;
 }
 
-.page-main ol {
+ol {
     margin: 16px 0;
     padding-left: 24px;
 }
 
-.page-main table {
+table {
     font-size: 12px;
     line-height: 1.5;
     border-spacing: 0;
@@ -747,23 +787,23 @@ body {
     margin: 16px 0;
 }
 
-.page-main table th,
-.page-main table td {
+table th,
+table td {
     padding: 8px 12px;
     border: 1px solid var(--color-border);
     text-align: left;
 }
 
-.page-main table th {
+table th {
     font-weight: 500;
     background: var(--color-gray-light);
 }
 
-.page-main table tr:nth-child(even) {
+table tr:nth-child(even) {
     background: var(--color-bg);
 }
 
-.page-main li {
+li {
     font-size: 12px;
     line-height: 1.6;
     margin-bottom: 6px;
@@ -771,14 +811,14 @@ body {
     position: relative;
 }
 
-.page-main ul li::before {
+ul li::before {
     content: '•';
     position: absolute;
     left: 0;
     color: var(--color-gray-mid);
 }
 
-.page-main .item-list li::before {
+.item-list li::before {
     content: none;
 }
 
@@ -962,6 +1002,15 @@ body {
         gap: 48px;
     }
 
+    .page-layout--two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .page-sidebar {
+        width: 100%;
+        position: static;
+    }
+
     .page-hero {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -982,14 +1031,6 @@ body {
     .page-hero-cta {
         flex: 1;
         min-width: 200px;
-    }
-
-    .page-sidebar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 24px 48px;
-        padding-bottom: 32px;
-        border-bottom: 1px solid var(--color-border);
     }
 
     .page-sidebar-item {
@@ -1050,26 +1091,6 @@ code {
     word-wrap: break-word;
     white-space: nowrap;
     vertical-align: 0.125em;
-}
-
-/* Code blocks - stronger visual distinction */
-pre {
-    background: #f6f8fa;
-    padding: 1rem;
-    border-radius: 6px;
-    border: 1px solid #d0d7de;
-    overflow: auto;
-    line-height: 1.45;
-    margin: 16px 0;
-}
-
-pre code {
-    background: transparent;
-    padding: 0;
-    font-size: 100%;
-    white-space: pre;
-    border: none;
-    color: #1f2328;
 }
 
 /* Usage Statistics Components */
