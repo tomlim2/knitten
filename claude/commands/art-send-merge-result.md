@@ -25,7 +25,7 @@ Replace `$COMMAND_NAME` with: `art-send-merge-result`
 
 **If `--list`, run:**
 ```bash
-python "C:\Users\TA_yeonsu\.claude\skills\art-send-merge-result\merge_done.py" --list
+python ~/.claude/skills/art-send-merge-result/merge_done.py --list
 ```
 
 ## Arguments
@@ -84,69 +84,10 @@ Guidelines:
 
 ### Step 4: Send via script
 
-Load thread info and send:
+Send the Korean summary as a custom message:
 
 ```bash
-python "C:\Users\TA_yeonsu\.claude\skills\art-send-merge-result\merge_done.py" <branch_name>
-```
-
-Note: The script sends a hardcoded message. If the Korean
-summary needs to be sent instead, use the art-notice sender
-with thread reply capability, or modify the message in the
-script before running.
-
-**Alternative: Send directly via Python if the script message
-is not suitable:**
-
-```python
-python -c "
-import json, os, urllib.request
-from pathlib import Path
-
-# Load env
-env_path = Path(r'C:\Users\TA_yeonsu\.claude\config\.env')
-with open(env_path) as f:
-    for line in f:
-        line = line.strip()
-        if line and not line.startswith('#') and '=' in line:
-            k, v = line.split('=', 1)
-            os.environ[k.strip()] = v.strip()
-
-# Load thread info
-threads_path = Path(r'C:\Users\TA_yeonsu\.claude\private\slack_threads.json')
-with open(threads_path) as f:
-    threads = json.load(f)
-info = threads['<branch_name>']
-
-# Load slack config
-cfg_path = Path(r'C:\Users\TA_yeonsu\.claude\config\slack.json')
-with open(cfg_path) as f:
-    cfg = json.load(f)
-
-message = '''<THE KOREAN SUMMARY>'''
-
-payload = json.dumps({
-    'channel': info['channel'],
-    'text': message,
-    'thread_ts': info['ts'],
-    'reply_broadcast': True,
-    'username': cfg.get('bot_username', '아트 아르리므'),
-    'link_names': True,
-}).encode('utf-8')
-
-req = urllib.request.Request(
-    'https://slack.com/api/chat.postMessage',
-    data=payload,
-    headers={
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': f'Bearer {os.environ[\"SLACK_BOT_TOKEN\"]}',
-    },
-    method='POST',
-)
-with urllib.request.urlopen(req, timeout=10) as resp:
-    result = json.loads(resp.read().decode('utf-8'))
-    print('[OK]' if result.get('ok') else f'[ERROR] {result.get(\"error\")}')
-"
+python ~/.claude/skills/art-send-merge-result/merge_done.py <branch_name> -m "<THE KOREAN SUMMARY>"
 ```
 
 Replace `<branch_name>` and `<THE KOREAN SUMMARY>` with actual values.

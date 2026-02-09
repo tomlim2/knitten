@@ -194,20 +194,25 @@ def list_available_branches() -> None:
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: merge_done.py <branch_name>")
-        print("       merge_done.py --list")
-        print()
-        print("Example: merge_done.py art/art-main-1.5.0-r2")
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Send merge result to Slack thread")
+    parser.add_argument("branch_name", nargs="?", help="Branch name")
+    parser.add_argument("--list", action="store_true", help="List available branches")
+    parser.add_argument("--message", "-m", type=str, help="Custom message to send (skips auto-detect)")
+
+    args = parser.parse_args()
+
+    if args.list or not args.branch_name:
+        if args.list:
+            list_available_branches()
+            sys.exit(0)
+        parser.print_help()
         print()
         list_available_branches()
         sys.exit(1)
 
-    if sys.argv[1] == "--list":
-        list_available_branches()
-        sys.exit(0)
-
-    branch_name = sys.argv[1]
+    branch_name = args.branch_name
 
     # Load thread info
     thread_info = load_thread_info(branch_name)
@@ -220,10 +225,18 @@ def main():
     channel = thread_info["channel"]
     thread_ts = thread_info["ts"]
 
+    # Custom message mode: send single message and exit
+    if args.message:
+        print(f"Sending custom message to thread for: {branch_name}")
+        if not send_thread_reply(channel, thread_ts, args.message, broadcast=True):
+            sys.exit(1)
+        print("\n[OK] Custom message sent!")
+        sys.exit(0)
+
+    # Auto mode: check merge status and send
     print(f"Checking merge status for: {branch_name}")
     print(f"Repo: {REPO_PATH}")
 
-    # Check if merged
     merged, merge_hash = check_branch_merged(branch_name)
 
     if not merged:
@@ -242,7 +255,6 @@ def main():
     print("\nGetting merge details...")
     details = get_merge_details(branch_name)
 
-    # Format as Korean summary
     msg2_template = SLACK_CONFIG.get("art_merge_detail_message")
     msg2 = msg2_template.format(details=details)
 
