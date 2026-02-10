@@ -1,6 +1,6 @@
 # caol-ila Learnings
 
-Last updated: 2026-02-09
+Last updated: 2026-02-10
 
 ---
 
@@ -67,6 +67,21 @@ Approaches worth repeating.
   - **Process lifecycle**: The `&` operator forks a child process that inherits the parent's file descriptors but runs independently. The parent (Claude Code command) doesn't wait for the child to exit (`wait()` is not called). The child either succeeds (tracking recorded) or fails silently (server down), both without impacting command execution.
   - **Shell job control**: The shell manages the background job. `2>/dev/null` redirects stderr to prevent error messages from appearing in the user's terminal if the server is unreachable.
 - **Result**: Commands execute instantly (0.001s overhead instead of 0.571s). User experience improved significantly - no perceived delay when running commands. Tracking still works when server is running, fails silently when not.
+
+### Claude Code 확장 시스템 전체 아키텍처 정리
+- **Date**: 2026-02-10
+- **Context**: Claude Code의 확장 메커니즘이 여러 레벨에 걸쳐 있어서 각각의 역할과 차이를 명확히 정리할 필요가 있었음.
+- **Solution**: 4가지 확장 레벨로 분류:
+  - **레벨 1: Skills/Commands** — 프롬프트(지시문). 메인 대화에서 실행. `skills/`, `commands/`에 저장.
+  - **레벨 2: Subagents** — 독립 컨텍스트의 작업자. 별도 시스템 프롬프트, 도구 제한, 모델 선택 가능. 결과만 메인에 반환. 최대 7개 병렬. `agents/`에 저장.
+  - **레벨 3: Agent Teams** — 여러 세션이 서로 메시지를 주고받으며 협업. 실험적 기능(기본 비활성). 대규모 병렬, 토론, 경쟁 가설에 적합.
+  - **레벨 4: Agent SDK** — 프로그래밍으로 오케스트레이션. TypeScript/Python에서 Claude를 프로그래밍적으로 제어.
+- **핵심 차이 — Skill vs Subagent**:
+  - Skill = 지시문. 메인 대화 안에서 실행. Claude가 자동 로드하거나 `/name`으로 호출.
+  - Subagent = 별도 두뇌. 자체 시스템 프롬프트, 도구 제한, 모델 선택. 결과만 메인에 반환.
+  - 접점: Skill에 `context: fork` + `agent: Explore` 설정하면 Skill이 Subagent 안에서 실행됨.
+- **실용적 판단 기준**: 순차 워크플로우 + 사용자 확인 필요 → Skill. 무거운 탐색/리뷰 → Subagent (`context: fork`). 대규모 병렬 토론 → Agent Teams.
+- **Sources**: code.claude.com/docs/en/skills, /sub-agents, /agent-teams
 
 ---
 

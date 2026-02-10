@@ -127,6 +127,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | Standard | When to read |
 |----------|-------------|
 | `slash-commands.md` | **Always** before creating commands |
+| `agent-workflow.md` | Before creating multi-pass agent commands |
 | `command-pre-execution.md` | Referenced by all commands automatically |
 | `javascript.md` | Before writing JS/Node.js code |
 | `design-system.md` | Before creating UI/web pages |
