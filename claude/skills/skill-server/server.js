@@ -243,8 +243,11 @@ app.get('/', async (req, res) => {
 
 // Serve skill static files (CSS, JS, etc.)
 app.get('/skills/:id/:file', (req, res, next) => {
-    const skillPath = path.join(SKILLS_DIR, req.params.id);
-    const filePath = path.join(skillPath, req.params.file);
+    const filePath = path.resolve(SKILLS_DIR, req.params.id, req.params.file);
+
+    if (!filePath.startsWith(SKILLS_DIR)) {
+        return res.status(403).send('Access denied');
+    }
 
     if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         return res.sendFile(filePath);
@@ -275,7 +278,7 @@ app.get('/skills/:id', (req, res) => {
 // File browser API
 app.get('/api/files', (req, res) => {
     const subpath = req.query.path || '';
-    const targetPath = path.join(PRIVATE_DIR, subpath);
+    const targetPath = path.resolve(PRIVATE_DIR, subpath);
 
     // Security check
     if (!targetPath.startsWith(PRIVATE_DIR)) {
@@ -414,7 +417,11 @@ app.get('/api/standards', (req, res) => {
 });
 
 app.get('/api/standards/:name', (req, res) => {
-    const filePath = path.join(STANDARDS_DIR, `${req.params.name}.md`);
+    const filePath = path.resolve(STANDARDS_DIR, `${req.params.name}.md`);
+
+    if (!filePath.startsWith(STANDARDS_DIR)) {
+        return res.status(403).send('Access denied');
+    }
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).send('Standard not found');
@@ -507,8 +514,16 @@ app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10m
 
 // WebSocket for CLI skills
 wss.on('connection', (ws) => {
+    ws.on('error', (err) => console.error('WebSocket error:', err.message));
+
     ws.on('message', async (message) => {
-        const data = JSON.parse(message);
+        let data;
+        try {
+            data = JSON.parse(message);
+        } catch {
+            ws.send(JSON.stringify({ type: 'error', message: 'Invalid JSON' }));
+            return;
+        }
 
         if (data.action === 'collect-commits') {
             const { repoPath, options } = data;
