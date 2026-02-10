@@ -1,0 +1,80 @@
+# ue-generate-spritesheet
+
+**Version:** 0.1.0
+
+Generate sprite sheets from image sequence folders for UE flipbook textures.
+
+## Changelog
+
+- **0.1.0** - Initial release (ported from anju sprite_sheet_generator)
+
+## Purpose
+
+Batch-converts folders of image sequences (PNG/JPG/WebP) into sprite sheet textures suitable for UE flipbooks. Each subfolder in the input directory becomes one sprite sheet.
+
+Features:
+- Center-crop + LANCZOS resize to uniform frame size
+- Configurable frame dimensions, FPS reduction, sheet size
+- Optional `png/` subfolder convention
+- Batch processing of multiple sequence folders
+
+## Usage
+
+```
+/ue-generate-spritesheet <input_path> [options]
+```
+
+### Options
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--input` | (required) | Input directory containing sequence folders |
+| `--output` | `~/.claude/private/unreal/spritesheet-generate/` | Output directory |
+| `--frame_width` | 80 | Frame width in pixels |
+| `--frame_height` | 80 | Frame height in pixels |
+| `--fps_reduction` | 1 | Sample every Nth frame (2 = half FPS) |
+| `--use_png_subfolder` | True | Look for images in `png/` subfolder |
+| `--max_width` | 1024 | Max sprite sheet width |
+| `--max_height` | 1024 | Max sprite sheet height |
+
+### Examples
+
+```bash
+# Basic usage
+python ~/.claude/skills/ue-generate-spritesheet/generate_spritesheet.py --input ~/sequences/
+
+# Custom frame size for facial animations (no png subfolder)
+python ~/.claude/skills/ue-generate-spritesheet/generate_spritesheet.py \
+  --input ~/faces/ --frame_width 260 --frame_height 145 \
+  --use_png_subfolder False --fps_reduction 2
+```
+
+### Input Structure
+
+```
+input/
+├── animation_01/
+│   └── png/           # if --use_png_subfolder True
+│       ├── 0001.png
+│       ├── 0002.png
+│       └── ...
+├── animation_02/
+│   └── png/
+│       ├── 0001.png
+│       └── ...
+```
+
+## Output
+
+Sprite sheets saved to: `~/.claude/private/unreal/spritesheet-generate/`
+
+Filename pattern: `{folder_name}_{frame_count}.png`
+
+## Files
+
+- `generate_spritesheet.py` - Main script (PIL-based, no UE dependency)
+
+## Related Files
+
+- Command: `~/.claude/commands/ue-generate-spritesheet.md`
+- Output: `~/.claude/private/unreal/spritesheet-generate/`
