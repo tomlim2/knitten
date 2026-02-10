@@ -1,6 +1,6 @@
 ---
 description: Open CINEV Character Creator GUI
-allowed-tools: Bash(python:*)
+allowed-tools: Bash(python:*), Read, Edit
 ---
 
 # Open CINEV Character Creator
