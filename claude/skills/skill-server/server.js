@@ -168,7 +168,8 @@ function discoverSkills() {
                 'ue': 'Unreal Engine',
                 'meta': 'Meta',
                 'learn': 'Learning',
-                'drink': 'Personal'
+                'drink': 'Personal',
+                'review': 'Review'
             };
             const category = categoryMap[prefix] || 'Other';
 
@@ -195,7 +196,7 @@ function discoverSkills() {
 // Group skills by category
 function groupByCategory(skills) {
     const groups = {};
-    const order = ['Meta', 'Unreal Engine', 'Art', 'Tutoring', 'Learning', 'Dev Tools', 'Personal', 'Browse', 'Other'];
+    const order = ['Meta', 'Review', 'Unreal Engine', 'Art', 'Tutoring', 'Learning', 'Dev Tools', 'Personal', 'Browse', 'Other'];
 
     skills.forEach(skill => {
         if (!groups[skill.category]) {
