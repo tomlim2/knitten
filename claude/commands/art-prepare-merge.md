@@ -1,7 +1,7 @@
 ---
 description: Prepare art branch for merge into develop
 argument-hint: "<art_branch>"
-allowed-tools: Bash(git:*), Bash(python:*)
+allowed-tools: Bash(git:*)
 ---
 
 # Art Prepare Merge
