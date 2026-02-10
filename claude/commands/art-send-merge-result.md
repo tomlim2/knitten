@@ -1,7 +1,7 @@
 ---
 description: Send merge completion with Korean MR summary as thread reply
 argument-hint: "<branch_name> | --list"
-allowed-tools: Bash(git:*), Bash(python:*)
+allowed-tools: MCP(art), Bash(git:*)
 ---
 
 # Art Send Merge Result
@@ -23,10 +23,7 @@ Replace `$COMMAND_NAME` with: `art-send-merge-result`
 
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
-**If `--list`, run:**
-```bash
-python ~/.claude/skills/art-send-merge-result/merge_done.py --list
-```
+**If `--list`**, call `thread_list()` and display results.
 
 ## Arguments
 
@@ -34,19 +31,35 @@ $ARGUMENTS
 
 ## 실행
 
-### Step 1: Analyze changes
+### Step 1: Get thread info
 
-Run git commands to understand what was merged:
+```
+thread_get(branch_name=$ARGUMENTS)
+```
+
+If `found: false`, show error and call `thread_list()` to display available branches.
+
+### Step 2: Get repo path
+
+```
+get_art_config()
+```
+
+Use the returned `repo_path` for git commands.
+
+### Step 3: Analyze changes
+
+Run git commands in the repo to understand what was merged:
 
 ```bash
-git fetch --all
-git log develop..origin/<branch_name> --oneline
-git diff develop...origin/<branch_name> --stat
+git -C <repo_path> fetch --all
+git -C <repo_path> log develop..origin/<branch_name> --oneline
+git -C <repo_path> diff develop...origin/<branch_name> --stat
 ```
 
 If the merge branch `art/merge/...` exists, use that instead.
 
-### Step 2: Generate Korean MR summary
+### Step 4: Generate Korean MR summary
 
 Based on the git analysis, generate a Korean summary following
 this format:
@@ -70,7 +83,7 @@ Guidelines:
 - Group changes by category (캐릭터, 맵, 셰이더, etc.)
 - Include file count and commit count
 
-### Step 3: Show message and confirm
+### Step 5: Show message and confirm
 
 **Show the user the full Slack message and ask for confirmation:**
 
@@ -82,15 +95,11 @@ Guidelines:
 
 **NEVER send without user confirmation.**
 
-### Step 4: Send via script
+### Step 6: Send via MCP
 
-Send the Korean summary as a custom message:
-
-```bash
-python ~/.claude/skills/art-send-merge-result/merge_done.py <branch_name> -m "<THE KOREAN SUMMARY>"
 ```
-
-Replace `<branch_name>` and `<THE KOREAN SUMMARY>` with actual values.
+slack_post_message(text=<Korean summary>, thread_ts=<ts from step 1>, broadcast=true)
+```
 
 ## Example
 

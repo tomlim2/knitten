@@ -1,58 +1,42 @@
 # art-send-merge-result
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
-Check if art branch was merged to develop and send completion notifications.
+Send merge completion notification with Korean MR summary as a thread reply.
 
 ## Changelog
 
+- **0.2.0** - Migrate to MCP server (`art`). Python script removed, uses `thread_get()` + `slack_post_message()` tools. Claude generates Korean summary from git analysis
 - **0.1.0** - Initial release
 
 ## Overview
 
 After an art branch is merged to develop, this skill:
-1. Checks if the branch was merged (by looking at develop commits this week)
-2. Sends "디벨롭에 머지 완료되었습니다!" as a thread reply
-3. Sends merge details as a second thread reply
+1. Gets thread info via `thread_get()`
+2. Analyzes git changes via `Bash(git:*)`
+3. Claude generates Korean MR summary
+4. Sends summary as thread reply via `slack_post_message()`
 
-## Usage
+## 사용법
 
-```bash
-python merge_done.py <branch_name>
-python merge_done.py --list
 ```
-
-## Options
-
-- `<branch_name>` - The branch to check merge status for
-- `--list` - List all branches with saved thread info
-
-## Example
-
-```bash
-python merge_done.py art/art-main-1.5.0-r2
+/art-send-merge-result <branch_name>
+/art-send-merge-result --list
 ```
-
-## Messages Sent
-
-1. First reply:
-   ```
-   디벨롭에 머지 완료되었습니다!
-   ```
-
-2. Second reply:
-   ```
-   **머지 내역:**
-   [commit details]
-   ```
 
 ## Dependencies
 
 - Requires `/art-create-branch` to be run first (saves thread info)
 - Thread info stored in `~/.claude/private/slack_threads.json`
-- Uses repo path from `art-create-branch/config.json`
+- Uses repo path from `get_art_config()`
 
-## Configuration
+## 구현
 
-Uses shared Slack config from `~/.claude/config/slack.json`:
-- `bot_username` - Bot display name
+MCP 서버 `art`의 `thread_get()` + `get_art_config()` + `slack_post_message()` 도구 조합. Git 분석은 `Bash(git:*)`.
+
+## 파일 구조
+
+```
+art-send-merge-result/
+└── SKILL.md    # 이 문서
+```

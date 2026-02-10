@@ -1,7 +1,7 @@
 ---
 description: Send message to Slack art channel
 argument-hint: "<message>"
-allowed-tools: Bash(python:*)
+allowed-tools: MCP(art)
 ---
 
 # Send Art Notice
@@ -34,8 +34,8 @@ Only proceed after user confirms.
 
 ## Execution
 
-Run the art notice sender script:
+Call the MCP tool:
 
-```bash
-python "C:\Users\TA_yeonsu\.claude\skills\art-send-notice\send_notice.py" $ARGUMENTS
+```
+slack_post_message(text=$ARGUMENTS)
 ```

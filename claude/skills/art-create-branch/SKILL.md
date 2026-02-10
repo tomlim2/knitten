@@ -1,11 +1,12 @@
 # art-create-branch
 
-**Version:** 0.3.0
+**Version:** 0.4.0
 
 Automated branch creation for CINEV art team.
 
 ## Changelog
 
+- **0.4.0** - Migrate to MCP server (`art`). Python script removed, logic delegated to MCP tools + `Bash(git:*)`
 - **0.3.0** - Fix git flow: fetch → ff develop → branch (no reset --hard)
 - **0.2.0** - Use shared config location (`~/.claude/config/`)
 - **0.1.0** - Initial release
@@ -21,41 +22,35 @@ Automated branch creation for CINEV art team.
 
 ## 사용법
 
-```bash
-python create_art_branch.py <새브랜치명> [소스브랜치명]
+```
+/art-create-branch <새브랜치명> [소스브랜치명]
 ```
 
 ### 예시
 
-```bash
-# 체리픽 포함
-python create_art_branch.py art/art-main-1.5.0-r1 art/art-main-1.5.0
-
-# 체리픽 없이 브랜치만 생성
-python create_art_branch.py art/art-main-1.5.0-r1
+```
+/art-create-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
+/art-create-branch art/art-main-1.5.0-r1
 ```
 
 ## 설정
 
-`.env` 파일에 Slack Bot Token 설정 필요:
-
-```
-SLACK_BOT_TOKEN=xoxb-your-token-here
-```
+- `~/.claude/config/.env` → `SLACK_BOT_TOKEN`
+- `~/.claude/config/slack.json` → channel, message templates
+- `config.json` → repo_path
 
 ## 컨플릭트 처리
 
-체리픽 중 컨플릭트 발생 시:
-1. 스크립트가 즉시 중단됨
-2. 컨플릭트 발생 단계와 커밋 해시 출력
-3. 수동으로 해결 후 `git cherry-pick --continue` 또는 `git cherry-pick --abort`
+체리픽 중 컨플릭트 발생 시 즉시 중단, 사용자에게 보고.
+
+## 구현
+
+MCP 서버 `art`에 위임. Git 작업은 `Bash(git:*)`, Slack은 `slack_post_message()`, 스레드 저장은 `thread_save()`.
 
 ## 파일 구조
 
 ```
-create-art-branch/
-├── SKILL.md              # 이 문서
-├── create_art_branch.py  # 메인 스크립트
-├── .env.example          # 환경변수 예시
-└── .env                  # 실제 환경변수 (gitignore)
+art-create-branch/
+├── SKILL.md       # 이 문서
+└── config.json    # repo_path 설정
 ```
