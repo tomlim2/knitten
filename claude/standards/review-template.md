@@ -277,10 +277,12 @@ Use these standards based on file type and domain:
 | Standard | When to Apply |
 |----------|---------------|
 | `javascript.md` | JavaScript/Node.js files (.js, .jsx, .ts, .tsx) |
+| `css.md` | CSS files (.css, .scss, .less) |
 | `unreal-engine-cpp.md` | Unreal Engine C++ files (.h, .cpp) |
 | `unreal-engine-asset.md` | Unreal Engine assets (naming, organization) |
-| `design-system.md` | UI/CSS files (.css, .html, .ejs) |
+| `design-system.md` | UI/CSS files — Typo-base design philosophy and tokens |
 | `review-code-javascript.md` | JavaScript/Node.js code review checklist (detailed) |
+| `review-code-css.md` | CSS code review checklist (detailed) |
 | `review-code-unreal-cpp.md` | C++ code review checklist (detailed) |
 | `review-code-unreal-python.md` | UE Python code review checklist |
 | `slash-commands.md` | Slash command files (.md in commands/) |
