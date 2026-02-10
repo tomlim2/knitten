@@ -1,6 +1,6 @@
 # Agent Workflow Standard
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 
 Standard patterns for multi-pass agent commands in Claude Code.
 
@@ -8,6 +8,7 @@ Standard patterns for multi-pass agent commands in Claude Code.
 
 ## Changelog
 
+- **1.1.0** - Research-backed guidance on Review reliability, context minimization, loop risks
 - **1.0.0** - Initial release formalizing existing agent patterns (bug-fix, ultrawork, consult, research)
 
 ---
@@ -77,6 +78,8 @@ Verify output against a checklist or standard. Read-only pass.
 - **Reference:** Review standard (e.g., `review-code-unreal-cpp.md`, `review-template.md`)
 - **Example:** `bug-fix` Step 3 runs the test to verify; code review commands
 
+> **Reliability warning:** LLM self-review without external feedback is unreliable (MIT Press). A checklist partially mitigates this, but real confidence comes from Validate (external tools). Always pair Review with Validate when possible.
+
 ### 5. Refine
 
 Fix issues found during Review. Targeted edits only.
@@ -96,6 +99,8 @@ Run external tools to confirm correctness. Build, test, lint.
 - **Tools:** Bash(npm:*), Bash(pytest:*), Bash(node:*), Task
 - **Reference:** none
 - **Example:** `bug-fix` Step 3 runs the test suite; `ultrawork` verifies tests pass
+
+> **Prefer Validate over Review.** External feedback (build, test, linter) is fundamentally more reliable than LLM judgment. The reason Generate→Review→Refine works in coding agents is the test suite, not the LLM's opinion. Use Validate instead of or alongside Review whenever external tools are available.
 
 ### 7. Synthesize
 
@@ -197,6 +202,8 @@ Pass 2: Generate → Pass 3: Review → Pass 4: Refine → (issues remain?) → 
 **Use when:** Quality requires iterative refinement.
 **Rule:** MUST declare maximum iteration count. Default max: 2 iterations.
 
+> **Contextual Drag warning:** Repeated refinement can cause self-deterioration — each iteration adds prior attempts to context, which may degrade rather than improve output. If the same issue persists after 2 iterations, suspect the pass structure itself rather than iterating further. A fresh Generate with a better prompt often outperforms a 4th Refine attempt.
+
 ---
 
 ## Pipeline Rules
@@ -223,6 +230,19 @@ The second case is a script, not an agent. Just run the commands sequentially.
 4. **Fan-out requires Synthesize** — Never leave parallel results unmerged.
 5. **No pass without purpose** — If two passes do the same thing, merge them.
 6. **Subagent for heavy exploration** — Use `Execution: Subagent` when a pass does broad codebase search.
+7. **Minimize pass output** — Pass only the essential deliverable to the next pass, not the full history. Most models degrade below 50% effectiveness past 32K tokens of context. Strip reasoning traces, intermediate attempts, and verbose logs before hand-off.
+
+---
+
+## What Drives Quality
+
+Pipeline structure matters less than the standards it enforces. In order of impact:
+
+1. **Standard document quality** — A precise, well-scoped standard catches more issues than adding passes. Bad standard + 5-pass agent < Good standard + single Generate pass.
+2. **Pipeline structure** — Correct pass types in the right order, with proper data flow.
+3. **Pass count** — More passes only help when each one genuinely transforms the output.
+
+The agent is a delivery mechanism for standards. If output quality is poor, improve the standard first, then reconsider the pipeline.
 
 ---
 
@@ -412,4 +432,5 @@ Before finalizing an agent command, verify:
 
 ## Version History
 
+- **1.1.0** (2026-02-10) - Research-backed guidance on Review reliability, context minimization, loop risks
 - **1.0.0** (2026-02-10) - Initial standard formalizing existing agent patterns
