@@ -1,6 +1,6 @@
 # caol-ila Learnings
 
-Last updated: 2026-02-10
+Last updated: 2026-02-11
 
 ---
 
@@ -82,6 +82,18 @@ Approaches worth repeating.
   - 접점: Skill에 `context: fork` + `agent: Explore` 설정하면 Skill이 Subagent 안에서 실행됨.
 - **실용적 판단 기준**: 순차 워크플로우 + 사용자 확인 필요 → Skill. 무거운 탐색/리뷰 → Subagent (`context: fork`). 대규모 병렬 토론 → Agent Teams.
 - **Sources**: code.claude.com/docs/en/skills, /sub-agents, /agent-teams
+
+### Art 스킬 MCP 서버 전환 (Python 4개 → MCP 1개)
+- **Date**: 2026-02-11
+- **Context**: Art 스킬 4개(`create_art_branch.py`, `send_notice.py`, `merge_notice.py`, `merge_done.py`)에 `load_env()`, `load_slack_config()`, `send_thread_reply()` 등 6개 함수가 2~4개 파일에 중복. `_shared/` 패턴은 Claude Code 비공식. 총 ~800줄의 중복 인프라 코드.
+- **Solution**: FastMCP 서버 1개(`art-mcp-server/server.py`, ~120줄)로 통합. 5개 도구 제공: `slack_post_message`, `thread_save`, `thread_get`, `thread_list`, `get_art_config`. 커맨드는 `MCP(art)` + `Bash(git:*)` 조합으로 전환. Python 스크립트 4개 + `.env.example` 2개 삭제.
+- **Why it worked**:
+  - **역할 분리**: 인프라(Slack API, 스레드 저장) → MCP 서버. 비즈니스 로직(시간 계산, 메시지 포맷팅) → command.md. 오케스트레이션 → Claude.
+  - **MCP가 공식 패턴**: `_shared/` Python import는 Claude Code에서 비공식. MCP는 도구 확장 공식 메커니즘. `claude mcp add art --scope user`로 등록.
+  - **Claude가 오케스트레이터**: 기존에는 Python이 블랙박스로 처리 → 에러 시 스크립트 에러 메시지만 전달. 이제 Claude가 각 단계를 이해하고 직접 판단/대응.
+  - **크로스 플랫폼**: Windows 하드코딩 경로(`C:\Users\TA_yeonsu\...`) 제거. `Path.home()` 사용.
+  - **확장 가능**: `slack_post_message`에 `channel` 파라미터 추가하면 art 외 다른 도메인에서도 재사용 가능.
+- **Result**: 17 files changed, +404 / -956. 순감소 552줄. 중복 코드 제거 + 유지보수 포인트 1곳으로 통합.
 
 ---
 
