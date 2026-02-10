@@ -133,6 +133,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | `design-system.md` | Before creating UI/web pages |
 | `unreal-engine-cpp.md` | Before writing UE C++ code |
 | `unreal-engine-asset.md` | Before creating/validating UE assets |
+| `review-code-javascript.md` | JavaScript/Node.js code reviews |
 | `review-code-unreal-cpp.md` | C++ code reviews |
 | `review-code-unreal-python.md` | Python code reviews (UE editor) |
 | `review-template.md` | Code review output format |
