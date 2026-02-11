@@ -122,12 +122,14 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | `command-pre-execution.md` | Referenced by all commands automatically |
 | `javascript.md` | Before writing JS/Node.js code |
 | `css.md` | Before writing CSS code |
+| `three-shader-language.md` | Before writing Three.js TSL shader code |
 | `design-system.md` | Before creating UI/web pages |
 | `unreal-engine-cpp.md` | Before writing UE C++ code |
 | `unreal-engine-asset.md` | Before creating/validating UE assets |
 | `review-code-javascript.md` | JavaScript/Node.js code reviews |
 | `review-code-css.md` | CSS code reviews |
 | `review-code-unreal-cpp.md` | C++ code reviews |
+| `review-code-tsl.md` | Three.js TSL code reviews |
 | `review-code-unreal-python.md` | Python code reviews (UE editor) |
 | `review-template.md` | Code review output format |
 | `research-methodology.md` | Deep research |
