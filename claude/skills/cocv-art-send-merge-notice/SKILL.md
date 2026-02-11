@@ -1,13 +1,10 @@
+---
+description: "Send merge notification as thread reply to art branch announcement. Use after preparing an art branch merge."
+---
+
 # cocv-art-send-merge-notice
 
-**Version:** 0.2.0
-
 Send merge notification as a threaded reply to an art branch announcement.
-
-## Changelog
-
-- **0.2.0** - Migrate to MCP server (`art`). Python script removed, uses `thread_get()` + `slack_post_message()` tools
-- **0.1.0** - Initial release
 
 ## Overview
 

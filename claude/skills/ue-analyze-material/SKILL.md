@@ -1,13 +1,10 @@
+---
+description: "Export and analyze UE material node graphs. Use when debugging or documenting Unreal Engine materials."
+---
+
 # ue-analyze-material
 
-**Version:** 0.2.0
-
 Export and analyze Unreal Engine material node graphs.
-
-## Changelog
-
-- **0.2.0** - Add remote execution via `run_in_editor.py`; one-step export+analyze from Claude Code
-- **0.1.0** - Initial release
 
 ## Standards Reference
 

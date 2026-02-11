@@ -1,6 +1,8 @@
-# dev-commits
+---
+description: "Extract git commit history for portfolio or analysis. Use when collecting commits for project documentation."
+---
 
-**Version:** 0.1.0
+# dev-commits
 
 Git commit history extraction skill for Claude Code.
 
@@ -9,12 +11,6 @@ Git commit history extraction skill for Claude Code.
 ## Purpose
 
 Extract git commit history from repositories and save structured data for portfolio and analysis use.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
 
 ## Usage
 

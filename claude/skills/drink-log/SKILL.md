@@ -1,12 +1,10 @@
+---
+description: "Browse wine and whisky collection with tasting notes and pricing. Use when recording a new drink or searching past entries."
+---
+
 # drink-log
 
-**Version:** 0.1.0
-
 Browse your wine and whisky collection with tasting notes.
-
-## Changelog
-
-- **0.1.0** - Initial release
 
 ## Purpose
 

@@ -1,15 +1,10 @@
+---
+description: "Create art branch from develop with cherry-picked commits. Use at the start of weekly CINEV art integration."
+---
+
 # cocv-art-create-branch
 
-**Version:** 0.4.0
-
 Automated branch creation for CINEV art team.
-
-## Changelog
-
-- **0.4.0** - Migrate to MCP server (`art`). Python script removed, logic delegated to MCP tools + `Bash(git:*)`
-- **0.3.0** - Fix git flow: fetch → ff develop → branch (no reset --hard)
-- **0.2.0** - Use shared config location (`~/.claude/config/`)
-- **0.1.0** - Initial release
 
 ## Purpose
 

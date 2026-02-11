@@ -1,16 +1,10 @@
+---
+description: "Web dashboard showing design system version status across skills. Use when checking design system alignment."
+---
+
 # dev-design-sync
 
-**Version:** 0.1.0
-
 Web dashboard showing design system version status across all skills.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

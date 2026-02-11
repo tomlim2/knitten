@@ -1,12 +1,10 @@
+---
+description: "Log lessons, generate invoices, and track payments for tutoring. Use when recording tutoring sessions."
+---
+
 # tutoring-log
 
-**Version:** 0.1.0
-
 Lesson logging, invoice generation, and payment tracking for tutoring.
-
-## Changelog
-
-- **0.1.0** - Initial release
 
 ## Overview
 

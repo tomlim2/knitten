@@ -1,12 +1,10 @@
+---
+description: "Pattern reference for creating UE Editor skills. Use when creating new Unreal Engine automation skills."
+---
+
 # ue-skill-template
 
-**Version:** 0.1.0
-
 Pattern reference for creating UE Editor skills that follow the proven `ue-analyze-material` architecture.
-
-## Changelog
-
-- **0.1.0** - Initial release, extracted from ue-analyze-material
 
 ## Purpose
 

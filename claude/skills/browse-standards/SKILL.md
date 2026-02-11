@@ -1,16 +1,10 @@
+---
+description: "Browse standards documents in a web dashboard. Use when reviewing or looking up coding standards."
+---
+
 # browse-standards
 
-**Version:** 0.1.0
-
 Web-based browser for standards documents stored in standards/.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

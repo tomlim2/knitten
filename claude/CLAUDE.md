@@ -1,15 +1,6 @@
 # CLAUDE.md
 
-**Version:** 0.4.0
-
 Global Claude Code configuration for all projects on this machine.
-
-## Changelog
-
-- **0.4.0** - Align with official docs; reflect skills/commands merge; trim for context efficiency
-- **0.3.0** - Add pre-execution pattern for centralized command logic
-- **0.2.0** - Add setup instructions and Slack message format reference
-- **0.1.0** - Initial release
 
 ---
 
@@ -59,7 +50,7 @@ Skills and commands are a **unified system**. Both create `/slash-commands`.
 | `commands/review.md` | Single markdown file | `/review` |
 | `skills/review/SKILL.md` | Directory + SKILL.md | `/review` |
 
-If both exist with the same name, the skill takes precedence. Skills are the recommended format (support directories, supporting files, version tracking).
+If both exist with the same name, the skill takes precedence. Skills are the recommended format (support directories, supporting files).
 
 ### Frontmatter Fields
 

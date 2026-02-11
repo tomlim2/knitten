@@ -1,16 +1,10 @@
+---
+description: "Usage statistics dashboard with infographic visualization. Use when checking which commands and skills are used most."
+---
+
 # browse-usage
 
-**Version:** 0.1.0
-
 Usage statistics dashboard with infographic-style visualization.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

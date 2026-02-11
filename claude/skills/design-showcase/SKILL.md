@@ -1,14 +1,8 @@
+---
+description: "Live showcase of Design System components with copyable HTML examples. Use when building UI or checking available components."
+---
+
 # design-showcase
-
-**Version:** 0.1.0
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release with design system component showcase
-
----
 
 ## Purpose
 

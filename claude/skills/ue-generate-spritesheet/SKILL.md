@@ -1,12 +1,10 @@
+---
+description: "Generate sprite sheets from image sequences for UE flipbook textures. Use when creating flipbook animations."
+---
+
 # ue-generate-spritesheet
 
-**Version:** 0.1.0
-
 Generate sprite sheets from image sequence folders for UE flipbook textures.
-
-## Changelog
-
-- **0.1.0** - Initial release (ported from anju sprite_sheet_generator)
 
 ## Purpose
 

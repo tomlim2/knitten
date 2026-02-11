@@ -1,12 +1,10 @@
+---
+description: "Find and delete unused assets in UE Editor. Use when cleaning up Unreal Engine project size."
+---
+
 # ue-cleanup-assets
 
-**Version:** 0.1.0
-
 Find and delete unused (unreferenced) assets in UE Editor.
-
-## Changelog
-
-- **0.1.0** - Initial release (ported from anju find_no_reference_and_delete.py, split into safe 2-phase workflow)
 
 ## Purpose
 

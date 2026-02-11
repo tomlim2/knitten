@@ -1,13 +1,10 @@
+---
+description: "Generate technical specification documents from code. Use when creating specs for features or systems."
+---
+
 # spec-generator
 
-**Version:** 0.1.1
-
 Technical specification document generator for Claude Code.
-
-## Changelog
-
-- **0.1.1** - Clarify parameter docs and input modes
-- **0.1.0** - Initial release
 
 ## Purpose
 

@@ -1,18 +1,10 @@
+---
+description: "Web-based monthly tuition invoice generator with PDF export. Use when generating student invoices."
+---
+
 # tutoring-invoice
 
-**Version:** 1.3.1 | [CHANGELOG](./CHANGELOG.md)
-
 Web-based monthly tuition invoice generator with automatic calculation and PDF export.
-
----
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md) for full history.
-
-- **1.3.1** - Current release
-
----
 
 ## Purpose
 

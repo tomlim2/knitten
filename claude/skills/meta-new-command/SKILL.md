@@ -1,16 +1,10 @@
+---
+description: "Naming rules and templates for creating Claude Code commands and skills. Use when creating new commands or skills."
+---
+
 # meta-new-command
 
-**Version:** 0.1.0
-
 Command and skill creation generator for Claude Code with comprehensive naming rules.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release with naming convention rules
-
----
 
 ## Purpose
 
@@ -224,17 +218,7 @@ skills/{category}-{verb}-{subject}/
 ```markdown
 # {category}-{verb}-{subject}
 
-**Version:** 0.1.0
-
 Brief description of what this skill does.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

@@ -1,16 +1,10 @@
+---
+description: "Common design patterns for commands and skills with detailed examples. Use when designing new command workflows."
+---
+
 # meta-patterns-guide
 
-**Version:** 0.1.0
-
 Common design patterns for Claude Code commands and skills with detailed examples.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release extracted from CLAUDE.md
-
----
 
 ## Purpose
 

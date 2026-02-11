@@ -1,17 +1,10 @@
+---
+description: "Browse all Claude Code commands in a web dashboard. Use when exploring available commands or checking documentation."
+---
+
 # browse-commands
 
-**Version:** 0.2.0
-
 Web-based browser for Claude Code commands stored in commands/.
-
----
-
-## Changelog
-
-- **0.2.0** - Current release
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

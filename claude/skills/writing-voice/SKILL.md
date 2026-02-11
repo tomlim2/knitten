@@ -1,16 +1,10 @@
+---
+description: "Writing style prompt to avoid generic AI output. Use when writing content that needs a human voice."
+---
+
 # writing-voice
 
-**Version:** 1.0.0
-
 Writing style prompt to avoid generic AI output.
-
----
-
-## Changelog
-
-- **1.0.0** - Initial release with voice presets and banned words
-
----
 
 ## Purpose
 

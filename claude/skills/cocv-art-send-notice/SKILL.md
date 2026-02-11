@@ -1,18 +1,10 @@
+---
+description: "Send messages to Slack art channel. Use when communicating art branch updates to the team."
+---
+
 # cocv-art-send-notice
 
-**Version:** 0.3.0
-
 Send messages to Slack art channel.
-
----
-
-## Changelog
-
-- **0.3.0** - Migrate to MCP server (`art`). Python script removed, uses `slack_post_message()` tool directly
-- **0.2.0** - Use shared config location (`~/.claude/config/`)
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

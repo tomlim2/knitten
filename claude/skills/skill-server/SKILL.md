@@ -1,17 +1,10 @@
+---
+description: "Local web server providing skill dashboard, file browser, and embedded skills. Infrastructure for all web-based skills."
+---
+
 # skill-server
 
-**Version:** 1.5.0
-
 Unified GUI dashboard for all Claude Code skills.
-
----
-
-## Changelog
-
-- **1.5.0** - Current release with dashboard, file browser, and embedded skills
-- **1.0.0** - Initial release
-
----
 
 ## Purpose
 

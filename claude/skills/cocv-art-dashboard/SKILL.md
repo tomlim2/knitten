@@ -1,16 +1,10 @@
+---
+description: "Web dashboard for CINEV art branch management. Use when monitoring art branch status."
+---
+
 # cocv-art-dashboard
 
-**Version:** 0.1.0
-
 Web dashboard for CINEV art branch management.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

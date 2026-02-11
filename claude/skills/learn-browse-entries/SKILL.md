@@ -1,17 +1,10 @@
+---
+description: "Browse project learnings in a web viewer. Use when reviewing past learnings or insights."
+---
+
 # learn-browse-entries
 
-**Version:** 0.5.0
-
 Web-based viewer for project learnings stored in private/learnings/.
-
----
-
-## Changelog
-
-- **0.5.0** - Current release with full markdown rendering
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 

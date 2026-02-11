@@ -1,16 +1,10 @@
+---
+description: "MCP server for CINEV art branch Slack integration. Infrastructure service providing Slack tools."
+---
+
 # cocv-mcp-server
 
-**Version:** 0.1.0
-
 MCP server for CINEV art branch Slack integration.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release: consolidated from 4 separate Python scripts
-
----
 
 ## Purpose
 

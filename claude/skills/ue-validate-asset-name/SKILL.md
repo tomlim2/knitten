@@ -1,12 +1,10 @@
+---
+description: "Validate and fix UE asset names against naming conventions. Use when checking Unreal Engine asset naming."
+---
+
 # ue-validate-asset-name
 
-**Version:** 0.1.0
-
 Validate and fix Unreal Engine asset names against naming conventions.
-
-## Changelog
-
-- **0.1.0** - Initial release
 
 ## Standards Reference
 

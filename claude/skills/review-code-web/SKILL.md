@@ -1,16 +1,10 @@
+---
+description: "Review JavaScript and CSS code against coding standards checklists. Use when reviewing frontend code quality."
+---
+
 # review-code-web
 
-**Version:** 0.1.0
-
 Review JavaScript and CSS code against coding standards checklists.
-
----
-
-## Changelog
-
-- **0.1.0** - Initial release
-
----
 
 ## Purpose
 
