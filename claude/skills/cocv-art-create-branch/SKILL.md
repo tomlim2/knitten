@@ -1,4 +1,4 @@
-# art-create-branch
+# cocv-art-create-branch
 
 **Version:** 0.4.0
 
@@ -23,14 +23,14 @@ Automated branch creation for CINEV art team.
 ## 사용법
 
 ```
-/art-create-branch <새브랜치명> [소스브랜치명]
+/cocv-art-create-branch <새브랜치명> [소스브랜치명]
 ```
 
 ### 예시
 
 ```
-/art-create-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
-/art-create-branch art/art-main-1.5.0-r1
+/cocv-art-create-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
+/cocv-art-create-branch art/art-main-1.5.0-r1
 ```
 
 ## 설정
@@ -45,12 +45,12 @@ Automated branch creation for CINEV art team.
 
 ## 구현
 
-MCP 서버 `art`에 위임. Git 작업은 `Bash(git:*)`, Slack은 `slack_post_message()`, 스레드 저장은 `thread_save()`.
+MCP 서버 `cocv`에 위임. Git 작업은 `Bash(git:*)`, Slack은 `slack_post_message()`, 스레드 저장은 `thread_save()`.
 
 ## 파일 구조
 
 ```
-art-create-branch/
+cocv-art-create-branch/
 ├── SKILL.md       # 이 문서
 └── config.json    # repo_path 설정
 ```

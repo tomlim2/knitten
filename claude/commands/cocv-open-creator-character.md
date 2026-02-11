@@ -10,7 +10,7 @@ Launch the CINEV Character Creator GUI for creating user characters via UE comma
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `cinev-open-creator-character`
+Replace `$COMMAND_NAME` with: `cocv-open-creator-character`
 
 ## Execution
 

@@ -12,7 +12,7 @@ CINEVStudio repositories, providing a clear overview of the day's work.
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `cinev-summarize-commit`
+Replace `$COMMAND_NAME` with: `cocv-summarize-commit`
 
 ## Repositories
 

@@ -1,7 +1,7 @@
 ---
 description: Send message to Slack art channel
 argument-hint: "<message>"
-allowed-tools: MCP(art)
+allowed-tools: MCP(cocv)
 ---
 
 # Send Art Notice
@@ -11,7 +11,7 @@ Send a notification message to the Slack art channel.
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `art-send-notice`
+Replace `$COMMAND_NAME` with: `cocv-art-send-notice`
 
 ## Arguments
 
@@ -19,8 +19,8 @@ $ARGUMENTS
 
 **If no argument is provided, show usage and ask the user for the message. NEVER auto-execute.**
 ```
-Usage: /art-send-notice <message>
-Example: /art-send-notice New build is ready!
+Usage: /cocv-art-send-notice <message>
+Example: /cocv-art-send-notice New build is ready!
 ```
 
 ## 실행 전 확인

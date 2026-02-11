@@ -88,7 +88,7 @@ If both exist with the same name, the skill takes precedence. Skills are the rec
 **MANDATORY: `{category}-{verb}-{subject}` pattern.**
 
 - Lowercase only, hyphens as separators, max 64 characters
-- Categories: `git`, `tutoring`, `cinev`, `ue`, `art`, `learn`, `meta`, `drink`
+- Categories: `git`, `tutoring`, `cocv`, `ue`, `learn`, `meta`, `drink`
 - Examples: `git-collect-commits`, `ue-analyze-material`, `meta-new-command`
 - Full rules: @~/.claude/skills/meta-new-command/SKILL.md
 

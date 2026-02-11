@@ -11,14 +11,14 @@ Prepare an art branch for merging into develop.
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `art-prepare-merge`
+Replace `$COMMAND_NAME` with: `cocv-art-prepare-merge`
 
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user for the branch name. NEVER auto-execute.**
 ```
-Usage: /art-prepare-merge <art_branch>
-Example: /art-prepare-merge art/art-main-1.5.0-r2
+Usage: /cocv-art-prepare-merge <art_branch>
+Example: /cocv-art-prepare-merge art/art-main-1.5.0-r2
 ```
 
 ## Branch Naming

@@ -1,4 +1,4 @@
-# art-send-notice
+# cocv-art-send-notice
 
 **Version:** 0.3.0
 
@@ -23,7 +23,7 @@ Send formatted messages to the Slack art channel for team communication about ar
 ## 사용법
 
 ```
-/art-send-notice "메시지 내용"
+/cocv-art-send-notice "메시지 내용"
 ```
 
 ## 설정
@@ -33,11 +33,11 @@ Send formatted messages to the Slack art channel for team communication about ar
 
 ## 구현
 
-MCP 서버 `art`의 `slack_post_message()` 도구로 직접 호출.
+MCP 서버 `cocv`의 `slack_post_message()` 도구로 직접 호출.
 
 ## 파일 구조
 
 ```
-art-send-notice/
+cocv-art-send-notice/
 └── SKILL.md    # 이 문서
 ```

@@ -1,7 +1,7 @@
 ---
 description: Send merge completion with Korean MR summary as thread reply
 argument-hint: "<branch_name> | --list"
-allowed-tools: MCP(art), Bash(git:*)
+allowed-tools: MCP(cocv), Bash(git:*)
 ---
 
 # Art Send Merge Result
@@ -12,13 +12,13 @@ as a thread reply to the original art branch announcement.
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `art-send-merge-result`
+Replace `$COMMAND_NAME` with: `cocv-art-send-merge-result`
 
 ## Usage
 
 ```
-/art-send-merge-result <branch_name>
-/art-send-merge-result --list
+/cocv-art-send-merge-result <branch_name>
+/cocv-art-send-merge-result --list
 ```
 
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
@@ -79,7 +79,7 @@ this format:
 Guidelines:
 - Write in Korean
 - Keep it concise but informative (like the MR description
-  from `/art-prepare-merge`, but in Korean)
+  from `/cocv-art-prepare-merge`, but in Korean)
 - Group changes by category (캐릭터, 맵, 셰이더, etc.)
 - Include file count and commit count
 
@@ -104,7 +104,7 @@ slack_post_message(text=<Korean summary>, thread_ts=<ts from step 1>, broadcast=
 ## Example
 
 ```
-/art-send-merge-result art/art-main-1.5.0-r2
+/cocv-art-send-merge-result art/art-main-1.5.0-r2
 ```
 
 Example Korean summary:

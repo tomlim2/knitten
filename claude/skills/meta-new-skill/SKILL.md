@@ -312,7 +312,7 @@ Use JSON for configuration:
 - Unreal Engine automation
 - Examples: `ue-analyze-material`, `ue-validate-asset-name`
 
-**Project Tools** (`cinev-*`, etc.)
+**Project Tools** (`cocv-*`, etc.)
 - Project-specific automation
 - Examples: Skills for specific projects
 

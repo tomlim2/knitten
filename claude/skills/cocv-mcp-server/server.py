@@ -31,7 +31,7 @@ def _load_slack_config() -> dict:
     return {}
 
 def _load_art_config() -> dict:
-    config_path = ROOT_DIR / "skills" / "art-create-branch" / "config.json"
+    config_path = ROOT_DIR / "skills" / "cocv-art-create-branch" / "config.json"
     if config_path.exists():
         with open(config_path, "r", encoding="utf-8") as f:
             return json.load(f)
@@ -57,7 +57,7 @@ _load_env()
 SLACK_CONFIG = _load_slack_config()
 ART_CONFIG = _load_art_config()
 
-mcp = FastMCP("art")
+mcp = FastMCP("cocv")
 
 
 @mcp.tool()

@@ -33,7 +33,7 @@ Each name consists of three parts separated by hyphens:
 1. **`category`**: Domain or project namespace
    - Lowercase, single word
    - Groups related functionality
-   - Examples: `git`, `tutoring`, `cinev`, `ue`, `learn`, `art`, `meta`
+   - Examples: `git`, `tutoring`, `cocv`, `ue`, `learn`, `meta`
 
 2. **`verb`**: Action performed
    - Present tense, active voice
@@ -63,14 +63,11 @@ Each name consists of three parts separated by hyphens:
 
 ### Project-Specific
 
-- **`cinev-*`**: CINEV project tools (creator, shipper, downloader, review)
-  - Example: `cinev-open-creator-launcher`, `cinev-review-cpp`, `cinev-zo-downloader`
+- **`cocv-*`**: CINEV project tools (creator, shipper, downloader, review, art branch workflows)
+  - Example: `cocv-open-creator-launcher`, `cocv-review-cpp`, `cocv-zo-downloader`
 
 - **`ue-*`**: Unreal Engine tools (analyze, validate, export, new)
   - Example: `ue-analyze-material`, `ue-validate-asset-name`, `ue-new-skill`
-
-- **`art-*`**: Art branch workflows (create, prepare, merge, send)
-  - Example: `art-create-branch`, `art-send-notice`, `art-prepare-merge`
 
 ### Domain-Specific
 
@@ -120,19 +117,19 @@ Each name consists of three parts separated by hyphens:
 | `tutoring-log` | tutoring | log | (implicit) | Log tutoring lesson |
 | `tutoring-paid` | tutoring | paid | (implicit) | Mark lessons as paid |
 | `learn-add-log` | learn | add | log | Add learning entry |
-| `cinev-open-creator-launcher` | cinev | open | creator-launcher | Open CINEV launcher |
-| `cinev-open-creator-shipper` | cinev | open | creator-shipper | Open CINEV shipper |
-| `cinev-review-cpp` | cinev | review | cpp | Review C++ code |
-| `cinev-zo-downloader` | cinev | zo | downloader | Open ZO downloader |
+| `cocv-open-creator-launcher` | cocv | open | creator-launcher | Open CINEV launcher |
+| `cocv-open-creator-shipper` | cocv | open | creator-shipper | Open CINEV shipper |
+| `cocv-review-cpp` | cocv | review | cpp | Review C++ code |
+| `cocv-zo-downloader` | cocv | zo | downloader | Open ZO downloader |
 | `ue-analyze-material` | ue | analyze | material | Analyze UE material |
 | `ue-validate-asset-name` | ue | validate | asset-name | Validate UE naming |
 | `ue-new-skill` | ue | new | skill | Generate UE skill |
-| `art-create-branch` | art | create | branch | Create art branch |
-| `art-send-notice` | art | send | notice | Send Slack notice |
-| `art-send-merge-notice` | art | send | merge-notice | Send merge notice |
-| `art-send-merge-result` | art | send | merge-result | Send merge result |
-| `art-prepare-merge` | art | prepare | merge | Prepare art merge |
-| `art-remove-branch` | art | remove | branch | Remove old art branch |
+| `cocv-art-create-branch` | cocv-art | create | branch | Create art branch |
+| `cocv-art-send-notice` | cocv-art | send | notice | Send Slack notice |
+| `cocv-art-send-merge-notice` | cocv-art | send | merge-notice | Send merge notice |
+| `cocv-art-send-merge-result` | cocv-art | send | merge-result | Send merge result |
+| `cocv-art-prepare-merge` | cocv-art | prepare | merge | Prepare art merge |
+| `cocv-art-remove-branch` | cocv-art | remove | branch | Remove old art branch |
 | `meta-new-command` | meta | new | command | Generate new command |
 | `review-skills` | review | skills | (implicit) | Review skill files |
 | `drink-log` | drink | log | (implicit) | Log wine/whisky |
@@ -344,7 +341,7 @@ Note: Tracking only works when skill server is running on port 972. If server is
 
 3. **Namespace Isolation**
    - Prevents command name collisions
-   - `tutoring-open-invoice` vs `cinev-open-creator-launcher`
+   - `tutoring-open-invoice` vs `cocv-open-creator-launcher`
    - Both "open" something but clearly different
 
 4. **Self-Documenting**

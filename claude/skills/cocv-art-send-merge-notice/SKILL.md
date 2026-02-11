@@ -1,4 +1,4 @@
-# art-send-merge-notice
+# cocv-art-send-merge-notice
 
 **Version:** 0.2.0
 
@@ -16,8 +16,8 @@ When an art branch is ready to be merged into develop, this skill sends a thread
 ## 사용법
 
 ```
-/art-send-merge-notice <branch_name>
-/art-send-merge-notice --list
+/cocv-art-send-merge-notice <branch_name>
+/cocv-art-send-merge-notice --list
 ```
 
 ## Message Format
@@ -30,16 +30,16 @@ When an art branch is ready to be merged into develop, this skill sends a thread
 
 ## Dependencies
 
-- Requires `/art-create-branch` to be run first (saves thread info)
+- Requires `/cocv-art-create-branch` to be run first (saves thread info)
 - Thread info stored in `~/.claude/private/slack_threads.json`
 
 ## 구현
 
-MCP 서버 `art`의 `thread_get()` → `slack_post_message()` 도구 조합.
+MCP 서버 `cocv`의 `thread_get()` → `slack_post_message()` 도구 조합.
 
 ## 파일 구조
 
 ```
-art-send-merge-notice/
+cocv-art-send-merge-notice/
 └── SKILL.md    # 이 문서
 ```

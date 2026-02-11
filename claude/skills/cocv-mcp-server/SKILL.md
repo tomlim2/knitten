@@ -1,4 +1,4 @@
-# art-mcp-server
+# cocv-mcp-server
 
 **Version:** 0.1.0
 
@@ -14,7 +14,7 @@ MCP server for CINEV art branch Slack integration.
 
 ## Purpose
 
-Provides MCP tools for Slack messaging and thread management used by art branch workflows. Replaces individual Python scripts in `art-send-notice`, `art-send-merge-notice`, `art-send-merge-result`, and `art-create-branch`.
+Provides MCP tools for Slack messaging and thread management used by art branch workflows. Replaces individual Python scripts in `cocv-art-send-notice`, `cocv-art-send-merge-notice`, `cocv-art-send-merge-result`, and `cocv-art-create-branch`.
 
 ---
 
@@ -34,14 +34,14 @@ Provides MCP tools for Slack messaging and thread management used by art branch 
 
 - `~/.claude/config/.env` - `SLACK_BOT_TOKEN`
 - `~/.claude/config/slack.json` - channel, bot_username, message templates
-- `~/.claude/skills/art-create-branch/config.json` - repo_path
+- `~/.claude/skills/cocv-art-create-branch/config.json` - repo_path
 
 ---
 
 ## Registration
 
 ```bash
-claude mcp add art --scope user -- python ~/.claude/skills/art-mcp-server/server.py
+claude mcp add cocv --scope user -- python ~/.claude/skills/cocv-mcp-server/server.py
 ```
 
 ---

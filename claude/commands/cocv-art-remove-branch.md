@@ -12,14 +12,14 @@ from its merge branch into the latest art branch.
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `art-remove-branch`
+Replace `$COMMAND_NAME` with: `cocv-art-remove-branch`
 
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user. NEVER auto-execute.**
 ```
-Usage: /art-remove-branch <old_art_branch> <latest_art_branch>
-Example: /art-remove-branch art/art-main-1.5.0-r1 art/art-main-1.5.0-r2
+Usage: /cocv-art-remove-branch <old_art_branch> <latest_art_branch>
+Example: /cocv-art-remove-branch art/art-main-1.5.0-r1 art/art-main-1.5.0-r2
 ```
 
 ## Branch Naming

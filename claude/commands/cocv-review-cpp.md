@@ -11,7 +11,7 @@ Review C++ code changes against Unreal Engine coding standards and project conve
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `cinev-review-cpp`
+Replace `$COMMAND_NAME` with: `cocv-review-cpp`
 
 ## Instructions
 
@@ -52,7 +52,7 @@ Skip upstream/third-party files unless project modifications are present.
 
 For each file in scope:
 1. Read the full file content
-2. Apply all checklist items from the cinev-review-code agent
+2. Apply all checklist items from the cocv-review-code agent
 3. Record findings with severity, location, and suggested fixes
 
 ### Step 4: Output
@@ -64,20 +64,20 @@ Present findings grouped by file, with severity counts and a final verdict.
 
 **Review all uncommitted changes:**
 ```
-/cinev-review-cpp
+/cocv-review-cpp
 ```
 
 **Review a specific file:**
 ```
-/cinev-review-cpp Plugins/VRM4U/Source/VRM4ULoader/Private/CinevGlbSanitizer.cpp
+/cocv-review-cpp Plugins/VRM4U/Source/VRM4ULoader/Private/CinevGlbSanitizer.cpp
 ```
 
 **Review changes in last 3 commits:**
 ```
-/cinev-review-cpp HEAD~3
+/cocv-review-cpp HEAD~3
 ```
 
 **Review staged changes only:**
 ```
-/cinev-review-cpp staged
+/cocv-review-cpp staged
 ```

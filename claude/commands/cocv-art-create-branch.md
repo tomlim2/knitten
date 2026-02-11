@@ -1,7 +1,7 @@
 ---
 description: Create art branch from develop with cherry-picked commits
 argument-hint: "<new_branch> [source_branch]"
-allowed-tools: MCP(art), Bash(git:*)
+allowed-tools: MCP(cocv), Bash(git:*)
 ---
 
 # Create Art Branch
@@ -11,20 +11,20 @@ CINEV 아트팀용 브랜치 생성 자동화.
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `art-create-branch`
+Replace `$COMMAND_NAME` with: `cocv-art-create-branch`
 
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user for the branch name. NEVER auto-execute.**
 ```
-Usage: /art-create-branch <new_branch> [source_branch]
-Example: /art-create-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
+Usage: /cocv-art-create-branch <new_branch> [source_branch]
+Example: /cocv-art-create-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
 ```
 
 ## Branch Naming
 
 - Art branch: `art/<art-versioning>` (e.g., `art/art-main-1.5.0-r1`)
-- Merge branch: `art/merge/<art-versioning>` (created by `/art-prepare-merge`)
+- Merge branch: `art/merge/<art-versioning>` (created by `/cocv-art-prepare-merge`)
 
 ## 실행
 

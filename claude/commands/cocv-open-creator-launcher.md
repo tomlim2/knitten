@@ -10,7 +10,7 @@ Launch the CINEV Creator Launcher GUI for downloading and running the latest bui
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `cinev-open-creator-launcher`
+Replace `$COMMAND_NAME` with: `cocv-open-creator-launcher`
 
 ## Execution
 

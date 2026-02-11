@@ -100,5 +100,5 @@ Rules:
 - Use `NEW` for newly added, `MOD` for modified
 - Omit a category section if it has 0 changes
 - If no changes at all, show: "No skill/command/standard changes on YYYY-MM-DD."
-- For skills, show the skill directory name (e.g., `cinev-open-creator-character`), not individual files
+- For skills, show the skill directory name (e.g., `cocv-open-creator-character`), not individual files
 - Server status line: show whether new items are discoverable, or "Server not running" if unreachable

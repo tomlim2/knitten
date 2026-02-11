@@ -1,7 +1,7 @@
 ---
 description: Send merge notice as thread reply to art branch announcement
 argument-hint: "<branch_name> | --list"
-allowed-tools: MCP(art)
+allowed-tools: MCP(cocv)
 ---
 
 # Art Merge Notice
@@ -11,13 +11,13 @@ Send a threaded reply to an art branch announcement notifying that the branch wi
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
 
-Replace `$COMMAND_NAME` with: `art-send-merge-notice`
+Replace `$COMMAND_NAME` with: `cocv-art-send-merge-notice`
 
 ## Usage
 
 ```
-/art-send-merge-notice <branch_name>
-/art-send-merge-notice --list
+/cocv-art-send-merge-notice <branch_name>
+/cocv-art-send-merge-notice --list
 ```
 
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
@@ -68,5 +68,5 @@ slack_post_message(text=<formatted message>, thread_ts=<ts from step 1>, broadca
 ## Example
 
 ```
-/art-send-merge-notice art/art-main-1.5.0-r2
+/cocv-art-send-merge-notice art/art-main-1.5.0-r2
 ```

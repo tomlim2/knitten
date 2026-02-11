@@ -1,4 +1,4 @@
-# art-send-merge-result
+# cocv-art-send-merge-result
 
 **Version:** 0.2.0
 
@@ -20,23 +20,23 @@ After an art branch is merged to develop, this skill:
 ## 사용법
 
 ```
-/art-send-merge-result <branch_name>
-/art-send-merge-result --list
+/cocv-art-send-merge-result <branch_name>
+/cocv-art-send-merge-result --list
 ```
 
 ## Dependencies
 
-- Requires `/art-create-branch` to be run first (saves thread info)
+- Requires `/cocv-art-create-branch` to be run first (saves thread info)
 - Thread info stored in `~/.claude/private/slack_threads.json`
 - Uses repo path from `get_art_config()`
 
 ## 구현
 
-MCP 서버 `art`의 `thread_get()` + `get_art_config()` + `slack_post_message()` 도구 조합. Git 분석은 `Bash(git:*)`.
+MCP 서버 `cocv`의 `thread_get()` + `get_art_config()` + `slack_post_message()` 도구 조합. Git 분석은 `Bash(git:*)`.
 
 ## 파일 구조
 
 ```
-art-send-merge-result/
+cocv-art-send-merge-result/
 └── SKILL.md    # 이 문서
 ```
