@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Design System: v1.8.1 -->
+<!-- Design System: v1.9.0 -->
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -9,8 +9,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
+    <!-- Shoelace Web Components -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <link rel="stylesheet" href="/static/styles/shoelace-theme.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
     <link rel="stylesheet" href="/static/styles/markdown-reading.css">
     <script src="/static/scripts/marked.js"></script>
+    <style>
+        .page-layout--two-column {
+            grid-template-columns: 240px 1fr;
+        }
+        .page-sidebar {
+            width: 240px;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: var(--color-gray-dark);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .sidebar-nav a:hover {
+            color: var(--color-black);
+        }
+        .sidebar-nav a.active {
+            color: var(--color-black);
+            font-weight: 500;
+            border-left: 2px solid var(--color-black);
+            padding-left: 10px;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -39,73 +73,78 @@
         </section>
 
         <div class="page-layout page-layout--two-column">
-            <article class="page-main markdown-body" id="learningContent">
-                <p style="color:var(--color-gray-mid);font-size:12px;">Select a project to view learnings</p>
-            </article>
             <aside class="page-sidebar">
                 <h2 style="font-size:16px;font-weight:500;margin-bottom:16px;letter-spacing:0;">Projects</h2>
-                <div id="projectList">Loading...</div>
+                <nav id="projectList" class="sidebar-nav">Loading...</nav>
             </aside>
+            <article class="page-main markdown-body" id="learningContent">
+            </article>
         </div>
     </main>
     <footer class="footer">
         <div class="footer-content">
             <span class="footer-copyright">© 2026 Skill Server</span>
-            <span class="footer-version">v1.7.0</span>
+            <span class="footer-version">v1.9.0</span>
         </div>
     </footer>
     <script>
+        const entries = [];
+
         async function loadProjects() {
             try {
                 const res = await fetch('/api/files?path=learnings/projects');
                 const data = await res.json();
-                const projectList = document.getElementById('projectList');
-                projectList.innerHTML = '';
-
-                const ul = document.createElement('ul');
-                ul.className = 'item-list';
+                const nav = document.getElementById('projectList');
+                nav.innerHTML = '';
 
                 // Add template
-                const templateLi = document.createElement('li');
-                const templateLink = document.createElement('a');
-                templateLink.href = '#';
-                templateLink.style.color = 'var(--color-black)';
-                templateLink.style.textDecoration = 'none';
-                templateLink.textContent = '_template';
-                templateLink.onclick = (e) => {
-                    e.preventDefault();
-                    loadLearning('_template.md');
-                };
-                templateLi.appendChild(templateLink);
-                ul.appendChild(templateLi);
+                addEntry(nav, '_template', '_template.md');
 
                 // Add projects
                 if (data.entries) {
                     data.entries.forEach(entry => {
                         if (entry.name.endsWith('.md')) {
-                            const li = document.createElement('li');
-                            const link = document.createElement('a');
-                            link.href = '#';
-                            link.style.color = 'var(--color-black)';
-                            link.style.textDecoration = 'none';
-                            link.textContent = entry.name.replace('.md', '');
-                            link.onclick = (e) => {
-                                e.preventDefault();
-                                loadLearning('projects/' + entry.name);
-                            };
-                            li.appendChild(link);
-                            ul.appendChild(li);
+                            const name = entry.name.replace('.md', '');
+                            addEntry(nav, name, 'projects/' + entry.name);
                         }
                     });
                 }
 
-                projectList.appendChild(ul);
+                const hash = window.location.hash.slice(1);
+                const match = entries.find(e => e.name === hash);
+                if (match) {
+                    selectLearning(match.name, match.path);
+                } else if (entries.length > 0) {
+                    selectLearning(entries[0].name, entries[0].path);
+                }
             } catch (e) {
                 console.error('Failed to load projects:', e);
             }
         }
 
-        async function loadLearning(filename) {
+        function addEntry(nav, name, path) {
+            entries.push({ name, path });
+            const link = document.createElement('a');
+            link.href = '#' + name;
+            link.textContent = name;
+            link.dataset.name = name;
+            link.dataset.path = path;
+            link.onclick = (e) => {
+                e.preventDefault();
+                selectLearning(name, path);
+            };
+            nav.appendChild(link);
+        }
+
+        function selectLearning(name, path) {
+            history.replaceState(null, '', '#' + name);
+            document.querySelectorAll('#projectList a').forEach(a => {
+                a.classList.toggle('active', a.dataset.name === name);
+            });
+            loadLearningContent(path);
+        }
+
+        async function loadLearningContent(filename) {
             try {
                 const res = await fetch('/api/files?path=learnings/' + filename);
                 const text = await res.text();
@@ -135,6 +174,14 @@
                 }
             });
         }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1);
+            const match = entries.find(e => e.name === hash);
+            if (match) {
+                selectLearning(match.name, match.path);
+            }
+        });
 
         loadProjects();
     </script>

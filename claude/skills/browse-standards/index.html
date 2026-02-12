@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Design System: v1.8.1 -->
+<!-- Design System: v1.9.0 -->
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -9,8 +9,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
+    <!-- Shoelace Web Components -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <link rel="stylesheet" href="/static/styles/shoelace-theme.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
     <link rel="stylesheet" href="/static/styles/markdown-reading.css">
     <script src="/static/scripts/marked.js"></script>
+    <style>
+        .page-layout--two-column {
+            grid-template-columns: 240px 1fr;
+        }
+        .page-sidebar {
+            width: 240px;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: var(--color-gray-dark);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .sidebar-nav a:hover {
+            color: var(--color-black);
+        }
+        .sidebar-nav a.active {
+            color: var(--color-black);
+            font-weight: 500;
+            border-left: 2px solid var(--color-black);
+            padding-left: 10px;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -39,52 +73,63 @@
         </section>
 
         <div class="page-layout page-layout--two-column">
-            <article class="page-main markdown-body" id="standardContent">
-                <p style="color:var(--color-gray-mid);font-size:14px;">Select a standard to view</p>
-            </article>
             <aside class="page-sidebar">
                 <h2 style="font-size:16px;font-weight:500;margin-bottom:16px;letter-spacing:0;">Standards</h2>
-                <div id="standardsList">Loading...</div>
+                <nav id="standardsList" class="sidebar-nav">Loading...</nav>
             </aside>
+            <article class="page-main markdown-body" id="standardContent">
+            </article>
         </div>
     </main>
     <footer class="footer">
         <div class="footer-content">
             <span class="footer-copyright">© 2026 Skill Server</span>
-            <span class="footer-version">v1.7.0</span>
+            <span class="footer-version">v1.9.0</span>
         </div>
     </footer>
     <script>
+        let standardNames = [];
+
         async function loadStandards() {
             try {
                 const res = await fetch('/api/standards');
                 const data = await res.json();
-                const list = document.getElementById('standardsList');
-                list.innerHTML = '';
+                const nav = document.getElementById('standardsList');
+                nav.innerHTML = '';
+                standardNames = data.standards.map(s => s.name);
 
-                const ul = document.createElement('ul');
-                ul.className = 'item-list';
                 data.standards.forEach(std => {
-                    const li = document.createElement('li');
                     const link = document.createElement('a');
-                    link.href = '#';
-                    link.style.color = 'var(--color-black)';
-                    link.style.textDecoration = 'none';
+                    link.href = '#' + std.name;
                     link.textContent = std.name;
+                    link.dataset.name = std.name;
                     link.onclick = (e) => {
                         e.preventDefault();
-                        loadStandard(std.name);
+                        selectStandard(std.name);
                     };
-                    li.appendChild(link);
-                    ul.appendChild(li);
+                    nav.appendChild(link);
                 });
-                list.appendChild(ul);
+
+                const hash = window.location.hash.slice(1);
+                if (hash && standardNames.includes(hash)) {
+                    selectStandard(hash);
+                } else if (standardNames.length > 0) {
+                    selectStandard(standardNames[0]);
+                }
             } catch (e) {
                 console.error('Failed to load standards:', e);
             }
         }
 
-        async function loadStandard(name) {
+        function selectStandard(name) {
+            history.replaceState(null, '', '#' + name);
+            document.querySelectorAll('#standardsList a').forEach(a => {
+                a.classList.toggle('active', a.dataset.name === name);
+            });
+            loadStandardContent(name);
+        }
+
+        async function loadStandardContent(name) {
             try {
                 const res = await fetch(`/api/standards/${name}`);
                 const text = await res.text();
@@ -114,6 +159,13 @@
                 }
             });
         }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1);
+            if (hash && standardNames.includes(hash)) {
+                selectStandard(hash);
+            }
+        });
 
         loadStandards();
     </script>
