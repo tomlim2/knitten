@@ -20,9 +20,9 @@ When an art branch is ready to be merged into develop, this skill sends a thread
 ## Message Format
 
 ```
-{branch_name} 아트 브렌치 디벨롭에 머지합니다.
+{merge_time} 기준의 `{branch_name}` 아트 브렌치 디벨롭에 머지합니다.
 
-반드시 리다이렉터 업데이트, 커밋, 푸시 및 언락 부탁드립니다!
+퇴근 전에 리디렉터 업데이트, 커밋, 푸시 및 언락 부탁해요!:chi_cham46_175446::chi_cham46_175446:
 ```
 
 ## Dependencies
@@ -32,11 +32,28 @@ When an art branch is ready to be merged into develop, this skill sends a thread
 
 ## 구현
 
-MCP 서버 `cocv`의 `thread_get()` → `slack_post_message()` 도구 조합.
+`send.py` 스크립트로 Slack API 직접 호출.
+
+```bash
+# 전송
+python ~/.claude/skills/cocv-art-send-merge-notice/send.py art/art-main-1.5.0-r3 --time "내일 아침 8시 30분"
+
+# 미리보기
+python ~/.claude/skills/cocv-art-send-merge-notice/send.py art/art-main-1.5.0-r3 --time "내일 아침 8시 30분" --dry-run
+
+# 브랜치 목록
+python ~/.claude/skills/cocv-art-send-merge-notice/send.py --list
+```
+
+## 설정
+
+- `~/.claude/config/.env` → `SLACK_BOT_TOKEN`
+- `~/.claude/private/slack_threads.json` → 브랜치별 스레드 정보
 
 ## 파일 구조
 
 ```
 cocv-art-send-merge-notice/
-└── SKILL.md    # 이 문서
+├── SKILL.md    # 이 문서
+└── send.py     # Slack API 전송 스크립트
 ```
