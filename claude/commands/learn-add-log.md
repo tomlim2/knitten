@@ -1,7 +1,7 @@
 ---
 description: Update project learnings with new insight
 argument-hint: "<project> <category: convention|worked|failed|gotcha>"
-allowed-tools: Read, Edit, Write, Bash(mkdir:*), Bash(ls:*), Bash(date:*)
+allowed-tools: Read, Edit, Write, Glob, Bash(curl:*)
 ---
 
 # Update Learnings
@@ -45,13 +45,10 @@ Categories:
 
 ## Current Learnings
 
-Projects with learnings:
-!`ls "D:\vs\caol-ila\claude\private\learnings\projects" 2>/dev/null || echo "No learnings yet - this will be the first!"`
+Use Glob to list existing project files:
+- Pattern: `D:\vs\caol-ila\claude\private\learnings\projects\*.md`
 
 ## Template Location
 
-!`cat "D:\vs\caol-ila\claude\private\learnings\_template.md" 2>/dev/null || echo "Template not found - will create project file from scratch"`
-
-## Today's Date
-
-!`date +%Y-%m-%d`
+Use Read to load the template:
+- Path: `D:\vs\caol-ila\claude\private\learnings\_template.md`
