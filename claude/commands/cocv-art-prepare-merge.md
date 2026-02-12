@@ -30,9 +30,14 @@ Example: /cocv-art-prepare-merge art/art-main-1.5.0-r2
 
 $ARGUMENTS
 
+## Git Safety
+
+**Before any git operation, read and follow:**
+`~/.claude/standards/cinev-git-workflow.md`
+
 ## 실행
 
-Execute the following git steps **sequentially** in the current repo.
+Execute the following git steps **sequentially**.
 Stop and report to the user if any step fails.
 
 ### Step 1: Fetch
