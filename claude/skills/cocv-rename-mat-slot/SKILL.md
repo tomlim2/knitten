@@ -55,7 +55,6 @@ For each missing slot (e.g., `Body_MTL`):
         { "from": "Body_MTL1", "to": "Body_MTL" }
       ],
       "skipped": [],
-      "saved": true,
       "error": null
     }
   ]
