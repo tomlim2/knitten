@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Design System: v1.8.1 -->
+<!-- Design System: v1.9.0 -->
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
+    <!-- Shoelace Web Components -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <link rel="stylesheet" href="/static/styles/shoelace-theme.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
     <style>
         .example-box {
             background: var(--color-white);
@@ -123,11 +127,11 @@
         <section class="page-hero page-hero--single">
             <div class="page-hero-content">
                 <h1>Design Showcase</h1>
-                <p>All Design System v1.8.1 components with copyable HTML examples</p>
+                <p>All Design System v1.9.0 components with copyable HTML examples</p>
                 <div class="page-hero-meta-grid">
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">VERSION</div>
-                        <div class="page-hero-meta-value">v1.8.1 (Typo-base)</div>
+                        <div class="page-hero-meta-value">v1.9.0 (Typo-base + Shoelace)</div>
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">STANDARD</div>
@@ -135,7 +139,7 @@
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">COMPONENTS</div>
-                        <div class="page-hero-meta-value">19 patterns</div>
+                        <div class="page-hero-meta-value">19 Typo-base + 5 Shoelace</div>
                     </div>
                 </div>
             </div>
@@ -885,6 +889,243 @@ console.log(example());</code></pre>
                     </div>
                 </div>
 
+                <!-- ========================================
+                     SHOELACE WEB COMPONENTS
+                     ======================================== -->
+
+                <hr style="border: none; border-top: 2px solid var(--color-black); margin: 48px 0 32px;">
+                <h1 style="margin-bottom: 8px;">Shoelace Components</h1>
+                <p style="margin-bottom: 32px; color: var(--color-gray-mid);">Interactive components powered by <a href="https://shoelace.style" target="_blank" style="color: var(--color-link-hover);">Shoelace</a> Web Components, themed to match Typo-base aesthetics.</p>
+
+                <!-- Shoelace: Dialog -->
+                <div class="content-section">
+                    <h2>Dialog (Modal)</h2>
+                    <p style="margin-bottom: 16px;">Modal dialog for confirmations, forms, or detail views</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <button class="btn btn-secondary" onclick="document.getElementById('demo-dialog').show()">Open Dialog</button>
+
+                        <sl-dialog id="demo-dialog" label="Confirm Action">
+                            <p style="margin-bottom: 0;">Are you sure you want to proceed? This action cannot be undone.</p>
+                            <div slot="footer" style="display: flex; gap: 8px; justify-content: flex-end;">
+                                <button class="btn btn-secondary btn-small" onclick="document.getElementById('demo-dialog').hide()">Cancel</button>
+                                <button class="btn btn-primary btn-small" style="width: auto;" onclick="document.getElementById('demo-dialog').hide()">Confirm</button>
+                            </div>
+                        </sl-dialog>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;!-- Trigger --&gt;
+&lt;button class="btn btn-secondary" onclick="document.getElementById('my-dialog').show()"&gt;
+    Open Dialog
+&lt;/button&gt;
+
+&lt;!-- Dialog --&gt;
+&lt;sl-dialog id="my-dialog" label="Confirm Action"&gt;
+    &lt;p&gt;Are you sure you want to proceed?&lt;/p&gt;
+    &lt;div slot="footer" style="display: flex; gap: 8px; justify-content: flex-end;"&gt;
+        &lt;button class="btn btn-secondary btn-small"
+                onclick="document.getElementById('my-dialog').hide()"&gt;Cancel&lt;/button&gt;
+        &lt;button class="btn btn-primary btn-small" style="width: auto;"
+                onclick="document.getElementById('my-dialog').hide()"&gt;Confirm&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/sl-dialog&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Shoelace: Dropdown -->
+                <div class="content-section">
+                    <h2>Dropdown</h2>
+                    <p style="margin-bottom: 16px;">Dropdown menu for actions or navigation</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <sl-dropdown>
+                            <button class="btn btn-secondary btn-small" slot="trigger" caret>Actions</button>
+                            <sl-menu>
+                                <sl-menu-item>Edit</sl-menu-item>
+                                <sl-menu-item>Duplicate</sl-menu-item>
+                                <sl-divider></sl-divider>
+                                <sl-menu-item>Delete</sl-menu-item>
+                            </sl-menu>
+                        </sl-dropdown>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;sl-dropdown&gt;
+    &lt;button class="btn btn-secondary btn-small" slot="trigger" caret&gt;
+        Actions
+    &lt;/button&gt;
+    &lt;sl-menu&gt;
+        &lt;sl-menu-item&gt;Edit&lt;/sl-menu-item&gt;
+        &lt;sl-menu-item&gt;Duplicate&lt;/sl-menu-item&gt;
+        &lt;sl-divider&gt;&lt;/sl-divider&gt;
+        &lt;sl-menu-item&gt;Delete&lt;/sl-menu-item&gt;
+    &lt;/sl-menu&gt;
+&lt;/sl-dropdown&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Shoelace: Tab Group -->
+                <div class="content-section">
+                    <h2>Tab Group</h2>
+                    <p style="margin-bottom: 16px;">Tabbed content navigation</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <sl-tab-group>
+                            <sl-tab slot="nav" panel="overview">Overview</sl-tab>
+                            <sl-tab slot="nav" panel="details">Details</sl-tab>
+                            <sl-tab slot="nav" panel="notes">Notes</sl-tab>
+
+                            <sl-tab-panel name="overview">
+                                <p style="margin: 16px 0 0;">This is the overview panel content. Use tabs to organize related content into switchable sections.</p>
+                            </sl-tab-panel>
+                            <sl-tab-panel name="details">
+                                <p style="margin: 16px 0 0;">This is the details panel. Each panel can contain any HTML content.</p>
+                            </sl-tab-panel>
+                            <sl-tab-panel name="notes">
+                                <p style="margin: 16px 0 0;">This is the notes panel. Panels are lazy-rendered for performance.</p>
+                            </sl-tab-panel>
+                        </sl-tab-group>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;sl-tab-group&gt;
+    &lt;sl-tab slot="nav" panel="overview"&gt;Overview&lt;/sl-tab&gt;
+    &lt;sl-tab slot="nav" panel="details"&gt;Details&lt;/sl-tab&gt;
+    &lt;sl-tab slot="nav" panel="notes"&gt;Notes&lt;/sl-tab&gt;
+
+    &lt;sl-tab-panel name="overview"&gt;
+        &lt;p&gt;Overview content...&lt;/p&gt;
+    &lt;/sl-tab-panel&gt;
+    &lt;sl-tab-panel name="details"&gt;
+        &lt;p&gt;Details content...&lt;/p&gt;
+    &lt;/sl-tab-panel&gt;
+    &lt;sl-tab-panel name="notes"&gt;
+        &lt;p&gt;Notes content...&lt;/p&gt;
+    &lt;/sl-tab-panel&gt;
+&lt;/sl-tab-group&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Shoelace: Tooltip -->
+                <div class="content-section">
+                    <h2>Tooltip</h2>
+                    <p style="margin-bottom: 16px;">Contextual information on hover</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <div style="display: flex; gap: 24px; align-items: center;">
+                            <sl-tooltip content="This is a tooltip">
+                                <button class="btn btn-secondary btn-small">Hover me</button>
+                            </sl-tooltip>
+                            <sl-tooltip content="Additional information about this item" placement="right">
+                                <span style="font-size: 14px; border-bottom: 1px dashed var(--color-gray-mid); cursor: help;">What is this?</span>
+                            </sl-tooltip>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;sl-tooltip content="This is a tooltip"&gt;
+    &lt;button class="btn btn-secondary btn-small"&gt;Hover me&lt;/button&gt;
+&lt;/sl-tooltip&gt;
+
+&lt;sl-tooltip content="Additional info" placement="right"&gt;
+    &lt;span&gt;What is this?&lt;/span&gt;
+&lt;/sl-tooltip&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Shoelace: Alert -->
+                <div class="content-section">
+                    <h2>Alert</h2>
+                    <p style="margin-bottom: 16px;">Status messages and notifications</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <sl-alert open>
+                                <strong>Information:</strong> This is a neutral alert message.
+                            </sl-alert>
+                            <sl-alert variant="success" open>
+                                <strong>Success:</strong> Changes saved successfully.
+                            </sl-alert>
+                            <sl-alert variant="warning" open>
+                                <strong>Warning:</strong> This action may have side effects.
+                            </sl-alert>
+                            <sl-alert variant="danger" open>
+                                <strong>Error:</strong> Something went wrong. Please try again.
+                            </sl-alert>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;sl-alert open&gt;
+    Information alert message.
+&lt;/sl-alert&gt;
+
+&lt;sl-alert variant="success" open&gt;
+    Changes saved successfully.
+&lt;/sl-alert&gt;
+
+&lt;sl-alert variant="warning" open&gt;
+    This action may have side effects.
+&lt;/sl-alert&gt;
+
+&lt;sl-alert variant="danger" open&gt;
+    Something went wrong.
+&lt;/sl-alert&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Shoelace: Select -->
+                <div class="content-section">
+                    <h2>Select (Shoelace)</h2>
+                    <p style="margin-bottom: 16px;">Enhanced select dropdown matching Typo-base input style</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Example</div>
+                        <div style="max-width: 400px;">
+                            <sl-select placeholder="Choose an option..." clearable>
+                                <sl-option value="option-1">Date (Newest)</sl-option>
+                                <sl-option value="option-2">Date (Oldest)</sl-option>
+                                <sl-option value="option-3">Rating (Highest)</sl-option>
+                                <sl-option value="option-4">Name (A-Z)</sl-option>
+                            </sl-select>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>&lt;sl-select placeholder="Choose an option..." clearable&gt;
+    &lt;sl-option value="option-1"&gt;Date (Newest)&lt;/sl-option&gt;
+    &lt;sl-option value="option-2"&gt;Date (Oldest)&lt;/sl-option&gt;
+    &lt;sl-option value="option-3"&gt;Rating (Highest)&lt;/sl-option&gt;
+&lt;/sl-select&gt;
+
+&lt;!-- Listen for changes --&gt;
+&lt;script&gt;
+const select = document.querySelector('sl-select');
+select.addEventListener('sl-change', e =&gt; {
+    console.log(e.target.value);
+});
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+
                 <!-- Complete Page Template -->
                 <div class="content-section">
                     <h2>Complete Page Template</h2>
@@ -896,7 +1137,7 @@ console.log(example());</code></pre>
 <path d="M3 10V3a1 1 0 0 1 1-1h7"/>
 </svg></button>
                         <pre class="code-example"><code>&lt;!DOCTYPE html&gt;
-&lt;!-- Design System: v1.8.1 --&gt;
+&lt;!-- Design System: v1.9.0 --&gt;
 &lt;html lang="ko"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;

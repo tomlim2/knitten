@@ -1,7 +1,7 @@
 # Design System - Typo-base
 
-**Version**: 1.8.1
-**Last Updated**: 2026-02-08
+**Version**: 1.9.0
+**Last Updated**: 2026-02-12
 
 **Canonical CSS Reference**: http://localhost:972/skills/design-showcase
 
@@ -185,6 +185,75 @@ Good: "작업을 진행하고 있습니다"
 
 ---
 
+## Interactive Components (Shoelace)
+
+### Hybrid Approach: Typo-base + Shoelace
+
+Typo-base handles layout, typography, cards, and heroes. **Shoelace Web Components** fill the gap for interactive components that Typo-base doesn't provide.
+
+| Area | Owned By |
+|------|----------|
+| Layout, typography, cards, hero | **Typo-base** (CSS) |
+| Modal, dropdown, tabs, tooltip, alert, toast | **Shoelace** (Web Components) |
+| Form inputs, buttons | **Typo-base** primary, Shoelace for enhanced selects |
+
+### Setup
+
+Shoelace is loaded via CDN (no build step required):
+
+```html
+<!-- In <head>, after main.css -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+<link rel="stylesheet" href="/static/styles/shoelace-theme.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
+```
+
+The `shoelace-theme.css` file maps Typo-base design tokens to Shoelace CSS variables (border-radius: 0, matching fonts/colors, no shadows).
+
+### When to Use Shoelace
+
+**Use Shoelace for:**
+- Dialogs/modals (`<sl-dialog>`)
+- Dropdowns (`<sl-dropdown>` + `<sl-menu>`)
+- Tabs (`<sl-tab-group>`)
+- Tooltips (`<sl-tooltip>`)
+- Alerts/notifications (`<sl-alert>`)
+- Enhanced selects (`<sl-select>`)
+- Radio button groups (`<sl-radio-group>`)
+
+**Keep using Typo-base for:**
+- Text inputs (`.input` class)
+- Buttons (`.btn`, `.btn-primary`, `.btn-secondary`)
+- Cards, lists, tables
+- Page layout and heroes
+- Typography and spacing
+
+### Event Handling
+
+Shoelace components use `sl-` prefixed events instead of native events:
+
+```javascript
+// Shoelace select
+document.querySelector('sl-select').addEventListener('sl-change', e => {
+    console.log(e.target.value);
+});
+
+// Shoelace dialog
+document.querySelector('sl-dialog').show();
+document.querySelector('sl-dialog').hide();
+```
+
+### Theming Rules
+
+All Shoelace overrides live in `shoelace-theme.css`. Key principles:
+- **border-radius: 0** on all components (matches Typo-base)
+- **No shadows** on any component
+- **Font family** matches Typo-base (Noto Sans KR, Inter)
+- **Colors** map to existing CSS variables
+- **Input style** matches bottom-border-only pattern
+
+---
+
 ## Implementation Notes
 
 ### Platform Adaptations
@@ -220,6 +289,7 @@ These principles are platform-agnostic. Adapt them to your constraints:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.0 | 2026-02-12 | Shoelace Web Components integration (dialog, dropdown, tabs, tooltip, alert, select) |
 | 1.8.1 | 2026-02-08 | Restructured as philosophy doc (CSS specs moved to showcase) |
 | 1.8.0 | 2026-02-07 | Added UX Writing two-mode system |
 | 1.7.0 | 2026-02-07 | Added Markdown Reading Typography pattern |

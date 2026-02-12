@@ -1,4 +1,4 @@
-<!-- Design System: v1.8.1 -->
+<!-- Design System: v1.9.0 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles/main.css">
+    <!-- Shoelace Web Components -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <link rel="stylesheet" href="/static/styles/shoelace-theme.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
 </head>
 <body>
     <header class="header">
@@ -58,31 +62,22 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                         <div>
                             <h3 style="font-size:12px;font-weight:500;margin-bottom:12px;color:var(--color-gray-mid);text-transform:uppercase;">Filter by Type</h3>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="radio" name="typeFilter" value="all" checked>
-                                    <span style="font-size: 14px;">All</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="radio" name="typeFilter" value="whisky">
-                                    <span style="font-size: 14px;">Whisky</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                    <input type="radio" name="typeFilter" value="wine">
-                                    <span style="font-size: 14px;">Wine</span>
-                                </label>
-                            </div>
+                            <sl-radio-group id="typeFilter" value="all">
+                                <sl-radio-button value="all" size="small">All</sl-radio-button>
+                                <sl-radio-button value="whisky" size="small">Whisky</sl-radio-button>
+                                <sl-radio-button value="wine" size="small">Wine</sl-radio-button>
+                            </sl-radio-group>
                         </div>
                         <div>
                             <h3 style="font-size:12px;font-weight:500;margin-bottom:12px;color:var(--color-gray-mid);text-transform:uppercase;">Sort By</h3>
-                            <select id="sortSelect" style="width: 100%; padding: 8px; border: 1px solid var(--color-border); background: var(--color-white); font-family: inherit; font-size: 14px;">
-                                <option value="date-desc">Date (Newest)</option>
-                                <option value="date-asc">Date (Oldest)</option>
-                                <option value="rating-desc">Rating (Highest)</option>
-                                <option value="rating-asc">Rating (Lowest)</option>
-                                <option value="name-asc">Name (A-Z)</option>
-                                <option value="name-desc">Name (Z-A)</option>
-                            </select>
+                            <sl-select id="sortSelect" value="date-desc" size="small">
+                                <sl-option value="date-desc">Date (Newest)</sl-option>
+                                <sl-option value="date-asc">Date (Oldest)</sl-option>
+                                <sl-option value="rating-desc">Rating (Highest)</sl-option>
+                                <sl-option value="rating-asc">Rating (Lowest)</sl-option>
+                                <sl-option value="name-asc">Name (A-Z)</sl-option>
+                                <sl-option value="name-desc">Name (Z-A)</sl-option>
+                            </sl-select>
                         </div>
                     </div>
                 </div>
@@ -90,10 +85,15 @@
         </div>
     </main>
 
+    <!-- Detail Dialog -->
+    <sl-dialog id="drinkDetail" label="Drink Details">
+        <div id="drinkDetailContent"></div>
+    </sl-dialog>
+
     <footer class="footer">
         <div class="footer-content">
             <span class="footer-copyright">© 2026 Skill Server</span>
-            <span class="footer-version">v0.1.0</span>
+            <span class="footer-version">v0.2.0</span>
         </div>
     </footer>
 
@@ -119,6 +119,34 @@
             }
         }
 
+        function showDetail(drink) {
+            const dialog = document.getElementById('drinkDetail');
+            const content = document.getElementById('drinkDetailContent');
+            dialog.label = drink.name + (drink.vintage ? ` ${drink.vintage}` : '');
+
+            let html = '';
+            if (drink.description) {
+                html += `<p style="color: var(--color-gray-mid); margin-bottom: 16px;">${drink.description}</p>`;
+            }
+            html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">`;
+            html += `<div><span style="color: var(--color-gray-mid);">Type:</span> ${drink.type || 'Unknown'}</div>`;
+            html += `<div><span style="color: var(--color-gray-mid);">Region:</span> ${drink.region || 'N/A'}</div>`;
+            if (drink.date) html += `<div><span style="color: var(--color-gray-mid);">Date:</span> ${drink.date}</div>`;
+            if (drink.price) html += `<div><span style="color: var(--color-gray-mid);">Price:</span> $${drink.price}</div>`;
+            if (drink.abv) html += `<div><span style="color: var(--color-gray-mid);">ABV:</span> ${drink.abv}%</div>`;
+            if (drink.source_rating) html += `<div><span style="color: var(--color-gray-mid);">Rating:</span> ${drink.source_rating.toFixed(1)}/5.0</div>`;
+            html += `</div>`;
+            if (drink.notes) {
+                html += `<p style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-border); font-size: 14px; line-height: 1.6;">${drink.notes}</p>`;
+            }
+            if (drink.vivino_url) {
+                html += `<p style="margin-top: 12px;"><a href="${drink.vivino_url}" target="_blank" style="font-size: 12px; color: var(--color-link-hover);">${drink.source || 'Source'} →</a></p>`;
+            }
+
+            content.innerHTML = html;
+            dialog.show();
+        }
+
         function renderDrinks(drinks) {
             const table = document.getElementById('drinksTable');
             const count = document.getElementById('drinksCount');
@@ -136,15 +164,15 @@
             emptyState.style.display = 'none';
             table.innerHTML = '';
 
-            drinks.forEach(drink => {
+            drinks.forEach((drink, idx) => {
                 const li = document.createElement('li');
-                // Use source rating only - display as numeric score for all drinks
-                const rating = drink.source_rating || 0;
-                const ratingDisplay = `<span style="font-size: 18px; font-weight: 600; color: var(--color-accent);">${rating.toFixed(1)}</span><span style="font-size: 14px; color: var(--color-gray-mid);">/5.0</span>`;
+                li.style.cursor = 'pointer';
+                li.addEventListener('click', () => showDetail(drink));
 
+                const rating = drink.source_rating || 0;
+                const ratingDisplay = `<span style="font-size: 18px; font-weight: 600;">${rating.toFixed(1)}</span><span style="font-size: 14px; color: var(--color-gray-mid);">/5.0</span>`;
                 const price = drink.price ? `$${drink.price}` : 'N/A';
 
-                // Build source info
                 let sourceInfo = '';
                 if (drink.source) {
                     let sourceText = drink.source;
@@ -152,7 +180,7 @@
                         sourceText += ` ${drink.source_rating}/5`;
                     }
                     if (drink.vivino_url) {
-                        sourceInfo = `<a href="${drink.vivino_url}" target="_blank" style="font-size: 11px; color: var(--color-accent); text-decoration: none; border-bottom: 1px solid var(--color-accent);">${sourceText}</a>`;
+                        sourceInfo = `<a href="${drink.vivino_url}" target="_blank" style="font-size: 11px; color: var(--color-link-hover); text-decoration: none; border-bottom: 1px solid var(--color-link-hover);" onclick="event.stopPropagation()">${sourceText}</a>`;
                     } else {
                         sourceInfo = `<span style="font-size: 11px; color: var(--color-gray-mid);">${sourceText}</span>`;
                     }
@@ -165,12 +193,11 @@
                         <div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 4px;">
                             ${drink.type || 'Unknown'} · ${drink.region || 'N/A'}
                         </div>
-                        ${drink.date ? `<div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 8px;">마신날: ${drink.date}</div>` : ''}
-                        ${drink.notes ? `<div style="font-size: 14px; color: var(--color-gray-dark); line-height: 1.5; margin-top: 8px;">개인 노트: ${drink.notes}</div>` : ''}
+                        ${drink.date ? `<div style="font-size: 12px; color: var(--color-gray-mid); margin-bottom: 8px;">${drink.date}</div>` : ''}
                         ${sourceInfo ? `<div style="margin-top: 8px;">${sourceInfo}</div>` : ''}
                     </div>
                     <div style="text-align: right; min-width: 120px;">
-                        <div style="font-size: 16px; color: var(--color-accent);">${ratingDisplay}</div>
+                        <div>${ratingDisplay}</div>
                         <div style="font-size: 14px; color: var(--color-gray-mid); margin-top: 4px;">${price}</div>
                         ${drink.abv ? `<div style="font-size: 12px; color: var(--color-gray-mid); margin-top: 2px;">${drink.abv}% ABV</div>` : ''}
                     </div>
@@ -182,8 +209,8 @@
         function filterAndSort() {
             let filtered = [...allDrinks];
 
-            // Filter by type
-            const typeFilter = document.querySelector('input[name="typeFilter"]:checked').value;
+            // Filter by type (sl-radio-group)
+            const typeFilter = document.getElementById('typeFilter').value;
             if (typeFilter !== 'all') {
                 filtered = filtered.filter(d => d.type && d.type.toLowerCase().includes(typeFilter.toLowerCase()));
             }
@@ -199,7 +226,7 @@
                 );
             }
 
-            // Sort
+            // Sort (sl-select)
             const sortBy = document.getElementById('sortSelect').value;
             filtered.sort((a, b) => {
                 switch (sortBy) {
@@ -208,10 +235,8 @@
                     case 'date-asc':
                         return (a.date || '').localeCompare(b.date || '');
                     case 'rating-desc':
-                        // Use Vivino rating only
                         return (b.source_rating || 0) - (a.source_rating || 0);
                     case 'rating-asc':
-                        // Use Vivino rating only
                         return (a.source_rating || 0) - (b.source_rating || 0);
                     case 'name-asc':
                         return (a.name || '').localeCompare(b.name || '');
@@ -226,10 +251,8 @@
         }
 
         document.getElementById('searchInput').addEventListener('input', filterAndSort);
-        document.getElementById('sortSelect').addEventListener('change', filterAndSort);
-        document.querySelectorAll('input[name="typeFilter"]').forEach(radio => {
-            radio.addEventListener('change', filterAndSort);
-        });
+        document.getElementById('sortSelect').addEventListener('sl-change', filterAndSort);
+        document.getElementById('typeFilter').addEventListener('sl-change', filterAndSort);
 
         loadDrinks();
     </script>
