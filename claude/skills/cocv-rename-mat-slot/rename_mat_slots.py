@@ -124,7 +124,6 @@ def rename_slots_on_mesh(mesh_path, missing_slots, existing_slots):
         "mesh_path": mesh_path,
         "renames": [],
         "skipped": [],
-        "saved": False,
         "error": None,
     }
 
@@ -138,7 +137,7 @@ def rename_slots_on_mesh(mesh_path, missing_slots, existing_slots):
         result["error"] = f"Not a SkeletalMesh (type: {mesh.get_class().get_name()})"
         return result
 
-    # Get material slots
+    # Read slots using same API as validation (get_editor_property)
     try:
         materials = mesh.get_editor_property("materials")
     except Exception as e:
@@ -148,7 +147,6 @@ def rename_slots_on_mesh(mesh_path, missing_slots, existing_slots):
     renamed_any = False
 
     for missing_slot in missing_slots:
-        # Find best match among current slot names
         current_names = [
             str(mat.get_editor_property("material_slot_name"))
             for mat in materials
@@ -167,13 +165,14 @@ def rename_slots_on_mesh(mesh_path, missing_slots, existing_slots):
             )
             continue
 
-        # Find the slot and rename it
-        for mat_slot in materials:
+        # Rename the matching slot
+        for i, mat_slot in enumerate(materials):
             name = str(mat_slot.get_editor_property("material_slot_name"))
             if name == match:
                 mat_slot.set_editor_property(
                     "material_slot_name", unreal.Name(missing_slot)
                 )
+                materials[i] = mat_slot
                 result["renames"].append({"from": match, "to": missing_slot})
                 renamed_any = True
                 unreal.log(
@@ -181,15 +180,15 @@ def rename_slots_on_mesh(mesh_path, missing_slots, existing_slots):
                 )
                 break
 
-    # Save if any renames were made
+    # Write modified materials back to mesh
     if renamed_any:
         try:
-            unreal.EditorAssetLibrary.save_loaded_asset(mesh)
-            result["saved"] = True
-            unreal.log(f"[{LOG_TAG}] Saved: {mesh_path}")
+            mesh.modify()
+            mesh.set_editor_property("materials", materials)
+            unreal.log(f"[{LOG_TAG}] Modified: {mesh_path}")
         except Exception as e:
-            result["error"] = f"Save failed: {e}"
-            unreal.log_error(f"[{LOG_TAG}] Save failed for {mesh_path}: {e}")
+            result["error"] = f"Modify failed: {e}"
+            unreal.log_error(f"[{LOG_TAG}] Modify failed for {mesh_path}: {e}")
 
     return result
 
@@ -249,7 +248,7 @@ def main():
         )
         results.append(result)
 
-        if result["renames"] and result["saved"]:
+        if result["renames"] and not result["error"]:
             renamed_count += 1
         elif result["error"] or result["skipped"]:
             failed_count += 1

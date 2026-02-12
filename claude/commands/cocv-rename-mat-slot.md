@@ -37,9 +37,16 @@ python "D:\vs\caol-ila\claude\skills\cocv-rename-mat-slot\run_in_editor.py" "D:\
 
 If execution fails (no UE Editor found, no validation JSON, etc.), show the error and stop.
 
-**Step 2: Analyze**
+**Step 2: Save All 안내**
 
-실행이 성공하면 새로 생성된 JSON을 찾아서 바로 분석 결과를 출력한다.
+리네임이 성공하면, UE Editor에서 수동으로 저장해야 한다는 안내를 반드시 출력한다:
+
+> **UE Editor에서 `Ctrl+Shift+S` (Save All)를 눌러 변경사항을 디스크에 저장하세요.**
+> Python API로는 SkeletalMesh material slot name 변경이 메모리에만 반영되므로, 에디터에서 직접 저장해야 합니다.
+
+**Step 3: Analyze**
+
+새로 생성된 JSON을 찾아서 바로 분석 결과를 출력한다.
 
 Find the newly created JSON(s) in `~/.claude/private/unreal/mat-slot-rename/` and proceed to analysis output.
 
@@ -68,7 +75,6 @@ Parse the JSON and produce a structured rename report:
 For each successfully renamed mesh:
 - Mesh path
 - Each rename: `from` → `to`
-- Saved status
 
 ### 4. Failed (if any)
 For each failed rename:

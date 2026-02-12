@@ -190,15 +190,19 @@ def save_json(data, name):
 # Main
 # ---------------------------------------------------------------------------
 
+DEFAULT_DATATABLE = "/Game/Character/Anime/_LookDev/DataTable/DT_LookDevHead"
+
+
 def main():
     selected = unreal.EditorUtilityLibrary.get_selected_assets()
 
     if not selected:
-        unreal.log_error(
-            f"[{LOG_TAG}] No assets selected. "
-            f"Select a DataTable in the Content Browser."
-        )
-        return
+        unreal.log(f"[{LOG_TAG}] No selection. Loading default: {DEFAULT_DATATABLE}")
+        dt = unreal.EditorAssetLibrary.load_asset(DEFAULT_DATATABLE)
+        if dt is None:
+            unreal.log_error(f"[{LOG_TAG}] Failed to load: {DEFAULT_DATATABLE}")
+            return
+        selected = [dt]
 
     # Load required slots once
     required_slots = load_required_slots()
