@@ -68,10 +68,12 @@ If the branch already exists, ask the user whether to:
 1. Delete and recreate it
 2. Abort
 
-### Step 4: Rebase on develop
+### Step 4: Rebase on origin/develop
+
+Rebase on `origin/develop` (not local `develop` which may be stale):
 
 ```bash
-git rebase develop
+git rebase origin/develop
 ```
 
 If conflicts occur:
@@ -79,14 +81,68 @@ If conflicts occur:
 2. Ask the user how to proceed
 3. Do NOT auto-resolve
 
-### Step 5: Done
+### Step 5: Push
 
-Show summary:
+Push the merge branch to origin.
+
+**First push** (no upstream yet):
+```bash
+git push -u origin <merge_branch>
+```
+
+**Subsequent pushes** (after rebase, upstream already set):
+```bash
+git push --force origin <merge_branch>
+```
+
+**LFS lock error handling:**
+
+If push fails due to LFS lock errors (e.g., "Lock failed: already locked by another user"):
+1. Extract locked file paths from the error message
+2. Unlock each file:
+   ```bash
+   git lfs unlock --force <locked_file_path>
+   ```
+3. Retry the push
+4. If it still fails, stop and report to the user
+
+### Step 6: Generate MR Description
+
+Generate a merge request description for the user to paste into GitLab.
+
+1. Get commit list:
+   ```bash
+   git log origin/develop..<merge_branch> --oneline
+   ```
+
+2. Group commits by category (based on conventional commit prefixes or content):
+   - **Art**: texture, material, mesh, animation, VFX, level assets
+   - **Fix**: bug fixes, corrections
+   - **Chore**: config, cleanup, maintenance
+
+3. Format as MR description (in English):
+   ```
+   ## Art Branch Merge: <art_branch>
+
+   ### Changes
+   - **Art**: brief summary of art changes
+   - **Fix**: brief summary of fixes (if any)
+   - **Chore**: brief summary of maintenance (if any)
+
+   ### Commits
+   - <commit hash> <commit message>
+   - ...
+   ```
+
+4. Show the result to the user so they can copy-paste it into the GitLab MR
+
+### Summary
+
+After all steps complete, show:
 ```
 Merge branch ready:
   Branch: <merge_branch>
   Based on: <art_branch>
-  Rebased on: develop
+  Rebased on: origin/develop
+  Pushed to: origin/<merge_branch>
 ```
-
-Then ask: "Run `/mr develop` to generate the MR description?"
