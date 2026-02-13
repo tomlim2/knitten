@@ -20,17 +20,41 @@ After an art branch is merged to develop, this skill sends two messages:
 
 Read `~/.claude/private/slack_threads.json` for the target branch's channel and thread_ts.
 
-### Step 2: Analyze git changes
+### Step 2: Get MR description
+
+Use the same commit analysis as `/cocv-art-prepare-merge` Step 6:
 
 ```bash
 git log origin/develop..<branch> --no-merges --oneline
 ```
 
-### Step 3: Categorize commits
+Categorize commits the same way (Art, Fix, Chore). This is the English MR description format used when creating the GitLab MR via `/mr develop`.
 
-Group commits by category and count per contributor:
-- Categories: `art`, `character`, `feature`, `fix`, `chore`, etc.
-- Contributors: count commits per author
+### Step 3: Translate to Korean PM-friendly summary
+
+Convert the English MR description into Korean. PM들이 보기 편한 형태로:
+
+- Category names: Art → 아트, Fix → 수정, Chore → 기타
+- Summarize related commits into one line (don't list every commit)
+- Use plain Korean, avoid git/technical jargon
+
+Example output:
+```
+머지 내역
+
+[아트]
+- F_CL001 텍스처 및 머티리얼 업데이트
+- 캐릭터 프리셋 추가 (5건)
+- 레벨 라이팅 조정
+
+[수정]
+- 머티리얼 슬롯 이름 수정
+
+[기타]
+- 설정 파일 정리
+```
+
+Omit empty categories. No participant/contributor info needed.
 
 ### Step 4: Save merge stats
 
@@ -41,14 +65,10 @@ Save to `~/.claude/private/art-merge-stats/<branch-slug>.json`:
   "branch": "art/art-main-1.5.0-r3",
   "merged_at": "2026-02-13",
   "total_commits": 37,
-  "total_contributors": 14,
-  "contributors": { "hana": 7, "deemo": 7 },
   "changes": {
-    "art": ["F_CL001 텍스처 및 머티리얼 업로드"],
-    "character": ["캐릭터 프리셋 업데이트 (5건)"],
-    "feature": [],
-    "fix": [],
-    "chore": []
+    "art": ["F_CL001 텍스처 및 머티리얼 업데이트", "캐릭터 프리셋 추가 (5건)"],
+    "fix": ["머티리얼 슬롯 이름 수정"],
+    "chore": ["설정 파일 정리"]
   }
 }
 ```
@@ -72,7 +92,7 @@ Use `--dry-run` first to preview. Send only after user approval.
 
 ### Step 6: Send thread-only detail
 
-Write detailed MR summary (changes only, **no participants**) to a tmp file, then send:
+Write the Korean PM-friendly summary from Step 3 to a tmp file, then send:
 
 ```bash
 python ~/.claude/skills/cocv-art-send-merge-result/send.py <branch> --file detail.txt

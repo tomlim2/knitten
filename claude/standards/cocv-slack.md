@@ -74,21 +74,17 @@ Maps branch names to their announcement thread:
 
 ### `~/.claude/private/art-merge-stats/<branch-slug>.json`
 
-Saved by `cocv-art-send-merge-result` before sending messages:
+Saved by `cocv-art-send-merge-result` before sending messages. Korean PM-friendly summaries, no contributor info:
 
 ```json
 {
   "branch": "art/art-main-1.5.0-r3",
   "merged_at": "2026-02-13",
   "total_commits": 37,
-  "total_contributors": 14,
-  "contributors": { "hana": 7, "deemo": 7 },
   "changes": {
-    "art": ["F_CL001 텍스처 및 머티리얼 업로드"],
-    "character": ["캐릭터 프리셋 업데이트 (5건)"],
-    "feature": [],
-    "fix": [],
-    "chore": []
+    "art": ["F_CL001 텍스처 및 머티리얼 업데이트", "캐릭터 프리셋 추가 (5건)"],
+    "fix": ["머티리얼 슬롯 이름 수정"],
+    "chore": ["설정 파일 정리"]
   }
 }
 ```

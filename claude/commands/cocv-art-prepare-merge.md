@@ -108,33 +108,14 @@ If push fails due to LFS lock errors (e.g., "Lock failed: already locked by anot
 
 ### Step 6: Generate MR Description
 
-Generate a merge request description for the user to paste into GitLab.
+Generate the MR description using `/cocv-mr` with develop as base branch:
 
-1. Get commit list:
-   ```bash
-   git log origin/develop..<merge_branch> --oneline
-   ```
+```
+/cocv-mr develop
+```
 
-2. Group commits by category (based on conventional commit prefixes or content):
-   - **Art**: texture, material, mesh, animation, VFX, level assets
-   - **Fix**: bug fixes, corrections
-   - **Chore**: config, cleanup, maintenance
-
-3. Format as MR description (in English):
-   ```
-   ## Art Branch Merge: <art_branch>
-
-   ### Changes
-   - **Art**: brief summary of art changes
-   - **Fix**: brief summary of fixes (if any)
-   - **Chore**: brief summary of maintenance (if any)
-
-   ### Commits
-   - <commit hash> <commit message>
-   - ...
-   ```
-
-4. Show the result to the user so they can copy-paste it into the GitLab MR
+This follows the cocv MR standard format (Summary, Problem, Solution).
+Show the result to the user so they can copy-paste it into the GitLab MR.
 
 ### Summary
 
