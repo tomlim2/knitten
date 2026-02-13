@@ -20,9 +20,12 @@ When an art branch is ready to be merged into develop, this skill sends a thread
 ## Message Format
 
 ```
-{merge_time} 기준의 `{branch_name}` 아트 브렌치 디벨롭에 머지합니다.
+{merge_time}에 `{branch_name}` 브렌치를 디벨롭에 합칠 예정입니다.
 
-퇴근 전에 리디렉터 업데이트, 커밋, 푸시 및 언락 부탁해요!:chi_cham46_175446::chi_cham46_175446:
+그 전에 아래 작업을 완료해 주세요.
+1. 리다이렉터 픽스업 (Fix Up Redirectors)
+2. 변경사항 커밋, 푸시
+3. 파일 잠금이 있다면 해제 (언락)
 ```
 
 ## Dependencies

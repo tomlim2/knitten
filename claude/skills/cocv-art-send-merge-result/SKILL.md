@@ -65,7 +65,7 @@ python ~/.claude/skills/cocv-art-send-merge-result/send.py <branch> --broadcast 
 
 Message format:
 ```
-:white_check_mark: `<branch>` → develop 머지 완료
+`<branch>` 디벨롭 머지 완료되었습니다.
 ```
 
 Use `--dry-run` first to preview. Send only after user approval.

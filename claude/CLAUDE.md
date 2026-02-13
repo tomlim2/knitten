@@ -132,6 +132,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | `review-code-tsl.md` | Three.js TSL code reviews |
 | `review-code-unreal-python.md` | Python code reviews (UE editor) |
 | `cinev-git-workflow.md` | **Always** before git ops on CINEV projects |
+| `cocv-slack.md` | Before any cocv Slack operations |
 | `review-template.md` | Code review output format |
 | `research-methodology.md` | Deep research |
 | `tech-spec-template.md` | Technical specifications |
@@ -143,7 +144,6 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 
 - **Repo paths first** — Before asking the user for project paths, ALWAYS read `~/.claude/private/repo-paths.json` first. It contains all registered project locations.
 - **Slack confirm first** — Before sending ANY Slack message, ALWAYS show the full message content to the user and get explicit approval. Applies to all Slack skills (`cocv-art-send-notice`, `cocv-art-send-merge-notice`, `cocv-art-send-merge-result`, etc.).
-- **Slack bot identity** — All cocv Slack messages are sent via the **아트 아르니므** bot (`SLACK_BOT_TOKEN` in `~/.claude/config/.env`). MUST use `send.py` scripts (direct Slack API) — never Claude AI Slack MCP tools, which show wrong sender.
 - **Be specific** — "Use 2-space indentation" > "Format code properly"
 - **Self-contained commands** — include all context via `` !`backtick` ``
 - **Clear skill interfaces** — CLI flags, predictable output to `private/`, error handling
