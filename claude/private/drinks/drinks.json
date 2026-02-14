@@ -300,6 +300,24 @@
       "source_price": "127",
       "vivino_url": "https://www.vivino.com/en/henri-giraud-hommage-au-pinot-noir-ay-champagne/w/8308611",
       "searched_at": "2026-02-08T00:00:00Z"
+    },
+    {
+      "id": "donnhoff-riesling-trocken-2024-2026-02-12",
+      "name": "Dönnhoff Riesling Trocken 2024",
+      "description": "Pure and fresh estate-level dry Riesling from the Nahe, brimming with mandarin orange, yellow peach, and salty minerality",
+      "type": "White Wine - Riesling",
+      "region": "Nahe, Germany",
+      "vintage": 2024,
+      "price": 42000,
+      "currency": "KRW",
+      "notes": "디저트 와인 달달한 맛 탄산 + 알콜이 세서 매우 맛있네요. 추천해준 사람말로는 떢볶이랑 어울린데요.",
+      "date": "2026-02-12",
+      "abv": 10.5,
+      "source": "James Suckling / Wine Advocate",
+      "source_rating": 4.6,
+      "source_price": "26-30",
+      "vivino_url": "https://www.vivino.com/en/donnhoff-riesling-trocken/w/1140718",
+      "searched_at": "2026-02-12T00:00:00Z"
     }
   ]
 }
