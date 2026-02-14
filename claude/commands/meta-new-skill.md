@@ -199,8 +199,8 @@ app.listen(PORT, () => {
 **Examples:**
 - `~/.claude/private/commits/` - git-commit-collector
 - `~/.claude/private/unreal/material-analyze/` - ue-analyze-material
-- Obsidian `30-resources/claude/tutoring/invoices/` - tutoring skills
-- Obsidian `30-resources/claude/drinks/` - drink-log
+- Obsidian `claude/tutoring/invoices/` - tutoring skills
+- Obsidian `claude/drinks/` - drink-log
 
 ## Naming Rules Reference
 

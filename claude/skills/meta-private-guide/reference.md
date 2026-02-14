@@ -101,7 +101,7 @@ Example: `ue-analyze-material` -> `~/.claude/private/unreal/material-analyze/`
 
 **Tutoring Skills (`tutoring-*`):**
 ```
-Obsidian/30-resources/claude/tutoring/
+Obsidian/claude/tutoring/
 ├── invoices/
 │   └── YYYY-MM_StudentName.pdf
 ├── presets.json
@@ -111,7 +111,7 @@ Obsidian/30-resources/claude/tutoring/
 
 **Learning Skills (`learn-*`):**
 ```
-Obsidian/30-resources/claude/learnings/
+Obsidian/claude/learnings/
 └── projects/
     ├── project1.md
     └── project2.md
@@ -119,7 +119,7 @@ Obsidian/30-resources/claude/learnings/
 
 **Drink Tracking (`drink-*`):**
 ```
-Obsidian/30-resources/claude/drinks/
+Obsidian/claude/drinks/
 └── drinks.json
 ```
 
@@ -282,7 +282,7 @@ claude/private/
 
 Sensitive files should have restricted permissions:
 ```bash
-chmod 600 "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/30-resources/claude/tutoring/students.json"
+chmod 600 "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/tutoring/students.json"
 ```
 
 ---

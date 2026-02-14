@@ -38,7 +38,7 @@ Command: `/open-invoice`
 5. **✨ Auto-copies to clipboard**: `/move-invoice <student_name>`
 6. Alert: "명령이 클립보드에 복사되었습니다"
 7. Paste (`Cmd+V`) in Claude Code
-8. PDF automatically moved to Obsidian `30-resources/claude/tutoring/invoices/`
+8. PDF automatically moved to Obsidian `claude/tutoring/invoices/`
 
 **Features:**
 - Manual form entry for full control
@@ -48,16 +48,16 @@ Command: `/open-invoice`
 - Invoice numbering system (YYYYMM-XXXX)
 
 ## File Locations
-- **Generated PDFs**: Downloads folder (move to Obsidian `30-resources/claude/tutoring/invoices/` for archival)
-- **Student info (optional)**: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/30-resources/claude/tutoring/presets.json` - Store student/teacher info for reference
+- **Generated PDFs**: Downloads folder (move to Obsidian `claude/tutoring/invoices/` for archival)
+- **Student info (optional)**: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/tutoring/presets.json` - Store student/teacher info for reference
 
 ## Optional: Student Information Storage
 
-You can maintain student and teacher information in Obsidian `30-resources/claude/tutoring/presets.json`:
+You can maintain student and teacher information in Obsidian `claude/tutoring/presets.json`:
 
 ```bash
 # Copy example file
-cp skills/invoice-generator/presets.json.example "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/30-resources/claude/tutoring/presets.json"
+cp skills/invoice-generator/presets.json.example "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/tutoring/presets.json"
 ```
 
 **Note**: This file is for reference only. The web app does not auto-load this data.
