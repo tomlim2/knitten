@@ -16,7 +16,7 @@ Track tutoring lessons with billing status:
 ## File Structure
 
 ```
-private/tutoring/lessons/<student>/
+~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/30-resources/claude/tutoring/lessons/<student>/
 ├── 2026-02-02_BlenderRigging.md        # Pending
 ├── 2026-02-09_WalkAnimation.md         # Pending
 └── 2026-01-15_ModelingBasics_done.md   # Paid

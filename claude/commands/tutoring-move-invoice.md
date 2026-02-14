@@ -1,12 +1,12 @@
 ---
-description: Move latest PDF from Downloads to private/tutoring/invoices
+description: Move latest PDF from Downloads to Obsidian tutoring/invoices
 argument-hint: "<student_name>"
 allowed-tools: Bash(mv:*), Bash(ls:*)
 ---
 
 # Move Invoice
 
-Move the latest invoice PDF from Downloads folder to `~/.claude/private/tutoring/invoices/` with proper naming.
+Move the latest invoice PDF from Downloads folder to Obsidian `30-resources/claude/tutoring/invoices/` with proper naming.
 
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
@@ -26,7 +26,7 @@ Usage: /tutoring-move-invoice <student_name>
 
 1. Finds the latest PDF in ~/Downloads
 2. Renames it to `YYYY-MM_StudentName.pdf` format
-3. Moves to `~/.claude/private/tutoring/invoices/`
+3. Moves to Obsidian `30-resources/claude/tutoring/invoices/`
 4. Reports the new location
 
 ## Execution
@@ -52,7 +52,7 @@ fi
 MONTH=$(date +"%Y-%m")
 
 # Create target directory
-TARGET_DIR=~/.claude/private/tutoring/invoices
+TARGET_DIR="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/30-resources/claude/tutoring/invoices"
 mkdir -p "$TARGET_DIR"
 
 # New filename
@@ -72,7 +72,7 @@ echo "   To: $TARGET_PATH"
 ```
 /tutoring-move-invoice 학생1
 → Downloads/학생1_1월_수업료청구서.pdf
-→ private/tutoring/invoices/2026-01_학생1.pdf
+→ Obsidian/30-resources/claude/tutoring/invoices/2026-01_학생1.pdf
 ```
 
 ## Typical Workflow
