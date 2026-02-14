@@ -1,10 +1,37 @@
 /* Design System: v1.9.0 */
 /* Skill Server - Typo-base Style */
 
-* {
+/* Modern Reset */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+html {
+    -moz-text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select {
+    font: inherit;
+}
+
+p { text-wrap: pretty; }
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
 }
 
 :root {
@@ -287,7 +314,6 @@ body {
     border: none;
     border-bottom: 1px solid var(--color-border);
     font-size: 16px;
-    font-family: inherit;
     background: transparent;
     transition: border-color 0.15s ease;
 }
@@ -312,7 +338,6 @@ body {
     border: none;
     border-bottom: 1px solid var(--color-border);
     font-size: 16px;
-    font-family: inherit;
     background: transparent;
     transition: border-color 0.15s ease;
 }
@@ -738,15 +763,8 @@ pre {
     border-radius: 6px;
 }
 
-ul {
+ul, ol {
     margin: 16px 0;
-    padding-left: 0;
-    list-style: none;
-}
-
-ol {
-    margin: 16px 0;
-    padding-left: 24px;
 }
 
 table {

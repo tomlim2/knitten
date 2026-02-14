@@ -645,7 +645,7 @@ console.log(example());</code></pre>
                 <!-- Colors -->
                 <div class="content-section">
                     <h2>Colors</h2>
-                    <p style="margin-bottom: 16px;">CSS variables from Design System v1.7.0</p>
+                    <p style="margin-bottom: 16px;">CSS variables from Design System v1.9.0</p>
 
                     <div class="example-box">
                         <div class="example-label">Color Palette</div>
@@ -786,7 +786,7 @@ console.log(example());</code></pre>
                         <pre class="code-example"><code>&lt;footer class="footer"&gt;
     &lt;div class="footer-content"&gt;
         &lt;span class="footer-copyright"&gt;© 2026 Skill Server&lt;/span&gt;
-        &lt;span class="footer-version"&gt;v1.7.0&lt;/span&gt;
+        &lt;span class="footer-version"&gt;v1.9.0&lt;/span&gt;
     &lt;/div&gt;
 &lt;/footer&gt;</code></pre>
                     </div>
@@ -1147,12 +1147,20 @@ select.addEventListener('sl-change', e =&gt; {
     &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
     &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet"&gt;
     &lt;link rel="stylesheet" href="/static/styles/main.css"&gt;
+&lt;!-- Shoelace Web Components --&gt;
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" /&gt;
+    &lt;link rel="stylesheet" href="/static/styles/shoelace-theme.css" /&gt;
+    &lt;script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"&gt;&lt;/script&gt;
 &lt;/head&gt;
 &lt;body&gt;
     &lt;header class="header"&gt;
         &lt;a href="/" class="logo"&gt;Skill Server&lt;/a&gt;
         &lt;nav class="nav"&gt;
             &lt;a href="/"&gt;Skills&lt;/a&gt;
+            &lt;a href="/skills/browse-commands"&gt;Commands&lt;/a&gt;
+            &lt;a href="/skills/learn-browse-entries"&gt;Learnings&lt;/a&gt;
+            &lt;a href="/skills/browse-standards"&gt;Standards&lt;/a&gt;
+            &lt;a href="/skills/browse-usage"&gt;Usage&lt;/a&gt;
             &lt;a href="/files"&gt;Files&lt;/a&gt;
         &lt;/nav&gt;
     &lt;/header&gt;
@@ -1181,7 +1189,7 @@ select.addEventListener('sl-change', e =&gt; {
     &lt;footer class="footer"&gt;
         &lt;div class="footer-content"&gt;
             &lt;span class="footer-copyright"&gt;© 2026 Skill Server&lt;/span&gt;
-            &lt;span class="footer-version"&gt;v1.7.0&lt;/span&gt;
+            &lt;span class="footer-version"&gt;v1.9.0&lt;/span&gt;
         &lt;/div&gt;
     &lt;/footer&gt;
 &lt;/body&gt;
@@ -1195,22 +1203,22 @@ select.addEventListener('sl-change', e =&gt; {
     <footer class="footer">
         <div class="footer-content">
             <span class="footer-copyright">© 2026 Skill Server</span>
-            <span class="footer-version">v1.7.0</span>
+            <span class="footer-version">v1.9.0</span>
         </div>
     </footer>
 
     <script>
         function copyCode(button) {
             const codeBlock = button.nextElementSibling;
-            const code = codeBlock.textContent;
+            const code = codeBlock.querySelector('code') || codeBlock;
 
-            navigator.clipboard.writeText(code).then(() => {
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 8 7 11 12 5"/></svg>';
                 button.style.background = 'var(--color-gray-light)';
 
                 setTimeout(() => {
-                    button.textContent = originalText;
+                    button.innerHTML = originalHTML;
                     button.style.background = 'var(--color-white)';
                 }, 1500);
             });
