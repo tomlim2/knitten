@@ -281,9 +281,11 @@ app.get('/', async (req, res) => {
     const skills = discoverSkills();
     const skillNames = new Set(skills.map(s => s.id));
     const commandOnly = discoverCommandOnly(skillNames);
-    const allItems = [...skills, ...commandOnly];
-    const groupedSkills = groupByCategory(allItems);
-    const totalCount = allItems.length;
+    const groupedSkills = groupByCategory(skills);
+    const totalCount = skills.length + commandOnly.length;
+
+    // Sort commands alphabetically
+    commandOnly.sort((a, b) => a.name.localeCompare(b.name));
 
     // Check anju repo connection
     let anjuConnected = false;
@@ -298,7 +300,7 @@ app.get('/', async (req, res) => {
     } catch (e) { /* ignore */ }
 
     const usageStats = await readUsageStats();
-    res.render('dashboard', { groupedSkills, totalCount, usageStats, config, activePage: '/', anjuConnected });
+    res.render('dashboard', { groupedSkills, commandOnly, totalCount, usageStats, config, activePage: '/', anjuConnected });
 });
 
 // Serve skill static files (CSS, JS, etc.)
