@@ -30,7 +30,7 @@ Run the git commit collector script with the provided arguments.
 - Output: `~/.claude/private/<repo_name>_commits.json`
 - Max files: 10 (omit file list if more than 10 files changed)
 
-**Script location:** `~/.claude/skills/dev-commits/extract_commits.py`
+**Script location:** `~/.claude/skills/git-collect-commits/extract_commits.py`
 
 ## Execution
 
@@ -43,7 +43,7 @@ Parse the arguments:
 
 Construct and run the command:
 ```bash
-python ~/.claude/skills/dev-commits/extract_commits.py <repo_path> -o ~/.claude/private/<repo_name>_commits.json [options]
+python ~/.claude/skills/git-collect-commits/extract_commits.py <repo_path> -o ~/.claude/private/<repo_name>_commits.json [options]
 ```
 
 After extraction, report:

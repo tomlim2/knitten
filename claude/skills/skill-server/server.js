@@ -163,7 +163,6 @@ function discoverSkills() {
             const categoryMap = {
                 'art': 'Art',
                 'tutoring': 'Tutoring',
-                'browse': 'Browse',
                 'dev': 'Dev Tools',
                 'ue': 'Unreal Engine',
                 'meta': 'Meta',
@@ -200,7 +199,7 @@ function discoverSkills() {
 // Group skills by category
 function groupByCategory(skills) {
     const groups = {};
-    const order = ['Meta', 'Review', 'Git', 'CINEV', 'Unreal Engine', 'Art', 'Tutoring', 'Consulting', 'Learning', 'Writing', 'Dev Tools', 'Personal', 'Browse', 'Other'];
+    const order = ['Meta', 'Review', 'Git', 'CINEV', 'Unreal Engine', 'Art', 'Tutoring', 'Consulting', 'Learning', 'Writing', 'Dev Tools', 'Personal', 'Other'];
 
     skills.forEach(skill => {
         if (!groups[skill.category]) {
@@ -250,7 +249,6 @@ function discoverCommandOnly(skillNames) {
         const categoryMap = {
             'art': 'Art',
             'tutoring': 'Tutoring',
-            'browse': 'Browse',
             'dev': 'Dev Tools',
             'ue': 'Unreal Engine',
             'meta': 'Meta',
@@ -259,7 +257,8 @@ function discoverCommandOnly(skillNames) {
             'review': 'Review',
             'cocv': 'CINEV',
             'git': 'Git',
-            'writing': 'Writing'
+            'writing': 'Writing',
+            'consulting': 'Consulting'
         };
         const category = categoryMap[prefix] || 'Other';
 

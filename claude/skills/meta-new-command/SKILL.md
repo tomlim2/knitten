@@ -85,18 +85,6 @@ Each name consists of three parts separated by hyphens:
 - **`review-*`**: Code and skill review tools
   - Example: `review-skills`
 
-### General (Special Cases)
-
-- **`clean-up`**: Maintenance and housekeeping (standalone, no verb-subject split)
-- **`design-sync`**: Design system sync (standalone)
-- **`explore`**: Codebase exploration (standalone verb)
-- **`consult`**: Read-only analysis (standalone verb)
-- **`research`**: Deep web research (standalone verb)
-- **`ultrawork`**: Maximum intensity mode (standalone concept)
-- **`spec`**: Generate specification (standalone)
-- **`site-map`**: Generate site map (standalone)
-- **`bug-fix`**: Fix bugs with test-first pattern (standalone)
-
 ---
 
 ## Examples by Category
@@ -107,14 +95,14 @@ Each name consists of three parts separated by hyphens:
 | `git-make-message` | git | make | message | Generate commit message |
 | `tutoring-open-invoice` | tutoring | open | invoice | Open invoice generator |
 | `tutoring-move-invoice` | tutoring | move | invoice | Move PDF to storage |
-| `tutoring-invoice-kakaotalk` | tutoring | invoice | kakaotalk | Generate KakaoTalk message |
-| `tutoring-log` | tutoring | log | (implicit) | Log tutoring lesson |
-| `tutoring-paid` | tutoring | paid | (implicit) | Mark lessons as paid |
+| `tutoring-format-kakaotalk` | tutoring | format | kakaotalk | Generate KakaoTalk message |
+| `tutoring-log-lesson` | tutoring | log | lesson | Log tutoring lesson |
+| `tutoring-mark-paid` | tutoring | mark | paid | Mark lessons as paid |
 | `learn-add-log` | learn | add | log | Add learning entry |
 | `cocv-open-creator-launcher` | cocv | open | creator-launcher | Open CINEV launcher |
 | `cocv-open-creator-shipper` | cocv | open | creator-shipper | Open CINEV shipper |
 | `cocv-review-cpp` | cocv | review | cpp | Review C++ code |
-| `cocv-zo-downloader` | cocv | zo | downloader | Open ZO downloader |
+| `cocv-open-zo-downloader` | cocv | open | zo-downloader | Open ZO downloader |
 | `ue-analyze-material` | ue | analyze | material | Analyze UE material |
 | `ue-validate-asset-name` | ue | validate | asset-name | Validate UE naming |
 | `ue-new-skill` | ue | new | skill | Generate UE skill |
@@ -125,8 +113,8 @@ Each name consists of three parts separated by hyphens:
 | `cocv-art-prepare-merge` | cocv-art | prepare | merge | Prepare art merge |
 | `cocv-art-remove-branch` | cocv-art | remove | branch | Remove old art branch |
 | `meta-new-command` | meta | new | command | Generate new command |
-| `review-skills` | review | skills | (implicit) | Review skill files |
-| `drink-log` | drink | log | (implicit) | Log wine/whisky |
+| `meta-review-skills` | meta | review | skills | Review skill files |
+| `drink-log-entry` | drink | log | entry | Log wine/whisky |
 
 ---
 
@@ -293,7 +281,7 @@ curl -X POST http://localhost:972/api/usage/track \
 Note: Tracking only works when skill server is running on port 972. If server is not running, this will fail silently.
 ```
 
-**Replace `COMMAND-NAME` with actual command name** (e.g., `design-sync`, `git-make-message`)
+**Replace `COMMAND-NAME` with actual command name** (e.g., `dev-sync-design`, `git-make-message`)
 
 **Complete pattern documentation:** `~/.claude/standards/slash-commands.md`
 
@@ -375,7 +363,7 @@ User: "Create ue-analyze-texture command"
 ```
 
 **Reference:**
-- Template: `~/.claude/skills/ue-skill-template/SKILL.md`
+- Template: `~/.claude/skills/ue-show-template/SKILL.md`
 - Command: `~/.claude/commands/ue-new-skill.md`
 
 ---
@@ -385,5 +373,5 @@ User: "Create ue-analyze-texture command"
 - `commands/meta-new-command.md` - Command wrapper for this skill
 - `skills/meta-new-skill/SKILL.md` - Skill structure rules (use for creating skills)
 - `commands/ue-new-skill.md` - UE-specific skill/command generator
-- `skills/ue-skill-template/SKILL.md` - UE skill template
+- `skills/ue-show-template/SKILL.md` - UE skill template
 - `CLAUDE.md` - Main workflow guidance (points to this skill)

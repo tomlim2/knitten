@@ -3,9 +3,9 @@
 **Version**: 1.9.0
 **Last Updated**: 2026-02-12
 
-**Canonical CSS Reference**: http://localhost:972/skills/design-showcase
+**Canonical CSS Reference**: http://localhost:972/skills/design-show-components
 
-> **IMPORTANT**: The design-showcase page is the **single source of truth** for all CSS implementations. For exact values (font-size, line-height, margins, colors, border-radius, spacing, component specs, etc.), **always refer to design-showcase/index.html**. This document defines philosophy, principles, and design direction only.
+> **IMPORTANT**: The design-show-components page is the **single source of truth** for all CSS implementations. For exact values (font-size, line-height, margins, colors, border-radius, spacing, component specs, etc.), **always refer to design-show-components/index.html**. This document defines philosophy, principles, and design direction only.
 
 ---
 
@@ -26,7 +26,7 @@ A design system inspired by editorial design and typography-driven layouts. Born
 - A vocabulary for discussing design choices
 
 **What This Is Not:**
-- A pixel-perfect specification (see design-showcase for that)
+- A pixel-perfect specification (see design-show-components for that)
 - A component library (implementations vary by platform)
 - A rigid rulebook (adapt to your platform's constraints)
 
@@ -261,7 +261,7 @@ All Shoelace overrides live in `shoelace-theme.css`. Key principles:
 These principles are platform-agnostic. Adapt them to your constraints:
 
 **Web (CSS):**
-- See `design-showcase` for exact pixel values
+- See `design-show-components` for exact pixel values
 - Use CSS variables for colors
 - Responsive breakpoints around 768px
 
@@ -277,7 +277,7 @@ These principles are platform-agnostic. Adapt them to your constraints:
 
 ### When in Doubt
 
-1. Check `design-showcase` for web reference implementation
+1. Check `design-show-components` for web reference implementation
 2. Ask: "Does this serve the content or distract from it?"
 3. Remove decoration before adding it
 4. Test with real content (never Lorem Ipsum)
@@ -323,7 +323,7 @@ These principles are platform-agnostic. Adapt them to your constraints:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**For exact values, see:** http://localhost:972/skills/design-showcase
+**For exact values, see:** http://localhost:972/skills/design-show-components
 
 ---
 

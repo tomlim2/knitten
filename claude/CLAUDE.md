@@ -107,7 +107,7 @@ If both exist with the same name, the skill takes precedence. Skills are the rec
 - Extracted data (commits, UE assets, analysis)
 - Business data (invoices, tutoring logs, drinks)
 - Cached computations and notes
-- Full guide: @~/.claude/skills/meta-private-guide/SKILL.md
+- Full guide: @~/.claude/skills/meta-guide-private/SKILL.md
 
 ---
 
@@ -144,7 +144,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 
 - **Repo paths first** — Before asking the user for project paths, ALWAYS read `~/.claude/private/repo-paths.json` first. It contains all registered project locations.
 - **Slack confirm first** — Before sending ANY Slack message, ALWAYS show the full message content to the user and get explicit approval. Applies to all Slack skills (`cocv-art-send-notice`, `cocv-art-send-merge-notice`, `cocv-art-send-merge-result`, etc.).
-- **Writing pipeline** — For external-facing content (blog, portfolio, README, LinkedIn, resume), always follow: `/writing-voice` (draft with human voice) → `/humanizer` (review against 24 AI patterns) → final output. Internal content (commits, Slack, code comments, notes) is exempt.
+- **Writing pipeline** — For external-facing content (blog, portfolio, README, LinkedIn, resume), always follow: `/writing-apply-voice` (draft with human voice) → `/writing-humanize-text` (review against 24 AI patterns) → final output. Internal content (commits, Slack, code comments, notes) is exempt.
 - **Be specific** — "Use 2-space indentation" > "Format code properly"
 - **Self-contained commands** — include all context via `` !`backtick` ``
 - **Clear skill interfaces** — CLI flags, predictable output to `private/`, error handling

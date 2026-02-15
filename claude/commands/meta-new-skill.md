@@ -51,7 +51,7 @@ This file contains:
 **If user asks to create a `ue-*` skill (Unreal Engine related), point them to:**
 
 ```
-~/.claude/skills/ue-skill-template/SKILL.md
+~/.claude/skills/ue-show-template/SKILL.md
 ```
 
 Or use the dedicated command:
@@ -61,7 +61,7 @@ Or use the dedicated command:
 
 **Why?**
 - UE skills have specific patterns (Python scripts, Unreal Editor integration, JSON export)
-- ue-skill-template contains UE-specific templates and conventions
+- ue-show-template contains UE-specific templates and conventions
 - ue-new-skill command generates all required files automatically
 
 **Example:**

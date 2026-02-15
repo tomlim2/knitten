@@ -32,7 +32,7 @@ Examples:
 ## Pattern Reference
 
 Read the template specification:
-!`cat "D:\vs\caol-ila\claude\skills\ue-skill-template\SKILL.md"`
+!`cat "D:\vs\caol-ila\claude\skills\ue-show-template\SKILL.md"`
 
 Read the reference implementation for style:
 !`head -50 "D:\vs\caol-ila\claude\skills\ue-analyze-material\export_material_data.py"`
@@ -131,4 +131,4 @@ After generating all files, show the user:
 - Skills: `D:\vs\caol-ila\claude\skills\`
 - Commands: `D:\vs\caol-ila\claude\commands\`
 - Reference: `D:\vs\caol-ila\claude\skills\ue-analyze-material\`
-- Template: `D:\vs\caol-ila\claude\skills\ue-skill-template\SKILL.md`
+- Template: `D:\vs\caol-ila\claude\skills\ue-show-template\SKILL.md`

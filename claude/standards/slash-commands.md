@@ -50,7 +50,7 @@ Replace \`$COMMAND_NAME\` with: \`command-name\`
 #### Rules
 
 1. **Place immediately after title** - Before any workflow sections
-2. **Replace `command-name`** with the actual command name (e.g., `design-sync`, `git-make-message`)
+2. **Replace `command-name`** with the actual command name (e.g., `dev-sync-design`, `git-make-message`)
 3. **NO `Bash(curl:*)` needed** in allowed-tools - Pre-execution file handles it
 4. **Centralized logic** - All tracking and pre-execution logic lives in one file
 5. **Single source of truth** - Update `command-pre-execution.md` to change all commands
@@ -81,7 +81,7 @@ Synchronize GUI/UI work artifacts with the design system version.
 **Before executing, read and execute:**
 \`~/.claude/standards/command-pre-execution.md\`
 
-Replace \`$COMMAND_NAME\` with: \`design-sync\`
+Replace \`$COMMAND_NAME\` with: \`dev-sync-design\`
 
 ## Workflow
 

@@ -62,7 +62,7 @@ This is the SAME pattern as commands. See `meta-new-command` skill for complete 
 
 **Template Location:**
 ```
-~/.claude/skills/ue-skill-template/SKILL.md
+~/.claude/skills/ue-show-template/SKILL.md
 ```
 
 **Command:**

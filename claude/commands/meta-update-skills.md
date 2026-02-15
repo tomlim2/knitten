@@ -33,7 +33,7 @@ Show a summary table:
 ```
 | Skill      | Status     | Source                  | Last checked |
 |------------|------------|-------------------------|--------------|
-| humanizer  | Up to date | blader/humanizer        | 2026-02-14   |
+| writing-humanize-text | Up to date | blader/humanizer        | 2026-02-14   |
 | skill-name | UPDATE     | owner/repo              | 2026-02-10   |
 ```
 

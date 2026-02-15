@@ -109,7 +109,7 @@ Filename: branch slug (e.g. `art-art-main-1.5.0-r3.json`).
 Registered as `cocv` MCP server:
 
 ```bash
-claude mcp add cocv --scope user -- python ~/.claude/skills/cocv-mcp-server/server.py
+claude mcp add cocv --scope user -- python ~/.claude/skills/cocv-serve-mcp/server.py
 ```
 
 ### Tools
