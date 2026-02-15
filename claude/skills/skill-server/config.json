@@ -4,10 +4,8 @@
   "title": "Skill Server",
   "nav": [
     { "label": "Skills", "href": "/" },
-    { "label": "Commands", "href": "/skills/meta-browse-commands" },
     { "label": "Learnings", "href": "/skills/learn-browse-entries" },
     { "label": "Standards", "href": "/skills/meta-browse-standards" },
-    { "label": "Usage", "href": "/skills/meta-browse-usage" },
-    { "label": "Files", "href": "/files" }
+    { "label": "Usage", "href": "/skills/meta-browse-usage" }
   ]
 }
