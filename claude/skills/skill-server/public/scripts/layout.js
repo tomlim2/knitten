@@ -13,31 +13,27 @@
     // Render header
     var header = document.getElementById('site-header');
     if (header) {
+      var navLinks = config.nav.map(function (item) {
+        var active = '';
+        if (item.href === pathname) {
+          active = ' class="active"';
+        } else if (isSkillSubPage && item.href === '/') {
+          active = ' class="active"';
+        }
+        var html = '<a href="' + item.href + '"' + active + '>' + item.label + '</a>';
+
+        // Insert sub-page indicator right after Skills link
+        if (isSkillSubPage && item.href === '/') {
+          var skillName = pathname.replace('/skills/', '');
+          html += '<span class="nav-sub"><span class="nav-sub-sep">/</span>' + skillName + '</span>';
+        }
+
+        return html;
+      }).join('');
+
       header.innerHTML =
         '<a href="/" class="logo">' + config.title + '</a>' +
-        '<nav class="nav">' +
-        config.nav.map(function (item) {
-          var active = '';
-          if (item.href === pathname) {
-            active = ' class="active"';
-          } else if (isSkillSubPage && item.href === '/') {
-            active = ' class="active"';
-          }
-          return '<a href="' + item.href + '"' + active + '>' + item.label + '</a>';
-        }).join('') +
-        '</nav>';
-
-      // Add breadcrumb for skill sub-pages
-      if (isSkillSubPage) {
-        var skillName = pathname.replace('/skills/', '');
-        var breadcrumb = document.createElement('div');
-        breadcrumb.className = 'breadcrumb';
-        breadcrumb.innerHTML =
-          '<a href="/">Skills</a>' +
-          '<span class="breadcrumb-sep">/</span>' +
-          '<span class="breadcrumb-current">' + skillName + '</span>';
-        header.after(breadcrumb);
-      }
+        '<nav class="nav">' + navLinks + '</nav>';
     }
 
     // Render footer
