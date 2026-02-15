@@ -42,12 +42,16 @@ Usage:
 
 ## File Structure
 
+Consulting logs are stored in **Obsidian vault** (not `private/`):
+
 ```
-private/consulting/
+{obsidian_vault}/claude/consulting/
 ├── nexon.md               # Company history file
 ├── krafton.md
-└── smilegame.md
+└── the-lab.md
 ```
+
+**Obsidian vault path:** Read `~/.claude/private/repo-paths.json` → key `obsidian` → append `/claude/consulting/`
 
 Each company gets ONE file. Sessions accumulate in reverse chronological order (newest first).
 
@@ -117,7 +121,7 @@ Concrete results, metrics, deliverables.
 
 ### Action: `list`
 
-1. Glob `~/.claude/private/consulting/*.md`
+1. Glob `{obsidian_vault}/claude/consulting/*.md`
 2. For each file, read total sessions count
 3. Display table:
 
@@ -142,6 +146,6 @@ Concrete results, metrics, deliverables.
 ## Notes
 
 - Company filenames: lowercase, hyphens for spaces (e.g., `smile-gate.md`)
-- All data stored in `~/.claude/private/consulting/` (gitignored, never committed)
+- All data stored in Obsidian vault (`{obsidian_vault}/claude/consulting/`)
 - Sessions are append-only — never delete past records
 - For portfolio use, run `/consulting-log-session summary` to get exportable data
