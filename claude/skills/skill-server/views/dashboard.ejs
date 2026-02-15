@@ -8,7 +8,7 @@
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
         <div class="server-status">
-            <%= skillCount %> skill<%= skillCount !== 1 ? 's' : '' %>, <%= commandCount %> command<%= commandCount !== 1 ? 's' : '' %> registered · Server connected<% if (anjuConnected) { %> · anju connected<% } %>
+            <%= totalCount %> registered · Server connected<% if (anjuConnected) { %> · anju connected<% } %>
         </div>
 
         <% groupedSkills.forEach(group => { %>
@@ -17,13 +17,11 @@
                 <% group.skills.forEach(skill => { %>
                 <div class="skill-card">
                     <div class="skill-content">
+                        <% if (skill.type === 'command') { %>
+                        <h3 class="skill-name skill-name--cli">/<%= skill.name %></h3>
+                        <% } else { %>
                         <h3 class="skill-name<%= skill.type === 'cli' ? ' skill-name--cli' : '' %>"><a href="/skills/<%= skill.id %>"><%= skill.type === 'cli' ? '/' : '' %><%= skill.name %></a></h3>
-                        <div class="skill-meta">
-                            <span class="skill-version">v<%= skill.version %></span>
-                            <% if (skill.platform && skill.platform !== 'all') { %>
-                            <span class="skill-platform skill-platform--<%= skill.platform %>"><%= skill.platform === 'win' ? 'Win' : 'Mac' %></span>
-                            <% } %>
-                        </div>
+                        <% } %>
                         <p class="skill-description"><%= skill.description %></p>
                     </div>
                 </div>
@@ -33,7 +31,7 @@
         <% }); %>
 
         <% if (groupedSkills.length === 0) { %>
-        <p class="empty-state">No skills found in ~/.claude/skills/</p>
+        <p class="empty-state">No skills found</p>
         <% } %>
     </main>
     <%- include('partials/footer', {config}) %>

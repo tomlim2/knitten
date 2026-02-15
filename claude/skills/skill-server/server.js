@@ -169,7 +169,11 @@ function discoverSkills() {
                 'meta': 'Meta',
                 'learn': 'Learning',
                 'drink': 'Personal',
-                'review': 'Review'
+                'review': 'Review',
+                'cocv': 'CINEV',
+                'git': 'Git',
+                'writing': 'Writing',
+                'consulting': 'Consulting'
             };
             const category = categoryMap[prefix] || 'Other';
 
@@ -196,7 +200,7 @@ function discoverSkills() {
 // Group skills by category
 function groupByCategory(skills) {
     const groups = {};
-    const order = ['Meta', 'Review', 'Unreal Engine', 'Art', 'Tutoring', 'Learning', 'Dev Tools', 'Personal', 'Browse', 'Other'];
+    const order = ['Meta', 'Review', 'Git', 'CINEV', 'Unreal Engine', 'Art', 'Tutoring', 'Consulting', 'Learning', 'Writing', 'Dev Tools', 'Personal', 'Browse', 'Other'];
 
     skills.forEach(skill => {
         if (!groups[skill.category]) {
@@ -211,19 +215,75 @@ function groupByCategory(skills) {
         .map(cat => ({ category: cat, skills: groups[cat] }));
 }
 
+// Discover command-only entries (commands without a matching skill)
+function discoverCommandOnly(skillNames) {
+    if (!fs.existsSync(COMMANDS_DIR)) return [];
+
+    const files = fs.readdirSync(COMMANDS_DIR).filter(f => f.endsWith('.md'));
+    const commands = [];
+
+    for (const file of files) {
+        const name = file.replace('.md', '');
+
+        // Skip if a skill with the same name exists
+        if (skillNames.has(name)) continue;
+
+        const content = fs.readFileSync(path.join(COMMANDS_DIR, file), 'utf-8');
+        const lines = content.split('\n');
+
+        // Parse frontmatter
+        let description = '';
+        let inFrontmatter = false;
+
+        for (const line of lines) {
+            if (line.trim() === '---') {
+                inFrontmatter = !inFrontmatter;
+                continue;
+            }
+            if (inFrontmatter && line.startsWith('description:')) {
+                description = line.replace('description:', '').trim();
+            }
+        }
+
+        // Detect category from prefix
+        const prefix = name.split('-')[0];
+        const categoryMap = {
+            'art': 'Art',
+            'tutoring': 'Tutoring',
+            'browse': 'Browse',
+            'dev': 'Dev Tools',
+            'ue': 'Unreal Engine',
+            'meta': 'Meta',
+            'learn': 'Learning',
+            'drink': 'Personal',
+            'review': 'Review',
+            'cocv': 'CINEV',
+            'git': 'Git',
+            'writing': 'Writing'
+        };
+        const category = categoryMap[prefix] || 'Other';
+
+        commands.push({
+            id: name,
+            name,
+            description,
+            type: 'command',
+            category,
+            path: path.join(COMMANDS_DIR, file)
+        });
+    }
+
+    return commands;
+}
+
 // Routes
 app.get('/', async (req, res) => {
     const skills = discoverSkills();
-    const groupedSkills = groupByCategory(skills);
-    const skillCount = skills.length;
-
-    // Count commands
-    let commandCount = 0;
-    if (fs.existsSync(COMMANDS_DIR)) {
-        commandCount = fs.readdirSync(COMMANDS_DIR)
-            .filter(file => file.endsWith('.md'))
-            .length;
-    }
+    const skillNames = new Set(skills.map(s => s.id));
+    const commandOnly = discoverCommandOnly(skillNames);
+    const allItems = [...skills, ...commandOnly];
+    const groupedSkills = groupByCategory(allItems);
+    const totalCount = allItems.length;
 
     // Check anju repo connection
     let anjuConnected = false;
@@ -238,7 +298,7 @@ app.get('/', async (req, res) => {
     } catch (e) { /* ignore */ }
 
     const usageStats = await readUsageStats();
-    res.render('dashboard', { groupedSkills, skillCount, commandCount, usageStats, config, activePage: '/', anjuConnected });
+    res.render('dashboard', { groupedSkills, totalCount, usageStats, config, activePage: '/', anjuConnected });
 });
 
 // Serve skill static files (CSS, JS, etc.)
