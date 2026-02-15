@@ -1,11 +1,11 @@
 ---
-description: List registered repo paths with connection status
-allowed-tools: Read
+description: Show registered repos and unregistered path references
+allowed-tools: Read, Grep
 ---
 
 # Check Refs
 
-List all registered repos from `~/.claude/private/repo-paths.json` with connection status.
+Show all registered repos and discover path references in the codebase that aren't registered yet.
 
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
@@ -14,18 +14,71 @@ Replace `$COMMAND_NAME` with: `meta-check-refs`
 
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json`
-2. If file doesn't exist, show "No repos registered yet. Use `/meta-register-refs` to add one."
-3. If file exists, check each path with `fs.existsSync` and display as a table:
+### Step 1: Read Registered Repos
+
+Read `~/.claude/private/repo-paths.json`.
+
+- If file doesn't exist, note "No repos registered yet" and continue to Step 2.
+- If file exists, store all entries for comparison.
+
+### Step 2: Scan Codebase for Path References
+
+Search the following locations for hardcoded paths. Extract any absolute path that looks like a project/repo location (starts with `/`, or a Windows drive letter like `D:\`, `E:\`).
+
+**Scan targets:**
+
+| File | What to look for |
+|------|-----------------|
+| `~/.claude/standards/cinev-git-workflow.md` | CINEVStudio paths in project tables |
+| `~/.claude/skills/cocv-art-create-branch/config.json` | `repo_path` values |
+| `~/.claude/skills/skill-server/server.js` | `OBSIDIAN_CLAUDE_DIR` and other path constants |
+| `~/.claude/commands/cocv-summarize-commit.md` | CINEVStudio and caol-ila paths |
+| `~/.claude/commands/cocv-open-creator-launcher.md` | Windows `anju` paths |
+| `~/.claude/commands/cocv-open-creator-shipper.md` | Windows `anju` paths |
+| `~/.claude/commands/cocv-open-creator-character.md` | Windows `anju` paths |
+| `~/.claude/commands/meta-check-updates.md` | caol-ila path |
+
+For each discovered path, determine a suggested name based on the directory name (e.g., `E:\CINEVStudio` → `cinev`, `D:\vs\anju` → `anju-win`).
+
+### Step 3: Cross-Reference
+
+Compare discovered paths against registered repos:
+- A path is "registered" if it exactly matches a value in `repo-paths.json`
+- A path is "unregistered" if it appears in the codebase but has no matching entry
+- Deduplicate: if the same path appears in multiple files, list all source files in one row
+
+### Step 4: Display Results
+
+**Section 1 — Registered Repos:**
 
 ```
-Registered repos:
+## Registered Repos
 
-| Repo           | Path                                    | Status      |
-|----------------|-----------------------------------------|-------------|
-| anju           | /Users/younsoolim/Desktop/www/anju      | connected   |
-| ta-portfolio   | /Users/younsoulim/Desktop/www/ta-port.. | connected   |
-| obsidian       | /Users/younsoolim/Library/Mobile Do...  | connected   |
+| Repo           | Path                                   | Status       |
+|----------------|----------------------------------------|--------------|
+| anju           | /Users/younsoolim/Desktop/www/anju     | connected    |
+| obsidian       | /Users/younsoolim/Library/Mobile Do... | connected    |
 ```
 
-To register a new repo, use `/meta-register-refs <name> <path>`.
+Status = `connected` if the path exists on this machine, `not found` if it doesn't (e.g., Windows paths on macOS).
+
+If no repos are registered, show: "No repos registered yet."
+
+**Section 2 — Referenced but Not Registered:**
+
+```
+## Referenced but Not Registered
+
+| Name            | Path                                   | Referenced in                     |
+|-----------------|----------------------------------------|-----------------------------------|
+| caol-ila        | /Users/younsoolim/Desktop/www/caol-ila | meta-check-updates.md             |
+| cinev           | E:\CINEVStudio                         | cinev-git-workflow.md, cocv-summarize-commit.md |
+```
+
+If all referenced paths are already registered, show: "All referenced paths are registered."
+
+**Footer:**
+
+```
+To register: /meta-register-refs <name> <path>
+```
