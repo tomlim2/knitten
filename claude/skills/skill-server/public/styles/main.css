@@ -114,6 +114,33 @@ body {
     pointer-events: none;
 }
 
+/* Breadcrumb - Sub-page indicator */
+.breadcrumb {
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 8px 24px;
+    font-size: 13px;
+    color: var(--color-gray-mid);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.breadcrumb a {
+    color: var(--color-gray-mid);
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    color: var(--color-black);
+}
+
+.breadcrumb-sep {
+    margin: 0 6px;
+}
+
+.breadcrumb-current {
+    color: var(--color-text);
+}
+
 /* Main */
 .main {
     max-width: 1170px;

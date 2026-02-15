@@ -15,17 +15,7 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
 </head>
 <body>
-    <header class="header">
-        <a href="/" class="logo">Skill Server</a>
-        <nav class="nav">
-            <a href="/">Skills</a>
-            <a href="/skills/meta-browse-commands">Commands</a>
-            <a href="/skills/learn-browse-entries">Learnings</a>
-            <a href="/skills/meta-browse-standards">Standards</a>
-            <a href="/skills/meta-browse-usage">Usage</a>
-            <a href="/files">Files</a>
-        </nav>
-    </header>
+    <header class="header" id="site-header"></header>
     <main class="main">
         <section class="page-hero page-hero--single">
             <div class="page-hero-content">
@@ -108,10 +98,7 @@
             </article>
         </div>
     </main>
-    <footer class="footer">
-        <div class="footer-content">
-            <span class="footer-copyright">Art Dashboard v0.1.0</span>
-        </div>
-    </footer>
+    <footer class="footer" id="site-footer"></footer>
+    <script src="/static/scripts/layout.js"></script>
 </body>
 </html>

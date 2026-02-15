@@ -489,6 +489,11 @@ app.get('/api/standards/:name', (req, res) => {
     res.type('text/plain').send(content);
 });
 
+// Config API (used by layout.js for shared nav/footer)
+app.get('/api/config', (req, res) => {
+    res.json(config);
+});
+
 // Usage tracking API
 app.post('/api/usage/track', async (req, res) => {
     const { type, id } = req.body;

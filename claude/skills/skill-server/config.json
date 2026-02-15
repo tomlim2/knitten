@@ -1,11 +1,13 @@
 {
-  "version": "1.7.0",
+  "version": "1.9.0",
   "copyright": "© 2026 Skill Server",
   "title": "Skill Server",
   "nav": [
     { "label": "Skills", "href": "/" },
+    { "label": "Commands", "href": "/skills/meta-browse-commands" },
     { "label": "Learnings", "href": "/skills/learn-browse-entries" },
     { "label": "Standards", "href": "/skills/meta-browse-standards" },
-    { "label": "Usage", "href": "/skills/meta-browse-usage" }
+    { "label": "Usage", "href": "/skills/meta-browse-usage" },
+    { "label": "Files", "href": "/files" }
   ]
 }

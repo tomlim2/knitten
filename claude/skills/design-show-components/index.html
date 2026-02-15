@@ -111,17 +111,7 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <a href="/" class="logo">Skill Server</a>
-        <nav class="nav">
-            <a href="/">Skills</a>
-            <a href="/skills/meta-browse-commands">Commands</a>
-            <a href="/skills/learn-browse-entries">Learnings</a>
-            <a href="/skills/meta-browse-standards">Standards</a>
-            <a href="/skills/meta-browse-usage">Usage</a>
-            <a href="/files">Files</a>
-        </nav>
-    </header>
+    <header class="header" id="site-header"></header>
 
     <main class="main">
         <section class="page-hero page-hero--single">
@@ -1200,12 +1190,8 @@ select.addEventListener('sl-change', e =&gt; {
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <span class="footer-copyright">© 2026 Skill Server</span>
-            <span class="footer-version">v1.9.0</span>
-        </div>
-    </footer>
+    <footer class="footer" id="site-footer"></footer>
+    <script src="/static/scripts/layout.js"></script>
 
     <script>
         function copyCode(button) {
