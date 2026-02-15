@@ -8,7 +8,10 @@
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
         <div class="server-status">
-            <%= totalCount %> registered · Server connected<% if (anjuConnected) { %> · anju connected<% } %>
+            <%= totalCount %> registered · Server connected
+            <% repos.forEach(repo => { %>
+                · <%= repo.name %> <% if (repo.connected) { %>connected<% } else { %>disconnected<% } %>
+            <% }); %>
         </div>
 
         <section class="home-section">
@@ -26,6 +29,28 @@
             <% } else { %>
             <p class="home-empty">아직 사용 기록이 없습니다</p>
             <% } %>
+        </section>
+
+        <section class="home-section">
+            <h2 class="section-title">Repos</h2>
+            <% if (repos.length > 0) { %>
+            <ul class="home-file-list" id="repoList">
+                <% repos.forEach(repo => { %>
+                <li>
+                    <span class="home-repo-status <% if (repo.connected) { %>home-repo-connected<% } %>"></span>
+                    <span class="home-file-name"><%= repo.name %></span>
+                    <span class="home-repo-path"><%= repo.path %></span>
+                </li>
+                <% }); %>
+            </ul>
+            <% } else { %>
+            <p class="home-empty">등록된 repo가 없습니다</p>
+            <% } %>
+            <form class="home-repo-form" id="repoForm">
+                <input type="text" name="name" placeholder="name" class="input home-repo-input">
+                <input type="text" name="path" placeholder="/absolute/path" class="input home-repo-input home-repo-input--path">
+                <button type="submit" class="btn btn-secondary btn-small">Add</button>
+            </form>
         </section>
 
         <section class="home-section">
@@ -79,5 +104,22 @@
 
     </main>
     <%- include('partials/footer', {config}) %>
+    <script>
+    document.getElementById('repoForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var name = this.name.value.trim();
+        var path = this.path.value.trim();
+        if (!name || !path) return;
+
+        var res = await fetch('/api/repos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, path: path })
+        });
+        if (res.ok) {
+            window.location.reload();
+        }
+    });
+    </script>
 </body>
 </html>

@@ -278,20 +278,23 @@ function discoverCommandOnly(skillNames) {
 
 // Routes
 app.get('/', async (req, res) => {
-    // Skill/command count + anju connection
+    // Skill/command count
     const skills = discoverSkills();
     const skillNames = new Set(skills.map(s => s.id));
     const commandOnly = discoverCommandOnly(skillNames);
     const totalCount = skills.length + commandOnly.length;
 
-    let anjuConnected = false;
+    // Registered repos with connection status
     const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    let repos = [];
     try {
         if (fs.existsSync(repoPathsFile)) {
             const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
-            if (repoPaths.anju && fs.existsSync(repoPaths.anju)) {
-                anjuConnected = true;
-            }
+            repos = Object.entries(repoPaths).map(([name, repoPath]) => ({
+                name,
+                path: repoPath,
+                connected: fs.existsSync(repoPath)
+            }));
         }
     } catch (e) { /* ignore */ }
 
@@ -348,7 +351,7 @@ app.get('/', async (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
-    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, totalCount, anjuConnected, config, activePage: '/' });
+    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, totalCount, repos, config, activePage: '/' });
 });
 
 app.get('/skills', async (req, res) => {
@@ -358,20 +361,8 @@ app.get('/skills', async (req, res) => {
     const allItems = [...skills, ...commandOnly].sort((a, b) => a.name.localeCompare(b.name));
     const totalCount = allItems.length;
 
-    // Check anju repo connection
-    let anjuConnected = false;
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
-    try {
-        if (fs.existsSync(repoPathsFile)) {
-            const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
-            if (repoPaths.anju && fs.existsSync(repoPaths.anju)) {
-                anjuConnected = true;
-            }
-        }
-    } catch (e) { /* ignore */ }
-
     const usageStats = await readUsageStats();
-    res.render('dashboard', { allItems, totalCount, usageStats, config, activePage: '/skills', anjuConnected });
+    res.render('dashboard', { allItems, totalCount, usageStats, config, activePage: '/skills' });
 });
 
 // Serve skill static files (CSS, JS, etc.)
@@ -568,6 +559,59 @@ app.get('/api/standards/:name', (req, res) => {
 
     const content = fs.readFileSync(filePath, 'utf-8');
     res.type('text/plain').send(content);
+});
+
+// Repos API
+app.get('/api/repos', (req, res) => {
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    try {
+        if (fs.existsSync(repoPathsFile)) {
+            const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+            const repos = Object.entries(repoPaths).map(([name, repoPath]) => ({
+                name,
+                path: repoPath,
+                connected: fs.existsSync(repoPath)
+            }));
+            return res.json({ repos });
+        }
+    } catch (e) { /* ignore */ }
+    res.json({ repos: [] });
+});
+
+app.post('/api/repos', (req, res) => {
+    const { name, path: repoPath } = req.body;
+    if (!name || !repoPath) {
+        return res.status(400).json({ error: 'Missing name or path' });
+    }
+
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    let repoPaths = {};
+    try {
+        if (fs.existsSync(repoPathsFile)) {
+            repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+        }
+    } catch (e) { /* ignore */ }
+
+    repoPaths[name] = repoPath;
+    fs.writeFileSync(repoPathsFile, JSON.stringify(repoPaths, null, 2) + '\n');
+    res.json({ success: true, name, path: repoPath });
+});
+
+app.delete('/api/repos', (req, res) => {
+    const { name } = req.body;
+    if (!name) {
+        return res.status(400).json({ error: 'Missing name' });
+    }
+
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    try {
+        if (fs.existsSync(repoPathsFile)) {
+            const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+            delete repoPaths[name];
+            fs.writeFileSync(repoPathsFile, JSON.stringify(repoPaths, null, 2) + '\n');
+        }
+    } catch (e) { /* ignore */ }
+    res.json({ success: true });
 });
 
 // Config API (used by layout.js for shared nav/footer)

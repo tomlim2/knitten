@@ -1294,6 +1294,43 @@ code {
     color: var(--color-gray-mid);
 }
 
+.home-repo-status {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.home-repo-connected {
+    background: #22c55e;
+}
+
+.home-repo-path {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+}
+
+.home-repo-form {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    margin-top: 12px;
+}
+
+.home-repo-input {
+    width: auto;
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 8px 0;
+}
+
+.home-repo-input--path {
+    flex: 1;
+}
+
 .home-empty {
     font-size: 12px;
     color: var(--color-gray-mid);
