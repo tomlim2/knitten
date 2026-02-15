@@ -7,10 +7,6 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
-        <div class="server-status">
-            <%= totalCount %> registered · Server connected<% if (anjuConnected) { %> · anju connected<% } %>
-        </div>
-
         <ul class="item-list">
             <% allItems.forEach(item => { %>
             <li>

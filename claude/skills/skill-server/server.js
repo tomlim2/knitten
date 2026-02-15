@@ -19,6 +19,7 @@ const SKILLS_DIR = path.join(CLAUDE_DIR, 'skills');
 const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
 const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
+const OBSIDIAN_CLAUDE_DIR = path.join(require('os').homedir(), 'Library', 'Mobile Documents', 'iCloud~md~obsidian', 'Documents', 'MyNotes', 'claude');
 
 // Initialize Supabase client (graceful degradation)
 let supabase = null;
@@ -277,6 +278,23 @@ function discoverCommandOnly(skillNames) {
 
 // Routes
 app.get('/', async (req, res) => {
+    // Skill/command count + anju connection
+    const skills = discoverSkills();
+    const skillNames = new Set(skills.map(s => s.id));
+    const commandOnly = discoverCommandOnly(skillNames);
+    const totalCount = skills.length + commandOnly.length;
+
+    let anjuConnected = false;
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    try {
+        if (fs.existsSync(repoPathsFile)) {
+            const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+            if (repoPaths.anju && fs.existsSync(repoPaths.anju)) {
+                anjuConnected = true;
+            }
+        }
+    } catch (e) { /* ignore */ }
+
     // Top used from Supabase
     const usageStats = await readUsageStats();
     const allUsage = { ...usageStats.skills, ...usageStats.commands };
@@ -285,8 +303,8 @@ app.get('/', async (req, res) => {
         .slice(0, 5)
         .map(([name, data]) => ({ name, count: data.count }));
 
-    // Recent learnings
-    const learningsDir = path.join(PRIVATE_DIR, 'learnings', 'projects');
+    // Recent learnings (from Obsidian vault)
+    const learningsDir = path.join(OBSIDIAN_CLAUDE_DIR, 'learnings', 'projects');
     let recentLearnings = [];
     try {
         if (fs.existsSync(learningsDir)) {
@@ -316,7 +334,21 @@ app.get('/', async (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
-    res.render('home', { topUsed, recentLearnings, recentStandards, config, activePage: '/' });
+    // Recent wines (from Obsidian vault)
+    const drinksFile = path.join(OBSIDIAN_CLAUDE_DIR, 'drinks', 'drinks.json');
+    let recentWines = [];
+    try {
+        if (fs.existsSync(drinksFile)) {
+            const drinksData = JSON.parse(fs.readFileSync(drinksFile, 'utf-8'));
+            const drinks = drinksData.drinks || [];
+            recentWines = drinks
+                .filter(d => d.type && d.type.toLowerCase().includes('wine'))
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+        }
+    } catch (e) { /* ignore */ }
+
+    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, totalCount, anjuConnected, config, activePage: '/' });
 });
 
 app.get('/skills', async (req, res) => {
@@ -379,10 +411,16 @@ app.get('/skills/:id', (req, res) => {
 // File browser API
 app.get('/api/files', (req, res) => {
     const subpath = req.query.path || '';
-    const targetPath = path.resolve(PRIVATE_DIR, subpath);
+
+    // Resolve base directory: learnings/ and drinks/ served from Obsidian vault
+    let baseDir = PRIVATE_DIR;
+    if (subpath.startsWith('learnings') || subpath.startsWith('drinks')) {
+        baseDir = OBSIDIAN_CLAUDE_DIR;
+    }
+    const targetPath = path.resolve(baseDir, subpath);
 
     // Security check
-    if (!targetPath.startsWith(PRIVATE_DIR)) {
+    if (!targetPath.startsWith(baseDir)) {
         return res.status(403).json({ error: 'Access denied' });
     }
 

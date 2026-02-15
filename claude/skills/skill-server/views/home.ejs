@@ -7,6 +7,9 @@
 <body>
     <%- include('partials/header', {config, activePage}) %>
     <main class="main">
+        <div class="server-status">
+            <%= totalCount %> registered · Server connected<% if (anjuConnected) { %> · anju connected<% } %>
+        </div>
 
         <section class="home-section">
             <h2 class="section-title">Most Used</h2>
@@ -33,6 +36,23 @@
                 <li>
                     <span class="home-file-name"><%= item.name %></span>
                     <span class="home-file-date"><%= new Date(item.mtime).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }) %></span>
+                </li>
+                <% }); %>
+            </ul>
+            <% } else { %>
+            <p class="home-empty">아직 기록이 없습니다</p>
+            <% } %>
+        </section>
+
+        <section class="home-section">
+            <h2 class="section-title">Recent Wines</h2>
+            <% if (recentWines.length > 0) { %>
+            <ul class="home-file-list">
+                <% recentWines.forEach(wine => { %>
+                <li>
+                    <span class="home-file-name"><%= wine.name %></span>
+                    <span class="home-wine-type"><%= wine.type.replace(/^(Red|White|Sparkling|Rosé|Natural)\s*Wine\s*-?\s*/, '') %></span>
+                    <span class="home-file-date"><%= new Date(wine.date).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }) %></span>
                 </li>
                 <% }); %>
             </ul>
