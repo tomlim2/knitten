@@ -1,14 +1,14 @@
 ---
-description: "Review commands and skills for consistency and compatibility"
-argument-hint: "[commands|skills|all] [pattern]"
+description: "Review commands, skills, and standards for consistency and compatibility"
+argument-hint: "[commands|skills|standards|all] [pattern]"
 allowed-tools: "Glob, Grep, Read, Edit, Write, AskUserQuestion"
 ---
 
 # meta-review-skills
 
-Scan command and skill files for format, content, and compatibility issues, then interactively fix them.
+Scan command, skill, and standards files for format, content, and compatibility issues, then interactively fix them.
 
-**Primary use case:** After a model update, review all commands and skills for consistency and compatibility.
+**Primary use case:** After a model update, review all commands, skills, and standards for consistency and compatibility.
 
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
@@ -21,24 +21,28 @@ $ARGUMENTS
 
 **If no argument is provided, show usage and stop. NEVER auto-execute.**
 ```
-Usage: /review-claude-skills <scope> [pattern]
+Usage: /meta-review-skills <scope> [pattern]
 
 Scope:
   commands    — Review command files only
   skills      — Review skill files only
-  all         — Review both commands and skills
+  standards   — Review standards files only
+  all         — Review commands, skills, and standards
 
 Pattern (optional):
   art-*       — Match by prefix
   drink-log   — Match exact name
+  review-*    — Match review-related standards
 
 Examples:
-  /review-claude-skills all              — Review everything
-  /review-claude-skills commands         — Review all commands
-  /review-claude-skills skills           — Review all skills
-  /review-claude-skills commands art-*   — Review art-related commands only
-  /review-claude-skills skills ue-*      — Review UE-related skills only
-  /review-claude-skills all drink-*      — Review drink-related commands and skills
+  /meta-review-skills all              — Review everything
+  /meta-review-skills commands         — Review all commands
+  /meta-review-skills skills           — Review all skills
+  /meta-review-skills standards        — Review all standards
+  /meta-review-skills commands art-*   — Review art-related commands only
+  /meta-review-skills skills ue-*      — Review UE-related skills only
+  /meta-review-skills standards review-* — Review code review standards only
+  /meta-review-skills all drink-*      — Review drink-related files
 ```
 
 ## Command Checklist (12 checks)
@@ -66,16 +70,16 @@ Apply these checks to each command file (`~/.claude/commands/*.md`).
 - **X2. Argument passing:** `$ARGUMENTS` and `{{input}}` should not be mixed in the same file. Pick one.
 - **X3. External references:** Paths to agents, skills, or scripts must point to files that actually exist. Verify with Glob.
 
-## Skill Checklist (13 checks)
+## Skill Checklist (11 checks)
 
 Apply these checks to each skill file (`~/.claude/skills/*/SKILL.md`).
 
-### Structure (S1–S4)
+### Structure (S1–S2)
 
-- **S1. Required sections present:** Title (`# name`), Version (`**Version:**`), Changelog, Purpose. All four must exist.
+- **S1. Required sections present:** Title (`# name`) and Purpose section. Both must exist.
 - **S2. Title matches directory name:** The H1 title must match the parent directory name (e.g., `# drink-log` in `skills/drink-log/SKILL.md`).
-- **S3. Version format:** Must follow semver pattern (`X.Y.Z`). Must be present on the line immediately after H1.
-- **S4. Changelog entries:** At least one entry. Latest version in Changelog must match the Version field.
+
+Note: Version and Changelog fields are NOT required — versioning is tracked via git only.
 
 ### Content (SC1–SC4)
 
@@ -95,12 +99,28 @@ Apply these checks to each skill file (`~/.claude/skills/*/SKILL.md`).
 - **SX1. External references:** Paths referenced in the SKILL.md must point to files that actually exist. Verify with Glob.
 - **SX2. Naming convention:** Directory name must follow `{category}-{verb}-{subject}` pattern (lowercase, hyphens only, max 64 characters). *(Official: lowercase+numbers+hyphens, max 64 chars)*
 
+## Standards Checklist (6 checks)
+
+Apply these checks to each standards file (`~/.claude/standards/*.md`).
+
+### Structure (ST1–ST3)
+
+- **ST1. H1 title present:** Must have exactly one H1 (`# Title`) at the top.
+- **ST2. Heading hierarchy:** No skipped levels (e.g., H1 → H3 without H2). Sections should use H2+.
+- **ST3. Line count:** WARN if over 500 lines, FAIL if over 800. Large standards should be split or reference supporting files.
+
+### References (SR1–SR3)
+
+- **SR1. Listed in CLAUDE.md index:** The file must appear in the Domain Standards table in `~/.claude/CLAUDE.md`. WARN if missing — either add to index or question if the file is still needed.
+- **SR2. Cross-references valid:** Any paths to other files (`~/.claude/...`, `@path/...`) must point to files that actually exist. Verify with Glob.
+- **SR3. Internal consistency:** If the standard references specific commands or skills by name, those must exist. Verify with Glob against `~/.claude/commands/{name}.md` or `~/.claude/skills/{name}/SKILL.md`.
+
 ## Workflow
 
 ### Step 1: Parse Scope
 
 Parse `$ARGUMENTS` to determine:
-- **Scope**: `commands`, `skills`, or `all`
+- **Scope**: `commands`, `skills`, `standards`, or `all`
 - **Pattern** (optional): glob pattern to filter files
 
 ### Step 2: Scan
@@ -108,6 +128,7 @@ Parse `$ARGUMENTS` to determine:
 Glob for files based on scope:
 - Commands: `~/.claude/commands/{pattern}.md` (default pattern: `*`)
 - Skills: `~/.claude/skills/{pattern}/SKILL.md` (default pattern: `*`)
+- Standards: `~/.claude/standards/{pattern}.md` (default pattern: `*`)
 
 Read each matched file.
 
@@ -115,14 +136,15 @@ Read each matched file.
 
 For each file, run the appropriate checklist:
 - Command files → Command Checklist (F1–F4, C1–C5, X1–X3)
-- Skill files → Skill Checklist (S1–S4, SC1–SC4, SF1–SF3, SX1–SX2)
+- Skill files → Skill Checklist (S1–S2, SC1–SC4, SF1–SF3, SX1–SX2)
+- Standards files → Standards Checklist (ST1–ST3, SR1–SR3)
 
 Record per check:
 - `PASS` — check passed
 - `WARN` — minor issue (LOW severity)
 - `FAIL` — needs fix (HIGH severity)
 
-Skip this command's own file (`review-claude-skills.md`) from review.
+Skip this command's own file (`meta-review-skills.md`) from review.
 
 ### Step 4: Interactive Fix
 
@@ -143,7 +165,15 @@ For each file with FAIL or WARN items:
 
    | # | Check | Status | Detail |
    |---|-------|--------|--------|
-   | S1 | Required sections | WARN | Missing Files section |
+   | S1 | Required sections | WARN | Missing Purpose section |
+   ```
+
+   ```
+   ## [standards] agent-workflow.md (1 issue)
+
+   | # | Check | Status | Detail |
+   |---|-------|--------|--------|
+   | SR3 | Internal consistency | WARN | References `meta-delegate-task` command which does not exist |
    ```
 
 2. Ask the user (via AskUserQuestion) whether to:
@@ -178,7 +208,14 @@ After processing all files, output a final summary:
 | drink-log/SKILL.md | 1 | 1 | 0 |
 | art-create-branch/SKILL.md | 0 | — | — |
 
-**Total:** X files scanned (Y commands, Z skills), N issues found, M fixed, W skipped
+### Standards
+
+| File | Issues | Fixed | Skipped |
+|------|--------|-------|---------|
+| slash-commands.md | 1 | 1 | 0 |
+| javascript.md | 0 | — | — |
+
+**Total:** X files scanned (Y commands, Z skills, W standards), N issues found, M fixed, K skipped
 ```
 
 ### Step 6: Save Report

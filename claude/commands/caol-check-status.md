@@ -1,11 +1,11 @@
 ---
 description: Check system status and connect services
-allowed-tools: Read, Bash(curl:*), Bash(node:*), Bash(cd:*), Bash(lsof:*)
+allowed-tools: Read, Write, Bash(curl:*), Bash(node:*), Bash(cd:*), Bash(lsof:*), Bash(git tag:*), Bash(git add:*), Bash(git commit:*), Task, AskUserQuestion
 ---
 
 # caol-check-status
 
-Check skill server and refs connection status. Auto-starts server if down.
+Check skill server, refs, and model version status. Auto-starts server if down. Detects model changes and orchestrates doc updates.
 
 **Before executing, read and execute:**
 `~/.claude/standards/command-pre-execution.md`
@@ -38,16 +38,30 @@ Replace `$COMMAND_NAME` with: `caol-check-status`
    - If NOT registered → `missing`
 4. Also include any extra refs in repo-paths.json that aren't in the expected list
 
-### Step 3: Output Results
+### Step 3: Check Model Version
 
-Display as two tables:
+1. Read `~/.claude/private/model-version.json`
+2. **If file does not exist:**
+   - Create it with current model info: `model_id`, `model_name`, `version: "2.0.0"`, `updated_at: today`
+   - Set model status to `{model_name} (initialized)`
+   - Skip update flow (Step 5)
+3. **If file exists:**
+   - Compare saved `model_id` with the current model ID from your system info
+   - If match → status: `{model_name} (current)`
+   - If mismatch → status: `{saved_model_name} → {new_model_name} (UPDATE NEEDED)`
+   - Remember whether update is needed for Step 5
+
+### Step 4: Output Results
+
+Display as tables:
 
 ```
 ## System Status
 
-| Component    | Status                |
-|--------------|-----------------------|
-| Skill Server | connected (port 972)  |
+| Component    | Status                          |
+|--------------|---------------------------------|
+| Skill Server | connected (port 972)            |
+| Model        | Opus 4.6 (current)              |
 
 ## Refs
 
@@ -58,10 +72,81 @@ Display as two tables:
 | cinev-studio | missing             |                         |
 ```
 
-### Step 4: Registration Guidance
-
 If any refs have `missing` status, show:
 
 ```
 To register missing refs: /meta-register-refs <name> <path>
 ```
+
+### Step 5: Model Update Flow
+
+**Only execute this step if Step 3 detected a model change.**
+
+1. Use AskUserQuestion to confirm:
+   - "Model changed from {old} to {new}. Run update flow to review and update all docs?"
+   - Options: "Run update flow", "Skip for now"
+2. If user confirms, execute sequentially:
+
+#### [1/4] Review Global CLAUDE.md
+
+Launch a Task subagent:
+- Read `~/.claude/commands/meta-review-claude-md.md`
+- Execute that command's logic: fetch official docs, run 12 checks, auto-fix FAIL/WARN items
+- Return summary: number of issues found and fixed
+
+#### [2/4] Check External Skill Updates
+
+Launch a Task subagent:
+- Read `~/.claude/commands/meta-update-skills.md`
+- Execute: check external-skills.json, compare with source repos, apply updates
+- Return summary: number of skills checked and updated
+
+**Why before review:** External skills must be updated first so that [3/4] reviews the latest versions, not stale local copies.
+
+#### [3/4] Review All Skills, Commands & Standards
+
+Launch a Task subagent:
+- Read `~/.claude/commands/meta-review-skills.md`
+- Execute with `all` scope: scan all commands, skills, and standards, apply checklists, auto-fix issues
+- Return summary: number of issues found and fixed
+
+#### [4/4] Update Registered Repo Docs
+
+1. Read `~/.claude/private/repo-paths.json`
+2. Filter to repos with `connected` status from Step 2
+3. **Exclude `caol-ila`** — its CLAUDE.md is the global config, already handled by [1/4]
+4. For each remaining connected repo, launch a Task subagent:
+   - Read `~/.claude/commands/meta-update-docs.md`
+   - Execute that command's logic at the repo's path
+   - Return summary of changes
+
+5. After all steps complete, display results:
+
+```
+## Update Flow Results
+
+| Step | Scope                       | Issues | Fixed | Status |
+|------|-----------------------------|--------|-------|--------|
+| 1/4  | Global CLAUDE.md            | 3      | 3     | done   |
+| 2/4  | External Skills             | 1      | 1     | done   |
+| 3/4  | Skills, Commands & Standards| 7      | 5     | done   |
+| 4/4  | Repo Docs (2 repos)         | 0      | 0     | done   |
+```
+
+### Step 6: Git Tagging
+
+**Only execute this step after Step 5 completes successfully.**
+
+1. Read current `version` from `~/.claude/private/model-version.json`
+2. Commit all changes in `caol-ila`:
+   ```
+   chore: update docs for model {new_model_name}
+   ```
+3. Major bump the version (e.g., `2.0.0` → `3.0.0`)
+4. Create semver tag: `git tag v{new_version}`
+5. Create model tag: `git tag model/{model_name_lowercase}` (e.g., `model/opus-4.7`)
+6. Update `model-version.json` with new model_id, model_name, version, updated_at
+7. Commit the json update:
+   ```
+   chore: bump version to v{new_version}
+   ```
