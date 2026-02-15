@@ -947,6 +947,21 @@ ul li::before {
     color: var(--color-text);
 }
 
+.item-type-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-right: 10px;
+    color: var(--color-gray-mid);
+    border: 1px solid var(--color-border);
+}
+
 .item-name--mono {
     font-size: 12px;
 }

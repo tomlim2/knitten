@@ -11,36 +11,17 @@
             <%= totalCount %> registered · Server connected<% if (anjuConnected) { %> · anju connected<% } %>
         </div>
 
-        <% groupedSkills.forEach(group => { %>
-        <section class="skill-section">
-            <div class="skill-grid">
-                <% group.skills.forEach(skill => { %>
-                <div class="skill-card">
-                    <div class="skill-content">
-                        <h3 class="skill-name<%= skill.type === 'cli' ? ' skill-name--cli' : '' %>"><a href="/skills/<%= skill.id %>"><%= skill.type === 'cli' ? '/' : '' %><%= skill.name %></a></h3>
-                        <p class="skill-description"><%= skill.description %></p>
-                    </div>
-                </div>
-                <% }); %>
-            </div>
-        </section>
-        <% }); %>
+        <ul class="item-list">
+            <% allItems.forEach(item => { %>
+            <li>
+                <span class="item-type-icon" title="<%= item.type === 'command' ? 'command' : 'skill' %>"><%= item.type === 'command' ? 'C' : 'S' %></span>
+                <span class="item-name--mono">/<%= item.name %></span>
+                <span class="item-meta"><%= item.description || '' %></span>
+            </li>
+            <% }); %>
+        </ul>
 
-        <% if (commandOnly.length > 0) { %>
-        <section class="content-section" style="margin-top: 32px;">
-            <h2 style="font-size: 14px; font-weight: 500; color: var(--color-gray-mid); margin-bottom: 16px;">Commands (<%= commandOnly.length %>)</h2>
-            <ul class="item-list">
-                <% commandOnly.forEach(cmd => { %>
-                <li>
-                    <span class="item-name--mono">/<%= cmd.name %></span>
-                    <span class="item-meta"><%= cmd.description || '' %></span>
-                </li>
-                <% }); %>
-            </ul>
-        </section>
-        <% } %>
-
-        <% if (groupedSkills.length === 0 && commandOnly.length === 0) { %>
+        <% if (allItems.length === 0) { %>
         <p class="empty-state">No skills found</p>
         <% } %>
     </main>
