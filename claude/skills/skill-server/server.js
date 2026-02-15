@@ -346,11 +346,29 @@ app.get('/', async (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
-    const refsMap = {}; // path -> { name, connected }
+    const refsMap = {}; // name -> { connected, path }
 
-    // Add registered repos
+    function addRef(name, refPath) {
+        const connected = fs.existsSync(refPath);
+        if (!refsMap[name]) {
+            refsMap[name] = { connected, path: refPath };
+        } else {
+            // Prefer connected path; among same status, keep first
+            if (connected && !refsMap[name].connected) {
+                refsMap[name] = { connected: true, path: refPath };
+            }
+        }
+    }
+
+    // Expected refs: always show, even if not yet registered
+    const expectedRefs = ['anju', 'ta-portfolio', 'obsidian', 'caol-ila', 'cinev-studio', 'cinev-engine'];
+    for (const name of expectedRefs) {
+        refsMap[name] = { connected: false, path: '' };
+    }
+
+    // Add registered repos (overwrites expected refs with actual data)
     for (const [name, repoPath] of Object.entries(registeredPaths)) {
-        refsMap[repoPath] = { name, connected: fs.existsSync(repoPath) };
+        addRef(name, repoPath);
     }
 
     // Scan codebase for hardcoded path references
@@ -391,20 +409,17 @@ app.get('/', async (req, res) => {
                     }
                 }
 
-                if (refsMap[repoRoot]) continue;
                 const segments = repoRoot.replace(/\\/g, '/').split('/').filter(Boolean);
-                refsMap[repoRoot] = {
-                    name: segments[segments.length - 1].toLowerCase(),
-                    connected: fs.existsSync(repoRoot)
-                };
+                const name = segments[segments.length - 1].toLowerCase();
+                addRef(name, repoRoot);
             }
         } catch (e) { /* ignore */ }
     }
 
-    const refs = Object.entries(refsMap).map(([refPath, data]) => ({
-        name: data.name,
+    const refs = Object.entries(refsMap).map(([name, data]) => ({
+        name,
         connected: data.connected,
-        path: refPath
+        path: data.path
     }));
 
     res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, refs, totalCount, config, activePage: '/' });
