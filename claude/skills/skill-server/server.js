@@ -337,7 +337,91 @@ app.get('/', async (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
-    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, totalCount, config, activePage: '/' });
+    // Refs: registered repos + unregistered path references
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    let registeredRepos = [];
+    let registeredPaths = {};
+    try {
+        if (fs.existsSync(repoPathsFile)) {
+            registeredPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+            registeredRepos = Object.entries(registeredPaths).map(([name, repoPath]) => ({
+                name,
+                path: repoPath,
+                connected: fs.existsSync(repoPath)
+            }));
+        }
+    } catch (e) { /* ignore */ }
+
+    // Scan codebase for hardcoded path references
+    const scanTargets = [
+        { file: path.join(STANDARDS_DIR, 'cinev-git-workflow.md') },
+        { file: path.join(SKILLS_DIR, 'cocv-art-create-branch', 'config.json') },
+        { file: path.join(COMMANDS_DIR, 'cocv-summarize-commit.md') },
+        { file: path.join(COMMANDS_DIR, 'cocv-open-creator-launcher.md') },
+        { file: path.join(COMMANDS_DIR, 'cocv-open-creator-shipper.md') },
+        { file: path.join(COMMANDS_DIR, 'cocv-open-creator-character.md') },
+        { file: path.join(COMMANDS_DIR, 'meta-check-updates.md') },
+    ];
+
+    const referencedMap = {}; // path -> { name, sources: Set }
+    const registeredPathValues = new Set(Object.values(registeredPaths));
+
+    for (const { file } of scanTargets) {
+        try {
+            if (!fs.existsSync(file)) continue;
+            const content = fs.readFileSync(file, 'utf8');
+            const source = path.basename(file);
+
+            // Extract Windows paths (E:\Folder... — require at least one segment)
+            const winMatches = content.match(/[A-Z]:\\[A-Za-z][^\s"`*)<,`]+/g) || [];
+            // Extract Unix absolute paths (/Users/...)
+            const unixMatches = content.match(/\/Users\/younsoolim\/[^\s"`*)<,`]+/g) || [];
+
+            const allPaths = [...winMatches, ...unixMatches];
+            for (let p of allPaths) {
+                p = p.replace(/[.,:;)]+$/, ''); // trim trailing punctuation
+                // Normalize to repo root (take up to 3rd path segment for Windows, or the project dir for Unix)
+                let repoRoot;
+                if (/^[A-Z]:\\/.test(p)) {
+                    // Windows: take project-level dir (e.g. E:\CINEVStudio, D:\vs\anju)
+                    const parts = p.replace(/\\/g, '/').split('/');
+                    if (parts[1] === 'vs' || parts[1] === 'Second') {
+                        repoRoot = parts.slice(0, 3).join('\\');
+                    } else {
+                        repoRoot = parts.slice(0, 2).join('\\');
+                    }
+                    repoRoot = repoRoot.replace(/\//g, '\\');
+                } else {
+                    // Unix: /Users/younsoolim/Desktop/www/project or /Users/younsoolim/Library/...
+                    const parts = p.split('/');
+                    if (parts[3] === 'Desktop' && parts[4] === 'www') {
+                        repoRoot = parts.slice(0, 6).join('/');
+                    } else if (parts[3] === 'Library') {
+                        repoRoot = parts.slice(0, 9).join('/'); // Obsidian-length path
+                    } else {
+                        repoRoot = parts.slice(0, 5).join('/');
+                    }
+                }
+
+                if (registeredPathValues.has(repoRoot)) continue;
+                if (!referencedMap[repoRoot]) {
+                    // Derive name from last meaningful segment
+                    const segments = repoRoot.replace(/\\/g, '/').split('/').filter(Boolean);
+                    const lastName = segments[segments.length - 1].toLowerCase();
+                    referencedMap[repoRoot] = { name: lastName, sources: new Set() };
+                }
+                referencedMap[repoRoot].sources.add(source);
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    const unregisteredRefs = Object.entries(referencedMap).map(([refPath, data]) => ({
+        name: data.name,
+        path: refPath,
+        sources: [...data.sources]
+    }));
+
+    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, registeredRepos, unregisteredRefs, totalCount, config, activePage: '/' });
 });
 
 app.get('/skills', async (req, res) => {

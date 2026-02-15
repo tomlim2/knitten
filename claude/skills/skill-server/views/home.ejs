@@ -29,6 +29,30 @@
         </section>
 
         <section class="home-section">
+            <h2 class="section-title">Refs</h2>
+            <% if (registeredRepos.length > 0 || unregisteredRefs.length > 0) { %>
+            <ul class="home-file-list">
+                <% registeredRepos.forEach(repo => { %>
+                <li>
+                    <span class="home-repo-status <% if (repo.connected) { %>home-repo-connected<% } %>"></span>
+                    <span class="home-file-name"><%= repo.name %></span>
+                    <span class="home-repo-path"><%= repo.path %></span>
+                </li>
+                <% }); %>
+                <% unregisteredRefs.forEach(ref => { %>
+                <li>
+                    <span class="home-repo-status home-repo-unregistered"></span>
+                    <span class="home-file-name"><%= ref.name %></span>
+                    <span class="home-repo-path"><%= ref.path %></span>
+                </li>
+                <% }); %>
+            </ul>
+            <% } else { %>
+            <p class="home-empty">등록된 경로가 없습니다</p>
+            <% } %>
+        </section>
+
+        <section class="home-section">
             <h2 class="section-title">Recent Learnings</h2>
             <% if (recentLearnings.length > 0) { %>
             <ul class="home-file-list">
