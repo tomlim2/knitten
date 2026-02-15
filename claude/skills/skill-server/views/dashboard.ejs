@@ -15,7 +15,11 @@
             <% allItems.forEach(item => { %>
             <li>
                 <span class="item-type-icon" title="<%= item.type === 'command' ? 'command' : 'skill' %>"><%= item.type === 'command' ? 'C' : 'S' %></span>
+                <% if (item.type !== 'command') { %>
+                <a href="/skills/<%= item.id %>" class="item-name--mono">/<%= item.name %></a>
+                <% } else { %>
                 <span class="item-name--mono">/<%= item.name %></span>
+                <% } %>
                 <span class="item-meta"><%= item.description || '' %></span>
             </li>
             <% }); %>
