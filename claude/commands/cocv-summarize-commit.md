@@ -16,8 +16,10 @@ Replace `$COMMAND_NAME` with: `cocv-summarize-commit`
 
 ## Repositories
 
-- `E:\CINEVStudio` (main)
-- `E:\Second\CINEVStudio` (second)
+Read paths from `~/.claude/private/repo-paths.json` (use `entry.path`):
+
+- `cinev-studio` (main)
+- `cinev-engine` (second)
 
 ## Instructions
 
@@ -100,7 +102,7 @@ Example output for art merges:
 ```markdown
 # Daily Work Summary — YYYY-MM-DD
 
-## E:\CINEVStudio
+## cinev-studio (main)
 
 ### [Category]
 - [commit hash] [description of what was done and why]
@@ -109,7 +111,7 @@ Example output for art merges:
 ### Merges
 - [branch] → [target] 머지 완료
 
-## E:\Second\CINEVStudio
+## cinev-engine (second)
 
 ### [Category]
 - [commit hash] [description of what was done and why]
@@ -133,7 +135,7 @@ Guidelines:
 
 After displaying the summary to the user, save it to:
 ```
-D:\vs\caol-ila\claude\private\daily-summaries\YYYY-MM-DD.md
+~/.claude/private/daily-summaries/YYYY-MM-DD.md
 ```
 
 - If the file already exists, append the new summary with a separator

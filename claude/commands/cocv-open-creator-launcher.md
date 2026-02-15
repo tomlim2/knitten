@@ -14,6 +14,9 @@ Replace `$COMMAND_NAME` with: `cocv-open-creator-launcher`
 
 ## Execution
 
+1. Read `~/.claude/private/repo-paths.json` → key `anju` → `.path`
+2. Run:
+
 ```bash
-python "D:\vs\anju\python\shipping_manager\creator_only\creator_launcher.py"
+python "<anju-path>\python\shipping_manager\creator_only\creator_launcher.py"
 ```

@@ -6,12 +6,12 @@ Git workflow rules for all CINEV project operations.
 
 ## Project Locations
 
-Read from `~/.claude/private/repo-paths.json`:
+Read from `~/.claude/private/repo-paths.json` (use `entry.path` for filesystem path):
 
-| Repo | Path |
-|------|------|
-| `cinev` | `E:\CINEVStudio` |
-| `cinev-second` | `E:\Second\CINEVStudio` |
+| Key | Role |
+|-----|------|
+| `cinev-studio` | Main project |
+| `cinev-engine` | Second project |
 
 ---
 
@@ -32,9 +32,9 @@ Look for `CINEVStudio` in the command line arguments to determine which project 
 
 ### Step 2: Select the safe project
 
-- If UE is running on `cinev` → use `cinev-second`
-- If UE is running on `cinev-second` → use `cinev`
-- If UE is not running on either → use either (prefer `cinev`)
+- If UE is running on `cinev-studio` → use `cinev-engine`
+- If UE is running on `cinev-engine` → use `cinev-studio`
+- If UE is not running on either → use either (prefer `cinev-studio`)
 
 **NEVER run git operations on a project where Unreal Editor is running.**
 

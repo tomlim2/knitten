@@ -92,6 +92,14 @@ async function recordUsage(type, id) {
     }
 }
 
+// Repo path helpers (backward compatible with old string format)
+function getRepoPath(entry) {
+    return typeof entry === 'string' ? entry : entry.path;
+}
+function getRepoDescription(entry) {
+    return typeof entry === 'string' ? '' : (entry.description || '');
+}
+
 // Skill registry
 function discoverSkills() {
     const skills = [];
@@ -367,8 +375,8 @@ app.get('/', async (req, res) => {
     }
 
     // Add registered repos (overwrites expected refs with actual data)
-    for (const [name, repoPath] of Object.entries(registeredPaths)) {
-        addRef(name, repoPath);
+    for (const [name, entry] of Object.entries(registeredPaths)) {
+        addRef(name, getRepoPath(entry));
     }
 
     // Scan codebase for hardcoded path references
@@ -410,7 +418,11 @@ app.get('/', async (req, res) => {
                 }
 
                 const segments = repoRoot.replace(/\\/g, '/').split('/').filter(Boolean);
-                const name = segments[segments.length - 1].toLowerCase();
+                const rawName = segments[segments.length - 1].toLowerCase();
+                const nameOverrides = {
+                    'cinevstudio': 'cinev-studio',
+                };
+                const name = nameOverrides[rawName] || rawName;
                 addRef(name, repoRoot);
             }
         } catch (e) { /* ignore */ }
@@ -638,10 +650,11 @@ app.get('/api/repos', (req, res) => {
     try {
         if (fs.existsSync(repoPathsFile)) {
             const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
-            const repos = Object.entries(repoPaths).map(([name, repoPath]) => ({
+            const repos = Object.entries(repoPaths).map(([name, entry]) => ({
                 name,
-                path: repoPath,
-                connected: fs.existsSync(repoPath)
+                path: getRepoPath(entry),
+                description: getRepoDescription(entry),
+                connected: fs.existsSync(getRepoPath(entry))
             }));
             return res.json({ repos });
         }
@@ -650,7 +663,7 @@ app.get('/api/repos', (req, res) => {
 });
 
 app.post('/api/repos', (req, res) => {
-    const { name, path: repoPath } = req.body;
+    const { name, path: repoPath, description } = req.body;
     if (!name || !repoPath) {
         return res.status(400).json({ error: 'Missing name or path' });
     }
@@ -663,9 +676,9 @@ app.post('/api/repos', (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
-    repoPaths[name] = repoPath;
+    repoPaths[name] = { path: repoPath, description: description || '' };
     fs.writeFileSync(repoPathsFile, JSON.stringify(repoPaths, null, 2) + '\n');
-    res.json({ success: true, name, path: repoPath });
+    res.json({ success: true, name, path: repoPath, description: description || '' });
 });
 
 app.delete('/api/repos', (req, res) => {

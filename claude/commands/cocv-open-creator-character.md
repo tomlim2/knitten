@@ -14,6 +14,9 @@ Replace `$COMMAND_NAME` with: `cocv-open-creator-character`
 
 ## Execution
 
+1. Read `~/.claude/private/repo-paths.json` → key `anju` → `.path`
+2. Run:
+
 ```bash
-python "D:\vs\anju\python\user_character_manager\character_creator_gui.py"
+python "<anju-path>\python\user_character_manager\character_creator_gui.py"
 ```

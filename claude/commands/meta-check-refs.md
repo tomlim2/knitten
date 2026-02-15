@@ -54,11 +54,13 @@ Compare discovered paths against registered repos:
 ```
 ## Registered Repos
 
-| Repo           | Path                                   | Status       |
-|----------------|----------------------------------------|--------------|
-| anju           | /Users/younsoolim/Desktop/www/anju     | connected    |
-| obsidian       | /Users/younsoolim/Library/Mobile Do... | connected    |
+| Repo           | Description                            | Path                                   | Status       |
+|----------------|----------------------------------------|----------------------------------------|--------------|
+| anju           | Graphics/shader experiments, UE Py...  | /Users/younsoolim/Desktop/www/anju     | connected    |
+| obsidian       | Obsidian vault for markdown docs...    | /Users/younsoolim/Library/Mobile Do... | connected    |
 ```
+
+Each entry in `repo-paths.json` is an object: `{ "path": "...", "description": "..." }`. Read `entry.path` for the path and `entry.description` for the description. For backward compatibility, if an entry is a plain string, treat it as the path with no description.
 
 Status = `connected` if the path exists on this machine, `not found` if it doesn't (e.g., Windows paths on macOS).
 
@@ -80,5 +82,5 @@ If all referenced paths are already registered, show: "All referenced paths are 
 **Footer:**
 
 ```
-To register: /meta-register-refs <name> <path>
+To register: /meta-register-refs <name> <path> [description]
 ```

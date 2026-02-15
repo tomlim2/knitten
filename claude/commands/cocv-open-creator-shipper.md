@@ -14,6 +14,9 @@ Replace `$COMMAND_NAME` with: `cocv-open-creator-shipper`
 
 ## Execution
 
+1. Read `~/.claude/private/repo-paths.json` → key `anju` → `.path`
+2. Run:
+
 ```bash
-python "D:\vs\anju\python\shipping_manager\shipper\shipping_gui.py"
+python "<anju-path>\python\shipping_manager\shipper\shipping_gui.py"
 ```

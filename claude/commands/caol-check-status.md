@@ -28,6 +28,8 @@ Replace `$COMMAND_NAME` with: `caol-check-status`
 ### Step 2: Check Refs
 
 1. Read `~/.claude/private/repo-paths.json`
+   - Each entry is an object: `{ "path": "...", "description": "..." }`. Use `entry.path` for the filesystem path.
+   - For backward compatibility, if an entry is a plain string, treat it as the path.
 2. Compare against expected refs list:
    - `anju`, `ta-portfolio`, `obsidian`, `caol-ila`, `cinev-studio`, `cinev-engine`
 3. For each expected ref:

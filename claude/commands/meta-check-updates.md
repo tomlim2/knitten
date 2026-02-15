@@ -32,10 +32,10 @@ Usage:
 
 ### Step 2: Get changed files from git
 
-Run in the caol-ila repo (`/Users/younsoolim/Desktop/www/caol-ila`):
+Read `~/.claude/private/repo-paths.json` → key `caol-ila` → `.path` to get the repo path. Then run:
 
 ```bash
-git -C /Users/younsoolim/Desktop/www/caol-ila log \
+git -C <caol-ila-path> log \
   --after="YYYY-MM-DD 00:00" --before="YYYY-MM-DDT23:59:59" \
   --name-only --format="" -- claude/commands/ claude/skills/ claude/standards/
 ```
@@ -55,7 +55,7 @@ Group deduplicated files by type:
 For each file, determine if it was **new** or **modified** on that date:
 
 ```bash
-git -C /Users/younsoolim/Desktop/www/caol-ila log \
+git -C <caol-ila-path> log \
   --diff-filter=A --after="YYYY-MM-DD 00:00" --before="YYYY-MM-DDT23:59:59" \
   --name-only --format="" -- <file>
 ```
