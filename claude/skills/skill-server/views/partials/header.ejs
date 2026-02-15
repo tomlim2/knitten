@@ -7,6 +7,9 @@
         <span class="nav-link-disabled"><%= item.label %></span>
         <% } else { %>
         <a href="<%= item.href %>" <% if (typeof activePage !== 'undefined' && activePage === item.href) { %>class="active"<% } %>><%= item.label %></a>
+        <% if (typeof activePage !== 'undefined' && activePage === item.href && typeof subPage !== 'undefined' && subPage) { %>
+        <span class="nav-sub"><span class="nav-sub-sep">/</span><%= subPage %></span>
+        <% } %>
         <% } %>
         <% }); %>
     </nav>

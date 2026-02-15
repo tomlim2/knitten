@@ -1222,6 +1222,78 @@ code {
     font-size: 11px;
 }
 
+/* Home Page */
+.home-section {
+    margin-bottom: 40px;
+}
+
+.home-section .section-title {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--color-gray-mid);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.home-ranked-list,
+.home-file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.home-ranked-list li,
+.home-file-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+}
+
+.home-ranked-list li::before,
+.home-file-list li::before {
+    content: none;
+}
+
+.home-ranked-list li:last-child,
+.home-file-list li:last-child {
+    border-bottom: none;
+}
+
+.home-rank {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    width: 24px;
+    flex-shrink: 0;
+}
+
+.home-item-name,
+.home-file-name {
+    font-size: 12px;
+    color: var(--color-text);
+    flex: 1;
+}
+
+.home-item-count {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+}
+
+.home-file-date {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+}
+
+.home-empty {
+    font-size: 12px;
+    color: var(--color-gray-mid);
+    padding: 16px 0;
+}
+
 /* Empty State */
 .empty-state {
     text-align: center;

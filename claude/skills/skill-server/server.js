@@ -277,6 +277,49 @@ function discoverCommandOnly(skillNames) {
 
 // Routes
 app.get('/', async (req, res) => {
+    // Top used from Supabase
+    const usageStats = await readUsageStats();
+    const allUsage = { ...usageStats.skills, ...usageStats.commands };
+    const topUsed = Object.entries(allUsage)
+        .sort((a, b) => b[1].count - a[1].count)
+        .slice(0, 5)
+        .map(([name, data]) => ({ name, count: data.count }));
+
+    // Recent learnings
+    const learningsDir = path.join(PRIVATE_DIR, 'learnings', 'projects');
+    let recentLearnings = [];
+    try {
+        if (fs.existsSync(learningsDir)) {
+            recentLearnings = fs.readdirSync(learningsDir)
+                .filter(f => f.endsWith('.md'))
+                .map(f => {
+                    const stat = fs.statSync(path.join(learningsDir, f));
+                    return { name: f, mtime: stat.mtime };
+                })
+                .sort((a, b) => b.mtime - a.mtime)
+                .slice(0, 5);
+        }
+    } catch (e) { /* ignore */ }
+
+    // Recent standards
+    let recentStandards = [];
+    try {
+        if (fs.existsSync(STANDARDS_DIR)) {
+            recentStandards = fs.readdirSync(STANDARDS_DIR)
+                .filter(f => f.endsWith('.md'))
+                .map(f => {
+                    const stat = fs.statSync(path.join(STANDARDS_DIR, f));
+                    return { name: f, mtime: stat.mtime };
+                })
+                .sort((a, b) => b.mtime - a.mtime)
+                .slice(0, 5);
+        }
+    } catch (e) { /* ignore */ }
+
+    res.render('home', { topUsed, recentLearnings, recentStandards, config, activePage: '/' });
+});
+
+app.get('/skills', async (req, res) => {
     const skills = discoverSkills();
     const skillNames = new Set(skills.map(s => s.id));
     const commandOnly = discoverCommandOnly(skillNames);
@@ -296,7 +339,7 @@ app.get('/', async (req, res) => {
     } catch (e) { /* ignore */ }
 
     const usageStats = await readUsageStats();
-    res.render('dashboard', { allItems, totalCount, usageStats, config, activePage: '/', anjuConnected });
+    res.render('dashboard', { allItems, totalCount, usageStats, config, activePage: '/skills', anjuConnected });
 });
 
 // Serve skill static files (CSS, JS, etc.)
@@ -330,7 +373,7 @@ app.get('/skills/:id', (req, res) => {
         return res.status(404).send('index.html not found');
     }
 
-    res.render('skill-cli', { skill, config, activePage: null });
+    res.render('skill-cli', { skill, config, activePage: '/skills', subPage: skill.id });
 });
 
 // File browser API

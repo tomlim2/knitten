@@ -3,7 +3,7 @@
   "copyright": "© 2026 Skill Server",
   "title": "Skill Server",
   "nav": [
-    { "label": "Skills", "href": "/" },
+    { "label": "Skills", "href": "/skills" },
     { "label": "Learnings", "href": "/skills/learn-browse-entries" },
     { "label": "Standards", "href": "/skills/meta-browse-standards" },
     { "label": "Usage", "href": "/skills/meta-browse-usage" }

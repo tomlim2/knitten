@@ -1,0 +1,63 @@
+<!-- Design System: v1.9.0 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <%- include('partials/head', {config}) %>
+</head>
+<body>
+    <%- include('partials/header', {config, activePage}) %>
+    <main class="main">
+
+        <section class="home-section">
+            <h2 class="section-title">Most Used</h2>
+            <% if (topUsed.length > 0) { %>
+            <ol class="home-ranked-list">
+                <% topUsed.forEach((item, i) => { %>
+                <li>
+                    <span class="home-rank"><%= i + 1 %></span>
+                    <span class="home-item-name"><%= item.name %></span>
+                    <span class="home-item-count"><%= item.count %></span>
+                </li>
+                <% }); %>
+            </ol>
+            <% } else { %>
+            <p class="home-empty">아직 사용 기록이 없습니다</p>
+            <% } %>
+        </section>
+
+        <section class="home-section">
+            <h2 class="section-title">Recent Learnings</h2>
+            <% if (recentLearnings.length > 0) { %>
+            <ul class="home-file-list">
+                <% recentLearnings.forEach(item => { %>
+                <li>
+                    <span class="home-file-name"><%= item.name %></span>
+                    <span class="home-file-date"><%= new Date(item.mtime).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }) %></span>
+                </li>
+                <% }); %>
+            </ul>
+            <% } else { %>
+            <p class="home-empty">아직 기록이 없습니다</p>
+            <% } %>
+        </section>
+
+        <section class="home-section">
+            <h2 class="section-title">Recent Standards</h2>
+            <% if (recentStandards.length > 0) { %>
+            <ul class="home-file-list">
+                <% recentStandards.forEach(item => { %>
+                <li>
+                    <span class="home-file-name"><%= item.name %></span>
+                    <span class="home-file-date"><%= new Date(item.mtime).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }) %></span>
+                </li>
+                <% }); %>
+            </ul>
+            <% } else { %>
+            <p class="home-empty">아직 기록이 없습니다</p>
+            <% } %>
+        </section>
+
+    </main>
+    <%- include('partials/footer', {config}) %>
+</body>
+</html>

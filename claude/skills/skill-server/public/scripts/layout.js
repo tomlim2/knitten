@@ -17,13 +17,13 @@
         var active = '';
         if (item.href === pathname) {
           active = ' class="active"';
-        } else if (isSkillSubPage && item.href === '/') {
+        } else if (isSkillSubPage && item.href === '/skills') {
           active = ' class="active"';
         }
         var html = '<a href="' + item.href + '"' + active + '>' + item.label + '</a>';
 
         // Insert sub-page indicator right after Skills link
-        if (isSkillSubPage && item.href === '/') {
+        if (isSkillSubPage && item.href === '/skills') {
           var skillName = pathname.replace('/skills/', '');
           html += '<span class="nav-sub"><span class="nav-sub-sep">/</span>' + skillName + '</span>';
         }
