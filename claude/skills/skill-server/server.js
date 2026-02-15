@@ -284,20 +284,6 @@ app.get('/', async (req, res) => {
     const commandOnly = discoverCommandOnly(skillNames);
     const totalCount = skills.length + commandOnly.length;
 
-    // Registered repos with connection status
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
-    let repos = [];
-    try {
-        if (fs.existsSync(repoPathsFile)) {
-            const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
-            repos = Object.entries(repoPaths).map(([name, repoPath]) => ({
-                name,
-                path: repoPath,
-                connected: fs.existsSync(repoPath)
-            }));
-        }
-    } catch (e) { /* ignore */ }
-
     // Top used from Supabase
     const usageStats = await readUsageStats();
     const allUsage = { ...usageStats.skills, ...usageStats.commands };
@@ -351,7 +337,7 @@ app.get('/', async (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
-    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, totalCount, repos, config, activePage: '/' });
+    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, totalCount, config, activePage: '/' });
 });
 
 app.get('/skills', async (req, res) => {
