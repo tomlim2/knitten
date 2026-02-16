@@ -841,6 +841,26 @@ async function findById(userId) {
 
 ## Code Quality
 
+### Indentation
+
+**Use 2 spaces.** No tabs.
+
+```javascript
+// ✅ Good - 2 spaces
+function processUser(user) {
+  if (!user) return null;
+  return transformUserData(user);
+}
+
+// ❌ Bad - tabs or 4 spaces
+function processUser(user) {
+    if (!user) return null;
+    return transformUserData(user);
+}
+```
+
+*Based on Airbnb JavaScript Style Guide.*
+
 ### ESLint Configuration
 
 ```json

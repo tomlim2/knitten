@@ -26,6 +26,7 @@
 ### Python Specific
 
 #### PEP 8 Style Guide
+- **4 spaces** for indentation (no tabs) — PEP 8
 - snake_case for functions and variables
 - UPPER_CASE for constants
 - Classes use PascalCase (but follow UE prefixes for UObjects)

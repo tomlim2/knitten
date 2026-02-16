@@ -6,6 +6,26 @@
 
 - **0.1.0** - Initial release
 
+## Indentation
+
+**Use tabs.** No spaces for indentation.
+
+```cpp
+// ✅ Good - tabs
+void AMyActor::BeginPlay()
+{
+	Super::BeginPlay();
+	if (bIsActive)
+	{
+		DoSomething();
+	}
+}
+```
+
+*Based on Epic Games Coding Standard.*
+
+---
+
 ## Brace Style for Control Statements
 
 ### Rule

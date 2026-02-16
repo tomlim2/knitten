@@ -26,6 +26,28 @@
 
 ---
 
+## Indentation
+
+**Use 2 spaces.** No tabs.
+
+```css
+/* ✅ Good — 2 spaces */
+.card {
+  display: flex;
+  align-items: center;
+}
+
+/* ❌ Bad — tabs */
+.card {
+	display: flex;
+	align-items: center;
+}
+```
+
+*Based on Google HTML/CSS Style Guide.*
+
+---
+
 ## Selectors & Specificity
 
 ### Class Selectors Only — No IDs for Styling
