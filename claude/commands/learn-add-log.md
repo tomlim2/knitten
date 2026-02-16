@@ -27,6 +27,8 @@ Parse as: `<project_name> <category>`
 
 Categories:
 - `convention` - Pattern discovered in codebase
+  - 작성 시 포함 요소: 정의 → 원리 → 장점 → 단점/한계 → 코멘트(도구, 경험 등)
+  - 라벨 없이 자연스러운 문장으로 이어서 작성
 - `worked` - Successful approach worth repeating
 - `failed` - Approach that didn't work (and why)
 - `gotcha` - Non-obvious issue that causes problems
@@ -41,7 +43,10 @@ Categories:
    - If new, copy from `D:\vs\caol-ila\claude\private\learnings\_template.md`
 4. **Ask user** to describe the learning
 5. **Append** to appropriate section with today's date
-6. **Confirm** the addition
+6. **용어 사전 (선택)** — 한글/영어 매칭이 직관적이지 않은 용어가 있으면 `_glossary.md`에도 추가
+   - 파일: `{learnings}/_glossary.md`
+   - 형식: `| 한글 (한자) | English | 뜻풀이 | 출처 링크 |`
+7. **Confirm** the addition
 
 ## Current Learnings
 
