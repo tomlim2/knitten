@@ -35,25 +35,26 @@ Categories:
 
 ## Execution
 
-**IMPORTANT:** Always use the absolute path `D:\vs\caol-ila\claude\private\learnings\` (not symlink).
+**Path resolution:** Read `~/.claude/private/repo-paths.json`, get `obsidian.path`, then use `{obsidian}/claude/learnings/` as the base directory.
 
-1. **Parse arguments** - Extract project name and category
-2. **Check/create directory**: `D:\vs\caol-ila\claude\private\learnings\projects\`
-3. **Read or create** project file: `D:\vs\caol-ila\claude\private\learnings\projects\<project>.md`
-   - If new, copy from `D:\vs\caol-ila\claude\private\learnings\_template.md`
-4. **Ask user** to describe the learning
-5. **Append** to appropriate section with today's date
-6. **용어 사전 (선택)** — 한글/영어 매칭이 직관적이지 않은 용어가 있으면 `_glossary.md`에도 추가
+1. **Resolve path** - Read `repo-paths.json` → `{obsidian.path}/claude/learnings/`
+2. **Parse arguments** - Extract project name and category
+3. **Check/create directory**: `{learnings}/projects/`
+4. **Read or create** project file: `{learnings}/projects/<project>.md`
+   - If new, copy from `{learnings}/_template.md`
+5. **Ask user** to describe the learning
+6. **Append** to appropriate section with today's date
+7. **용어 사전 (선택)** — 한글/영어 매칭이 직관적이지 않은 용어가 있으면 `_glossary.md`에도 추가
    - 파일: `{learnings}/_glossary.md`
    - 형식: `| 한글 (한자) | English | 뜻풀이 | 출처 링크 |`
-7. **Confirm** the addition
+8. **Confirm** the addition
 
 ## Current Learnings
 
 Use Glob to list existing project files:
-- Pattern: `D:\vs\caol-ila\claude\private\learnings\projects\*.md`
+- Pattern: `{learnings}/projects/*.md`
 
 ## Template Location
 
 Use Read to load the template:
-- Path: `D:\vs\caol-ila\claude\private\learnings\_template.md`
+- Path: `{learnings}/_template.md`
