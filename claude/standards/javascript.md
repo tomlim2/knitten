@@ -104,6 +104,18 @@ const x = getUserData();                 // Meaningless
 const apiUrl = 'https://api.example.com';
 const htmlContent = '<div>...</div>';
 const userId = user.id;
+
+// ❌ Bad - Single-letter / cryptic names
+for (let i = 0; i < layers.length; i++) { ... }
+items.forEach((el, i) => { ... });
+canvas.addEventListener('click', (e) => { ... });
+const btn = document.getElementById('submit');
+
+// ✅ Good - Descriptive names everywhere
+for (let layerIndex = 0; layerIndex < layers.length; layerIndex++) { ... }
+items.forEach((item, index) => { ... });
+canvas.addEventListener('click', (event) => { ... });
+const submitButton = document.getElementById('submit');
 ```
 
 ### Private Convention (Node.js)

@@ -135,6 +135,9 @@ Sections marked **(if applicable)** only apply when the codebase uses that techn
 
 > For coding style rules (naming, const/let, ES6+, SRP, nesting, early returns, comments), see **javascript.md**. Below are review-specific checkpoints not covered there.
 
+- 💡 👁 **Descriptive variable names** — No single-letter or cryptic abbreviations (`i`, `j`, `e`, `el`, `btn`, `v`, `cb`). Use full descriptive names: `layerIndex`, `event`, `element`, `button`, `value`, `callback`. Applies to loop indices, callback parameters, and all local variables
+  - *MAINT-01 · javascript.md Naming Conventions · Airbnb Style Guide*
+
 - 💡 👁 **Magic values** — Bare numeric/string literals in conditionals, loop bounds, and config extracted to named constants with explanatory names
   - *MAINT-02 · Microsoft Engineering Playbook*
 
