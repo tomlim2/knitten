@@ -703,9 +703,6 @@ body {
 
 .page-sidebar {
     width: 240px;
-    position: sticky;
-    top: 24px;
-    align-self: start;
 }
 
 .sidebar-heading {
