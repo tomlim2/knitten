@@ -129,7 +129,7 @@
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">COMPONENTS</div>
-                        <div class="page-hero-meta-value">19 Typo-base + 5 Shoelace + 1 Project</div>
+                        <div class="page-hero-meta-value">19 Typo-base + 5 Shoelace + 2 Project</div>
                     </div>
                 </div>
             </div>
@@ -1135,7 +1135,7 @@ select.addEventListener('sl-change', e =&gt; {
                             <!-- Example 1: standalone -->
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 11px; color: #8a8a8a; min-width: 60px;">Standalone</span>
-                                <div style="display: flex; align-items: center; gap: 4px;">
+                                <div style="display: flex; align-items: center; gap: 0; border-radius: 3px; border: 1px solid transparent; transition: border-color 0.12s;">
                                     <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #5b9bd5; position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;"></div>
                                     <input type="text" value="5B9BD5" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
                                 </div>
@@ -1144,7 +1144,7 @@ select.addEventListener('sl-change', e =&gt; {
                             <div style="display: flex; align-items: center; gap: 5px;">
                                 <input type="checkbox" checked style="accent-color: #5b9bd5; width: 13px; height: 13px;">
                                 <span style="font-size: 10px; color: #999; cursor: pointer;">Outline</span>
-                                <div style="display: flex; align-items: center; gap: 4px; margin-left: auto;">
+                                <div style="display: flex; align-items: center; gap: 0; margin-left: auto; border-radius: 3px; border: 1px solid transparent; transition: border-color 0.12s;">
                                     <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #000000; position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;"></div>
                                     <input type="text" value="000000" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
                                 </div>
@@ -1155,7 +1155,7 @@ select.addEventListener('sl-change', e =&gt; {
                                     <input type="text" value="65" style="width: 28px; background: transparent; border: none; color: #999; font-size: 10px; text-align: right; padding: 2px 1px 2px 4px; outline: none; font-family: inherit;" readonly>
                                     <span style="color: #8a8a8a; font-size: 10px;">%</span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 4px;">
+                                <div style="display: flex; align-items: center; gap: 0; border-radius: 3px; border: 1px solid transparent; transition: border-color 0.12s;">
                                     <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #c25b3f; position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;"></div>
                                     <input type="text" value="C25B3F" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
                                 </div>
@@ -1201,7 +1201,18 @@ chip.el.style.marginLeft = 'auto';</code></pre>
                         <pre class="code-example"><code>.color-chip-wrap {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    transition: border-color 0.12s;
+}
+.color-chip-wrap:hover,
+.color-chip-wrap:focus-within {
+    border-color: var(--accent-dim);
+}
+.color-chip-wrap:hover .gradient-hex,
+.color-chip-wrap:focus-within .gradient-hex {
+    border-color: transparent;
 }
 .gradient-swatch {
     width: 18px;
@@ -1268,6 +1279,310 @@ chip.el.style.marginLeft = 'auto';</code></pre>
                                 <tr>
                                     <td>Mounting</td>
                                     <td>Place <code>&lt;span id="..."&gt;</code> in HTML, call <code>.replaceWith(chip.el)</code> in JS — no framework dependency</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Color Ramp -->
+                <div class="content-section">
+                    <h2>Color Ramp</h2>
+                    <p style="margin-bottom: 16px;">Figma-style gradient editor with draggable handles, step/linear modes, and editable color stops. Used for toon shading color ramps in Matcap Painter.</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Live Preview (Dark Context)</div>
+                        <div style="background: #232323; border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Mode selector row -->
+                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                <select style="background: #2a2a2a; color: #d4d4d4; border: 1px solid #2f2f2f; border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; outline: none;">
+                                    <option selected>Step</option>
+                                    <option>Linear</option>
+                                </select>
+                                <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 3px; color: #8a8a8a; cursor: pointer; font-size: 14px; margin-left: auto;" title="Flip gradient">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M280-160 80-360l200-200 56 57-103 103h287v80H233l103 103-56 57Zm400-240-56-57 103-103H440v-80h287L624-743l56-57 200 200-200 200Z"/></svg>
+                                </button>
+                            </div>
+                            <!-- Gradient bar with handles -->
+                            <div style="padding: 14px 0 4px; position: relative;">
+                                <div style="height: 20px; border-radius: 6px; position: relative; cursor: crosshair; border: 1px solid rgba(255,255,255,0.08); background: linear-gradient(to right, #1a1a1a 0%, #1a1a1a 25%, #5b4a3a 25%, #5b4a3a 50%, #c25b3f 50%, #c25b3f 75%, #ffecd2 75%, #ffecd2 100%);">
+                                    <!-- Handle 1 (selected) -->
+                                    <div style="position: absolute; top: -12px; left: 0%; width: 14px; height: 14px; border: 2px solid #5b9bd5; border-radius: 3px; cursor: grab; transform: translateX(-50%); background: #1a1a1a; z-index: 2;"></div>
+                                    <!-- Handle 2 -->
+                                    <div style="position: absolute; top: -12px; left: 33%; width: 14px; height: 14px; border: 2px solid #666; border-radius: 3px; cursor: grab; transform: translateX(-50%); background: #5b4a3a; z-index: 2;"></div>
+                                    <!-- Handle 3 -->
+                                    <div style="position: absolute; top: -12px; left: 66%; width: 14px; height: 14px; border: 2px solid #666; border-radius: 3px; cursor: grab; transform: translateX(-50%); background: #c25b3f; z-index: 2;"></div>
+                                    <!-- Handle 4 -->
+                                    <div style="position: absolute; top: -12px; left: 100%; width: 14px; height: 14px; border: 2px solid #666; border-radius: 3px; cursor: grab; transform: translateX(-50%); background: #ffecd2; z-index: 2;"></div>
+                                </div>
+                            </div>
+                            <!-- Stops header -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 4px;">
+                                <span style="font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; color: #8a8a8a;">Stops</span>
+                                <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 3px; color: #999; cursor: pointer; font-size: 14px;" title="Add stop">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M450-450H220v-60h230v-230h60v230h230v60H510v230h-60v-230Z"/></svg>
+                                </button>
+                            </div>
+                            <!-- Stop items -->
+                            <div style="display: flex; flex-direction: column; gap: 1px;">
+                                <!-- Stop 1 (selected) -->
+                                <div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 2px 4px; border-radius: 3px; background: #2e3548; cursor: pointer;">
+                                    <div style="display: flex; align-items: center; background: #2a2a2a; border: 1px solid #2f2f2f; border-radius: 3px; padding-right: 4px; min-width: 48px;">
+                                        <input type="text" value="0" style="width: 28px; background: transparent; border: none; color: #999; font-size: 10px; text-align: right; padding: 2px 1px 2px 4px; outline: none; font-family: inherit;" readonly>
+                                        <span style="color: #8a8a8a; font-size: 10px;">%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0; border-radius: 3px; border: 1px solid transparent;">
+                                        <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #1a1a1a; cursor: pointer; flex-shrink: 0;"></div>
+                                        <input type="text" value="1A1A1A" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                    </div>
+                                    <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: #8a8a8a; cursor: pointer; font-size: 14px; margin-left: auto; border-radius: 3px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M220-450v-60h520v60H220Z"/></svg>
+                                    </button>
+                                </div>
+                                <!-- Stop 2 -->
+                                <div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 2px 4px; border-radius: 3px; cursor: pointer;">
+                                    <div style="display: flex; align-items: center; background: #2a2a2a; border: 1px solid #2f2f2f; border-radius: 3px; padding-right: 4px; min-width: 48px;">
+                                        <input type="text" value="33" style="width: 28px; background: transparent; border: none; color: #999; font-size: 10px; text-align: right; padding: 2px 1px 2px 4px; outline: none; font-family: inherit;" readonly>
+                                        <span style="color: #8a8a8a; font-size: 10px;">%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0; border-radius: 3px; border: 1px solid transparent;">
+                                        <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #5b4a3a; cursor: pointer; flex-shrink: 0;"></div>
+                                        <input type="text" value="5B4A3A" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                    </div>
+                                    <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: #8a8a8a; cursor: pointer; font-size: 14px; margin-left: auto; border-radius: 3px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M220-450v-60h520v60H220Z"/></svg>
+                                    </button>
+                                </div>
+                                <!-- Stop 3 -->
+                                <div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 2px 4px; border-radius: 3px; cursor: pointer;">
+                                    <div style="display: flex; align-items: center; background: #2a2a2a; border: 1px solid #2f2f2f; border-radius: 3px; padding-right: 4px; min-width: 48px;">
+                                        <input type="text" value="66" style="width: 28px; background: transparent; border: none; color: #999; font-size: 10px; text-align: right; padding: 2px 1px 2px 4px; outline: none; font-family: inherit;" readonly>
+                                        <span style="color: #8a8a8a; font-size: 10px;">%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0; border-radius: 3px; border: 1px solid transparent;">
+                                        <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #c25b3f; cursor: pointer; flex-shrink: 0;"></div>
+                                        <input type="text" value="C25B3F" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                    </div>
+                                    <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: #8a8a8a; cursor: pointer; font-size: 14px; margin-left: auto; border-radius: 3px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M220-450v-60h520v60H220Z"/></svg>
+                                    </button>
+                                </div>
+                                <!-- Stop 4 -->
+                                <div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 2px 4px; border-radius: 3px; cursor: pointer;">
+                                    <div style="display: flex; align-items: center; background: #2a2a2a; border: 1px solid #2f2f2f; border-radius: 3px; padding-right: 4px; min-width: 48px;">
+                                        <input type="text" value="100" style="width: 28px; background: transparent; border: none; color: #999; font-size: 10px; text-align: right; padding: 2px 1px 2px 4px; outline: none; font-family: inherit;" readonly>
+                                        <span style="color: #8a8a8a; font-size: 10px;">%</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 0; border-radius: 3px; border: 1px solid transparent;">
+                                        <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #ffecd2; cursor: pointer; flex-shrink: 0;"></div>
+                                        <input type="text" value="FFECD2" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                    </div>
+                                    <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: #8a8a8a; cursor: pointer; font-size: 14px; margin-left: auto; border-radius: 3px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M220-450v-60h520v60H220Z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>// Access gradient stops
+const stops = toonGenerator.gradientStops;
+// [{ position: 0, color: '#1a1a1a' }, { position: 33, color: '#5b4a3a' }, ...]
+
+// Set gradient mode
+toonGenerator.gradientMode = 'step';   // or 'linear'
+
+// Add a stop
+toonGenerator.gradientStops.push({ position: 50, color: '#ff8800' });
+
+// Flip gradient (mirror positions)
+toonGenerator.gradientStops.forEach(s =&gt; s.position = 100 - s.position);
+
+// Render updates
+toonGenerator.render();</code></pre>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 24px;">
+                        <div class="example-label">Required CSS</div>
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>/* Gradient Bar */
+.gradient-bar-wrap { padding: 14px 0 4px; }
+.gradient-bar {
+    height: 20px;
+    border-radius: 6px;
+    position: relative;
+    cursor: crosshair;
+    border: 1px solid rgba(255,255,255,0.08);
+    overflow: visible;
+}
+
+/* Draggable Handles */
+.gradient-handle {
+    position: absolute;
+    top: -12px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 3px;
+    cursor: grab;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+.gradient-handle::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #666;
+}
+.gradient-handle.selected { border-color: var(--accent); }
+.gradient-handle.selected::after { border-top-color: var(--accent); }
+.gradient-handle:active { cursor: grabbing; }
+
+/* Stop List */
+.gradient-stops-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px 4px;
+}
+.gradient-stop-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.gradient-stop-item:hover { background: var(--layer-hover); }
+.gradient-stop-item.selected { background: var(--layer-active); }
+
+/* Position Input */
+.gradient-pos-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding-right: 4px;
+    min-width: 48px;
+}
+.gradient-pos {
+    width: 28px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 10px;
+    text-align: right;
+    padding: 2px 1px 2px 4px;
+    outline: none;
+    font-family: inherit;
+}
+.gradient-pos-pct {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+/* Mode Selector */
+.gradient-mode-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+.gradient-mode-select {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    outline: none;
+}
+.gradient-mode-select:focus-visible {
+    border-color: var(--accent-dim);
+}
+
+/* Add / Remove Buttons */
+.gradient-add-btn {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.12s, color 0.12s;
+}
+.gradient-add-btn:hover {
+    background: var(--btn-hover);
+    color: var(--text);
+}
+.gradient-remove-btn {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: auto;
+    border-radius: 3px;
+    transition: background 0.12s, color 0.12s;
+}
+.gradient-remove-btn:hover {
+    background: var(--btn-hover);
+    color: var(--text);
+}</code></pre>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 24px;">
+                        <div class="example-label">Design Concept</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Aspect</th>
+                                    <th>Decision</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Figma-style pattern</td>
+                                    <td>Gradient bar with draggable diamond handles above, stop list below — familiar to designers</td>
+                                </tr>
+                                <tr>
+                                    <td>Step / Linear modes</td>
+                                    <td>Step = hard color bands (toon shading), Linear = smooth interpolation. Dropdown selector with flip button</td>
+                                </tr>
+                                <tr>
+                                    <td>Draggable handles</td>
+                                    <td>Each handle maps to a stop position (0-100%). Drag to reposition, click bar to add new stop</td>
+                                </tr>
+                                <tr>
+                                    <td>Min 2 stops</td>
+                                    <td>Remove button hidden when only 2 stops remain — prevents degenerate gradients</td>
+                                </tr>
+                                <tr>
+                                    <td>ColorChip integration</td>
+                                    <td>Each stop row embeds a <code>ColorChip</code> for color editing — reuses swatch + hex pattern</td>
                                 </tr>
                             </tbody>
                         </table>
