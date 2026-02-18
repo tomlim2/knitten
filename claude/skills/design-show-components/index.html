@@ -129,7 +129,7 @@
                     </div>
                     <div class="page-hero-meta-item">
                         <div class="page-hero-meta-label">COMPONENTS</div>
-                        <div class="page-hero-meta-value">19 Typo-base + 5 Shoelace</div>
+                        <div class="page-hero-meta-value">19 Typo-base + 5 Shoelace + 1 Project</div>
                     </div>
                 </div>
             </div>
@@ -1113,6 +1113,164 @@ select.addEventListener('sl-change', e =&gt; {
     console.log(e.target.value);
 });
 &lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- ========================================
+                     PROJECT COMPONENTS (Dark UI)
+                     ======================================== -->
+
+                <hr style="border: none; border-top: 2px solid var(--color-black); margin: 48px 0 32px;">
+                <h1 style="margin-bottom: 8px;">Project Components</h1>
+                <p style="margin-bottom: 32px; color: var(--color-gray-mid);">Reusable ES module components for dark-themed tool UIs (Matcap Painter, etc.)</p>
+
+                <!-- ColorChip -->
+                <div class="content-section">
+                    <h2>ColorChip</h2>
+                    <p style="margin-bottom: 16px;">Swatch + hex input color picker. Combines a visual color swatch (wrapping a hidden native <code>&lt;input type="color"&gt;</code>) with a hex text input. All state syncs internally.</p>
+
+                    <div class="example-box">
+                        <div class="example-label">Live Preview (Dark Context)</div>
+                        <div style="background: #232323; border-radius: 6px; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                            <!-- Example 1: standalone -->
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 11px; color: #8a8a8a; min-width: 60px;">Standalone</span>
+                                <div style="display: flex; align-items: center; gap: 4px;">
+                                    <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #5b9bd5; position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;"></div>
+                                    <input type="text" value="5B9BD5" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                </div>
+                            </div>
+                            <!-- Example 2: in a row with label -->
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" checked style="accent-color: #5b9bd5; width: 13px; height: 13px;">
+                                <span style="font-size: 10px; color: #999; cursor: pointer;">Outline</span>
+                                <div style="display: flex; align-items: center; gap: 4px; margin-left: auto;">
+                                    <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #000000; position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;"></div>
+                                    <input type="text" value="000000" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                </div>
+                            </div>
+                            <!-- Example 3: gradient stop row -->
+                            <div style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 2px 4px; border-radius: 3px; background: #2e3548;">
+                                <div style="display: flex; align-items: center; background: #2a2a2a; border: 1px solid #2f2f2f; border-radius: 3px; padding-right: 4px; min-width: 48px;">
+                                    <input type="text" value="65" style="width: 28px; background: transparent; border: none; color: #999; font-size: 10px; text-align: right; padding: 2px 1px 2px 4px; outline: none; font-family: inherit;" readonly>
+                                    <span style="color: #8a8a8a; font-size: 10px;">%</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 4px;">
+                                    <div style="width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15); background: #c25b3f; position: relative; overflow: hidden; cursor: pointer; flex-shrink: 0;"></div>
+                                    <input type="text" value="C25B3F" maxlength="6" style="width: 52px; background: transparent; border: 1px solid transparent; border-radius: 3px; color: #999; font-size: 10px; font-family: inherit; font-variant-numeric: tabular-nums; padding: 2px 4px; outline: none; text-transform: uppercase;" readonly>
+                                </div>
+                                <button style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: #8a8a8a; cursor: pointer; font-size: 14px; margin-left: auto; border-radius: 3px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14" fill="currentColor"><path d="M220-450v-60h520v60H220Z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>import { ColorChip } from './color-chip.js';
+
+// Create
+const chip = new ColorChip('#5b9bd5', { ariaLabel: 'Brush color' });
+container.appendChild(chip.el);
+
+// Callbacks
+chip.onStart  = ()    =&gt; { saveUndoState(); };    // first input (drag start)
+chip.onChange  = (hex) =&gt; { model.color = hex; };  // every change
+chip.onCommit = ()    =&gt; { finalizeUndo(); };      // change done
+
+// Programmatic update
+chip.value = '#ff0000';   // syncs swatch + hex
+console.log(chip.value);  // '#ff0000'
+
+// Mount via placeholder
+// HTML: &lt;span id="my-chip"&gt;&lt;/span&gt;
+document.getElementById('my-chip').replaceWith(chip.el);
+
+// Push right in flex row
+chip.el.style.marginLeft = 'auto';</code></pre>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 24px;">
+                        <div class="example-label">Required CSS</div>
+                        <button class="copy-code-btn" onclick="copyCode(this)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+<rect x="5" y="5" width="9" height="9" rx="1"/>
+<path d="M3 10V3a1 1 0 0 1 1-1h7"/>
+</svg></button>
+                        <pre class="code-example"><code>.color-chip-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.gradient-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+.gradient-swatch input[type="color"] {
+    position: absolute;
+    inset: -4px;
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    opacity: 0;
+    cursor: pointer;
+    border: none;
+}
+.gradient-hex {
+    width: 52px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: var(--text-dim);
+    font-size: 10px;
+    font-family: inherit;
+    font-variant-numeric: tabular-nums;
+    padding: 2px 4px;
+    outline: none;
+    text-transform: uppercase;
+}
+.gradient-hex:hover { border-color: var(--border); }
+.gradient-hex:focus { border-color: var(--accent-dim); color: var(--text); }</code></pre>
+                    </div>
+
+                    <div class="example-box" style="margin-top: 24px;">
+                        <div class="example-label">Design Concept</div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Aspect</th>
+                                    <th>Decision</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Native picker</td>
+                                    <td>Hidden <code>&lt;input type="color"&gt;</code> overlays the swatch — OS-native color dialog, zero custom UI</td>
+                                </tr>
+                                <tr>
+                                    <td>Hex input</td>
+                                    <td>Direct hex editing for precise values; validates on change, reverts on invalid</td>
+                                </tr>
+                                <tr>
+                                    <td>3 callbacks</td>
+                                    <td><code>onStart</code> (undo snapshot), <code>onChange</code> (live update), <code>onCommit</code> (finalize) — maps to drag lifecycle</td>
+                                </tr>
+                                <tr>
+                                    <td>stopPropagation</td>
+                                    <td>Click events stop on input/hex — safe to embed in clickable rows (layers, gradient stops)</td>
+                                </tr>
+                                <tr>
+                                    <td>Mounting</td>
+                                    <td>Place <code>&lt;span id="..."&gt;</code> in HTML, call <code>.replaceWith(chip.el)</code> in JS — no framework dependency</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
