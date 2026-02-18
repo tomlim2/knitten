@@ -23,9 +23,18 @@ Replace `$COMMAND_NAME` with: `dev-review-publish`
 
 ## Workflow
 
-### Pass 1: Review (fan-out, 3 parallel subagents)
+### Pass 0: Detect 3D Stack
 
-Launch 3 Task subagents in parallel. Each reads the relevant standard and audits all files in the target directory.
+Before launching reviews, check if the target directory contains 3D-related code:
+
+- Grep for imports/usage of: `three`, `THREE`, `WebGLRenderer`, `WebGPURenderer`, `GLTFLoader`, `OrbitControls`, `Scene`, `PerspectiveCamera`, `canvas.getContext('webgl`)`, `canvas.getContext('webgpu')`
+- Check for file extensions: `.glsl`, `.frag`, `.vert`, `.wgsl`
+
+If **any** match is found, set `has3D = true`. This determines whether subagent D runs in Pass 1.
+
+### Pass 1: Review (fan-out, 3–4 parallel subagents)
+
+Launch 3 Task subagents in parallel (+ 1 more if `has3D`). Each reads the relevant standard and audits all files in the target directory.
 
 **A. Code Quality** — `subagent_type: Explore`
 > Read `~/.claude/standards/review-code-javascript.md` and `~/.claude/standards/review-code-css.md`.
@@ -45,7 +54,14 @@ Launch 3 Task subagents in parallel. Each reads the relevant standard and audits
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
 
-Collect all findings from A, B, C into a unified list.
+**D. 3D Rendering** *(only if `has3D`)* — `subagent_type: Explore`
+> Read `~/.claude/standards/review-3d-rendering.md`.
+> Identify the 3D stack (renderer, material system, dependencies).
+> Audit all JS/TS/GLSL/WGSL files in the target directory against the 55-item 3D rendering checklist.
+> Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
+> severity is one of: critical, error, suggestion.
+
+Collect all findings from A, B, C (and D if applicable) into a unified list.
 
 ### Pass 2: Publish Check
 
@@ -134,4 +150,5 @@ Output the final report in the format below.
 - `standards/review-ux.md` — UX/UI audit checklist
 - `standards/review-ux-writing.md` — UX writing checklist
 - `skills/dev-check-publish/SKILL.md` — Deploy readiness checklist
+- `standards/review-3d-rendering.md` — 3D rendering performance checklist (conditional)
 - `standards/review-template.md` — Review output format
