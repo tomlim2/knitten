@@ -345,6 +345,15 @@ app.get('/', async (req, res) => {
         }
     } catch (e) { /* ignore */ }
 
+    // Hardware info
+    let hardware = null;
+    try {
+        const hwFile = path.join(PRIVATE_DIR, 'hardware.json');
+        if (fs.existsSync(hwFile)) {
+            hardware = JSON.parse(fs.readFileSync(hwFile, 'utf8'));
+        }
+    } catch (e) { /* ignore */ }
+
     // Refs: unified list of all referenced paths
     const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
     let registeredPaths = {};
@@ -434,7 +443,7 @@ app.get('/', async (req, res) => {
         path: data.path
     }));
 
-    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, refs, totalCount, config, activePage: '/' });
+    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, refs, hardware, totalCount, config, activePage: '/' });
 });
 
 app.get('/skills', async (req, res) => {

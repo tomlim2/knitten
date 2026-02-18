@@ -29,6 +29,24 @@
         </section>
 
         <section class="home-section">
+            <h2 class="section-title">Hardware</h2>
+            <% if (hardware) { %>
+            <ul class="home-file-list">
+                <li>
+                    <span class="home-file-name"><%= hardware.name || 'unknown' %></span>
+                    <span class="home-repo-path"><%= hardware.chip %> · <%= hardware.memory_gb %>GB · <%= hardware.gpu %></span>
+                </li>
+                <li>
+                    <span class="home-file-name"><%= hardware.os %></span>
+                    <span class="home-repo-path"><%= hardware.description || '' %></span>
+                </li>
+            </ul>
+            <% } else { %>
+            <p class="home-empty">hardware.json 없음 — /system-save-hardware 실행</p>
+            <% } %>
+        </section>
+
+        <section class="home-section">
             <h2 class="section-title">Refs</h2>
             <% if (refs.length > 0) { %>
             <ul class="home-file-list">
