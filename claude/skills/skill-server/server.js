@@ -457,6 +457,18 @@ app.get('/skills', async (req, res) => {
     res.render('dashboard', { allItems, totalCount, usageStats, config, activePage: '/skills' });
 });
 
+// Unified markdown reader routes
+app.get('/standards', (req, res) => {
+    res.render('markdown-reader', { mode: 'standards', config, activePage: '/standards' });
+});
+app.get('/learnings', (req, res) => {
+    res.render('markdown-reader', { mode: 'learnings', config, activePage: '/learnings' });
+});
+
+// 301 redirects from old skill pages
+app.get('/skills/meta-browse-standards', (req, res) => res.redirect(301, '/standards'));
+app.get('/skills/learn-browse-entries', (req, res) => res.redirect(301, '/learnings'));
+
 // Serve skill static files (CSS, JS, etc.)
 app.get('/skills/:id/:file', (req, res, next) => {
     const filePath = path.resolve(SKILLS_DIR, req.params.id, req.params.file);
@@ -488,7 +500,8 @@ app.get('/skills/:id', (req, res) => {
         return res.status(404).send('index.html not found');
     }
 
-    res.render('skill-cli', { skill, config, activePage: '/skills', subPage: skill.id });
+    const cliSkills = skills.filter(s => s.type === 'cli').sort((a, b) => a.id.localeCompare(b.id));
+    res.render('markdown-reader', { mode: 'skill', skill, cliSkills, config, activePage: '/skills', subPage: skill.id });
 });
 
 // File browser API

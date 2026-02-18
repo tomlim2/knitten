@@ -31,16 +31,7 @@
         <section class="home-section">
             <h2 class="section-title">Hardware</h2>
             <% if (hardware) { %>
-            <ul class="home-file-list">
-                <li>
-                    <span class="home-file-name"><%= hardware.name || 'unknown' %></span>
-                    <span class="home-repo-path"><%= hardware.chip %> · <%= hardware.memory_gb %>GB · <%= hardware.gpu %></span>
-                </li>
-                <li>
-                    <span class="home-file-name"><%= hardware.os %></span>
-                    <span class="home-repo-path"><%= hardware.description || '' %></span>
-                </li>
-            </ul>
+            <p class="home-hardware-summary"><%= hardware.chip %> · <%= hardware.memory_gb %>GB · <%= hardware.gpu %> · <%= hardware.os %></p>
             <% } else { %>
             <p class="home-empty">hardware.json 없음 — /system-save-hardware 실행</p>
             <% } %>

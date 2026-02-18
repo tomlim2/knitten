@@ -1,0 +1,251 @@
+<!-- Design System: v1.9.0 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <% const pageTitle = mode === 'skill' ? skill.name : (mode === 'standards' ? 'Standards' : 'Learnings') %>
+    <%- include('partials/head', {config, pageTitle}) %>
+    <script src="/static/scripts/marked.js"></script>
+</head>
+<body>
+    <%- include('partials/header', {config, activePage, subPage: typeof subPage !== 'undefined' ? subPage : undefined}) %>
+    <main class="main">
+        <section class="page-hero page-hero--single">
+            <div class="page-hero-content">
+                <% if (mode === 'skill') { %>
+                <h1>/<%= skill.name %></h1>
+                <p><%= skill.description %></p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Command</div>
+                        <div class="page-hero-meta-value"><code>/<%= skill.id %></code></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Version</div>
+                        <div class="page-hero-meta-value">v<%= skill.version %></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Type</div>
+                        <div class="page-hero-meta-value"><%= skill.type %></div>
+                    </div>
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Path</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/skills/<%= skill.id %>/</code></div>
+                    </div>
+                </div>
+                <% } else if (mode === 'standards') { %>
+                <h1>Standards</h1>
+                <p>Project standards document browser</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Location</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/standards/</code></div>
+                    </div>
+                </div>
+                <% } else { %>
+                <h1>Learnings</h1>
+                <p>Project learnings and insights</p>
+                <div class="page-hero-meta-grid">
+                    <div class="page-hero-meta-item">
+                        <div class="page-hero-meta-label">Location</div>
+                        <div class="page-hero-meta-value"><code>~/.claude/private/learnings/</code></div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </section>
+
+        <div class="page-layout page-layout--two-column">
+            <aside class="page-sidebar">
+                <% if (mode === 'skill') { %>
+                <h2 class="sidebar-heading">Skills</h2>
+                <nav class="sidebar-nav" id="sidebarNav">
+                    <% cliSkills.forEach(s => { %>
+                    <a href="/skills/<%= s.id %>"<% if (typeof subPage !== 'undefined' && subPage === s.id) { %> class="active"<% } %>><%= s.id %></a>
+                    <% }); %>
+                </nav>
+                <% } else if (mode === 'standards') { %>
+                <h2 class="sidebar-heading">Standards</h2>
+                <nav class="sidebar-nav" id="sidebarNav">Loading...</nav>
+                <% } else { %>
+                <h2 class="sidebar-heading">Projects</h2>
+                <nav class="sidebar-nav" id="sidebarNav">Loading...</nav>
+                <% } %>
+            </aside>
+            <article class="page-main markdown-body" id="readerContent"></article>
+        </div>
+    </main>
+    <%- include('partials/footer', {config}) %>
+
+    <script>
+        function addCopyButtonsToCodeBlocks() {
+            const codeBlocks = document.querySelectorAll('#readerContent pre code');
+            codeBlocks.forEach(code => {
+                const pre = code.parentElement;
+                if (pre && !pre.querySelector('.copy-code-btn')) {
+                    const button = document.createElement('button');
+                    button.className = 'copy-code-btn';
+                    button.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M3 10V3a1 1 0 0 1 1-1h7"/></svg>';
+                    button.onclick = () => navigator.clipboard.writeText(code.textContent);
+                    pre.appendChild(button);
+                }
+            });
+        }
+
+        <% if (mode === 'skill') { %>
+        // Skill mode: server-injected markdown
+        (function() {
+            const markdown = `<%- skill.markdown.replace(/`/g, '\\`').replace(/\$/g, '\\$') %>`;
+            let content = markdown;
+            const separatorIndex = content.indexOf('---');
+            if (separatorIndex !== -1) {
+                content = content.substring(separatorIndex + 3).trim();
+            }
+            document.getElementById('readerContent').innerHTML = marked.parse(content);
+            addCopyButtonsToCodeBlocks();
+        })();
+        <% } else if (mode === 'standards') { %>
+        // Standards mode: client-side fetch with hash routing
+        (function() {
+            let standardNames = [];
+
+            async function loadStandards() {
+                try {
+                    const res = await fetch('/api/standards');
+                    const data = await res.json();
+                    const nav = document.getElementById('sidebarNav');
+                    nav.innerHTML = '';
+                    standardNames = data.standards.map(s => s.name);
+
+                    data.standards.forEach(std => {
+                        const link = document.createElement('a');
+                        link.href = '#' + std.name;
+                        link.textContent = std.name;
+                        link.dataset.name = std.name;
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            selectStandard(std.name);
+                        };
+                        nav.appendChild(link);
+                    });
+
+                    const hash = window.location.hash.slice(1);
+                    if (hash && standardNames.includes(hash)) {
+                        selectStandard(hash);
+                    } else if (standardNames.length > 0) {
+                        selectStandard(standardNames[0]);
+                    }
+                } catch (e) {
+                    console.error('Failed to load standards:', e);
+                }
+            }
+
+            function selectStandard(name) {
+                history.replaceState(null, '', '#' + name);
+                document.querySelectorAll('#sidebarNav a').forEach(a => {
+                    a.classList.toggle('active', a.dataset.name === name);
+                });
+                loadContent(name);
+            }
+
+            async function loadContent(name) {
+                try {
+                    const res = await fetch('/api/standards/' + name);
+                    const text = await res.text();
+                    document.getElementById('readerContent').innerHTML = marked.parse(text);
+                    addCopyButtonsToCodeBlocks();
+                } catch (e) {
+                    document.getElementById('readerContent').innerHTML = '<p style="color:var(--color-gray-mid);">Failed to load standard</p>';
+                }
+            }
+
+            window.addEventListener('hashchange', () => {
+                const hash = window.location.hash.slice(1);
+                if (hash && standardNames.includes(hash)) {
+                    selectStandard(hash);
+                }
+            });
+
+            loadStandards();
+        })();
+        <% } else { %>
+        // Learnings mode: client-side fetch with hash routing
+        (function() {
+            const entries = [];
+
+            async function loadProjects() {
+                try {
+                    const res = await fetch('/api/files?path=learnings/projects');
+                    const data = await res.json();
+                    const nav = document.getElementById('sidebarNav');
+                    nav.innerHTML = '';
+
+                    addEntry(nav, '_template', '_template.md');
+
+                    if (data.entries) {
+                        data.entries.forEach(entry => {
+                            if (entry.name.endsWith('.md')) {
+                                const name = entry.name.replace('.md', '');
+                                addEntry(nav, name, 'projects/' + entry.name);
+                            }
+                        });
+                    }
+
+                    const hash = window.location.hash.slice(1);
+                    const match = entries.find(e => e.name === hash);
+                    if (match) {
+                        selectLearning(match.name, match.path);
+                    } else if (entries.length > 0) {
+                        selectLearning(entries[0].name, entries[0].path);
+                    }
+                } catch (e) {
+                    console.error('Failed to load projects:', e);
+                }
+            }
+
+            function addEntry(nav, name, path) {
+                entries.push({ name, path });
+                const link = document.createElement('a');
+                link.href = '#' + name;
+                link.textContent = name;
+                link.dataset.name = name;
+                link.dataset.path = path;
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    selectLearning(name, path);
+                };
+                nav.appendChild(link);
+            }
+
+            function selectLearning(name, path) {
+                history.replaceState(null, '', '#' + name);
+                document.querySelectorAll('#sidebarNav a').forEach(a => {
+                    a.classList.toggle('active', a.dataset.name === name);
+                });
+                loadContent(path);
+            }
+
+            async function loadContent(filename) {
+                try {
+                    const res = await fetch('/api/files?path=learnings/' + filename);
+                    const text = await res.text();
+                    document.getElementById('readerContent').innerHTML = marked.parse(text);
+                    addCopyButtonsToCodeBlocks();
+                } catch (e) {
+                    document.getElementById('readerContent').innerHTML = '<p style="color:var(--color-gray-mid);">Failed to load learning</p>';
+                }
+            }
+
+            window.addEventListener('hashchange', () => {
+                const hash = window.location.hash.slice(1);
+                const match = entries.find(e => e.name === hash);
+                if (match) {
+                    selectLearning(match.name, match.path);
+                }
+            });
+
+            loadProjects();
+        })();
+        <% } %>
+    </script>
+</body>
+</html>
