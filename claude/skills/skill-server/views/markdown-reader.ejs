@@ -7,7 +7,7 @@
     <script src="/static/scripts/marked.js"></script>
 </head>
 <body>
-    <%- include('partials/header', {config, activePage, subPage: typeof subPage !== 'undefined' ? subPage : undefined}) %>
+    <%- include('partials/header', {config, activePage}) %>
     <main class="main">
         <section class="page-hero page-hero--single">
             <div class="page-hero-content">
@@ -60,7 +60,7 @@
                 <h2 class="sidebar-heading">Skills</h2>
                 <nav class="sidebar-nav" id="sidebarNav">
                     <% cliSkills.forEach(s => { %>
-                    <a href="/skills/<%= s.id %>"<% if (typeof subPage !== 'undefined' && subPage === s.id) { %> class="active"<% } %>><%= s.id %></a>
+                    <a href="/skills/<%= s.id %>"<% if (skill.id === s.id) { %> class="active"<% } %>><%= s.id %></a>
                     <% }); %>
                 </nav>
                 <% } else if (mode === 'standards') { %>

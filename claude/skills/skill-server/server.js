@@ -501,7 +501,7 @@ app.get('/skills/:id', (req, res) => {
     }
 
     const cliSkills = skills.filter(s => s.type === 'cli').sort((a, b) => a.id.localeCompare(b.id));
-    res.render('markdown-reader', { mode: 'skill', skill, cliSkills, config, activePage: '/skills', subPage: skill.id });
+    res.render('markdown-reader', { mode: 'skill', skill, cliSkills, config, activePage: '/skills' });
 });
 
 // File browser API
