@@ -31,21 +31,42 @@ Automated branch creation for CINEV art team.
 ## 설정
 
 - `~/.claude/config/.env` → `SLACK_BOT_TOKEN`
-- `~/.claude/config/slack.json` → channel, message templates
+- `~/.claude/config/slack.json` → `art_channel`, `art_new_branch_message`
 - `config.json` → repo_path
 
 ## 컨플릭트 처리
 
 체리픽 중 컨플릭트 발생 시 즉시 중단, 사용자에게 보고.
 
-## 구현
+## Slack 전송 규칙
 
-MCP 서버 `cocv`에 위임. Git 작업은 `Bash(git:*)`, Slack은 `slack_post_message()`, 스레드 저장은 `thread_save()`.
+**MUST use `send.py`** for Slack delivery. Do NOT use Claude AI Slack MCP tools (`slack_send_message` etc.) — they show "Sent via @Claude" and wrong sender identity.
+
+### 전송 절차
+
+1. `--dry-run`으로 미리보기
+2. 사용자 확인 후 실제 전송
+3. 전송 후 스레드 정보 자동 저장 (`~/.claude/private/slack_threads.json`)
+
+```bash
+# 미리보기
+python ~/.claude/skills/cocv-art-create-branch/send.py art/art-main-1.5.0-r4 --dry-run
+
+# 실제 전송
+python ~/.claude/skills/cocv-art-create-branch/send.py art/art-main-1.5.0-r4
+```
+
+### 스레드 정보
+
+전송 후 `slack_threads.json`에 저장되어 후속 스킬에서 사용:
+- `cocv-art-send-merge-notice` — 머지 사전 공지 (스레드 답글)
+- `cocv-art-send-merge-result` — 머지 완료 알림 (스레드 답글)
 
 ## 파일 구조
 
 ```
 cocv-art-create-branch/
 ├── SKILL.md       # 이 문서
-└── config.json    # repo_path 설정
+├── config.json    # repo_path 설정
+└── send.py        # Slack API 직접 전송 + 스레드 정보 저장
 ```

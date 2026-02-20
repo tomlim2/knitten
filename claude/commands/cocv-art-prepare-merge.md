@@ -106,7 +106,36 @@ If push fails due to LFS lock errors (e.g., "Lock failed: already locked by anot
 3. Retry the push
 4. If it still fails, stop and report to the user
 
-### Step 6: Generate MR Description
+### Step 6: Save merge branch info
+
+Save the merge branch name and its HEAD commit hash to `~/.claude/private/art-branches.json`.
+This info is used later by `/cocv-art-remove-branch` to find remnant commits.
+
+```python
+import json
+from pathlib import Path
+from datetime import datetime, timezone, timedelta
+
+KST = timezone(timedelta(hours=9))
+file = Path.home() / ".claude" / "private" / "art-branches.json"
+data = json.loads(file.read_text(encoding="utf-8")) if file.exists() else {}
+
+data["<art_branch>"] = {
+    **data.get("<art_branch>", {}),
+    "merge_branch": "<merge_branch>",
+    "merge_branch_head": "<HEAD commit hash of merge branch>",
+    "merge_created_at": datetime.now(KST).isoformat()
+}
+
+file.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+```
+
+Get the HEAD commit hash with:
+```bash
+git rev-parse HEAD
+```
+
+### Step 7: Generate MR Description
 
 Generate the MR description using `/cocv-mr` with develop as base branch:
 
@@ -126,4 +155,5 @@ Merge branch ready:
   Based on: <art_branch>
   Rebased on: origin/develop
   Pushed to: origin/<merge_branch>
+  Saved to: ~/.claude/private/art-branches.json
 ```
