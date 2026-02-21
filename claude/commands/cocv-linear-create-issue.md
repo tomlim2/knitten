@@ -89,6 +89,21 @@ description: if provided
 state: if provided
 ```
 
-### Step 4: Report result
+### Step 4: Attach Slack link
+
+이슈와 관련된 Slack 메시지가 있으면 description 하단에 링크를 포함한다.
+
+**패턴:**
+```markdown
+## 공유
+
+* [Slack 스레드](https://cinamonhq.slack.com/archives/{channel_id}/{message_ts})
+```
+
+- 유저가 Slack 링크를 제공하면 그대로 사용
+- 유저가 "슬랙 링크 있어" 등으로 언급하면 링크를 요청
+- Slack 링크가 없으면 이 섹션 생략
+
+### Step 5: Report result
 
 Show the created issue identifier (e.g., `TA-123`) and URL.
