@@ -89,7 +89,21 @@ description: if provided
 state: if provided
 ```
 
-### Step 4: Attach Slack link
+### Step 4: Link mentioned issues in description
+
+description에 다른 Linear 이슈가 텍스트로 언급되어 있으면, 해당 텍스트를 클릭 가능한 Linear 링크로 변환한다.
+
+**변환 규칙:**
+- `TA-441: 제페토 화장 전용 머티리얼` (plain text)
+- → `[TA-441: 제페토 화장 전용 머티리얼](https://linear.app/cinamon-corp/issue/TA-441)` (linked)
+
+**감지 패턴:**
+- `TA-XXX` 형태의 이슈 식별자가 description에 포함된 경우
+- 이미 마크다운 링크(`[...](...)`)로 감싸져 있으면 스킵
+
+생성 후 description에 이슈 식별자가 발견되면 `mcp__claude_ai_Linear__update_issue`로 description을 업데이트한다.
+
+### Step 5: Attach Slack link
 
 이슈와 관련된 Slack 메시지가 있으면 description 하단에 링크를 포함한다.
 
@@ -104,6 +118,16 @@ state: if provided
 - 유저가 "슬랙 링크 있어" 등으로 언급하면 링크를 요청
 - Slack 링크가 없으면 이 섹션 생략
 
-### Step 5: Report result
+### Step 6: Suggest image attachment
+
+이슈 내용이 시각적 참고가 도움될 때 (셰이더, UI, 렌더링 결과, 비교 등), description 하단에 `> 예시 사진 첨부 요망`을 추가하여 유저에게 사진 첨부를 안내한다.
+
+**대상:**
+- 셰이더/머티리얼 관련 이슈
+- UI/UX 변경 이슈
+- 비포/애프터 비교가 필요한 이슈
+- 버그 리포트 (시각적 증상)
+
+### Step 7: Report result
 
 Show the created issue identifier (e.g., `TA-123`) and URL.
