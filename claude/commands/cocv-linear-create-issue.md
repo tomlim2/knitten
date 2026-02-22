@@ -68,6 +68,59 @@ Linear Issue Preview:
 
 **Wait for user confirmation before creating.**
 
+### Step 2.5: Format and polish description
+
+Description이 있으면 아래 규칙으로 정리한 뒤 프리뷰에 반영한다.
+
+**Description 템플릿** (해당 섹션만 사용, 순서 유지):
+
+```markdown
+## 작업 내용
+
+{무엇을 하는지 간결하게}
+
+## 작업 단계
+
+1. ~~단계명~~ ✓
+2. 단계명
+3. 단계명
+
+## 현재 상태
+
+{진행 상황, 결과}
+
+## 향후 과제
+
+{남은 작업, 개선 방향}
+
+## 브랜치
+
+`branch-name`
+
+## 포함 작업
+
+* TA-000: 이슈 제목
+
+## 참고
+
+* [Slack](url)
+
+> 이미지 첨부
+```
+
+**구조 규칙:**
+- `##` 헤딩으로 섹션 구분, 위 템플릿 순서 준수
+- 리스트는 `*` 통일
+- 이미지/사진 첨부 자리는 blockquote: `> 이미지 첨부`
+- 코드, 브랜치명, 파일명은 backtick으로 감싸기
+- 완료된 단계는 `~~취소선~~` + `✓`
+
+**라이팅 규칙:**
+- 유저의 구어체/줄임말을 자연스러운 한국어 문어체로 다듬기 (의미 변경 금지)
+- 불필요한 조사/접속사 제거, 간결하게
+- 기술 용어(영문)는 원문 유지
+- AI 냄새나는 표현 금지 (과도한 수식어, 이모지, 홍보성 문장)
+
 ### Step 3: Create issue
 
 Use `mcp__claude_ai_Linear__create_issue` with:
