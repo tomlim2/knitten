@@ -7,12 +7,6 @@ allowed-tools: Bash(python:*)
 # tutoring-log-lesson
 
 Log a new tutoring lesson.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `tutoring-log-lesson`
-
 ## Usage
 
 ```
@@ -26,7 +20,7 @@ Replace `$COMMAND_NAME` with: `tutoring-log-lesson`
 Run the tutoring log script:
 
 ```bash
-cd ~/.claude/skills/tutoring && python log.py $ARGUMENTS
+cd ~/.claude/skills/tutoring-log-lesson && python log.py $ARGUMENTS
 ```
 
 ## Options

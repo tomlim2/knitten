@@ -422,7 +422,6 @@ Before finalizing an agent command, verify:
 ## Related Files
 
 - `slash-commands.md` — Command authoring standard (agents are commands)
-- `command-pre-execution.md` — Pre-execution logic (runs once per agent)
 - `unreal-engine-cpp.md` — UE C++ coding standard (Generate pass reference)
 - `review-code-unreal-cpp.md` — UE C++ review checklist (Review pass reference)
 - `review-template.md` — Code review output format

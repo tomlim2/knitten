@@ -7,12 +7,6 @@ allowed-tools: Read, Write, Bash(ls:*)
 # Generate New Command
 
 Create a new Claude Code command following the standardized naming convention.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-new-command`
-
 ## Arguments
 
 $ARGUMENTS = `<category> <verb> <subject>`
@@ -85,11 +79,11 @@ User: "Create a ue-analyze-texture command"
 4. **Ask user**:
    - Description (one-line summary)
    - What arguments does it accept? (for argument-hint)
-   - What tools does it need? (for allowed-tools - NO NEED for `Bash(curl:*)`, handled by pre-execution)
+   - What tools does it need? (for allowed-tools - NO NEED for ``, handled by pre-execution)
    - What does it do? (for content body)
 
 5. **Generate file**: `~/.claude/commands/{category}-{verb}-{subject}.md`
-   - Frontmatter: description → argument-hint → allowed-tools (NO `Bash(curl:*)` needed)
+   - Frontmatter: description → argument-hint → allowed-tools (NO `` needed)
    - Pre-execution reference (delegates to command-pre-execution.md)
    - Title: `# {Verb} {Subject}`
    - Arguments section (if applicable)
@@ -104,7 +98,7 @@ User: "Create a ue-analyze-texture command"
 ---
 description: [One-line summary]
 argument-hint: "[<arg>]"
-allowed-tools: [Tool list - NO Bash(curl:*) needed]
+allowed-tools: [Tool list - NO  needed]
 ---
 
 # [Title]
@@ -138,7 +132,7 @@ Usage: /[command-name] <argument>
 **Key changes from old pattern:**
 - Removed `## Usage Tracking` section
 - Added `**Before executing, read and execute:**` block
-- No need for `Bash(curl:*)` in allowed-tools (handled by pre-execution)
+- No need for `` in allowed-tools (handled by pre-execution)
 - Usage tracking is now centralized in `command-pre-execution.md`
 
 ## After Creation

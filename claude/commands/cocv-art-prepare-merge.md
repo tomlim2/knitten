@@ -1,18 +1,13 @@
 ---
 description: Prepare art branch for merge into develop
 argument-hint: "<art_branch>"
+disable-model-invocation: true
 allowed-tools: Bash(git:*)
 ---
 
 # Art Prepare Merge
 
 Prepare an art branch for merging into develop.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-art-prepare-merge`
-
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user for the branch name. NEVER auto-execute.**
@@ -140,7 +135,7 @@ git rev-parse HEAD
 Generate the MR description using `/cocv-mr` with develop as base branch:
 
 ```
-/cocv-mr develop
+/cocv-make-mr develop
 ```
 
 This follows the cocv MR standard format (Summary, Problem, Solution).

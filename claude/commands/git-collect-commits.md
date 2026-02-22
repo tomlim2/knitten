@@ -7,12 +7,6 @@ allowed-tools: Bash(python:*)
 # Git Commit Collector
 
 Extract commit history from a git repository for portfolio use.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `git-collect-commits`
-
 ## Arguments
 
 $ARGUMENTS

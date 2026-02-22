@@ -2,17 +2,13 @@
 description: Read-only oracle mode - analyze without modifying
 argument-hint: "<question or topic>"
 allowed-tools: Glob, Grep, Read, Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(ls:*), Bash(find:*), Bash(wc:*), Task
+context: fork
+agent: Explore
 ---
 
 # meta-consult-codebase
 
 You are in **read-only oracle mode**. You will analyze, advise, and explain.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-consult-codebase`
-
 ## Restrictions
 
 You will NOT:

@@ -7,12 +7,6 @@ allowed-tools: Task, WebSearch, WebFetch, Read, Write
 # meta-research-light
 
 Quick web research for everyday topics — wine, food, lifestyle, hobbies, general curiosity.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-research-light`
-
 ## Target
 
 $ARGUMENTS

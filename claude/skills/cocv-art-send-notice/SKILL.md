@@ -1,5 +1,6 @@
 ---
 description: "Send messages to Slack art channel. Use when communicating art branch updates to the team."
+disable-model-invocation: true
 ---
 
 # cocv-art-send-notice
@@ -12,24 +13,24 @@ Send formatted messages to the Slack art channel for team communication about ar
 
 ---
 
-## 사용법
+## Usage
 
 ```
-/cocv-art-send-notice "메시지 내용"
+/cocv-art-send-notice "message content"
 ```
 
-## 설정
+## Configuration
 
 - `~/.claude/config/.env` → `SLACK_BOT_TOKEN`
 - `~/.claude/config/slack.json` → `art_channel`, `bot_username`
 
-## 구현
+## Implementation
 
-MCP 서버 `cocv`의 `slack_post_message()` 도구로 직접 호출.
+Uses MCP server `cocv`'s `slack_post_message()` tool for direct invocation.
 
-## 파일 구조
+## Files
 
 ```
 cocv-art-send-notice/
-└── SKILL.md    # 이 문서
+└── SKILL.md    # This document
 ```

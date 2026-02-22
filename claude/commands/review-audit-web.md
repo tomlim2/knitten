@@ -7,12 +7,6 @@ allowed-tools: "Bash(git:*), Read, Grep, Glob"
 # review-audit-web
 
 Review JavaScript/CSS code changes against coding standards.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `review-audit-web`
-
 ## Instructions
 
 You are tasked with reviewing web code (JavaScript and CSS). Follow the review standards below based on file type:

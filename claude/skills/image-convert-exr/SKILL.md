@@ -6,12 +6,6 @@ allowed-tools: Bash(python3:*)
 # image-convert-exr
 
 Convert OpenEXR files to PNG or JPG with optional resize.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `image-convert-exr`
-
 ## Arguments
 
 - `<input>` - Path to input EXR file

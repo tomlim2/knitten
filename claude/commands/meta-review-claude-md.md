@@ -8,12 +8,6 @@ allowed-tools: "Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, AskUserQuest
 Periodic review and update of `~/.claude/CLAUDE.md` against the latest official Claude Code documentation.
 
 **Primary use case:** After a model update or periodically, ensure CLAUDE.md reflects the latest official features and best practices.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-review-claude-md`
-
 ## Checklist (12 checks)
 
 ### Accuracy (A1–A4)

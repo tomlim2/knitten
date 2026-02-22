@@ -7,12 +7,6 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Task
 # ue-write-cpp
 
 Write Unreal Engine C++ code with built-in standards enforcement and self-review.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `ue-write-cpp`
-
 ## Arguments
 
 - `<description or file path>` - What to write (e.g., "GameMode에 플레이어 스폰 로직 추가") or path to existing file to modify

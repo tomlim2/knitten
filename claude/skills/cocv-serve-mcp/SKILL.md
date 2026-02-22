@@ -1,5 +1,6 @@
 ---
 description: "MCP server for CINEV art branch Slack integration. Infrastructure service providing Slack tools."
+disable-model-invocation: true
 ---
 
 # cocv-serve-mcp

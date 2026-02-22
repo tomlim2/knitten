@@ -1,16 +1,17 @@
 ---
 description: "Send merge notification as thread reply to art branch announcement. Use after preparing an art branch merge."
+disable-model-invocation: true
 ---
 
 # cocv-art-send-merge-notice
 
 Send merge notification as a threaded reply to an art branch announcement.
 
-## Overview
+## Purpose
 
 When an art branch is ready to be merged into develop, this skill sends a threaded reply to the original branch announcement on Slack.
 
-## 사용법
+## Usage
 
 ```
 /cocv-art-send-merge-notice <branch_name>
@@ -33,30 +34,30 @@ When an art branch is ready to be merged into develop, this skill sends a thread
 - Requires `/cocv-art-create-branch` to be run first (saves thread info)
 - Thread info stored in `~/.claude/private/slack_threads.json`
 
-## 구현
+## Implementation
 
-`send.py` 스크립트로 Slack API 직접 호출.
+Uses `send.py` script for direct Slack API delivery.
 
 ```bash
-# 전송
-python ~/.claude/skills/cocv-art-send-merge-notice/send.py art/art-main-1.5.0-r3 --time "내일 아침 8시 30분"
+# Send
+python ~/.claude/skills/cocv-art-send-merge-notice/send.py art/art-main-1.5.0-r3 --time "tomorrow 8:30 AM"
 
-# 미리보기
-python ~/.claude/skills/cocv-art-send-merge-notice/send.py art/art-main-1.5.0-r3 --time "내일 아침 8시 30분" --dry-run
+# Preview
+python ~/.claude/skills/cocv-art-send-merge-notice/send.py art/art-main-1.5.0-r3 --time "tomorrow 8:30 AM" --dry-run
 
-# 브랜치 목록
+# List branches
 python ~/.claude/skills/cocv-art-send-merge-notice/send.py --list
 ```
 
-## 설정
+## Configuration
 
 - `~/.claude/config/.env` → `SLACK_BOT_TOKEN`
-- `~/.claude/private/slack_threads.json` → 브랜치별 스레드 정보
+- `~/.claude/private/slack_threads.json` → Per-branch thread info
 
-## 파일 구조
+## Files
 
 ```
 cocv-art-send-merge-notice/
-├── SKILL.md    # 이 문서
-└── send.py     # Slack API 전송 스크립트
+├── SKILL.md    # This document
+└── send.py     # Slack API delivery script
 ```

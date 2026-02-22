@@ -6,12 +6,6 @@ allowed-tools: Bash(system_profiler:*), Bash(sw_vers:*), Write, Read
 # system-save-hardware
 
 Collect macOS hardware specs and save to `~/.claude/private/hardware.json`.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `system-save-hardware`
-
 ---
 
 ## Workflow

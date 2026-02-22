@@ -1,21 +1,16 @@
 ---
 description: Apply human writing voice to content
 argument-hint: "[content type] for [audience] about [topic]"
+allowed-tools: Read
 ---
 
 # writing-apply-voice
 
 Apply a human writing style to avoid generic AI output.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `writing-apply-voice`
-
 ## Instructions
 
 Read the skill documentation:
-!`cat ~/.claude/skills/writing-voice/SKILL.md`
+!`cat ~/.claude/skills/writing-apply-voice/SKILL.md`
 
 ## User Request
 

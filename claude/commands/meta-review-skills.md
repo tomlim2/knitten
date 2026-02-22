@@ -9,12 +9,6 @@ allowed-tools: "Glob, Grep, Read, Edit, Write, AskUserQuestion"
 Scan command, skill, and standards files for format, content, and compatibility issues, then interactively fix them.
 
 **Primary use case:** After a model update, review all commands, skills, and standards for consistency and compatibility.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-review-skills`
-
 ## Target
 
 $ARGUMENTS
@@ -62,7 +56,6 @@ Apply these checks to each command file (`~/.claude/commands/*.md`).
 - **C2. Usage example:** At least one example showing how to invoke the command.
 - **C3. Output format:** Defined output structure (code block, table, or structured markdown).
 - **C4. Numbered steps:** Multi-step workflows should use numbered Steps (Step 1, Step 2, ...).
-- **C5. Pre-execution reference:** Must include the pre-execution block: `**Before executing, read and execute:** ~/.claude/standards/command-pre-execution.md` with correct `$COMMAND_NAME` replacement. FAIL if missing entirely. WARN if present but `$COMMAND_NAME` doesn't match the filename.
 
 ### Compatibility (X1–X3)
 

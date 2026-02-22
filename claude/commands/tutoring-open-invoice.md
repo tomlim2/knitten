@@ -3,14 +3,15 @@ description: Open invoice generator via skill server
 allowed-tools: Bash(open:*)
 ---
 
-# Open Invoice Generator
+# tutoring-open-invoice
 
 Open the monthly tuition invoice generator through the skill server.
 
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
+## Usage
 
-Replace `$COMMAND_NAME` with: `tutoring-open-invoice`
+```
+/tutoring-open-invoice
+```
 
 ## Execution
 
@@ -32,3 +33,7 @@ fi
 # Open invoice generator
 open http://localhost:972/skills/invoice-generator
 ```
+
+## Output
+
+Confirms the skill server is running and the invoice generator page is opened in the browser.

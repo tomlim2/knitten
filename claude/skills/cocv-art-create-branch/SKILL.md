@@ -10,63 +10,64 @@ Automated branch creation for CINEV art team.
 
 1. `git fetch --all`
 2. `git checkout develop && git pull --ff-only` (fast-forward)
-3. `git checkout -b <새브랜치>` (develop에서 분기)
-4. 소스 브랜치에서 지정 기간 커밋 체리픽 (선택)
-   - 기간: 전주 금요일 08:00 KST ~ 이번주 월요일 08:00 KST
-5. 푸시 후 Slack art 채널에 알림
+3. `git checkout -b <new_branch>` (branch from develop)
+4. Cherry-pick commits from source branch for the specified period (optional)
+   - Period: Previous Friday 08:00 KST ~ This Monday 08:00 KST
+5. Push and send notification to Slack art channel
 
-## 사용법
+## Usage
 
 ```
-/cocv-art-create-branch <새브랜치명> [소스브랜치명]
+/cocv-art-create-branch <new_branch_name> [source_branch_name]
 ```
 
-### 예시
+### Examples
 
 ```
 /cocv-art-create-branch art/art-main-1.5.0-r1 art/art-main-1.5.0
 /cocv-art-create-branch art/art-main-1.5.0-r1
 ```
 
-## 설정
+## Configuration
 
 - `~/.claude/config/.env` → `SLACK_BOT_TOKEN`
 - `~/.claude/config/slack.json` → `art_channel`, `art_new_branch_message`
 - `config.json` → repo_path
 
-## 컨플릭트 처리
+## Conflict Handling
 
-체리픽 중 컨플릭트 발생 시 즉시 중단, 사용자에게 보고.
+If a conflict occurs during cherry-pick, stop immediately and report to the user.
 
-## Slack 전송 규칙
+## Slack Delivery Rules
 
 **MUST use `send.py`** for Slack delivery. Do NOT use Claude AI Slack MCP tools (`slack_send_message` etc.) — they show "Sent via @Claude" and wrong sender identity.
 
-### 전송 절차
+### Delivery Procedure
 
-1. `--dry-run`으로 미리보기
-2. 사용자 확인 후 실제 전송
-3. 전송 후 스레드 정보 자동 저장 (`~/.claude/private/slack_threads.json`)
+1. Preview with `--dry-run`
+2. Send after user confirmation
+3. Thread info auto-saved to `~/.claude/private/slack_threads.json`
 
 ```bash
-# 미리보기
+# Preview
 python ~/.claude/skills/cocv-art-create-branch/send.py art/art-main-1.5.0-r4 --dry-run
 
-# 실제 전송
+# Send
 python ~/.claude/skills/cocv-art-create-branch/send.py art/art-main-1.5.0-r4
 ```
 
-### 스레드 정보
+### Thread Info
 
-전송 후 `slack_threads.json`에 저장되어 후속 스킬에서 사용:
-- `cocv-art-send-merge-notice` — 머지 사전 공지 (스레드 답글)
-- `cocv-art-send-merge-result` — 머지 완료 알림 (스레드 답글)
+Saved to `slack_threads.json` after delivery for use by follow-up skills:
+- `cocv-art-send-merge-notice` — Pre-merge notification (thread reply)
+- `cocv-art-send-merge-result` — Merge completion notification (thread reply)
 
-## 파일 구조
+## Files
 
 ```
 cocv-art-create-branch/
-├── SKILL.md       # 이 문서
-├── config.json    # repo_path 설정
-└── send.py        # Slack API 직접 전송 + 스레드 정보 저장
+├── SKILL.md       # This document
+├── config.json    # repo_path configuration
+├── config.json.example  # Example configuration
+└── send.py        # Slack API direct delivery + thread info storage
 ```

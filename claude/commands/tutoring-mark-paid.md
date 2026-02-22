@@ -1,18 +1,13 @@
 ---
 description: Mark pending lessons as paid
 argument-hint: "<student> [--dry-run] [--list]"
+disable-model-invocation: true
 allowed-tools: Bash(python:*)
 ---
 
 # tutoring-mark-paid
 
 Mark all pending lessons as paid by renaming files with `_done` suffix.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `tutoring-mark-paid`
-
 ## Usage
 
 ```
@@ -28,7 +23,7 @@ Replace `$COMMAND_NAME` with: `tutoring-mark-paid`
 Run the paid script:
 
 ```bash
-cd ~/.claude/skills/tutoring && python paid.py $ARGUMENTS
+cd ~/.claude/skills/tutoring-log-lesson && python paid.py $ARGUMENTS
 ```
 
 ## Options

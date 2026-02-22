@@ -6,12 +6,6 @@ allowed-tools: Bash(open:*)
 # meta-open-dashboard
 
 Start the local skill server and open the dashboard in browser.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-open-dashboard`
-
 ## Execution
 
 1. Check if dependencies are installed

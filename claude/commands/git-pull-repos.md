@@ -6,12 +6,6 @@ allowed-tools: Bash(git pull:*), Bash(git -C:*)
 # Git Pull Repos
 
 Pull both anju and caol-ila repositories.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `git-pull-repos`
-
 ## Execution
 
 Read `~/.claude/private/repo-paths.json` for paths, then pull both repos in parallel:

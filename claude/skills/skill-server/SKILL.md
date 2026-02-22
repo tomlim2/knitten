@@ -1,5 +1,6 @@
 ---
 description: "Local web server providing skill dashboard, file browser, and embedded skills. Infrastructure for all web-based skills."
+disable-model-invocation: true
 ---
 
 # skill-server

@@ -6,16 +6,19 @@ allowed-tools: Bash(open:*)
 # cocv-open-zo-downloader
 
 Open the NZ temporary downloader HTML tool in the default browser.
+## Usage
 
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-open-zo-downloader`
+```
+/cocv-open-zo-downloader
+```
 
 ## Execution
 
+1. Read `~/.claude/private/repo-paths.json` to get the `anju` repo path
+2. Open the NZ downloader HTML file:
+
 ```bash
-start "" "D:\vs\anju\api-test\nz-downloader\index.html"
+open "<anju_path>/api-test/nz-downloader/index.html"
 ```
 
-Just confirm the file was opened.
+Confirm the file was opened in the browser.

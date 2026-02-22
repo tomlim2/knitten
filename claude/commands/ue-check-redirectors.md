@@ -1,18 +1,12 @@
 ---
 description: "Scan /Game/ for ObjectRedirectors and report broken references"
 argument-hint: "[filename]"
-allowed-tools: Read, Glob, Task, Grep, Bash(python:*), Bash(curl:*)
+allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 ---
 
 # Check UE ObjectRedirectors
 
 Scan the UE project for stale ObjectRedirectors that remain after asset moves/renames.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `ue-check-redirectors`
-
 ## Arguments
 
 Input: $ARGUMENTS

@@ -1,16 +1,11 @@
 ---
 description: 이전 대답을 GitLab 코드 리뷰 응답 형식으로 변환
+allowed-tools: Read
 ---
 
 # cocv-format-comment
 
 이전 대화에서 제공한 분석/답변을 GitLab MR 코드 리뷰에 대한 응답으로 변환합니다.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-format-comment`
-
 ## 변환 규칙
 
 ### 톤과 스타일

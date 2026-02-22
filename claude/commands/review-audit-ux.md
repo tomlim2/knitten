@@ -7,12 +7,6 @@ allowed-tools: "Bash(git:*), Read, Grep, Glob"
 # review-audit-ux
 
 Review UX/UI layout, interaction flow, and writing quality in code files.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `review-audit-ux`
-
 ## Instructions
 
 You audit code for UX/UI quality — layout, button placement, interaction flow, and writing. This command auto-detects whether the target is a **web app** or **Python GUI** and applies the matching standards.

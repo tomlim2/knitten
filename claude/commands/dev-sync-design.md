@@ -7,12 +7,6 @@ allowed-tools: Read, Glob, Grep, Edit, Task
 # dev-sync-design
 
 Synchronize GUI/UI work artifacts with the design system version.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `dev-sync-design`
-
 ## CSS Architecture
 
 **Design System v1.8.1** uses centralized CSS with specialized overrides:

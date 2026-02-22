@@ -8,10 +8,11 @@ allowed-tools: Task, Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(pytest:*
 
 Fix bugs using the **test-first verification pattern**: Reproduce → Fix → Confirm.
 
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
+**If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
-Replace `$COMMAND_NAME` with: `dev-fix-bug`
+```
+Usage: /dev-fix-bug <bug description or issue number>
+```
 
 ## Workflow
 

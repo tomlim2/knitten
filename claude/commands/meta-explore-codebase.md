@@ -2,17 +2,13 @@
 description: Fast codebase exploration - multiple angles, pattern discovery
 argument-hint: "<topic or pattern>"
 allowed-tools: Glob, Grep, Read, Bash(git log:*), Bash(find:*), Bash(wc:*), Bash(ls:*), Bash(head:*), Task
+context: fork
+agent: Explore
 ---
 
 # meta-explore-codebase
 
 Fast, parallel exploration of the codebase from multiple angles.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-explore-codebase`
-
 ## Target
 
 $ARGUMENTS

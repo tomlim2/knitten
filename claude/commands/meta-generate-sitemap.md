@@ -6,12 +6,6 @@ allowed-tools: Bash(node:*), Read, Write
 # meta-generate-sitemap
 
 Generate a complete sitemap of all skill server routes and pages.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-generate-sitemap`
-
 ## Current Structure
 
 **Read** the current state:

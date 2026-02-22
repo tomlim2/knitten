@@ -1,5 +1,6 @@
 ---
 description: "Rename invalid material slot names on character SkeletalMesh assets. Fixes slots like Body_MTL1 -> Body_MTL based on validation results."
+disable-model-invocation: true
 ---
 
 # cocv-rename-mat-slot

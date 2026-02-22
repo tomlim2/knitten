@@ -46,12 +46,6 @@ Output follows `review-template.md` format.
 ---
 
 ## Instructions
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `review-audit-3d`
-
 ### Step 1: Determine Review Scope
 
 Parse the argument:

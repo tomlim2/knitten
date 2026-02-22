@@ -1,18 +1,12 @@
 ---
 description: "Check today's updated skills and commands via git"
 argument-hint: "[YYYY-MM-DD]"
-allowed-tools: Bash(git:*), Bash(curl:*), Read, Glob, Grep
+allowed-tools: Bash(git:*), Read, Glob, Grep
 ---
 
 # Check Updates
 
 Show skills, commands, and standards changed in caol-ila on a given date (defaults to today).
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-check-updates`
-
 ## Arguments
 
 - `[YYYY-MM-DD]` - Date to check (optional, defaults to today)

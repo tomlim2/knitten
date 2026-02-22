@@ -7,12 +7,6 @@ allowed-tools: Bash(python:*)
 # cocv-download-vrm-z
 
 Download a character VRM file from CINEV cloud storage.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-download-vrm-z`
-
 ## Arguments
 
 - `<characterId>` - Character ID(s), 공백으로 구분하여 여러 개 가능

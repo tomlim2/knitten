@@ -16,7 +16,6 @@ Works on both Windows (work) and macOS (home).
 
 - **Skill server port:** 972
 - **Slack mention:** `<@U04MCMGPN05>` / emoji: `:arnyang_ugly:`
-- **Usage tracking:** `curl -X POST http://localhost:972/api/usage/track -H "Content-Type: application/json" -d '{"type":"commands","id":"command-name"}'`
 
 ---
 
@@ -27,12 +26,10 @@ claude/                          # Symlinked to ~/.claude
 ├── CLAUDE.md                    # This file (loaded every session)
 ├── commands/                    # Slash commands (39+ .md files)
 ├── skills/                      # Skills with SKILL.md (25+ directories)
-│   ├── _shared/                 # Shared utilities (track_usage, etc.)
 │   ├── meta-new-command/        # Command/skill naming rulebook
 │   └── meta-new-skill/          # Skill creation guide
 ├── standards/                   # Detailed reference docs (read on-demand)
 │   ├── slash-commands.md        # [REQUIRED] Command authoring standard
-│   ├── command-pre-execution.md # Centralized pre-execution logic
 │   └── ...                      # JS, UE C++, design system, etc.
 └── private/                     # Personal data vault (gitignored)
 ```
@@ -69,7 +66,6 @@ If both exist with the same name, the skill takes precedence. Skills are the rec
 
 ### Key Patterns
 
-- **Pre-execution:** All commands must reference @~/.claude/standards/command-pre-execution.md
 - **Dynamic context:** `` !`command` `` runs shell before sending to Claude
 - **Arguments:** `$ARGUMENTS`, `$ARGUMENTS[0]`, `$0` shorthand
 - **@import:** `@path/to/file` imports content into CLAUDE.md or skills
@@ -119,7 +115,6 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 |----------|-------------|
 | `slash-commands.md` | **Always** before creating commands |
 | `agent-workflow.md` | Before creating multi-pass agent commands |
-| `command-pre-execution.md` | Referenced by all commands automatically |
 | `javascript.md` | Before writing JS/Node.js code |
 | `css.md` | Before writing CSS code |
 | `three-shader-language.md` | Before writing Three.js TSL shader code |

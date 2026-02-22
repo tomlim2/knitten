@@ -1,16 +1,17 @@
 ---
 description: Check system status and connect services
-allowed-tools: Read, Write, Bash(curl:*), Bash(node:*), Bash(cd:*), Bash(lsof:*), Bash(git tag:*), Bash(git add:*), Bash(git commit:*), Task, AskUserQuestion
+allowed-tools: Read, Write, Bash(node:*), Bash(cd:*), Bash(lsof:*), Bash(git tag:*), Bash(git add:*), Bash(git commit:*), Task, AskUserQuestion
 ---
 
 # caol-check-status
 
 Check skill server, refs, and model version status. Auto-starts server if down. Detects model changes and orchestrates doc updates.
 
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
+## Usage
 
-Replace `$COMMAND_NAME` with: `caol-check-status`
+```
+/caol-check-status
+```
 
 ## Workflow
 

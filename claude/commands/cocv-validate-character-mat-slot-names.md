@@ -1,18 +1,12 @@
 ---
 description: "Validate character SkeletalMesh material slot names from DataTable"
 argument-hint: "[datatable_name]"
-allowed-tools: Read, Glob, Task, Grep, Bash(python:*), Bash(curl:*)
+allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 ---
 
 # Validate Character Material Slot Names
 
 Validate material slot names on character SkeletalMesh assets referenced in a DataTable.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-validate-character-mat-slot-names`
-
 ## Arguments
 
 Input: $ARGUMENTS

@@ -7,12 +7,6 @@ allowed-tools: Read, Glob, Bash(python:*)
 # Cleanup Unused Assets
 
 Find unreferenced assets in UE Editor and safely delete them in a two-phase workflow.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `ue-cleanup-assets`
-
 ## Arguments
 
 Input: $ARGUMENTS

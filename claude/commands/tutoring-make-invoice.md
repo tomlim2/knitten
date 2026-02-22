@@ -7,12 +7,6 @@ allowed-tools: Bash(python:*)
 # tutoring-make-invoice
 
 Show pending lessons and generate invoice summary.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `tutoring-make-invoice`
-
 ## Usage
 
 ```
@@ -27,7 +21,7 @@ Replace `$COMMAND_NAME` with: `tutoring-make-invoice`
 Run the invoice script:
 
 ```bash
-cd ~/.claude/skills/tutoring && python invoice.py $ARGUMENTS
+cd ~/.claude/skills/tutoring-log-lesson && python invoice.py $ARGUMENTS
 ```
 
 ## Options

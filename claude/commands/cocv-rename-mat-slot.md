@@ -1,18 +1,12 @@
 ---
 description: "Rename invalid material slot names on character SkeletalMesh assets"
 argument-hint: "[datatable_name]"
-allowed-tools: Read, Glob, Task, Grep, Bash(python:*), Bash(curl:*)
+allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 ---
 
 # Rename Character Material Slot Names
 
 Rename invalid material slot names (e.g., `Body_MTL1` → `Body_MTL`) on character SkeletalMesh assets.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-rename-mat-slot`
-
 ## Arguments
 
 Input: $ARGUMENTS

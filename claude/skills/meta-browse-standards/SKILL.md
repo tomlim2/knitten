@@ -24,4 +24,4 @@ Access via skill-server dashboard or directly at `/skills/standards-browser`.
 
 ## Files
 
-- `index.html` - Standards browser page
+Served through skill-server at `/skills/standards-browser`. No standalone files.

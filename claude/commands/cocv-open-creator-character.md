@@ -6,12 +6,6 @@ allowed-tools: Bash(python:*), Read, Edit
 # Open CINEV Character Creator
 
 Launch the CINEV Character Creator GUI for creating user characters via UE commandlet.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-open-creator-character`
-
 ## Execution
 
 1. Read `~/.claude/private/repo-paths.json` → key `anju` → `.path`

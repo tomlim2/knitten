@@ -25,4 +25,4 @@ Access via skill-server dashboard or directly at `/skills/learnings-viewer`.
 
 ## Files
 
-- `index.html` - Learnings viewer page
+Served through skill-server at `/skills/learnings-viewer`. No standalone files.

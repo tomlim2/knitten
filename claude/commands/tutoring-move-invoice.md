@@ -1,18 +1,12 @@
 ---
 description: Move latest PDF from Downloads to Obsidian tutoring/invoices
 argument-hint: "<student_name>"
-allowed-tools: Bash(mv:*), Bash(ls:*)
+allowed-tools: Bash(mv:*), Bash(ls:*), Bash(mkdir:*), Bash(date:*)
 ---
 
 # Move Invoice
 
 Move the latest invoice PDF from Downloads folder to Obsidian `claude/tutoring/invoices/` with proper naming.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `tutoring-move-invoice`
-
 ## Arguments
 
 User provides: $ARGUMENTS (student name)

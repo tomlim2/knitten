@@ -7,12 +7,6 @@ allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob, Grep
 # meta-research-rules
 
 Find actionable criteria and rules for improving Claude Code agents and skill commands.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-research-rules`
-
 ## Target
 
 $ARGUMENTS

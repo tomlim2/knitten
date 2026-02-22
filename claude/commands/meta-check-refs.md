@@ -6,12 +6,6 @@ allowed-tools: Read, Grep
 # Check Refs
 
 Show all registered repos and discover path references in the codebase that aren't registered yet.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-check-refs`
-
 ## Execution
 
 ### Step 1: Read Registered Repos

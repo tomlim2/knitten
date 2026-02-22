@@ -7,12 +7,6 @@ allowed-tools: Read, Write, Bash(mkdir:*), Bash(copy:*), Bash(cp:*), Glob, Grep,
 # Generate New UE Editor Skill
 
 Create a new UE Editor skill following the established `ue-analyze-material` pattern.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `ue-new-skill`
-
 ## Arguments
 
 Input: $ARGUMENTS
@@ -32,10 +26,10 @@ Examples:
 ## Pattern Reference
 
 Read the template specification:
-!`cat "D:\vs\caol-ila\claude\skills\ue-show-template\SKILL.md"`
+!`cat ~/.claude/skills/ue-show-template/SKILL.md`
 
 Read the reference implementation for style:
-!`head -50 "D:\vs\caol-ila\claude\skills\ue-analyze-material\export_material_data.py"`
+!`head -50 ~/.claude/skills/ue-analyze-material/export_material_data.py`
 
 ## Step 1: Gather Requirements
 
@@ -71,13 +65,13 @@ From the verb and noun arguments, compute:
 Create exactly 4 files:
 
 ### 3a. Create skill directory
-```
-mkdir D:\vs\caol-ila\claude\skills\ue-{verb}-{noun}
+```bash
+mkdir -p ~/.claude/skills/ue-{verb}-{noun}
 ```
 
 ### 3b. Copy run_in_editor.py (verbatim)
-```
-copy D:\vs\caol-ila\claude\skills\ue-analyze-material\run_in_editor.py D:\vs\caol-ila\claude\skills\ue-{verb}-{noun}\run_in_editor.py
+```bash
+cp ~/.claude/skills/ue-analyze-material/run_in_editor.py ~/.claude/skills/ue-{verb}-{noun}/run_in_editor.py
 ```
 
 ### 3c. Write export_{noun}_data.py
@@ -128,7 +122,7 @@ After generating all files, show the user:
 
 ## Paths
 
-- Skills: `D:\vs\caol-ila\claude\skills\`
-- Commands: `D:\vs\caol-ila\claude\commands\`
-- Reference: `D:\vs\caol-ila\claude\skills\ue-analyze-material\`
-- Template: `D:\vs\caol-ila\claude\skills\ue-show-template\SKILL.md`
+- Skills: `~/.claude/skills/`
+- Commands: `~/.claude/commands/`
+- Reference: `~/.claude/skills/ue-analyze-material/`
+- Template: `~/.claude/skills/ue-show-template/SKILL.md`

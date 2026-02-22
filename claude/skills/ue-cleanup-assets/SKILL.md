@@ -1,5 +1,6 @@
 ---
 description: "Find and delete unused assets in UE Editor. Use when cleaning up Unreal Engine project size."
+disable-model-invocation: true
 ---
 
 # ue-cleanup-assets

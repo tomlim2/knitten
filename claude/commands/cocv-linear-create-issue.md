@@ -1,17 +1,12 @@
 ---
 description: Create a Linear issue in TA team assigned to deemo
 argument-hint: "<title> [--desc <description>] [--priority 0-4] [--label <label>] [--project <project>] [--due <YYYY-MM-DD>] [--team <team>] [--assignee <user>]"
+allowed-tools: Read, AskUserQuestion
 ---
 
 # Linear Create Issue
 
 Create a new Linear issue with TA team defaults.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-linear-create-issue`
-
 ## Defaults
 
 | Field | Default |

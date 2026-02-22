@@ -1,18 +1,12 @@
 ---
 description: Update project learnings with new insight
 argument-hint: "<project> <category: convention|worked|failed|gotcha>"
-allowed-tools: Read, Edit, Write, Glob, Bash(curl:*)
+allowed-tools: Read, Edit, Write, Glob
 ---
 
 # Update Learnings
 
 Add a new learning to the project wisdom vault.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `learn-add-log`
-
 ## Arguments
 
 $ARGUMENTS

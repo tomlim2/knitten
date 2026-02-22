@@ -7,12 +7,6 @@ allowed-tools: Read, Write
 # Register Refs
 
 Register a repo name and path to `~/.claude/private/repo-paths.json`.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `meta-register-refs`
-
 ## Arguments
 
 - `<repo-name>` - Name of the repo (e.g., `anju`, `caol-ila`)

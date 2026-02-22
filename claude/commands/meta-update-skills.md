@@ -1,16 +1,17 @@
 ---
 description: Check and update external skills from their source repos
-allowed-tools: Read, Write, Edit, WebFetch, Bash(curl:*)
+allowed-tools: Read, Write, Edit, WebFetch
 ---
 
 # meta-update-skills
 
 Check external skills for updates and apply them.
 
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
+## Usage
 
-Replace `$COMMAND_NAME` with: `meta-update-skills`
+```
+/meta-update-skills
+```
 
 ## Workflow
 

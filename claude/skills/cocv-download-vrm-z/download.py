@@ -7,26 +7,12 @@ Usage:
 """
 
 import argparse
-import json
 import sys
 import urllib.request
 import urllib.error
 from pathlib import Path
 
 BASE_URL = "https://storage-cinev-shorts.cinev.com/cinev/characters/vrm"
-
-
-def track_usage(skill_name):
-    try:
-        import requests
-        requests.post(
-            "http://localhost:972/api/usage/track",
-            headers={"Content-Type": "application/json"},
-            data=json.dumps({"type": "skills", "id": skill_name}),
-            timeout=1,
-        )
-    except Exception:
-        pass
 
 
 def download_vrm(character_id: str, output_dir: Path) -> bool:
@@ -53,8 +39,6 @@ def download_vrm(character_id: str, output_dir: Path) -> bool:
 
 
 def main():
-    track_usage("cocv-download-vrm-z")
-
     parser = argparse.ArgumentParser(description="Download VRM from CINEV storage")
     parser.add_argument("character_ids", nargs="+", help="Character ID(s) (e.g. anju_v3 bleue_v1)")
     parser.add_argument("-o", "--output", default=".", help="Output directory (default: current)")

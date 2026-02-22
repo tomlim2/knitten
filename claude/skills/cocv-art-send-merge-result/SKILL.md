@@ -1,5 +1,6 @@
 ---
 description: "Send merge completion with Korean MR summary as thread reply. Use after completing an art branch merge."
+disable-model-invocation: true
 ---
 
 # cocv-art-send-merge-result

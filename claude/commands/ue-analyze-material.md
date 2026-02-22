@@ -7,12 +7,6 @@ allowed-tools: Read, Glob, Task, Grep, Bash(python:*)
 # Analyze UE Material
 
 Analyze a material exported by the `ue-analyze-material` skill.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `ue-analyze-material`
-
 ## Standards Reference
 
 **Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`

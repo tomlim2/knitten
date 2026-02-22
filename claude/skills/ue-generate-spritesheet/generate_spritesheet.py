@@ -15,11 +15,7 @@ import sys
 import argparse
 from pathlib import Path
 
-# Add _shared to path for usage tracking
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 from PIL import Image
-from _shared.track_usage import track
 
 
 def calculate_sheet_size(frame_size, max_sheet_size=(1024, 1024)):
@@ -99,8 +95,6 @@ def generate_sprite_sheet(folder_path, output_filename, frame_size=(260, 145),
 
 
 def main():
-    track('skills', 'ue-generate-spritesheet')
-
     parser = argparse.ArgumentParser(description='Generate sprite sheets from image folders')
     parser.add_argument('--input', required=True, help='Input directory containing sequence folders')
     parser.add_argument('--output', default=None, help='Output directory (default: ~/.claude/private/unreal/spritesheet-generate/)')

@@ -7,12 +7,6 @@ allowed-tools: Bash(git:*), Bash(mkdir:*), Bash(ls:*), Bash(date:*), Glob, Grep,
 # dev-generate-spec
 
 Generate a technical specification document for code or branch changes.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `dev-generate-spec`
-
 ## Arguments
 
 Target: $ARGUMENTS

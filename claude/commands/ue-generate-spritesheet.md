@@ -7,12 +7,6 @@ allowed-tools: Read, Bash(python:*), Glob
 # Generate Sprite Sheet
 
 Generate sprite sheet textures from image sequence folders for UE flipbooks.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `ue-generate-spritesheet`
-
 ## Arguments
 
 Input: $ARGUMENTS

@@ -1,18 +1,13 @@
 ---
 description: Clean up old art branch after new one takes over
 argument-hint: "<old_art_branch> <latest_art_branch>"
+disable-model-invocation: true
 allowed-tools: Bash(git:*)
 ---
 
 # Art Remove Branch
 
 Remove an old art branch after cherry-picking remnant commits into the latest art branch.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-art-remove-branch`
-
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user. NEVER auto-execute.**

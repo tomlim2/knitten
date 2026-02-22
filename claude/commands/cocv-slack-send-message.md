@@ -1,17 +1,13 @@
 ---
 description: Send a Slack message as my personal account via MCP
 argument-hint: "<channel_name_or_id> <message>"
+disable-model-invocation: true
+allowed-tools: Read, AskUserQuestion
 ---
 
 # Slack Send Message (Personal)
 
 Send a Slack message as deemo (personal account) using Claude AI MCP Slack tools.
-
-**Before executing, read and execute:**
-`~/.claude/standards/command-pre-execution.md`
-
-Replace `$COMMAND_NAME` with: `cocv-slack-send-message`
-
 ## 사용법
 
 **If $ARGUMENTS is empty, show usage and ask the user. NEVER auto-execute.**

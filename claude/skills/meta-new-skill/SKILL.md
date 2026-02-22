@@ -10,8 +10,6 @@ Skill creation generator for Claude Code with comprehensive structure rules.
 
 This skill helps create new Claude Code skills following the standardized naming convention and structure. It serves as the authoritative rulebook for skill creation.
 
-**IMPORTANT: All new Python skills MUST include usage tracking by importing `_shared.track_usage` and calling at start of main(). See "Usage Tracking" section.**
-
 ---
 
 ## Skill Structure

@@ -56,57 +56,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Usage Tracking
-
-Skills can track when they're invoked to help identify which skills are used most frequently.
-
-**Import tracking helper:**
-```python
-import sys
-sys.path.insert(0, str(Path.home() / ".claude" / "skills"))
-from _shared.track_usage import track
-```
-
-**Track at start of main():**
-```python
-def main():
-    # Track skill usage (fails silently if server not running)
-    track('skills', 'my-skill-name')
-
-    # Rest of implementation...
-    parser = argparse.ArgumentParser(...)
-```
-
-**Full example:**
-```python
-#!/usr/bin/env python3
-"""My skill that does something useful."""
-
-import sys
-from pathlib import Path
-
-# Add skills directory to path for _shared imports
-sys.path.insert(0, str(Path.home() / ".claude" / "skills"))
-from _shared.track_usage import track
-
-def main():
-    # Track skill usage
-    track('skills', 'my-skill-name')
-
-    # Implementation
-    print("Doing work...")
-
-if __name__ == "__main__":
-    main()
-```
-
-**Notes:**
-- Tracking is optional but recommended
-- Fails silently if skill server is not running
-- Helps identify frequently-used skills for optimization
-- Data stored in `~/.claude/private/usage-stats.json`
-- Dashboard shows usage stats at http://localhost:972
-
 ---
 
 ## Configuration Files

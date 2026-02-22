@@ -325,7 +325,7 @@ Codebase exploration only. Does NOT do web research.
 
 ## Related Files
 
-- Command: `~/.claude/commands/research.md`
+- Command: `~/.claude/commands/meta-research-web.md`
 - Output: `~/.claude/private/research/`
 
 ---
