@@ -9,11 +9,14 @@ Automated branch creation for CINEV art team.
 ## Purpose
 
 1. `git fetch --all`
-2. `git checkout develop && git pull --ff-only` (fast-forward)
-3. `git checkout -b <new_branch>` from develop
-4. Cherry-pick commits from `current` branch (art-branches.json) for the specified period
+2. `git checkout -b <new_branch> origin/develop` (remote develop 기반, 로컬 develop 사용 금지)
+3. Cherry-pick commits from `current` branch (art-branches.json) for the specified period
    - Period: Previous Friday 08:00 KST ~ This Monday 08:00 KST
-5. Push and send notification to Slack art channel
+4. Push new branch
+5. Delete previous art branch from remote (`git push origin --delete <current_branch>`)
+   - 삭제 전 유저 확인 필수
+   - `current` branch의 잔여 커밋(merge branch tip 이후)이 있으면 먼저 체리픽
+6. Send notification to Slack art channel
 
 ## Usage
 
