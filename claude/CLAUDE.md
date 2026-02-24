@@ -51,18 +51,9 @@ If both exist with the same name, the skill takes precedence. Skills are the rec
 
 ### Frontmatter Fields
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `description` | Recommended | What the skill does — Claude uses this for auto-loading |
-| `name` | No | Display name (lowercase, numbers, hyphens, max 64 chars). Defaults to directory name |
-| `argument-hint` | No | Hint for autocomplete (e.g., `[issue-number]`) |
-| `allowed-tools` | No | Tools allowed without permission prompts. Never use bare `Bash` — use `Bash(git:*)` etc. |
-| `disable-model-invocation` | No | `true` = only user can invoke (for side-effect commands like `/deploy`) |
-| `user-invocable` | No | `false` = hidden from `/` menu, Claude-only background knowledge |
-| `context` | No | `fork` = run in isolated subagent |
-| `agent` | No | Subagent type when `context: fork` (`Explore`, `Plan`, etc.) |
-| `model` | No | Model override |
-| `hooks` | No | Lifecycle hooks scoped to this skill |
+Essential: `description` (recommended), `allowed-tools` (never bare `Bash` — use `Bash(git:*)` etc.), `argument-hint`
+Advanced: `name`, `disable-model-invocation`, `user-invocable`, `context`/`agent`/`model`, `hooks`
+Full reference: @~/.claude/standards/slash-commands.md
 
 ### Key Patterns
 
@@ -114,24 +105,24 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | Standard | When to read |
 |----------|-------------|
 | `slash-commands.md` | **Always** before creating commands |
-| `agent-workflow.md` | Before creating multi-pass agent commands |
-| `javascript.md` | Before writing JS/Node.js code |
-| `css.md` | Before writing CSS code |
-| `three-shader-language.md` | Before writing Three.js TSL shader code |
+| `cinev-git-workflow.md` | **Always** before CINEV git ops |
+| `cocv-slack.md` | Before Slack operations |
+| `javascript.md`, `css.md` | Before writing JS/CSS |
+| `three-shader-language.md` | Before Three.js TSL shaders |
 | `design-system.md` | Before creating UI/web pages |
-| `unreal-engine-cpp.md` | Before writing UE C++ code |
-| `unreal-engine-asset.md` | Before creating/validating UE assets |
-| `review-code-javascript.md` | JavaScript/Node.js code reviews |
-| `review-code-css.md` | CSS code reviews |
-| `review-code-unreal-cpp.md` | C++ code reviews |
-| `review-code-tsl.md` | Three.js TSL code reviews |
-| `review-code-unreal-python.md` | Python code reviews (UE editor) |
-| `cinev-git-workflow.md` | **Always** before git ops on CINEV projects |
-| `cocv-slack.md` | Before any cocv Slack operations |
-| `review-template.md` | Code review output format |
-| `research-methodology.md` | Deep research |
-| `tech-spec-template.md` | Technical specifications |
-| `delegation.md` | Task delegation patterns |
+| `unreal-engine-cpp.md`, `unreal-engine-asset.md` | Before UE C++ or asset work |
+| `review-code-*.md`, `review-template.md` | Code reviews (JS, CSS, UE C++, TSL, UE Python) |
+| `agent-workflow.md`, `delegation.md` | Multi-pass agents, task delegation |
+| `research-methodology.md`, `tech-spec-template.md` | Research and specs |
+
+---
+
+## Context Management
+
+- **CLAUDE.md ≤ 150 lines** — move detailed examples/patterns to `standards/` files
+- **50% context → `/compact`** — when context reaches ~50%, manually run `/compact` to reclaim space
+- **Subtask sizing** — each subtask must be completable within 50% of context window
+- **Plan mode first** — for non-trivial tasks, start with plan mode to align before coding
 
 ---
 
