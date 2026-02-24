@@ -31,6 +31,7 @@ Search the following locations for hardcoded paths. Extract any absolute path th
 | `~/.claude/commands/cocv-open-creator-shipper.md` | Windows `anju` paths |
 | `~/.claude/commands/cocv-open-creator-character.md` | Windows `anju` paths |
 | `~/.claude/commands/meta-check-updates.md` | caol-ila path |
+| `~/.claude/skills/cocv-manage-art-branch/config.json` | `repo_key` values |
 
 For each discovered path, determine a suggested name based on the directory name (e.g., `E:\CINEVStudio` → `cinev`, `D:\vs\anju` → `anju-win`).
 

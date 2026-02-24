@@ -12,6 +12,7 @@ Read from `~/.claude/private/repo-paths.json` (use `entry.path` for filesystem p
 |-----|------|
 | `cinev-studio` | Main project |
 | `cinev-engine` | Second project |
+| `cinev-ta-tools` | TA tool 모음 (MegaMelange) |
 
 ---
 
