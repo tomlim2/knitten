@@ -26,10 +26,12 @@ Periodic review and update of `~/.claude/CLAUDE.md` against the latest official 
   - `https://code.claude.com/docs/en/memory` — memory/CLAUDE.md system
 - **O4. Deprecated patterns:** Flag anything in CLAUDE.md that contradicts current official docs.
 
-### Efficiency (E1–E2)
+### Efficiency (E1–E4)
 
-- **E1. Line count:** CLAUDE.md should stay under 200 lines. This file is loaded into every session — every line costs context. WARN if over 200, FAIL if over 300.
+- **E1. Line count:** CLAUDE.md must stay ≤ 150 lines. This file is loaded into every session — every line costs context. WARN if over 120, FAIL if over 150.
 - **E2. Actionable content only:** Flag non-actionable content (motivational quotes, explanatory prose for humans, FAQ). CLAUDE.md should contain instructions, rules, and references — not documentation.
+- **E3. Examples belong in standards:** Detailed code examples, patterns, and multi-line code blocks should live in `standards/` files (e.g., `command-skill-reference.md`), not in CLAUDE.md. CLAUDE.md should reference them with links. WARN if code blocks exceed 10 lines total.
+- **E4. Table density:** Tables with 10+ rows should be reviewed for consolidation (group related rows) or relocation to standards. WARN if any table exceeds 15 rows.
 
 ### Consistency (K1–K2)
 
