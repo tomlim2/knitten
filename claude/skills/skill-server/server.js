@@ -1,10 +1,8 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const { WebSocketServer } = require('ws');
 const http = require('http');
-const { createClient } = require('@supabase/supabase-js');
 
 // Load config
 const config = require('./config.json');
@@ -21,22 +19,6 @@ const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
 const OBSIDIAN_CLAUDE_DIR = path.join(require('os').homedir(), 'Library', 'Mobile Documents', 'iCloud~md~obsidian', 'Documents', 'MyNotes', 'claude');
 
-// Initialize Supabase client (graceful degradation)
-let supabase = null;
-try {
-    if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
-        supabase = createClient(
-            process.env.SUPABASE_URL,
-            process.env.SUPABASE_ANON_KEY
-        );
-        console.log('✓ Supabase connected - tracking enabled');
-    } else {
-        console.log('⚠ Supabase credentials not found - tracking disabled');
-    }
-} catch (error) {
-    console.log('⚠ Supabase initialization failed - tracking disabled');
-}
-
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -44,53 +26,6 @@ app.set('views', path.join(__dirname, 'views'));
 // Static files
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
-
-// Usage tracking helpers
-async function readUsageStats() {
-    if (!supabase) {
-        return { skills: {}, commands: {} };
-    }
-
-    try {
-        const { data, error } = await supabase
-            .from('usage_tracking')
-            .select('*');
-
-        if (error) throw error;
-
-        // Convert to old format for compatibility
-        const stats = { skills: {}, commands: {} };
-        data.forEach(row => {
-            stats[row.type][row.item_id] = {
-                count: row.count,
-                lastUsed: row.last_used
-            };
-        });
-
-        return stats;
-    } catch (error) {
-        console.error('Failed to read usage stats:', error.message);
-        return { skills: {}, commands: {} };
-    }
-}
-
-async function recordUsage(type, id) {
-    if (!supabase) return; // Graceful degradation
-
-    try {
-        const { error } = await supabase.rpc('increment_usage', {
-            p_type: type,
-            p_item_id: id
-        });
-
-        if (error) {
-            console.error('Tracking error:', error.message);
-        }
-    } catch (error) {
-        // Fail silently - tracking is optional
-        console.error('Tracking error:', error.message);
-    }
-}
 
 // Repo path helpers (backward compatible with old string format)
 function getRepoPath(entry) {
@@ -285,20 +220,12 @@ function discoverCommandOnly(skillNames) {
 }
 
 // Routes
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
     // Skill/command count
     const skills = discoverSkills();
     const skillNames = new Set(skills.map(s => s.id));
     const commandOnly = discoverCommandOnly(skillNames);
     const totalCount = skills.length + commandOnly.length;
-
-    // Top used from Supabase
-    const usageStats = await readUsageStats();
-    const allUsage = { ...usageStats.skills, ...usageStats.commands };
-    const topUsed = Object.entries(allUsage)
-        .sort((a, b) => b[1].count - a[1].count)
-        .slice(0, 5)
-        .map(([name, data]) => ({ name, count: data.count }));
 
     // Recent learnings (from Obsidian vault)
     const learningsDir = path.join(OBSIDIAN_CLAUDE_DIR, 'learnings', 'projects');
@@ -443,18 +370,17 @@ app.get('/', async (req, res) => {
         path: data.path
     }));
 
-    res.render('home', { topUsed, recentLearnings, recentStandards, recentWines, refs, hardware, totalCount, config, activePage: '/' });
+    res.render('home', { recentLearnings, recentStandards, recentWines, refs, hardware, totalCount, config, activePage: '/' });
 });
 
-app.get('/skills', async (req, res) => {
+app.get('/skills', (req, res) => {
     const skills = discoverSkills();
     const skillNames = new Set(skills.map(s => s.id));
     const commandOnly = discoverCommandOnly(skillNames);
     const allItems = [...skills, ...commandOnly].sort((a, b) => a.name.localeCompare(b.name));
     const totalCount = allItems.length;
 
-    const usageStats = await readUsageStats();
-    res.render('dashboard', { allItems, totalCount, usageStats, config, activePage: '/skills' });
+    res.render('dashboard', { allItems, totalCount, config, activePage: '/skills' });
 });
 
 // Unified markdown reader routes
@@ -723,57 +649,6 @@ app.delete('/api/repos', (req, res) => {
 // Config API (used by layout.js for shared nav/footer)
 app.get('/api/config', (req, res) => {
     res.json(config);
-});
-
-// Usage tracking API
-app.post('/api/usage/track', async (req, res) => {
-    const { type, id } = req.body;
-
-    if (!type || !id) {
-        return res.status(400).json({ error: 'Missing type or id' });
-    }
-
-    if (type !== 'skills' && type !== 'commands') {
-        return res.status(400).json({ error: 'Invalid type. Must be "skills" or "commands"' });
-    }
-
-    await recordUsage(type, id);
-    res.json({ success: true });
-});
-
-app.get('/api/usage/stats', async (req, res) => {
-    const stats = await readUsageStats();
-    res.json(stats);
-});
-
-app.delete('/api/usage/track', async (req, res) => {
-    const { type, id } = req.body;
-
-    if (!type || !id) {
-        return res.status(400).json({ error: 'Missing type or id' });
-    }
-
-    if (type !== 'skills' && type !== 'commands') {
-        return res.status(400).json({ error: 'Invalid type. Must be "skills" or "commands"' });
-    }
-
-    if (!supabase) {
-        return res.status(503).json({ error: 'Tracking service unavailable' });
-    }
-
-    try {
-        const { error } = await supabase
-            .from('usage_tracking')
-            .delete()
-            .eq('type', type)
-            .eq('item_id', id);
-
-        if (error) throw error;
-
-        res.json({ success: true, message: `Deleted ${type}/${id}` });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
 });
 
 // Save invoice PDF

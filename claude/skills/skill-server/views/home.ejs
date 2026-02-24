@@ -12,23 +12,6 @@
         </div>
 
         <section class="home-section">
-            <h2 class="section-title">Most Used</h2>
-            <% if (topUsed.length > 0) { %>
-            <ol class="home-ranked-list">
-                <% topUsed.forEach((item, i) => { %>
-                <li>
-                    <span class="home-rank"><%= i + 1 %></span>
-                    <span class="home-item-name"><%= item.name %></span>
-                    <span class="home-item-count"><%= item.count %></span>
-                </li>
-                <% }); %>
-            </ol>
-            <% } else { %>
-            <p class="home-empty">아직 사용 기록이 없습니다</p>
-            <% } %>
-        </section>
-
-        <section class="home-section">
             <h2 class="section-title">Hardware</h2>
             <% if (hardware) { %>
             <p class="home-hardware-summary"><%= hardware.chip %> · <%= hardware.memory_gb %>GB · <%= hardware.gpu %> · <%= hardware.os %></p>
