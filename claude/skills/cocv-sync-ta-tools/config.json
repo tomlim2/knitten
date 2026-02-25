@@ -4,8 +4,8 @@
   "mappings": [
     { "source": "python/user_character_manager", "target": "user_character_manager" },
     { "source": "python/shipping_manager", "target": "shipping_manager" },
-    { "source": "web/matcap-painter", "target": "matcap_painter" },
-    { "source": "python/truepmx2vrm", "target": "truepmx2vrm" }
+    { "source": "web/matcap-painter", "target": "matcap-painter" },
+    { "source": "python/pmx2vrm-convert-module", "target": "pmx2vrm-convert-module" }
   ],
   "exclude": ["__pycache__", ".env", "*.pyc"]
 }
