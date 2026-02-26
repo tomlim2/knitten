@@ -253,7 +253,9 @@ If any WARN, ask user whether to proceed or abort.
 
 ### Step 8: Generate MR description
 
-Run `/cocv-make-mr develop` to generate the MR description.
+**REQUIRED** — Run `/cocv-make-mr develop`. Do NOT write manually.
+
+After `/cocv-make-mr` generates the description, override the title:
 
 **MR Title Convention:**
 
@@ -268,15 +270,27 @@ Run `/cocv-make-mr develop` to generate the MR description.
 
 Show result to user for copy-paste into GitLab MR.
 
-### Summary output
+### Summary checklist
+
+**All items must be shown. Do NOT skip any.**
 
 ```
-Merge branch ready:
-  Branch:     <merge_branch>
-  Based on:   <current_branch>
-  Rebased on: origin/develop
-  Pushed to:  origin/<merge_branch>
-  State:      merge_prepared
+merge-prep complete
+───────────────────
+Branch:     <merge_branch>
+Based on:   <current_branch>
+Rebased on: origin/develop
+Pushed to:  origin/<merge_branch>
+
+Validation:
+  [PASS/WARN] Source code changes
+  [PASS/WARN] Whitelist authors
+  [PASS/WARN] Redirectors
+
+MR:
+  [ ] /cocv-make-mr develop 실행
+  [ ] MR title convention 적용
+  [ ] GitLab MR 생성 링크 제공
 ```
 
 ---
