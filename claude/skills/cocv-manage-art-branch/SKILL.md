@@ -42,18 +42,58 @@ All git commands run against the resolved repo path.
 Each history entry in `art-branches.json` has a `state` field:
 
 ```
-created → merge_prepared → merge_noticed → merged → archived
+created → merge_prepared → merge_noticed → merged/created → archived
+                                              ↑
+                                   mid-week: back to created
+                                   regular (Fri): → archived
 ```
 
 ### State Transitions
 
 | Action | From State | To State |
 |--------|-----------|----------|
-| `create` | (none / merged / archived) | `created` |
+| `create` | (none / archived) | `created` |
 | `merge-prep` | `created` | `merge_prepared` |
 | `merge-notice` | `merge_prepared` | `merge_noticed` |
-| `merge-result` | `merge_noticed` | `merged` |
+| `merge-result (mid-week)` | `merge_noticed` | `created` |
+| `merge-result (regular)` | `merge_noticed` | `merged` |
 | `cleanup` | `merged` | `archived` |
+
+### Multi-Merge Support
+
+A single art branch can be merged multiple times per week.
+
+- **Mid-week merge**: state returns to `created` after merge-result
+- **Regular merge (Friday)**: state goes to `merged` → `archived`
+
+Merges are tracked in a `merges[]` array:
+
+```json
+{
+  "branch": "art/art-main-1.5.0-r5",
+  "state": "created",
+  "merges": [
+    {
+      "number": 1,
+      "type": "mid-week",
+      "merge_branch": "art/merge/art-main-1.5.0-r5",
+      "merge_branch_head": "28ecdab9...",
+      "merged_at": "2026-02-26T08:00:00+09:00"
+    }
+  ]
+}
+```
+
+- `type`: `"mid-week"` or `"regular"`
+- `number`: sequential merge count per branch (1, 2, 3...)
+- Merge branch naming for #2+: `art/merge/art-main-1.5.0-r5-2`
+
+### Slack Broadcast Convention
+
+| Type | Broadcast message suffix |
+|------|-------------------------|
+| Regular | (없음) |
+| Mid-week | `(중간 머지 #N)` |
 
 ### Legacy Data Inference
 
@@ -61,8 +101,8 @@ If a history entry has no `state` field, infer it:
 
 | Condition | Inferred State |
 |-----------|---------------|
-| Is `current` AND no `merge_branch` | `created` |
-| Is `current` AND has `merge_branch` but no evidence of notice/merge | `merge_prepared` |
+| Is `current` AND no `merges` (or empty) | `created` |
+| Is `current` AND has `merges` but old format `merge_branch` field | migrate to `merges[]` |
 | Is NOT `current` | `archived` |
 
 When inferring state, write it back to `art-branches.json` so future reads are clean.

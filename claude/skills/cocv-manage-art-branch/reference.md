@@ -198,9 +198,73 @@ Get HEAD hash:
 git -C <repo_path> rev-parse HEAD
 ```
 
-### Step 7: Generate MR description
+### Step 7: Validate merge branch
+
+Run three checks before generating MR description.
+
+#### Check 1: Source code changes
+
+```bash
+git -C <repo_path> diff origin/develop...<merge_branch> --name-only \
+  | grep -E '\.(cpp|h|cs|py|js|ts|ini|cfg|json|xml|yaml|yml|toml|bat|sh|ps1)$'
+```
+
+- If any results: **WARN** — list files and ask user to confirm
+- Art branches should only contain asset changes (.uasset, .umap, textures)
+
+#### Check 2: Non-whitelist authors
+
+```bash
+git -C <repo_path> log origin/develop..<merge_branch> --format="%an" \
+  | sort -u
+```
+
+Compare against `config.json` → `art_team_whitelist`.
+- If unknown authors found: **WARN** — list names and their commits
+
+#### Check 3: Redirectors
+
+Search for `ObjectRedirector` in changed `.uasset` files:
+
+```bash
+# List changed .uasset files
+git -C <repo_path> diff origin/develop...<merge_branch> --name-only \
+  | grep '\.uasset$'
+
+# For each file, binary grep for redirector signature
+git -C <repo_path> show <merge_branch>:<file_path> \
+  | grep -c "ObjectRedirector" 2>/dev/null
+```
+
+- If any redirectors found: **WARN** — list file paths
+- Redirectors should be fixed up before merge
+
+#### Validation output
+
+```
+Merge Branch Validation
+───────────────────────
+[PASS] Source code changes: none
+[WARN] Non-whitelist authors: deemo (2 commits)
+[PASS] Redirectors: none
+```
+
+If any WARN, ask user whether to proceed or abort.
+
+### Step 8: Generate MR description
 
 Run `/cocv-make-mr develop` to generate the MR description.
+
+**MR Title Convention:**
+
+| Case | Title |
+|------|-------|
+| First merge | `content(art): merge <branch> into develop` |
+| 2nd+ merge | `content(art): merge <branch> into develop (#N)` |
+
+- First merge has no suffix (implicit `#1`).
+- Second merge onward uses `(#2)`, `(#3)`, etc.
+- Count is per art branch (resets each week).
 
 Show result to user for copy-paste into GitLab MR.
 
@@ -292,7 +356,17 @@ Format:
 
 Omit empty categories. No contributor info.
 
-### Step 4: Save merge stats
+### Step 4: Determine merge type
+
+Ask user or infer from day-of-week:
+- **Friday** → `"regular"` (default)
+- **Other days** → `"mid-week"` (default)
+
+User can override (e.g. Friday mid-week merge if another follows).
+
+### Step 5: Save merge stats
+
+Calculate merge number from existing `merges[]` array in `art-branches.json`.
 
 Save to `~/.claude/private/art-merge-stats/<branch-slug>.json`:
 
@@ -300,6 +374,8 @@ Save to `~/.claude/private/art-merge-stats/<branch-slug>.json`:
 {
   "branch": "<current_branch>",
   "merged_at": "2026-02-28",
+  "merge_number": 1,
+  "merge_type": "mid-week",
   "total_commits": 37,
   "changes": {
     "art": ["description 1", "description 2"],
@@ -311,12 +387,16 @@ Save to `~/.claude/private/art-merge-stats/<branch-slug>.json`:
 
 Branch slug: replace `/` with `-` (e.g., `art-art-main-1.5.0-r5.json`).
 
-### Step 5: Send broadcast message
+### Step 6: Send broadcast message
 
 Write broadcast message to tmp file:
 
 ```
+# Regular merge:
 `<current_branch>` 디벨롭 머지 완료되었습니다.
+
+# Mid-week merge:
+`<current_branch>` 디벨롭 머지 완료되었습니다. (중간 머지 #N)
 ```
 
 ```bash
@@ -339,9 +419,23 @@ python ~/.claude/skills/cocv-art-send-merge-result/send.py <current_branch> --fi
 python ~/.claude/skills/cocv-art-send-merge-result/send.py <current_branch> --file tmp_detail.txt
 ```
 
-### Step 7: Update state
+### Step 8: Update state
 
-Update `art-branches.json`: set current branch `state` → `merged`
+Append to `merges[]` array in `art-branches.json`:
+
+```json
+{
+  "number": <N>,
+  "type": "mid-week" | "regular",
+  "merge_branch": "<merge_branch>",
+  "merge_branch_head": "<HEAD hash>",
+  "merged_at": "<ISO 8601 KST>"
+}
+```
+
+Update state based on merge type:
+- **mid-week** → state back to `created` (branch stays active)
+- **regular** → state to `merged` (cycle ends)
 
 ---
 
