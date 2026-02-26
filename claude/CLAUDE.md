@@ -136,6 +136,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 - **Self-contained commands** — include all context via `` !`backtick` ``
 - **Clear skill interfaces** — CLI flags, predictable output to `private/`, error handling
 - **Simplify ruthlessly** — if a senior engineer says it's overcomplicated, simplify
+- **Kill by PID, not by name** — NEVER use `taskkill /IM node.exe` or similar broad kills. Find the specific PID first (`netstat -ano | grep :<port>`), then `taskkill /F /PID <pid>`. Broad kills will terminate Claude Code itself.
 - **Secrets** — use environment variables, NEVER store in this folder
 - **Documentation language** — all rules and docs in this file must be in **English only**
 
