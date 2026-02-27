@@ -354,9 +354,23 @@ If any WARN, ask user whether to proceed or abort.
 
 ### Step 8: Generate MR description
 
-**REQUIRED** — Run `/cocv-make-mr develop`. Do NOT write manually.
+**REQUIRED** — MR 스킬로 생성. Do NOT write manually.
 
-After `/cocv-make-mr` generates the description, override the title:
+**`/mr` 스킬은 회사에서 관리하는 외부 스킬**이므로 언제든 없어지거나 변경될 수 있다.
+
+```
+# 1. cocv-make-mr 최신화 (회사 스킬 → 로컬 스킬에 반영)
+/meta-update-skills cocv-make-mr
+
+# 2. MR 생성
+/mr develop
+```
+
+**Fallback:** `/mr` 커맨드가 존재하지 않거나 실행 실패 시:
+1. ⚠️ WARNING 출력: "`/mr` 스킬을 찾을 수 없습니다. `/cocv-make-mr`로 진행합니다."
+2. `/cocv-make-mr develop`로 폴백 실행
+
+After MR description is generated, override the title:
 
 **MR Title Convention:**
 
@@ -389,7 +403,7 @@ Validation:
   [PASS/WARN] Redirectors
 
 MR:
-  [ ] /cocv-make-mr develop 실행
+  [ ] /meta-update-skills cocv-make-mr → /mr develop 실행 (없으면 /cocv-make-mr develop)
   [ ] MR title convention 적용
   [ ] GitLab MR 생성 링크 제공
 ```
@@ -702,3 +716,28 @@ Use the auto-suggestion matrix from SKILL.md to recommend the next step.
 
 Available actions: create, merge-prep, merge-notice, merge-result, cleanup, status
 ```
+
+---
+
+## Stabilization Status
+
+> **2026-02-27 — deemo**
+>
+> 이 프로세스는 아직 불안정합니다. 다음 주(2026-03-02~)에도 계속 돌리면서
+> 안정화할 예정입니다.
+>
+> **목표:** 담당자(deemo) 이직 대비, 비개발자가 아트 브랜치 관리를 운영할 수
+> 있도록 프로세스를 견고하게 만드는 것.
+>
+> **현재 상태:**
+> - 수동 판단 포인트 15개 이상 → 자동화 필요
+> - 상태 검증 없음 → 잘못된 순서로 명령 실행 가능
+> - 에러 복구 절차 미비
+> - 비개발자용 가이드(RUNBOOK) 미작성
+>
+> **계획 (안정화되면 순차 적용):**
+> 1. 상태 검증 강제 — 각 명령 실행 전 상태 체크, 잘못된 상태면 올바른 다음 액션 안내
+> 2. 자동 판단 강화 — 요일 기반 머지 타입 자동 결정, merges[] 배열로 1st/2nd 자동 감지
+> 3. 에러 복구 절차 — cherry-pick/rebase 충돌, push 실패, Slack 전송 실패 시 복구 방법
+> 4. 비개발자 RUNBOOK — 주 단위 체크리스트, FAQ, 긴급 상황 대응, 상태 리셋 가이드
+> 5. auto-suggest 강화 — 명확한 지시 + 이유 + 예상 다음 단계 표시
