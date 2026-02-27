@@ -21,11 +21,21 @@ Existing individual commands (`/cocv-art-create-branch`, `/cocv-art-prepare-merg
 /cocv-manage-art-branch                  # Auto-suggest based on day + state
 /cocv-manage-art-branch create           # Create new art branch
 /cocv-manage-art-branch merge-prep       # Prepare merge branch + rebase
-/cocv-manage-art-branch merge-notice     # Send pre-merge Slack notice
-/cocv-manage-art-branch merge-result     # Send post-merge Slack result
+/cocv-manage-art-branch merge-notice     # 머지 예고 (사전 알림, 머지 전)
+/cocv-manage-art-branch merge-result     # 머지 결과 (완료 통보, 머지 후)
 /cocv-manage-art-branch cleanup          # Cherry-pick remnants + delete old branch
 /cocv-manage-art-branch status           # Show current state + next action
 ```
+
+### Naming Clarification
+
+| Command | 한국어 | Timing | 목적 |
+|---------|--------|--------|------|
+| `merge-notice` | 머지 **예고** | 머지 **전** | "내일 아침 8시 30분에 머지합니다" |
+| `merge-result` | 머지 **결과** | 머지 **후** | "머지 완료되었습니다 + 내역" |
+
+`merge-notice`는 advance notice(사전 예고)이지 notification(결과 알림)이 아님.
+혼동 시 상태를 확인: `merge_prepared` → 예고 전, `merge_noticed` → 결과 전.
 
 ---
 
@@ -157,11 +167,11 @@ Create new art branch from `origin/develop`, cherry-pick weekend commits from cu
 ### `merge-prep`
 Checkout art branch, create `art/merge/<versioning>` branch, rebase on `origin/develop`, push, update `art-branches.json` with merge info, generate MR description.
 
-### `merge-notice`
-Load thread info from `slack_threads.json`, confirm merge time with user, send pre-merge Slack notice via `send.py`.
+### `merge-notice` (머지 예고 — 머지 **전**)
+머지 **하기 전** 사전 알림. "내일 아침 8시 30분에 머지합니다" 형태의 예고를 Slack 스레드에 전송. 머지 시간을 사용자에게 확인 후 전송.
 
-### `merge-result`
-Analyze merged commits, generate Korean PM summary, save merge stats, send broadcast + thread-only detail via `send.py`.
+### `merge-result` (머지 결과 — 머지 **후**)
+머지 **완료 후** 결과 통보. 머지된 커밋 분석, 한국어 PM 요약 생성, Slack broadcast + 스레드 상세 전송.
 
 ### `cleanup`
 Find remnant commits after merge branch tip, cherry-pick into current branch, delete old branch from remote.

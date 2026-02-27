@@ -128,6 +128,19 @@ Thread info is auto-saved to `~/.claude/private/slack_threads.json` by the scrip
 
 Prepare the current art branch for merging into develop.
 
+### First merge vs 2nd+ merge
+
+**CRITICAL:** The procedure differs depending on whether this is the first merge or a subsequent merge for the same art branch.
+
+| Merge # | Method | Why |
+|---------|--------|-----|
+| 1st | Branch from art → rebase onto develop | All commits are new |
+| 2nd+ | Branch from develop → cherry-pick new commits only | Previous merge branch was rebased, so commit hashes differ from art branch. Rebasing the full art branch again causes binary conflicts on already-merged .umap files. |
+
+**How to determine merge number:** Check `merges[]` array in `art-branches.json`. If empty or missing, it's the 1st merge.
+
+---
+
 ### Step 1: Fetch
 
 ```bash
@@ -145,7 +158,11 @@ git -C <repo_path> pull origin <current_branch>
 
 Derive name: `art/<versioning>` → `art/merge/<versioning>`
 
-Example: `art/art-main-1.5.0-r5` → `art/merge/art-main-1.5.0-r5`
+- 1st merge: `art/merge/art-main-1.5.0-r5`
+- 2nd merge: `art/merge/art-main-1.5.0-r5-2`
+- 3rd merge: `art/merge/art-main-1.5.0-r5-3`
+
+#### For 1st merge (rebase method):
 
 ```bash
 git -C <repo_path> checkout -b <merge_branch>
@@ -153,13 +170,49 @@ git -C <repo_path> checkout -b <merge_branch>
 
 If branch already exists, ask user: delete and recreate, or abort.
 
-### Step 4: Rebase on origin/develop
+#### For 2nd+ merge (cherry-pick method):
+
+```bash
+git -C <repo_path> checkout -b <merge_branch> origin/develop
+```
+
+Creates the merge branch directly from `origin/develop`.
+
+### Step 4: Apply commits
+
+#### For 1st merge: Rebase on origin/develop
 
 ```bash
 git -C <repo_path> rebase origin/develop
 ```
 
 If conflicts: show conflicting files, ask user, do NOT auto-resolve.
+
+#### For 2nd+ merge: Cherry-pick new commits only
+
+**IMPORTANT:** The previous merge branch was rebased onto develop, so its commit hashes differ from the original art branch commits. You CANNOT use `merge_branch_head` from `art-branches.json` to find new commits via `git log <hash>..<art-branch>` — they are on different lineages and the range will return ALL commits, not just new ones.
+
+**Correct method — use `git cherry` with the local merge branch:**
+
+The previous merge branch should still exist locally. Use it to find commits NOT yet represented:
+
+```bash
+# Find the previous local merge branch name from art-branches.json merges[] array
+# e.g., art/merge/art-main-1.5.0-r5
+
+# List commits in art branch NOT in the previous merge branch
+git -C <repo_path> cherry -v <prev_merge_branch> origin/<current_branch>
+```
+
+This outputs `+` for commits not in the merge branch (truly new) and `-` for commits already represented (via rebase). Cherry-pick only the `+` commits:
+
+```bash
+git -C <repo_path> cherry-pick <hash1> <hash2> <hash3> ...
+```
+
+**Fallback if local merge branch was deleted:**
+
+Match by commit message — find the tip commit message of the merge branch from git reflog or `art-branches.json` notes, locate the corresponding original commit on the art branch, then cherry-pick everything after it.
 
 ### Step 5: Push
 
@@ -200,7 +253,7 @@ git -C <repo_path> rev-parse HEAD
 
 ### Step 7: Validate merge branch
 
-Run three checks before generating MR description.
+Run five checks before generating MR description.
 
 #### Check 1: Source code changes
 
@@ -239,6 +292,52 @@ git -C <repo_path> show <merge_branch>:<file_path> \
 - If any redirectors found: **WARN** — list file paths
 - Redirectors should be fixed up before merge
 
+#### Check 4: Asset file sizes
+
+Measure local file sizes of changed `.uasset` files. Report total size, file count, and top largest files.
+
+```bash
+git -C <repo_path> diff origin/develop...<merge_branch> --name-only \
+  | grep '\.uasset$' \
+  | while read f; do
+      if [ -f "$f" ]; then
+        sz=$(stat --printf="%s" "$f" 2>/dev/null)
+        echo "$sz $f"
+      fi
+    done | sort -rn
+```
+
+- Show summary: file count, total MB, largest file size
+- Show top 10 largest files
+- No hard threshold — informational for reviewer awareness
+
+#### Check 5: Asset naming convention
+
+Check changed `.uasset` and `.umap` filenames against UE naming rules (see `standards/unreal-engine-asset.md`). This is a path-based check — no UE Editor needed.
+
+Rules checked from filename:
+- **ASCII_ONLY** (ERROR): No Korean, CJK, emoji, or non-ASCII characters
+- **ALLOWED_CHARS** (ERROR): Only `[A-Za-z0-9_]` — no spaces, hyphens, dots
+- **NO_DOUBLE_UNDERSCORE** (WARN): No consecutive `__`
+- **NO_TRAILING_UNDERSCORE** (WARN): Name must not end with `_`
+
+```bash
+git -C <repo_path> diff origin/develop...<merge_branch> --name-only \
+  | grep -E '\.(uasset|umap)$' \
+  | while read f; do
+      name=$(basename "$f" | sed 's/\.\(uasset\|umap\)$//')
+      issues=""
+      echo "$name" | grep -qP '[^\x00-\x7F]' && issues="${issues}ASCII_ONLY "
+      echo "$name" | grep -qP '[^A-Za-z0-9_]' && issues="${issues}ALLOWED_CHARS "
+      echo "$name" | grep -q '__' && issues="${issues}DOUBLE_UNDERSCORE "
+      echo "$name" | grep -qP '_$' && issues="${issues}TRAILING_UNDERSCORE "
+      [ -n "$issues" ] && echo "FAIL|$name|$issues|$f"
+    done
+```
+
+- If any FAIL: **WARN** — list asset names and their violations
+- PREFIX and PASCAL_CASE checks require UE Editor context (asset class), so are not checked here
+
 #### Validation output
 
 ```
@@ -247,6 +346,8 @@ Merge Branch Validation
 [PASS] Source code changes: none
 [WARN] Non-whitelist authors: deemo (2 commits)
 [PASS] Redirectors: none
+[PASS] Asset size: 334 files, 72.0 MB total (max 5.8 MB)
+[PASS] Naming convention: 428 files checked, 0 violations
 ```
 
 If any WARN, ask user whether to proceed or abort.
@@ -331,19 +432,46 @@ Update `art-branches.json`: set current branch `state` → `merge_noticed`
 
 Send post-merge completion notification with Korean summary.
 
+### Step 0: Verify merge completion
+
+Before anything else, confirm the MR was actually merged into develop.
+
+```bash
+git -C <repo_path> fetch --all
+
+# Check 1: merge branch no longer exists on remote
+git -C <repo_path> branch -r --list "origin/<merge_branch>"
+
+# Check 2: develop log contains merge branch name
+git -C <repo_path> log origin/develop --oneline -20 --grep="<merge_branch>"
+```
+
+**Decision logic:**
+- Remote merge branch **gone** + develop log **contains** merge branch name → **merged**. Proceed directly.
+- Remote merge branch **still exists** → MR not yet merged. Stop and inform user.
+- Remote merge branch **gone** but develop log **doesn't contain** it → ambiguous. Ask user to confirm.
+
+This step eliminates guesswork. Do NOT ask the user "is it merged?" — verify programmatically.
+
 ### Step 1: Load thread info
 
 Read `~/.claude/private/slack_threads.json` for the current branch.
 
 ### Step 2: Analyze merged commits
 
+Use the **local** merge branch for comparison (remote was deleted after MR merge).
+
 ```bash
-git -C <repo_path> fetch --all
-git -C <repo_path> log origin/develop..origin/<current_branch> --oneline --no-merges
-git -C <repo_path> diff origin/develop...origin/<current_branch> --stat
+# Local merge branch should still exist
+git -C <repo_path> log origin/develop..<local_merge_branch> --oneline --no-merges
+git -C <repo_path> diff origin/develop...<local_merge_branch> --stat
 ```
 
-If merge branch exists, use that for comparison instead.
+Fallback: if local merge branch was also deleted, use `merge_branch_head` hash from `art-branches.json`:
+
+```bash
+git -C <repo_path> log origin/develop..<merge_branch_head> --oneline --no-merges
+```
 
 ### Step 3: Generate Korean PM summary
 
