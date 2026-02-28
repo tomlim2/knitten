@@ -69,24 +69,26 @@ def print_summary(summary: dict) -> None:
 
 def open_invoice_generator(summary: dict) -> None:
     """Open invoice generator web app with pre-filled data."""
-    # Build query params for pre-filling the form
+    import json
+
     lessons_data = []
     for l in summary["lessons"]:
-        lessons_data.append({
-            "date": l["date"],
-            "hours": l["duration_hours"],
-        })
+        hours = int(l["duration_hours"])
+        minutes = int((l["duration_hours"] - hours) * 60)
+        entry = {"date": l["date"], "hours": hours, "minutes": minutes}
+        if l.get("topic"):
+            entry["note"] = l["topic"]
+        lessons_data.append(entry)
 
-    # URL encode the data
     params = {
         "student": summary["student"],
         "rate": str(summary["hourly_rate"]),
-        # Note: lessons data would need JS handling on the web app side
+        "lessons": json.dumps(lessons_data, ensure_ascii=False),
+        "auto": "1",
     }
     query = urllib.parse.urlencode(params)
 
-    # Open skill server invoice page
-    url = f"http://localhost:972/skills/invoice-generator?{query}"
+    url = f"http://localhost:972/skills/tutoring-make-invoice?{query}"
     print(f"Opening: {url}")
     webbrowser.open(url)
 

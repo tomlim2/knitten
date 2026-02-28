@@ -7,14 +7,19 @@ from pathlib import Path
 from datetime import datetime
 
 
+def get_obsidian_claude_dir() -> Path:
+    """Get the Obsidian claude directory path."""
+    return Path.home() / "Library" / "Mobile Documents" / "iCloud~md~obsidian" / "Documents" / "MyNotes" / "claude"
+
+
 def get_lessons_dir() -> Path:
     """Get the lessons directory path."""
-    return Path.home() / ".claude" / "private" / "tutoring" / "lessons"
+    return get_obsidian_claude_dir() / "tutoring" / "lessons"
 
 
 def get_invoices_dir() -> Path:
     """Get the invoices directory path."""
-    return Path.home() / ".claude" / "private" / "tutoring" / "invoices"
+    return get_obsidian_claude_dir() / "tutoring" / "invoices"
 
 
 def get_student_dir(student_name: str) -> Path:

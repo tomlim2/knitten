@@ -651,6 +651,17 @@ app.get('/api/config', (req, res) => {
     res.json(config);
 });
 
+// Get invoice presets (bank info, students)
+app.get('/api/invoice/presets', (req, res) => {
+    const presetsPath = path.join(OBSIDIAN_CLAUDE_DIR, 'tutoring', 'presets.json');
+    try {
+        const data = JSON.parse(fs.readFileSync(presetsPath, 'utf-8'));
+        res.json(data);
+    } catch (e) {
+        res.status(404).json({ error: 'presets.json not found' });
+    }
+});
+
 // Save invoice PDF
 app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10mb' }), (req, res) => {
     const { studentName, year, month } = req.query;
@@ -659,7 +670,7 @@ app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10m
         return res.status(400).json({ error: 'Missing studentName, year, or month' });
     }
 
-    const invoicesDir = path.join(PRIVATE_DIR, 'tutoring', 'invoices');
+    const invoicesDir = path.join(OBSIDIAN_CLAUDE_DIR, 'tutoring', 'invoices');
 
     // Create directory if not exists
     if (!fs.existsSync(invoicesDir)) {

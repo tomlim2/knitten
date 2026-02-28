@@ -1,14 +1,98 @@
 // Version
-const VERSION = '1.3.1';
+const VERSION = '1.5.0';
 
-// Display version on load
-document.addEventListener('DOMContentLoaded', () => {
+// Display version on load and load presets
+document.addEventListener('DOMContentLoaded', async () => {
     const versionEl = document.getElementById('version');
     if (versionEl) versionEl.textContent = `Invoice Generator v${VERSION}`;
 
     const versionFormEl = document.getElementById('versionForm');
     if (versionFormEl) versionFormEl.textContent = `Invoice Generator v${VERSION}`;
+
+    // Load presets
+    try {
+        const res = await fetch('/api/invoice/presets');
+        if (res.ok) {
+            const presets = await res.json();
+            if (presets.default_teacher) {
+                const t = presets.default_teacher;
+                if (t.bank) document.getElementById('bankName').value = t.bank;
+                if (t.account) document.getElementById('accountNumber').value = t.account;
+                if (t.account_holder) document.getElementById('accountHolder').value = t.account_holder;
+            }
+            if (presets.students) {
+                populateStudentSelect(presets.students);
+            }
+        }
+    } catch (e) {
+        // presets not available, ignore
+    }
+
+    // Auto-fill from URL params
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('student')) {
+        document.getElementById('studentName').value = params.get('student');
+    }
+    if (params.has('rate')) {
+        document.getElementById('hourlyRate').value = params.get('rate');
+    }
+    if (params.has('lessons')) {
+        try {
+            const lessons = JSON.parse(params.get('lessons'));
+            if (lessons.length > 0) {
+                const container = document.getElementById('classEntries');
+                container.innerHTML = '';
+                lessons.forEach(l => {
+                    const entry = document.createElement('div');
+                    entry.className = 'class-entry';
+                    entry.innerHTML = `
+                        <input type="date" class="class-date" required>
+                        <input type="number" class="class-hours" placeholder="0" step="0.5" required>
+                        <input type="number" class="class-minutes" placeholder="0" step="15">
+                        <input type="text" class="class-note" placeholder="비고">
+                        <button type="button" class="btn btn-secondary btn-small" onclick="removeEntry(this)">삭제</button>
+                    `;
+                    container.appendChild(entry);
+                    entry.querySelector('.class-date').value = l.date;
+                    entry.querySelector('.class-hours').value = l.hours;
+                    if (l.minutes) entry.querySelector('.class-minutes').value = l.minutes;
+                    if (l.note) entry.querySelector('.class-note').value = l.note;
+                });
+            }
+        } catch (e) {
+            // invalid lessons JSON, ignore
+        }
+    }
+
+    // Auto-generate invoice if auto=1
+    if (params.get('auto') === '1') {
+        document.getElementById('invoiceForm').dispatchEvent(new Event('submit'));
+    }
 });
+
+// Populate student select dropdown
+function populateStudentSelect(students) {
+    const names = Object.keys(students);
+    if (names.length === 0) return;
+
+    const select = document.getElementById('studentSelect');
+    if (!select) return;
+
+    names.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+    });
+
+    select.addEventListener('change', () => {
+        const name = select.value;
+        if (!name) return;
+        const student = students[name];
+        document.getElementById('studentName').value = name;
+        if (student.hourly_rate) document.getElementById('hourlyRate').value = student.hourly_rate;
+    });
+}
 
 // Add new class entry
 document.getElementById('addEntry').addEventListener('click', () => {
@@ -168,6 +252,29 @@ document.getElementById('invoiceForm').addEventListener('submit', (e) => {
         year,
         month
     };
+
+    // Generate KakaoTalk message
+    const lessonDates = classes.map(cls => {
+        const d = new Date(cls.date);
+        return `${d.getMonth() + 1}/${d.getDate()}`;
+    }).join(', ');
+
+    const account = document.getElementById('accountNumber').value.replace(/-/g, '');
+    const topics = classes.map(cls => cls.note).filter(Boolean);
+    const topicSummary = topics.length > 0 ? topics.join(', ') : '[수업내용]';
+    const kakaoMsg = `안녕하세요, ${studentName}이 어머님!\n${month}월 수업료 청구드립니다.\n\n* 총 청구액: ${formatNumber(Math.round(totalHours * hourlyRate))}원\n* 입금 계좌: ${bankName} ${account} (${accountHolder})\n* 수업 기간: ${lessonDates}\n* 수업 내용: ${topicSummary}\n\n자세한 수업 내역은 별도 PDF로 보내드려요!`;
+
+    document.getElementById('kakaotalkMessage').textContent = kakaoMsg;
+});
+
+// Copy KakaoTalk message
+document.getElementById('copyKakao').addEventListener('click', () => {
+    const msg = document.getElementById('kakaotalkMessage').textContent;
+    navigator.clipboard.writeText(msg).then(() => {
+        const btn = document.getElementById('copyKakao');
+        btn.textContent = '복사 완료!';
+        setTimeout(() => { btn.textContent = '복사하기'; }, 1500);
+    });
 });
 
 // Edit invoice
