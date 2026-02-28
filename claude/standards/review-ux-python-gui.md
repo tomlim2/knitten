@@ -9,7 +9,7 @@ Static code audit checklist for detecting UX/UI issues in Python desktop GUI app
 **Review checklist** for Python GUI UX audits. This is a companion to:
 
 - `review-ux-writing.md` — UX writing checklist (shared across web and GUI)
-- `review-ux.md` — Web-specific UX/UI checklist
+- `review-ux.md` — Web-specific UX/UI checklista
 - `review-template.md` — Output format (for **structuring** review feedback)
 
 This document defines **what to check** from a UX perspective in Python GUI code. Use `review-template.md` for how to format findings.
