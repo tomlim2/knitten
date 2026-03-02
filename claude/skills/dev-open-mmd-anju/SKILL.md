@@ -3,7 +3,7 @@ description: Open MMD Player (Three.js WebGPU viewer). Use when opening or launc
 allowed-tools: Bash(npx:*), Bash(open:*), Bash(curl:*), Bash(lsof:*), Read
 ---
 
-# dev-open-mmd-player
+# dev-open-mmd-anju
 
 Open the MikuMikuDance web player for PMX model viewing and VMD animation playback.
 
