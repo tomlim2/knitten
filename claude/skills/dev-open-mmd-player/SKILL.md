@@ -1,5 +1,5 @@
 ---
-description: Open MMD Player (Three.js WebGPU viewer). Use when opening or launching the mmd-player web app.
+description: Open MMD Player (Three.js WebGPU viewer). Use when opening or launching the mmd-player-anju web app.
 allowed-tools: Bash(npx:*), Bash(open:*), Bash(curl:*), Bash(lsof:*), Read
 ---
 
@@ -13,7 +13,7 @@ ES modules require an HTTP server (file:// blocked by CORS).
 
 ### Step 1: Resolve Path
 - Read `~/.claude/private/repo-paths.json` to get the `anju` repo path
-- Player path: `<anju>/web/mmd-player`
+- Player path: `<anju>/web/mmd-player-anju`
 
 ### Step 2: Start Server
 - Check if port 3002 is already in use via `lsof -i :3002`
