@@ -7,7 +7,7 @@ if (args.length === 0 || args[0] === '--help') {
   console.log(`Usage: node parse-vmd.js <vmd_path> [options]
 
 Options:
-  --mode <type>     summary|keyframes|angles|velocity|extensions (default: summary)
+  --mode <type>     summary|keyframes|angles|velocity|extensions|quat (default: summary)
   --bones <list>    Comma-separated bone names (default: arm bones)
   --seconds <n>     Analyze first N seconds (default: 30)
   --all-bones       Show all bone names found in the VMD
@@ -16,6 +16,7 @@ Examples:
   node parse-vmd.js motion.vmd
   node parse-vmd.js motion.vmd --mode extensions --seconds 60
   node parse-vmd.js motion.vmd --mode angles --bones 左ひじ,右ひじ
+  node parse-vmd.js motion.vmd --mode quat --bones 左腕,右腕
   node parse-vmd.js motion.vmd --all-bones`);
   process.exit(0);
 }
@@ -279,6 +280,81 @@ if (mode === 'extensions') {
         extending = false;
         peakAngle = 0;
       }
+    }
+  }
+}
+
+if (mode === 'quat') {
+  for (const bone of targetBones) {
+    const kfs = (allKeyframes[bone] || []).filter(k => k.frame <= MAX_FRAME);
+    if (kfs.length === 0) {
+      console.log(`\n--- ${bone}: no keyframes ---`);
+      continue;
+    }
+
+    console.log(`\n--- ${bone}: quaternion quality (${kfs.length} keyframes) ---`);
+
+    // 1. Hemisphere flip detection (consecutive dot product < 0)
+    let flipCount = 0;
+    for (let i = 1; i < kfs.length; i++) {
+      const prev = kfs[i - 1], curr = kfs[i];
+      const dot = prev.qx * curr.qx + prev.qy * curr.qy + prev.qz * curr.qz + prev.qw * curr.qw;
+      if (dot < 0) flipCount++;
+    }
+    console.log(`  Hemisphere flips: ${flipCount} / ${kfs.length - 1} transitions${flipCount > 0 ? ' ⚠' : ''}`);
+
+    // 2. Consecutive angle delta + max
+    let maxDelta = 0, maxDeltaFrame = 0;
+    let totalDelta = 0;
+    for (let i = 1; i < kfs.length; i++) {
+      const delta = angularDelta(kfs[i - 1], kfs[i]);
+      totalDelta += delta;
+      if (delta > maxDelta) {
+        maxDelta = delta;
+        maxDeltaFrame = kfs[i].frame;
+      }
+    }
+    const avgDelta = kfs.length > 1 ? totalDelta / (kfs.length - 1) : 0;
+    console.log(`  Angle delta: avg ${fmtF(avgDelta, 1, 6)}°  max ${fmtF(maxDelta, 1, 6)}° at f${maxDeltaFrame}`);
+
+    // 3. Rotation axis distribution (X/Y/Z %)
+    let axisSum = [0, 0, 0];
+    for (const kf of kfs) {
+      const ax = Math.abs(kf.qx), ay = Math.abs(kf.qy), az = Math.abs(kf.qz);
+      const total = ax + ay + az;
+      if (total > 1e-6) {
+        axisSum[0] += ax / total;
+        axisSum[1] += ay / total;
+        axisSum[2] += az / total;
+      }
+    }
+    const axisTotal = axisSum[0] + axisSum[1] + axisSum[2];
+    if (axisTotal > 0) {
+      const px = (axisSum[0] / axisTotal * 100).toFixed(0);
+      const py = (axisSum[1] / axisTotal * 100).toFixed(0);
+      const pz = (axisSum[2] / axisTotal * 100).toFixed(0);
+      console.log(`  Axis distribution: X=${px}%  Y=${py}%  Z=${pz}%`);
+    }
+
+    // 4. Peak rotation frame + axis
+    let peakAngle = 0, peakFrame = 0, peakAxis = '';
+    for (const kf of kfs) {
+      const angle = quatAngle(kf.qw);
+      if (angle > peakAngle) {
+        peakAngle = angle;
+        peakFrame = kf.frame;
+        const ax = Math.abs(kf.qx), ay = Math.abs(kf.qy), az = Math.abs(kf.qz);
+        peakAxis = ax >= ay && ax >= az ? 'X' : ay >= az ? 'Y' : 'Z';
+      }
+    }
+    console.log(`  Peak rotation: ${fmtF(peakAngle, 1, 6)}° at f${peakFrame} (${fmtF(peakFrame / FPS, 1, 5)}s) axis=${peakAxis}${peakAngle > 120 ? ' ⚠ EXTREME' : ''}`);
+
+    // 5. Top 5 largest angle frames
+    const sorted = [...kfs].sort((a, b) => quatAngle(b.qw) - quatAngle(a.qw)).slice(0, 5);
+    console.log('  Top 5 frames:');
+    for (const kf of sorted) {
+      const angle = quatAngle(kf.qw);
+      console.log(`    f${fmt(kf.frame, 5)} (${fmtF(kf.frame / FPS, 1, 5)}s)  ${fmtF(angle, 1, 6)}°  q=[${fmtF(kf.qx, 3, 7)} ${fmtF(kf.qy, 3, 7)} ${fmtF(kf.qz, 3, 7)} ${fmtF(kf.qw, 3, 7)}]`);
     }
   }
 }

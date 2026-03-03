@@ -26,6 +26,7 @@ Read VMD motion data files, extract bone keyframes, and provide analysis includi
   - `angles` — Per-frame interpolated angles with bar chart
   - `velocity` — Angular velocity and deceleration spikes
   - `extensions` — Arm extension events (bent→straight transitions)
+  - `quat` — Quaternion quality analysis (hemisphere flips, angle deltas, axis distribution, peak rotation)
 - `[--bones <list>]` - Comma-separated bone names (default: arm bones)
 - `[--seconds <n>]` - Analyze first N seconds (default: 30)
 
