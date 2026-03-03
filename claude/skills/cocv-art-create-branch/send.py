@@ -90,9 +90,10 @@ def save_thread_info(branch_name, channel, ts):
     print(f"OK: Thread info saved for '{branch_name}'")
 
 
-def build_message(branch_name, template):
+def build_message(branch_name, template, config):
     """Build announcement message from template."""
-    return template.replace("{branch_name}", branch_name)
+    weekly_emoji = config.get("weekly_emoji", "")
+    return template.replace("{branch_name}", branch_name).replace("{weekly_emoji}", weekly_emoji)
 
 
 def main():
@@ -104,7 +105,7 @@ def main():
     config = load_slack_config()
     channel = config["art_channel"]
     template = config.get("art_new_branch_message", "@here\n새 아트 브렌치가 준비되었습니다.\n`{branch_name}`\n\n아래 순서대로 진행해 주세요.\n1. 위 브렌치로 이동 (체크아웃)\n2. 다운로드 바이너리스")
-    message = build_message(args.branch, template)
+    message = build_message(args.branch, template, config)
 
     if args.dry_run:
         print("=== DRY RUN ===")

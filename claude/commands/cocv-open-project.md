@@ -1,11 +1,11 @@
 ---
-description: Open CINEV UE project in Unreal Editor
-allowed-tools: Bash(start:*), Read
+description: Build and open CINEV UE project in Unreal Editor
+allowed-tools: Bash(start:*), Bash(*UnrealBuildTool*), Bash(*dotnet*), Bash(test:*), Read
 ---
 
 # Open CINEV Project
 
-Launch CINEVStudio in Unreal Editor.
+Build CINEVStudio, then launch in Unreal Editor.
 
 ## Execution
 
@@ -15,8 +15,17 @@ Launch CINEVStudio in Unreal Editor.
 2. Build paths:
    - Editor: `<cinev-engine>/Engine/Binaries/Win64/UnrealEditor.exe`
    - Project: `<cinev-studio>/CINEVStudio/CINEVStudio.uproject`
-3. Verify both files exist
-4. Launch (non-blocking):
+   - BuildTool: `<cinev-engine>/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe`
+3. Verify files exist
+4. Build (blocking):
+
+```bash
+"<cinev-engine>/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool.exe" CINEVStudioEditor Win64 Development -Project="<uproject>" -WaitMutex -FromMsBuild
+```
+
+If build fails, report the error and stop. Do NOT launch the editor.
+
+5. Launch (non-blocking):
 
 ```bash
 start "" "<editor_exe>" "<uproject>"

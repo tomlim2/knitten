@@ -77,9 +77,19 @@ git -C <repo_path> push -u origin <new_branch>
 
 Check for remnant commits first (commits after merge branch tip):
 
+**IMPORTANT:** `merge_branch_head`는 리베이스/체리픽된 머지 브랜치의 해시이므로, 아트 브랜치와 lineage가 다르다. `merge_branch_head..origin/<art_branch>` 범위를 사용하면 이미 머지된 커밋까지 전부 반환된다.
+
+**올바른 방법:**
+
 ```bash
-# If merge_branch_head exists in art-branches.json
-git -C <repo_path> log <merge_branch_head>..origin/<current_branch> --oneline --no-merges
+# 1. merge_branch_head의 커밋 메시지 확인
+git -C <repo_path> log <merge_branch_head> --oneline -1
+
+# 2. 아트 브랜치에서 같은 메시지의 원본 커밋 찾기
+git -C <repo_path> log origin/<current_branch> --oneline --grep="<commit_message>"
+
+# 3. 원본 해시 기준으로 실제 잔여분만 추출
+git -C <repo_path> log <original_hash>..origin/<current_branch> --oneline --no-merges
 ```
 
 If remnants exist, cherry-pick them first (with user confirmation).
@@ -605,12 +615,24 @@ Read `art-branches.json`:
 - Current branch = `current`
 - Old branch = the one being cleaned up (ask user if ambiguous, or use the previous `current` from history)
 
-### Step 2: Find merge branch tip
+### Step 2: Find merge branch tip on the art branch
 
-Look up `merge_branch_head` from the old branch's history entry.
+**IMPORTANT:** `merge_branch_head`는 리베이스/체리픽된 머지 브랜치의 해시이므로, 아트 브랜치와 lineage가 다르다. `merge_branch_head..origin/<art_branch>` 범위를 사용하면 이미 머지된 커밋까지 전부 반환된다.
+
+**올바른 방법:**
+
+```bash
+# 1. merge_branch_head의 커밋 메시지 확인
+git -C <repo_path> log <merge_branch_head> --oneline -1
+
+# 2. 아트 브랜치에서 같은 메시지의 원본 커밋 찾기
+git -C <repo_path> log origin/<old_branch> --oneline --grep="<commit_message>"
+
+# 3. 원본 해시를 사용
+```
 
 Fallback sources (in order):
-1. `art-branches.json` → `merge_branch_head`
+1. `art-branches.json` → `merge_branch_head` → 커밋 메시지로 원본 해시 역추적
 2. Local/remote branch: `git branch -a | grep art/merge/`
 3. Ask user for commit hash
 
@@ -620,7 +642,8 @@ Fallback sources (in order):
 git -C <repo_path> fetch --all
 git -C <repo_path> checkout <current_branch>
 git -C <repo_path> pull origin <current_branch>
-git -C <repo_path> log <merge_branch_tip>..origin/<old_branch> --oneline --no-merges
+# <original_hash> = Step 2에서 찾은 아트 브랜치 원본 해시
+git -C <repo_path> log <original_hash>..origin/<old_branch> --oneline --no-merges
 ```
 
 Show list and count. If none, skip to Step 5.
