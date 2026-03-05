@@ -35,7 +35,7 @@ Existing individual commands (`/cocv-art-create-branch`, `/cocv-art-prepare-merg
 | `merge-result` | 머지 **결과** | 머지 **후** | "머지 완료되었습니다 + 내역" |
 
 `merge-notice`는 advance notice(사전 예고)이지 notification(결과 알림)이 아님.
-혼동 시 상태를 확인: `merge_prepared` → 예고 전, `merge_noticed` → 결과 전.
+혼동 시 상태를 확인: `created` → 예고 전, `merge_noticed` → prep 전, `merge_prepared` → 결과 전.
 
 ---
 
@@ -52,8 +52,9 @@ All git commands run against the resolved repo path.
 Each history entry in `art-branches.json` has a `state` field:
 
 ```
-created → merge_prepared → merge_noticed → merged/created → archived
-                                              ↑
+created → merge_noticed → merge_prepared → merged/created → archived
+             ↑ (Thu)         ↑ (Fri)           ↑ (Fri)
+             예고만          rebase+MR       MR 머지 후 결과
                                    mid-week: back to created
                                    regular (Fri): → archived
 ```
@@ -63,10 +64,10 @@ created → merge_prepared → merge_noticed → merged/created → archived
 | Action | From State | To State |
 |--------|-----------|----------|
 | `create` | (none / archived) | `created` |
-| `merge-prep` | `created` | `merge_prepared` |
-| `merge-notice` | `merge_prepared` | `merge_noticed` |
-| `merge-result (mid-week)` | `merge_noticed` | `created` |
-| `merge-result (regular)` | `merge_noticed` | `merged` |
+| `merge-notice` | `created` | `merge_noticed` |
+| `merge-prep` | `merge_noticed` | `merge_prepared` |
+| `merge-result (mid-week)` | `merge_prepared` | `created` |
+| `merge-result (regular)` | `merge_prepared` | `merged` |
 | `cleanup` | `merged` | `archived` |
 
 ### Multi-Merge Support
@@ -133,9 +134,10 @@ When `/cocv-manage-art-branch` runs with no arguments:
 | Mon | merged / archived / none | `create` — new weekly branch |
 | Mon | created | `status` — already created this week |
 | Tue-Wed | created | `status` — work in progress |
-| Thu | created | `merge-prep` then `merge-notice` |
-| Thu | merge_prepared | `merge-notice` |
-| Fri | merge_noticed | `merge-result` (after MR is merged) |
+| Thu | created | `merge-notice` — 내일 머지 예고만 |
+| Thu | merge_noticed | `status` — 예고 완료, 내일 머지 대기 |
+| Fri | merge_noticed | `merge-prep` — rebase + MR 생성 |
+| Fri | merge_prepared | `merge-result` (MR 머지 후 결과 전송) |
 | Fri | merged | `status` — cycle complete |
 | Any | * | Show state + list available actions |
 
