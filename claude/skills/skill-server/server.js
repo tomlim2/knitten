@@ -17,7 +17,17 @@ const SKILLS_DIR = path.join(CLAUDE_DIR, 'skills');
 const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
 const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
-const OBSIDIAN_CLAUDE_DIR = path.join(require('os').homedir(), 'Library', 'Mobile Documents', 'iCloud~md~obsidian', 'Documents', 'MyNotes', 'claude');
+const OBSIDIAN_CLAUDE_DIR = (() => {
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    try {
+        const repos = JSON.parse(fs.readFileSync(repoPathsFile, 'utf-8'));
+        const entry = repos.obsidian;
+        const obsidianPath = typeof entry === 'string' ? entry : entry?.path;
+        if (obsidianPath) return path.join(obsidianPath, 'claude');
+    } catch {}
+    // fallback: macOS iCloud path
+    return path.join(require('os').homedir(), 'Library', 'Mobile Documents', 'iCloud~md~obsidian', 'Documents', 'MyNotes', 'claude');
+})();
 
 // View engine
 app.set('view engine', 'ejs');
