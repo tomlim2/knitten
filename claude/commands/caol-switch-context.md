@@ -18,12 +18,48 @@ Context briefing and switcher. Shows where you left off across 회사/개인/부
 Read these files first:
 
 1. `~/.claude/private/repo-paths.json` — repo paths (each entry: `{ path, description }` or plain string)
-2. `~/.claude/private/contexts.json` — personal projects
+2. `~/.claude/private/contexts.json` — personal projects (fallback to defaults below if missing)
 3. `~/.claude/private/art-branches.json` — CINEV art branch state
 
 Helper: to get the repo path from an entry, use `typeof entry === 'string' ? entry : entry.path`.
 
 Obsidian claude dir: resolve `obsidian` key from repo-paths.json, then append `/claude`.
+
+### Default Project Data (used if contexts.json is missing)
+
+```json
+{
+  "personal": {
+    "projects": [
+      {
+        "name": "포트폴리오 준비",
+        "status": "active",
+        "repo": null,
+        "note": "노션 기반 포폴 작업 선행 중",
+        "link": "https://www.notion.so/5bcc7d0f600b4a1c87ed13766698e8e7?v=316b202b5f4880799fe6000c51158d65"
+      },
+      {
+        "name": "MMD Player",
+        "status": "active",
+        "repo": "anju",
+        "path": "web/mmd-player-anju",
+        "todo": [
+          "VMD 업로드 폴더 위치 여는 기능",
+          "PMX 스위칭 시 T포즈 로드 → 모션 확인 후 모델 전환",
+          "UX 정리: 다음곡/이전곡, 우클릭 3초 앞으로",
+          "다양한 BG FX 추가"
+        ]
+      },
+      {
+        "name": "Matcap Painting",
+        "status": "active",
+        "repo": "anju",
+        "note": "포스트프로세스 등 계속 개발 중"
+      }
+    ]
+  }
+}
+```
 
 ## Flow A: No Argument (overview + select)
 
