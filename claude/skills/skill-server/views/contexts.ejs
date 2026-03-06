@@ -1,0 +1,185 @@
+<!-- Design System: v1.9.0 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <%- include('partials/head', {config}) %>
+    <style>
+        .ctx-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .ctx-card {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 24px;
+            background: var(--color-white);
+        }
+        .ctx-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .ctx-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        .ctx-card-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .ctx-badge-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .ctx-badge-idle {
+            background: var(--color-gray-light);
+            color: var(--color-gray-mid);
+        }
+        .ctx-state {
+            font-size: 12px;
+            color: var(--color-gray-dark);
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: var(--color-gray-light);
+            border-radius: 4px;
+            font-family: var(--font-mono);
+        }
+        .ctx-section-label {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: var(--color-gray-mid);
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+        .ctx-item-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .ctx-item-list li {
+            font-size: 12px;
+            color: var(--color-text);
+            padding: 4px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ctx-item-date {
+            color: var(--color-gray-mid);
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .ctx-item-msg {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .ctx-empty {
+            font-size: 12px;
+            color: var(--color-gray-mid);
+            padding: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header', {config, activePage}) %>
+    <main class="main">
+        <div class="ctx-grid">
+
+            <!-- 회사 (CINEV) -->
+            <div class="ctx-card">
+                <div class="ctx-card-header">
+                    <span class="ctx-card-title">회사 — CINEV</span>
+                    <span class="ctx-card-badge <%= contexts.cinev.badge %>"><%= contexts.cinev.badgeLabel %></span>
+                </div>
+                <% if (contexts.cinev.artState) { %>
+                <div class="ctx-state"><%= contexts.cinev.artState %></div>
+                <% } %>
+                <div class="ctx-section-label">Recent Commits</div>
+                <% if (contexts.cinev.commits.length > 0) { %>
+                <ul class="ctx-item-list">
+                    <% contexts.cinev.commits.forEach(c => { %>
+                    <li>
+                        <span class="ctx-item-msg"><%= c.msg %></span>
+                        <span class="ctx-item-date"><%= c.date %></span>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p class="ctx-empty">커밋 없음</p>
+                <% } %>
+            </div>
+
+            <!-- 개인 (Personal) -->
+            <div class="ctx-card">
+                <div class="ctx-card-header">
+                    <span class="ctx-card-title">개인</span>
+                    <span class="ctx-card-badge <%= contexts.personal.badge %>"><%= contexts.personal.badgeLabel %></span>
+                </div>
+                <% contexts.personal.projects.forEach(proj => { %>
+                <div class="ctx-section-label" style="display:flex;align-items:center;gap:8px;">
+                    <%= proj.name %>
+                    <span class="ctx-card-badge <%= proj.status === 'active' ? 'ctx-badge-active' : 'ctx-badge-idle' %>" style="font-size:10px;"><%= proj.status === 'active' ? 'Active' : proj.note || 'Done' %></span>
+                </div>
+                <% if (proj.commits && proj.commits.length > 0) { %>
+                <ul class="ctx-item-list">
+                    <% proj.commits.forEach(c => { %>
+                    <li>
+                        <span class="ctx-item-msg"><%= c.msg %></span>
+                        <span class="ctx-item-date"><%= c.date %></span>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else if (!proj.repo) { %>
+                <p class="ctx-empty">repo 미연결</p>
+                <% } else { %>
+                <p class="ctx-empty">커밋 없음</p>
+                <% } %>
+                <% }); %>
+            </div>
+
+            <!-- 부업 (Side Work) -->
+            <div class="ctx-card">
+                <div class="ctx-card-header">
+                    <span class="ctx-card-title">부업</span>
+                    <span class="ctx-card-badge <%= contexts.side.badge %>"><%= contexts.side.badgeLabel %></span>
+                </div>
+                <div class="ctx-section-label">Tutoring</div>
+                <% if (contexts.side.tutoring.length > 0) { %>
+                <ul class="ctx-item-list">
+                    <% contexts.side.tutoring.forEach(t => { %>
+                    <li>
+                        <span class="ctx-item-msg"><%= t.student %> — <%= t.topic %></span>
+                        <span class="ctx-item-date"><%= t.date %></span>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p class="ctx-empty">최근 수업 없음</p>
+                <% } %>
+                <div class="ctx-section-label">Consulting</div>
+                <% if (contexts.side.consulting.length > 0) { %>
+                <ul class="ctx-item-list">
+                    <% contexts.side.consulting.forEach(c => { %>
+                    <li>
+                        <span class="ctx-item-msg"><%= c.company %> — <%= c.topic %></span>
+                        <span class="ctx-item-date"><%= c.date %></span>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p class="ctx-empty">최근 컨설팅 없음</p>
+                <% } %>
+            </div>
+
+        </div>
+    </main>
+    <%- include('partials/footer', {config}) %>
+</body>
+</html>

@@ -9,7 +9,7 @@
 }
 
 ul, ol {
-    list-style: none;
+    list-style: none !important;
 }
 
 html {
@@ -833,7 +833,7 @@ table tr:nth-child(even) {
     background: var(--color-bg);
 }
 
-li {
+.markdown-body li {
     font-size: 12px;
     line-height: 1.6;
     margin-bottom: 6px;
@@ -841,15 +841,11 @@ li {
     position: relative;
 }
 
-ul li::before {
+.markdown-body ul li::before {
     content: '•';
     position: absolute;
     left: 0;
     color: var(--color-gray-mid);
-}
-
-.item-list li::before {
-    content: none;
 }
 
 .text-semibold {

@@ -383,6 +383,166 @@ app.get('/', (req, res) => {
     res.render('home', { recentLearnings, recentStandards, recentWines, refs, hardware, totalCount, config, activePage: '/' });
 });
 
+// Context view helpers
+const { execSync } = require('child_process');
+
+function getRecentCommits(repoPath, count = 5, subPath = null) {
+    try {
+        const pathArg = subPath ? ` -- "${subPath}"` : '';
+        const out = execSync(
+            `git -C "${repoPath}" log --oneline --format="%s||%ad" --date=format:"%m/%d" -${count}${pathArg}`,
+            { encoding: 'utf-8', timeout: 5000 }
+        ).trim();
+        if (!out) return [];
+        return out.split('\n').map(line => {
+            const [msg, date] = line.split('||');
+            return { msg, date };
+        });
+    } catch { return []; }
+}
+
+function getRecentLessons(obsidianDir, count = 3) {
+    const lessonsDir = path.join(obsidianDir, 'tutoring', 'lessons');
+    const results = [];
+    try {
+        const students = fs.readdirSync(lessonsDir).filter(d =>
+            fs.statSync(path.join(lessonsDir, d)).isDirectory()
+        );
+        for (const student of students) {
+            const files = fs.readdirSync(path.join(lessonsDir, student))
+                .filter(f => f.endsWith('.md'))
+                .sort().reverse();
+            for (const f of files.slice(0, 2)) {
+                const match = f.match(/^(\d{4}-\d{2}-\d{2})_(.+?)(_done)?\.md$/);
+                if (match) {
+                    results.push({
+                        student,
+                        topic: match[2].replace(/_/g, ' '),
+                        date: match[1].slice(5).replace('-', '/')
+                    });
+                }
+            }
+        }
+    } catch {}
+    // Consultations
+    const consultationsDir = path.join(obsidianDir, 'tutoring', 'consultations');
+    try {
+        if (fs.existsSync(consultationsDir)) {
+            const files = fs.readdirSync(consultationsDir).filter(f => f.endsWith('.md'));
+            for (const file of files) {
+                const content = fs.readFileSync(path.join(consultationsDir, file), 'utf-8');
+                const student = file.replace('.md', '');
+                const sessions = [...content.matchAll(/^###\s+(\d{4}-\d{2}-\d{2})\s*\|\s*(.+)/gm)];
+                for (const s of sessions.slice(-2)) {
+                    results.push({
+                        student,
+                        topic: '(면담) ' + s[2].trim(),
+                        date: s[1].slice(5).replace('-', '/')
+                    });
+                }
+            }
+        }
+    } catch {}
+    return results.sort((a, b) => b.date > a.date ? 1 : -1).slice(0, count);
+}
+
+function getRecentConsulting(obsidianDir, count = 3) {
+    const consultDir = path.join(obsidianDir, 'consulting');
+    const results = [];
+    try {
+        const files = fs.readdirSync(consultDir).filter(f => f.endsWith('.md'));
+        for (const file of files) {
+            const content = fs.readFileSync(path.join(consultDir, file), 'utf-8');
+            const companyMatch = content.match(/^#\s+(.+)/m);
+            const company = companyMatch ? companyMatch[1].replace(/ - Consulting History/, '') : file.replace('.md', '');
+            const sessions = [...content.matchAll(/^###\s+(\d{4}-\d{2}-\d{2})\s*\|\s*(.+)/gm)];
+            for (const s of sessions.slice(-2)) {
+                results.push({
+                    company,
+                    topic: s[2].trim(),
+                    date: s[1].slice(5).replace('-', '/')
+                });
+            }
+        }
+    } catch {}
+    return results.sort((a, b) => b.date > a.date ? 1 : -1).slice(0, count);
+}
+
+function daysAgo(dateStr) {
+    const d = new Date(dateStr);
+    const now = new Date();
+    return Math.floor((now - d) / 86400000);
+}
+
+app.get('/contexts', (req, res) => {
+    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    let repos = {};
+    try { repos = JSON.parse(fs.readFileSync(repoPathsFile, 'utf-8')); } catch {}
+
+    // CINEV
+    const cinevPath = getRepoPath(repos['cinev-studio'] || repos['cinev-studio-git']);
+    const cinevCommits = cinevPath ? getRecentCommits(cinevPath) : [];
+    let artState = null;
+    try {
+        const ab = JSON.parse(fs.readFileSync(path.join(PRIVATE_DIR, 'art-branches.json'), 'utf-8'));
+        const current = ab.history.find(h => h.branch === ab.current);
+        if (current) {
+            artState = `art: ${ab.current}  state: ${current.state}  since: ${current.created_at}`;
+        }
+    } catch {}
+    const cinevLastDate = cinevCommits[0]?.date;
+    const cinevActive = cinevLastDate && daysAgo(new Date().getFullYear() + '-' + cinevLastDate.replace('/', '-')) <= 3;
+
+    // Personal
+    let personalProjects = [];
+    try {
+        const ctxData = JSON.parse(fs.readFileSync(path.join(PRIVATE_DIR, 'contexts.json'), 'utf-8'));
+        personalProjects = (ctxData.personal?.projects || []).map(p => {
+            const proj = { ...p, commits: [] };
+            if (p.repo && repos[p.repo]) {
+                const repoPath = getRepoPath(repos[p.repo]);
+                if (p.path) {
+                    proj.commits = getRecentCommits(repoPath, 3, p.path);
+                } else {
+                    proj.commits = getRecentCommits(repoPath, 3);
+                }
+            }
+            return proj;
+        });
+    } catch {}
+    const personalActive = personalProjects.some(p => p.status === 'active');
+
+    // Side work
+    const tutoring = getRecentLessons(OBSIDIAN_CLAUDE_DIR);
+    const consulting = getRecentConsulting(OBSIDIAN_CLAUDE_DIR);
+    const sideLastDate = tutoring[0]?.date || consulting[0]?.date;
+    const sideActive = sideLastDate && daysAgo(new Date().getFullYear() + '-' + sideLastDate.replace('/', '-')) <= 7;
+
+    res.render('contexts', {
+        config,
+        activePage: '/contexts',
+        contexts: {
+            cinev: {
+                commits: cinevCommits,
+                artState,
+                badge: cinevActive ? 'ctx-badge-active' : 'ctx-badge-idle',
+                badgeLabel: cinevActive ? 'Active' : 'Idle'
+            },
+            personal: {
+                projects: personalProjects,
+                badge: personalActive ? 'ctx-badge-active' : 'ctx-badge-idle',
+                badgeLabel: personalActive ? 'Active' : 'Idle'
+            },
+            side: {
+                tutoring,
+                consulting,
+                badge: sideActive ? 'ctx-badge-active' : 'ctx-badge-idle',
+                badgeLabel: sideActive ? 'Active' : 'Idle'
+            }
+        }
+    });
+});
+
 app.get('/skills', (req, res) => {
     const skills = discoverSkills();
     const skillNames = new Set(skills.map(s => s.id));

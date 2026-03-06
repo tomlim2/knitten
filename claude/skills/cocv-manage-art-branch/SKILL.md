@@ -137,9 +137,29 @@ When `/cocv-manage-art-branch` runs with no arguments:
 | Thu | created | `merge-notice` — 내일 머지 예고만 |
 | Thu | merge_noticed | `status` — 예고 완료, 내일 머지 대기 |
 | Fri | merge_noticed | `merge-prep` — rebase + MR 생성 |
-| Fri | merge_prepared | `merge-result` (MR 머지 후 결과 전송) |
+| Fri | merge_prepared | Auto-verify merge branch (see below), then `merge-result` if merged |
 | Fri | merged | `status` — cycle complete |
 | Any | * | Show state + list available actions |
+
+### Merge Branch Auto-Verification
+
+When state is `merge_prepared`, auto-suggest MUST verify merge completion before suggesting next action. Do NOT ask the user — check programmatically:
+
+```bash
+git -C <repo_path> fetch --all
+# Check 1: merge branch still on remote?
+git -C <repo_path> branch -r --list "origin/<merge_branch>"
+# Check 2: develop contains merge commit?
+git -C <repo_path> log origin/develop --oneline -20 --grep="<merge_branch>"
+```
+
+| Remote branch | Develop log | Result |
+|---------------|-------------|--------|
+| Gone | Contains merge | **Merged** — proceed to `merge-result` directly |
+| Still exists | — | **Not merged** — show "MR 아직 머지되지 않음" and stop |
+| Gone | No match | **Ambiguous** — ask user to confirm |
+
+When verified as merged, skip confirmation and execute `merge-result` immediately (commit analysis, summary generation, Slack send with dry-run preview).
 
 ### Display Format
 
