@@ -23,6 +23,12 @@ claude/paste-cache/
 claude/tasks/
 claude/session-env/
 claude/statsig/
+claude/telemetry/
+claude/backups/
+claude/mcp-needs-auth-cache.json
+
+# Python cache
+__pycache__/
 
 # Future-proof: catch any new runtime files
 claude/*.log
