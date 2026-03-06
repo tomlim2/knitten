@@ -18,7 +18,7 @@ Context briefing and switcher. Shows where you left off across 회사/개인/부
 Read these files first:
 
 1. `~/.claude/private/repo-paths.json` — repo paths (each entry: `{ path, description }` or plain string)
-2. `~/.claude/private/contexts.json` — personal projects (fallback to defaults below if missing)
+2. `{obsidianClaudeDir}/contexts.json` — personal projects (fallback to defaults below if missing)
 3. `~/.claude/private/art-branches.json` — CINEV art branch state
 
 Helper: to get the repo path from an entry, use `typeof entry === 'string' ? entry : entry.path`.

@@ -496,7 +496,7 @@ app.get('/contexts', (req, res) => {
     // Personal
     let personalProjects = [];
     try {
-        const ctxData = JSON.parse(fs.readFileSync(path.join(PRIVATE_DIR, 'contexts.json'), 'utf-8'));
+        const ctxData = JSON.parse(fs.readFileSync(path.join(OBSIDIAN_CLAUDE_DIR, 'contexts.json'), 'utf-8'));
         personalProjects = (ctxData.personal?.projects || []).map(p => {
             const proj = { ...p, commits: [] };
             if (p.repo && repos[p.repo]) {
