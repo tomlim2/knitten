@@ -1,19 +1,16 @@
 # CLAUDE.md
 
-Global Claude Code configuration for all projects on this machine.
+Central hub for Claude Code — all commands, skills, standards, and configuration live here and symlink to `~/.claude`. Works on both Windows (work) and macOS (home).
 
 ---
 
 ## Setup
 
-**This repo (`caol-ila`) is the global Claude Code configuration.**
-
 ```
-<repo>/claude/  →  symlinked to  →  ~/.claude
+caol-ila/claude/  →  symlinked to  →  ~/.claude
 ```
 
-Works on both Windows (work) and macOS (home).
-
+- **Role:** Single source of truth for all Claude Code configuration across machines and projects
 - **Skill server port:** 972
 - **Slack mention:** `<@U04MCMGPN05>` / emoji: `:arnyang_ugly:`
 
@@ -24,8 +21,8 @@ Works on both Windows (work) and macOS (home).
 ```
 claude/                          # Symlinked to ~/.claude
 ├── CLAUDE.md                    # This file (loaded every session)
-├── commands/                    # Slash commands (39+ .md files)
-├── skills/                      # Skills with SKILL.md (25+ directories)
+├── commands/                    # Slash commands (69+ .md files)
+├── skills/                      # Skills with SKILL.md (53+ directories)
 │   ├── meta-new-command/        # Command/skill naming rulebook
 │   └── meta-new-skill/          # Skill creation guide
 ├── standards/                   # Detailed reference docs (read on-demand)
@@ -66,7 +63,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 **MANDATORY: `{category}-{verb}-{subject}` pattern.**
 
 - Lowercase only, hyphens as separators, max 64 characters
-- Categories: `git`, `tutoring`, `cocv`, `ue`, `learn`, `meta`, `drink`
+- Categories: `meta`, `cocv`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
 - Examples: `git-collect-commits`, `ue-analyze-material`, `meta-new-command`
 - Full rules: @~/.claude/skills/meta-new-command/SKILL.md
 
@@ -109,6 +106,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | `cocv-slack.md` | Before Slack operations |
 | `javascript.md`, `css.md` | Before writing JS/CSS |
 | `three-shader-language.md` | Before Three.js TSL shaders |
+| `ui-design.md` | Before designing or reviewing any UI (Apple HIG baseline) |
 | `design-system.md` | Before creating UI/web pages |
 | `unreal-engine-cpp.md`, `unreal-engine-asset.md` | Before UE C++ or asset work |
 | `review-code-*.md`, `review-template.md` | Code reviews (JS, CSS, UE C++, TSL, UE Python) |

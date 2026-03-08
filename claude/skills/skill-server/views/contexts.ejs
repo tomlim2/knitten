@@ -178,6 +178,27 @@
                 <% } %>
             </div>
 
+            <!-- 취미 (Hobby) -->
+            <div class="ctx-card">
+                <div class="ctx-card-header">
+                    <span class="ctx-card-title">취미</span>
+                    <span class="ctx-card-badge <%= contexts.hobby.badge %>"><%= contexts.hobby.badgeLabel %></span>
+                </div>
+                <div class="ctx-section-label">Recent Drinks</div>
+                <% if (contexts.hobby.drinks.length > 0) { %>
+                <ul class="ctx-item-list">
+                    <% contexts.hobby.drinks.forEach(d => { %>
+                    <li>
+                        <span class="ctx-item-msg"><%= d.name %><% if (d.venue) { %> — <%= d.venue %><% } %></span>
+                        <span class="ctx-item-date"><%= d.date %></span>
+                    </li>
+                    <% }); %>
+                </ul>
+                <% } else { %>
+                <p class="ctx-empty">기록 없음</p>
+                <% } %>
+            </div>
+
         </div>
     </main>
     <%- include('partials/footer', {config}) %>

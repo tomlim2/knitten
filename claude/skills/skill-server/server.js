@@ -518,6 +518,17 @@ app.get('/contexts', (req, res) => {
     const sideLastDate = tutoring[0]?.date || consulting[0]?.date;
     const sideActive = sideLastDate && daysAgo(new Date().getFullYear() + '-' + sideLastDate.replace('/', '-')) <= 7;
 
+    // Hobby — recent drinks
+    let recentDrinks = [];
+    try {
+        const drinksData = JSON.parse(fs.readFileSync(path.join(OBSIDIAN_CLAUDE_DIR, 'drinks', 'drinks.json'), 'utf-8'));
+        recentDrinks = (drinksData.drinks || [])
+            .filter(d => d.date)
+            .sort((a, b) => b.date.localeCompare(a.date))
+            .slice(0, 5)
+            .map(d => ({ name: d.name, type: d.type, venue: d.venue || '', date: d.date }));
+    } catch {}
+
     res.render('contexts', {
         config,
         activePage: '/contexts',
@@ -538,6 +549,11 @@ app.get('/contexts', (req, res) => {
                 consulting,
                 badge: sideActive ? 'ctx-badge-active' : 'ctx-badge-idle',
                 badgeLabel: sideActive ? 'Active' : 'Idle'
+            },
+            hobby: {
+                drinks: recentDrinks,
+                badge: recentDrinks.length > 0 ? 'ctx-badge-active' : 'ctx-badge-idle',
+                badgeLabel: recentDrinks.length > 0 ? `${recentDrinks.length} recent` : 'Empty'
             }
         }
     });
