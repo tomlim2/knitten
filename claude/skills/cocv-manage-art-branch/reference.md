@@ -49,15 +49,20 @@ git -C <repo_path> checkout -b <new_branch> origin/develop
 
 If branch already exists, report error and stop.
 
-### Step 4: Cherry-pick weekend commits
+### Step 4: Cherry-pick remnant commits
 
-Calculate time window: previous Friday 08:00 KST ~ this Monday 08:00 KST.
+Cherry-pick commits added to the old art branch AFTER the merge branch was created.
+
+**CRITICAL: Use date-based approach, NOT SHA-based.** The merge branch is rebased, so SHAs differ from original art branch commits. SHA-based diff (`merge_branch_head..origin/<art_branch>`) returns ALL commits, not just remnants.
+
+1. Read `merge_created_at` from the old (current) branch's history entry in `art-branches.json`
+2. Find remnant commits:
 
 ```bash
-git -C <repo_path> log origin/<current_branch> --since="<friday_8am_kst>" --until="<monday_8am_kst>" --reverse --format=%H
+git -C <repo_path> log origin/<current_branch> --after="<merge_created_at>" --reverse --format=%H
 ```
 
-Cherry-pick each commit in order:
+3. Cherry-pick each commit in order:
 
 ```bash
 git -C <repo_path> cherry-pick <commit_hash>
@@ -65,7 +70,9 @@ git -C <repo_path> cherry-pick <commit_hash>
 
 **Conflict**: stop immediately, show conflicting commit hash and files, ask user.
 
-If no current branch or no commits in range, skip this step.
+**Skip conditions:**
+- No `merge_created_at` (branch was never merged) → skip, new branch from develop is clean
+- No commits found after the date → skip
 
 ### Step 5: Push
 
@@ -75,24 +82,13 @@ git -C <repo_path> push -u origin <new_branch>
 
 ### Step 6: Delete previous art branch from remote
 
-Check for remnant commits first (commits after merge branch tip):
-
-**IMPORTANT:** `merge_branch_head`는 리베이스/체리픽된 머지 브랜치의 해시이므로, 아트 브랜치와 lineage가 다르다. `merge_branch_head..origin/<art_branch>` 범위를 사용하면 이미 머지된 커밋까지 전부 반환된다.
-
-**올바른 방법:**
+**Safety check:** Step 4 should have already cherry-picked all remnants. Verify by re-running the same query:
 
 ```bash
-# 1. merge_branch_head의 커밋 메시지 확인
-git -C <repo_path> log <merge_branch_head> --oneline -1
-
-# 2. 아트 브랜치에서 같은 메시지의 원본 커밋 찾기
-git -C <repo_path> log origin/<current_branch> --oneline --grep="<commit_message>"
-
-# 3. 원본 해시 기준으로 실제 잔여분만 추출
-git -C <repo_path> log <original_hash>..origin/<current_branch> --oneline --no-merges
+git -C <repo_path> log origin/<current_branch> --after="<merge_created_at>" --oneline
 ```
 
-If remnants exist, cherry-pick them first (with user confirmation).
+If any un-cherry-picked commits remain (shouldn't happen), cherry-pick them now before deletion.
 
 Then delete (with user confirmation):
 
@@ -101,8 +97,6 @@ git -C <repo_path> push origin --delete <current_branch>
 ```
 
 ### Step 7: Slack notification
-
-Use the existing `cocv-art-create-branch` send.py:
 
 ```bash
 # Preview
@@ -573,7 +567,7 @@ python ~/.claude/skills/cocv-manage-art-branch/scripts/send_result.py <current_b
 python ~/.claude/skills/cocv-manage-art-branch/scripts/send_result.py <current_branch> --broadcast --file tmp_broadcast.txt
 ```
 
-### Step 6: Send thread-only detail
+### Step 7: Send thread-only detail
 
 Write Korean PM summary from Step 3 to tmp file.
 

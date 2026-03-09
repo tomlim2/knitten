@@ -144,6 +144,16 @@ When `/cocv-manage-art-branch` runs with no arguments:
 
 **Note:** `create`는 `merged` 상태에서도 실행 가능. 새 브랜치 먼저 만들고, 이전 브랜치 cleanup은 별도로 진행.
 
+### Emergency Merge (상태 건너뛰기)
+
+긴급 머지 시 `merge-notice`를 생략하고 바로 `merge-prep` 가능. 상태가 `created`인데 `merge-prep`을 요청하면:
+
+1. 경고 표시: "현재 상태가 `created`입니다. `merge-notice` 없이 바로 `merge-prep`을 진행합니다."
+2. 사용자 확인 후 진행
+3. 상태를 `merge_prepared`로 직접 전환 (중간 상태 `merge_noticed` 건너뜀)
+
+머지 후 state가 `created`로 돌아오므로 (mid-week) 브랜치는 유지되고 금요일에 정규 머지를 다시 할 수 있다.
+
 ### Merge Branch Auto-Verification
 
 When state is `merge_prepared`, auto-suggest MUST verify merge completion before suggesting next action. Do NOT ask the user — check programmatically:
@@ -189,7 +199,7 @@ Each sub-command follows the detailed procedure in [reference.md](reference.md).
 ### `create`
 Create new art branch from `origin/develop`, cherry-pick remnant commits from current branch, push, send Slack announcement, update `art-branches.json`.
 
-**IMPORTANT:** Delegates to `cocv-art-create-branch` SKILL.md which contains the cherry-pick logic. Key rule: use **date-based** cherry-pick (`--after="<merge_created_at>"`), NOT SHA-based diff. See that skill's "Cherry-Pick Logic" section for details.
+**Cherry-pick rule:** use **date-based** cherry-pick (`--after="<merge_created_at>"`), NOT SHA-based diff. See reference.md `create` Step 4 for details.
 
 ### `merge-prep`
 Checkout art branch, create `art/merge/<versioning>` branch, rebase on `origin/develop`, push, update `art-branches.json` with merge info, generate MR description.
