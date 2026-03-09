@@ -11,7 +11,7 @@ Unified orchestrator for CINEV art branch lifecycle. Run daily — it reads the 
 
 Replaces the need to remember which of 5+ separate commands to run. One entry point (`/cocv-manage-art-branch`) handles routing, state tracking, and action suggestion.
 
-Existing individual commands (`/cocv-art-create-branch`, `/cocv-art-prepare-merge`, etc.) remain untouched and functional.
+Old individual commands (`/cocv-art-create-branch`, `/cocv-art-prepare-merge`, etc.) are thin redirects to this skill's sub-commands.
 
 ---
 
@@ -210,10 +210,21 @@ Display current branch, state, creation date, recent commits, and day-based next
 
 ## Slack Rules
 
-1. **Always use existing `send.py` scripts** from the respective skill directories. NEVER use Claude AI Slack MCP tools.
+1. **Always use `send.py` scripts** from `scripts/` subdirectory. NEVER use Claude AI Slack MCP tools.
 2. **Always `--dry-run` first** → show preview → get user confirmation → send.
 3. **Thread info** is loaded from `~/.claude/private/slack_threads.json`.
-4. **MCP tools** (`slack_post_message`, `thread_save`, etc.) are used only for `create` sub-command (matches existing `cocv-art-create-branch` behavior).
+
+### Script Paths
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/send_create.py <branch> [--dry-run]` | New branch announcement (saves thread info) |
+| `scripts/send_notice.py <branch> --time "<time>" [--dry-run]` | Pre-merge notice (thread reply, broadcast) |
+| `scripts/send_result.py <branch> --file <path> [--broadcast] [--dry-run]` | Merge result (thread reply) |
+| `scripts/send_notice.py --list` | List branches with thread info |
+| `scripts/send_result.py --list` | List branches with thread info |
+
+All scripts are relative to `~/.claude/skills/cocv-manage-art-branch/`.
 
 ---
 
@@ -233,19 +244,29 @@ Display current branch, state, creation date, recent commits, and day-based next
 
 ```
 cocv-manage-art-branch/
-├── SKILL.md        # This document (orchestrator, routing, state machine)
-├── reference.md    # Detailed sub-command procedures
-└── config.json     # repo_key configuration
+├── SKILL.md              # This document (orchestrator, routing, state machine)
+├── reference.md          # Detailed sub-command procedures
+├── config.json           # repo_key + art_team_whitelist
+├── config.json.example   # Example configuration
+├── index.html            # Web dashboard
+└── scripts/
+    ├── send_create.py    # New branch Slack announcement
+    ├── send_notice.py    # Pre-merge notice (thread reply)
+    └── send_result.py    # Merge result (thread reply)
 ```
 
 ---
 
-## Related Skills
+## Legacy Commands
 
-| Skill | Still works independently |
-|-------|--------------------------|
-| `cocv-art-create-branch` | Yes — `/cocv-art-create-branch` unchanged |
-| `cocv-art-prepare-merge` | Yes — `/cocv-art-prepare-merge` unchanged |
-| `cocv-art-send-merge-notice` | Yes — `/cocv-art-send-merge-notice` unchanged |
-| `cocv-art-send-merge-result` | Yes — `/cocv-art-send-merge-result` unchanged |
-| `cocv-art-remove-branch` | Yes — `/cocv-art-remove-branch` unchanged |
+Old individual commands redirect to this skill:
+
+| Old Command | Redirects To |
+|-------------|-------------|
+| `/cocv-art-create-branch` | `/cocv-manage-art-branch create` |
+| `/cocv-art-prepare-merge` | `/cocv-manage-art-branch merge-prep` |
+| `/cocv-art-send-merge-notice` | `/cocv-manage-art-branch merge-notice` |
+| `/cocv-art-send-merge-result` | `/cocv-manage-art-branch merge-result` |
+| `/cocv-art-remove-branch` | `/cocv-manage-art-branch cleanup` |
+
+`/cocv-art-send-notice` remains independent (general-purpose Slack message, not part of the state machine).

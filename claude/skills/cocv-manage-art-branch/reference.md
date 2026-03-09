@@ -106,10 +106,10 @@ Use the existing `cocv-art-create-branch` send.py:
 
 ```bash
 # Preview
-python ~/.claude/skills/cocv-art-create-branch/send.py <new_branch> --dry-run
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_create.py <new_branch> --dry-run
 
 # Send (after user confirmation)
-python ~/.claude/skills/cocv-art-create-branch/send.py <new_branch>
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_create.py <new_branch>
 ```
 
 Thread info is auto-saved to `~/.claude/private/slack_threads.json` by the script.
@@ -438,12 +438,12 @@ Ask user for the merge time (e.g., "내일 아침 8시 30분", "오늘 오후 3�
 
 ```bash
 # Preview
-python ~/.claude/skills/cocv-art-send-merge-notice/send.py <current_branch> --time "<time>" --dry-run
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_notice.py <current_branch> --time "<time>" --dry-run
 
 # Show preview to user, get confirmation
 
 # Send
-python ~/.claude/skills/cocv-art-send-merge-notice/send.py <current_branch> --time "<time>"
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_notice.py <current_branch> --time "<time>"
 ```
 
 ### Step 4: Update state
@@ -567,10 +567,10 @@ Write broadcast message to tmp file:
 
 ```bash
 # Preview
-python ~/.claude/skills/cocv-art-send-merge-result/send.py <current_branch> --broadcast --file tmp_broadcast.txt --dry-run
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_result.py <current_branch> --broadcast --file tmp_broadcast.txt --dry-run
 
 # Send (after user confirmation)
-python ~/.claude/skills/cocv-art-send-merge-result/send.py <current_branch> --broadcast --file tmp_broadcast.txt
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_result.py <current_branch> --broadcast --file tmp_broadcast.txt
 ```
 
 ### Step 6: Send thread-only detail
@@ -579,10 +579,10 @@ Write Korean PM summary from Step 3 to tmp file.
 
 ```bash
 # Preview
-python ~/.claude/skills/cocv-art-send-merge-result/send.py <current_branch> --file tmp_detail.txt --dry-run
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_result.py <current_branch> --file tmp_detail.txt --dry-run
 
 # Send (after user confirmation)
-python ~/.claude/skills/cocv-art-send-merge-result/send.py <current_branch> --file tmp_detail.txt
+python ~/.claude/skills/cocv-manage-art-branch/scripts/send_result.py <current_branch> --file tmp_detail.txt
 ```
 
 ### Step 8: Update state
