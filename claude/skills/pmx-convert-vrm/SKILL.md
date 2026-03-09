@@ -50,12 +50,12 @@ Examples:
 
 Read `~/.claude/private/repo-paths.json` to find the `anju` repo path, then use:
 ```
-<anju_path>/python/pmx2vrm-convert-module
+<anju_path>/module/pmx2vrm
 ```
 
 If repo-paths.json doesn't exist or `anju` key is missing, fall back to:
 ```
-D:/vs/anju/python/pmx2vrm-convert-module
+D:/vs/anju/module/pmx2vrm
 ```
 
 Verify `python/intake.py` exists in the directory before proceeding.

@@ -36,7 +36,7 @@ If no arguments or no `--name` provided, show usage and stop.
 ## Paths
 
 Read `~/.claude/private/repo-paths.json` to resolve:
-- `anju` → converter root (`<path>/python/pmx2vrm-convert-module`) and register script (`<path>/python/user_character_manager/register_vrm.py`)
+- `anju` → converter root (`<path>/module/pmx2vrm`) and register script (`<path>/python/user_character_manager/register_vrm.py`)
 - `cinev-engine` → UE engine root
 - `cinev-studio` → UE project root
 
@@ -45,7 +45,7 @@ Read `~/.claude/private/repo-paths.json` to resolve:
 ### Step 1: Convert PMX → VRM
 
 ```bash
-cd "<anju>/python/pmx2vrm-convert-module" && python -m python.intake "<input>" --name <name> [--preset <preset>] [other flags]
+cd "<anju>/module/pmx2vrm" && python -m python.intake "<input>" --name <name> [--preset <preset>] [other flags]
 ```
 
 Capture the output VRM path from the `-> <path>` line.

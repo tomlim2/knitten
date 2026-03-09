@@ -38,12 +38,12 @@ Examples:
 
 Read `~/.claude/private/repo-paths.json` to find the `anju` repo path, then use:
 ```
-<anju_path>/python/pmx2vrm-convert-module/python/vrm_validator.py
+<anju_path>/module/pmx2vrm/python/vrm_validator.py
 ```
 
 If repo-paths.json doesn't exist or `anju` key is missing, fall back to:
 ```
-D:/vs/anju/python/pmx2vrm-convert-module/python/vrm_validator.py
+D:/vs/anju/module/pmx2vrm/python/vrm_validator.py
 ```
 
 Verify the script exists before proceeding.

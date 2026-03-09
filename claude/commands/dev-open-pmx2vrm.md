@@ -15,7 +15,7 @@ Open the truepmx2vrm Next.js webapp for PMX to VRM conversion.
 4. Open browser to http://localhost:3001
 
 ```bash
-cd "<anju_path>/python/pmx2vrm-convert-module/webapp"
+cd "<anju_path>/module/pmx2vrm/webapp"
 
 # Check if already running
 if ! curl -s http://localhost:3001 > /dev/null 2>&1; then

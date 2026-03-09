@@ -47,10 +47,10 @@ Examples:
 
 Read `~/.claude/private/repo-paths.json` to find the `anju` repo path, then use:
 ```
-<anju_path>/python/pmx2vrm-convert-module/python/
+<anju_path>/module/pmx2vrm/python/
 ```
 
-Fall back to: `D:/vs/anju/python/pmx2vrm-convert-module/python/`
+Fall back to: `D:/vs/anju/module/pmx2vrm/python/`
 
 Required files in that directory:
 - `pmx_reader.py` — binary PMX parser
