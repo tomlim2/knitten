@@ -1,6 +1,6 @@
 ---
 description: "Context briefing and switcher for 회사/개인/부업"
-argument-hint: "[회사|개인|부업]"
+argument-hint: "[회사|개인|부업|<project-name>]"
 allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(curl:*), AskUserQuestion, mcp__claude_ai_Linear__list_issues
 ---
 
@@ -10,8 +10,9 @@ Context briefing and switcher. Shows where you left off across 회사/개인/부
 
 ## Arguments
 
-- `$ARGUMENTS` — optional context name
+- `$ARGUMENTS` — optional context name or company sub-project name
 - Aliases: `회사`/`cinev`, `개인`/`personal`, `부업`/`side`
+- Company sub-projects: any `name` from `contexts.json` → `company.projects[]` (e.g. `pmx2vrm`)
 
 ## Data Sources
 
@@ -106,6 +107,7 @@ Resolve alias:
 - `회사`, `cinev` → cinev context
 - `개인`, `personal` → personal context
 - `부업`, `side` → side context
+- Otherwise → search `contexts.json` → `company.projects[]` by `name` (case-insensitive). If match found → **Flow C** (company sub-project briefing)
 
 ### 회사 (CINEV) Briefing
 
@@ -165,6 +167,48 @@ For active projects that have a `repo` key:
 - Extract sessions from `### YYYY-MM-DD | topic` pattern
 - Collect up to 3 most recent across all companies, sorted by date desc
 - Display: `{date} {company} — {topic}`
+
+## Flow C: Company Sub-Project Briefing
+
+When argument matches a `company.projects[]` entry by name:
+
+### 1. Resolve project
+
+Find the matching project in `contexts.json` → `company.projects[]`. Resolve repo path from `repo-paths.json`.
+
+### 2. Read working rules
+
+Read the repo's `CLAUDE.md` and find sections relevant to the project. Display the rules so the user (and Claude) knows the workflow constraints.
+
+### 3. Show project briefing
+
+```
+══ 회사 / {project.name} ════════════════════════
+
+Working Rules ({repo}/CLAUDE.md)
+  {extracted rules section}
+
+Status
+  {project.note}
+
+TODO
+  - {todo item 1}
+  - {todo item 2}
+
+Recent Commits
+  - abc1234 fix spring value mismatch (03/09)
+  ...
+
+Known Issues
+  - {from known-issues.json if exists in project path}
+```
+
+**Steps:**
+1. Show working rules from `{repoPath}/CLAUDE.md` — find section matching the project name (case-insensitive search)
+2. Show project `note` and `todo[]` from contexts.json
+3. Recent 5 commits: `git -C "{repoPath}" log --oneline --format="%h %s (%ad)" --date=format:"%m/%d" -5 -- "{project.path}"`
+4. If `{repoPath}/{project.path}/known-issues.json` exists, read and show pending issues
+5. If `{repoPath}/{project.path}/README.md` exists, show the pipeline overview
 
 ## Output Format
 
