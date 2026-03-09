@@ -63,7 +63,7 @@ created → merge_noticed → merge_prepared → merged/created → archived
 
 | Action | From State | To State |
 |--------|-----------|----------|
-| `create` | (none / archived) | `created` |
+| `create` | (none / archived / merged) | `created` |
 | `merge-notice` | `created` | `merge_noticed` |
 | `merge-prep` | `merge_noticed` | `merge_prepared` |
 | `merge-result (mid-week)` | `merge_prepared` | `created` |
@@ -126,20 +126,23 @@ When `/cocv-manage-art-branch` runs with no arguments:
 
 1. Read `~/.claude/private/art-branches.json`
 2. Determine current branch and its state
-3. Check day-of-week (KST)
+3. Check day-of-week: use `date '+%A'` (system is already KST, do NOT override with TZ='Asia/Seoul')
 4. Suggest the next action:
 
 | Day | State | Suggestion |
 |-----|-------|------------|
-| Mon | merged / archived / none | `create` — new weekly branch |
+| Sat-Sun | * | 주말 — "왜 왔어요? 쉬세요!" (no action suggested) |
+| Mon | merged / archived / none | `create` — new weekly branch (cleanup은 나중에) |
 | Mon | created | `status` — already created this week |
 | Tue-Wed | created | `status` — work in progress |
 | Thu | created | `merge-notice` — 내일 머지 예고만 |
 | Thu | merge_noticed | `status` — 예고 완료, 내일 머지 대기 |
 | Fri | merge_noticed | `merge-prep` — rebase + MR 생성 |
 | Fri | merge_prepared | Auto-verify merge branch (see below), then `merge-result` if merged |
-| Fri | merged | `status` — cycle complete |
+| Fri | merged | `cleanup` — 잔여 커밋 cherry-pick + 이전 브랜치 삭제 |
 | Any | * | Show state + list available actions |
+
+**Note:** `create`는 `merged` 상태에서도 실행 가능. 새 브랜치 먼저 만들고, 이전 브랜치 cleanup은 별도로 진행.
 
 ### Merge Branch Auto-Verification
 
@@ -184,7 +187,9 @@ If the user confirms the suggestion, execute the corresponding sub-command.
 Each sub-command follows the detailed procedure in [reference.md](reference.md).
 
 ### `create`
-Create new art branch from `origin/develop`, cherry-pick weekend commits from current branch, push, send Slack announcement, update `art-branches.json`.
+Create new art branch from `origin/develop`, cherry-pick remnant commits from current branch, push, send Slack announcement, update `art-branches.json`.
+
+**IMPORTANT:** Delegates to `cocv-art-create-branch` SKILL.md which contains the cherry-pick logic. Key rule: use **date-based** cherry-pick (`--after="<merge_created_at>"`), NOT SHA-based diff. See that skill's "Cherry-Pick Logic" section for details.
 
 ### `merge-prep`
 Checkout art branch, create `art/merge/<versioning>` branch, rebase on `origin/develop`, push, update `art-branches.json` with merge info, generate MR description.

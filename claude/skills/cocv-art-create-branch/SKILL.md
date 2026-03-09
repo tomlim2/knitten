@@ -10,13 +10,16 @@ Automated branch creation for CINEV art team.
 
 1. `git fetch --all`
 2. `git checkout -b <new_branch> origin/develop` (remote develop 기반, 로컬 develop 사용 금지)
-3. Cherry-pick commits from `current` branch (art-branches.json) for the specified period
-   - Period: Previous Friday 08:00 KST ~ This Monday 08:00 KST
+3. Cherry-pick remnant commits from `current` branch (see Cherry-Pick Logic below)
 4. Push new branch
-5. Delete previous art branch from remote (`git push origin --delete <current_branch>`)
+5. **[MANDATORY] Delete previous art branch from remote** — DO NOT skip this step
+   - `git push origin --delete <current_branch>`
    - 삭제 전 유저 확인 필수
-   - `current` branch의 잔여 커밋(merge branch tip 이후)이 있으면 먼저 체리픽
-6. Send notification to Slack art channel
+   - 삭제 후 art-branches.json에서 이전 브랜치 state → `archived`
+6. Ask user for this week's emoji (see Weekly Emoji below)
+7. Send notification to Slack art channel
+
+**Execution order is strict: steps 1→7 must run sequentially. Do NOT skip step 5 to jump to Slack.**
 
 ## Usage
 
@@ -76,9 +79,38 @@ Art branch history is stored in `~/.claude/private/art-branches.json`.
 - `config.json` → repo_path
 - `~/.claude/private/art-branches.json` → branch history
 
+## Cherry-Pick Logic
+
+**CRITICAL: Do NOT cherry-pick by SHA diff from merge branch tip.** The merge branch is rebased, so SHAs differ from the original art branch commits. Using `merge_branch_head..origin/<art_branch>` will include commits already in develop and cause binary conflicts.
+
+### Correct Procedure
+
+1. Read `merge_created_at` from the current branch's history entry in `art-branches.json`
+2. Find remnant commits by **date** — commits added AFTER the merge branch was created:
+   ```bash
+   git log origin/<current_art_branch> --oneline --after="<merge_created_at>" --reverse
+   ```
+3. Cherry-pick only these remnant commits (oldest first)
+4. If no `merge_created_at` exists (branch was never merged), cherry-pick nothing — the new branch is already based on `origin/develop`
+
+### Why date-based, not SHA-based
+
+| Method | Result |
+|--------|--------|
+| `merge_branch_head..origin/<art_branch>` | Includes ALL original commits (rebased versions already in develop) → binary conflicts |
+| `--after="<merge_created_at>"` | Only commits added after merge branch was cut → clean cherry-pick |
+
+The merge branch rebases art commits onto develop, producing new SHAs. The originals remain on the art branch with different SHAs. Git can't tell they're the same content, so SHA-based diff gives false positives.
+
 ## Conflict Handling
 
 If a conflict occurs during cherry-pick, stop immediately and report to the user.
+
+## Weekly Emoji
+
+Before sending the Slack announcement, ALWAYS ask the user for this week's emoji. Update `~/.claude/config/slack.json` → `weekly_emoji` field with the new value before sending.
+
+Do NOT reuse the previous week's emoji without asking.
 
 ## Slack Delivery Rules
 
