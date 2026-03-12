@@ -1,18 +1,19 @@
 ---
-description: Pull latest from anju and caol-ila repos
+description: Pull latest from anju, caol-ila, and ta-portfolio repos
 allowed-tools: Bash(git pull:*), Bash(git -C:*)
 ---
 
 # Git Pull Repos
 
-Pull both anju and caol-ila repositories.
+Pull anju, caol-ila, and ta-portfolio repositories.
 ## Execution
 
-Read `~/.claude/private/repo-paths.json` for paths, then pull both repos in parallel:
+Read `~/.claude/private/repo-paths.json` for paths, then pull all repos in parallel:
 
 ```bash
 git -C "<anju-path>" pull
 git -C "<caol-ila-path>" pull
+git -C "<ta-portfolio-path>" pull
 ```
 
 Show results for each repo.
