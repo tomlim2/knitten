@@ -41,6 +41,7 @@ Run all checks against the target directory. For each check, report one of:
 | 6 | SIZE | File size and performance (GitHub limits, images) |
 | 7 | COMPAT | Browser compatibility (WebGPU, ES modules) |
 | 8 | CONSOLE | Debug output (console.log, debugger, alert) |
+| 9 | MOBILE | Mobile/browser fallback (incompatible device modal, touch UX) |
 
 ---
 

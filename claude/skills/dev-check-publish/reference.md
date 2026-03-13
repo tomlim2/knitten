@@ -82,6 +82,20 @@ Full checklist details with severity tables, fix patterns, and output format tem
 | No `<noscript>` fallback | INFO |
 | ES module scripts without `type="module"` | FAIL |
 
+### 9. MOBILE — Mobile/Browser Fallback
+
+**Why it matters:** Users on incompatible devices (old mobile browsers, Firefox without WebGPU) should see a clear message instead of a blank screen or cryptic error.
+
+| Check | Severity |
+|-------|----------|
+| Uses modern APIs (WebGPU, WebXR) without runtime detection | FAIL |
+| Runtime detection exists but no user-facing fallback UI | WARN |
+| Runtime detection shows a modal/message listing supported browsers | PASS condition |
+| Touch-specific UX issues (tiny targets, hover-dependent interactions) | WARN |
+| No `pointer: coarse` media query adjustments | INFO |
+
+**Scan for:** `navigator.gpu`, `navigator.xr`, feature detection patterns, fallback UI elements, `@media (pointer: coarse)` queries.
+
 ### 8. CONSOLE — Debug Output
 
 | Check | Severity |
@@ -115,6 +129,7 @@ Full checklist details with severity tables, fix patterns, and output format tem
 | 6 | SIZE    | PASS   | 79MB total |
 | 7 | COMPAT  | WARN   | WebGPU required, no fallback notice |
 | 8 | CONSOLE | PASS   | Error handling only |
+| 9 | MOBILE  | PASS   | Compat modal present |
 
 ### FAIL — Must Fix
 
