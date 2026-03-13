@@ -81,6 +81,7 @@ Full checklist details with severity tables, fix patterns, and output format tem
 | Uses bleeding-edge APIs (check for: WebGPU, WebXR, WebTransport) | WARN |
 | No `<noscript>` fallback | INFO |
 | ES module scripts without `type="module"` | FAIL |
+| Checks for `SharedArrayBuffer` on GitHub Pages | FAIL — GitHub Pages cannot set COOP/COEP headers, so SAB is always unavailable. Only check SAB if the app actually uses it (e.g. `new SharedArrayBuffer`, workers with shared memory). |
 
 ### 9. MOBILE — Mobile/Browser Fallback
 
