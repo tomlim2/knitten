@@ -12,8 +12,8 @@ ES modules require an HTTP server (file:// blocked by CORS).
 ## Workflow
 
 ### Step 1: Resolve Path
-- Read `~/.claude/private/repo-paths.json` to get the `anju` repo path
-- Player path: `<anju>/web/mmd-player-anju`
+- Read `~/.claude/private/repo-paths.json` to get the `mmd-anju` repo path
+- Player path: `<mmd-anju>/`
 
 ### Step 2: Start Server
 - Check if port 3002 is already in use via `lsof -i :3002`
