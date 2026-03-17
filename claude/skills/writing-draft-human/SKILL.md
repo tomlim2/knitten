@@ -2,7 +2,7 @@
 description: "Writing style prompt to avoid generic AI output. Use when writing content that needs a human voice."
 ---
 
-# writing-apply-voice
+# writing-draft-human
 
 Writing style prompt to avoid generic AI output.
 
