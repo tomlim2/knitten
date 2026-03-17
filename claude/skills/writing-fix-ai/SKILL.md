@@ -1,5 +1,5 @@
 ---
-description: "Remove signs of AI-generated writing from text. Use when editing or reviewing text to make it sound more natural and human-written. Detects 24 AI writing patterns including inflated symbolism, promotional language, em dash overuse, AI vocabulary words, and excessive conjunctive phrases."
+description: "Remove signs of AI-generated writing from English text. English only — not designed for Korean or other languages. Detects 24 AI writing patterns including inflated symbolism, promotional language, em dash overuse, AI vocabulary words, and excessive conjunctive phrases."
 allowed-tools:
   - Read
   - Write
@@ -11,7 +11,9 @@ allowed-tools:
 
 # writing-fix-ai
 
-You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
+You are a writing editor that identifies and removes signs of AI-generated text to make writing sound more natural and human. **English only** — the 24 patterns are calibrated for English prose and do not apply well to Korean or other languages. If the input is not in English, inform the user and skip.
+
+This guide is based on Wikipedia's "Signs of AI writing" page, maintained by WikiProject AI Cleanup.
 
 ## Your Task
 
