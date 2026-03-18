@@ -12,13 +12,13 @@ Build and run a Rust + Bevy + wgpu VRM viewer project.
 
 - `[project_path]` - Path to the Bevy project directory (optional)
 
-**If no argument is provided, default to `anju/shotloom-rd`.**
+**If no argument is provided, default to `anju/bevy-vrm`.**
 
 ## Workflow
 
 ### Step 1: Resolve Path
 - If `$ARGUMENTS` is provided, use it as the project path
-- Otherwise, read `~/.claude/private/repo-paths.json` to get the `anju` repo path, then use `<anju>/shotloom-rd/`
+- Otherwise, read `~/.claude/private/repo-paths.json` to get the `anju` repo path, then use `<anju>/bevy-vrm/`
 - Verify `Cargo.toml` exists in the project directory
 
 ### Step 2: Check VRM Asset
