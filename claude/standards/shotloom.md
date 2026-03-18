@@ -63,6 +63,19 @@ Shotloom relies heavily on AI-assisted code generation. Language choices compens
 - **TypeScript** — catches integration errors between React components and wasm-bindgen bridge at build time
 - **Crate boundaries** — layer violations are compile errors, not code review findings
 
+## Performance Targets
+
+| Metric | Target | Minimum | Context |
+|--------|--------|---------|---------|
+| FPS (editor preview) | 60 fps | 30 fps | Interactive editing, camera orbit, timeline scrub |
+| FPS (native) | 120 fps | 60 fps | Native build on M2 Max measured 119-120 fps (2026-03-17, VRM single character) |
+| Frame time | ≤16.6 ms | ≤33.3 ms | Budget per frame at 60/30 fps |
+| Draw calls | Monitor | — | Track as scene complexity grows |
+
+**Reference baselines (Bevy VRM R&D, 2026-03-17):**
+- Single VRM character + directional light + orbit camera → 119-120 fps / 8 ms frame time (native, Apple M2 Max)
+- Debug overlay: F3 toggle (FpsOverlayPlugin + EntityCountDiagnosticsPlugin)
+
 ## Browser Constraints
 
 - Targets WebGPU-capable browsers (Chrome/Edge stable, Safari recent, Firefox behind flag)
