@@ -782,6 +782,71 @@ app.get('/api/standards/:name', (req, res) => {
     res.type('text/plain').send(content);
 });
 
+// Learnings API — project-based tree
+app.get('/api/learnings', (req, res) => {
+    const projectsDir = path.join(OBSIDIAN_CLAUDE_DIR, 'projects');
+    if (!fs.existsSync(projectsDir)) {
+        return res.json({ projects: [] });
+    }
+
+    const projects = [];
+
+    // _template.md at root
+    const templatePath = path.join(projectsDir, '_template.md');
+    if (fs.existsSync(templatePath)) {
+        projects.push({ name: '_template', files: [{ name: '_template.md', path: '_template.md' }] });
+    }
+
+    // Scan directories
+    const entries = fs.readdirSync(projectsDir, { withFileTypes: true });
+    entries.filter(e => e.isDirectory()).sort((a, b) => {
+        // _ prefixed dirs last
+        const aPrefix = a.name.startsWith('_') ? 1 : 0;
+        const bPrefix = b.name.startsWith('_') ? 1 : 0;
+        if (aPrefix !== bPrefix) return aPrefix - bPrefix;
+        return a.name.localeCompare(b.name);
+    }).forEach(dir => {
+        const dirPath = path.join(projectsDir, dir.name);
+        const files = [];
+
+        function scanDir(currentPath, prefix) {
+            const items = fs.readdirSync(currentPath, { withFileTypes: true });
+            items.forEach(item => {
+                if (item.isFile() && item.name.endsWith('.md')) {
+                    files.push({
+                        name: prefix ? prefix + '/' + item.name : item.name,
+                        path: dir.name + '/' + (prefix ? prefix + '/' : '') + item.name
+                    });
+                } else if (item.isDirectory()) {
+                    scanDir(path.join(currentPath, item.name), prefix ? prefix + '/' + item.name : item.name);
+                }
+            });
+        }
+
+        scanDir(dirPath, '');
+        if (files.length > 0) {
+            projects.push({ name: dir.name, files });
+        }
+    });
+
+    res.json({ projects });
+});
+
+app.get('/api/learnings/:filePath(*)', (req, res) => {
+    const projectsDir = path.join(OBSIDIAN_CLAUDE_DIR, 'projects');
+    const filePath = path.resolve(projectsDir, req.params.filePath);
+
+    if (!filePath.startsWith(projectsDir)) {
+        return res.status(403).send('Access denied');
+    }
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send('File not found');
+    }
+
+    const content = fs.readFileSync(filePath, 'utf-8');
+    res.type('text/plain').send(content);
+});
+
 // Repos API
 app.get('/api/repos', (req, res) => {
     const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');

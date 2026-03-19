@@ -168,65 +168,82 @@
             loadStandards();
         })();
         <% } else { %>
-        // Learnings mode: client-side fetch with hash routing
+        // Learnings mode: project-based tree with hash routing
         (function() {
-            const entries = [];
+            const allFiles = []; // { id, path }
 
             async function loadProjects() {
                 try {
-                    const res = await fetch('/api/files?path=learnings/projects');
+                    const res = await fetch('/api/learnings');
                     const data = await res.json();
                     const nav = document.getElementById('sidebarNav');
                     nav.innerHTML = '';
 
-                    addEntry(nav, '_template', '_template.md');
+                    data.projects.forEach(project => {
+                        if (project.name === '_template') {
+                            // _template at bottom
+                            return;
+                        }
 
-                    if (data.entries) {
-                        data.entries.forEach(entry => {
-                            if (entry.name.endsWith('.md')) {
-                                const name = entry.name.replace('.md', '');
-                                addEntry(nav, name, 'projects/' + entry.name);
-                            }
+                        // Project heading
+                        const heading = document.createElement('div');
+                        heading.style.cssText = 'font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-gray-mid); padding:16px 12px 6px; margin-top:4px;';
+                        heading.textContent = project.name;
+                        nav.appendChild(heading);
+
+                        project.files.forEach(file => {
+                            const id = project.name + '/' + file.name.replace('.md', '');
+                            addFileLink(nav, id, file.path, file.name.replace('.md', ''));
                         });
+                    });
+
+                    // _template last
+                    const tmpl = data.projects.find(p => p.name === '_template');
+                    if (tmpl) {
+                        const sep = document.createElement('div');
+                        sep.style.cssText = 'border-top:1px solid var(--color-border); margin:12px 0;';
+                        nav.appendChild(sep);
+                        addFileLink(nav, '_template', '_template.md', '_template');
                     }
 
-                    const hash = window.location.hash.slice(1);
-                    const match = entries.find(e => e.name === hash);
+                    // Resolve hash
+                    const hash = decodeURIComponent(window.location.hash.slice(1));
+                    const match = allFiles.find(e => e.id === hash);
                     if (match) {
-                        selectLearning(match.name, match.path);
-                    } else if (entries.length > 0) {
-                        selectLearning(entries[0].name, entries[0].path);
+                        selectLearning(match.id, match.path);
+                    } else if (allFiles.length > 0) {
+                        selectLearning(allFiles[0].id, allFiles[0].path);
                     }
                 } catch (e) {
                     console.error('Failed to load projects:', e);
                 }
             }
 
-            function addEntry(nav, name, path) {
-                entries.push({ name, path });
+            function addFileLink(nav, id, filePath, displayName) {
+                allFiles.push({ id, path: filePath });
                 const link = document.createElement('a');
-                link.href = '#' + name;
-                link.textContent = name;
-                link.dataset.name = name;
-                link.dataset.path = path;
+                link.href = '#' + encodeURIComponent(id);
+                link.textContent = displayName;
+                link.dataset.id = id;
+                link.dataset.filePath = filePath;
                 link.onclick = (e) => {
                     e.preventDefault();
-                    selectLearning(name, path);
+                    selectLearning(id, filePath);
                 };
                 nav.appendChild(link);
             }
 
-            function selectLearning(name, path) {
-                history.replaceState(null, '', '#' + name);
+            function selectLearning(id, filePath) {
+                history.replaceState(null, '', '#' + encodeURIComponent(id));
                 document.querySelectorAll('#sidebarNav a').forEach(a => {
-                    a.classList.toggle('active', a.dataset.name === name);
+                    a.classList.toggle('active', a.dataset.id === id);
                 });
-                loadContent(path);
+                loadContent(filePath);
             }
 
-            async function loadContent(filename) {
+            async function loadContent(filePath) {
                 try {
-                    const res = await fetch('/api/files?path=learnings/' + filename);
+                    const res = await fetch('/api/learnings/' + encodeURIComponent(filePath));
                     const text = await res.text();
                     document.getElementById('readerContent').innerHTML = marked.parse(text);
                     addCopyButtonsToCodeBlocks();
@@ -236,10 +253,10 @@
             }
 
             window.addEventListener('hashchange', () => {
-                const hash = window.location.hash.slice(1);
-                const match = entries.find(e => e.name === hash);
+                const hash = decodeURIComponent(window.location.hash.slice(1));
+                const match = allFiles.find(e => e.id === hash);
                 if (match) {
-                    selectLearning(match.name, match.path);
+                    selectLearning(match.id, match.path);
                 }
             });
 
