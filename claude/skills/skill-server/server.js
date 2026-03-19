@@ -569,6 +569,10 @@ app.get('/skills', (req, res) => {
     res.render('dashboard', { allItems, totalCount, config, activePage: '/skills' });
 });
 
+app.get('/components', (req, res) => {
+    res.render('components', { config, activePage: '/components' });
+});
+
 // Unified markdown reader routes
 app.get('/standards', (req, res) => {
     res.render('markdown-reader', { mode: 'standards', config, activePage: '/standards' });

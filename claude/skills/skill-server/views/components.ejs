@@ -1,0 +1,1016 @@
+<!-- Design System: v1.9.0 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <%- include('partials/head', {config, pageTitle: 'Components'}) %>
+    <style>
+        .cl-section { margin-bottom: 56px; }
+        .cl-section > h2 {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            color: var(--color-gray-mid);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .cl-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--color-gray-mid);
+            margin-bottom: 12px;
+        }
+        .cl-specimen {
+            padding: 24px;
+            border: 1px solid var(--color-border);
+            background: var(--color-white);
+            margin-bottom: 24px;
+        }
+        .cl-swatch {
+            width: 80px;
+            height: 80px;
+            border: 1px solid var(--color-border);
+        }
+        .cl-swatch-label {
+            font-size: 11px;
+            font-family: 'SF Mono', Consolas, Monaco, monospace;
+            color: var(--color-gray-mid);
+            margin-top: 8px;
+        }
+        .cl-swatch-name {
+            font-size: 11px;
+            color: var(--color-gray-dark);
+        }
+        .cl-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .cl-code {
+            font-family: 'SF Mono', Consolas, Monaco, monospace;
+            font-size: 11px;
+            color: var(--color-gray-mid);
+        }
+        .cl-divider {
+            border: none;
+            border-top: 1px solid var(--color-border);
+            margin: 48px 0;
+        }
+        .cl-row { display: flex; gap: 24px; flex-wrap: wrap; }
+        .cl-col { flex: 1; min-width: 280px; }
+        .cl-stack { display: flex; flex-direction: column; gap: 16px; }
+        .cl-inline { display: flex; align-items: center; gap: 16px; }
+        .cl-token-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .cl-token-row:last-child { border-bottom: none; }
+        .cl-token-sample { flex-shrink: 0; }
+        .cl-token-desc { font-size: 12px; color: var(--color-gray-dark); }
+        .cl-token-value { font-size: 11px; color: var(--color-gray-mid); font-family: 'SF Mono', Consolas, Monaco, monospace; }
+
+        .cl-intro {
+            font-size: 12px;
+            color: var(--color-gray-mid);
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/header', {config, activePage: '/components'}) %>
+    <main class="main">
+
+        <div style="margin-bottom: 48px;">
+            <h1 style="font-size: 20px; font-weight: 400; margin-bottom: 12px;">Component Library</h1>
+            <p class="cl-intro">All UI parts used in Skill Server. Listing them makes it easy to spot inconsistencies, validate the color palette, and ensure components with similar roles share the same visual language.</p>
+        </div>
+
+        <!-- ==================== COLORS ==================== -->
+        <section class="cl-section">
+            <h2>Colors</h2>
+
+            <p class="cl-label">Core</p>
+            <div class="cl-swatches">
+                <div>
+                    <div class="cl-swatch" style="background: #000000;"></div>
+                    <p class="cl-swatch-label">--color-black</p>
+                    <p class="cl-swatch-name">#000000</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #1a1a1a;"></div>
+                    <p class="cl-swatch-label">--color-text</p>
+                    <p class="cl-swatch-name">#1a1a1a</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #ffffff;"></div>
+                    <p class="cl-swatch-label">--color-white</p>
+                    <p class="cl-swatch-name">#ffffff</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #f8f8f8;"></div>
+                    <p class="cl-swatch-label">--color-bg</p>
+                    <p class="cl-swatch-name">#f8f8f8</p>
+                </div>
+            </div>
+
+            <p class="cl-label">Gray Scale</p>
+            <div class="cl-swatches">
+                <div>
+                    <div class="cl-swatch" style="background: #f5f5f5;"></div>
+                    <p class="cl-swatch-label">--color-gray-light</p>
+                    <p class="cl-swatch-name">#f5f5f5</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #888888;"></div>
+                    <p class="cl-swatch-label">--color-gray-mid</p>
+                    <p class="cl-swatch-name">#888888</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #555555;"></div>
+                    <p class="cl-swatch-label">--color-gray-dark</p>
+                    <p class="cl-swatch-name">#555555</p>
+                </div>
+            </div>
+
+            <p class="cl-label">Border &amp; Interactive</p>
+            <div class="cl-swatches">
+                <div>
+                    <div class="cl-swatch" style="background: #e5e5e5;"></div>
+                    <p class="cl-swatch-label">--color-border</p>
+                    <p class="cl-swatch-name">#e5e5e5</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #cccccc;"></div>
+                    <p class="cl-swatch-label">--color-border-hover</p>
+                    <p class="cl-swatch-name">#cccccc</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #0066cc;"></div>
+                    <p class="cl-swatch-label">--color-link-hover</p>
+                    <p class="cl-swatch-name">#0066cc</p>
+                </div>
+            </div>
+
+            <p class="cl-label">Code</p>
+            <div class="cl-swatches">
+                <div>
+                    <div class="cl-swatch" style="background: #eff1f3;"></div>
+                    <p class="cl-swatch-label">--color-code-bg</p>
+                    <p class="cl-swatch-name">#eff1f3</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #24292f;"></div>
+                    <p class="cl-swatch-label">--color-code-text</p>
+                    <p class="cl-swatch-name">#24292f</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #f6f8fa;"></div>
+                    <p class="cl-swatch-label">--color-code-block-bg</p>
+                    <p class="cl-swatch-name">#f6f8fa</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #1f2328;"></div>
+                    <p class="cl-swatch-label">--color-code-block-text</p>
+                    <p class="cl-swatch-name">#1f2328</p>
+                </div>
+            </div>
+
+            <p class="cl-label">Status</p>
+            <div class="cl-swatches">
+                <div>
+                    <div class="cl-swatch" style="background: #22c55e;"></div>
+                    <p class="cl-swatch-label">#22c55e</p>
+                    <p class="cl-swatch-name">connected</p>
+                </div>
+                <div>
+                    <div class="cl-swatch" style="background: #d32f2f;"></div>
+                    <p class="cl-swatch-label">#d32f2f</p>
+                    <p class="cl-swatch-name">error</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== TYPOGRAPHY ==================== -->
+        <section class="cl-section">
+            <h2>Typography</h2>
+
+            <p class="cl-label">h1 — 20px / 400</p>
+            <div class="cl-specimen">
+                <h1 style="margin: 0;">Component Library</h1>
+            </div>
+
+            <p class="cl-label">h2 — 18px / 400</p>
+            <div class="cl-specimen">
+                <h2 style="margin: 0;">Section Heading</h2>
+            </div>
+
+            <p class="cl-label">h3 — 16px / 400</p>
+            <div class="cl-specimen">
+                <h3 style="margin: 0;">Subsection Heading</h3>
+            </div>
+
+            <p class="cl-label">h4 — 14px / 400</p>
+            <div class="cl-specimen">
+                <h4 style="margin: 0;">Detail Heading</h4>
+            </div>
+
+            <p class="cl-label">Body — 14px / 1.5 / color-text</p>
+            <div class="cl-specimen">
+                <p style="margin: 0;">All UI parts used in Skill Server. Listing them makes it easy to spot inconsistencies, validate the color palette, and ensure components with similar roles share the same visual language.</p>
+            </div>
+
+            <p class="cl-label">Section Title — 12px / 500 / uppercase / gray-mid</p>
+            <div class="cl-specimen">
+                <h2 class="section-title" style="margin: 0; border: none; padding: 0;">Meta</h2>
+            </div>
+
+            <p class="cl-label">Label — 12px / 600 / uppercase / gray-mid (form labels)</p>
+            <div class="cl-specimen">
+                <label style="display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--color-gray-mid); margin: 0;">Repository Path</label>
+            </div>
+
+            <p class="cl-label">Mono — SF Mono / 12px (code, file sizes, paths)</p>
+            <div class="cl-specimen">
+                <span style="font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; color: var(--color-gray-mid);">~/.claude/skills/skill-server/</span>
+            </div>
+
+            <p class="cl-label">Font Families</p>
+            <div class="cl-specimen">
+                <div class="cl-stack">
+                    <div>
+                        <p class="cl-code" style="margin-bottom: 4px;">Sans — Noto Sans KR, Inter, sans-serif</p>
+                        <p style="margin: 0; font-family: 'Noto Sans KR', 'Inter', sans-serif;">가나다라마바사 ABCDEFG 0123456789</p>
+                    </div>
+                    <div>
+                        <p class="cl-code" style="margin-bottom: 4px;">Mono — SF Mono, Consolas, Monaco, monospace</p>
+                        <p style="margin: 0; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px;">const server = express(); // port 972</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== LINKS ==================== -->
+        <section class="cl-section">
+            <h2>Links</h2>
+
+            <div class="cl-specimen">
+                <div class="cl-stack">
+                    <div>
+                        <p class="cl-code" style="margin-bottom: 4px;">Nav link — gray-mid → black (active)</p>
+                        <div style="display: flex; gap: 28px;">
+                            <a href="#" style="color: var(--color-gray-mid); text-decoration: none; font-size: 16px; transition: color 0.15s;">Contexts</a>
+                            <a href="#" style="color: var(--color-black); text-decoration: none; font-size: 16px;">Skills</a>
+                            <a href="#" style="color: var(--color-gray-mid); text-decoration: none; font-size: 16px; transition: color 0.15s;">Standards</a>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="cl-code" style="margin-bottom: 4px;">Skill name link — black → #0066cc on hover</p>
+                        <a href="#" style="color: var(--color-black); text-decoration: none; font-size: 14px;">meta-open-dashboard</a>
+                    </div>
+                    <div>
+                        <p class="cl-code" style="margin-bottom: 4px;">Item link (mono) — inherit → #0066cc on hover</p>
+                        <a href="#" style="color: inherit; text-decoration: none; font-size: 12px; font-family: 'SF Mono', Consolas, Monaco, monospace;">design-show-components</a>
+                    </div>
+                    <div>
+                        <p class="cl-code" style="margin-bottom: 4px;">Action link — text → black on hover / border-bottom</p>
+                        <a href="#" style="display: inline-flex; align-items: center; gap: 8px; color: var(--color-text); text-decoration: none; font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--color-border);">View SKILL.md →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== BUTTONS ==================== -->
+        <section class="cl-section">
+            <h2>Buttons</h2>
+
+            <p class="cl-label">Primary — black bg / white text / 12px / 600 / uppercase</p>
+            <div class="cl-specimen">
+                <div class="cl-inline">
+                    <button class="btn btn-primary" style="width: auto;">Submit</button>
+                    <button class="btn btn-primary btn-small" style="width: auto;">Small</button>
+                </div>
+            </div>
+
+            <p class="cl-label">Secondary — transparent / border / gray-dark</p>
+            <div class="cl-specimen">
+                <div class="cl-inline">
+                    <button class="btn btn-secondary">Cancel</button>
+                    <button class="btn btn-secondary btn-small">Close</button>
+                </div>
+            </div>
+
+            <p class="cl-label">CTA — hero action / black bg / 20px 24px padding</p>
+            <div class="cl-specimen">
+                <a href="#" class="page-hero-cta" style="display: inline-block; text-decoration: none;">Open Skill</a>
+            </div>
+
+            <p class="cl-label">Copy Button — minimal / gray-mid → black on hover</p>
+            <div class="cl-specimen">
+                <button class="copy-btn">Copy</button>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== FORMS ==================== -->
+        <section class="cl-section">
+            <h2>Forms</h2>
+
+            <p class="cl-label">Input — bottom border only / transparent bg</p>
+            <div class="cl-specimen">
+                <div style="max-width: 400px;">
+                    <div class="form-group">
+                        <label>Repository Name</label>
+                        <input type="text" placeholder="e.g. anju" class="input">
+                    </div>
+                    <div class="form-group">
+                        <label>Path</label>
+                        <input type="text" placeholder="/Users/younsoolim/Desktop/www/anju" class="input">
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Form Row — 2-column grid / 24px gap</p>
+            <div class="cl-specimen">
+                <div class="form-row" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" placeholder="Repository name" class="input">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" placeholder="Brief description" class="input">
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Full-width Submit</p>
+            <div class="cl-specimen">
+                <div style="max-width: 400px;">
+                    <button class="submit-button">Register</button>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== CARDS ==================== -->
+        <section class="cl-section">
+            <h2>Cards</h2>
+
+            <p class="cl-label">Skill Card — min-h 140px / 4-column grid</p>
+            <div class="cl-specimen">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <div class="skill-card">
+                        <div class="skill-content">
+                            <div class="skill-name"><a href="#">meta-open-dashboard</a></div>
+                            <div>
+                                <span class="skill-badge">Meta</span>
+                                <span class="skill-badge" style="margin-left: -4px;">CLI</span>
+                            </div>
+                            <div class="skill-description">Open the skill server dashboard in browser</div>
+                            <div class="skill-meta">
+                                <span class="skill-version">v1.0.0</span>
+                                <span class="skill-platform">macOS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-content">
+                            <div class="skill-name"><a href="#">review-audit-web</a></div>
+                            <div>
+                                <span class="skill-badge">Review</span>
+                                <span class="skill-badge" style="margin-left: -4px;">CLI</span>
+                            </div>
+                            <div class="skill-description">Review JavaScript and CSS code against coding standards checklists</div>
+                            <div class="skill-meta">
+                                <span class="skill-version">v2.1.0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card">
+                        <div class="skill-content">
+                            <div class="skill-name"><a href="#">ue-analyze-material</a></div>
+                            <div>
+                                <span class="skill-badge">UE</span>
+                                <span class="skill-badge" style="margin-left: -4px;">Web</span>
+                            </div>
+                            <div class="skill-description">Export and analyze UE material node graphs for debugging</div>
+                            <div class="skill-meta">
+                                <span class="skill-version">v1.3.0</span>
+                                <span class="skill-platform">Windows</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Related Card — border / 24px padding / hover:border-black</p>
+            <div class="cl-specimen">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <a href="#" class="related-card">
+                        <div class="related-card-name" style="font-size: 14px; font-weight: 500;">meta-new-command</div>
+                        <div class="related-card-desc" style="font-size: 12px;">Command creation generator</div>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-card-name" style="font-size: 14px; font-weight: 500;">meta-new-skill</div>
+                        <div class="related-card-desc" style="font-size: 12px;">Skill structure rules</div>
+                    </a>
+                    <a href="#" class="related-card">
+                        <div class="related-card-name" style="font-size: 14px; font-weight: 500;">meta-browse-standards</div>
+                        <div class="related-card-desc" style="font-size: 12px;">Browse standards docs</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== PANELS ==================== -->
+        <section class="cl-section">
+            <h2>Panels</h2>
+
+            <p class="cl-label">CLI Form Panel — white bg / border / 28px padding</p>
+            <div class="cl-specimen" style="padding: 0;">
+                <div class="cli-form" style="margin: 0;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>Skill Name</label>
+                        <input type="text" value="meta-open-dashboard" class="input" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Output Section — white bg / border / 28px padding</p>
+            <div class="cl-specimen" style="padding: 0;">
+                <div class="output-section" style="margin: 0;">
+                    <div class="status-bar">Processing skill...</div>
+                    <div class="output">$ npm start
+Server running on port 972
+Dashboard: http://localhost:972</div>
+                </div>
+            </div>
+
+            <p class="cl-label">Status Bar — gray-light bg / 3px left border (black or error)</p>
+            <div class="cl-specimen">
+                <div class="cl-stack">
+                    <div class="status-bar">Ready — 53 skills registered</div>
+                    <div class="status-bar error">Error — config.json not found</div>
+                </div>
+            </div>
+
+            <p class="cl-label">File Preview — black header / mono content</p>
+            <div class="cl-specimen" style="padding: 0;">
+                <div class="file-preview" style="min-height: auto;">
+                    <div class="preview-header"><span>SKILL.md</span></div>
+                    <div class="preview-content" style="max-height: 120px;">---
+description: Open the skill server dashboard
+allowed-tools: Bash(npm:*), Bash(open:*)
+---
+
+# meta-open-dashboard</div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== LISTS ==================== -->
+        <section class="cl-section">
+            <h2>Lists</h2>
+
+            <p class="cl-label">Item List — border-bottom separator / type icon + name + meta</p>
+            <div class="cl-specimen">
+                <ul class="item-list">
+                    <li>
+                        <span class="item-type-icon">S</span>
+                        <a class="item-name item-name--mono" href="#">meta-open-dashboard</a>
+                        <span class="item-meta">Open the skill server dashboard</span>
+                        <button class="copy-btn">Copy</button>
+                    </li>
+                    <li>
+                        <span class="item-type-icon">C</span>
+                        <a class="item-name item-name--mono" href="#">git-make-message</a>
+                        <span class="item-meta">Generate git commit message</span>
+                        <span class="arg-hint">&lt;staged&gt;</span>
+                    </li>
+                    <li>
+                        <span class="item-type-icon">S</span>
+                        <a class="item-name item-name--mono" href="#">review-audit-web</a>
+                        <span class="item-meta">Review JS/CSS code</span>
+                        <button class="copy-btn">Copy</button>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="cl-label">Activity List — 12px / border-bottom / name + time</p>
+            <div class="cl-specimen">
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-name">Updated design-system.md</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-name">Added new skill: cocv-validate-vrm</div>
+                        <div class="activity-time">5 hours ago</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-name">Registered repo: bevy-vrm</div>
+                        <div class="activity-time">1 day ago</div>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="cl-label">File List — icon + name + date / hover:gray-light</p>
+            <div class="cl-specimen" style="padding: 0;">
+                <div class="file-list">
+                    <div class="file-item directory">
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">commits/</span>
+                        <span class="file-size"></span>
+                    </div>
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">hardware.json</span>
+                        <span class="file-size">2.1 KB</span>
+                    </div>
+                    <div class="file-item">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">repo-paths.json</span>
+                        <span class="file-size">1.4 KB</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Ranked List — rank number + name + count</p>
+            <div class="cl-specimen">
+                <ul class="home-ranked-list">
+                    <li>
+                        <span class="home-rank">1</span>
+                        <span class="home-item-name">Meta</span>
+                        <span class="home-item-count">15</span>
+                    </li>
+                    <li>
+                        <span class="home-rank">2</span>
+                        <span class="home-item-name">CINEV</span>
+                        <span class="home-item-count">12</span>
+                    </li>
+                    <li>
+                        <span class="home-rank">3</span>
+                        <span class="home-item-name">Unreal Engine</span>
+                        <span class="home-item-count">8</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== TABLES ==================== -->
+        <section class="cl-section">
+            <h2>Tables</h2>
+
+            <p class="cl-label">Data Table — 12px / border-collapse / striped rows</p>
+            <div class="cl-specimen">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Platform</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Meta</td>
+                            <td>15</td>
+                            <td>Cross-platform</td>
+                        </tr>
+                        <tr>
+                            <td>CINEV</td>
+                            <td>12</td>
+                            <td>Windows</td>
+                        </tr>
+                        <tr>
+                            <td>Unreal Engine</td>
+                            <td>8</td>
+                            <td>Windows</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== CODE ==================== -->
+        <section class="cl-section">
+            <h2>Code</h2>
+
+            <p class="cl-label">Inline Code — code-bg / code-text / 1px border / 0.85em</p>
+            <div class="cl-specimen">
+                <p style="margin: 0;">Run <code>npm start</code> to launch the server on port <code>972</code>.</p>
+            </div>
+
+            <p class="cl-label">Code Block — code-block-bg / SF Mono / 12px / 6px radius</p>
+            <div class="cl-specimen">
+                <pre style="margin: 0;"><code>const express = require('express');
+const app = express();
+const PORT = 972;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});</code></pre>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== LAYOUT ==================== -->
+        <section class="cl-section">
+            <h2>Layout</h2>
+
+            <p class="cl-label">Hero Section — 2-column grid (1fr 320px) / 60px gap</p>
+            <div class="cl-specimen">
+                <div class="page-hero" style="padding: 0; border: none;">
+                    <div>
+                        <div class="page-hero-category">Meta</div>
+                        <h1 style="margin-bottom: 12px;">meta-open-dashboard</h1>
+                        <p style="margin-bottom: 16px;">Start the local skill server and open the dashboard in browser.</p>
+                        <div class="page-hero-meta-grid" style="margin-top: 16px; padding-top: 16px;">
+                            <div class="page-hero-meta-item">
+                                <span class="page-hero-meta-label">Version</span>
+                                <span class="page-hero-meta-value">1.0.0</span>
+                            </div>
+                            <div class="page-hero-meta-item">
+                                <span class="page-hero-meta-label">Type</span>
+                                <span class="page-hero-meta-value">CLI</span>
+                            </div>
+                            <div class="page-hero-meta-item">
+                                <span class="page-hero-meta-label">Platform</span>
+                                <span class="page-hero-meta-value">macOS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-hero-actions">
+                        <a href="#" class="page-hero-cta" style="text-decoration: none;">Open Dashboard</a>
+                        <a href="#" class="page-hero-action-link">View SKILL.md →</a>
+                        <a href="#" class="page-hero-action-link">Browse Source →</a>
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Two-Column — sidebar (240px) + content</p>
+            <div class="cl-specimen">
+                <div style="display: grid; grid-template-columns: 240px 1fr; gap: 24px;">
+                    <div>
+                        <h3 class="sidebar-heading" style="margin: 0 0 16px;">Contents</h3>
+                        <ul class="sidebar-nav">
+                            <li><a href="#" class="active">Overview</a></li>
+                            <li><a href="#">Workflow</a></li>
+                            <li><a href="#">Arguments</a></li>
+                            <li><a href="#">Related</a></li>
+                        </ul>
+                    </div>
+                    <div style="padding: 12px; border: 1px dashed var(--color-border); font-size: 12px; color: var(--color-gray-mid); display: flex; align-items: center; justify-content: center;">
+                        Main content area (max-width: 720px)
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Max Width — 1170px</p>
+            <div class="cl-specimen">
+                <div style="background: var(--color-gray-light); height: 32px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-gray-mid); font-family: 'SF Mono', Consolas, Monaco, monospace;">
+                    max-width: 1170px
+                </div>
+            </div>
+
+            <p class="cl-label">Grid — 4-column (skill-grid) / 24px gap</p>
+            <div class="cl-specimen">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+                    <div style="background: var(--color-gray-light); height: 48px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-gray-mid);">1</div>
+                    <div style="background: var(--color-gray-light); height: 48px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-gray-mid);">2</div>
+                    <div style="background: var(--color-gray-light); height: 48px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-gray-mid);">3</div>
+                    <div style="background: var(--color-gray-light); height: 48px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-gray-mid);">4</div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== STATUS ==================== -->
+        <section class="cl-section">
+            <h2>Status Indicators</h2>
+
+            <p class="cl-label">Connection Status — 6px dot / green=connected, gray=disconnected</p>
+            <div class="cl-specimen">
+                <div class="cl-stack">
+                    <div class="cl-inline">
+                        <span class="home-repo-status home-repo-connected"></span>
+                        <span style="font-size: 12px;">anju</span>
+                        <span class="home-repo-path">~/Desktop/www/anju</span>
+                    </div>
+                    <div class="cl-inline">
+                        <span class="home-repo-status"></span>
+                        <span style="font-size: 12px;">cinev-studio</span>
+                        <span class="home-repo-path">D:/CINEV/CINEVStudio</span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="cl-label">Server Status — 12px / gray-mid / border-bottom</p>
+            <div class="cl-specimen">
+                <div class="server-status" style="margin: 0; padding-bottom: 0; border: none;">
+                    53 registered · Server connected
+                </div>
+            </div>
+
+            <p class="cl-label">Empty State — centered / gray-mid / 14px</p>
+            <div class="cl-specimen">
+                <div class="empty-state" style="padding: 24px;">No skills found</div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== DESIGN TOKENS ==================== -->
+        <section class="cl-section">
+            <h2>Design Tokens</h2>
+
+            <div class="cl-row">
+                <div class="cl-col">
+                    <p class="cl-label">Spacing (multiples of 4)</p>
+                    <div class="cl-stack">
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 8px; height: 8px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">8px</span>
+                            <span class="cl-token-desc">Small gaps</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 12px; height: 12px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">12px</span>
+                            <span class="cl-token-desc">Label margins</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 16px; height: 16px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">16px</span>
+                            <span class="cl-token-desc">Section padding</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 24px; height: 24px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">24px</span>
+                            <span class="cl-token-desc">Grid gaps, main padding, card padding</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 32px; height: 16px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">32px</span>
+                            <span class="cl-token-desc">Top padding</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 40px; height: 16px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">40px</span>
+                            <span class="cl-token-desc">Section spacing</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 16px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">48px</span>
+                            <span class="cl-token-desc">Large section dividers</span>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 56px; height: 16px; background: var(--color-black);"></div>
+                            <span class="cl-token-value">56px</span>
+                            <span class="cl-token-desc">Page layout padding</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cl-col">
+                    <p class="cl-label">Borders</p>
+                    <div class="cl-stack">
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border: 1px solid var(--color-border);"></div>
+                            <div>
+                                <span class="cl-token-value">1px solid #e5e5e5</span>
+                                <p class="cl-token-desc" style="margin: 0;">Cards, inputs, sections</p>
+                            </div>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border-left: 3px solid var(--color-black);"></div>
+                            <div>
+                                <span class="cl-token-value">3px solid #000</span>
+                                <p class="cl-token-desc" style="margin: 0;">Status bar, path display</p>
+                            </div>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border-left: 3px solid #d32f2f;"></div>
+                            <div>
+                                <span class="cl-token-value">3px solid #d32f2f</span>
+                                <p class="cl-token-desc" style="margin: 0;">Error status bar</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="cl-label" style="margin-top: 24px;">Border Radius</p>
+                    <div class="cl-stack">
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border: 1px solid var(--color-border); border-radius: 0;"></div>
+                            <div>
+                                <span class="cl-token-value">0px</span>
+                                <p class="cl-token-desc" style="margin: 0;">All components (typo-base)</p>
+                            </div>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border: 1px solid var(--color-border); border-radius: 4px;"></div>
+                            <div>
+                                <span class="cl-token-value">4px</span>
+                                <p class="cl-token-desc" style="margin: 0;">Type icon badge</p>
+                            </div>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border: 1px solid var(--color-border); border-radius: 6px;"></div>
+                            <div>
+                                <span class="cl-token-value">6px</span>
+                                <p class="cl-token-desc" style="margin: 0;">Code blocks (pre)</p>
+                            </div>
+                        </div>
+                        <div class="cl-token-row">
+                            <div class="cl-token-sample" style="width: 48px; height: 48px; border: 1px solid var(--color-border); border-radius: 50%;"></div>
+                            <div>
+                                <span class="cl-token-value">50%</span>
+                                <p class="cl-token-desc" style="margin: 0;">Status dot</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== NAVIGATION ==================== -->
+        <section class="cl-section">
+            <h2>Navigation</h2>
+
+            <p class="cl-label">Header — 56px height / border-bottom / logo left / nav right</p>
+            <div class="cl-specimen">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <a href="#" style="font-size: 16px; color: var(--color-black); text-decoration: none;">Skill Server</a>
+                    <nav style="display: flex; gap: 28px;">
+                        <a href="#" style="color: var(--color-gray-mid); text-decoration: none; font-size: 16px;">Contexts</a>
+                        <a href="#" style="color: var(--color-black); text-decoration: none; font-size: 16px;">Skills</a>
+                        <a href="#" style="color: var(--color-gray-mid); text-decoration: none; font-size: 16px;">Standards</a>
+                        <a href="#" style="color: var(--color-gray-mid); text-decoration: none; font-size: 16px;">Learnings</a>
+                    </nav>
+                </div>
+            </div>
+
+            <p class="cl-label">Toolbar — white bg / border / back button</p>
+            <div class="cl-specimen" style="padding: 0;">
+                <div class="skill-toolbar" style="margin: 0;">
+                    <span class="skill-title">meta-open-dashboard</span>
+                    <a href="#" class="back-button">Back</a>
+                </div>
+            </div>
+
+            <p class="cl-label">Sidebar Nav — active: 2px left border / font-weight 500</p>
+            <div class="cl-specimen">
+                <ul class="sidebar-nav" style="width: 200px;">
+                    <li><a href="#" class="active">Overview</a></li>
+                    <li><a href="#">Workflow</a></li>
+                    <li><a href="#">Arguments</a></li>
+                    <li><a href="#">Related</a></li>
+                </ul>
+            </div>
+
+            <p class="cl-label">Footer — border-top / 12px / gray-mid</p>
+            <div class="cl-specimen">
+                <div style="border-top: 1px solid var(--color-border); padding-top: 14px; display: flex; justify-content: space-between; font-size: 12px; color: var(--color-gray-mid);">
+                    <span>&copy; 2026 Skill Server</span>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== SHOELACE ==================== -->
+        <section class="cl-section">
+            <h2>Shoelace Web Components</h2>
+            <p style="font-size: 12px; color: var(--color-gray-dark); margin-bottom: 24px;">Shoelace 2.20.1 with custom theme override (<code>shoelace-theme.css</code>). Flat, borderless style to match typo-base aesthetic.</p>
+
+            <p class="cl-label">Input</p>
+            <div class="cl-specimen">
+                <div style="max-width: 400px;">
+                    <sl-input label="Skill Name" placeholder="e.g. meta-open-dashboard"></sl-input>
+                </div>
+            </div>
+
+            <p class="cl-label">Select</p>
+            <div class="cl-specimen">
+                <div style="max-width: 400px;">
+                    <sl-select label="Category" placeholder="Select category">
+                        <sl-option value="meta">Meta</sl-option>
+                        <sl-option value="cocv">CINEV</sl-option>
+                        <sl-option value="ue">Unreal Engine</sl-option>
+                        <sl-option value="review">Review</sl-option>
+                    </sl-select>
+                </div>
+            </div>
+
+            <p class="cl-label">Checkbox &amp; Switch</p>
+            <div class="cl-specimen">
+                <div class="cl-inline">
+                    <sl-checkbox>Auto-push after commit</sl-checkbox>
+                    <sl-switch>Dark mode</sl-switch>
+                </div>
+            </div>
+
+            <p class="cl-label">Badge &amp; Tag</p>
+            <div class="cl-specimen">
+                <div class="cl-inline">
+                    <sl-badge variant="primary">CLI</sl-badge>
+                    <sl-badge variant="neutral">Web</sl-badge>
+                    <sl-tag size="small">macOS</sl-tag>
+                    <sl-tag size="small">Windows</sl-tag>
+                </div>
+            </div>
+
+            <p class="cl-label">Spinner &amp; Progress</p>
+            <div class="cl-specimen">
+                <div class="cl-inline">
+                    <sl-spinner style="font-size: 1.5rem;"></sl-spinner>
+                    <sl-progress-bar value="65" style="flex: 1; max-width: 300px;"></sl-progress-bar>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== TRANSITIONS ==================== -->
+        <section class="cl-section">
+            <h2>Transitions</h2>
+
+            <div class="cl-specimen">
+                <div class="cl-stack">
+                    <div class="cl-token-row">
+                        <span class="cl-token-value" style="min-width: 180px;">all 0.15s ease</span>
+                        <span class="cl-token-desc">Default — buttons, links, borders, cards</span>
+                    </div>
+                    <div class="cl-token-row">
+                        <span class="cl-token-value" style="min-width: 180px;">color 0.15s ease</span>
+                        <span class="cl-token-desc">Nav links, text hover states</span>
+                    </div>
+                    <div class="cl-token-row">
+                        <span class="cl-token-value" style="min-width: 180px;">background-color 0.1s ease</span>
+                        <span class="cl-token-desc">File item hover</span>
+                    </div>
+                    <div class="cl-token-row">
+                        <span class="cl-token-value" style="min-width: 180px;">border-color 0.15s ease</span>
+                        <span class="cl-token-desc">Input focus, card hover</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="cl-divider">
+
+        <!-- ==================== RESPONSIVE ==================== -->
+        <section class="cl-section">
+            <h2>Responsive</h2>
+
+            <div class="cl-specimen">
+                <div class="cl-stack">
+                    <div class="cl-token-row">
+                        <span class="cl-token-value" style="min-width: 180px;">768px</span>
+                        <span class="cl-token-desc">Single breakpoint — mobile/desktop</span>
+                    </div>
+                </div>
+                <div style="margin-top: 16px; font-size: 12px; color: var(--color-gray-dark); line-height: 1.6;">
+                    <p style="margin: 0 0 8px;"><strong>Below 768px:</strong></p>
+                    <ul style="margin: 0; padding-left: 16px; list-style: disc !important;">
+                        <li style="font-size: 12px; padding-left: 0; margin-bottom: 4px;">skill-grid → 1 column</li>
+                        <li style="font-size: 12px; padding-left: 0; margin-bottom: 4px;">form-row → 1 column</li>
+                        <li style="font-size: 12px; padding-left: 0; margin-bottom: 4px;">page-hero → 1 column (stacked)</li>
+                        <li style="font-size: 12px; padding-left: 0; margin-bottom: 4px;">two-column layout → single column</li>
+                        <li style="font-size: 12px; padding-left: 0; margin-bottom: 4px;">related-grid → 1 column</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <%- include('partials/footer', {config}) %>
+</body>
+</html>

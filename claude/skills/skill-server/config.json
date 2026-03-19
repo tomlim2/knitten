@@ -6,6 +6,7 @@
     { "label": "Contexts", "href": "/contexts" },
     { "label": "Skills", "href": "/skills" },
     { "label": "Standards", "href": "/standards" },
-    { "label": "Learnings", "href": "/learnings" }
+    { "label": "Learnings", "href": "/learnings" },
+    { "label": "Components", "href": "/components" }
   ]
 }
