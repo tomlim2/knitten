@@ -907,6 +907,46 @@ app.get('/api/gemini-key', (req, res) => {
     res.json({ key: key ? key : null });
 });
 
+// Gemini usage tracking
+const GEMINI_USAGE_FILE = path.join(PRIVATE_DIR, 'gemini-usage.json');
+
+function getGeminiUsage() {
+    try {
+        if (fs.existsSync(GEMINI_USAGE_FILE)) {
+            return JSON.parse(fs.readFileSync(GEMINI_USAGE_FILE, 'utf-8'));
+        }
+    } catch {}
+    return { totalRequests: 0, totalInputTokens: 0, totalOutputTokens: 0, totalImages: 0, history: [] };
+}
+
+function saveGeminiUsage(data) {
+    fs.writeFileSync(GEMINI_USAGE_FILE, JSON.stringify(data, null, 2) + '\n');
+}
+
+app.get('/api/gemini-usage', (req, res) => {
+    res.json(getGeminiUsage());
+});
+
+app.post('/api/gemini-usage', (req, res) => {
+    const { inputTokens, outputTokens, model, type } = req.body;
+    const usage = getGeminiUsage();
+    usage.totalRequests += 1;
+    usage.totalInputTokens += (inputTokens || 0);
+    usage.totalOutputTokens += (outputTokens || 0);
+    usage.totalImages += 1;
+    usage.history.push({
+        ts: new Date().toISOString(),
+        model: model || 'unknown',
+        type: type || 'unknown',
+        inputTokens: inputTokens || 0,
+        outputTokens: outputTokens || 0
+    });
+    // Keep last 500 entries
+    if (usage.history.length > 500) usage.history = usage.history.slice(-500);
+    saveGeminiUsage(usage);
+    res.json(usage);
+});
+
 // Config API (used by layout.js for shared nav/footer)
 app.get('/api/config', (req, res) => {
     res.json(config);

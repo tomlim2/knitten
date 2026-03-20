@@ -214,7 +214,10 @@ textarea::placeholder { color: var(--color-gray-mid); }
         </div>
     </div>
 </main>
-<footer class="footer">Gemini API — Text to Image</footer>
+<footer class="footer">
+    <span>Gemini API — Text to Image</span>
+    <span id="usageBar" style="float:right; font-family:'SF Mono',Consolas,monospace;"></span>
+</footer>
 
 <script>
 let currentImageData = null;
@@ -304,7 +307,19 @@ async function generate() {
             const src = `data:${currentMimeType};base64,${currentImageData}`;
             document.getElementById('outputArea').innerHTML = `<img src="${src}" alt="Generated">`;
             document.getElementById('outputActions').style.display = 'flex';
-            showStatus(textPart ? textPart.text : 'Image generated');
+
+            // Token usage
+            const meta = data.usageMetadata || {};
+            const inTok = meta.promptTokenCount || 0;
+            const outTok = meta.candidatesTokenCount || meta.totalTokenCount || 0;
+            showStatus(`${textPart ? textPart.text + ' — ' : ''}${inTok} in / ${outTok} out tokens`);
+
+            // Report to server
+            fetch('/api/gemini-usage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ inputTokens: inTok, outputTokens: outTok, model, type: 't2i' })
+            }).then(r => r.json()).then(u => updateUsageBar(u));
         } else if (textPart) {
             showStatus(textPart.text, 'error');
         } else {
@@ -344,6 +359,15 @@ function openInI2I() {
     sessionStorage.setItem('i2i_mime', currentMimeType);
     window.location.href = '/skills/dev-run-i2i';
 }
+
+function updateUsageBar(u) {
+    const el = document.getElementById('usageBar');
+    const totalTok = (u.totalInputTokens + u.totalOutputTokens).toLocaleString();
+    el.textContent = `${u.totalRequests} req · ${totalTok} tokens · ${u.totalImages} images`;
+}
+
+// Load initial usage
+fetch('/api/gemini-usage').then(r => r.json()).then(updateUsageBar).catch(() => {});
 
 // Ctrl+Enter to generate
 document.getElementById('prompt').addEventListener('keydown', e => {

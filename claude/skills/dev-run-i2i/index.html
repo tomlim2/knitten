@@ -219,7 +219,10 @@ textarea::placeholder { color: var(--color-gray-mid); }
         </div>
     </div>
 </main>
-<footer class="footer">Gemini API — Image to Image</footer>
+<footer class="footer">
+    <span>Gemini API — Image to Image</span>
+    <span id="usageBar" style="float:right; font-family:'SF Mono',Consolas,monospace;"></span>
+</footer>
 
 <script>
 let sourceImageData = null;
@@ -376,7 +379,17 @@ async function generate() {
             const src = `data:${currentMimeType};base64,${currentImageData}`;
             document.getElementById('outputArea').innerHTML = `<img src="${src}" alt="Edited">`;
             document.getElementById('outputActions').style.display = 'flex';
-            showStatus(textPart ? textPart.text : 'Image edited');
+
+            const meta = data.usageMetadata || {};
+            const inTok = meta.promptTokenCount || 0;
+            const outTok = meta.candidatesTokenCount || meta.totalTokenCount || 0;
+            showStatus(`${textPart ? textPart.text + ' — ' : ''}${inTok} in / ${outTok} out tokens`);
+
+            fetch('/api/gemini-usage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ inputTokens: inTok, outputTokens: outTok, model, type: 'i2i' })
+            }).then(r => r.json()).then(u => updateUsageBar(u));
         } else if (textPart) {
             showStatus(textPart.text, 'error');
         } else {
@@ -417,6 +430,15 @@ function useAsSource() {
     setSourcePreview(`data:${currentMimeType};base64,${currentImageData}`);
     showStatus('Output set as new source');
 }
+
+function updateUsageBar(u) {
+    const el = document.getElementById('usageBar');
+    const totalTok = (u.totalInputTokens + u.totalOutputTokens).toLocaleString();
+    el.textContent = `${u.totalRequests} req · ${totalTok} tokens · ${u.totalImages} images`;
+}
+
+// Load initial usage
+fetch('/api/gemini-usage').then(r => r.json()).then(updateUsageBar).catch(() => {});
 
 // Ctrl+Enter to generate
 document.getElementById('prompt').addEventListener('keydown', e => {
