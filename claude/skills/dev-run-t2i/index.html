@@ -160,6 +160,7 @@ textarea::placeholder { color: var(--color-gray-mid); }
     <nav class="nav">
         <a href="/skills/dev-run-t2i" class="active">T2I</a>
         <a href="/skills/dev-run-i2i">I2I</a>
+        <a href="/gallery">Gallery</a>
     </nav>
 </header>
 <main class="main">
@@ -373,6 +374,23 @@ fetch('/api/gemini-usage').then(r => r.json()).then(updateUsageBar).catch(() => 
 document.getElementById('prompt').addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generate();
 });
+
+// Load prompt from gallery (via sessionStorage)
+(function() {
+    const gPrompt = sessionStorage.getItem('gallery_prompt');
+    const gAspect = sessionStorage.getItem('gallery_aspect');
+    if (gPrompt) {
+        document.getElementById('prompt').value = gPrompt;
+        sessionStorage.removeItem('gallery_prompt');
+    }
+    if (gAspect) {
+        const sel = document.getElementById('aspect');
+        for (const opt of sel.options) {
+            if (opt.value === gAspect) { sel.value = gAspect; break; }
+        }
+        sessionStorage.removeItem('gallery_aspect');
+    }
+})();
 </script>
 </body>
 </html>

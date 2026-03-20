@@ -569,6 +569,235 @@ app.get('/skills', (req, res) => {
     res.render('dashboard', { allItems, totalCount, config, activePage: '/skills' });
 });
 
+// Gallery
+const GALLERY_FILE = path.join(PRIVATE_DIR, 'gallery-prompts.json');
+
+// Civitai fetch
+const GALLERY_FETCH_INTERVAL = 24 * 60 * 60 * 1000; // 24h
+let lastGalleryFetch = 0;
+
+function aspectFromDimensions(w, h) {
+    if (!w || !h) return '1:1';
+    const r = w / h;
+    if (Math.abs(r - 1) < 0.1) return '1:1';
+    if (Math.abs(r - 16/9) < 0.15) return '16:9';
+    if (Math.abs(r - 9/16) < 0.15) return '9:16';
+    if (Math.abs(r - 4/3) < 0.15) return '4:3';
+    if (Math.abs(r - 3/4) < 0.15) return '3:4';
+    if (r > 1) return '16:9';
+    return '9:16';
+}
+
+function categorizeCivitaiPrompt(prompt) {
+    const p = prompt.toLowerCase();
+    if (/\b(texture|seamless|tileable|pattern|material)\b/.test(p)) return 'Texture';
+    if (/\b(icon|ui|button|interface|emoji|logo)\b/.test(p)) return 'UI/Icon';
+    if (/\b(landscape|scenery|city|mountain|ocean|sunset|forest|building|architecture|street)\b/.test(p)) return 'Landscape';
+    return 'Character';
+}
+
+async function fetchCivitaiPrompts() {
+    const https = require('https');
+
+    function fetchJSON(url) {
+        return new Promise((resolve, reject) => {
+            https.get(url, { headers: { 'User-Agent': 'SkillServer/1.0' } }, (res) => {
+                let body = '';
+                res.on('data', chunk => body += chunk);
+                res.on('end', () => {
+                    try { resolve(JSON.parse(body)); }
+                    catch (e) { reject(e); }
+                });
+            }).on('error', reject);
+        });
+    }
+
+    try {
+        const data = await fetchJSON('https://civitai.com/api/v1/images?limit=50&sort=Most+Reactions&period=Day&nsfw=None');
+        const items = data.items || [];
+        const prompts = [];
+
+        for (const img of items) {
+            const meta = img.meta || {};
+            const prompt = meta.prompt;
+            if (!prompt || prompt.length < 20) continue;
+
+            // Truncate very long prompts
+            const cleanPrompt = prompt.length > 500 ? prompt.slice(0, 500) + '...' : prompt;
+            const aspect = aspectFromDimensions(img.width, img.height);
+            const category = categorizeCivitaiPrompt(prompt);
+
+            // Build civitai URL
+            const url = `https://civitai.com/images/${img.id}`;
+
+            // Title: first meaningful phrase (up to 40 chars)
+            const titleRaw = cleanPrompt.split(/[,.\n]/)[0].trim();
+            const title = titleRaw.length > 40 ? titleRaw.slice(0, 37) + '...' : titleRaw;
+
+            const tags = ['civitai'];
+            if (meta.Model) tags.push(meta.Model.toLowerCase().replace(/\s+/g, '-'));
+
+            prompts.push({ title, prompt: cleanPrompt, aspect, category, url, tags });
+        }
+
+        if (prompts.length === 0) return { fetched: 0 };
+
+        // Merge into gallery
+        const gallery = readGallery();
+
+        // Collect existing civitai URLs to avoid duplicates
+        const existingUrls = new Set();
+        for (const cat of gallery.categories) {
+            for (const p of cat.prompts) {
+                if (p.url) existingUrls.add(p.url);
+            }
+        }
+
+        let added = 0;
+        for (const p of prompts) {
+            if (existingUrls.has(p.url)) continue;
+
+            let cat = gallery.categories.find(c => c.name === p.category);
+            if (!cat) {
+                cat = { name: p.category, prompts: [] };
+                gallery.categories.push(cat);
+            }
+            cat.prompts.push({
+                title: p.title,
+                prompt: p.prompt,
+                aspect: p.aspect,
+                tags: p.tags,
+                url: p.url
+            });
+            added++;
+        }
+
+        // Cap per category: keep latest 30
+        for (const cat of gallery.categories) {
+            if (cat.prompts.length > 30) {
+                // Keep manually added (no civitai url) + latest civitai ones
+                const manual = cat.prompts.filter(p => !p.url || !p.url.includes('civitai.com'));
+                const civitai = cat.prompts.filter(p => p.url && p.url.includes('civitai.com'));
+                const keepCivitai = civitai.slice(-Math.max(30 - manual.length, 10));
+                cat.prompts = [...manual, ...keepCivitai];
+            }
+        }
+
+        gallery.categories = gallery.categories.filter(c => c.prompts.length > 0);
+        gallery.lastFetch = new Date().toISOString();
+        saveGallery(gallery);
+        lastGalleryFetch = Date.now();
+
+        return { fetched: prompts.length, added, total: gallery.categories.reduce((s, c) => s + c.prompts.length, 0) };
+    } catch (e) {
+        console.error('Civitai fetch error:', e.message);
+        return { error: e.message };
+    }
+}
+
+// Auto-fetch on server start (delayed) + every 24h
+setTimeout(() => {
+    const gallery = readGallery();
+    const lastFetchTime = gallery.lastFetch ? new Date(gallery.lastFetch).getTime() : 0;
+    if (Date.now() - lastFetchTime > GALLERY_FETCH_INTERVAL) {
+        fetchCivitaiPrompts().then(r => console.log('Gallery auto-fetch:', r));
+    }
+    lastGalleryFetch = lastFetchTime;
+}, 5000);
+
+setInterval(() => {
+    fetchCivitaiPrompts().then(r => console.log('Gallery scheduled fetch:', r));
+}, GALLERY_FETCH_INTERVAL);
+
+function readGallery() {
+    try {
+        if (fs.existsSync(GALLERY_FILE)) {
+            return JSON.parse(fs.readFileSync(GALLERY_FILE, 'utf-8'));
+        }
+    } catch {}
+    return { categories: [] };
+}
+
+function saveGallery(data) {
+    fs.writeFileSync(GALLERY_FILE, JSON.stringify(data, null, 2) + '\n');
+}
+
+app.get('/gallery', (req, res) => {
+    res.render('gallery', { config, activePage: '/gallery' });
+});
+
+app.get('/api/gallery', async (req, res) => {
+    // Auto-fetch if stale (24h since last fetch)
+    const gallery = readGallery();
+    const lastFetchTime = gallery.lastFetch ? new Date(gallery.lastFetch).getTime() : 0;
+    if (Date.now() - lastFetchTime > GALLERY_FETCH_INTERVAL) {
+        await fetchCivitaiPrompts();
+        return res.json(readGallery());
+    }
+    res.json(gallery);
+});
+
+app.post('/api/gallery/fetch', async (req, res) => {
+    const result = await fetchCivitaiPrompts();
+    res.json(result);
+});
+
+app.post('/api/gallery', (req, res) => {
+    const { title, prompt, category, aspect, tags, url, editCategory, editIndex } = req.body;
+    if (!title || !prompt || !category) {
+        return res.status(400).json({ error: 'Missing title, prompt, or category' });
+    }
+
+    const data = readGallery();
+    const entry = { title, prompt, aspect: aspect || '1:1', tags: tags || [] };
+    if (url) entry.url = url;
+
+    // Edit existing
+    if (editCategory !== undefined && editIndex !== undefined) {
+        const oldCat = data.categories.find(c => c.name === editCategory);
+        if (oldCat && oldCat.prompts[editIndex] !== undefined) {
+            // If category changed, remove from old and add to new
+            if (editCategory !== category) {
+                oldCat.prompts.splice(editIndex, 1);
+                let newCat = data.categories.find(c => c.name === category);
+                if (!newCat) {
+                    newCat = { name: category, prompts: [] };
+                    data.categories.push(newCat);
+                }
+                newCat.prompts.push(entry);
+            } else {
+                oldCat.prompts[editIndex] = entry;
+            }
+        }
+    } else {
+        // Add new
+        let cat = data.categories.find(c => c.name === category);
+        if (!cat) {
+            cat = { name: category, prompts: [] };
+            data.categories.push(cat);
+        }
+        cat.prompts.push(entry);
+    }
+
+    // Remove empty categories
+    data.categories = data.categories.filter(c => c.prompts.length > 0);
+    saveGallery(data);
+    res.json({ success: true });
+});
+
+app.delete('/api/gallery/:category/:index', (req, res) => {
+    const catName = decodeURIComponent(req.params.category);
+    const idx = parseInt(req.params.index);
+    const data = readGallery();
+    const cat = data.categories.find(c => c.name === catName);
+    if (cat && cat.prompts[idx] !== undefined) {
+        cat.prompts.splice(idx, 1);
+    }
+    data.categories = data.categories.filter(c => c.prompts.length > 0);
+    saveGallery(data);
+    res.json({ success: true });
+});
+
 app.get('/components', (req, res) => {
     res.render('components', { config, activePage: '/components' });
 });

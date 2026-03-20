@@ -7,6 +7,7 @@
     { "label": "Skills", "href": "/skills" },
     { "label": "Standards", "href": "/standards" },
     { "label": "Learnings", "href": "/learnings" },
+    { "label": "Gallery", "href": "/gallery" },
     { "label": "Components", "href": "/components" }
   ]
 }
