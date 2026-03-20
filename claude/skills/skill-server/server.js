@@ -613,13 +613,11 @@ async function fetchCivitaiPrompts() {
     }
 
     try {
-        // Random period + sort for variety
+        // Random period for variety, always sorted by most reactions
         const periods = ['Day', 'Week', 'Month'];
-        const sorts = ['Most Reactions', 'Most Comments', 'Newest'];
         const period = periods[Math.floor(Math.random() * periods.length)];
-        const sort = sorts[Math.floor(Math.random() * sorts.length)];
 
-        const data = await fetchJSON(`https://civitai.com/api/v1/images?limit=50&sort=${encodeURIComponent(sort)}&period=${period}&nsfw=None`);
+        const data = await fetchJSON(`https://civitai.com/api/v1/images?limit=50&sort=Most+Reactions&period=${period}&nsfw=None`);
         const items = data.items || [];
         const prompts = [];
 
