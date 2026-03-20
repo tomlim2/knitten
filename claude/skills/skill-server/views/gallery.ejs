@@ -127,6 +127,16 @@
             border-color: #d32f2f;
             color: #d32f2f;
         }
+        .btn-icon.fav.active {
+            color: #f59e0b;
+            border-color: #f59e0b;
+        }
+        .btn-icon.fav.active svg {
+            fill: #f59e0b;
+        }
+        .prompt-card.is-fav {
+            border-left: 3px solid #f59e0b;
+        }
 
         /* Add form overlay */
         .form-overlay {
@@ -305,17 +315,18 @@
             `<option value="${c.name}">${c.name}</option>`
         ).join('');
 
-        let html = '';
-        galleryData.categories.forEach(cat => {
-            if (!cat.prompts || cat.prompts.length === 0) return;
-            html += `<div class="skill-section">`;
-            html += `<div class="section-title">${cat.name}</div>`;
-            html += `<div class="prompt-grid">`;
-            cat.prompts.forEach((p, idx) => {
-                const tagsStr = (p.tags || []).join(', ');
-                html += `
-                <div class="prompt-card" onclick="goT2I('${esc(cat.name)}', ${idx})">
+        const starFilled = `<svg viewBox="0 -960 960 960"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>`;
+        const starOutline = `<svg viewBox="0 -960 960 960"><path d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"/></svg>`;
+
+        function renderCard(cat, p, idx, section) {
+            const tagsStr = (p.tags || []).join(', ');
+            const isFav = p.favorite ? ' is-fav' : '';
+            const favClass = p.favorite ? ' active' : '';
+            const favIcon = p.favorite ? starFilled : starOutline;
+            return `
+                <div class="prompt-card${isFav}" onclick="goT2I('${esc(cat.name)}', ${idx})">
                     <div class="prompt-card-actions">
+                        <button class="btn-icon fav${favClass}" onclick="event.stopPropagation();toggleFav('${esc(cat.name)}',${idx})" title="Favorite">${favIcon}</button>
                         <button class="btn-icon" onclick="event.stopPropagation();copyPrompt('${esc(cat.name)}',${idx})" title="Copy"><svg viewBox="0 -960 960 960"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg></button>
                         ${p.url ? `<a class="btn-icon" href="${esc(p.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Source"><svg viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>` : ''}
                         <button class="btn-icon" onclick="event.stopPropagation();editPrompt('${esc(cat.name)}',${idx})" title="Edit"><svg viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>
@@ -328,6 +339,35 @@
                         <span class="prompt-tags">${esc(tagsStr)}</span>
                     </div>
                 </div>`;
+        }
+
+        let html = '';
+
+        // Favorites section
+        const favs = [];
+        galleryData.categories.forEach(cat => {
+            (cat.prompts || []).forEach((p, idx) => {
+                if (p.favorite) favs.push({ cat, p, idx });
+            });
+        });
+        if (favs.length > 0) {
+            html += `<div class="skill-section">`;
+            html += `<div class="section-title">Favorites</div>`;
+            html += `<div class="prompt-grid">`;
+            favs.forEach(({ cat, p, idx }) => {
+                html += renderCard(cat, p, idx, 'fav');
+            });
+            html += `</div></div>`;
+        }
+
+        // Category sections
+        galleryData.categories.forEach(cat => {
+            if (!cat.prompts || cat.prompts.length === 0) return;
+            html += `<div class="skill-section">`;
+            html += `<div class="section-title">${cat.name}</div>`;
+            html += `<div class="prompt-grid">`;
+            cat.prompts.forEach((p, idx) => {
+                html += renderCard(cat, p, idx, 'cat');
             });
             html += `</div></div>`;
         });
@@ -433,6 +473,15 @@
         el.textContent = msg;
         el.classList.add('show');
         setTimeout(() => el.classList.remove('show'), 2000);
+    }
+
+    async function toggleFav(catName, idx) {
+        await fetch('/api/gallery/favorite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category: catName, index: idx })
+        });
+        await loadGallery();
     }
 
     async function fetchNew() {

@@ -672,14 +672,13 @@ async function fetchCivitaiPrompts() {
             added++;
         }
 
-        // Cap per category: keep latest 30
+        // Cap per category: keep latest 30, never remove favorites
         for (const cat of gallery.categories) {
             if (cat.prompts.length > 30) {
-                // Keep manually added (no civitai url) + latest civitai ones
-                const manual = cat.prompts.filter(p => !p.url || !p.url.includes('civitai.com'));
-                const civitai = cat.prompts.filter(p => p.url && p.url.includes('civitai.com'));
-                const keepCivitai = civitai.slice(-Math.max(30 - manual.length, 10));
-                cat.prompts = [...manual, ...keepCivitai];
+                const kept = cat.prompts.filter(p => p.favorite || !p.url || !p.url.includes('civitai.com'));
+                const civitai = cat.prompts.filter(p => !p.favorite && p.url && p.url.includes('civitai.com'));
+                const keepCivitai = civitai.slice(-Math.max(30 - kept.length, 10));
+                cat.prompts = [...kept, ...keepCivitai];
             }
         }
 
@@ -782,6 +781,18 @@ app.post('/api/gallery', (req, res) => {
     // Remove empty categories
     data.categories = data.categories.filter(c => c.prompts.length > 0);
     saveGallery(data);
+    res.json({ success: true });
+});
+
+app.post('/api/gallery/favorite', (req, res) => {
+    const { category, index } = req.body;
+    const data = readGallery();
+    const cat = data.categories.find(c => c.name === category);
+    if (cat && cat.prompts[index] !== undefined) {
+        cat.prompts[index].favorite = !cat.prompts[index].favorite;
+        if (!cat.prompts[index].favorite) delete cat.prompts[index].favorite;
+        saveGallery(data);
+    }
     res.json({ success: true });
 });
 
