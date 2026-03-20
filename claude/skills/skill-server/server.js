@@ -613,7 +613,13 @@ async function fetchCivitaiPrompts() {
     }
 
     try {
-        const data = await fetchJSON('https://civitai.com/api/v1/images?limit=50&sort=Most+Reactions&period=Day&nsfw=None');
+        // Random period + sort for variety
+        const periods = ['Day', 'Week', 'Month'];
+        const sorts = ['Most Reactions', 'Most Comments', 'Newest'];
+        const period = periods[Math.floor(Math.random() * periods.length)];
+        const sort = sorts[Math.floor(Math.random() * sorts.length)];
+
+        const data = await fetchJSON(`https://civitai.com/api/v1/images?limit=50&sort=${encodeURIComponent(sort)}&period=${period}&nsfw=None`);
         const items = data.items || [];
         const prompts = [];
 
@@ -622,15 +628,11 @@ async function fetchCivitaiPrompts() {
             const prompt = meta.prompt;
             if (!prompt || prompt.length < 20) continue;
 
-            // Truncate very long prompts
             const cleanPrompt = prompt.length > 500 ? prompt.slice(0, 500) + '...' : prompt;
             const aspect = aspectFromDimensions(img.width, img.height);
             const category = categorizeCivitaiPrompt(prompt);
-
-            // Build civitai URL
             const url = `https://civitai.com/images/${img.id}`;
 
-            // Title: first meaningful phrase (up to 40 chars)
             const titleRaw = cleanPrompt.split(/[,.\n]/)[0].trim();
             const title = titleRaw.length > 40 ? titleRaw.slice(0, 37) + '...' : titleRaw;
 
@@ -642,21 +644,15 @@ async function fetchCivitaiPrompts() {
 
         if (prompts.length === 0) return { fetched: 0 };
 
-        // Merge into gallery
+        // Clear non-favorites, keep only favorites
         const gallery = readGallery();
-
-        // Collect existing civitai URLs to avoid duplicates
-        const existingUrls = new Set();
         for (const cat of gallery.categories) {
-            for (const p of cat.prompts) {
-                if (p.url) existingUrls.add(p.url);
-            }
+            cat.prompts = cat.prompts.filter(p => p.favorite);
         }
 
+        // Add fresh prompts
         let added = 0;
         for (const p of prompts) {
-            if (existingUrls.has(p.url)) continue;
-
             let cat = gallery.categories.find(c => c.name === p.category);
             if (!cat) {
                 cat = { name: p.category, prompts: [] };
@@ -672,16 +668,6 @@ async function fetchCivitaiPrompts() {
             added++;
         }
 
-        // Cap per category: keep latest 30, never remove favorites
-        for (const cat of gallery.categories) {
-            if (cat.prompts.length > 30) {
-                const kept = cat.prompts.filter(p => p.favorite || !p.url || !p.url.includes('civitai.com'));
-                const civitai = cat.prompts.filter(p => !p.favorite && p.url && p.url.includes('civitai.com'));
-                const keepCivitai = civitai.slice(-Math.max(30 - kept.length, 10));
-                cat.prompts = [...kept, ...keepCivitai];
-            }
-        }
-
         gallery.categories = gallery.categories.filter(c => c.prompts.length > 0);
         gallery.lastFetch = new Date().toISOString();
         saveGallery(gallery);
@@ -694,19 +680,14 @@ async function fetchCivitaiPrompts() {
     }
 }
 
-// Auto-fetch on server start (delayed) + every 24h
+// Auto-fetch on server start if gallery is empty (no non-favorites)
 setTimeout(() => {
     const gallery = readGallery();
-    const lastFetchTime = gallery.lastFetch ? new Date(gallery.lastFetch).getTime() : 0;
-    if (Date.now() - lastFetchTime > GALLERY_FETCH_INTERVAL) {
-        fetchCivitaiPrompts().then(r => console.log('Gallery auto-fetch:', r));
+    const hasContent = gallery.categories.some(c => c.prompts.some(p => !p.favorite));
+    if (!hasContent) {
+        fetchCivitaiPrompts().then(r => console.log('Gallery initial fetch:', r));
     }
-    lastGalleryFetch = lastFetchTime;
 }, 5000);
-
-setInterval(() => {
-    fetchCivitaiPrompts().then(r => console.log('Gallery scheduled fetch:', r));
-}, GALLERY_FETCH_INTERVAL);
 
 function readGallery() {
     try {
@@ -725,15 +706,8 @@ app.get('/gallery', (req, res) => {
     res.render('gallery', { config, activePage: '/gallery' });
 });
 
-app.get('/api/gallery', async (req, res) => {
-    // Auto-fetch if stale (24h since last fetch)
-    const gallery = readGallery();
-    const lastFetchTime = gallery.lastFetch ? new Date(gallery.lastFetch).getTime() : 0;
-    if (Date.now() - lastFetchTime > GALLERY_FETCH_INTERVAL) {
-        await fetchCivitaiPrompts();
-        return res.json(readGallery());
-    }
-    res.json(gallery);
+app.get('/api/gallery', (req, res) => {
+    res.json(readGallery());
 });
 
 app.post('/api/gallery/fetch', async (req, res) => {

@@ -237,7 +237,7 @@
         <div class="gallery-header">
             <h1>Prompt Gallery</h1>
             <div style="display:flex;gap:8px;">
-                <button class="btn-add" style="background:transparent;color:var(--color-gray-dark);border:1px solid var(--color-border);" onclick="fetchNew()" id="btnFetch">Fetch New</button>
+                <button class="btn-add" style="background:transparent;color:var(--color-gray-dark);border:1px solid var(--color-border);" onclick="fetchNew()" id="btnFetch">Shuffle</button>
                 <button class="btn-add" onclick="openForm()">Add Prompt</button>
             </div>
         </div>
@@ -326,9 +326,9 @@
             return `
                 <div class="prompt-card${isFav}" onclick="goT2I('${esc(cat.name)}', ${idx})">
                     <div class="prompt-card-actions">
+                        ${p.url ? `<a class="btn-icon" href="${esc(p.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Source"><svg viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>` : ''}
                         <button class="btn-icon fav${favClass}" onclick="event.stopPropagation();toggleFav('${esc(cat.name)}',${idx})" title="Favorite">${favIcon}</button>
                         <button class="btn-icon" onclick="event.stopPropagation();copyPrompt('${esc(cat.name)}',${idx})" title="Copy"><svg viewBox="0 -960 960 960"><path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z"/></svg></button>
-                        ${p.url ? `<a class="btn-icon" href="${esc(p.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Source"><svg viewBox="0 -960 960 960"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>` : ''}
                         <button class="btn-icon" onclick="event.stopPropagation();editPrompt('${esc(cat.name)}',${idx})" title="Edit"><svg viewBox="0 -960 960 960"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>
                         <button class="btn-icon delete" onclick="event.stopPropagation();deletePrompt('${esc(cat.name)}',${idx})" title="Delete"><svg viewBox="0 -960 960 960"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg></button>
                     </div>
@@ -501,7 +501,7 @@
             showToast('Fetch failed');
         }
         btn.disabled = false;
-        btn.textContent = 'Fetch New';
+        btn.textContent = 'Shuffle';
     }
 
     loadGallery();
