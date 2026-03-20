@@ -901,6 +901,12 @@ app.delete('/api/repos', (req, res) => {
     res.json({ success: true });
 });
 
+// Gemini API key from env
+app.get('/api/gemini-key', (req, res) => {
+    const key = process.env.GEMINI_API_KEY || '';
+    res.json({ key: key ? key : null });
+});
+
 // Config API (used by layout.js for shared nav/footer)
 app.get('/api/config', (req, res) => {
     res.json(config);

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I2I — Gemini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --color-black: #000;
+    --color-text: #1a1a1a;
+    --color-white: #fff;
+    --color-bg: #f8f8f8;
+    --color-border: #e5e5e5;
+    --color-border-hover: #ccc;
+    --color-gray-light: #f5f5f5;
+    --color-gray-mid: #888;
+    --color-gray-dark: #555;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+.header {
+    max-width: 1170px; margin: 0 auto; padding: 0 24px;
+    height: 56px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--color-border);
+}
+.logo { font-size: 16px; color: var(--color-black); text-decoration: none; }
+.nav { display: flex; gap: 20px; }
+.nav a { color: var(--color-gray-mid); text-decoration: none; font-size: 14px; transition: color 0.15s; }
+.nav a:hover, .nav a.active { color: var(--color-black); }
+.main { max-width: 1170px; margin: 0 auto; padding: 32px 24px; }
+h1 { font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+.subtitle { font-size: 12px; color: var(--color-gray-mid); margin-bottom: 32px; }
+
+.workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    min-height: 600px;
+}
+.panel {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.panel-title {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--color-gray-mid); margin-bottom: 16px;
+}
+
+.drop-zone {
+    border: 1px dashed var(--color-border);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    position: relative;
+    overflow: hidden;
+}
+.drop-zone:hover { border-color: var(--color-border-hover); }
+.drop-zone.has-image { border-style: solid; padding: 0; }
+.drop-zone img { max-width: 100%; max-height: 300px; object-fit: contain; }
+.drop-zone-text { font-size: 12px; color: var(--color-gray-mid); text-align: center; }
+.drop-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+
+textarea {
+    width: 100%; min-height: 80px;
+    border: none; border-bottom: 1px solid var(--color-border);
+    font-family: inherit; font-size: 14px; resize: vertical;
+    background: transparent; padding: 8px 0; margin-top: 16px;
+    transition: border-color 0.15s;
+}
+textarea:focus { outline: none; border-bottom-color: var(--color-black); }
+textarea::placeholder { color: var(--color-gray-mid); }
+
+.controls {
+    display: flex; gap: 12px; align-items: center; margin-top: 16px; flex-wrap: wrap;
+}
+.controls select {
+    border: 1px solid var(--color-border); background: transparent;
+    padding: 8px 12px; font-size: 12px; font-family: inherit;
+    transition: border-color 0.15s;
+}
+.controls select:focus { outline: none; border-color: var(--color-black); }
+.controls label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--color-gray-mid); letter-spacing: 0.05em;
+}
+.ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+
+.btn-generate {
+    padding: 12px 24px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--color-black); color: var(--color-white);
+    border: none; cursor: pointer; transition: background 0.15s;
+    margin-left: auto;
+}
+.btn-generate:hover { background: var(--color-text); }
+.btn-generate:disabled { background: var(--color-gray-mid); cursor: not-allowed; }
+
+.output-area {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    min-height: 400px;
+}
+.output-area img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.output-placeholder { font-size: 12px; color: var(--color-gray-mid); }
+.output-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-small {
+    padding: 8px 16px; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.05em; background: transparent;
+    color: var(--color-gray-dark); border: 1px solid var(--color-border);
+    cursor: pointer; transition: all 0.15s;
+}
+.btn-small:hover { border-color: var(--color-black); color: var(--color-black); }
+
+.status-bar {
+    background: var(--color-gray-light); padding: 10px 14px;
+    font-size: 12px; font-family: 'SF Mono', Consolas, monospace;
+    margin-top: 12px; border-left: 3px solid var(--color-black);
+}
+.status-bar.error { border-left-color: #d32f2f; background: #ffebee; }
+.status-bar.generating { border-left-color: var(--color-gray-mid); }
+
+.api-key-row {
+    display: flex; gap: 8px; align-items: flex-end; margin-bottom: 24px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--color-border);
+}
+.api-key-row input {
+    flex: 1; border: none; border-bottom: 1px solid var(--color-border);
+    padding: 8px 0; font-size: 12px; font-family: 'SF Mono', Consolas, monospace;
+    background: transparent; transition: border-color 0.15s;
+}
+.api-key-row input:focus { outline: none; border-bottom-color: var(--color-black); }
+.api-key-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--color-gray-mid); letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.key-status { font-size: 11px; color: var(--color-gray-mid); margin-left: 8px; }
+.key-status.saved { color: #22c55e; }
+
+.footer {
+    max-width: 1170px; margin: 0 auto; padding: 14px 24px;
+    font-size: 12px; color: var(--color-gray-mid);
+    border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+    .workspace { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+    <a href="/" class="logo">Skill Server</a>
+    <nav class="nav">
+        <a href="/skills/dev-run-t2i">T2I</a>
+        <a href="/skills/dev-run-i2i" class="active">I2I</a>
+    </nav>
+</header>
+<main class="main">
+    <h1>Image to Image</h1>
+    <p class="subtitle">Gemini native image editing</p>
+
+    <div class="api-key-row">
+        <div style="flex:1;">
+            <div class="api-key-label">Gemini API Key</div>
+            <input type="password" id="apiKey" placeholder="AIza..." value="">
+        </div>
+        <button class="btn-small" onclick="saveKey()">Save</button>
+        <span class="key-status" id="keyStatus"></span>
+    </div>
+
+    <div class="workspace">
+        <div class="panel">
+            <div class="panel-title">Source Image</div>
+            <div class="drop-zone" id="dropZone">
+                <span class="drop-zone-text" id="dropText">Drop image or click to upload</span>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+            <textarea id="prompt" placeholder="Describe how to edit the image... (e.g. 'Replace background with a sunset')"></textarea>
+            <div class="controls">
+                <div class="ctrl-group">
+                    <label>Model</label>
+                    <select id="model">
+                        <option value="gemini-2.0-flash-exp-image-generation">2.0-flash-exp-image</option>
+                    </select>
+                </div>
+                <button class="btn-generate" id="btnGenerate" onclick="generate()">Edit</button>
+            </div>
+            <div id="statusBar" style="display:none;"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Output</div>
+            <div class="output-area" id="outputArea">
+                <span class="output-placeholder">Edited image will appear here</span>
+            </div>
+            <div class="output-actions" id="outputActions" style="display:none;">
+                <button class="btn-small" onclick="downloadImage()">Download</button>
+                <button class="btn-small" onclick="copyToClipboard()">Copy</button>
+                <button class="btn-small" onclick="useAsSource()">Use as Source</button>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer">Gemini API — Image to Image</footer>
+
+<script>
+let sourceImageData = null;
+let sourceMimeType = null;
+let currentImageData = null;
+let currentMimeType = null;
+
+// Load API key from env (via server) or localStorage fallback
+(async function() {
+    try {
+        const res = await fetch('/api/gemini-key');
+        const data = await res.json();
+        if (data.key) {
+            document.getElementById('apiKey').value = data.key;
+            document.getElementById('keyStatus').textContent = 'env';
+            document.getElementById('keyStatus').className = 'key-status saved';
+        } else {
+            const saved = localStorage.getItem('gemini_api_key');
+            if (saved) {
+                document.getElementById('apiKey').value = saved;
+                document.getElementById('keyStatus').textContent = 'local';
+                document.getElementById('keyStatus').className = 'key-status saved';
+            }
+        }
+    } catch {
+        const saved = localStorage.getItem('gemini_api_key');
+        if (saved) {
+            document.getElementById('apiKey').value = saved;
+            document.getElementById('keyStatus').textContent = 'local';
+            document.getElementById('keyStatus').className = 'key-status saved';
+        }
+    }
+
+    // Check for image passed from T2I
+    const passedImage = sessionStorage.getItem('i2i_image');
+    const passedMime = sessionStorage.getItem('i2i_mime');
+    if (passedImage && passedMime) {
+        sourceImageData = passedImage;
+        sourceMimeType = passedMime;
+        setSourcePreview(`data:${passedMime};base64,${passedImage}`);
+        sessionStorage.removeItem('i2i_image');
+        sessionStorage.removeItem('i2i_mime');
+    }
+})();
+
+function saveKey() {
+    const key = document.getElementById('apiKey').value.trim();
+    if (key) {
+        localStorage.setItem('gemini_api_key', key);
+        document.getElementById('keyStatus').textContent = 'local';
+        document.getElementById('keyStatus').className = 'key-status saved';
+    }
+}
+
+function setSourcePreview(src) {
+    const zone = document.getElementById('dropZone');
+    zone.innerHTML = `<img src="${src}" alt="Source"><input type="file" id="fileInput" accept="image/*">`;
+    zone.classList.add('has-image');
+    document.getElementById('fileInput').addEventListener('change', handleFile);
+}
+
+// File handling
+document.getElementById('fileInput').addEventListener('change', handleFile);
+
+function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    sourceMimeType = file.type;
+    const reader = new FileReader();
+    reader.onload = () => {
+        const base64 = reader.result.split(',')[1];
+        sourceImageData = base64;
+        setSourcePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Drag and drop
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--color-black)'; });
+dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.style.borderColor = '';
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        sourceMimeType = file.type;
+        const reader = new FileReader();
+        reader.onload = () => {
+            sourceImageData = reader.result.split(',')[1];
+            setSourcePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function showStatus(msg, type = '') {
+    const bar = document.getElementById('statusBar');
+    bar.style.display = 'block';
+    bar.className = 'status-bar ' + type;
+    bar.textContent = msg;
+}
+
+async function generate() {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    if (!apiKey) { showStatus('API key required', 'error'); return; }
+    if (!sourceImageData) { showStatus('Source image required', 'error'); return; }
+
+    const prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) { showStatus('Edit instruction required', 'error'); return; }
+
+    const model = document.getElementById('model').value;
+    const btn = document.getElementById('btnGenerate');
+
+    btn.disabled = true;
+    btn.textContent = 'Editing...';
+    showStatus('Sending request to Gemini...', 'generating');
+
+    try {
+        const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: prompt },
+                            { inline_data: { mime_type: sourceMimeType, data: sourceImageData } }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseModalities: ['TEXT', 'IMAGE']
+                    }
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if (data.error) {
+            showStatus(data.error.message, 'error');
+            return;
+        }
+
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        const imagePart = parts.find(p => p.inlineData);
+        const textPart = parts.find(p => p.text);
+
+        if (imagePart) {
+            currentImageData = imagePart.inlineData.data;
+            currentMimeType = imagePart.inlineData.mimeType;
+            const src = `data:${currentMimeType};base64,${currentImageData}`;
+            document.getElementById('outputArea').innerHTML = `<img src="${src}" alt="Edited">`;
+            document.getElementById('outputActions').style.display = 'flex';
+            showStatus(textPart ? textPart.text : 'Image edited');
+        } else if (textPart) {
+            showStatus(textPart.text, 'error');
+        } else {
+            showStatus('No image in response', 'error');
+        }
+    } catch (e) {
+        showStatus('Request failed: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Edit';
+    }
+}
+
+function downloadImage() {
+    if (!currentImageData) return;
+    const ext = currentMimeType.includes('png') ? 'png' : 'jpg';
+    const a = document.createElement('a');
+    a.href = `data:${currentMimeType};base64,${currentImageData}`;
+    a.download = `i2i_${Date.now()}.${ext}`;
+    a.click();
+}
+
+async function copyToClipboard() {
+    if (!currentImageData) return;
+    try {
+        const blob = await (await fetch(`data:${currentMimeType};base64,${currentImageData}`)).blob();
+        await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+        showStatus('Copied to clipboard');
+    } catch (e) {
+        showStatus('Copy failed: ' + e.message, 'error');
+    }
+}
+
+function useAsSource() {
+    if (!currentImageData) return;
+    sourceImageData = currentImageData;
+    sourceMimeType = currentMimeType;
+    setSourcePreview(`data:${currentMimeType};base64,${currentImageData}`);
+    showStatus('Output set as new source');
+}
+
+// Ctrl+Enter to generate
+document.getElementById('prompt').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2I — Gemini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --color-black: #000;
+    --color-text: #1a1a1a;
+    --color-white: #fff;
+    --color-bg: #f8f8f8;
+    --color-border: #e5e5e5;
+    --color-border-hover: #ccc;
+    --color-gray-light: #f5f5f5;
+    --color-gray-mid: #888;
+    --color-gray-dark: #555;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+.header {
+    max-width: 1170px; margin: 0 auto; padding: 0 24px;
+    height: 56px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--color-border);
+}
+.logo { font-size: 16px; color: var(--color-black); text-decoration: none; }
+.nav { display: flex; gap: 20px; }
+.nav a { color: var(--color-gray-mid); text-decoration: none; font-size: 14px; transition: color 0.15s; }
+.nav a:hover, .nav a.active { color: var(--color-black); }
+.main { max-width: 1170px; margin: 0 auto; padding: 32px 24px; }
+h1 { font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+.subtitle { font-size: 12px; color: var(--color-gray-mid); margin-bottom: 32px; }
+
+.workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    min-height: 600px;
+}
+.panel {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.panel-title {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--color-gray-mid); margin-bottom: 16px;
+}
+textarea {
+    width: 100%; flex: 1; min-height: 120px;
+    border: none; border-bottom: 1px solid var(--color-border);
+    font-family: inherit; font-size: 14px; resize: vertical;
+    background: transparent; padding: 8px 0;
+    transition: border-color 0.15s;
+}
+textarea:focus { outline: none; border-bottom-color: var(--color-black); }
+textarea::placeholder { color: var(--color-gray-mid); }
+
+.controls {
+    display: flex; gap: 12px; align-items: center; margin-top: 16px; flex-wrap: wrap;
+}
+.controls select, .controls input[type="text"] {
+    border: 1px solid var(--color-border); background: transparent;
+    padding: 8px 12px; font-size: 12px; font-family: inherit;
+    transition: border-color 0.15s;
+}
+.controls select:focus, .controls input[type="text"]:focus {
+    outline: none; border-color: var(--color-black);
+}
+.controls label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--color-gray-mid); letter-spacing: 0.05em;
+}
+.ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+
+.btn-generate {
+    padding: 12px 24px; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--color-black); color: var(--color-white);
+    border: none; cursor: pointer; transition: background 0.15s;
+    margin-left: auto;
+}
+.btn-generate:hover { background: var(--color-text); }
+.btn-generate:disabled { background: var(--color-gray-mid); cursor: not-allowed; }
+
+.output-area {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    min-height: 400px; position: relative;
+}
+.output-area img {
+    max-width: 100%; max-height: 100%; object-fit: contain;
+}
+.output-placeholder {
+    font-size: 12px; color: var(--color-gray-mid);
+}
+.output-actions {
+    display: flex; gap: 8px; margin-top: 12px;
+}
+.btn-small {
+    padding: 8px 16px; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.05em; background: transparent;
+    color: var(--color-gray-dark); border: 1px solid var(--color-border);
+    cursor: pointer; transition: all 0.15s;
+}
+.btn-small:hover { border-color: var(--color-black); color: var(--color-black); }
+
+.status-bar {
+    background: var(--color-gray-light); padding: 10px 14px;
+    font-size: 12px; font-family: 'SF Mono', Consolas, monospace;
+    margin-top: 12px; border-left: 3px solid var(--color-black);
+}
+.status-bar.error { border-left-color: #d32f2f; background: #ffebee; }
+.status-bar.generating { border-left-color: var(--color-gray-mid); }
+
+.api-key-row {
+    display: flex; gap: 8px; align-items: flex-end; margin-bottom: 24px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--color-border);
+}
+.api-key-row input {
+    flex: 1; border: none; border-bottom: 1px solid var(--color-border);
+    padding: 8px 0; font-size: 12px; font-family: 'SF Mono', Consolas, monospace;
+    background: transparent; transition: border-color 0.15s;
+}
+.api-key-row input:focus { outline: none; border-bottom-color: var(--color-black); }
+.api-key-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--color-gray-mid); letter-spacing: 0.05em; margin-bottom: 4px;
+}
+.key-status {
+    font-size: 11px; color: var(--color-gray-mid); margin-left: 8px;
+}
+.key-status.saved { color: #22c55e; }
+
+.footer {
+    max-width: 1170px; margin: 0 auto; padding: 14px 24px;
+    font-size: 12px; color: var(--color-gray-mid);
+    border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+    .workspace { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+    <a href="/" class="logo">Skill Server</a>
+    <nav class="nav">
+        <a href="/skills/dev-run-t2i" class="active">T2I</a>
+        <a href="/skills/dev-run-i2i">I2I</a>
+    </nav>
+</header>
+<main class="main">
+    <h1>Text to Image</h1>
+    <p class="subtitle">Gemini native image generation</p>
+
+    <div class="api-key-row">
+        <div style="flex:1;">
+            <div class="api-key-label">Gemini API Key</div>
+            <input type="password" id="apiKey" placeholder="AIza..." value="">
+        </div>
+        <button class="btn-small" onclick="saveKey()">Save</button>
+        <span class="key-status" id="keyStatus"></span>
+    </div>
+
+    <div class="workspace">
+        <div class="panel">
+            <div class="panel-title">Prompt</div>
+            <textarea id="prompt" placeholder="Describe the image you want to generate..."></textarea>
+            <div class="controls">
+                <div class="ctrl-group">
+                    <label>Model</label>
+                    <select id="model">
+                        <option value="gemini-2.0-flash-exp-image-generation">2.0-flash-exp-image</option>
+                    </select>
+                </div>
+                <div class="ctrl-group">
+                    <label>Aspect Ratio</label>
+                    <select id="aspect">
+                        <option value="1:1">1:1</option>
+                        <option value="16:9">16:9</option>
+                        <option value="9:16">9:16</option>
+                        <option value="4:3">4:3</option>
+                        <option value="3:4">3:4</option>
+                    </select>
+                </div>
+                <button class="btn-generate" id="btnGenerate" onclick="generate()">Generate</button>
+            </div>
+            <div id="statusBar" style="display:none;"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Output</div>
+            <div class="output-area" id="outputArea">
+                <span class="output-placeholder">Generated image will appear here</span>
+            </div>
+            <div class="output-actions" id="outputActions" style="display:none;">
+                <button class="btn-small" onclick="downloadImage()">Download</button>
+                <button class="btn-small" onclick="copyToClipboard()">Copy</button>
+                <button class="btn-small" onclick="openInI2I()">Edit in I2I</button>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer">Gemini API — Text to Image</footer>
+
+<script>
+let currentImageData = null;
+let currentMimeType = null;
+
+// Load API key from env (via server) or localStorage fallback
+(async function() {
+    try {
+        const res = await fetch('/api/gemini-key');
+        const data = await res.json();
+        if (data.key) {
+            document.getElementById('apiKey').value = data.key;
+            document.getElementById('keyStatus').textContent = 'env';
+            document.getElementById('keyStatus').className = 'key-status saved';
+            return;
+        }
+    } catch {}
+    const saved = localStorage.getItem('gemini_api_key');
+    if (saved) {
+        document.getElementById('apiKey').value = saved;
+        document.getElementById('keyStatus').textContent = 'local';
+        document.getElementById('keyStatus').className = 'key-status saved';
+    }
+})();
+
+function saveKey() {
+    const key = document.getElementById('apiKey').value.trim();
+    if (key) {
+        localStorage.setItem('gemini_api_key', key);
+        document.getElementById('keyStatus').textContent = 'local';
+        document.getElementById('keyStatus').className = 'key-status saved';
+    }
+}
+
+function showStatus(msg, type = '') {
+    const bar = document.getElementById('statusBar');
+    bar.style.display = 'block';
+    bar.className = 'status-bar ' + type;
+    bar.textContent = msg;
+}
+
+async function generate() {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    if (!apiKey) { showStatus('API key required', 'error'); return; }
+
+    const prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) { showStatus('Prompt required', 'error'); return; }
+
+    const model = document.getElementById('model').value;
+    const aspect = document.getElementById('aspect').value;
+    const btn = document.getElementById('btnGenerate');
+
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    showStatus('Sending request to Gemini...', 'generating');
+
+    try {
+        const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        responseModalities: ['TEXT', 'IMAGE'],
+                        imageConfig: { aspectRatio: aspect }
+                    }
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if (data.error) {
+            showStatus(data.error.message, 'error');
+            return;
+        }
+
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        const imagePart = parts.find(p => p.inlineData);
+        const textPart = parts.find(p => p.text);
+
+        if (imagePart) {
+            currentImageData = imagePart.inlineData.data;
+            currentMimeType = imagePart.inlineData.mimeType;
+            const src = `data:${currentMimeType};base64,${currentImageData}`;
+            document.getElementById('outputArea').innerHTML = `<img src="${src}" alt="Generated">`;
+            document.getElementById('outputActions').style.display = 'flex';
+            showStatus(textPart ? textPart.text : 'Image generated');
+        } else if (textPart) {
+            showStatus(textPart.text, 'error');
+        } else {
+            showStatus('No image in response', 'error');
+        }
+    } catch (e) {
+        showStatus('Request failed: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate';
+    }
+}
+
+function downloadImage() {
+    if (!currentImageData) return;
+    const ext = currentMimeType.includes('png') ? 'png' : 'jpg';
+    const a = document.createElement('a');
+    a.href = `data:${currentMimeType};base64,${currentImageData}`;
+    a.download = `t2i_${Date.now()}.${ext}`;
+    a.click();
+}
+
+async function copyToClipboard() {
+    if (!currentImageData) return;
+    try {
+        const blob = await (await fetch(`data:${currentMimeType};base64,${currentImageData}`)).blob();
+        await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+        showStatus('Copied to clipboard');
+    } catch (e) {
+        showStatus('Copy failed: ' + e.message, 'error');
+    }
+}
+
+function openInI2I() {
+    if (!currentImageData) return;
+    sessionStorage.setItem('i2i_image', currentImageData);
+    sessionStorage.setItem('i2i_mime', currentMimeType);
+    window.location.href = '/skills/dev-run-i2i';
+}
+
+// Ctrl+Enter to generate
+document.getElementById('prompt').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
