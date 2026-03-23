@@ -8,46 +8,73 @@ Global Claude Code configuration. Commands, skills, standards, and config — al
 caol-ila/
 ├── claude/                      # Symlinked to ~/.claude
 │   ├── CLAUDE.md                # System docs (loaded every session)
-│   ├── commands/                # 41 slash commands
-│   ├── skills/                  # 27 skill directories
+│   ├── commands/                # 72 slash commands
+│   ├── skills/                  # 56 skill directories
 │   │   ├── _shared/             # Shared utilities
 │   │   └── skill-server/        # Dashboard + usage tracking (port 972)
-│   ├── standards/               # 12 reference documents
+│   ├── standards/               # 31 reference documents
 │   ├── config/                  # Shared config (slack.json, .env)
 │   └── private/                 # Personal data vault (gitignored)
 └── README.md
 ```
 
-## Commands (41)
+## Commands (72)
 
 | Category | Commands |
 |----------|----------|
-| **art** | `art-create-branch`, `art-prepare-merge`, `art-remove-branch`, `art-send-notice`, `art-send-merge-notice`, `art-send-merge-result` |
-| **cinev** | `cinev-review-cpp`, `cinev-open-creator-launcher`, `cinev-open-creator-shipper`, `cinev-zo-downloader`, `cinamon-summarize-commit` |
-| **git** | `git-make-message`, `git-collect-commits`, `gitlab-comment-style` |
-| **tutoring** | `tutoring-log`, `tutoring-invoice`, `tutoring-invoice-kakaotalk`, `tutoring-move-invoice`, `tutoring-open-invoice`, `tutoring-paid` |
-| **ue** | `ue-analyze-material`, `ue-new-skill`, `ue-validate-asset-name` |
-| **meta** | `meta-new-command`, `meta-new-skill`, `meta-check-refs` |
-| **review** | `review-claude-md`, `review-claude-skills` |
-| **workflow** | `bug-fix`, `clean-up`, `consult`, `explore`, `ultrawork`, `research`, `spec`, `writing-voice` |
-| **other** | `design-sync`, `drink-log`, `learn-add-log`, `open-skills`, `site-map` |
+| **caol** | `check-status`, `switch-context` |
+| **cocv** | `art-create-branch`, `art-prepare-merge`, `art-remove-branch`, `art-send-notice`, `art-send-merge-notice`, `art-send-merge-result`, `download-vrm-z`, `format-comment`, `linear-create-issue`, `make-mr`, `manage-art-branch`, `open-creator-character`, `open-creator-launcher`, `open-creator-shipper`, `open-creator-vroid`, `open-project`, `open-zo-downloader`, `register-character`, `rename-mat-slot`, `review-cpp`, `slack-send-message`, `summarize-commit`, `validate-character-mat-slot-names`, `validate-vrm` |
+| **dev** | `fix-bug`, `generate-spec`, `open-pmx2vrm`, `sync-design` |
+| **drink** | `log-entry` |
+| **git** | `collect-commits`, `make-message`, `pull-repos` |
+| **learn** | `add-log`, `log-vocab` |
+| **meta** | `check-refs`, `check-updates`, `consult-codebase`, `explore-codebase`, `generate-sitemap`, `new-command`, `new-skill`, `open-dashboard`, `register-refs`, `research-light`, `research-rules`, `research-web`, `review-claude-md`, `review-skills`, `update-docs`, `update-skills`, `work-ultra` |
+| **pmx** | `convert-vrm`, `read-data` |
+| **review** | `audit-ux`, `audit-web`, `audit-web-spec` |
+| **tutoring** | `log-consultation`, `log-lesson`, `make-invoice`, `mark-paid`, `open-invoice` |
+| **ue** | `analyze-material`, `check-redirectors`, `cleanup-assets`, `generate-spritesheet`, `new-skill`, `validate-asset-name`, `write-cpp` |
+| **vrm** | `read-data` |
+| **writing** | `apply-voice` |
 
-## Standards (12)
+## Skills (56)
+
+| Category | Skills |
+|----------|--------|
+| **cocv** | `art-send-notice`, `deploy-pmx-character`, `download-vrm-z`, `manage-art-branch`, `rename-mat-slot`, `serve-mcp`, `sync-ta-tools`, `validate-character-mat-slot-names`, `validate-vrm` |
+| **consulting** | `log-session` |
+| **design** | `show-components` |
+| **dev** | `ask-gemini`, `check-publish`, `export-resume`, `generate-spec`, `open-matcap-painter`, `open-mmd-anju`, `open-vrm-bevy`, `parse-vmd`, `review-publish`, `run-i2i`, `run-t2i`, `show-design-status`, `validate-vmd` |
+| **drink** | `log-entry` |
+| **git** | `collect-commits` |
+| **image** | `convert-exr` |
+| **learn** | `browse-entries`, `log-vocab` |
+| **meta** | `browse-commands`, `browse-standards`, `guide-private`, `new-command`, `new-skill`, `show-patterns` |
+| **pmx** | `convert-vrm`, `read-data` |
+| **project** | `add-record` |
+| **review** | `audit-3d`, `audit-ux`, `audit-web`, `audit-web-spec` |
+| **system** | `save-hardware` |
+| **tutoring** | `log-consultation`, `log-lesson`, `make-invoice` |
+| **ue** | `analyze-material`, `check-redirectors`, `cleanup-assets`, `generate-spritesheet`, `show-template`, `validate-asset-name` |
+| **vrm** | `read-data` |
+| **writing** | `draft-human`, `fix-ai`, `fix-ai-ko` |
+
+## Standards (31)
 
 | Standard | Domain |
 |----------|--------|
 | `slash-commands.md` | Command authoring rules |
-| `command-pre-execution.md` | Centralized pre-execution logic |
-| `javascript.md` | JS/Node.js conventions |
-| `design-system.md` | UI tokens, Brutalist B&W |
-| `unreal-engine-cpp.md` | UE C++ coding standards |
-| `unreal-engine-asset.md` | UE asset naming conventions |
-| `review-code-unreal-cpp.md` | C++ code review checklist |
-| `review-code-unreal-python.md` | Python code review (UE editor) |
-| `review-template.md` | Code review output format |
+| `agent-workflow.md` | Multi-pass agent patterns |
+| `delegation.md` | Task delegation patterns |
 | `research-methodology.md` | Deep research patterns |
 | `tech-spec-template.md` | Technical specification template |
-| `delegation.md` | Task delegation patterns |
+| `javascript.md`, `css.md` | JS/CSS conventions |
+| `design-system.md` | UI tokens, Brutalist B&W |
+| `ui-design.md` | Apple HIG baseline |
+| `three-shader-language.md` | Three.js TSL shaders |
+| `unreal-engine-cpp.md`, `unreal-engine-asset.md` | UE C++ and asset naming |
+| `cinev-git-workflow.md`, `cocv-slack.md` | CINEV workflow and Slack |
+| `cinev-character-asset-naming.md`, `cinev-vrm-shading.md` | Character assets and VRM |
+| `review-*.md` (8 files) | Code review checklists (JS, CSS, TSL, UE C++, UE Python, UX, spec, template) |
 
 ## Config
 
@@ -56,11 +83,9 @@ Shared configuration in `claude/config/`:
 - **`.env`** — API tokens (Slack, Supabase). Gitignored.
 - **`slack.json`** — Channel IDs, bot username, message templates
 
-All skills and the skill server resolve paths via `Path(__file__).resolve()` / `path.resolve(__dirname)` to read from the canonical repo location regardless of symlink.
-
 ## Skill Server
 
-Dashboard at `http://localhost:972`. Start with `/open-skills`.
+Dashboard at `http://localhost:972`. Start with `/meta-open-dashboard`.
 
 - Browse commands, skills, standards
 - Usage tracking (Supabase-backed)
