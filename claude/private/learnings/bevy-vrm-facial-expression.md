@@ -147,5 +147,41 @@ morph.weights_mut()[index] += w * bind_weight;
 
 ---
 
+---
+
+## VRM 로드 가능 기준 (WIP)
+
+### Hard Limits (로드 불가)
+
+| 조건 | 제한 | 증상 |
+|------|------|------|
+| skin joints > 256 | Bevy/WGPU 하드웨어 제한 | mesh 깨짐, vertex weight 오류, 시각적 방향 틀림 |
+
+**해당 모델**: Saber.vrm (426), phainon_n_p2v.vrm (437)
+
+### Soft Limits (로드 가능, 기능 제한)
+
+| 조건 | 증상 | 우회 |
+|------|------|------|
+| bevy_vrm1 RetargetExpressionNodes 미생성 | ExpressionOverride → MorphWeights 안됨 | Fallback Direct MorphWeights |
+| VRM 0.x conversion 실패 | rotateVRM0 적용 불가 | auto_fix_vrm_forward로 자동 보정 |
+| blinkLeft/blinkRight bind 없음 | 개별 눈 깜빡임 불가 | `blinkLeft\|blink` fallback 표기 |
+
+### 정상 동작 확인된 모델
+
+| VRM | joints | expression | forward | 비고 |
+|-----|--------|------------|---------|------|
+| 4a712f6f | 116 | ExpressionOverride 경로 | identity (native 1.0) | 완벽 동작 |
+| Yoya.vrm | 162 | Fallback MorphWeights | auto_fix 불필요 (forward +Z) | blink만 fallback |
+| GhostPumpking.vrm | ? | Fallback MorphWeights | auto_fix 불필요 | 정상 |
+
+### 향후 기준 추가 예정
+- mesh primitive 수 제한?
+- morph target 수 제한?
+- texture 해상도/메모리 제한?
+- VRM 0.x specific extension 호환성 체크
+
+---
+
 ### 키워드 (RAG 검색용)
 `bevy` `vrm` `fbx` `blend shape` `morph target` `expression` `stack overflow` `fbxcel` `pull parser` `MorphWeights` `ExpressionOverride` `RetargetExpressionNodes` `bevy_vrm1` `Compute Task Pool` `thread spawn` `macOS` `CINEV` `facial animation` `lip sync` `blink` `gaze`
