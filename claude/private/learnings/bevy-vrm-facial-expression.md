@@ -183,5 +183,38 @@ morph.weights_mut()[index] += w * bind_weight;
 
 ---
 
+## VRM Forward Direction 문제 (미해결)
+
+### VRM 스펙 좌표계
+- **VRM 0.x**: Right-hand Y-up, **-Z forward** (Unity 좌표계)
+- **VRM 1.0**: Right-hand Y-up, **+Z forward** (glTF 좌표계)
+- 0.x → 1.0 변환 시 Y축 180° 회전 필요
+- 참조: https://github.com/vrm-c/vrm-specification/issues/205
+
+### 현재 상태
+- `auto_fix_vrm_forward` 시스템: `Initialized` 후 hips bone forward 체크
+- Vrm entity 또는 parent entity 180°Y 회전 시도
+- **문제**: xiao_vroid.vrm (VRoid Studio 네이티브 1.0)에서 보정이 시각적으로 안 됨
+- parent entity Transform 수정이 bevy_vrm1 scene hierarchy에서 제대로 전파 안 되는 것으로 추정
+
+### 다음 스텝
+- Blender VRM 플러그인 소스 (`saturday06/VRM-Addon-for-Blender`) 참조
+- three-vrm의 loadVRMAnimation.js 좌표 변환 로직 참조
+- bevy_vrm1의 scene spawn hierarchy 분석 (어느 entity의 Transform을 회전해야 하는지)
+- VRM 로드 시점에 glTF JSON의 scene root rotation으로 사전 판단
+
+---
+
+## VRM 로더 개선사항 (WIP)
+
+1. **Forward Direction 자동 감지** — VRM 0.x(-Z) vs 1.0(+Z) 좌표계 차이 처리
+2. **Joint Limit 사전 체크** — 256 초과 시 로드 전 경고/거부
+3. **Expression 초기화 검증** — RetargetExpressionNodes 유무 → fallback 자동 선택
+4. **VRM 0.x → 1.0 변환 안정화** — convert 실패 시 graceful fallback
+5. **Morph Target 검증** — binding이 참조하는 index 유효성 체크
+6. **좌표계 변환 통합** — bone retarget + expression + forward를 하나의 좌표계 파이프라인으로
+
+---
+
 ### 키워드 (RAG 검색용)
 `bevy` `vrm` `fbx` `blend shape` `morph target` `expression` `stack overflow` `fbxcel` `pull parser` `MorphWeights` `ExpressionOverride` `RetargetExpressionNodes` `bevy_vrm1` `Compute Task Pool` `thread spawn` `macOS` `CINEV` `facial animation` `lip sync` `blink` `gaze`
