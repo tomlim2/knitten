@@ -32,7 +32,7 @@ import json, urllib.request, sys, os
 
 API_KEY = os.environ.get('GEMINI_API_KEY', '')
 QUESTION = sys.argv[1]
-MODEL = 'gemini-2.5-flash-preview-05-20'
+MODEL = 'gemini-2.5-flash'
 URL = f'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={API_KEY}'
 
 body = json.dumps({
