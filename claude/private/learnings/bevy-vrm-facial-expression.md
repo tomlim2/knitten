@@ -197,11 +197,28 @@ morph.weights_mut()[index] += w * bind_weight;
 - **문제**: xiao_vroid.vrm (VRoid Studio 네이티브 1.0)에서 보정이 시각적으로 안 됨
 - parent entity Transform 수정이 bevy_vrm1 scene hierarchy에서 제대로 전파 안 되는 것으로 추정
 
-### 다음 스텝
-- Blender VRM 플러그인 소스 (`saturday06/VRM-Addon-for-Blender`) 참조
-- three-vrm의 loadVRMAnimation.js 좌표 변환 로직 참조
-- bevy_vrm1의 scene spawn hierarchy 분석 (어느 entity의 Transform을 회전해야 하는지)
-- VRM 로드 시점에 glTF JSON의 scene root rotation으로 사전 판단
+### 해결됨: Bevy -Z forward = glTF/VRM visual front
+
+**근본 원인**: Bevy는 -Z를 forward로 사용, glTF/VRM은 +Z. bevy_vrm1은 `convert_coordinates=false`로 로드.
+결과: Bevy에서 모델의 -Z axis가 world -Z를 가리킴 → 모델의 앞면(+Z)이 world +Z(카메라 방향) → **자연스럽게 정면**.
+
+**시도했지만 실패한 것들**:
+- Vrm entity Transform 직접 수정 → bevy_vrm1이 덮어씀
+- Parent entity rotation → depth=0 (parent 없음)
+- Wrapper parent entity + add_child → bevy_vrm1 무시
+- GLB JSON 패치 (180°Y rotation 주입) → 오히려 정면을 뒤집음
+
+**최종 결론**:
+- VRM 1.0 네이티브 (identity root rotation): **패치 불필요, 자연스럽게 정면**
+- VRM 0.x → 1.0 변환 (`vrm0_compat`): baked 180°Y rotation 때문에 뒤를 봄
+  - `vrm0_compat::convert()`가 root node에 `[0,1,0,0]` 추가하는 것이 원인
+  - TODO: vrm0_compat 수정 또는 변환 후 root rotation 제거
+
+**참조**:
+- [Bevy glTF coordinate issue #19686](https://github.com/bevyengine/bevy/issues/19686)
+- [bevy_fix_gltf_coordinate_system](https://github.com/janhohenheim/bevy_fix_gltf_coordinate_system) (Bevy 0.17+에서 불필요)
+- Blender VRM plugin: Z축 180° rotation for 0.x (Y-up → Z-up 변환 포함)
+- bevy_vrm1 `VrmLoader`: `default_convert_coordinates: Default::default()` = false
 
 ---
 
