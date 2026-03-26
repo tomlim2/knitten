@@ -1,12 +1,12 @@
 ---
 description: Ask Gemini, GPT-4o, Opus in parallel, then build an implementation plan
 argument-hint: "<question>"
-allowed-tools: Bash(python3:*)
+allowed-tools: Bash(python3:*), Agent
 ---
 
 # dev-decision-start
 
-Send a question to **Gemini**, **GPT-4o** (GitHub Models), and **Claude Opus** in parallel, synthesize all three answers, and produce a **step-by-step implementation plan**. The skill ends after presenting the plan — it does NOT execute anything.
+Send a question to **Gemini**, **GPT-4o** (GitHub Models), and **Claude Opus** (subagent) in parallel, synthesize all three answers, and produce a **step-by-step implementation plan**. The skill ends after presenting the plan — it does NOT execute anything.
 
 Use this when you need to decide on an approach before starting implementation.
 
@@ -23,7 +23,6 @@ Usage: /dev-decision-start <question>
 ### Step 1: Validate
 - Check if `$ARGUMENTS` is provided
 - Check if `GEMINI_API_KEY` env var exists
-- Check if `ANTHROPIC_API_KEY` env var exists
 
 ### Step 2: Rewrite the question as a consultation
 
@@ -39,6 +38,10 @@ Before calling the APIs, YOU (Claude) must:
 Use the role description as ROLE_HERE and the rewritten question as QUESTION_HERE in Step 3.
 
 ### Step 3: Call all three models in parallel
+
+Launch these three calls **simultaneously** (single message, three tool calls):
+
+#### 3a. Gemini + GPT-4o (Python script)
 
 Run this Python script with the role and rewritten question as arguments:
 
@@ -87,36 +90,12 @@ def ask_github(role, q):
     usage = data.get('usage', {})
     return text, usage.get('prompt_tokens', 0), usage.get('completion_tokens', 0), model
 
-def ask_opus(role, q):
-    api_key = os.environ.get('ANTHROPIC_API_KEY', '')
-    model = 'claude-opus-4-20250514'
-    url = 'https://api.anthropic.com/v1/messages'
-    system = role + ' A colleague is asking for your expert guidance on planning an implementation. Give a concrete, step-by-step approach. Be specific and opinionated — do not hedge.'
-    body = json.dumps({
-        'model': model,
-        'max_tokens': 8192,
-        'system': system,
-        'messages': [{'role': 'user', 'content': q}]
-    }).encode()
-    req = urllib.request.Request(url, data=body, headers={
-        'Content-Type': 'application/json',
-        'x-api-key': api_key,
-        'anthropic-version': '2023-06-01'
-    })
-    res = urllib.request.urlopen(req)
-    data = json.loads(res.read())
-    text = ''.join(b.get('text', '') for b in data['content'] if b['type'] == 'text')
-    usage = data.get('usage', {})
-    return text, usage.get('input_tokens', 0), usage.get('output_tokens', 0), model
-
 with concurrent.futures.ThreadPoolExecutor() as ex:
     f_gemini = ex.submit(ask_gemini, ROLE, QUESTION)
     f_github = ex.submit(ask_github, ROLE, QUESTION)
-    f_opus = ex.submit(ask_opus, ROLE, QUESTION)
 
 g_text, g_in, g_out, g_model = f_gemini.result()
 o_text, o_in, o_out, o_model = f_github.result()
-a_text, a_in, a_out, a_model = f_opus.result()
 
 print('## Gemini Response')
 print(f'Model: {g_model} | Tokens: {g_in} in / {g_out} out')
@@ -129,13 +108,6 @@ print('## GPT-4o Response')
 print(f'Model: {o_model} | Tokens: {o_in} in / {o_out} out')
 print()
 print(o_text)
-print()
-print('---')
-print()
-print('## Opus Response')
-print(f'Model: {a_model} | Tokens: {a_in} in / {a_out} out')
-print()
-print(a_text)
 
 try:
     usage_body = json.dumps({'inputTokens': g_in, 'outputTokens': g_out, 'model': g_model, 'type': 'consult'}).encode()
@@ -145,7 +117,19 @@ except: pass
 " "ROLE_HERE" "QUESTION_HERE"
 ```
 
-Replace ROLE_HERE with the role description and QUESTION_HERE with the rewritten question from Step 2.
+#### 3b. Opus (subagent)
+
+Launch an Agent tool call **in the same message** as the Python script above, with `model: "opus"`:
+
+```
+Agent(
+  description: "Opus consultation",
+  model: "opus",
+  prompt: "ROLE_HERE\n\nA colleague is asking for your expert guidance on planning an implementation. Give a concrete, step-by-step approach. Be specific and opinionated — do not hedge.\n\nQUESTION_HERE\n\nThis is a read-only consultation. Do NOT use any tools. Just provide your expert analysis and recommended implementation steps directly as text."
+)
+```
+
+Replace ROLE_HERE and QUESTION_HERE with the values from Step 2.
 
 ### Step 4: Synthesize into a Plan (Claude's job)
 
