@@ -1,11 +1,21 @@
 {
-  "repo_key_source": "anju",
   "repo_key_target": "cinev-ta-tools",
-  "mappings": [
-    { "source": "python/user_character_manager", "target": "user_character_manager" },
-    { "source": "python/shipping_manager", "target": "shipping_manager" },
-    { "source": "module/pmx2vrm", "target": "pmx2vrm-convert-module" },
-    { "source": "python/vroid_character_creator", "target": "vroid_character_creator" }
+  "groups": [
+    {
+      "repo_key_source": "anju",
+      "mappings": [
+        { "source": "python/user_character_manager", "target": "user_character_manager" },
+        { "source": "python/shipping_manager", "target": "shipping_manager" },
+        { "source": "module/pmx2vrm", "target": "pmx2vrm-convert-module" },
+        { "source": "python/vroid_character_creator", "target": "vroid_character_creator" }
+      ]
+    },
+    {
+      "repo_key_source": "bevy-vrm2u",
+      "mappings": [
+        { "source": ".", "target": "vrm2u" }
+      ]
+    }
   ],
-  "exclude": ["__pycache__", ".env", "*.pyc", "node_modules", ".next"]
+  "exclude": ["__pycache__", ".env", "*.pyc", "node_modules", ".next", "target", ".git"]
 }

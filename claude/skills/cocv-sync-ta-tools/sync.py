@@ -1,11 +1,11 @@
 """
-TA Tools Sync — Bidirectional file sync between anju and cinev-ta-tools.
+TA Tools Sync — Bidirectional file sync between source repos and cinev-ta-tools.
 
 Usage:
     python sync.py                          # dry-run preview
     python sync.py --execute                # apply changes
-    python sync.py --direction anju         # anju → ta-tools only
-    python sync.py --direction ta-tools     # ta-tools → anju only
+    python sync.py --direction source       # source → ta-tools only
+    python sync.py --direction ta-tools     # ta-tools → source only
 """
 
 import argparse
@@ -74,6 +74,7 @@ def compute_sync_actions(
     source_files: dict[str, float],
     target_files: dict[str, float],
     direction: str | None,
+    source_label: str,
 ) -> list[dict]:
     """
     Compare files and decide sync actions.
@@ -96,29 +97,29 @@ def compute_sync_actions(
                     "reason": "",
                 })
             elif diff > 0:
-                # source (anju) is newer
+                # source is newer
                 if direction == "ta-tools":
                     actions.append({
                         "rel_path": rel_path,
                         "action": "skip",
                         "direction_label": "→",
-                        "reason": f"anju is {format_time_diff(diff)} newer, skipped (direction=ta-tools)",
+                        "reason": f"{source_label} is {format_time_diff(diff)} newer, skipped (direction=ta-tools)",
                     })
                 else:
                     actions.append({
                         "rel_path": rel_path,
                         "action": "source_to_target",
                         "direction_label": "→",
-                        "reason": f"anju is {format_time_diff(diff)} newer",
+                        "reason": f"{source_label} is {format_time_diff(diff)} newer",
                     })
             else:
                 # target (ta-tools) is newer
-                if direction == "anju":
+                if direction == "source":
                     actions.append({
                         "rel_path": rel_path,
                         "action": "skip",
                         "direction_label": "←",
-                        "reason": f"ta-tools is {format_time_diff(diff)} newer, skipped (direction=anju)",
+                        "reason": f"ta-tools is {format_time_diff(diff)} newer, skipped (direction=source)",
                     })
                 else:
                     actions.append({
@@ -133,22 +134,22 @@ def compute_sync_actions(
                     "rel_path": rel_path,
                     "action": "skip",
                     "direction_label": "+→",
-                    "reason": "only in anju, skipped (direction=ta-tools)",
+                    "reason": f"only in {source_label}, skipped (direction=ta-tools)",
                 })
             else:
                 actions.append({
                     "rel_path": rel_path,
                     "action": "source_to_target",
                     "direction_label": "+→",
-                    "reason": "only in anju",
+                    "reason": f"only in {source_label}",
                 })
         else:
-            if direction == "anju":
+            if direction == "source":
                 actions.append({
                     "rel_path": rel_path,
                     "action": "skip",
                     "direction_label": "+←",
-                    "reason": "only in ta-tools, skipped (direction=anju)",
+                    "reason": f"only in ta-tools, skipped (direction=source)",
                 })
             else:
                 actions.append({
@@ -161,7 +162,7 @@ def compute_sync_actions(
     return actions
 
 
-def print_report(mapping_label: str, actions: list[dict]):
+def print_report(mapping_label: str, actions: list[dict], source_label: str):
     """Print sync report for one mapping."""
     print(f"\n{mapping_label}/")
 
@@ -172,7 +173,7 @@ def print_report(mapping_label: str, actions: list[dict]):
         elif a["action"] == "skip":
             print(f"  ~ {a['rel_path']}  ({a['reason']})")
         else:
-            arrow = "anju → ta-tools" if a["action"] == "source_to_target" else "ta-tools → anju"
+            arrow = f"{source_label} → ta-tools" if a["action"] == "source_to_target" else f"ta-tools → {source_label}"
             print(f"  {a['direction_label']} {a['rel_path']}    {arrow} ({a['reason']})")
             sync_count += 1
 
@@ -198,48 +199,70 @@ def execute_sync(
             shutil.copy2(str(src), str(dst))
 
 
+def normalize_config(config):
+    """Support both flat (legacy) and groups config format."""
+    if "groups" in config:
+        return config["groups"], config["repo_key_target"], config["exclude"]
+    # Legacy flat format
+    group = {
+        "repo_key_source": config["repo_key_source"],
+        "mappings": config["mappings"],
+    }
+    return [group], config["repo_key_target"], config["exclude"]
+
+
 def main():
     parser = argparse.ArgumentParser(description="TA Tools Sync")
     parser.add_argument("--execute", action="store_true", help="Apply changes (default: dry-run)")
-    parser.add_argument("--direction", choices=["anju", "ta-tools"], help="One-way sync direction")
+    parser.add_argument("--direction", choices=["source", "ta-tools", "anju"], help="One-way sync direction")
     args = parser.parse_args()
+
+    # Normalize legacy "anju" direction to "source"
+    direction = args.direction
+    if direction == "anju":
+        direction = "source"
 
     config = load_config()
     repo_paths = load_repo_paths()
 
-    source_key = config["repo_key_source"]
-    target_key = config["repo_key_target"]
+    groups, target_key, exclude = normalize_config(config)
 
-    if source_key not in repo_paths or target_key not in repo_paths:
-        print(f"Error: repo keys '{source_key}' or '{target_key}' not found in repo-paths.json")
+    if target_key not in repo_paths:
+        print(f"Error: repo key '{target_key}' not found in repo-paths.json")
         sys.exit(1)
 
-    source_root = Path(repo_paths[source_key]["path"])
     target_root = Path(repo_paths[target_key]["path"])
-    exclude = config["exclude"]
 
     mode = "EXECUTE" if args.execute else "DRY-RUN"
     direction_label = f" (direction={args.direction})" if args.direction else ""
     print(f"TA Tools Sync — {mode}{direction_label}")
     print(f"{'─' * 50}")
-    print(f"  anju:     {source_root}")
     print(f"  ta-tools: {target_root}")
 
     total_sync = 0
 
-    for mapping in config["mappings"]:
-        source_dir = source_root / mapping["source"]
-        target_dir = target_root / mapping["target"]
+    for group in groups:
+        source_key = group["repo_key_source"]
+        if source_key not in repo_paths:
+            print(f"\nWarning: repo key '{source_key}' not found in repo-paths.json, skipping")
+            continue
 
-        source_files = collect_files(source_dir, exclude)
-        target_files = collect_files(target_dir, exclude)
+        source_root = Path(repo_paths[source_key]["path"])
+        print(f"\n  [{source_key}] {source_root}")
 
-        actions = compute_sync_actions(source_files, target_files, args.direction)
-        sync_count = print_report(mapping["target"], actions)
-        total_sync += sync_count
+        for mapping in group["mappings"]:
+            source_dir = source_root / mapping["source"] if mapping["source"] != "." else source_root
+            target_dir = target_root / mapping["target"]
 
-        if args.execute and sync_count > 0:
-            execute_sync(actions, source_dir, target_dir)
+            source_files = collect_files(source_dir, exclude)
+            target_files = collect_files(target_dir, exclude)
+
+            actions = compute_sync_actions(source_files, target_files, direction, source_key)
+            sync_count = print_report(mapping["target"], actions, source_key)
+            total_sync += sync_count
+
+            if args.execute and sync_count > 0:
+                execute_sync(actions, source_dir, target_dir)
 
     print(f"\n{'─' * 50}")
     if total_sync == 0:
