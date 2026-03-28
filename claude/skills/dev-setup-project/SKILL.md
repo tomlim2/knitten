@@ -24,8 +24,8 @@ Usage: /dev-setup-project <project-name> [repo-path]
 ### Step 1: 경로 확인
 
 1. `$ARGUMENTS`에서 project-name과 repo-path 파싱
-2. repo-path가 없으면 사용자에게 물어봄
-3. 디렉토리 존재 여부 확인. 없으면 생성할지 물어봄
+2. repo-path가 없으면 `~/.claude/private/repo-paths.json`에서 `anju` 경로를 읽고, `{anju}/{project-name}/` 을 기본 경로로 사용
+3. 디렉토리 존재 여부 확인. 없으면 생성
 
 ### Step 2: Git 초기화
 
