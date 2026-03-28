@@ -43,6 +43,9 @@ claude/plugins/
 claude/skills/skill-server/node_modules/
 claude/skills/skill-server/package-lock.json
 
+# Font files (OFL licensed, downloaded on demand)
+claude/skills/canvas-design/canvas-fonts/
+
 # Python cache
 __pycache__/
 *.pyc
