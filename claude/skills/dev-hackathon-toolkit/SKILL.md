@@ -1,103 +1,205 @@
 ---
 description: "Hackathon toolkit — quick-access hub for timed problem solving. Use when starting a hackathon, competition, or timed coding challenge."
 argument-hint: "[problem description]"
-allowed-tools: Bash(python3:*), Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep
+allowed-tools: Bash(python3:*), Bash(cd:*), Bash(ps:*), Bash(kill:*), Bash(date:*), Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep
 ---
 
 # dev-hackathon-toolkit
 
-시간 제한 해커톤/대회용 빠른 문제 해결 허브. 기존 스킬들을 단계별로 안내하고, 시간 추적까지 제공합니다.
+Timed hackathon/competition problem-solving hub. Guides through existing skills step-by-step with time tracking.
 
 ## Arguments
 
-- `[problem description]` - 문제 설명 (선택). 없으면 대기 모드로 시작.
+- `[problem description]` - Problem description (optional). Without it, starts in standby mode.
 
 ## Workflow
 
-### Step 1: 타이머 시작
+### Step 0: Pre-flight Checklist (MANDATORY, first 5 minutes)
 
-현재 시간을 기록하고, 남은 시간을 계산할 수 있도록 시작 시간과 종료 시간을 확인합니다.
+**Do this BEFORE any experiment. No exceptions.**
 
 ```
-해커톤 시작: {현재시간}
-종료 예정: {사용자에게 확인}
+1. [1min] Verify working directory
+   - cd to project dir with ABSOLUTE PATH
+   - Run `pwd` to confirm
+   - ALL subsequent commands use absolute paths or explicit `cd`
+
+2. [2min] Smoke test
+   - Run 10 epochs on CPU to verify pipeline end-to-end
+   - If it fails here, fix before launching real experiments
+   - Template: python3 -c "...train 10 epochs...print('OK')"
+
+3. [1min] GPU ownership rule
+   - Only 1 process on GPU (MPS/CUDA) at any time
+   - Other sessions use CPU or WAIT
+   - Check: ps aux | grep python | grep -v grep
+
+4. [1min] Output verification
+   - Experiments MUST save results to disk (JSON/CSV + model checkpoint)
+   - stdout-only = results lost if session dies
+   - Set 10min checkpoint: if no output file exists, something is wrong
 ```
 
-### Step 2: 문제 분석 (처음 10분)
+### Step 1: Start Timer
 
-문제를 받으면:
+Record current time, confirm end time with user.
 
-1. **문제 요약** — 핵심을 3줄로 정리
-2. **유형 분류** — 알고리즘 / ML / 프롬프트 엔지니어링 / 데이터 처리 / 시스템 설계 / 기타
-3. **필요 도구 판단** — 어떤 API, 라이브러리, 접근법이 필요한지
-4. **시간 배분 제안** — 4시간 기준 단계별 시간 배분
+```
+Hackathon start: {current time}
+Deadline: {confirm with user}
+Submit target: {deadline - 30min buffer}
+Experiment freeze: {deadline - 60min}
+```
 
-### Step 3: 접근법 결정
+### Step 2: Problem Analysis (first 10 minutes)
 
-문제 유형에 따라 적합한 기존 스킬로 안내:
+1. **Summary** — 3-line core problem
+2. **Classification** — Algorithm / ML / Prompt Engineering / Data / System Design / Other
+3. **Required tools** — APIs, libraries, approaches needed
+4. **Time allocation** — Phase-based time distribution
 
-| 상황 | 스킬 | 설명 |
-|------|------|------|
-| 접근법을 모르겠을 때 | `/dev-decision-start` | Gemini+GPT-4o+Opus 3모델 병렬 상담 |
-| 특정 기술 빠른 질문 | `/dev-ask-gemini` | Gemini 단일 모델 빠른 응답 |
-| 기술 조사 필요 | `/meta-research-web` | 2개 에이전트 병렬 웹 리서치 |
-| 가벼운 조사 | `/meta-research-light` | 단일 에이전트 빠른 리서치 |
+### Step 3: Approach Decision
 
-### Step 4: 구현
+| Situation | Skill | Description |
+|-----------|-------|-------------|
+| Unsure about approach | `/dev-decision-start` | 3-model parallel consult (Gemini+GPT-4o+Opus) |
+| Quick technical question | `/dev-ask-gemini` | Single model fast response |
+| Deep research needed | `/meta-research-web` | 2-agent parallel web research |
+| Light research | `/meta-research-light` | Single agent quick research |
 
-구현 중 사용할 수 있는 스킬:
+### Step 4: Implementation
 
-| 상황 | 스킬 | 설명 |
-|------|------|------|
-| 전력 구현 모드 | `/meta-work-ultra` | 필수 추적 + 완료까지 진행 |
-| 버그 발생 | `/dev-fix-bug` | RED→GREEN→REFACTOR 증명 기반 수정 |
-| 실험/반복 추적 | `/dev-log-experiment` | 가설→측정→결론 사이클 기록 |
-| 코드베이스 파악 | `/meta-consult-codebase` | 읽기 전용 분석 모드 |
+| Situation | Skill | Description |
+|-----------|-------|-------------|
+| Full power mode | `/meta-work-ultra` | Mandatory tracking + run to completion |
+| Bug found | `/dev-fix-bug` | RED→GREEN→REFACTOR proof-based fix |
+| Experiment tracking | `/dev-log-experiment` | Hypothesis→Measure→Conclude cycle |
+| Codebase analysis | `/meta-consult-codebase` | Read-only analysis mode |
 
-### Step 5: 제출 전 검증 (마지막 15분)
+### Step 5: Pre-submit Verification (last 30 minutes)
 
-| 상황 | 스킬 | 설명 |
-|------|------|------|
-| 코드 품질 확인 | `/review-audit-web` | JS/CSS 코딩 표준 체크 |
-| 스펙 문서 생성 | `/dev-generate-spec` | 코드에서 스펙 문서 자동 생성 |
+| Situation | Skill | Description |
+|-----------|-------|-------------|
+| Code quality check | `/review-audit-web` | JS/CSS coding standards |
+| Spec document | `/dev-generate-spec` | Auto-generate spec from code |
 
 ---
 
-## 빠른 시작 템플릿
+## Multi-Session GPU Rules
 
-문제를 받으면 바로 이 순서로:
+**#1 cause of wasted time in hackathons is GPU contention.**
 
 ```
-1. [2분] 문제 읽고 요약
-2. [5분] /dev-decision-start "문제: {요약}. 4시간 안에 풀어야 함. 접근법?"
-3. [3분] 접근법 확정, 시간 배분
-4. [3시간] 구현 — 막히면 /dev-ask-gemini, 버그면 /dev-fix-bug
-5. [30분] 정리 + 검증 + 제출 준비
-6. [15분] 제출
+RULES:
+1. Only 1 session owns GPU at any time
+2. Assign GPU owner explicitly in devlog
+3. Other sessions: CPU or wait
+4. Before launching: ps aux | grep python | grep -v grep
+5. If 2+ python processes on GPU → kill extras immediately
+6. MPS (Apple Silicon) cannot share. Period.
+```
+
+Monitor command:
+```bash
+ps aux | grep -i "python.*<script>" | grep -v grep | awk '{print $2, $3, $9, $11}'
+```
+
+Kill by PID only:
+```bash
+kill <PID>
 ```
 
 ---
 
-## 직접 사용 가능한 도구
+## Multi-Session Coordination
 
-이 스킬 내에서 바로 실행 가능:
+When running multiple Claude Code sessions:
 
-- **Python 실행** — `python3` 스크립트 직접 실행
-- **웹 검색** — WebSearch로 기술 문서, 논문, 레퍼런스 검색
-- **웹 페이지 읽기** — WebFetch로 문서/API 레퍼런스 읽기
-- **파일 읽기/쓰기** — 코드 작성, 데이터 파일 처리
-- **서브에이전트** — 병렬로 리서치/분석 위임
+```
+Session naming: SS1, SS2, SS3, SS4
+Devlog: single source of truth (Obsidian vault)
+Communication: clipboard copy → paste to target session
+
+Devlog must contain:
+- Session assignment table (who does what)
+- Timeline (what happened when)
+- Experiment results table (all sessions update here)
+- Decision log (why we chose what)
+```
+
+Template for session briefing (clipboard):
+```
+You are SS{N} — {role}.
+Read devlog: {absolute path}
+Your job: {specific task}
+Constraints: {GPU/CPU, time limit, file ownership}
+```
 
 ---
 
-## 프로젝트 레포
+## Experiment Execution Protocol
 
-작업 시작 전 `~/.claude/private/repo-paths.json`에서 `krafton-hackathon` 경로를 읽고 해당 디렉토리로 이동하여 작업합니다.
+```
+1. SMOKE TEST FIRST (10 epochs, CPU, 1-2 min)
+   - Catches: import errors, shape mismatches, cwd issues, data bugs
+   - If smoke test fails → fix before real run
+
+2. ABSOLUTE PATHS ALWAYS
+   - cd /absolute/path/ && python3 script.py
+   - Never rely on session cwd
+
+3. SAVE RESULTS TO DISK
+   - torch.save(model.state_dict(), 'best_model.pt')
+   - Write results to JSON: {"params": N, "acc": X, "config": {...}}
+
+4. 10-MINUTE CHECKPOINT
+   - If no output file after 10min → check process, check cwd, check errors
+
+5. ONE GPU PROCESS AT A TIME
+   - Check before launching: ps aux | grep python
+   - Kill extras immediately
+```
 
 ---
 
-## 주의사항
+## Quick Start Template
 
-- **제출은 1회** — 제출 전 반드시 더블체크
-- **시간 관리** — 한 접근법에 1시간 이상 막히면 방향 전환
-- **AI 적극 활용** — 공식적으로 허용됨, 도구를 최대한 활용
+When problem arrives:
+
+```
+1. [5min] Pre-flight checklist (Step 0)
+2. [2min] Read problem, summarize
+3. [5min] /dev-decision-start "Problem: {summary}. {N} hours. Approach?"
+4. [3min] Confirm approach, time allocation
+5. [bulk] Implement — /dev-ask-gemini if stuck, /dev-fix-bug for bugs
+6. [30min] Package + verify + submit
+```
+
+---
+
+## Available Tools
+
+Directly executable within this skill:
+
+- **Python** — `python3` scripts
+- **Web search** — WebSearch for docs, papers, references
+- **Web fetch** — WebFetch for documentation/API refs
+- **File I/O** — Read, write, edit code and data
+- **Sub-agents** — Parallel research/analysis delegation
+- **Process management** — ps, kill for GPU process control
+
+---
+
+## Project Repo
+
+Before starting, read `~/.claude/private/repo-paths.json` for `krafton-hackathon` path. Work in that directory.
+
+---
+
+## Key Rules
+
+- **Submit once only** — double-check before submitting
+- **Time management** — if stuck >1h on one approach, pivot
+- **AI tools encouraged** — officially allowed, use maximally
+- **Ops before experiments** — solve infrastructure first, then focus on the problem
+- **The problem is usually lightweight** — if it's taking too long, it's an ops issue, not a compute issue
