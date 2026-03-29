@@ -1,14 +1,12 @@
 ---
-description: Ask Gemini, GPT-4o, Opus in parallel, then build an implementation plan
+description: Ask Gemini, GPT-4o, Opus in parallel with specialized roles, then synthesize into an implementation plan
 argument-hint: "<question>"
-allowed-tools: Bash(python3:*), Agent
+allowed-tools: Bash(python3:*), Agent, Read
 ---
 
 # dev-decision-start
 
-Send a question to **Gemini**, **GPT-4o** (GitHub Models), and **Claude Opus** (subagent) in parallel, synthesize all three answers, and produce a **step-by-step implementation plan**. The skill ends after presenting the plan — it does NOT execute anything.
-
-Use this when you need to decide on an approach before starting implementation.
+Send a question to **Gemini** (Architect), **GPT-4o** (Implementer), and **Opus** (Critic) in parallel with specialized prompts, then synthesize using a structured framework.
 
 ## Arguments
 
@@ -24,18 +22,21 @@ Usage: /dev-decision-start <question>
 - Check if `$ARGUMENTS` is provided
 - Check if `GEMINI_API_KEY` env var exists
 
-### Step 2: Rewrite the question as a consultation
+### Step 2: Prepare (NO rewrite — send raw question)
 
-Before calling the APIs, YOU (Claude) must:
+1. **Identify the domain** of the question
+2. **Craft a one-line role description** for domain context (e.g. "You are a senior ML engineer specializing in transformer optimization.")
+3. **Read the three frame files:**
+   - `~/.claude/skills/dev-decision-start/frames/architect.md` → ARCHITECT_FRAME
+   - `~/.claude/skills/dev-decision-start/frames/implementer.md` → IMPLEMENTER_FRAME
+   - `~/.claude/skills/dev-decision-start/frames/critic.md` → CRITIC_FRAME
 
-1. **Identify the domain** of the question (e.g. "3D rendering", "database design", "Rust async", "Unreal Engine animation")
-2. **Craft a role description** — a senior expert in that specific domain (e.g. "You are a senior 3D graphics engineer with 20+ years of experience in real-time rendering pipelines.")
-3. **Rewrite the raw question** into a polished consultation request — as if a mid-level engineer is asking this domain expert for guidance. The rewritten question should:
-   - Clearly state the problem context and what has been tried
-   - Be respectful and concise, like asking a tech lead you trust
-   - End with: "Please suggest an implementation approach with concrete steps."
+4. Construct three prompts:
+   - **Gemini:** `ROLE + ARCHITECT_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
+   - **GPT-4o:** `ROLE + IMPLEMENTER_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
+   - **Opus:** `ROLE + CRITIC_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
 
-Use the role description as ROLE_HERE and the rewritten question as QUESTION_HERE in Step 3.
+**Do NOT rewrite the user's question.** Send it as-is. The frames provide the expert framing.
 
 ### Step 3: Call all three models in parallel
 
@@ -43,39 +44,38 @@ Launch these three calls **simultaneously** (single message, three tool calls):
 
 #### 3a. Gemini + GPT-4o (Python script)
 
-Run this Python script with the role and rewritten question as arguments:
+Run this Python script. Pass the Gemini system prompt as arg1, GPT-4o system prompt as arg2, and the raw question as arg3:
 
 ```bash
 python3 -c "
 import json, urllib.request, sys, os, concurrent.futures
 
-ROLE = sys.argv[1]
-QUESTION = sys.argv[2]
+GEMINI_SYSTEM = sys.argv[1]
+GPT4O_SYSTEM = sys.argv[2]
+QUESTION = sys.argv[3]
 
-def ask_gemini(role, q):
+def ask_gemini(system, q):
     api_key = os.environ.get('GEMINI_API_KEY', '')
     model = 'gemini-2.5-flash'
     url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}'
-    system = role + ' A colleague is asking for your expert guidance on planning an implementation. Give a concrete, step-by-step approach. Be specific and opinionated — do not hedge.'
     body = json.dumps({
         'system_instruction': {'parts': [{'text': system}]},
         'contents': [{'parts': [{'text': q}]}],
-        'generationConfig': {'maxOutputTokens': 8192}
+        'generationConfig': {'maxOutputTokens': 4096}
     }).encode()
     req = urllib.request.Request(url, data=body, headers={'Content-Type': 'application/json'})
-    res = urllib.request.urlopen(req)
+    res = urllib.request.urlopen(req, timeout=120)
     data = json.loads(res.read())
     parts = data['candidates'][0]['content']['parts']
     text = ''.join(p.get('text', '') for p in parts)
     meta = data.get('usageMetadata', {})
     return text, meta.get('promptTokenCount', 0), meta.get('candidatesTokenCount', 0), model
 
-def ask_github(role, q):
+def ask_github(system, q):
     import subprocess
     token = subprocess.check_output(['gh', 'auth', 'token']).decode().strip()
     model = 'gpt-4o'
     url = 'https://models.inference.ai.azure.com/chat/completions'
-    system = role + ' A colleague is asking for your expert guidance on planning an implementation. Give a concrete, step-by-step approach. Be specific and opinionated — do not hedge.'
     body = json.dumps({
         'messages': [{'role': 'system', 'content': system}, {'role': 'user', 'content': q}],
         'model': model
@@ -84,27 +84,27 @@ def ask_github(role, q):
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {token}'
     })
-    res = urllib.request.urlopen(req)
+    res = urllib.request.urlopen(req, timeout=120)
     data = json.loads(res.read())
     text = data['choices'][0]['message']['content']
     usage = data.get('usage', {})
     return text, usage.get('prompt_tokens', 0), usage.get('completion_tokens', 0), model
 
 with concurrent.futures.ThreadPoolExecutor() as ex:
-    f_gemini = ex.submit(ask_gemini, ROLE, QUESTION)
-    f_github = ex.submit(ask_github, ROLE, QUESTION)
+    f_gemini = ex.submit(ask_gemini, GEMINI_SYSTEM, QUESTION)
+    f_github = ex.submit(ask_github, GPT4O_SYSTEM, QUESTION)
 
 g_text, g_in, g_out, g_model = f_gemini.result()
 o_text, o_in, o_out, o_model = f_github.result()
 
-print('## Gemini Response')
+print('## Gemini (Architect)')
 print(f'Model: {g_model} | Tokens: {g_in} in / {g_out} out')
 print()
 print(g_text)
 print()
 print('---')
 print()
-print('## GPT-4o Response')
+print('## GPT-4o (Implementer)')
 print(f'Model: {o_model} | Tokens: {o_in} in / {o_out} out')
 print()
 print(o_text)
@@ -114,48 +114,54 @@ try:
     usage_req = urllib.request.Request('http://localhost:972/api/gemini-usage', data=usage_body, headers={'Content-Type': 'application/json'})
     urllib.request.urlopen(usage_req)
 except: pass
-" "ROLE_HERE" "QUESTION_HERE"
+" "GEMINI_SYSTEM_HERE" "GPT4O_SYSTEM_HERE" "QUESTION_HERE"
 ```
 
-#### 3b. Opus (subagent)
+#### 3b. Opus (subagent — Critic role)
 
 Launch an Agent tool call **in the same message** as the Python script above, with `model: "opus"`:
 
 ```
 Agent(
-  description: "Opus consultation",
+  description: "Opus critic consultation",
   model: "opus",
-  prompt: "ROLE_HERE\n\nA colleague is asking for your expert guidance on planning an implementation. Give a concrete, step-by-step approach. Be specific and opinionated — do not hedge.\n\nQUESTION_HERE\n\nThis is a read-only consultation. Do NOT use any tools. Just provide your expert analysis and recommended implementation steps directly as text."
+  prompt: "ROLE + CRITIC_FRAME + \n\nQuestion:\n + RAW_QUESTION + \n\nThis is a read-only consultation. Do NOT use any tools. Just provide your expert analysis directly as text, following the response format exactly."
 )
 ```
 
-Replace ROLE_HERE and QUESTION_HERE with the values from Step 2.
+### Step 4: Synthesize (Structured Framework)
 
-### Step 4: Synthesize into a Plan (Claude's job)
+Read `~/.claude/skills/dev-decision-start/synthesis/framework.md` and follow it exactly.
 
-After receiving all three responses, YOU (Claude) must synthesize them into a single implementation plan. Do NOT blindly adopt any answer — be the critical judge.
+**Quick reference:**
 
-Present the plan in this format:
+1. **Agreement Check** — Do all 3 recommendations align? (3/3, 2/3, divergent)
+2. **Merge Steps** — Union of unique steps. Flag steps all 3 mentioned (core) vs. only 1 (possible noise)
+3. **Risk Rollup** — Collect risks + dissent points, weight by mention count
+4. **Output:**
 
 ```
 ## Plan: <one-line title>
 
-### Context
-<1-2 sentences on the problem and key constraints>
+### Agreement
+[3/3 | 2/3 | divergent] — [where they agreed/disagreed]
 
-### Approach
-<Which strategy was chosen and why, noting where the models agreed/disagreed>
+### Recommended Approach
+1. **Step** — what and why
+2. ...
 
-### Steps
-1. **Step title** — what to do and why
-2. **Step title** — what to do and why
-3. ...
+### Watch Out For
+- [Risks + dissent points, ranked]
 
-### Risks
-- <potential issue and mitigation>
+### Open Questions
+- [Where models diverged without resolution]
 
 ### Alternatives
-- <fallback approach if the main plan doesn't work>
+- [Fallback if main approach fails]
 ```
 
-**This is where the skill ends.** Present the plan and stop. Do NOT begin implementation.
+**Rules:**
+- Do NOT blindly pick the majority — if the critic raises a valid showstopper, surface it
+- Do NOT average approaches — pick one and note trade-offs
+- Keep the final plan under 30 lines
+- **This is where the skill ends.** Present the plan and stop. Do NOT begin implementation.
