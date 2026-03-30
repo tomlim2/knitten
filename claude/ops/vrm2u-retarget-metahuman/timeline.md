@@ -18,4 +18,10 @@
 | R-011 | fbxcel stack overflow 수정 + 분석 | #2 | done | — |
 | R-012 | T2M vs CINEV FBX 스펙 비교 분석 | #3 | done | R-004 |
 
-*Updated: 2026-03-30*
+| R-012 | T2M vs CINEV FBX 스펙 비교 분석 | #3 | done | R-004 |
+| R-013 | shoulder slerp T2M 대응 실험 (5 variants) | #3 | done | R-012 |
+| R-014 | headless CLI 품질 경고 시스템 | #2 | done | R-008 |
+| R-015 | 본 매핑 정합성 검증 | #3 | done | R-012 |
+| R-016 | rest pose 충실도 검증 (fidelity metric) | #3 | done | R-013,R-015 |
+
+*Updated: 2026-03-31*
