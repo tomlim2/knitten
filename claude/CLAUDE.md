@@ -110,6 +110,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 | `design-system.md` | Before creating UI/web pages |
 | `unreal-engine-cpp.md`, `unreal-engine-asset.md` | Before UE C++ or asset work |
 | `review-code-*.md`, `review-template.md` | Code reviews (JS, CSS, UE C++, TSL, UE Python) |
+| `multi-agent-ops.md` | **Always** when assigned as 지통실 #1 (1호기) |
 | `agent-workflow.md`, `delegation.md` | Multi-pass agents, task delegation |
 | `research-methodology.md`, `tech-spec-template.md` | Research and specs |
 
@@ -133,7 +134,7 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 - **Be specific** — "Use 2-space indentation" > "Format code properly"
 - **Self-contained commands** — include all context via `` !`backtick` ``
 - **Clear skill interfaces** — CLI flags, predictable output to `private/`, error handling
-- **Start small, prove, then grow** — always build the smallest working version first (10 lines, 1 function, 1 test). Verify it works, then expand incrementally. Never jump to the full solution in one shot.
+- **Start small, prove, then grow** — always build the smallest working version first (10 lines, 1 function, 1 test). Verify it works, then expand incrementally. Never jump to the full solution in one shot. When debugging hard problems, always test in the smallest unit (CLI, single value) before opening heavy tools (viewer, full pipeline). Only scale up when the small test passes.
 - **Simplify ruthlessly** — if a senior engineer says it's overcomplicated, simplify
 - **Kill by PID, not by name** — NEVER use `taskkill /IM node.exe` or similar broad kills. Find the specific PID first (`netstat -ano | grep :<port>`), then `taskkill /F /PID <pid>`. Broad kills will terminate Claude Code itself.
 - **Secrets** — use environment variables, NEVER store in this folder
