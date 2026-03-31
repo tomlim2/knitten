@@ -61,20 +61,17 @@ Worker는 ops 디렉토리를 읽지 않는다. #1이 파일 경로와 라인 �
   "repo": "repo name",
   "depends": "R-NNN or null",
   "goal": "1-2 sentences",
-  "context": "why this task exists",
   "rules": ["no source modification", "no commits"],
   "files": ["path/to/file.rs:L100-150", "path/to/other.rs:L30-60"],
   "tasks": ["step 1", "step 2"],
-  "references": {
-    "function_name": "path/to/file.rs:~L100"
-  },
-  "validation": ["cargo clippy clean", "cargo test pass"],
-  "report": "~/.claude/private/ops/R-NNN-result.md"
+  "validation": ["cargo clippy clean", "cargo test pass"]
 }
 ```
 
 - `snippets` 필드 없음. `files`에 `path:L시작-끝`으로 라인 범위 지정.
 - Worker가 해당 파일을 직접 Read.
+- 각 라인 범위 ≤50줄. task당 최대 3개 범위. 넘으면 subtask로 분할.
+- `report`, `context`, `references` 필드 생략 가능. report 경로는 convention (`~/.claude/private/ops/{task-id}-result.md`), context는 goal로 충분, references는 files로 대체.
 
 ### #1 Dispatch Flow
 
@@ -103,6 +100,15 @@ Worker는 ops 디렉토리를 읽지 않는다. #1이 파일 경로와 라인 �
 ### Branch Isolation
 - 같은 레포 병렬 작업 시 각자 별도 브랜치: `{task-id}/{agent}`
 - #1이 merge/cherry-pick으로 통합
+
+### Result 파일 규칙
+- Worker는 아래 필드만 작성. freeform prose 금지.
+  ```
+  status: done / blocked
+  summary: (3줄 이내)
+  files_changed: [파일 목록]
+  blockers: (있으면)
+  ```
 
 ### Log 작성 규칙
 - 한 줄: `R-013 done. → shoulder-slerp-experiment.md`
