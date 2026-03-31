@@ -24,4 +24,8 @@
 | R-015 | 본 매핑 정합성 검증 | #3 | done | R-012 |
 | R-016 | rest pose 충실도 검증 (fidelity metric) | #3 | done | R-013,R-015 |
 
+| R-017 | Blender-specific retarget config (FbxSourceType + slerp factor + detection) | #2 | done | R-012,R-013 |
+| R-018 | 전신 rest pose audit + validator 보강 (lowerArm 등 누락 수정) | #2 | done | R-017 |
+| R-019 | 보행 관련 본 rest_pose_offsets 추가 (lowerArm/lowerLeg/foot/spine/neck/head) | #2 | done | R-018 |
+
 *Updated: 2026-03-31*
