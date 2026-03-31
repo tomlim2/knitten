@@ -1,12 +1,12 @@
 ---
-description: Ask Gemini, GPT-4o, Opus in parallel with specialized roles, then synthesize into an implementation plan
+description: Ask Gemini, Codex, Opus in parallel with specialized roles, then synthesize into an implementation plan
 argument-hint: "<question>"
 allowed-tools: Bash(python3:*), Agent, Read
 ---
 
 # dev-decision-start
 
-Send a question to **Gemini** (Architect), **GPT-4o** (Implementer), and **Opus** (Critic) in parallel with specialized prompts, then synthesize using a structured framework.
+Send a question to **Gemini** (Architect), **Codex** (Implementer), and **Opus** (Critic) in parallel with specialized prompts, then synthesize using a structured framework.
 
 ## Arguments
 
@@ -33,7 +33,7 @@ Usage: /dev-decision-start <question>
 
 4. Construct three prompts:
    - **Gemini:** `ROLE + ARCHITECT_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
-   - **GPT-4o:** `ROLE + IMPLEMENTER_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
+   - **Codex:** `ROLE + IMPLEMENTER_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
    - **Opus:** `ROLE + CRITIC_FRAME + "\n\nQuestion:\n" + RAW_QUESTION`
 
 **Do NOT rewrite the user's question.** Send it as-is. The frames provide the expert framing.
@@ -42,16 +42,16 @@ Usage: /dev-decision-start <question>
 
 Launch these three calls **simultaneously** (single message, three tool calls):
 
-#### 3a. Gemini + GPT-4o (Python script)
+#### 3a. Gemini + Codex (Python script)
 
-Run this Python script. Pass the Gemini system prompt as arg1, GPT-4o system prompt as arg2, and the raw question as arg3:
+Run this Python script. Pass the Gemini system prompt as arg1, Codex system prompt as arg2, and the raw question as arg3:
 
 ```bash
 python3 -c "
-import json, urllib.request, sys, os, concurrent.futures
+import json, urllib.request, sys, os, concurrent.futures, subprocess
 
 GEMINI_SYSTEM = sys.argv[1]
-GPT4O_SYSTEM = sys.argv[2]
+CODEX_SYSTEM = sys.argv[2]
 QUESTION = sys.argv[3]
 
 def ask_gemini(system, q):
@@ -71,31 +71,21 @@ def ask_gemini(system, q):
     meta = data.get('usageMetadata', {})
     return text, meta.get('promptTokenCount', 0), meta.get('candidatesTokenCount', 0), model
 
-def ask_github(system, q):
-    import subprocess
-    token = subprocess.check_output(['gh', 'auth', 'token']).decode().strip()
-    model = 'gpt-4o'
-    url = 'https://models.inference.ai.azure.com/chat/completions'
-    body = json.dumps({
-        'messages': [{'role': 'system', 'content': system}, {'role': 'user', 'content': q}],
-        'model': model
-    }).encode()
-    req = urllib.request.Request(url, data=body, headers={
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {token}'
-    })
-    res = urllib.request.urlopen(req, timeout=120)
-    data = json.loads(res.read())
-    text = data['choices'][0]['message']['content']
-    usage = data.get('usage', {})
-    return text, usage.get('prompt_tokens', 0), usage.get('completion_tokens', 0), model
+def ask_codex(system, q):
+    prompt = system + chr(10) + chr(10) + 'Question:' + chr(10) + q
+    result = subprocess.run(
+        ['codex', 'exec', '--full-auto', '--color', 'never', prompt],
+        capture_output=True, text=True, timeout=120
+    )
+    text = result.stdout.strip()
+    return text, 0, 0, 'codex-mini'
 
 with concurrent.futures.ThreadPoolExecutor() as ex:
     f_gemini = ex.submit(ask_gemini, GEMINI_SYSTEM, QUESTION)
-    f_github = ex.submit(ask_github, GPT4O_SYSTEM, QUESTION)
+    f_codex = ex.submit(ask_codex, CODEX_SYSTEM, QUESTION)
 
 g_text, g_in, g_out, g_model = f_gemini.result()
-o_text, o_in, o_out, o_model = f_github.result()
+c_text, c_in, c_out, c_model = f_codex.result()
 
 print('## Gemini (Architect)')
 print(f'Model: {g_model} | Tokens: {g_in} in / {g_out} out')
@@ -104,17 +94,17 @@ print(g_text)
 print()
 print('---')
 print()
-print('## GPT-4o (Implementer)')
-print(f'Model: {o_model} | Tokens: {o_in} in / {o_out} out')
+print('## Codex (Implementer)')
+print(f'Model: {c_model}')
 print()
-print(o_text)
+print(c_text)
 
 try:
     usage_body = json.dumps({'inputTokens': g_in, 'outputTokens': g_out, 'model': g_model, 'type': 'consult'}).encode()
     usage_req = urllib.request.Request('http://localhost:972/api/gemini-usage', data=usage_body, headers={'Content-Type': 'application/json'})
     urllib.request.urlopen(usage_req)
 except: pass
-" "GEMINI_SYSTEM_HERE" "GPT4O_SYSTEM_HERE" "QUESTION_HERE"
+" "GEMINI_SYSTEM_HERE" "CODEX_SYSTEM_HERE" "QUESTION_HERE"
 ```
 
 #### 3b. Opus (subagent — Critic role)
