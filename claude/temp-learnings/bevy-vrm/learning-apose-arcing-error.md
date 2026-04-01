@@ -71,8 +71,46 @@ rotation-only correction이 FK hierarchy에서 parent의 tilt(spine X-tilt 23°)
 - **closed-form** → iteration 없이 정확
 - 게임 엔진(UE5 TwoBoneIK), 수술 로봇(da Vinci), 우주 로봇(Canadarm2) 전부에서 쓰는 표준 패턴
 
+## R-027: Full-Body FK Evaluator (2026-04-01)
+
+### 문제
+
+IK solver math는 정확 (cosine rule, unit test pass), IK target 계산도 정확 (FBX relative + proportion scale). 하지만 viewer에서 팔이 여전히 뒤로 젖힘.
+
+**원인:** `compute_chain_world()`가 chain 시작점(shoulder)의 parent world transform을 **rest pose로 근사**. Animation 중 spine/chest/upperChest 회전이 무시됨 → shoulder world transform 부정확 → IK가 잘못된 위치에서 solve.
+
+### 해법
+
+`[shoulder, upper, lower, hand]` chain을 `[hips, spine, chest, upperChest, shoulder, upper, lower, hand]` 전신 FK chain으로 교체.
+
+```rust
+// parent_map을 따라 bone에서 hips까지 올라가 chain 구성
+fn build_chain_to_hips(vrm_rest, bone_name) -> Vec<String>
+// e.g. "leftUpperArm" → [hips, spine, chest, upperChest, leftShoulder, leftUpperArm]
+```
+
+- `compute_chain_world`의 i==0은 이제 hips → parent는 root_bone(static) → rest pose 사용 정확
+- Left/right arm이 spine chain 공유하므로 2번 평가되지만 성능 무시 가능
+
+### 결과
+
+| Metric | Before (shoulder start) | After (hips start) |
+|--------|------------------------|-------------------|
+| err before (FK only) | 8.4cm | 17.1cm (정확한 측정) |
+| err after (IK) | 0.3cm | 0.5cm avg |
+| max err after | — | 1.5cm |
+
+err before가 올라간 이유: spine animated rotation이 제대로 반영되면서 FK→IK 전의 실제 오차가 더 정확히 측정됨.
+
+### 교훈
+
+- **IK solver가 맞아도 FK evaluator가 틀리면 결과가 틀림** — world transform chain 전체가 정확해야 함
+- Rest pose 근사는 static bone(root)에만 허용, animated bone에 쓰면 반드시 drift
+- UE5 IK Retargeter도 동일 구조: 전신 FK 평가 → limb IK 보정
+
 ## 핵심 교훈
 
 - FK chain에서 rotation-only correction은 parent tilt와의 coupling으로 인해 end-effector position 오차 발생 — 이건 10번 시도해도 안 됨
 - "계층 구조의 종속성을 일시적으로 끊고 전역 기준으로 재조립" = kinematic decoupling + IK
 - 문제를 joint space가 아닌 task space에서 정의하면 해법이 자명해짐
+- **IK solver가 정확해도 FK evaluator의 parent world transform이 틀리면 무의미** — hips부터 전신 FK 필수
