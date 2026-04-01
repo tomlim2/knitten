@@ -20,7 +20,7 @@ Usage: /dev-decision-start <question>
 
 ### Step 1: Validate
 - Check if `$ARGUMENTS` is provided
-- Check if `GEMINI_API_KEY` env var exists
+- Check if `gemini` CLI is available (`which gemini`)
 
 ### Step 2: Prepare (NO rewrite — send raw question)
 
@@ -48,28 +48,19 @@ Run this Python script. Pass the Gemini system prompt as arg1, Codex system prom
 
 ```bash
 python3 -c "
-import json, urllib.request, sys, os, concurrent.futures, subprocess
+import sys, subprocess, concurrent.futures
 
 GEMINI_SYSTEM = sys.argv[1]
 CODEX_SYSTEM = sys.argv[2]
 QUESTION = sys.argv[3]
 
 def ask_gemini(system, q):
-    api_key = os.environ.get('GEMINI_API_KEY', '')
-    model = 'gemini-2.5-flash'
-    url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}'
-    body = json.dumps({
-        'system_instruction': {'parts': [{'text': system}]},
-        'contents': [{'parts': [{'text': q}]}],
-        'generationConfig': {'maxOutputTokens': 4096}
-    }).encode()
-    req = urllib.request.Request(url, data=body, headers={'Content-Type': 'application/json'})
-    res = urllib.request.urlopen(req, timeout=120)
-    data = json.loads(res.read())
-    parts = data['candidates'][0]['content']['parts']
-    text = ''.join(p.get('text', '') for p in parts)
-    meta = data.get('usageMetadata', {})
-    return text, meta.get('promptTokenCount', 0), meta.get('candidatesTokenCount', 0), model
+    prompt = system + chr(10) + chr(10) + 'Question:' + chr(10) + q
+    result = subprocess.run(
+        ['gemini', '-p', prompt, '-m', 'gemini-2.5-flash', '-o', 'text'],
+        capture_output=True, text=True, timeout=120
+    )
+    return result.stdout.strip(), 'gemini-2.5-flash'
 
 def ask_codex(system, q):
     prompt = system + chr(10) + chr(10) + 'Question:' + chr(10) + q
@@ -77,18 +68,17 @@ def ask_codex(system, q):
         ['codex', 'exec', '--full-auto', '--color', 'never', prompt],
         capture_output=True, text=True, timeout=120
     )
-    text = result.stdout.strip()
-    return text, 0, 0, 'codex-mini'
+    return result.stdout.strip(), 'codex-mini'
 
 with concurrent.futures.ThreadPoolExecutor() as ex:
     f_gemini = ex.submit(ask_gemini, GEMINI_SYSTEM, QUESTION)
     f_codex = ex.submit(ask_codex, CODEX_SYSTEM, QUESTION)
 
-g_text, g_in, g_out, g_model = f_gemini.result()
-c_text, c_in, c_out, c_model = f_codex.result()
+g_text, g_model = f_gemini.result()
+c_text, c_model = f_codex.result()
 
 print('## Gemini (Architect)')
-print(f'Model: {g_model} | Tokens: {g_in} in / {g_out} out')
+print(f'Model: {g_model}')
 print()
 print(g_text)
 print()
@@ -98,12 +88,6 @@ print('## Codex (Implementer)')
 print(f'Model: {c_model}')
 print()
 print(c_text)
-
-try:
-    usage_body = json.dumps({'inputTokens': g_in, 'outputTokens': g_out, 'model': g_model, 'type': 'consult'}).encode()
-    usage_req = urllib.request.Request('http://localhost:972/api/gemini-usage', data=usage_body, headers={'Content-Type': 'application/json'})
-    urllib.request.urlopen(usage_req)
-except: pass
 " "GEMINI_SYSTEM_HERE" "CODEX_SYSTEM_HERE" "QUESTION_HERE"
 ```
 
