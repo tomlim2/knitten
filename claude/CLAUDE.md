@@ -21,8 +21,8 @@ caol-ila/claude/  →  symlinked to  →  ~/.claude
 ```
 claude/                          # Symlinked to ~/.claude
 ├── CLAUDE.md                    # This file (loaded every session)
-├── commands/                    # Slash commands (69+ .md files)
-├── skills/                      # Skills with SKILL.md (53+ directories)
+├── commands/                    # Slash commands (.md files)
+├── skills/                      # Skills with SKILL.md (directories)
 │   ├── meta-new-command/        # Command/skill naming rulebook
 │   └── meta-new-skill/          # Skill creation guide
 ├── standards/                   # Detailed reference docs (read on-demand)
@@ -97,22 +97,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 ## Domain Standards
 
-Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded.
-
-| Standard | When to read |
-|----------|-------------|
-| `slash-commands.md` | **Always** before creating commands |
-| `cinev-git-workflow.md` | **Always** before CINEV git ops |
-| `cocv-slack.md` | Before Slack operations |
-| `javascript.md`, `css.md` | Before writing JS/CSS |
-| `three-shader-language.md` | Before Three.js TSL shaders |
-| `ui-design.md` | Before designing or reviewing any UI (Apple HIG baseline) |
-| `design-system.md` | Before creating UI/web pages |
-| `unreal-engine-cpp.md`, `unreal-engine-asset.md` | Before UE C++ or asset work |
-| `review-code-*.md`, `review-template.md` | Code reviews (JS, CSS, UE C++, TSL, UE Python) |
-| `multi-agent-ops.md` | **Always** when assigned as 지통실 #1 (1호기) |
-| `agent-workflow.md`, `delegation.md` | Multi-pass agents, task delegation |
-| `research-methodology.md`, `tech-spec-template.md` | Research and specs |
+Read on-demand, NOT auto-loaded. Full index: @~/.claude/standards/index.md
 
 ---
 
@@ -125,26 +110,31 @@ Detailed reference documents in `standards/` — read on-demand, NOT auto-loaded
 
 ---
 
-## Best Practices
+## Runtime Rules
 
-- **Hardware specs** — When checking local machine capabilities (GPU, RAM, chip), read `~/.claude/private/hardware.json` first. Run `/system-save-hardware` if the file doesn't exist.
-- **Repo paths first** — Before asking the user for project paths, ALWAYS read `~/.claude/private/repo-paths.json` first. It contains all registered project locations.
-- **Slack confirm first** — Before sending ANY Slack message, ALWAYS show the full message content to the user and get explicit approval. Applies to all Slack skills (`cocv-art-send-notice`, `cocv-art-send-merge-notice`, `cocv-art-send-merge-result`, etc.).
-- **Writing pipeline** — For external-facing content (blog, portfolio, README, LinkedIn, resume), always follow: `/writing-draft-human` (draft with human voice) → `/writing-fix-ai` (review against 24 AI patterns) → final output. Internal content (commits, Slack, code comments, notes) is exempt.
-- **Be specific** — "Use 2-space indentation" > "Format code properly"
-- **Self-contained commands** — include all context via `` !`backtick` ``
-- **Clear skill interfaces** — CLI flags, predictable output to `private/`, error handling
-- **Start small, prove, then grow** — always build the smallest working version first (10 lines, 1 function, 1 test). Verify it works, then expand incrementally. Never jump to the full solution in one shot. When debugging hard problems, always test in the smallest unit (CLI, single value) before opening heavy tools (viewer, full pipeline). Only scale up when the small test passes.
-- **Simplify ruthlessly** — if a senior engineer says it's overcomplicated, simplify
-- **Kill by PID, not by name** — NEVER use `taskkill /IM node.exe` or similar broad kills. Find the specific PID first (`netstat -ano | grep :<port>`), then `taskkill /F /PID <pid>`. Broad kills will terminate Claude Code itself.
-- **Secrets** — use environment variables, NEVER store in this folder
-- **Documentation language** — all rules and docs in this file must be in **English only**
-- **Docs in Obsidian** — All documentation (learnings, specs, project notes, research) goes in the Obsidian vault under `claude/`. Path: look up `obsidian` key in `~/.claude/private/repo-paths.json`. Key folders: `claude/learnings/projects/` (gotchas/patterns), `claude/projects/` (specs, records), `claude/specs/`, `claude/research/`. Do NOT store docs in `~/.claude/private/` — private is for raw data only (JSON, cached computations).
+- **Hardware specs** — read `~/.claude/private/hardware.json` first. Run `/system-save-hardware` if missing.
+- **Repo paths first** — ALWAYS read `~/.claude/private/repo-paths.json` before asking user for project paths.
+- **Slack confirm first** — ALWAYS show full message and get explicit approval before sending ANY Slack message.
+- **Writing pipeline** — External content: `/writing-draft-human` → `/writing-fix-ai` → final. Internal content exempt.
+- **Docs in Obsidian** — All docs go in Obsidian vault (`obsidian` key in repo-paths.json), under `claude/`. NOT in `~/.claude/private/`.
+- **Kill by PID** — NEVER broad-kill by process name. Find PID first, then kill specific PID.
 
 ---
 
-## Philosophy
+## Coding Principles
 
-> **ultrathink** — We're not automating tasks. We're composing instruments for making a dent in the universe.
+- **Start small, prove, then grow** — smallest working version first, verify, then expand incrementally.
+- **Simplify ruthlessly** — if a senior engineer says it's overcomplicated, simplify.
+- **Be specific** — "Use 2-space indentation" > "Format code properly"
+- **Self-contained commands** — include all context via `` !`backtick` ``
 
-Every command is a guardrail that enforces the right way. Every skill is accumulated experience turned into reusable code. `private/` is sacred. If it doesn't make your workflow sing, iterate until it does.
+---
+
+## Security
+
+- **Secrets** — use environment variables, NEVER store in this folder
+- **Documentation language** — all rules and docs in this file must be in **English only**
+
+---
+
+> **ultrathink** — Every command is a guardrail. Every skill is accumulated experience. `private/` is sacred.
