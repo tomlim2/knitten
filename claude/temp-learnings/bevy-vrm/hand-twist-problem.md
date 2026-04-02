@@ -148,10 +148,24 @@ let (_, twist) = swing_twist(full_delta, src_dir);
 3. twist 적용 시 world_to_local 변환에서 parent space 불일치
 4. twist_est 측정 자체가 부정확 (|full_err - dir_err|는 근사치)
 
-**다음 시도 전 확인 필요:**
-- FBX hand world rotation을 frame 0에서 직접 비교 (값 출력)
-- VRM hand world rotation과 pixel-level 비교
-- Rest pose에서의 delta 확인 (rest = 0이어야 맞음)
+### Frame 0 비교 결과 — FBX rotation 직접 비교 불가 확인
+
+| | VRM hand rot (Y-up) | FBX hand rot (Z-up→Y-up) | Delta |
+|---|---|---|---|
+| Left f=0 | (0.049, 0.000, -0.687, 0.725) | (-0.496, 0.425, -0.496, 0.573) | **86.0°** |
+| Right f=0 | (0.114, 0.195, 0.684, 0.694) | (-0.613, -0.649, -0.236, -0.384) | **102.8°** |
+
+**Rest frame에서 86~103° 차이 = FBX bone_rotations은 VRM world rotation과 비교 불가.**
+
+FBX의 `bone_rotations`은 `parent_world × pre_rotation × anim_rotation` (Z-up) 형태로, FBX bone convention (pre_rotation 등)이 포함되어 있어 physical orientation이 다름. coord_rot conjugation으로는 변환 불충분.
+
+### 결론: Rotation 기반 twist correction은 불가
+
+FBX world rotation ≠ physical orientation → twist correction의 전제 자체가 틀림.
+**Position/direction 기반 접근만 유효:**
+- hand→index vs hand→little cross product로 palm normal 계산
+- 또는 hand→thumb 방향으로 twist reference 정의
+- source/target 모두 position으로 계산하므로 convention 문제 없음
 
 ## 관련 문서
 
