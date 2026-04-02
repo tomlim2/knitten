@@ -124,6 +124,35 @@ cargo run --manifest-path crates/cinev_retarget/Cargo.toml --bin headless -- \
   assets/retarget/cinev_blender_female.json
 ```
 
+## 시도한 접근과 결과
+
+### 접근 1 시도: swing_twist decomposition (실패)
+
+```rust
+// FBX hand world rot (Z-up) → Y-up
+let fbx_world_yup = coord_rot × fbx_rot_zup × coord_rot_inv;
+// Full delta
+let full_delta = fbx_world_yup × vrm_world⁻¹;
+// Decompose along hand forward axis
+let (_, twist) = swing_twist(full_delta, src_dir);
+// Apply twist as world→local correction
+```
+
+**결과:**
+- Left: 162.6° → 108.7° (약간 개선)
+- Right: 81.1° → 128.9° (악화!)
+
+**실패 원인 후보:**
+1. `swing_twist` decomposition의 축 방향 문제 — src_dir의 부호가 left/right에서 반대
+2. FBX bone_rotations가 pure world rotation이 아닌 다른 공간일 수 있음 (pre_rot 포함?)
+3. twist 적용 시 world_to_local 변환에서 parent space 불일치
+4. twist_est 측정 자체가 부정확 (|full_err - dir_err|는 근사치)
+
+**다음 시도 전 확인 필요:**
+- FBX hand world rotation을 frame 0에서 직접 비교 (값 출력)
+- VRM hand world rotation과 pixel-level 비교
+- Rest pose에서의 delta 확인 (rest = 0이어야 맞음)
+
 ## 관련 문서
 
 - `hand-rotation-problem.md` — 이전 세션의 hand rotation 3가지 시도 (FK 단계)
