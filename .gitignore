@@ -1,5 +1,7 @@
-# Private data (moved to Obsidian, system files remain)
-claude/private/
+# Personal data (learnings and specs are tracked)
+claude/private/*
+!claude/private/learnings/
+!claude/private/specs/
 
 # Secrets
 *.env
@@ -19,16 +21,8 @@ claude/debug/
 claude/ide/
 claude/stats-cache.json
 claude/plans/
-claude/paste-cache/
-claude/tasks/
 claude/session-env/
 claude/statsig/
-claude/telemetry/
-claude/backups/
-claude/mcp-needs-auth-cache.json
-
-# Python cache
-__pycache__/
 
 # Future-proof: catch any new runtime files
 claude/*.log
@@ -36,27 +30,9 @@ claude/logs/
 claude/temp/
 claude/tmp/
 
-# External plugins (have own git repos)
-claude/plugins/
-
 # Skill server runtime
 claude/skills/skill-server/node_modules/
 claude/skills/skill-server/package-lock.json
-
-# Font files (OFL licensed, downloaded on demand)
-claude/skills/canvas-design/canvas-fonts/
-
-# Python cache
-__pycache__/
-*.pyc
-
-# Temp files
-tmp_*.txt
-ge.txt
-nul
-
-# Claude Code local config (symlink target)
-.claude/
 
 # OS files
 .DS_Store
