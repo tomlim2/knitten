@@ -16,3 +16,4 @@ Detailed reference documents — read on-demand, NOT auto-loaded.
 | `multi-agent-ops.md` | **Always** when assigned as 지통실 #1 (1호기) |
 | `agent-workflow.md`, `delegation.md` | Multi-pass agents, task delegation |
 | `research-methodology.md`, `tech-spec-template.md` | Research and specs |
+| `repo-paths-keys.md` | Before registering repos or setting up a new machine |

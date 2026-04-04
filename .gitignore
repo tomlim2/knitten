@@ -23,6 +23,13 @@ claude/stats-cache.json
 claude/plans/
 claude/session-env/
 claude/statsig/
+claude/backups/
+claude/sessions/
+claude/tasks/
+claude/telemetry/
+claude/plugins/
+claude/paste-cache/
+claude/mcp-needs-auth-cache.json
 
 # Future-proof: catch any new runtime files
 claude/*.log
@@ -30,9 +37,19 @@ claude/logs/
 claude/temp/
 claude/tmp/
 
+# Python cache
+__pycache__/
+*.pyc
+
+# Font binaries in skills
+claude/skills/canvas-design/canvas-fonts/
+
 # Skill server runtime
 claude/skills/skill-server/node_modules/
 claude/skills/skill-server/package-lock.json
+
+# Claude Code session logs
+*.txt
 
 # OS files
 .DS_Store
