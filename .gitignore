@@ -30,6 +30,7 @@ claude/telemetry/
 claude/plugins/
 claude/paste-cache/
 claude/mcp-needs-auth-cache.json
+claude/image-cache/
 
 # Future-proof: catch any new runtime files
 claude/*.log

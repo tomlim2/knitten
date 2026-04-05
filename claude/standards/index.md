@@ -17,3 +17,4 @@ Detailed reference documents — read on-demand, NOT auto-loaded.
 | `agent-workflow.md`, `delegation.md` | Multi-pass agents, task delegation |
 | `research-methodology.md`, `tech-spec-template.md` | Research and specs |
 | `repo-paths-keys.md` | Before registering repos or setting up a new machine |
+| `obsidian-format.md` | Before creating or migrating Obsidian documents |

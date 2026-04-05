@@ -117,6 +117,7 @@ Read on-demand, NOT auto-loaded. Full index: @~/.claude/standards/index.md
 - **Slack confirm first** — ALWAYS show full message and get explicit approval before sending ANY Slack message.
 - **Writing pipeline** — External content: `/writing-draft-human` → `/writing-fix-ai` → final. Internal content exempt.
 - **Docs in Obsidian** — All docs go in Obsidian vault (`obsidian` key in repo-paths.json), under `claude/`. NOT in `~/.claude/private/`.
+- **Obsidian format** — ALWAYS read `~/.claude/standards/obsidian-format.md` before creating or editing Obsidian .md files. Frontmatter, wikilinks, tags required.
 - **Kill by PID** — NEVER broad-kill by process name. Find PID first, then kill specific PID.
 
 ---
