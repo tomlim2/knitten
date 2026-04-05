@@ -26,6 +26,10 @@ Keys that skills/commands depend on. Register with `/meta-register-refs <key> <p
 | `mmd-anju` | MMD Player (Three.js WebGPU) | git | dev-open-mmd-anju |
 | `matcap-painter` | Matcap Painter web app | git | dev-open-matcap-painter |
 | `vrm2u-bevy` | Rust+Bevy VRM viewer | git | dev-open-vrm-bevy |
+| `bevy-vrm` | Bevy VRM retarget viewer | git | vrm-debug-screenshot |
+| `shotloom` | Shotloom (CINEV) | git-corp | — |
+| `story-previz` | StoryPreviz (CINEV) | git-corp | — |
+| `cinev-ta-tools` | TA Python tools (megamelange) | git-lfs-corp | cocv-sync-ta-tools |
 
 ### Windows Only
 
@@ -34,7 +38,7 @@ Keys that skills/commands depend on. Register with `/meta-register-refs <key> <p
 | `cinev-studio` | CINEVStudio UE project (main) | local | cocv-open-project, cocv-summarize-commit |
 | `cinev-git` | CINEVStudio git working copy | git-lfs-corp | cinev-git-workflow |
 | `cinev-studio-git` | CINEVStudio git (art branch ops) | git-lfs-corp | cocv-manage-art-branch |
-| `cinev-ta-tools` | TA Python tools (sync target) | git-corp | cocv-sync-ta-tools |
+| `cinev-ta-tools` | (moved to macOS Only — cross-machine) | git-lfs-corp | cocv-sync-ta-tools |
 | `bevy-vrm2u` | Bevy VRM tools (sync source) | git-corp | cocv-sync-ta-tools |
 
 ---
@@ -47,7 +51,7 @@ Project-specific or temporary. Register as needed.
 |-----|-------------|---------|---------|
 | `krafton-hackathon` | Krafton AI Hackathon 2026 | local | dev-hackathon-toolkit |
 | `mmd-archive` | MMD asset archive | local | — (reference only) |
-| `mega-melange` | Unreal MCP experiments | git | — (reference only) |
+| `mega-melange` | (deprecated → cinev-ta-tools) | — | — |
 
 ---
 
