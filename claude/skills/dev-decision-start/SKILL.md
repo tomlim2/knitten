@@ -57,7 +57,7 @@ QUESTION = sys.argv[3]
 def ask_gemini(system, q):
     prompt = system + chr(10) + chr(10) + 'Question:' + chr(10) + q
     result = subprocess.run(
-        ['gemini', '-p', prompt, '-m', 'gemini-2.5-flash', '-o', 'text'],
+        ['npx', '-y', '@google/gemini-cli', '-p', prompt, '-m', 'gemini-2.5-flash', '-o', 'text'],
         capture_output=True, text=True, timeout=120
     )
     return result.stdout.strip(), 'gemini-2.5-flash'

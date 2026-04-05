@@ -1,12 +1,12 @@
 ---
 description: Ask Gemini AI a question
 argument-hint: "<question>"
-allowed-tools: Bash(gemini:*)
+allowed-tools: Bash(npx:*)
 ---
 
 # dev-ask-gemini
 
-Ask Gemini a question via CLI and return the response. Uses locally installed `gemini` CLI with Google account auth (Pro subscription).
+Ask Gemini a question via CLI and return the response.
 
 ## Arguments
 
@@ -20,15 +20,20 @@ Usage: /dev-ask-gemini <question>
 
 ### Step 1: Validate
 - Check if `$ARGUMENTS` is provided
-- Check if `gemini` CLI is available (`which gemini`)
 
 ### Step 2: Call Gemini CLI
 
 ```bash
-gemini -p "QUESTION_HERE" -m gemini-2.5-flash -o text
+npx -y @google/gemini-cli -p "QUESTION_HERE" -m gemini-2.5-flash -o text
 ```
 
 Replace QUESTION_HERE with the user's question from $ARGUMENTS.
+
+**Notes:**
+- Uses `npx -y @google/gemini-cli` (no global install needed)
+- `-m gemini-2.5-flash` for fast responses. Use `-m gemini-2.5-pro` for deeper analysis
+- `-o text` for plain text output
+- Auth: Google account via browser login on first use
 
 ### Step 3: Show Response
 - Display the CLI output directly
