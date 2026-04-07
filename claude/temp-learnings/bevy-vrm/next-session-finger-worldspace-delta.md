@@ -1,77 +1,68 @@
 ---
-title: "다음 세션: Finger world-space delta retarget (Wicked Engine 방식)"
+title: "다음 세션: Finger retarget 개선 — splay, magnitude, Intermediate direction"
 tags: [bevy-vrm, retarget, finger, todo]
 created: 2026-04-07
+updated: 2026-04-07
 ---
 
-# 다음 세션: Finger World-Space Delta Retarget
+# 다음 세션: Finger Retarget 개선
 
-## 현재 상태 (2026-04-07 기준)
+## 현재 상태 (2026-04-07 완료)
 
-- Three-quat formula의 finger curl: 크기 ~80% 전달되지만 **방향(축)이 틀림**
-- 원인: FBX A-pose arm orientation ↔ VRM T-pose arm orientation 차이
-  - parentRestWorld가 다르니까 curl이 다른 축으로 매핑됨
-- Swing-twist(X축) 분해로 twist 제거 중이지만 curl 축 자체가 잘못됨
-- Default curl (15°/20°/10° + splay) 은 잘 작동
+- **Backward curl: 0/0 해결** ✅ (muscle-space scalar curl)
+- Magnitude: 60-90% (curl axis projection 손실)
+- Right Proximal direction: 8-23° rest, 17-41° peak
+- Right Intermediate direction: 33-62° peak (FK 누적)
+- Left static Ring/Little Intermediate: 47-62° (finger_bind_pose 한계)
+- Splay: 미구현 (curl only)
 
-## 근본 해결: Wicked Engine 방식
+## 해결된 것
 
-Three-quat formula를 finger에는 우회. 대신 world-space delta 방식:
+1. Backward curl — muscle-space curl (scalar angle 추출 + VRM axis 적용)
+2. Thumb — hand radial axis (index→pinky) 사용, Proximal rest 0.1°
+3. DOF constraints — non-thumb X-twist 제거, thumb은 제외
 
+## 남은 과제 우선순위
+
+### 1. Splay 추가 (Proximal MCP)
+현재 curl만 전달. MCP 관절은 splay(벌어짐)도 필요.
+- FBX splay axis = bone_dir × curl_axis
+- VRM splay axis = 같은 공식
+- splay angle 추출 + curl과 합성
+
+### 2. Magnitude 개선 (60-90% → 목표 90%+)
+FBX curl axis와 VRM curl axis 차이(palm normal 6.5° 오차)로 projection 손실.
+- FBX curl axis를 더 정확하게 계산 (position 기반 대신 FBX bone orientation 직접 사용?)
+- 또는 axis 보정 계수 적용
+
+### 3. Intermediate direction (33-62°)
+Proximal의 direction error가 FK로 누적.
+- Proximal direction 자체를 줄여야 (현재 17-41° peak)
+- 또는 Intermediate에서도 world-space 보정
+
+### 4. Left static Ring/Little Intermediate (47-62°)
+finger_bind_pose가 이 bone들을 제대로 잡지 못함.
+- finger_bind_pose correction 공식 검토
+- 또는 muscle-space를 static에도 적용 (FBX bind pose curl 추출)
+
+### 5. Thumb Metacarpal (18°)
+Rebasis 결과 유지 중. Muscle-space 적용 시 29°로 악화.
+- Thumb-specific metacarpal correction 필요
+- 또는 현재 18° 수용
+
+## CLI 검증
+
+```bash
+cd ~/Desktop/www/bevy-vrm/crates/cinev_retarget
+cargo run --bin finger-diag -- \
+  ../../assets/models/vroid_1x_m_c_normal.vrm \
+  ../../assets/fbx/t2m_m_wave.fbx \
+  ../../assets/retarget/cinev_blender_male.json
 ```
-1. FBX finger world rotation (per frame) 계산
-   - FBX skeleton의 parent chain으로 world rot 누적
-2. src_diff = anim_world × tpose_world⁻¹
-   - T-pose 대비 순수 animation delta (world space)
-3. Swing-twist(bone axis) → twist 제거, curl만
-4. tgt_world = src_diff × vrm_tpose_world
-   - VRM T-pose에 delta 적용
-5. tgt_local = vrm_parent_world⁻¹ × tgt_world
-   - VRM parent inverse → local rotation
-```
-
-핵심: bone별 자신의 rest 기준 delta → parent rest 차이 누적 안 됨
-
-## 필요한 데이터
-
-- FBX finger bone world rotations per frame → `FbxSkeletonFrames`에 있음 (bone_positions)
-  - 단 rotation은 없고 position만 있음 → rotation 계산 필요
-  - 또는 FBX bone hierarchy에서 local rotation 누적해서 world rotation 계산
-- FBX finger T-pose world rotation → frame 0 또는 rest_rotation_euler + parent chain
-- VRM finger T-pose world rotation → `bone_rest_global`
-- VRM finger parent world rotation → parent chain FK
-
-## 구현 위치
-
-- `retargeter.rs`의 `compute_rotations()`에서 finger bone일 때 분기
-- 또는 별도 `compute_finger_rotations()` 함수
 
 ## 관련 파일
 
-- `crates/cinev_retarget/src/retargeter.rs` — compute_rotations, three-quat
-- `crates/cinev_retarget/src/mapping.rs` — BoneTrack, src_rest_global
-- `crates/cinev_retarget/src/fbx.rs` — FBX parsing, global_rest 계산
-- `crates/cinev_retarget/src/ik/mod.rs` — finger_bind_pose, default curl
-
-## 참고 자료
-
-- [Wicked Engine — Animation Retargeting](https://wickedengine.net/2022/09/animation-retargeting/)
-- [Allen Chou — Swing-Twist Decomposition](https://allenchou.net/2018/05/game-math-swing-twist-interpolation-sterp/)
-
-## 시작 명령
-
-```
-cd ~/Desktop/www/bevy-vrm && cargo run --bin bevy-vrm
-```
-
-- F7: 여자 프리셋, F8: 남자 standing, F9: 남자 wave
-- G: bone gizmo, F4: log
-
-## 오늘 커밋 이력
-
-| Hash | 내용 |
-|------|------|
-| 0c1cb27 | finger curl-only extraction, default pose, F9 wave preset |
-| 75d6430 | timeline readability + bolder gizmo labels |
-| cee7816 | brighter bone colors and FBX label readability |
-| 7d47022 | swing-twist curl filter + bind-pose curl-only for non-thumb |
+- `crates/cinev_retarget/src/retargeter.rs` — three-vrm + rebasis + DOF
+- `crates/cinev_retarget/src/ik/mod.rs` — muscle-space curl, thumb radial, finger_bind_pose
+- `crates/cinev_retarget/src/bin/finger_diag.rs` — backward detection + direction + magnitude
+- `crates/cinev_retarget/src/bin/palm_check.rs` — palm normal survey
