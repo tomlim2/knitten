@@ -131,6 +131,12 @@ Read on-demand, NOT auto-loaded. Full index: @~/.claude/standards/index.md
 
 ---
 
+## Verification
+
+- **Always verify before presenting** — code change → run tests/CLI/diagnostics → confirm results → only then show to user or suggest next step.
+
+---
+
 ## Security
 
 - **Secrets** — use environment variables, NEVER store in this folder
