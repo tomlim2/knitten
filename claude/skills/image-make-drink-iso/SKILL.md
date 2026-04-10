@@ -48,11 +48,29 @@ Goal: get the actual label image so the color palette is real, not guessed.
    - Illustration style (line art, watercolor, photo, vintage, minimal, etc.)
    - Key motifs (animal, object, pattern, typography quirks)
    - Region / origin (e.g., "Marlborough New Zealand")
+   - **Typography** — this carries the label's 감성, capture it precisely:
+     - Classification: serif / slab serif / sans / script / blackletter / hand-lettered / art-nouveau / art-deco / grotesque / humanist / display
+     - Weight & width: thin / regular / bold / ultra-bold, condensed / regular / extended
+     - Case & layout: all caps / small caps / mixed, centered / stacked / arched / circular
+     - Character quirks: swashes, ligatures, drop caps, ornamental flourishes, stencil cuts, letterpress imprint, gold foil, embossing
+     - Vibe in 2–3 words (e.g., "1920s apothecary", "French children's book", "Scottish distillery crest", "minimalist Scandinavian")
 
 If after 2–3 search attempts you still have no label image, ask the user to:
 - Describe the label colors in one line, OR
 - Send a photo path you can `Read`, OR
 - Authorize a generic palette inspired by the drink type
+
+### Step 2b: Research the region — landmarks, specialties, traditions
+Goal: ground the diorama in the drink's **actual hometown** so it feels specific, not generic "wine village". Once you know the region from Step 2, WebSearch for:
+
+1. `"<region>" famous landmarks OR iconic buildings` — pick 1 hero landmark (clock tower, cathedral, lighthouse, bridge, mountain silhouette…) for the Step 3 `{landmark}` slot
+2. `"<region>" local specialties OR traditional food` — 2–3 items to scatter as miniature props (cheese wheels, oysters, chocolate, bread, mussels…)
+3. `"<region>" traditional craft OR folk culture` — textile patterns, pottery, festivals, signage styles (these enrich the hand-painted signage from the typography block)
+4. Native flora/fauna specific to the region — trees, birds, animals beyond generic grape vines
+
+Keep it tight: 3–5 concrete nouns total. Prefer **specific** ("Pohutukawa trees, greenshell mussels, Marlborough Sounds lighthouse") over **generic** ("trees, seafood, coast"). Drop these into Step 3's City contents and `{landmark}` slot.
+
+If the region is unknown or the drink has no real hometown (e.g., generic cocktails), skip this step — fall back to the drink's archetype (e.g., tiki for rum cocktails).
 
 ### Step 3: Draft the prompt
 Fill this template (keep the structure — strict palette, iso 35°, clay-line hybrid is the signature look):
@@ -74,6 +92,14 @@ look with crisp black outlines, line-art 3D hybrid, miniature pop-up book
 diorama. Soft flat lighting, no harsh shadows, no gradients beyond the
 three colors.
 
+Typographic soul of the label ({type_vibe}): the diorama carries the same
+lettering spirit — {type_classification}, {type_weight_width}, {type_quirks}.
+Reflect this through hand-painted signage on shop fronts, café chalkboards,
+barrel stamps, banner ribbons, and awning text — all shaped in that exact
+lettering style (but with no readable words, just the *shape and rhythm* of
+the letters). Street signs, posters, and crate markings should feel like
+they were printed from the same font family as the bottle label.
+
 City contents:
 - {production building — winery / distillery / brewery / bar with cellar}
 - {label motif characters — e.g. cats, animals, mascots, miniature people}
@@ -81,6 +107,11 @@ City contents:
 - {label accessories — e.g. yarn balls, copper still, oak barrels, hop sacks}
 - A small market square, cobblestone streets, lampposts, planters, café tables
 - A small bottle of {drink_name} and a glass on one of the café tables (witty)
+- **One signature landmark** — the visual anchor of the island ({landmark}).
+  Pick ONE that fits the drink's region/motif: e.g. clock tower, lighthouse,
+  windmill, pagoda, chapel spire, observatory dome, giant oak tree, stone
+  arch bridge, carousel, watermill. Taller than everything else, placed
+  off-center (rule of thirds), so the eye lands on it first.
 
 Composition: perfect square 1:1, centered floating island, ultra-detailed
 miniature, hyperreal 3D render with vintage illustration character, in the
