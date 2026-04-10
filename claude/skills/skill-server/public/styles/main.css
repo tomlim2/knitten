@@ -1172,6 +1172,19 @@ code {
 }
 
 /* Home Page */
+.home-hero {
+    width: 33.3333%;
+    margin: 0 0 32px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.home-hero-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
 .home-section {
     margin-bottom: 40px;
 }
