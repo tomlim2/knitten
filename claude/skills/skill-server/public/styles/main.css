@@ -984,6 +984,16 @@ table tr:nth-child(even) {
     color: var(--color-text);
 }
 
+.item-index {
+    font-size: 11px;
+    color: var(--color-gray-mid);
+    width: 28px;
+    flex-shrink: 0;
+    text-align: right;
+    margin-right: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
 .item-type-icon {
     display: inline-flex;
     align-items: center;
