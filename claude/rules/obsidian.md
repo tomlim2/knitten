@@ -1,0 +1,10 @@
+- **Frontmatter required** — Every `.md` file needs YAML frontmatter with `title`, `tags`, `date`, `source`
+- **H1 is singular** — Exactly 1 H1 per document, placed immediately after frontmatter
+- **Section separators** — `---` horizontal rule between major sections
+- **Wikilinks for images** — `![[folder/file.png]]`, NEVER markdown image links for vault content
+- **Wikilinks for internal references** — `[[Note Name]]`
+- **Markdown links for external** — `[text](URL)`
+- **Lists use `-`** — Ordered lists use `1.`
+- **Tags in frontmatter** — Inline `#tag` only at document footer, never inline in body
+- **Location:** `{obsidian-vault}/claude/` for all Claude-authored docs
+- Full format spec + tag conventions: @~/.claude/standards/obsidian-format.md

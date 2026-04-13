@@ -93,6 +93,10 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 ---
 
+## Rules
+
+Always-applied constraints. Full index: @~/.claude/rules/index.md
+
 ## Domain Standards
 
 Read on-demand, NOT auto-loaded. Full index: @~/.claude/standards/index.md

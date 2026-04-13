@@ -1,0 +1,9 @@
+- **Pattern** — `{category}-{verb}-{subject}` for ALL commands and skills (MANDATORY)
+- **Lowercase only** — No capitals, no camelCase, no underscores, no spaces
+- **Hyphens as separators** — Multi-word subjects use hyphens (`creator-launcher`)
+- **Max 64 characters**
+- **Categories** — `meta`, `cocv`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
+- **Be specific** — `tutoring-open-invoice` not just `open-invoice`
+- **Keep verbs simple** — `make` not `generate`, `add` not `append`
+- **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
+- Full rationale and examples: @~/.claude/skills/meta-new-command/SKILL.md
