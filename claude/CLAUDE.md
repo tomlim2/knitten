@@ -78,9 +78,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 ## Git Workflow
 
-- **Commit only** — Do NOT auto-push unless explicitly requested
-- **Author:** `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
-- **No Co-Authored-By** — Do NOT add `Co-Authored-By: Claude` lines
+@~/.claude/rules/git.md
 
 ---
 
@@ -112,36 +110,25 @@ Read on-demand, NOT auto-loaded. Full index: @~/.claude/standards/index.md
 
 ## Runtime Rules
 
-- **Hardware specs** — read `~/.claude/private/hardware.json` first. Run `/system-save-hardware` if missing.
-- **Repo paths first** — ALWAYS read `~/.claude/private/repo-paths.json` before asking user for project paths.
-- **Slack confirm first** — ALWAYS show full message and get explicit approval before sending ANY Slack message.
-- **Writing pipeline** — External content: `/writing-draft-human` → `/writing-fix-ai` → final. Internal content exempt.
-- **Docs in Obsidian** — All docs go in Obsidian vault (`obsidian` key in repo-paths.json), under `claude/`. NOT in `~/.claude/private/`.
-- **Obsidian format** — ALWAYS read `~/.claude/standards/obsidian-format.md` before creating or editing Obsidian .md files. Frontmatter, wikilinks, tags required.
-- **Kill by PID** — NEVER broad-kill by process name. Find PID first, then kill specific PID.
-- **Delegate mechanical work** — For pure mechanical edits (bulk rename, sed-style replacements, file moves, boilerplate scaffolding, scoped cleanup passes), dispatch a subagent with `model: "haiku"` (single-file trivial) or `model: "sonnet"` (multi-file, light judgment), prefer `run_in_background: true`, and stay in conversation with the user in foreground while it works. Do NOT delegate: design decisions, debugging, test interpretation, anything requiring conversation context.
+@~/.claude/rules/runtime.md
 
 ---
 
 ## Coding Principles
 
-- **Start small, prove, then grow** — smallest working version first, verify, then expand incrementally.
-- **Simplify ruthlessly** — if a senior engineer says it's overcomplicated, simplify.
-- **Be specific** — "Use 2-space indentation" > "Format code properly"
-- **Self-contained commands** — include all context via `` !`backtick` ``
+@~/.claude/rules/coding.md
 
 ---
 
 ## Verification
 
-- **Always verify before presenting** — code change → run tests/CLI/diagnostics → confirm results → only then show to user or suggest next step.
+@~/.claude/rules/verification.md
 
 ---
 
 ## Security
 
-- **Secrets** — use environment variables, NEVER store in this folder
-- **Documentation language** — all rules and docs in this file must be in **English only**
+@~/.claude/rules/security.md
 
 ---
 

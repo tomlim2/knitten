@@ -1,0 +1,2 @@
+- **Secrets** — use environment variables, NEVER store in this folder
+- **Documentation language** — all rules and docs in this file must be in **English only**

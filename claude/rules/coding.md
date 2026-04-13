@@ -1,0 +1,4 @@
+- **Start small, prove, then grow** — smallest working version first, verify, then expand incrementally.
+- **Simplify ruthlessly** — if a senior engineer says it's overcomplicated, simplify.
+- **Be specific** — "Use 2-space indentation" > "Format code properly"
+- **Self-contained commands** — include all context via `` !`backtick` ``
