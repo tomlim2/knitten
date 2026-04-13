@@ -119,6 +119,7 @@ Read on-demand, NOT auto-loaded. Full index: @~/.claude/standards/index.md
 - **Docs in Obsidian** — All docs go in Obsidian vault (`obsidian` key in repo-paths.json), under `claude/`. NOT in `~/.claude/private/`.
 - **Obsidian format** — ALWAYS read `~/.claude/standards/obsidian-format.md` before creating or editing Obsidian .md files. Frontmatter, wikilinks, tags required.
 - **Kill by PID** — NEVER broad-kill by process name. Find PID first, then kill specific PID.
+- **Delegate mechanical work** — For pure mechanical edits (bulk rename, sed-style replacements, file moves, boilerplate scaffolding, scoped cleanup passes), dispatch a subagent with `model: "haiku"` (single-file trivial) or `model: "sonnet"` (multi-file, light judgment), prefer `run_in_background: true`, and stay in conversation with the user in foreground while it works. Do NOT delegate: design decisions, debugging, test interpretation, anything requiring conversation context.
 
 ---
 
