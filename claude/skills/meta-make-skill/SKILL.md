@@ -2,7 +2,7 @@
 description: "Structure rules and templates for creating Claude Code skills. Use when creating new skills."
 ---
 
-# meta-new-skill
+# meta-make-skill
 
 Skill creation generator for Claude Code with comprehensive structure rules.
 
@@ -30,8 +30,8 @@ skills/{category}-{verb}-{subject}/
 
 **MANDATORY: All skills MUST follow the `{category}-{verb}-{subject}` pattern.**
 
-This is the SAME pattern as commands. See `meta-new-command` skill for complete naming rules:
-- `~/.claude/skills/meta-new-command/SKILL.md`
+This is the SAME pattern as commands. See `meta-make-command` skill for complete naming rules:
+- `~/.claude/skills/meta-make-command/SKILL.md`
 
 ### Quick Reference
 
@@ -47,8 +47,8 @@ This is the SAME pattern as commands. See `meta-new-command` skill for complete 
 | `git-commit-collector` | git | commit | collector |
 | `ue-analyze-material` | ue | analyze | material |
 | `ue-validate-asset-name` | ue | validate | asset-name |
-| `meta-new-command` | meta | new | command |
-| `meta-new-skill` | meta | new | skill |
+| `meta-make-command` | meta | make | command |
+| `meta-make-skill` | meta | make | skill |
 | `skill-server` | skill | server | (implicit) |
 | `drink-log` | drink | log | (implicit) |
 
@@ -65,7 +65,7 @@ This is the SAME pattern as commands. See `meta-new-command` skill for complete 
 
 **Command:**
 ```
-/ue-new-skill <verb> <noun>
+/ue-make-skill <verb> <noun>
 ```
 
 **Why UE skills are special:**
@@ -76,7 +76,7 @@ This is the SAME pattern as commands. See `meta-new-command` skill for complete 
 - Use `export_{noun}_data.py` naming pattern
 - Have specific error handling for `get_editor_property()` calls
 
-**When to use ue-new-skill:**
+**When to use ue-make-skill:**
 - Any skill that exports data from Unreal Editor
 - Any skill that analyzes UE assets (materials, meshes, blueprints, etc.)
 - Any skill that validates UE naming conventions
@@ -85,8 +85,8 @@ This is the SAME pattern as commands. See `meta-new-command` skill for complete 
 **Example:**
 ```
 User request: "Create a ue-analyze-texture skill"
-→ Use: /ue-new-skill analyze texture
-→ NOT: /meta-new-skill ue analyze texture
+→ Use: /ue-make-skill analyze texture
+→ NOT: /meta-make-skill ue analyze texture
 ```
 
 ---

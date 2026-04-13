@@ -23,8 +23,8 @@ claude/                          # Symlinked to ~/.claude
 ├── CLAUDE.md                    # This file (loaded every session)
 ├── commands/                    # Slash commands (.md files)
 ├── skills/                      # Skills with SKILL.md (directories)
-│   ├── meta-new-command/        # Command/skill naming rulebook
-│   └── meta-new-skill/          # Skill creation guide
+│   ├── meta-make-command/        # Command/skill naming rulebook
+│   └── meta-make-skill/          # Skill creation guide
 ├── standards/                   # Detailed reference docs (read on-demand)
 │   ├── slash-commands.md        # [REQUIRED] Command authoring standard
 │   └── ...                      # JS, UE C++, design system, etc.
@@ -64,14 +64,14 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 - Lowercase only, hyphens as separators, max 64 characters
 - Categories: `meta`, `cocv`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
-- Examples: `git-collect-commits`, `ue-analyze-material`, `meta-new-command`
-- Full rules: @~/.claude/skills/meta-new-command/SKILL.md
+- Examples: `git-collect-commits`, `ue-analyze-material`, `meta-make-command`
+- Full rules: @~/.claude/skills/meta-make-command/SKILL.md
 
 ### Creating New
 
-- **Command:** `/meta-new-command <category> <verb> <subject>`
-- **Skill:** `/meta-new-skill <category> <verb> <subject>`
-- **UE skill:** `/ue-new-skill <verb> <noun>` (uses special template)
+- **Command:** `/meta-make-command <category> <verb> <subject>`
+- **Skill:** `/meta-make-skill <category> <verb> <subject>`
+- **UE skill:** `/ue-make-skill <verb> <noun>` (uses special template)
 - **Command standard:** @~/.claude/standards/slash-commands.md
 
 ---

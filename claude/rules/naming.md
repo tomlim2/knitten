@@ -6,4 +6,4 @@
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Keep verbs simple** — `make` not `generate`, `add` not `append`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
-- Full rationale and examples: @~/.claude/skills/meta-new-command/SKILL.md
+- Full rationale and examples: @~/.claude/skills/meta-make-command/SKILL.md

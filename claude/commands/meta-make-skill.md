@@ -14,12 +14,12 @@ $ARGUMENTS = `<category> <verb> <subject>`
 **If no argument is provided, show usage and ask. NEVER auto-execute.**
 
 ```
-Usage: /meta-new-skill <category> <verb> <subject>
+Usage: /meta-make-skill <category> <verb> <subject>
 
 Examples:
-  /meta-new-skill git analyze diff
-  /meta-new-skill tutoring export records
-  /meta-new-skill ue validate texture
+  /meta-make-skill git analyze diff
+  /meta-make-skill tutoring export records
+  /meta-make-skill ue validate texture
 ```
 
 ## Skill Structure Rules Reference
@@ -27,7 +27,7 @@ Examples:
 **MANDATORY: Read the complete skill structure rules before creating any skill.**
 
 ```
-~/.claude/skills/meta-new-skill/SKILL.md
+~/.claude/skills/meta-make-skill/SKILL.md
 ```
 
 This file contains:
@@ -50,17 +50,17 @@ This file contains:
 
 Or use the dedicated command:
 ```
-/ue-new-skill <verb> <noun>
+/ue-make-skill <verb> <noun>
 ```
 
 **Why?**
 - UE skills have specific patterns (Python scripts, Unreal Editor integration, JSON export)
 - ue-show-template contains UE-specific templates and conventions
-- ue-new-skill command generates all required files automatically
+- ue-make-skill command generates all required files automatically
 
 **Example:**
 - User: "Create a ue-validate-texture skill"
-- Response: "For Unreal Engine skills, please use `/ue-new-skill validate texture` which follows the UE-specific template and conventions."
+- Response: "For Unreal Engine skills, please use `/ue-make-skill validate texture` which follows the UE-specific template and conventions."
 
 ## Execution
 
@@ -180,7 +180,7 @@ app.listen(PORT, () => {
 ## After Creation
 
 1. **Test the skill**: Run implementation files directly
-2. **Create wrapper command**: Create `/meta-new-command {category} {verb} {subject}` to wrap this skill
+2. **Create wrapper command**: Create `/meta-make-command {category} {verb} {subject}` to wrap this skill
 3. **Register in skill-server** (if web skill)
 4. **Update CLAUDE.md** if new category added
 5. **Commit**: Add to version control
@@ -200,7 +200,7 @@ app.listen(PORT, () => {
 
 For complete naming rules, see:
 ```
-~/.claude/skills/meta-new-command/SKILL.md
+~/.claude/skills/meta-make-command/SKILL.md
 ```
 
 Skills follow the SAME naming pattern as commands: `{category}-{verb}-{subject}`

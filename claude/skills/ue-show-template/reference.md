@@ -147,6 +147,6 @@ Sections in order:
 
 ## Related Files
 
-- Generator command: `~/.claude/commands/ue-new-skill.md`
+- Generator command: `~/.claude/commands/ue-make-skill.md`
 - Reference skill: `~/.claude/skills/ue-analyze-material/`
 - Shared sender: `~/.claude/skills/ue-analyze-material/run_in_editor.py`

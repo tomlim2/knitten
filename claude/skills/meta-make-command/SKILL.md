@@ -2,7 +2,7 @@
 description: "Naming rules and templates for creating Claude Code commands and skills. Use when creating new commands or skills."
 ---
 
-# meta-new-command
+# meta-make-command
 
 Command and skill creation generator for Claude Code with comprehensive naming rules.
 
@@ -63,7 +63,7 @@ Each name consists of three parts separated by hyphens:
 | `tutoring-*` | Tutoring business | `tutoring-open-invoice`, `tutoring-log-lesson` |
 | `learn-*` | Learning/docs | `learn-add-log` |
 | `drink-*` | Drink tracking | `drink-log-entry` |
-| `meta-*` | System tools | `meta-new-command`, `meta-new-skill` |
+| `meta-*` | System tools | `meta-make-command`, `meta-make-skill` |
 | `review-*` | Code/skill reviews | `review-audit-web` |
 
 ---
@@ -90,15 +90,15 @@ Each name consists of three parts separated by hyphens:
 
 ## Special Case: Unreal Engine
 
-For `ue-*` commands, use `/ue-new-skill <verb> <noun>` which creates both the skill AND command automatically.
+For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the skill AND command automatically.
 
 ---
 
 ## Related Files
 
-- `commands/meta-new-command.md` - Command wrapper for this skill
-- `skills/meta-new-skill/SKILL.md` - Skill structure rules (use for creating skills)
-- `commands/ue-new-skill.md` - UE-specific skill/command generator
+- `commands/meta-make-command.md` - Command wrapper for this skill
+- `skills/meta-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
+- `commands/ue-make-skill.md` - UE-specific skill/command generator
 
 ## Additional Resources
 

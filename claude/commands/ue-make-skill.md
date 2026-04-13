@@ -13,13 +13,13 @@ Input: $ARGUMENTS
 
 **If no argument provided:**
 ```
-Usage: /ue-new-skill <verb> <noun>
+Usage: /ue-make-skill <verb> <noun>
 
 Examples:
-  /ue-new-skill analyze mesh
-  /ue-new-skill inspect animation
-  /ue-new-skill extract texture
-  /ue-new-skill audit blueprint
+  /ue-make-skill analyze mesh
+  /ue-make-skill inspect animation
+  /ue-make-skill extract texture
+  /ue-make-skill audit blueprint
 ```
 **Stop here if no argument. Do not auto-execute.**
 

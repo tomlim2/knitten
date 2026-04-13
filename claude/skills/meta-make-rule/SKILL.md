@@ -99,7 +99,7 @@ Structural rules:
 ## Related
 
 - `meta-make-standard` — long reference docs
-- `meta-new-skill` — reusable skills
-- `meta-new-command` — slash commands
+- `meta-make-skill` — reusable skills
+- `meta-make-command` — slash commands
 - `rules/index.md` — full index
 - `standards/index.md` — reference docs rules link to

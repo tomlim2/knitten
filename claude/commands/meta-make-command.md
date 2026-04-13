@@ -14,12 +14,12 @@ $ARGUMENTS = `<category> <verb> <subject>`
 **If no argument is provided, show usage and ask. NEVER auto-execute.**
 
 ```
-Usage: /meta-new-command <category> <verb> <subject>
+Usage: /meta-make-command <category> <verb> <subject>
 
 Examples:
-  /meta-new-command git push remote
-  /meta-new-command tutoring export records
-  /meta-new-command ue validate blueprint
+  /meta-make-command git push remote
+  /meta-make-command tutoring export records
+  /meta-make-command ue validate blueprint
 ```
 
 ## Naming Rules Reference
@@ -27,7 +27,7 @@ Examples:
 **MANDATORY: Read the complete naming rules before creating any command.**
 
 ```
-~/.claude/skills/meta-new-command/SKILL.md
+~/.claude/skills/meta-make-command/SKILL.md
 ```
 
 This file contains:
@@ -48,23 +48,23 @@ This file contains:
 
 Use the UE skill generator instead:
 ```
-/ue-new-skill <verb> <noun>
+/ue-make-skill <verb> <noun>
 ```
 
 This automatically creates both the skill AND the command.
 
 **Why?**
 - UE commands typically need UE skills to do the actual work
-- `/ue-new-skill` creates the complete package: skill + command + templates
+- `/ue-make-skill` creates the complete package: skill + command + templates
 - Ensures consistency with UE-specific patterns
 
 **Example:**
 ```
 User: "Create a ue-analyze-texture command"
-→ Response: "For Unreal Engine export/analysis commands, use /ue-new-skill analyze texture which creates both the skill and command automatically."
+→ Response: "For Unreal Engine export/analysis commands, use /ue-make-skill analyze texture which creates both the skill and command automatically."
 ```
 
-**When to use meta-new-command for UE:**
+**When to use meta-make-command for UE:**
 - Simple wrapper commands that call existing UE skills
 - Commands that don't need new UE Editor integration
 - Commands that only orchestrate existing UE tools

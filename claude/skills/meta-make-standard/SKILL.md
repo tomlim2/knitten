@@ -19,7 +19,7 @@ Use this when:
 
 Do NOT use this when:
 - The content is a short, must-follow constraint → use `meta-make-rule` instead.
-- The content is a reusable tool/script → use `meta-new-skill` instead.
+- The content is a reusable tool/script → use `meta-make-skill` instead.
 
 ---
 
@@ -106,6 +106,6 @@ Structural rules:
 ## Related
 
 - `meta-make-rule` — short enforcement rules (one-liners)
-- `meta-new-skill` — reusable skills
-- `meta-new-command` — slash commands
+- `meta-make-skill` — reusable skills
+- `meta-make-command` — slash commands
 - `standards/index.md` — full index

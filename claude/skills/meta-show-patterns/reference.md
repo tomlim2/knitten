@@ -283,9 +283,9 @@ Parse JSON and produce structured analysis.
 4. Confirm creation
 ```
 
-### Example: Meta New Command
+### Example: Meta Make Command
 
-**Command** (`commands/meta-new-command.md`):
+**Command** (`commands/meta-make-command.md`):
 ```markdown
 ---
 description: Generate a new command following naming conventions
@@ -395,5 +395,5 @@ Read: !`ls ~/.claude/private/data.json`
 ## Related Files
 
 - `CLAUDE.md` - Main workflow guidance
-- `skills/meta-new-command/SKILL.md` - Command creation rules
-- `skills/meta-new-skill/SKILL.md` - Skill creation rules
+- `skills/meta-make-command/SKILL.md` - Command creation rules
+- `skills/meta-make-skill/SKILL.md` - Skill creation rules

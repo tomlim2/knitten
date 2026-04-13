@@ -1,4 +1,4 @@
-# meta-new-command Reference
+# meta-make-command Reference
 
 Full examples table, file structure specs, creation workflows, and convention rationale.
 
@@ -22,14 +22,14 @@ Full examples table, file structure specs, creation workflows, and convention ra
 | `cocv-open-zo-downloader` | cocv | open | zo-downloader | Open ZO downloader |
 | `ue-analyze-material` | ue | analyze | material | Analyze UE material |
 | `ue-validate-asset-name` | ue | validate | asset-name | Validate UE naming |
-| `ue-new-skill` | ue | new | skill | Generate UE skill |
+| `ue-make-skill` | ue | make | skill | Generate UE skill |
 | `cocv-art-create-branch` | cocv-art | create | branch | Create art branch |
 | `cocv-art-send-notice` | cocv-art | send | notice | Send Slack notice |
 | `cocv-art-send-merge-notice` | cocv-art | send | merge-notice | Send merge notice |
 | `cocv-art-send-merge-result` | cocv-art | send | merge-result | Send merge result |
 | `cocv-art-prepare-merge` | cocv-art | prepare | merge | Prepare art merge |
 | `cocv-art-remove-branch` | cocv-art | remove | branch | Remove old art branch |
-| `meta-new-command` | meta | new | command | Generate new command |
+| `meta-make-command` | meta | make | command | Generate new command |
 | `meta-review-skills` | meta | review | skills | Review skill files |
 | `drink-log-entry` | drink | log | entry | Log wine/whisky |
 
@@ -209,7 +209,7 @@ How to use this skill, with examples.
 
 **Command:**
 ```
-/ue-new-skill <verb> <noun>
+/ue-make-skill <verb> <noun>
 ```
 
 This creates BOTH the skill AND the command automatically.
@@ -217,14 +217,14 @@ This creates BOTH the skill AND the command automatically.
 **Why?**
 - Most UE commands need a UE skill to do the actual work
 - UE skills require specific patterns (Editor integration, JSON export, logging)
-- `/ue-new-skill` ensures consistency and creates the complete package
+- `/ue-make-skill` ensures consistency and creates the complete package
 
-**What `/ue-new-skill` generates:**
+**What `/ue-make-skill` generates:**
 1. Skill: `ue-{verb}-{noun}/` with Python scripts
 2. Command: `ue-{verb}-{noun}.md` that calls the skill
 3. All necessary templates and wrappers
 
-**When to use meta-new-command for UE:**
+**When to use meta-make-command for UE:**
 - Simple wrapper commands for existing UE skills
 - Commands that only orchestrate existing UE tools
 - Commands without new Editor integration needs
@@ -232,21 +232,21 @@ This creates BOTH the skill AND the command automatically.
 **Example:**
 ```
 User: "Create ue-analyze-texture command"
-→ Use: /ue-new-skill analyze texture
+→ Use: /ue-make-skill analyze texture
 → Creates: ue-analyze-texture skill + command
-→ NOT: /meta-new-command ue analyze texture
+→ NOT: /meta-make-command ue analyze texture
 ```
 
 **Reference:**
 - Template: `~/.claude/skills/ue-show-template/SKILL.md`
-- Command: `~/.claude/commands/ue-new-skill.md`
+- Command: `~/.claude/commands/ue-make-skill.md`
 
 ---
 
 ## Related Files
 
-- `commands/meta-new-command.md` - Command wrapper for this skill
-- `skills/meta-new-skill/SKILL.md` - Skill structure rules (use for creating skills)
-- `commands/ue-new-skill.md` - UE-specific skill/command generator
+- `commands/meta-make-command.md` - Command wrapper for this skill
+- `skills/meta-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
+- `commands/ue-make-skill.md` - UE-specific skill/command generator
 - `skills/ue-show-template/SKILL.md` - UE skill template
 - `CLAUDE.md` - Main workflow guidance (points to this skill)

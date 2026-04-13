@@ -8,7 +8,7 @@ Pattern reference for creating UE Editor skills that follow the proven `ue-analy
 
 ## Purpose
 
-This is not a runnable skill. It's a **pattern specification** that the `/ue-new-skill` command reads to generate new UE Editor skills with consistent architecture.
+This is not a runnable skill. It's a **pattern specification** that the `/ue-make-skill` command reads to generate new UE Editor skills with consistent architecture.
 
 ## Architecture: 3-Part Structure
 
