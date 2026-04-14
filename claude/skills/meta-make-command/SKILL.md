@@ -27,7 +27,7 @@ Each name consists of three parts separated by hyphens:
 1. **`category`**: Domain or project namespace
    - Lowercase, single word
    - Groups related functionality
-   - Examples: `git`, `tutoring`, `cocv`, `ue`, `learn`, `meta`
+   - Examples: `git`, `tutoring`, `cci`, `ue`, `learn`, `meta`
 
 2. **`verb`**: Action performed
    - Present tense, active voice
@@ -57,7 +57,7 @@ Each name consists of three parts separated by hyphens:
 
 | Category | Domain | Examples |
 |----------|--------|---------|
-| `cocv-*` | CINEV project tools | `cocv-open-creator-launcher`, `cocv-review-cpp` |
+| `cci-*` | CINEV project tools | `cci-open-creator-launcher`, `cci-review-cpp` |
 | `ue-*` | Unreal Engine tools | `ue-analyze-material`, `ue-validate-asset-name` |
 | `git-*` | Git operations | `git-collect-commits`, `git-make-message` |
 | `tutoring-*` | Tutoring business | `tutoring-open-invoice`, `tutoring-log-lesson` |

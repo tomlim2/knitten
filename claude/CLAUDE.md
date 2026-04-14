@@ -63,7 +63,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 **MANDATORY: `{category}-{verb}-{subject}` pattern.**
 
 - Lowercase only, hyphens as separators, max 64 characters
-- Categories: `meta`, `cocv`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
+- Categories: `meta`, `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
 - Examples: `git-collect-commits`, `ue-analyze-material`, `meta-make-command`
 - Full rules: @~/.claude/skills/meta-make-command/SKILL.md
 

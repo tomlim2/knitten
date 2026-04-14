@@ -16,19 +16,19 @@ Full examples table, file structure specs, creation workflows, and convention ra
 | `tutoring-log-lesson` | tutoring | log | lesson | Log tutoring lesson |
 | `tutoring-mark-paid` | tutoring | mark | paid | Mark lessons as paid |
 | `learn-add-log` | learn | add | log | Add learning entry |
-| `cocv-open-creator-launcher` | cocv | open | creator-launcher | Open CINEV launcher |
-| `cocv-open-creator-shipper` | cocv | open | creator-shipper | Open CINEV shipper |
-| `cocv-review-cpp` | cocv | review | cpp | Review C++ code |
-| `cocv-open-zo-downloader` | cocv | open | zo-downloader | Open ZO downloader |
+| `cci-open-creator-launcher` | cci | open | creator-launcher | Open CINEV launcher |
+| `cci-open-creator-shipper` | cci | open | creator-shipper | Open CINEV shipper |
+| `cci-review-cpp` | cci | review | cpp | Review C++ code |
+| `cci-open-zo-downloader` | cci | open | zo-downloader | Open ZO downloader |
 | `ue-analyze-material` | ue | analyze | material | Analyze UE material |
 | `ue-validate-asset-name` | ue | validate | asset-name | Validate UE naming |
 | `ue-make-skill` | ue | make | skill | Generate UE skill |
-| `cocv-art-create-branch` | cocv-art | create | branch | Create art branch |
-| `cocv-art-send-notice` | cocv-art | send | notice | Send Slack notice |
-| `cocv-art-send-merge-notice` | cocv-art | send | merge-notice | Send merge notice |
-| `cocv-art-send-merge-result` | cocv-art | send | merge-result | Send merge result |
-| `cocv-art-prepare-merge` | cocv-art | prepare | merge | Prepare art merge |
-| `cocv-art-remove-branch` | cocv-art | remove | branch | Remove old art branch |
+| `cci-art-create-branch` | cci-art | create | branch | Create art branch |
+| `cci-art-send-notice` | cci-art | send | notice | Send Slack notice |
+| `cci-art-send-merge-notice` | cci-art | send | merge-notice | Send merge notice |
+| `cci-art-send-merge-result` | cci-art | send | merge-result | Send merge result |
+| `cci-art-prepare-merge` | cci-art | prepare | merge | Prepare art merge |
+| `cci-art-remove-branch` | cci-art | remove | branch | Remove old art branch |
 | `meta-make-command` | meta | make | command | Generate new command |
 | `meta-review-skills` | meta | review | skills | Review skill files |
 | `drink-log-entry` | drink | log | entry | Log wine/whisky |
@@ -188,7 +188,7 @@ How to use this skill, with examples.
 
 3. **Namespace Isolation**
    - Prevents command name collisions
-   - `tutoring-open-invoice` vs `cocv-open-creator-launcher`
+   - `tutoring-open-invoice` vs `cci-open-creator-launcher`
    - Both "open" something but clearly different
 
 4. **Self-Documenting**

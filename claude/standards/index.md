@@ -71,7 +71,7 @@ Standards contain the rationale, examples, and templates that rules link back to
 | [`cinev-git-workflow.md`](cinev-git-workflow.md) | **Always** before CINEV git ops (see also [`rules/cinev-git.md`](../rules/cinev-git.md)) |
 | [`cinev-character-asset-naming.md`](cinev-character-asset-naming.md) | CINEV character asset naming |
 | [`cinev-vrm-shading.md`](cinev-vrm-shading.md) | CINEV VRM shading work |
-| [`cocv-slack.md`](cocv-slack.md) | Before Slack operations |
+| [`cci-slack.md`](cci-slack.md) | Before Slack operations |
 | [`shotloom.md`](shotloom.md) | Shotloom project work |
 | [`arp-skeleton.md`](arp-skeleton.md) | ARP (Auto-Rig Pro) skeleton reference |
 

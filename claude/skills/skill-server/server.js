@@ -123,7 +123,7 @@ function discoverSkills() {
                 'learn': 'Learning',
                 'drink': 'Personal',
                 'review': 'Review',
-                'cocv': 'CINEV',
+                'cci': 'CINEV',
                 'git': 'Git',
                 'writing': 'Writing',
                 'consulting': 'Consulting'
@@ -209,7 +209,7 @@ function discoverCommandOnly(skillNames) {
             'learn': 'Learning',
             'drink': 'Personal',
             'review': 'Review',
-            'cocv': 'CINEV',
+            'cci': 'CINEV',
             'git': 'Git',
             'writing': 'Writing',
             'consulting': 'Consulting'
@@ -328,11 +328,11 @@ app.get('/', (req, res) => {
     // Scan codebase for hardcoded path references
     const scanTargets = [
         path.join(STANDARDS_DIR, 'cinev-git-workflow.md'),
-        path.join(SKILLS_DIR, 'cocv-art-create-branch', 'config.json'),
-        path.join(COMMANDS_DIR, 'cocv-summarize-commit.md'),
-        path.join(COMMANDS_DIR, 'cocv-open-creator-launcher.md'),
-        path.join(COMMANDS_DIR, 'cocv-open-creator-shipper.md'),
-        path.join(COMMANDS_DIR, 'cocv-open-creator-character.md'),
+        path.join(SKILLS_DIR, 'cci-art-create-branch', 'config.json'),
+        path.join(COMMANDS_DIR, 'cci-summarize-commit.md'),
+        path.join(COMMANDS_DIR, 'cci-open-creator-launcher.md'),
+        path.join(COMMANDS_DIR, 'cci-open-creator-shipper.md'),
+        path.join(COMMANDS_DIR, 'cci-open-creator-character.md'),
         path.join(COMMANDS_DIR, 'meta-check-updates.md'),
     ];
 

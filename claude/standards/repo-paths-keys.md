@@ -14,7 +14,7 @@ Keys that skills/commands depend on. Register with `/meta-register-refs <key> <p
 
 | Key | Description | Storage | Used by |
 |-----|-------------|---------|---------|
-| `anju` | UE Python tools, shader/web experiments | git | cocv-open-creator-*, cocv-register-character, cocv-validate-vrm, pmx-*, dev-open-npr-viewer, dev-open-vrm-bevy, cocv-sync-ta-tools, dev-setup-project |
+| `anju` | UE Python tools, shader/web experiments | git | cci-open-creator-*, cci-register-character, cci-validate-vrm, pmx-*, dev-open-npr-viewer, dev-open-vrm-bevy, cci-sync-ta-tools, dev-setup-project |
 | `obsidian` | Obsidian vault for markdown docs | icloud | learn-log-day, learn-log-vocab, learn-add-log, tutoring-log-consultation, consulting-log-session, dev-setup-project |
 | `caol-ila` | Claude Code config hub (this repo) | git | meta-check-updates, git-pull-repos |
 
@@ -29,17 +29,17 @@ Keys that skills/commands depend on. Register with `/meta-register-refs <key> <p
 | `bevy-vrm` | Bevy VRM retarget viewer | git | vrm-debug-screenshot |
 | `shotloom` | Shotloom (CINEV) | git-corp | — |
 | `story-previz` | StoryPreviz (CINEV) | git-corp | — |
-| `cinev-ta-tools` | TA Python tools (megamelange) | git-lfs-corp | cocv-sync-ta-tools |
+| `cinev-ta-tools` | TA Python tools (megamelange) | git-lfs-corp | cci-sync-ta-tools |
 
 ### Windows Only
 
 | Key | Description | Storage | Used by |
 |-----|-------------|---------|---------|
-| `cinev-studio` | CINEVStudio UE project (main) | local | cocv-open-project, cocv-summarize-commit |
+| `cinev-studio` | CINEVStudio UE project (main) | local | cci-open-project, cci-summarize-commit |
 | `cinev-git` | CINEVStudio git working copy | git-lfs-corp | cinev-git-workflow |
-| `cinev-studio-git` | CINEVStudio git (art branch ops) | git-lfs-corp | cocv-manage-art-branch |
-| `cinev-ta-tools` | (moved to macOS Only — cross-machine) | git-lfs-corp | cocv-sync-ta-tools |
-| `bevy-vrm2u` | Bevy VRM tools (sync source) | git-corp | cocv-sync-ta-tools |
+| `cinev-studio-git` | CINEVStudio git (art branch ops) | git-lfs-corp | cci-manage-art-branch |
+| `cinev-ta-tools` | (moved to macOS Only — cross-machine) | git-lfs-corp | cci-sync-ta-tools |
+| `bevy-vrm2u` | Bevy VRM tools (sync source) | git-corp | cci-sync-ta-tools |
 
 ---
 
@@ -69,6 +69,6 @@ Project-specific or temporary. Register as needed.
 
 ## Notes
 
-- `cinev-git` vs `cinev-studio-git`: some skills use one, some the other. Both may point to the same path — check `cocv-manage-art-branch/config.json` for which key it expects.
+- `cinev-git` vs `cinev-studio-git`: some skills use one, some the other. Both may point to the same path — check `cci-manage-art-branch/config.json` for which key it expects.
 - Paths are machine-local. The same key can have different paths on macOS vs Windows.
 - Format: `{ "key": { "path": "/abs/path", "description": "..." } }` or plain string `{ "key": "/abs/path" }`.

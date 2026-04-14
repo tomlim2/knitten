@@ -58,7 +58,7 @@ If there are uncommitted changes:
 
 This standard applies to ALL skills and commands that perform git operations on CINEV projects:
 
-- `cocv-art-prepare-merge`
-- `cocv-art-create-branch`
-- `cocv-art-remove-branch`
-- Any future `cocv-*` skill involving git
+- `cci-art-prepare-merge`
+- `cci-art-create-branch`
+- `cci-art-remove-branch`
+- Any future `cci-*` skill involving git

@@ -93,7 +93,7 @@ Use JSON for configuration:
 - Unreal Engine automation
 - Examples: `ue-analyze-material`, `ue-validate-asset-name`
 
-**Project Tools** (`cocv-*`, etc.)
+**Project Tools** (`cci-*`, etc.)
 - Project-specific automation
 - Examples: Skills for specific projects
 

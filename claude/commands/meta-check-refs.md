@@ -24,14 +24,14 @@ Search the following locations for hardcoded paths. Extract any absolute path th
 | File | What to look for |
 |------|-----------------|
 | `~/.claude/standards/cinev-git-workflow.md` | CINEVStudio paths in project tables |
-| `~/.claude/skills/cocv-art-create-branch/config.json` | `repo_path` values |
+| `~/.claude/skills/cci-art-create-branch/config.json` | `repo_path` values |
 | `~/.claude/skills/skill-server/server.js` | `OBSIDIAN_CLAUDE_DIR` and other path constants |
-| `~/.claude/commands/cocv-summarize-commit.md` | CINEVStudio and caol-ila paths |
-| `~/.claude/commands/cocv-open-creator-launcher.md` | Windows `anju` paths |
-| `~/.claude/commands/cocv-open-creator-shipper.md` | Windows `anju` paths |
-| `~/.claude/commands/cocv-open-creator-character.md` | Windows `anju` paths |
+| `~/.claude/commands/cci-summarize-commit.md` | CINEVStudio and caol-ila paths |
+| `~/.claude/commands/cci-open-creator-launcher.md` | Windows `anju` paths |
+| `~/.claude/commands/cci-open-creator-shipper.md` | Windows `anju` paths |
+| `~/.claude/commands/cci-open-creator-character.md` | Windows `anju` paths |
 | `~/.claude/commands/meta-check-updates.md` | caol-ila path |
-| `~/.claude/skills/cocv-manage-art-branch/config.json` | `repo_key` values |
+| `~/.claude/skills/cci-manage-art-branch/config.json` | `repo_key` values |
 
 For each discovered path, determine a suggested name based on the directory name (e.g., `E:\CINEVStudio` → `cinev`, `D:\vs\anju` → `anju-win`).
 
@@ -69,7 +69,7 @@ If no repos are registered, show: "No repos registered yet."
 | Name            | Path                                   | Referenced in                     |
 |-----------------|----------------------------------------|-----------------------------------|
 | caol-ila        | /Users/younsoolim/Desktop/www/caol-ila | meta-check-updates.md             |
-| cinev           | E:\CINEVStudio                         | cinev-git-workflow.md, cocv-summarize-commit.md |
+| cinev           | E:\CINEVStudio                         | cinev-git-workflow.md, cci-summarize-commit.md |
 ```
 
 If all referenced paths are already registered, show: "All referenced paths are registered."
