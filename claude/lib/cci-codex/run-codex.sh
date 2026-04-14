@@ -22,8 +22,20 @@ set -euo pipefail
 SKILL="${1:-}"
 PROMPT="${2:-}"
 
+# --file <path> mode: read prompt from file. Use this when prompts
+# exceed shell argv limits (~200KB+). Example:
+#   run-codex.sh port-bevy --file /tmp/prompt.md
+if [ "$PROMPT" = "--file" ] && [ -n "${3:-}" ]; then
+  if [ ! -f "$3" ]; then
+    echo "run-codex.sh: --file target not found: $3" >&2
+    exit 2
+  fi
+  PROMPT="$(cat "$3")"
+fi
+
 if [ -z "$SKILL" ] || [ -z "$PROMPT" ]; then
   echo "usage: run-codex.sh <skill-name> <prompt>" >&2
+  echo "       run-codex.sh <skill-name> --file <path-to-prompt>" >&2
   exit 2
 fi
 
@@ -74,11 +86,13 @@ ${PROMPT}"
   echo ""
 } > "$OUT_FILE"
 
-# Run codex; tee both to terminal and append to archive
+# Run codex; feed prompt via bash herestring (avoids argv limits for
+# large prompts — herestrings use bash internal memory, not execve()).
+# Tee output to terminal and append to archive.
 codex exec --full-auto --color never \
   -c reasoning_effort='"high"' \
   --output-last-message "$LAST_MSG_FILE" \
-  "$FULL_PROMPT" 2>&1 | tee -a "$OUT_FILE"
+  - <<<"$FULL_PROMPT" 2>&1 | tee -a "$OUT_FILE"
 
 # One-line summary
 echo ""
