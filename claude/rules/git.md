@@ -1,3 +1,20 @@
 - **Commit only** — Do NOT auto-push unless explicitly requested
 - **Author:** `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
 - **No Co-Authored-By** — Do NOT add `Co-Authored-By: Claude` lines
+- **NEVER open a pull request without explicit per-PR user approval.** Draft or ready-for-review status does not matter; creation itself requires approval.
+- **NEVER close a pull request without explicit per-PR user approval.** "Close and reopen later" workflows still require per-close approval.
+- **NEVER reopen a pull request without explicit per-PR user approval.** Prior intent to reopen is not the same as current approval to reopen.
+- **NEVER force-push to a branch with an open PR without explicit user approval.** Force-push after PR creation can invalidate review threads and has reopen side effects.
+- Prior approval for one PR action does not carry over. Each open/close/reopen/force-push is its own decision.
+- Investigating PR state (`gh pr view`, `gh pr list`, web URL) is allowed without approval — reading is not acting.
+- **Pre-PR-open checklist — verify all before requesting user approval to call `gh pr create`:**
+  - Branch is pushed to remote, up to date with base, and has no uncommitted changes.
+  - Commit author identity matches the repo's expected identity (`git log -1 --format="%an <%ae>"`). For CINEV GitHub repos this is `tomlim2 <deemo@vonvon.me>`; for personal repos `tomlim2 <tomandlim@gmail.com>`.
+  - Local CI-equivalent gates pass: `cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test` (or repo-specific equivalents like `pnpm check:rust`), and any repo-specific validators (e.g., `node scripts/validate-doc-paths.mjs` in shotloom).
+  - Commit messages match the repo's commit guideline (CINEV repos use conventional commits per `docs/guidelines/commit-guideline.md`; check CONTRIBUTING for repo-specific rules).
+  - PR title and description match team conventions — sample 3–5 recent merged PRs in the same repo/team if unsure.
+  - Any referenced Linear/GitHub issues exist, are in the right project, and are cross-linked.
+  - If superseding a prior PR, the redirect comment and the prior PR number are prepared in the new PR description.
+- **Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has a dedicated rule file, consult and satisfy it in addition to the generic bullets above:
+  - `shotloom-github` (CINEV/shotloom) → @~/.claude/rules/shotloom-git.md
+- Full reference: @~/.claude/standards/cinev-git-workflow.md

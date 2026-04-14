@@ -29,3 +29,4 @@ Unlike `standards/` (long reference docs read on-demand), rules here are **must-
 | [`obsidian.md`](obsidian.md) | Obsidian vault document format |
 | [`cinev-git.md`](cinev-git.md) | CINEV project git ops (UE lock check) |
 | [`multi-agent.md`](multi-agent.md) | When assigned 지통실 #1 (1호기) |
+| [`shotloom-git.md`](shotloom-git.md) | Shotloom (CINEV/shotloom) repo pre-PR checks — gh account, commit identity, cargo gates, doc validator, commit/branch conventions, ADR index update |
