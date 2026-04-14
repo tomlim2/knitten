@@ -11,6 +11,7 @@ Unlike `standards/` (long reference docs read on-demand), rules here are **must-
 | [`git.md`](git.md) | Git commit / push / author |
 | [`runtime.md`](runtime.md) | Session-start checks, Slack, Obsidian, delegation |
 | [`coding.md`](coding.md) | Writing code principles |
+| [`conventions.md`](conventions.md) | Always re-read repo conventions before work AND before reviewing |
 | [`testing.md`](testing.md) | Unit tests mandatory for new code; PR blocker; exception list |
 | [`verification.md`](verification.md) | Before presenting results |
 | [`security.md`](security.md) | Secrets, documentation language |
