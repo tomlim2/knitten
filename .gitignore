@@ -55,3 +55,6 @@ claude/skills/skill-server/package-lock.json
 # OS files
 .DS_Store
 Thumbs.db
+
+# Stray root-level Claude Code runtime dir
+.claude/

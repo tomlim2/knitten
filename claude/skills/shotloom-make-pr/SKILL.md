@@ -82,6 +82,18 @@ If `cargo test` fails because no tests exist in a changed crate, do NOT skip —
 
 If CI fails on Linux-specific deps (e.g. `alsa-sys` when bevy is pulled in as a heavy dev-dep), narrow bevy features locally (`default-features = false`) before push.
 
+### Step 3b: Confirm `/shotloom-review-before-pr` was run and reported clean
+
+`shotloom-make-pr` does **not** inline the pattern-based self-review. That work belongs to the dedicated `/shotloom-review-before-pr` skill, which loads `standards/review-code-rust.md` and walks 16 patterns against the current diff without any side effects.
+
+**Before proceeding to Step 4, ask the user:**
+
+> Did you run `/shotloom-review-before-pr` on this branch and resolve all findings? (y/n)
+
+- If **yes** → continue to Step 4.
+- If **no** → stop. Tell the user to run `/shotloom-review-before-pr` first, fix anything it finds, then re-invoke `/shotloom-make-pr`. Do NOT auto-run it from inside this skill — make-pr stays single-purpose (PR creation) and review-before-pr stays single-purpose (read-only review).
+- If the user insists on skipping → record the skip in the PR body's Test plan section as `- [ ] /shotloom-review-before-pr — SKIPPED on user request` so reviewers can see it was bypassed.
+
 ### Step 4: Sample recent merged PRs for tone
 
 ```bash
@@ -202,6 +214,7 @@ Post the PR URL and a one-line status. Do NOT push any subsequent commits withou
 
 ## Related
 
+- `standards/review-code-rust.md` — **MANDATORY pre-PR self-review checklist** — load in Step 3b
 - `rules/shotloom-git.md` — per-PR approval, pre-PR checklist, account/identity rules
 - `rules/git.md` — global PR lifecycle approval rules
 - `rules/testing.md` — unit test requirement
