@@ -320,3 +320,213 @@ Cargo test 는 green 이었지만 ④ 가 진짜 원인이라 시각적으로는
 - 옵션 B 까지 가야 하는 경우: 추가 4-8시간
 
 **하루 작업 박스 권장.** 안 풀리면 issue 에 partial findings 만 commit 하고 다음 세션으로 넘김.
+
+---
+
+## 9. 주말 TODO — vrm0_compat 전체 audit (별개 작업, §8 보다 우선)
+
+§8 thumb 디버깅 도중에 나온 framing: *"converter 가 자기 책임 (정확한 0.x → 1.0 변환) 만 제대로 하면, 0.x 와 1.0 모델이 동일한 buggy runtime 상태가 되어 문제가 단일화된다."*
+
+이 framing 을 받아서 `vrm2u-bevy/crates/vrm0_compat/` 6개 파일 (lib.rs, glb.rs, humanoid.rs, meta.rs, materials.rs, expressions.rs, spring_bone.rs) 전체를 VRM 0.x ↔ 1.0 spec 차이와 비교해 audit 함. **모든 코드 수정은 보류 — 발견만 기록.**
+
+### 9.1 🔴 P1 — Critical 버그 (출력이 구조적으로 잘못됨)
+
+#### P1-1. `humanoid.rs::BONE_RENAMES` 엄지 체인 매핑
+
+§8 ① 와 동일. 4줄 fix:
+```rust
+("leftThumbProximal", "leftThumbMetacarpal"),
+("rightThumbProximal", "rightThumbMetacarpal"),
+("leftThumbIntermediate", "leftThumbProximal"),
+("rightThumbIntermediate", "rightThumbProximal"),
+// Distal pass-through
+```
+파일: `crates/vrm0_compat/src/humanoid.rs:6-11`. 시간 추정: 10분 + 단위 테스트 3개.
+
+#### P1-2. `expressions.rs::convert` mesh→node 잘못된 매핑
+
+파일: `crates/vrm0_compat/src/expressions.rs:62-66`
+
+```rust
+Some(json!({
+    "node": mesh,  // VRM 0.x mesh index maps to node  ← 거짓말 주석
+    "index": index,
+    "weight": weight / 100.0
+}))
+```
+
+VRM 0.x `blendShapeBind`:
+- `mesh`: `meshes[]` 배열의 인덱스 (mesh 자원)
+- `index`: 그 mesh 의 morph target 인덱스
+- `weight`: 0-100
+
+VRM 1.0 `morphTargetBind`:
+- `node`: `nodes[]` 배열의 인덱스 (그 노드는 `mesh` 필드로 mesh 를 참조)
+- `index`: morph target 인덱스
+- `weight`: 0.0-1.0
+
+**문제:** 현재 코드는 mesh index 를 node index 로 그대로 사용. 두 인덱스는 우연히 일치할 수도 있고 아닐 수도 있음. 일반 모델에선 `nodes[i].mesh = i` 로 정렬돼 있어서 우연히 작동할 수 있지만, 노드 순서가 뒤섞인 모델 (특히 spring bone 등 추가 노드가 mesh 노드보다 먼저 오는 경우) 에선 **blend shape 가 잘못된 노드에 적용되거나 아예 안 적용**.
+
+수정 방법: `nodes[]` 배열을 한 번 스캔해서 `mesh_idx → node_idx` 역매핑 만들고 lookup. 한 mesh 가 여러 node 에서 참조되는 경우는 (인스턴싱) 별도 처리 필요 — VRM 모델에선 드물지만 spec 상 가능.
+
+```rust
+fn build_mesh_to_node_map(json: &Value) -> HashMap<u64, u64> {
+    let mut map = HashMap::new();
+    if let Some(nodes) = json.get("nodes").and_then(|v| v.as_array()) {
+        for (node_idx, node) in nodes.iter().enumerate() {
+            if let Some(mesh_idx) = node.get("mesh").and_then(|v| v.as_u64()) {
+                // 첫 번째로 만난 노드 사용. 인스턴싱 시 추가 처리 필요.
+                map.entry(mesh_idx).or_insert(node_idx as u64);
+            }
+        }
+    }
+    map
+}
+```
+
+`expressions::convert` 시그니처에 `nodes` 추가하거나 `lib.rs` 에서 미리 매핑 만들어 전달. 시간 추정: 30-60분 + 단위 테스트.
+
+### 9.2 🟠 P2 — Significant gaps (정보 손실)
+
+#### P2-1. `meta.rs` 라이선싱 필드 전부 무시
+
+파일: `crates/vrm0_compat/src/meta.rs:25-39`
+
+현재 코드는 `title/author/version` 만 읽고 라이선싱은 안전한 default 박음:
+```rust
+"licenseUrl": "https://vrm.dev/licenses/1.0/",
+"avatarPermission": "everyone",
+"commercialUsage": "personalNonProfit",
+...
+"allowExcessivelyViolentUsage": false,
+"allowExcessivelySexualUsage": false,
+"allowPoliticalOrReligiousUsage": false,
+"allowAntisocialOrHateUsage": false,
+"allowRedistribution": false,
+```
+
+VRM 0.x 의 실제 필드 (`extensions.VRM.meta`):
+- `allowedUserName` ("OnlyAuthor"|"ExplicitlyLicensedPerson"|"Everyone") → 1.0 `avatarPermission` ("onlyAuthor"|"onlySeparatelyLicensedPerson"|"everyone")
+- `commercialUssageName` ("Allow"|"Disallow") → 1.0 `commercialUsage` ("personalNonProfit"|"personalProfit"|"corporation")
+- `violentUssageName` ("Allow"|"Disallow") → 1.0 `allowExcessivelyViolentUsage` (bool)
+- `sexualUssageName` ("Allow"|"Disallow") → 1.0 `allowExcessivelySexualUsage` (bool)
+- `licenseName` (string) → 1.0 `licenseUrl` (URL — 매핑 표 필요: "Redistribution_Prohibited" → 어떤 URL?)
+- `otherPermissionUrl` → 1.0 `otherLicenseUrl`
+- `texture` (thumbnail node index) → 1.0 `thumbnailImage` (image index — 변환 필요)
+- `contactInformation` → 1.0 `contactInformation`
+- `reference` → 1.0 `references[]`
+
+**저자가 명시한 권한이 전부 손실** → 라이선스 위반 가능성. 시간 추정: 60-90분 + 매핑 표 검증.
+
+#### P2-2. `materials.rs` 텍스처 누락
+
+파일: `crates/vrm0_compat/src/materials.rs`
+
+현재 변환되는 텍스처: `_MainTex` (baseColor), `_ShadeTexture` (shadeMultiply). 끝.
+
+VRM 0.x MToon 의 다른 텍스처들:
+- `_BumpMap` → glTF `normalTexture`
+- `_EmissionMap` → glTF `emissiveTexture` + `emissiveFactor`
+- `_SphereAdd` → MToon 1.0 `matcapTexture`
+- `_OutlineWidthTexture` → MToon 1.0 `outlineWidthMultiplyTexture`
+- `_RimTexture` → MToon 1.0 `rimMultiplyTexture`
+- `_UvAnimMaskTexture` → MToon 1.0 `uvAnimationMaskTexture`
+
+전부 변환 안 됨 → MToon 시각 충실도 손실. 시간 추정: 60-120분.
+
+#### P2-3. `materials.rs::transparentWithZWrite` 하드코드
+
+파일: `crates/vrm0_compat/src/materials.rs:170`
+
+```rust
+"transparentWithZWrite": false,
+```
+
+`VRM/UnlitTransparentZWrite` 셰이더는 이름 그대로 ZWrite=true 인데 무조건 false. 셰이더 이름 보고 분기:
+```rust
+"transparentWithZWrite": shader == "VRM/UnlitTransparentZWrite",
+```
+시간 추정: 5분.
+
+### 9.3 🟡 P3 — 검증 필요 (spec 재확인 후 결정)
+
+#### P3-1. `lib.rs::flip_root_nodes` 정당성
+
+파일: `crates/vrm0_compat/src/lib.rs:96-112`
+
+루트 노드에 180° Y 회전 적용 (`[0.0, 1.0, 0.0, 0.0]`). VRM 0.x 와 1.0 의 facing 차이 보정인 듯. 검증 필요:
+- VRM 0.x 캐릭터는 +Z 방향 facing? -Z?
+- VRM 1.0 spec: 캐릭터는 +Z 방향 facing (per VRMC_vrm 1.0)
+- 0.x 가 -Z 였다면 180° Y 회전 정당. 0.x 도 +Z 였다면 잘못된 회전.
+
+시각 회귀 테스트로 검증 가능. spec 문서 직접 확인 권장.
+
+#### P3-2. `spring_bone.rs::collect_chain` 분기 처리
+
+파일: `crates/vrm0_compat/src/spring_bone.rs:181-198`
+
+```rust
+loop {
+    match children_map.get(&current) {
+        Some(children) if children.len() == 1 => {
+            current = children[0];
+            chain.push(current);
+        }
+        Some(children) if children.len() > 1 => {
+            for &child in children {
+                chain.push(child);
+            }
+            break;  // ← 분기점 자식들만 push 하고 그 자식의 자손은 무시
+        }
+        _ => break,
+    }
+}
+```
+
+분기점 (skirt → 4 panel) 같은 spring bone 구조에서 panel 의 깊은 자식들이 chain 에 안 들어감. bevy_vrm1 이 어떻게 처리하는지 확인 필요. 재귀로 바꾸거나 각 자식별로 별도 spring 생성하는 게 정공법.
+
+#### P3-3. `lib.rs::extensionsRequired` 미설정
+
+파일: `crates/vrm0_compat/src/lib.rs:114-136`
+
+`extensionsUsed` 만 업데이트, `extensionsRequired` 는 안 건드림. unlit MToon 머티리얼 (특히 hair, eye glow) 은 일부 viewer 에서 `KHR_materials_unlit` 을 required 로 선언해야 정상 표시. 시간 추정: 10분.
+
+### 9.4 ✅ Clean (변경 불필요)
+
+- `glb.rs` — GLB 파싱/리빌드. 표준 glTF GLB 컨테이너 처리, 정확함.
+- `expressions.rs` preset rename — happy/angry/sad/relaxed/aa/ih/blink/lookUp 등 매핑 spec 과 일치.
+- `materials.rs` 감마→선형 변환, alpha mode 매핑, outline width cm→m. 정확.
+- `spring_bone.rs::stiffiness` 오타 처리 + 결측 필드 default. 정확.
+
+### 9.5 작업량 추정 + Tier 분류
+
+| Tier | 항목 | 시간 |
+|---|---|---|
+| **Tier 1** | P1-1, P1-2 | 1.5-2시간 |
+| **Tier 2** | + P2-1, P2-2, P2-3 | + 2-3시간 |
+| **Tier 3** | + P3-1, P3-2, P3-3 검증/수정 | + 1-2시간 |
+
+전체 audit 완수: **약 5시간 작업**. Tier 1+2 만: **약 4시간**.
+
+### 9.6 §8 (thumb 시각 문제) 와의 관계
+
+**Converter audit (§9) 가 끝나도 사용자가 본 "엄지 안 구부러짐" 은 해결 안 됨.** 그 문제는 §8 의 ④ `arp_body.json` Skip 룰 + ②③ runtime 결함 때문. Converter 책임 밖.
+
+하지만 §9 가 끝난 후엔:
+- 0.x 모델이 진짜 valid 1.0 처럼 보이게 됨
+- §8 의 thumb 문제가 *"0.x 만"* 이 아니라 *"모든 VRM"* 의 동일한 문제로 단일화됨
+- §8 작업의 가설/측정이 깔끔해짐 — *"이 fix 가 0.x 와 1.x 양쪽에서 동일하게 작동한다"* 를 보장 가능
+
+**권장 순서:** §9 Tier 1 (필수 P1) → §8 옵션 A (thumb runtime UserCalibrated path 활성화) → §9 Tier 2 (P2 정보 손실 차단) → §9 Tier 3 (P3 검증). 한 번에 모든 걸 안 풀어도 됨, 단계별로 commit/test/visual-regression.
+
+### 9.7 새 Linear issue 후보 제목
+
+- *"vrm2u-bevy: vrm0_compat full audit + structural fixes"* (P1 Tier 1)
+- *"vrm2u-bevy: vrm0_compat licensing + material gap closure"* (P2 Tier 2)
+- *"vrm2u-bevy: thumb retarget chain rewrite"* (§8 — 별개 issue)
+
+3개 이슈로 분리하면 각각 PR 단위가 적당함. 한 PR 에 다 넣으면 reviewer 가 audit 영역과 runtime 영역 섞여서 리뷰하기 어려움.
+
+### 9.8 오늘 commit 안 한 코드
+
+§9 audit 도 §8 처럼 **모든 코드 수정 보류**. 발견만 이 devlog 에 기록. `vrm2u-bevy` git tree 는 클린 상태로 종료.
