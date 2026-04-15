@@ -51,6 +51,14 @@ The PR body lives in GitHub's database, not in git. It does not auto-update when
 
 **Real defect:** PR #66 body said `examples/fixtures.json` was gitignored and contributors copy from `fixtures.example.json`, but the actual layout was a committed `fixtures.json` with LFS-tracked assets. Caught twice — once on the file, once on the README.
 
+### A6 — Numeric claims in comments must be traceable
+
+Any comment that makes a quantitative claim ("~12 MB per bone", "~55 minutes of animation", "~3x faster", "~100k rows") must be re-derivable from `std::mem::size_of`, a constant, or a linked benchmark. Off-by-4x memory estimates and off-by-10x perf estimates are both common and poison future capacity planning.
+
+**Self-check:** for every numeric comment in touched files, re-derive the number inline. Prefer `approximately 28 bytes per frame (Quat + Vec3 at 4x + 3x f32)` over `approximately 12 MB`.
+
+**Real defect (PR #72):** `MAX_FRAME_COUNT` comment in `shotloom-fbx-anim-importer/src/types.rs` estimated "~12 MB per bone track" at 100k frames. Actual per-bone shape is `Quat (16 B) + Vec3 (12 B) + padding ≈ 32 B`, so ~3.2 MiB per bone — 4x smaller than claimed.
+
 ### A5 — Test name must describe the test setup
 
 A test named `single_root_no_children` whose body builds an empty `HashMap` is lying about what it covers. A future maintainer reading the name will assume the wrong invariant.
@@ -195,6 +203,44 @@ If you narrow features in `Cargo.toml` but forget to re-resolve `Cargo.lock`, th
 
 **Real defect:** Even after the bevy feature narrow, `Cargo.lock` still listed `alsa`, `alsa-sys`, `bevy_audio`, `cpal`. Required a follow-up `chore: regenerate Cargo.lock` commit.
 
+### E3 — Windows portability on filesystem ops
+
+Shotloom ships a Windows desktop target (Tauri). Any `fs::rename` into an existing path, `Path::canonicalize` compare, `fs::symlink`, or permissions manipulation must work on Windows, not just POSIX. The classic trap: POSIX `rename` atomically replaces an existing destination; Windows errors out. macOS-only dev blinds the reviewer because local tests pass.
+
+**Self-check:** for every `fs::rename` / `fs::symlink` / permissions call, ask "does this work on Windows?" Prefer designs that make overwrite unnecessary (content-addressable caches that only write once) over `cfg(windows)` branches.
+
+**Real defect (PR #72):** `write_artifact_atomically` used "rename; if failed and dest exists, delete dest and retry" — on Windows that becomes "first rename always fails, delete the good cache, retry, if retry fails lose everything". Fixed by removing the overwrite path entirely (content-addressable cache never overwrites).
+
+---
+
+## Pattern F — Cross-crate & inherited-pattern hygiene
+
+**Bugs that hide at crate boundaries or get copied verbatim from a sibling.** None of Patterns A–E catch these because each pattern only sees one file.
+
+### F1 — Cross-layer silent fallback
+
+A parser / input layer accepts a value (enum, index, tag, order) whose validity range depends on a downstream catch-all fallback in a sibling crate. Neither layer alone treats an out-of-range value as an error: the parser trusts the consumer, the consumer trusts the parser.
+
+**Self-check:** for every narrow integer (`u8`, `u16`, enum discriminant) your parser stores, grep downstream consumers in sibling crates for catch-all match arms on that value. If a downstream fallback exists, validate at the parser boundary instead.
+
+**Real defect (PR #72):** `shotloom-fbx-anim-importer/src/parse/model.rs` parsed FBX `RotationOrder` as `i32` → `u8` with no range check. `shotloom_retarget::euler_to_quat` had a catch-all silently rewriting any out-of-range value to `XYZ`. Malformed rigs got plausible-but-wrong FK output. Fix: `0..=5` check at the importer, return `Error::Parse`.
+
+### F2 — Architectural invariant drift after mirroring
+
+When you mirror a pattern from a sibling crate, the data invariants may have diverged. Inherited defensive code (a `fs::read` + byte-compare + rewrite chain, a `HashMap::contains_key` guard after `entry().or_default()`) looks intentional and gets left untouched by reviewers, but does real I/O / allocation work for a branch that can never trigger — or worse, masks a divergence that makes the check load-bearing in one place and redundant in another.
+
+**Self-check:** when mirroring a pattern, re-derive the invariants first. Ask "is this defensive check still load-bearing given what this crate stores?" Look specifically for `read + compare + rewrite` on content-hash paths.
+
+**Real defect (PR #72):** `shotloom-import/src/fbx.rs` inherited VRM import's `fs::read + byte-compare + rewrite` path. VRM caches post-normalization bytes (compare is load-bearing: same source hash can legitimately produce different normalized bytes). FBX caches raw source bytes keyed by source sha256 (same hash always means same bytes — compare is redundant I/O on every non-first import). Fix: existence check only, write once on miss.
+
+### F3 — Mirrored-pattern inheritance
+
+"We just followed the existing sibling" is presented as a reason not to audit. A new crate's module structure, error shape, cache layout, or validation flow is labelled "mirrors import_vrm_to_cache" / "same as shotloom-gltf" without an explicit review of the source. Every bug in the source becomes your bug in the mirror, and the mirror gets reviewed against the mirror target rather than against the actual invariants.
+
+**Self-check:** for every mirrored pattern, open the source and read it with review glasses before copying. Pattern A–F findings in the source are especially likely to propagate. When you find defects in the source, either fix in both places or open a follow-up issue — do not silently inherit.
+
+**Real defect (PR #72):** `fbx.rs::write_artifact_atomically` was lifted verbatim from `import_vrm_to_cache`. Both had the same "if second rename fails you lose the cache" bug. FBX self-review caught it on the FBX side but did not open a parallel VRM ticket because VRM was "existing, out of scope".
+
 ---
 
 ## Self-review checklist (before push)
@@ -207,6 +253,7 @@ Run through this list every time, in order:
 [ ] A3 — lib.rs / mod.rs top-of-file state descriptions match current code
 [ ] A4 — PR body matches `git ls-files` for changed crates
 [ ] A5 — Every new test name describes its actual setup
+[ ] A6 — Numeric claims in comments re-derived from types / constants / bench
 
 [ ] B1 — Every classifier bucket is the only input to its handler
 [ ] B2 — No early return drops downstream stages that don't need the missing data
@@ -222,6 +269,11 @@ Run through this list every time, in order:
 
 [ ] E1 — `cargo metadata --filter-platform x86_64-unknown-linux-gnu` clean of audio/udev
 [ ] E2 — `Cargo.lock` regenerated after any `Cargo.toml` dep change
+[ ] E3 — Filesystem ops reviewed for Windows semantics (rename, canonicalize, symlink)
+
+[ ] F1 — Narrow integers / enum discriminants range-checked at parser boundary
+[ ] F2 — Inherited defensive code re-validated against this crate's actual invariants
+[ ] F3 — Mirrored-pattern sources read with review glasses; defects fixed in both places
 ```
 
 If any line cannot be ticked or explicitly waived ("N/A — no Cargo.toml changes"), do not push. Fix it locally, re-run the gates, then push.
@@ -230,4 +282,4 @@ If any line cannot be ticked or explicitly waived ("N/A — no Cargo.toml change
 
 ## Provenance
 
-This standard was derived from 16 Copilot review comments on [Shotloom PR #66 (STL-74)](https://github.com/CINEV/shotloom/pull/66), spanning three review rounds (2026-04-14). Each pattern above maps to at least one real defect Copilot caught after the author pushed. Update this file whenever a new defect class shows up that this checklist doesn't cover.
+Patterns A–E (excluding A6, E3) were reverse-engineered from 16 Copilot review comments on [Shotloom PR #66 (STL-74)](https://github.com/CINEV/shotloom/pull/66), spanning three review rounds (2026-04-14). A6, E3, and Pattern group F (F1–F3) were added from PR #72 self-review gap analysis (2026-04-15, merged from the earlier `shotloom-review-patterns.md`). Each pattern maps to at least one real defect caught after push. Update this file whenever a new defect class shows up that this checklist doesn't cover — this is the **single source of truth** for Rust pre-PR review patterns. Both `shotloom-review-before-pr` (local) and `cci-codex-review-rust` (remote) load this file directly; do not maintain a parallel checklist.

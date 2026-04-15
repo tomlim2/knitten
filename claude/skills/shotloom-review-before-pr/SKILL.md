@@ -1,5 +1,5 @@
 ---
-description: Pre-PR self-review for Shotloom Rust changes. Walks the 16-pattern checklist from review-code-rust.md against the current diff and reports defects locally before pushing. Does NOT create a PR.
+description: Pre-PR self-review for Shotloom Rust changes. Walks the 22-pattern checklist from review-code-rust.md against the current diff and reports defects locally before pushing. Does NOT create a PR.
 allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*)
 ---
 
@@ -33,15 +33,16 @@ If the branch has no commits ahead of `main`, abort — there's nothing to revie
 
 **Read `~/.claude/standards/review-code-rust.md` in full.** This is mandatory. The file is the authoritative checklist; this skill is just the orchestrator that runs the checklist against the current diff.
 
-The standard contains 16 patterns derived from real Copilot review defects on Shotloom PR #66:
+The standard contains 22 patterns derived from real Copilot review defects on Shotloom PR #66 plus PR #72 self-review gap analysis:
 
 | Group | Patterns | Class |
 |---|---|---|
-| **A** | A1–A5 | Doc ↔ code coherence (5) |
+| **A** | A1–A6 | Doc ↔ code coherence (6) |
 | **B** | B1–B2 | Classifier / dispatch asymmetry (2) |
 | **C** | C1–C3 | Silent fallback in hot path (3) |
 | **D** | D1–D4 | Library hygiene (4) |
-| **E** | E1–E2 | Build / platform regressions (2) |
+| **E** | E1–E3 | Build / platform regressions (3) |
+| **F** | F1–F3 | Cross-crate & inherited-pattern hygiene (3) |
 
 ### Step 3: Run pattern sweeps against the current diff
 
@@ -83,6 +84,12 @@ for f in $(git diff --name-only origin/main..HEAD -- '*.rs'); do
   rg -A 5 '#\[test\]' "$f" 2>/dev/null
 done
 # Read each test — does the body actually exercise what the name promises?
+
+# A6: numeric claims in comments (MB / GB / minutes / Nx / ~N) — re-derive each
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -i '~?\s*[0-9]+\s*(MB|MiB|GB|GiB|minutes?|hours?|[kK]|[mM]illion|x\b)'
+# For each hit, re-derive from std::mem::size_of / a constant / a bench.
 
 # === Pattern B — Classifier / dispatch asymmetry ===
 
@@ -146,6 +153,32 @@ if git diff --name-only origin/main..HEAD | rg -q 'Cargo\.toml' && \
    ! git diff --name-only origin/main..HEAD | rg -q 'Cargo\.lock'; then
   echo "WARNING: Cargo.toml changed but Cargo.lock did not — run cargo update and commit the lockfile"
 fi
+
+# E3: Windows portability on filesystem ops (rename / canonicalize / symlink)
+rg 'fs::rename|fs::symlink|Path::canonicalize|set_permissions' \
+  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs')
+# For each hit, verify Windows semantics (POSIX rename-over-existing fails on Windows).
+
+# === Pattern F — Cross-crate & inherited-pattern hygiene ===
+
+# F1: cross-layer silent fallback — narrow integers / enum casts at parser boundary
+rg 'as u8|as u16|as u32' \
+  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/parse/*.rs' 'crates/*/src/importer/*.rs')
+# For each hit, verify the source range is validated at the parser, not delegated to a downstream catch-all.
+
+# F2: inherited defensive code — fs::read + compare + rewrite chains on cached paths
+rg -A 10 'fs::read' \
+  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs') \
+  | rg -A 5 '== '
+# For each hit, ask: is this defensive check still load-bearing in THIS crate, or inherited from a sibling where it was?
+
+# F3: mirrored-pattern inheritance — comments or commit messages that cite "mirrors" / "follows" / "same as"
+git log origin/main..HEAD --format='%B' \
+  | rg -i 'mirror|follows|same as|like .* pattern|copied from'
+git diff origin/main..HEAD -- '*.rs' \
+  | rg '^\+' \
+  | rg -i '// mirror|// follows|// same as|// copied from'
+# For each hit, open the source and audit it under groups A–F before accepting the mirror.
 ```
 
 ### Step 4: Triage — group findings by pattern
@@ -193,7 +226,7 @@ If the user fixes findings and asks to re-check, restart from Step 1. The skill 
 
 ## Related
 
-- `standards/review-code-rust.md` — **the authoritative 16-pattern checklist** loaded at Step 2
+- `standards/review-code-rust.md` — **the authoritative 22-pattern checklist** loaded at Step 2
 - `skills/shotloom-make-pr/SKILL.md` — the next step after this skill reports clean
 - `rules/shotloom-git.md` — pre-PR identity / build / commit conventions
 - `rules/testing.md` — unit test requirement (orthogonal to this checklist)
