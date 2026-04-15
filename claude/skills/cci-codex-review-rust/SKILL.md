@@ -16,6 +16,7 @@ Codex(`gpt-5.4`)에게 **Rust 변경분 정밀 리뷰**를 시킨다. high reaso
 - 성능 핫패스 (불필요한 alloc, clone)
 - 동시성/Send/Sync
 - 에러 메시지 품질
+- **shotloom 전용 반복 실수 12 패턴** (stale doc, comment/code contradiction, dangling doc ref, language consistency, library side effects, silent default on missing data, early return disabling stage, computed-but-unused, silent catch-all fallback, test setup/comment mismatch, PR description/commit drift) — 과거 PR #66에서 copilot이 catch한 패턴을 reverse-engineer. 기본 컨텍스트로 자동 포함.
 
 ## Arguments
 
@@ -60,6 +61,11 @@ $ARGUMENTS 파싱:
 - `--commit SHA` → `git show <SHA>`
 - `--context-docs <path>` (반복) → 각 경로를 `Read`로 전체 내용 읽어둠
 - `--phase` / `--out-of-scope` / `--constraints` → Scope Context 플레이스홀더에 치환. 플래그 미지정 시 해당 라인 자체를 드롭 (literal `<PHASE>` 로 남기지 말 것).
+
+**Shotloom auto-context** (shotloom 레포일 때만 자동 포함, 사용자 플래그 불필요):
+- 현재 git remote에 `shotloom` 문자열이 포함되면 `~/.claude/standards/shotloom-review-patterns.md` 전체 내용을 `## Shotloom Review Patterns (mandatory)` 섹션으로 프롬프트에 자동 임베드.
+- 이 섹션은 `## Binding ADRs` 보다 아래, `## 리뷰 체크리스트` 보다 위에 위치.
+- 프롬프트 본문에 다음 문장을 추가: "Apply every pattern in the Shotloom Review Patterns section to every changed file. Report per-pattern match/clean with severity BLOCK/SHOULD/NIT."
 
 수집한 diff를 다음 프롬프트 본문에 끼워넣는다:
 
@@ -119,6 +125,12 @@ $ARGUMENTS 파싱:
 ## Binding ADRs / Design Docs
 
 <여기에 --context-docs로 넘어온 각 문서의 전체 내용을 경로 헤더와 함께 임베드. 없으면 섹션 자체를 드롭.>
+
+---
+
+## Shotloom Review Patterns (mandatory)
+
+<shotloom 레포일 때만 포함. `~/.claude/standards/shotloom-review-patterns.md`의 전체 내용을 그대로 임베드. Codex에게 "Apply every pattern in this section to every changed file. Report per-pattern match/clean with severity BLOCK/SHOULD/NIT. Patterns are derived from historical Copilot findings on PR #66 and cover the specific classes of issue shotloom reviewers flag." 지시 추가. 타 레포일 땐 섹션 자체 드롭.>
 
 ---
 
