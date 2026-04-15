@@ -159,3 +159,164 @@ P2/P3 배치를 `codex exec ... | tail -200` 백그라운드로 dispatch 했다�
 - 메모리에 기록된 규칙: *"평일 devlog/learning은 caol-ila temp-learnings로, 주말에 Obsidian 아카이빙"*
 
 **우선순위:** 7.1 (이중 관리 원칙) 이 제일 시급. 지금 분산돼 있어서 다음 세션에 찾을 때 헷갈릴 위험이 있음.
+
+---
+
+## 8. 주말 TODO — vrm2u-bevy thumb retarget chain rewrite
+
+밤늦게 viewer 띄워서 0.x 모델 (`vroid_0x_f_minjoon.vrm`) 의 엄지 문제 진단 시작 → 표면 픽스 시도 → 근본 원인 발견 → **모든 코드 수정 revert + 여기로 이관.** 깊은 작업이고 4월 초 R&D 가 막혔던 영역이라 신중하게 접근해야 함.
+
+### 8.1 사용자 보고
+
+- 모델: `assets/models/vroid_0x_f_minjoon.vrm` (VRM 0.x VRoid 모델)
+- 증상 1: 엄지가 반대 방향으로 꺾임
+- 증상 2: 엄지 끝 (`ThumbDistal`) 이 아예 안 구부러짐 (양손)
+- VRM 1.x 모델에선 위 두 증상 안 보이는 듯 (확인 필요)
+
+### 8.2 진단 결과 — 발견 5건
+
+오늘 코드 안 들여다보고는 이해 불가. 5건 다 같은 근본 원인의 layer 별 노출.
+
+#### ① `vrm0_compat::humanoid::BONE_RENAMES` 가 0.x → 1.0 엄지 매핑을 잘못함
+
+파일: `crates/vrm0_compat/src/humanoid.rs:6-11`
+
+```rust
+("leftThumbIntermediate", "leftThumbMetacarpal"),  // ❌
+("rightThumbIntermediate", "rightThumbMetacarpal"),// ❌
+("leftThumbProximal", "leftThumbProximal"),        // ❌ Proximal → Metacarpal 이어야
+("rightThumbProximal", "rightThumbProximal"),      // ❌
+```
+
+VRM 0.x 와 1.0 의 엄지 본 네이밍은 한 슬롯 밀려 있음. 같은 3개 물리 본:
+
+| 물리 위치 | VRM 0.x | VRM 1.0 |
+|---|---|---|
+| 손에 붙은 뿌리 | `ThumbProximal` | `ThumbMetacarpal` |
+| 중간 관절 | `ThumbIntermediate` | `ThumbProximal` |
+| 끝 | `ThumbDistal` | `ThumbDistal` (동일) |
+
+올바른 매핑:
+
+```rust
+("leftThumbProximal", "leftThumbMetacarpal"),
+("rightThumbProximal", "rightThumbMetacarpal"),
+("leftThumbIntermediate", "leftThumbProximal"),
+("rightThumbIntermediate", "rightThumbProximal"),
+// Distal pass-through
+```
+
+현재 코드는 0.x 의 "Intermediate" (중간) 를 1.0 의 "Metacarpal" (뿌리) 로 잘못 매핑하고, 0.x 의 "Proximal" (실제 뿌리) 을 1.0 "Proximal" (중간 슬롯) 으로 그대로 둠. 결과적으로 0.x 모델에선 humanoid map 에서 뿌리/중간이 뒤바뀌어, retargeter 가 "뿌리 굽힘" 회전을 적용할 때 실제론 중간 본을 굽혀서 엄지가 반대 방향으로 꺾임.
+
+#### ② `compute_virtual_rest_global` 이 1.0 엄지 chain 모름
+
+파일: `crates/humanoid_retarget/src/vrm_rest.rs:307-318`
+
+```rust
+for finger in &fingers {  // ["Thumb", "Index", "Middle", "Ring", "Little"]
+    pairs.push((f"{side}{finger}Proximal", f"{side}{finger}Intermediate", side_x));
+    pairs.push((f"{side}{finger}Intermediate", f"{side}{finger}Distal", side_x));
+}
+```
+
+모든 finger 가 `Proximal → Intermediate → Distal` chain 이라고 가정. 하지만 VRM 1.0 엄지엔 `Intermediate` 슬롯이 없음 (`Metacarpal → Proximal → Distal`). 결과: 엄지의 virtual rest 가 lookup 실패 → 엄지 뿌리/끝 둘 다 rest 보정 없음.
+
+수정안: 엄지만 별도 처리:
+```rust
+if *finger == "Thumb" {
+    pairs.push((f"{side}ThumbMetacarpal", f"{side}ThumbProximal", side_x));
+    pairs.push((f"{side}ThumbProximal", f"{side}ThumbDistal", side_x));
+} else { /* 기존 Proximal/Intermediate/Distal */ }
+```
+
+#### ③ `segment_depth` 가 1.0 엄지 못 분류
+
+파일: `crates/humanoid_retarget/src/finger_rest_align.rs:159-172`
+
+```rust
+if ends_with("proximal") → 0
+if ends_with("intermediate") → 1
+if ends_with("distal") → 2
+else → 3 (unknown)
+```
+
+`leftThumbMetacarpal` 은 위 세 어떤 suffix 와도 안 맞아서 3 (unknown) 반환 → 엄지 chain 위상 정렬이 깨짐. 게다가 `leftThumbProximal` 을 0 (뿌리 역할) 로 분류하는데 1.0 에선 이게 중간 관절이라 의미가 뒤바뀜.
+
+수정안: 엄지일 땐 다른 매핑:
+```rust
+let is_thumb = lower.contains("thumb");
+if is_thumb && ends_with("metacarpal") { 0 }
+else if is_thumb && ends_with("proximal") { 1 }
+else if ends_with("proximal") { 0 }
+else if ends_with("intermediate") { 1 }
+else if ends_with("distal") { 2 }
+else { 3 }
+```
+
+#### ④ **`arp_body.json` 의 `*Thumb* Skip` 룰 — 진짜 근본 원인**
+
+파일: `assets/retarget/arp_body.json`
+
+```json
+["*Thumb*", "Skip"],
+["*Index*", "ScalarCurl"],
+["*Middle*", "ScalarCurl"],
+...
+```
+
+매핑 자체는 메인 테이블에서 `c_thumb1/2/3 → leftThumbMetacarpal/Proximal/Distal` 로 정상 연결돼 있음. 하지만 retarget mode 룰에서 **모든 Thumb 매칭 본을 의도적으로 Skip 처리**. 즉 ①②③ 다 고쳐도 retargeter 자체가 엄지 회전 계산을 안 함. 이게 사용자가 본 "엄지 끝 안 구부러짐" 의 직접 원인.
+
+`experiments-thumb-bind-pose.md` (2026-04-03) 에 *"Thumb 은 multi-axis 라서 from_rotation_arc shortest arc 가 안 맞음 → curl direction 이 바깥으로 꺾임 → skip"* 으로 기록된 결정의 잔재. ScalarCurl 모드는 단일 축 가정인데 엄지는 palm 평면 + palm 수직 두 축으로 동시에 회전해야 해서 ScalarCurl 적용 불가.
+
+#### ⑤ `arp_body.json` 안 0.x 레거시 매핑 잔재
+
+같은 파일 다른 섹션 (override 블록?) 에:
+
+```json
+"c_thumb1.l": "leftThumbProximal",       // 0.x 네이밍 — 1.0 에선 Metacarpal 이어야
+"c_thumb2.l": "leftThumbIntermediate",   // 0.x 네이밍 — 1.0 에선 Proximal
+```
+
+메인 테이블의 1.0 매핑과 상충됨. 우선순위/덮어쓰기 순서 확인 필요.
+
+### 8.3 대체 경로 — `arp_vrm_user_pose.rs` EXP-004
+
+파일: `crates/humanoid_retarget/src/adapters/arp_vrm_user_pose.rs:73-102`
+
+devlog 에 적힌 EXP-004 (2026-04-12) UserCalibrated path. 6개 엄지 본 매핑 정의 + viewer 키바인딩 (P=calibration, Tab=thumb bone, Q/W/A/S/Z/X=rotate) 까지 만들어져 있음. 하지만 retarget pipeline 에 wire up 안 된 듯 — Skip 룰을 우회해서 이 path 를 활성화하면 엄지 처리가 가능할 가능성 있음.
+
+devlog 메모: *"EXP-003 DirectCopy failed (thumb → elbow). EXP-004 UserCalibrated 가능성"*. 즉 DirectCopy 도 시도했고 실패. UserCalibrated 가 그나마 가능성 있는 마지막 시도.
+
+### 8.4 주말/내일 작업 분기
+
+| 옵션 | 작업량 | 리스크 |
+|---|---|---|
+| **A. UserCalibrated path 활성화만** | 1-2시간 | 낮음. ④ Skip 룰 빼고 EXP-004 wire up. 한 모델만이라도 동작 보면 성공 |
+| **B. 새 `ThumbCurl` 모드 설계 + 구현** | 4-8시간 | 중. multi-axis (palm normal + palm plane) 처리 새로 짜야 함 |
+| **C. multi-model 회귀 검증** | +2-4시간 | 0.x/1.x, M/F, 여러 모델 |
+| **D. B+C** | **반나절~하루** | 디자인 spiral 가능성 있음 (4월 초 R&D 가 막혔던 곳) |
+
+### 8.5 권장 진입 순서
+
+1. **새 Linear issue 생성** — e.g. *"vrm2u-bevy: thumb retarget chain rewrite"*. STL- prefix 안 붙음 (개인 프로젝트). 위 ①-⑤ 발견 + 옵션 A/B 명시.
+2. **옵션 A 먼저 시도** (1-2시간 박스). UserCalibrated 활성화 + 한 모델 (`vroid_0x_f_minjoon.vrm`) 로 시각 검증.
+3. 옵션 A 가 안 풀리면 **옵션 B 로 escalation.** `experiments-thumb-bind-pose.md` 의 EXP-002 (palm normal 기반 signed angle) 부터 다시 시도.
+4. **옵션 A 가 풀리면**: ①②③ 도 함께 fix (cascading 으로 효과 나타남), 그리고 옵션 C 로 multi-model 회귀 측정.
+
+### 8.6 오늘 시도한 코드 수정 (전부 revert 됨)
+
+기록만 남김. 실제 적용 안 됨 — `git status` 클린 상태로 종료.
+
+- `vrm0_compat/src/humanoid.rs` ① 수정 + 단위 테스트 3개
+- `humanoid_retarget/src/vrm_rest.rs` ② 수정
+- `humanoid_retarget/src/finger_rest_align.rs` ③ 수정
+
+Cargo test 는 green 이었지만 ④ 가 진짜 원인이라 시각적으로는 효과 없음. 부분 수정만 commit 하면 misleading 한 "thumb fix" 커밋이 git history 에 남게 됨 → 전부 revert 결정.
+
+### 8.7 시간 추정
+
+- 옵션 A 시도 + 결과 확인: 1-2시간
+- 옵션 A 가 풀린 경우 ①②③ + 회귀 측정: +2-3시간
+- 옵션 B 까지 가야 하는 경우: 추가 4-8시간
+
+**하루 작업 박스 권장.** 안 풀리면 issue 에 partial findings 만 commit 하고 다음 세션으로 넘김.
