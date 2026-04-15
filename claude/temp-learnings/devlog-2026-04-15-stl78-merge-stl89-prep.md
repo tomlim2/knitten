@@ -120,3 +120,42 @@ P2/P3 배치를 `codex exec ... | tail -200` 백그라운드로 dispatch 했다�
 5. 결과를 `devlog-2026-04-18-self-review-blindspot.md` (토요일자) 로 기록하고, pattern 확장이 있으면 `standards/review-code-rust.md` 에 반영.
 
 **우선순위:** H1 + H3 부터. 산수 + 주석-사실 불일치는 오늘 가장 많이 놓친 축이고 grep 수준 자동화로도 부분적으로 잡을 수 있음.
+
+---
+
+## 7. 주말 문서 정리 대상
+
+이번 주 만들어둔 문서들 구조 리뷰 + 중복/이관 정리.
+
+### 7.1 이중 관리 구조: `order/` vs `.agent/`
+
+- `shotloom/.agent/handoff-stl-89.md` — repo-scoped 운영 메모리 (shotloom 체크아웃에 딸려옴)
+- `~/.codex/order/stl-89-retarget-arp-to-vrm-wiring.md` — codex CLI 주문 큐
+- 둘은 같은 내용 복사본. 오늘 만들 때 "source of truth = shotloom/.agent, 복사본 = ~/.codex/order" 로 결정했는데 원칙이 제대로 지켜질지 검증 필요.
+- 주말 검토 항목:
+  - 원칙 문서화: 어느 쪽이 canonical 인지 `~/.codex/order/README.md` 와 shotloom 의 `.agent/README.md` 둘 다에 교차 명시.
+  - 복사본 드리프트 방지 방법 — symlink vs 수동 sync vs 복사만 허용. symlink 는 shotloom 체크아웃 상태 의존이라 위험. 수동 sync 가 현실적일 듯.
+  - 완료된 order 는 어디로 — `~/.codex/order/archive/` 이관 vs Linear 완료 표시로 충분.
+
+### 7.2 `.agent/` 폴더 구조 (shotloom)
+
+- 오늘 `.agent/handoff-stl-89.md` 하나만 넣었는데, `~/.claude/standards/shotloom.md` 의 `.agent/` 섹션은 `README.md` + `working-rules.md` + `project-guide.md` + `checklists.md` 를 권장한다.
+- 아직 `README.md` 조차 없어서 다음 agent 가 `.agent/` 폴더를 처음 열면 handoff 파일 하나만 보이는 상태. 주말에:
+  - `.agent/README.md` — index (handoff 파일들 + 향후 working-rules 등 설명)
+  - 필요 시 `.agent/working-rules.md` — shotloom 에서 agent 가 지켜야 하는 반복적 운영 rule (`rules/shotloom-git.md` 와 중복 안 되게 주의)
+
+### 7.3 `~/.codex/order/` 디렉토리 구조
+
+- 지금: `order/README.md` + `order/stl-89-*.md` 만 존재.
+- 검토:
+  - `order/archive/` 하위 도입 여부
+  - order 파일 이름 규칙 (`<issue-id>-<slug>.md`) 확정 — 현재는 README 에 한 줄로만 있음
+  - `order/` 외에 `prompts/`, `skills/` 같은 기존 폴더와 역할 분리 재검토. 특히 "반복적으로 쓰는 지시 템플릿" 과 "일회성 작업 주문" 이 섞이면 안 됨.
+
+### 7.4 devlog → Obsidian 아카이빙
+
+- 오늘자 `devlog-2026-04-15-stl78-merge-stl89-prep.md` 는 `caol-ila/claude/temp-learnings/` 에 있음 (평일 용).
+- 주말에 이 devlog + 4/14 devlog 들을 Obsidian vault `claude/` 하위로 이관하고, `temp-learnings/` 는 비우는 게 `maximize-codex-sonnet` / `weekday-temp-storage` 메모리 규칙에 맞음.
+- 메모리에 기록된 규칙: *"평일 devlog/learning은 caol-ila temp-learnings로, 주말에 Obsidian 아카이빙"*
+
+**우선순위:** 7.1 (이중 관리 원칙) 이 제일 시급. 지금 분산돼 있어서 다음 세션에 찾을 때 헷갈릴 위험이 있음.
