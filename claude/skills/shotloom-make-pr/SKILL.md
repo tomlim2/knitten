@@ -49,6 +49,22 @@ Read: ~/Desktop/www/shotloom-github/.github/pull_request_template.md
 Read: ~/Desktop/www/shotloom-github/docs/guidelines/commit-guideline.md   # PR title format
 ```
 
+Also read any agent-operational guidance in `.agent/` if the folder
+exists:
+
+```
+Read: ~/Desktop/www/shotloom-github/.agent/README.md          # index, if present
+Read: ~/Desktop/www/shotloom-github/.agent/working-rules.md   # repo-scoped agent rules
+Read: ~/Desktop/www/shotloom-github/.agent/checklists.md      # pre/post-task checklists
+```
+
+`.agent/` holds informal operational rules the shotloom agents
+(including Codex "돌쇠") share inside this repo. It is NOT a
+substitute for `docs/guidelines/` — treat it as additive guidance
+and honor any repo-scoped rules found there even if they are not
+yet reflected in `~/.claude/rules/shotloom-git.md`. If `.agent/`
+does not exist in the current checkout, skip this step silently.
+
 ### Step 3: Local CI-equivalent gates
 
 Run in order. Any failure blocks PR creation.

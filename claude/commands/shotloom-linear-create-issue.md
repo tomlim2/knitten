@@ -64,6 +64,11 @@ Design-decision issues swap `## Scope` for `## Proposed Resolution`.
 **Implementation issue template (default):**
 
 ```markdown
+## Summary
+
+{선택: TL;DR 한 문단. Context보다 더 짧게, 이슈를 왜 여는지 한 문장으로
+ 잡을 수 있을 때만 사용. Context와 중복되면 생략.}
+
 ## Context
 
 {왜 이 작업이 필요한가. 배경, 관련된 상위 결정, 현재 상태가 어떤지.
@@ -86,9 +91,11 @@ Design-decision issues swap `## Scope` for `## Proposed Resolution`.
 
 ## References
 
-* `docs/specs/...` — 관련 spec
-* `docs/adr/adr-00XX-....md` — ADR
+* `docs/specs/...` — 관련 spec (shotloom 레포 내부)
+* `docs/adr/adr-00XX-....md` — ADR (shotloom 레포 내부)
 * STL-XX — 관련 이슈
+
+Related to STL-NN
 ```
 
 **Design-decision issue template (when `--label design-decision`):**
@@ -100,7 +107,8 @@ Design-decision issues swap `## Scope` for `## Proposed Resolution`.
 
 ## Proposed Resolution
 
-{제안 해결안. 선택지 비교가 필요하면 불릿이나 테이블.}
+{제안 해결안. 선택지 비교가 필요하면 불릿이나 테이블.
+ 2단계 결정(Alpha/Bravo)인 경우 `### Alpha` / `### Bravo` 서브섹션 사용.}
 
 ## Acceptance Criteria
 
@@ -113,18 +121,48 @@ Design-decision issues swap `## Scope` for `## Proposed Resolution`.
 * {트레이드오프, 후속 작업 힌트}
 ```
 
+**Umbrella issue template (상위 이슈, child 분해):**
+
+```markdown
+{1-2 문단 umbrella 설명}
+
+## Child Issues
+
+* `STL-XX` {child 이슈 제목}
+* `STL-YY` {child 이슈 제목}
+```
+
 **구조 규칙:**
-- `## Context`가 첫 섹션, 한/영 어느 쪽이든 가능 (혼용 OK)
+- `## Summary`는 선택 첫 섹션. 생략 가능. 있으면 `## Context`보다 앞에.
+- `## Context`가 사실상 첫 섹션 (Summary 없으면). 한/영 어느 쪽이든 가능 (혼용 OK).
 - 리스트는 `*` 통일, AC는 `- [ ]` 체크박스
 - 코드/브랜치명/파일명은 backtick으로
 - 이미지가 필요하면 blockquote `> 예시 사진 첨부 요망`
-- Section 순서: Context → (Proposed Resolution | Scope) → Acceptance Criteria → Notes → References
+- Section 순서: Summary? → Context → (Proposed Resolution | Scope | Child Issues) → Acceptance Criteria → Notes → References
+
+**Korean section name variants (팀에서 실제로 쓰는 표현):**
+
+| English | Korean variants |
+|---------|----------------|
+| Context | `## 배경`, `## 컨텍스트`, `## Purpose`, `## 목적` |
+| Scope | `## 범위`, `## 요청 사항` |
+| Proposed Resolution | `## 결정 필요 사항`, `## 제안` |
+| Acceptance Criteria | `## 완료 조건` |
+| References | `## 참고 파일`, `## 참고` |
+
+한/영 혼용 자연스럽게. 한 이슈 안에서 일관되면 혼용 OK.
 
 **라이팅 규칙:**
 - 한/영 혼용 자연스럽게 (팀 컨벤션)
 - 과도한 수식어, 이모지, AI 냄새나는 표현 금지
 - 기술 용어(영문)는 원문 유지
 - 짧고 단정적인 문장
+
+**Privacy / private repo 규칙 (엄수):**
+- **Shotloom Linear 이슈에 개인 private 레포를 절대 링크/언급하지 말 것.** 포함: `bevy-vrm`, `anju`, `mmd-anju`, `ta-portfolio`, `StoryPreviz`, 그 외 `~/.claude/private/repo-paths.json`에 등록되었지만 CINEV 소유가 아닌 모든 레포.
+- bevy-vrm에서 shotloom으로 "port"/"이식"하는 작업일 때도 원본을 **"prior internal prototype"** / **"선행 R&D 코드"** / **"upstream reference implementation"** 같은 추상 표현으로만 지칭. 레포 이름, URL, 커밋 해시, 파일 경로 포함 금지.
+- 허용되는 참조: shotloom 레포 내부 경로 (`crates/...`, `docs/...`), CINEV 조직 GitHub, STL-NN, ADR 번호, spec 문서명.
+- 애매할 때: "이 링크/경로가 shotloom 레포 안에 있는가?" — 아니면 제거.
 
 ### Step 3: Preview and confirm
 
@@ -165,42 +203,44 @@ state: "Backlog" (or override)
 description: formatted description
 ```
 
-### Step 5: Link mentioned STL issues
+### Step 5: STL issue references
 
-If the description references other Shotloom issues in plain text form
-(`STL-42`, `STL-17`, etc.), convert them to clickable Linear links.
+**Prefer plain `STL-NN` text. Linear auto-linkifies it.** 팀의 최근 이슈(STL-74, STL-75, STL-76, STL-77)는 markdown link 대신 plain `STL-NN` 또는 Linear 네이티브 `<issue id="...">STL-NN</issue>` 리치태그를 사용한다. MCP `save_issue`는 plain `STL-NN`을 넘기면 Linear가 자동으로 렌더링한다.
 
-**변환 규칙:**
-- `STL-42: direction draft ownership` (plain)
-- → `[STL-42: direction draft ownership](https://linear.app/cinamon-corp/issue/STL-42)` (linked)
+**규칙:**
+- Plain `STL-42` — default, 자동 링크됨
+- `Related to STL-NN` — footer에 plain text로
+- Markdown link (`[STL-42](url)`) — **사용하지 말 것.** 팀 컨벤션 아님.
 
-**감지 패턴:**
-- `STL-\d+` 식별자가 description에 포함된 경우
-- 이미 markdown link로 감싸져 있으면 스킵
+### Step 6: External references (shotloom 레포 내부만)
 
-### Step 6: Attach external references
-
-If the description mentions external URLs (GitHub commits, ADR files,
-spec docs, Slack threads), ensure they are proper markdown links.
-
-- PR/commit references → `[commit abc1234](url)` format
-- ADR files → `[ADR-0022](docs/adr/adr-0022-....md)` in repo-relative path
-- Slack threads → add under `## 공유` section if team has this pattern
+- ADR / spec / 파일 경로는 shotloom 레포 기준 상대 경로: `docs/adr/adr-0022-....md`, `crates/shotloom-retarget/src/lib.rs`
+- CINEV org GitHub commit/PR: `[commit abc1234](https://github.com/CINEV/shotloom/commit/abc1234)` 허용
+- **Private 개인 레포 링크/경로 절대 금지** (Step 2 Privacy 규칙 참고). bevy-vrm, anju, mmd-anju 등 언급 시 `"prior internal prototype"` 같은 추상 표현으로 치환.
+- Slack thread: 팀이 쓰는 패턴이면 `## 공유` 섹션에 추가
 
 ### Step 7: Report result
 
 Show the created issue identifier (e.g., `STL-74`), URL, and auto-generated
 git branch name (e.g., `deemo/stl-74-scaffold-shotloom-retarget-crate`).
 
-## Team Conventions Observed (2026-04-14)
+## Team Conventions Observed (2026-04-15)
 
-From sampling 30 recent issues in STL team:
+From sampling the 15 most-recent issues in STL team:
 
 - **Title**: Korean or English OK. Often prefixed with subsystem scope.
   Example: `"bundle-format: camera_preset 에셋 종류 정의 누락"`.
-- **Sections**: `## Context` (or `## 배경` / `## Purpose`) is near-universal.
-  `## Scope` (or `## 범위` / `## Proposed Resolution`) follows. AC uses
-  `- [ ]` checkboxes. Notes/References tail.
+- **Sections**: Husker의 최신 이슈(STL-76/77)는 `## Summary` → `## Context`로 시작. 그 외에는
+  `## Context` (or `## 배경` / `## 컨텍스트` / `## Purpose` / `## 목적`)가 사실상 첫 섹션.
+  `## Scope` (or `## 범위` / `## 요청 사항` / `## Proposed Resolution` / `## 결정 필요 사항`)가
+  따름. AC는 `- [ ]` 체크박스 (or `## 완료 조건`). Notes/References는 꼬리.
+- **STL issue references**: plain `STL-NN` 또는 Linear 네이티브 `<issue>` 태그. Markdown link는
+  팀 컨벤션 아님.
+- **Umbrella**: STL-17처럼 `## Child Issues` bullet list로 분해.
+- **Staged decisions**: STL-68처럼 `### Alpha` / `### Bravo` 서브섹션으로 2단계 결정 표현.
+- **Footer**: `Related to STL-NN` plain text (STL-73).
+- **Private repo 금지**: 어떤 이슈에도 bevy-vrm, anju, mmd-anju 등 개인 private 레포 이름/
+  URL/경로 언급 없음. Shotloom 이슈는 shotloom 레포 + CINEV org만 참조.
 - **Labels**: `design-decision` is the main label in use. Implementation
   issues typically have no label.
 - **Parent umbrella**: issues decomposing a larger umbrella (STL-30 for
