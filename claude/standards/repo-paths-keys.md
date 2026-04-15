@@ -17,6 +17,7 @@ Keys that skills/commands depend on. Register with `/meta-register-refs <key> <p
 | `anju` | UE Python tools, shader/web experiments | git | cci-open-creator-*, cci-register-character, cci-validate-vrm, pmx-*, dev-open-npr-viewer, dev-open-vrm-bevy, cci-sync-ta-tools, dev-setup-project |
 | `obsidian` | Obsidian vault for markdown docs | icloud | learn-log-day, learn-log-vocab, learn-add-log, tutoring-log-consultation, consulting-log-session, dev-setup-project |
 | `caol-ila` | Claude Code config hub (this repo) | git | meta-check-updates, git-pull-repos |
+| `codex-base` | Codex CLI config + prompts + session data (`~/.codex`, `tomlim2/codex-base`) | git | git-pull-repos |
 
 ### macOS Only
 
