@@ -85,3 +85,38 @@ P2/P3 배치를 `codex exec ... | tail -200` 백그라운드로 dispatch 했다�
 - **S3:** `vrm_rest::build_from_bevy_vrm` — `bevy_vrm1::Loaded` humanoid 컴포넌트 surface 조사 먼저 (자체 매핑 테이블 금지)
 - **S4/S5:** `examples/viewer.rs` 배선 + male/female preset T-pose 탈출 확인
 - **S6:** full gates + 22-pattern self-review (`/shotloom-review-before-pr`) + PR (`/shotloom-make-pr`)
+
+---
+
+## 6. 주말 TODO — 셀프 코드리뷰 blind spot 역추적
+
+**질문:** 오늘 PR #72 에서 Copilot/ryumiel 이 잡은 지적사항을, 왜 내가 여러 번 돌린 셀프 코드리뷰에서는 못 걸러냈는가?
+
+**조사 대상 (오늘 외부 리뷰가 처음 잡아낸 것들):**
+
+1. `RotationOrder` i32 → u8 silent cast, downstream `euler_to_quat` XYZ fallback (Group C silent fallback)
+2. `should_write` byte-compare 가 SHA-256 콘텐츠 어드레서블 캐시에서 중복 I/O (성능 + 디자인)
+3. Windows `fs::rename` overwrite-failure 경로 (플랫폼 특이사항)
+4. `write_artifact_atomically` 의 `!exists()` vs `rename` race (동시성)
+5. `NORMALIZED_FBX_CACHE_VERSION` naming — 실제로는 normalization 단계 없음 (네이밍 ↔ 구현 mismatch)
+6. `~12 MB` per-bone 추정 주석이 실제 `Quat+Vec3` ≈ 28 B/frame 대비 ~4x 과장 (산수 검증 누락)
+7. `partial_cmp().unwrap()` panic 을 이유로 든 주석이 실제 `f32::total_cmp` 코드와 불일치 (doc↔code drift)
+8. `assert_parse_err_contains` non-exhaustive match 가 미래 variant 추가 시 컴파일 에러 far-from-site (defensive test 설계)
+
+**가설 (검증 필요):**
+
+- **H1 — Pattern coverage gap:** 현재 `review-code-rust.md` 22-pattern 이 Group A (doc↔code), B (classifier asymmetry), C (silent fallback), D (library hygiene), E (build/platform), F (cross-crate) 로 나뉘어 있는데, **"수치/단위 검증" (#6) + "플랫폼 특이 IO" (#3) + "동시성 race" (#4) 는 어느 Group 에도 명시적으로 없음.** 체크리스트가 산수/플랫폼/동시성 축을 커버 안 하면 반복적으로 놓친다.
+- **H2 — Diff-local reading bias:** 셀프 리뷰를 할 때 나는 `git diff` 단위로 파일 별로 읽는다. 그런데 #4 race, #3 Windows, #2 redundant I/O 는 **파일 단위가 아니라 호출 체인 전체** (`import_fbx_to_cache` → `should_write` → `write_artifact_atomically` → `fs::rename`) 를 머릿속에 그려야 잡힌다. 셀프 리뷰 시점에 "이 변경이 전체 I/O path 어디에 걸리는지" 를 명시적으로 스케치 안 했다.
+- **H3 — 주석을 코드처럼 안 읽음:** #5 네이밍 드리프트, #6 12 MB 과장, #7 `partial_cmp` stale 주석 — 모두 **주석 자체의 사실 주장**이 틀린 케이스. 내가 셀프 리뷰할 때 주석은 "설명이니까 맞겠지" 로 넘기고 산수/패턴 일치 검증을 안 했다. Group A (doc↔code) 가 명시돼 있음에도 적용이 느슨했다.
+- **H4 — Test 가 코드와 동시에 움직일 때 두 쪽 다 테스트 대상이 됨:** #8 은 "테스트를 테스트 하는" 메타 층. 내가 테스트를 작성하면서 미래 확장성까지 체크 안 했다. 테스트는 한 번 쓰고 잊는 대상이 아닌데.
+- **H5 — Self-review repetition fatigue:** 3회 self-review 중 2-3회차에 "지난번에 봤으니 괜찮겠지" 로 커버리지가 줄어든 가능성. 매 회차에 동일한 pattern pass 를 돌렸는지, 아니면 회차마다 다른 각도만 봤는지 기록이 없음.
+
+**조사 방법 (주말):**
+
+1. `review-code-rust.md` 22 pattern 을 위 8 건과 매핑 — 각 defect 가 어느 pattern 으로 잡혔어야 했는지 표로 작성. Pattern coverage 구멍이 보이면 pattern 18-22 추가.
+2. 셀프 리뷰 체크리스트에 **"산수/플랫폼/동시성/주석-사실"** 4 개 축을 명시적 bullet 으로 추가 (H1, H2 커버).
+3. `/shotloom-review-before-pr` 스킬에 **"주석의 사실 주장을 코드와 대조" step** 추가 (H3 커버). 예: `grep -n "MB\|MiB\|ms\|panic\|unwrap" $DIFF_FILES` 같은 보조 grep 한 줄.
+4. 회차별 self-review 기록 템플릿 — 매 회차에 어느 pattern 을 돌렸는지 명시적으로 체크 (H5 커버).
+5. 결과를 `devlog-2026-04-18-self-review-blindspot.md` (토요일자) 로 기록하고, pattern 확장이 있으면 `standards/review-code-rust.md` 에 반영.
+
+**우선순위:** H1 + H3 부터. 산수 + 주석-사실 불일치는 오늘 가장 많이 놓친 축이고 grep 수준 자동화로도 부분적으로 잡을 수 있음.
