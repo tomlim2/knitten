@@ -76,9 +76,12 @@ For each selected feedback item:
 
 ### Step 5: Validate + commit
 
-1. If review feedback requires PR description update, run:
-   `gh pr edit $ARGUMENTS --body "..."`
-   (show updated body to user first for approval)
+1. **Always update the PR description** after resolving feedback:
+   - `gh pr view $ARGUMENTS --json body -q .body` to read current body
+   - Update the Summary section to reflect new changes (added fixes, deleted files, new deps, etc.)
+   - Update the Validation section with fresh test counts and doc-path counts
+   - Remove or correct any statements that are no longer true
+   - `gh pr edit $ARGUMENTS --body "..."` to push the update
 
 2. Run Shotloom CI-equivalent gates (parallel where possible):
    ```
