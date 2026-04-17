@@ -37,12 +37,28 @@ The standard contains 22 patterns derived from real Copilot review defects on Sh
 
 | Group | Patterns | Class |
 |---|---|---|
-| **A** | A1–A6 | Doc ↔ code coherence (6) |
+| **A** | A1–A7 | Doc ↔ code coherence (7) |
 | **B** | B1–B2 | Classifier / dispatch asymmetry (2) |
 | **C** | C1–C3 | Silent fallback in hot path (3) |
 | **D** | D1–D4 | Library hygiene (4) |
 | **E** | E1–E3 | Build / platform regressions (3) |
 | **F** | F1–F3 | Cross-crate & inherited-pattern hygiene (3) |
+| **G** | G1–G7 | Structural / repo-convention coherence (7) |
+
+### Step 2.5: Load repo conventions (mandatory)
+
+Before running the code pattern sweeps, read the repo's published conventions in full. Group G of `review-code-rust.md` assumes these were loaded — skipping this step drops G entirely.
+
+Read (in this order, each in full):
+
+1. `CONTRIBUTING.md` at repo root — contributor workflow, co-location / MAP.md rules, doc-path validator requirement.
+2. `AGENTS.md` at repo root — agent-facing workflow and ownership model.
+3. `docs/guidelines/commit-guideline.md` — conventional commit format the G2 sweep enforces.
+4. `docs/guidelines/pr-guideline.md` (if present) — PR body shape for G3.
+5. `docs/adr/README.md` — ADR index; note which ADRs name crate boundaries that Group G1 and G5 depend on.
+6. The most recently merged 3–5 PRs in this repo (`gh pr list --state merged --limit 5`) for shape reference.
+
+If a repo-local Claude rule file exists (`~/.claude/rules/<repo>-*.md`, e.g. `shotloom-git.md`), load that too — it overrides the generic rules.
 
 ### Step 3: Run pattern sweeps against the current diff
 
@@ -179,6 +195,71 @@ git diff origin/main..HEAD -- '*.rs' \
   | rg '^\+' \
   | rg -i '// mirror|// follows|// same as|// copied from'
 # For each hit, open the source and audit it under groups A–F before accepting the mirror.
+
+# === Pattern G — Structural / repo-convention coherence ===
+
+# G1: new files under changed crates — does the crate ownership match the file's concern?
+for f in $(git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/src/*.rs'); do
+  echo "=== NEW FILE: $f ==="
+  crate=$(echo "$f" | cut -d/ -f1-2)
+  echo "Existing content in $crate:"
+  git ls-files "$crate/src/" | head -8
+done
+# For each new file, ask: does the crate's ADR/mission cover this file's concern?
+
+# G2: commit subjects against docs/guidelines/commit-guideline.md
+git log origin/main..HEAD --format='%s' | while read subj; do
+  len=${#subj}
+  if [ "$len" -gt 80 ]; then echo "TOO LONG ($len): $subj"; fi
+  case "$subj" in
+    feat\(*|fix\(*|docs\(*|test\(*|refactor\(*|chore\(*|ci\(*|build\(*|perf\(*|style\(*) ;;
+    *) echo "NON-CONVENTIONAL: $subj" ;;
+  esac
+done
+# Also visually check imperative mood and no trailing period.
+
+# G3: PR title + body shape vs recent merged PRs
+gh pr list --state merged --limit 5 --json number,title,body 2>/dev/null \
+  | python3 -c 'import json,sys; [print(f"--- PR #{p[\"number\"]}: {p[\"title\"]}"); print(p["body"][:400]) for p in json.load(sys.stdin)]' \
+  2>/dev/null
+# Compare section headings, footer shape, checkbox usage with your draft body.
+
+# G4: branch name convention
+branch=$(git rev-parse --abbrev-ref HEAD)
+case "$branch" in
+  feat/*|fix/*|refactor/*|chore/*|hotfix/*|release/*) ;;
+  *) echo "BRANCH NAME: $branch does not match feat/fix/refactor/chore/hotfix/release prefix" ;;
+esac
+# Shotloom: no stl-NN prefix — Linear's auto-suggestion is a UI hint, not the canonical name.
+
+# G5: ADR / tech-debt coherence when structure shifts
+git diff --name-only origin/main..HEAD -- 'crates/*/src/' 'crates/Cargo.toml' \
+  | rg 'lib\.rs|mod\.rs' \
+  && echo "Structure may have shifted — verify docs/adr/ or docs/tech-debt/ reflect it"
+git diff --name-only origin/main..HEAD -- 'docs/adr/' 'docs/tech-debt/' 'docs/adr/README.md' 'docs/tech-debt/README.md'
+# If crate structure changed but no ADR/tech-debt edit — justify in PR body or add one.
+
+# G6: doc-paths validator + Rust comment path spot-check
+node scripts/validate-doc-paths.mjs 2>&1 | tail -2
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -o '`(docs|crates|scripts|examples|fixtures)/[^`]+`' \
+  | sort -u
+# For each path in Rust comments, `ls` it.
+
+# G7: every fix-type commit ships a paired regression test
+for sha in $(git log origin/main..HEAD --format='%H' --grep='^fix'); do
+  subj=$(git log -1 --format='%s' "$sha")
+  has_test=$(git show --stat "$sha" | rg -c '#\[test\]|_test\.rs')
+  if [ "${has_test:-0}" = "0" ]; then
+    # Check if a later commit in the same branch added the regression test
+    later_test=$(git log "$sha..HEAD" --format='%s' | rg -c '^test\(' || true)
+    if [ "${later_test:-0}" = "0" ]; then
+      echo "FIX COMMIT WITHOUT TEST: $sha $subj"
+    fi
+  fi
+done
+# A fix: commit without a paired regression test violates rules/testing.md.
 ```
 
 ### Step 4: Triage — group findings by pattern

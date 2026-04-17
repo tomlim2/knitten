@@ -74,6 +74,28 @@ For each selected feedback item:
 3. Apply the fix. If the feedback also implies PR description or doc changes, apply those too.
 4. After each fix, briefly report what was changed.
 
+### Step 4.5: Capture defect as a reusable pattern
+
+After a fix lands, decide whether the defect represents a **new pattern class** or a new instance of an existing one. This prevents the same finding from resurfacing on a future PR.
+
+For each resolved finding:
+
+1. Open `~/.claude/standards/review-code-rust.md` and re-read the Pattern A–G taxonomy (plus the self-review checklist at the bottom).
+2. **Match against existing patterns first.** If the finding is a clearer / more dramatic instance of an already-listed pattern (A1, B2, C3, etc.), add a one-line secondary "Real defect" reference to that pattern citing this PR and the comment ID.
+3. **If nothing matches, draft a new pattern entry.** Write a pattern stub with:
+   - Title line: `### X8 — <one-line pattern name>` (use the next free number in the relevant group, or open a new Group letter if no group fits)
+   - Short description (2–3 sentences)
+   - `**Self-check:**` bash one-liner or a "for every X, ask Y" rule
+   - `**Real defect:**` line with PR link and comment ID
+4. Add the new pattern to the Self-review checklist block at the bottom of the standard.
+5. Append a one-line entry to the Provenance section noting the date, PR, and pattern added.
+
+Do **not** update the standard for every trivial fix. Use these filters:
+- Add → the fix is "replace this kind of construct with that kind", the rule is gr[ae]p-able against any future diff, and a senior reviewer would have caught it mechanically.
+- Skip → fix is ad-hoc (rename for clarity, data typo, local semantic bug without a recurring shape).
+
+Report to user at the end: "Added Pattern X to review-code-rust.md" or "No new pattern — fix was {reason}."
+
 ### Step 5: Validate + commit
 
 1. **Always update the PR description** after resolving feedback:
@@ -197,6 +219,7 @@ Keep the main thread as orchestrator: gather results, stage files, commit, post 
 | Comment ID not found (404) | PR may have been force-pushed; re-fetch comments |
 | Reply posts as top-level | Use `/comments/<id>/replies` endpoint, not `/issues/<N>/comments` |
 | Cargo clippy fails after fix | Fix clippy warnings before committing |
+| Inline reply rejected on rename-detected diff | GitHub's rename-aware diff only accepts replies on lines present in the original `diff_hunk`. Read the comment's `diff_hunk` field first and reply at a line that appears there — do NOT bisect line numbers on the live PR. Each failed attempt leaves a visible "superseded" artifact reviewers see. If artifacts already exist, include a brief one-line apology in the next successful reply (e.g., "Apologies for the earlier superseded entries — API-bisection artifacts while locating the accepted line"). |
 
 ## Related
 

@@ -67,6 +67,18 @@ A test named `single_root_no_children` whose body builds an empty `HashMap` is l
 
 **Real defect:** `topo.rs::single_root_no_children` built an empty map; renamed to `empty_map_returns_empty_order` with matching comment.
 
+### A7 — Documented error-handling contract must match implementation
+
+If a rustdoc on a `Result`-returning function promises defensive behavior ("Returns `Err` if...", "exists for API consistency and defensive robustness", "validates..."), the body must actually return `Err` on those inputs — not panic via direct `[]` indexing, `unwrap()`, or arithmetic overflow. A `Result` return type is a contract; unreachable-by-current-invariant is not the same as unreachable-by-type. This is especially load-bearing when:
+
+- The invariant that makes the panic "unreachable" lives in a **different function** (a builder, a validator) that callers can bypass.
+- The struct field feeding the index is `pub` (callers can mutate it after construction) or deserialized from untrusted bytes.
+- The doc literally names the error variant the function is supposed to return.
+
+**Self-check:** for every `pub fn ... -> Result<_, E>` in touched files, grep the body for `[`, `.unwrap(`, `.expect(`, and unchecked arithmetic. For each hit, ask: "if an adversarial caller constructs the input, does this panic or return `Err`?" If the doc promises `Err`, the body must use `.get(i).ok_or(...)?`, `checked_add`, etc. Do not rely on "an upstream builder guarantees this" unless the builder is the only constructor AND the relevant field is private.
+
+**Real defect (PR #85):** `vrm_rest::build_from_bytes` doc promised *"Returns `VrmRestError` if the GLB JSON structure is inconsistent... `Result` exists for API consistency and defensive robustness"*, but the body used `locals[node_index]` and `global_mats[node_index]` at four sites. The invariant came from `build_humanoid_node_map`, and `HumanoidMap.node_to_vrm` was `pub` — so the panic was reachable. Fix: replace each `v[i]` with `v.get(i).ok_or_else(|| VrmRestError::InvalidHumanoidNodeIndex { ... })?` and reuse the existing error variant.
+
 ---
 
 ## Pattern B — Classifier / dispatch asymmetry
@@ -243,6 +255,63 @@ When you mirror a pattern from a sibling crate, the data invariants may have div
 
 ---
 
+## Pattern G — Structural / convention coherence
+
+**The PR's code is correct in isolation but drifts from the repo's structural rules.** Each failure here is a reviewer round-trip even when the code itself is fine, because the repo has a published shape that reviewers enforce. Always read `CONTRIBUTING.md`, `AGENTS.md`, `docs/guidelines/*.md`, and `docs/adr/README.md` before opening the PR; repo-local rule files in `~/.claude/rules/<repo>-*.md` override the generic ones.
+
+### G1 — New files land in the crate responsible for the concern
+
+Every new Rust file must match the responsibility of its owning crate per the repo's ADRs and recent precedent. Do not drop a parsing helper into the runtime crate because it is convenient; do not add a retarget-only sentinel to the gltf parsing crate.
+
+**Self-check:** for each new file, `git log --oneline -- crates/<crate>/` the last few merges — does the crate's existing content look like your new file? If no, either move the file or justify the expansion in the PR body.
+
+**Real defect (PR #85):** `shotloom-gltf::vrm_extract` hardcoded `"VRMC_vrm.root_bone"` despite ADR-0025 saying gltf is retarget-agnostic. The string belonged in `shotloom-retarget::mapping`. Flagged P1 by reviewer, tracked as STL-114.
+
+### G2 — Commit subject + body match `docs/guidelines/commit-guideline.md`
+
+Conventional commits, lowercase type+scope, imperative mood, subject ≤ 80 characters, no trailing period, blank line before body, body wraps at 80 characters. Breaking changes need both `!` in subject and `BREAKING CHANGE:` in body. Linear IDs go in the footer (`Related to STL-NN`), not the subject.
+
+**Self-check:** `git log origin/main..HEAD --format='%s%n%b%n---'` — visually audit each subject against the guideline and verify footers exist where expected.
+
+### G3 — PR title + body match the repo's recent merged pattern
+
+PR title format, section headings (`## Summary`, `## Test plan`, `## Validation`), checkbox list formatting, and footer (`Related to STL-NN` / `Closes STL-NN`) vary by repo. Match the last 3–5 merged PRs in the same repo. A PR with the wrong body shape draws a review round-trip even when the code is perfect.
+
+**Self-check:** `gh pr list --state merged --limit 5 --json title,body` before drafting. Copy the section skeleton from whichever merged PR is most similar in scope.
+
+### G4 — Branch name follows repo convention, not Linear's auto-suggestion
+
+Shotloom: `feat/<description>`, `fix/<description>`, `refactor/<description>`, `chore/<description>`, `release/vX.Y.Z` — **no STL-NN prefix**. Linear's auto-generated `deemo/stl-NN-*` is a UI hint, not the canonical branch name. Other CINEV repos may have different conventions; check CONTRIBUTING before creating.
+
+**Self-check:** `git rev-parse --abbrev-ref HEAD` and compare against `grep -E '^(feat|fix|refactor|chore)/' <(git branch -r)` recent entries. Rename locally before pushing if needed.
+
+### G5 — ADR / tech-debt register kept current with structural moves
+
+When a PR moves, deletes, or re-owns code across crate boundaries, the architectural record must move with it:
+- A new boundary decision → new ADR under `docs/adr/` with an entry in `docs/adr/README.md`.
+- A resolved structural debt → the tech-debt file is **deleted** (not marked Resolved) and the `docs/tech-debt/README.md` entry removed. The resolution lives in the commit/PR history and the related ADR.
+- A new structural debt accepted in this PR → a new `docs/tech-debt/<slug>.md` file plus a README register entry.
+
+**Self-check:** for each cross-crate file move, cross-crate API shape change, or "this is a boundary decision" comment in the PR body, ask "does `docs/adr/` or `docs/tech-debt/` reflect this?" If no, add or remove the artifact in the same PR.
+
+**Real defect (PR #85):** `docs/tech-debt/vrm-rest-extraction-boundary.md` was left marked "Resolved" after the refactor landed; reviewer asked to delete it per `docs/guidelines/documentation-standard.md` §5.9. Fixed in 5abada1.
+
+### G6 — Doc paths referenced in docs / comments resolve
+
+Every `docs/...` / `crates/...` / `scripts/...` path in a changed markdown file or Rust comment must point to something that actually exists at commit time. Shotloom runs `node scripts/validate-doc-paths.mjs` both pre-commit and in CI, but Rust `///` comments and ADR cross-links can still drift.
+
+**Self-check:** `node scripts/validate-doc-paths.mjs` locally after the final commit, plus `rg -o '\`(docs|crates|scripts)/[^\`]+\`' <(git diff origin/main..HEAD)` + `ls` spot-check for Rust comment refs.
+
+### G7 — Bug-fix PRs ship a regression test (`rules/testing.md`)
+
+Per `rules/testing.md`, a bug fix must ship a test that fails on `main` and passes on the branch. "Pattern-clean" is not enough if the fix has no tripwire — a future refactor can re-introduce the same defect silently. Regression tests are mandatory for any panic fix, logic bug, or silent-fallback correction.
+
+**Self-check:** for every commit whose type is `fix`, grep the diff for a corresponding `#[test] fn ..._regression_*` or `..._survives_*` / `..._rejects_*` / `..._returns_*` test. If absent, add before opening the PR. Optionally verify the test fails pre-fix by temporarily reverting and running `cargo test`.
+
+**Real defect (PR #95 self-review, 2026-04-17):** Fix commit `714ff7f` (accessor panic guard) opened the PR without a regression test. Pattern-clean across A–F but testing.md violated. Added `fb137e0 test(gltf): add regression test for accessor out-of-bounds panic` after self-review flagged it.
+
+---
+
 ## Self-review checklist (before push)
 
 Run through this list every time, in order:
@@ -254,6 +323,7 @@ Run through this list every time, in order:
 [ ] A4 — PR body matches `git ls-files` for changed crates
 [ ] A5 — Every new test name describes its actual setup
 [ ] A6 — Numeric claims in comments re-derived from types / constants / bench
+[ ] A7 — Every `pub fn -> Result<_, _>` whose doc promises defensive behavior uses `.get`/`checked_*` — no `[]`, `unwrap`, or unchecked arithmetic on caller-influenced indices
 
 [ ] B1 — Every classifier bucket is the only input to its handler
 [ ] B2 — No early return drops downstream stages that don't need the missing data
@@ -274,6 +344,14 @@ Run through this list every time, in order:
 [ ] F1 — Narrow integers / enum discriminants range-checked at parser boundary
 [ ] F2 — Inherited defensive code re-validated against this crate's actual invariants
 [ ] F3 — Mirrored-pattern sources read with review glasses; defects fixed in both places
+
+[ ] G1 — New files in the crate that owns the responsibility per ADR / recent precedent
+[ ] G2 — Every commit subject + body follows `docs/guidelines/commit-guideline.md`
+[ ] G3 — PR title + body shape matches the last 3–5 merged PRs in the same repo
+[ ] G4 — Branch name uses `feat/fix/refactor/chore/release` prefix, no Linear ID prefix
+[ ] G5 — ADR added/updated or tech-debt entry added/deleted when structure shifts
+[ ] G6 — `node scripts/validate-doc-paths.mjs` clean + Rust comment path refs spot-checked
+[ ] G7 — Every `fix:` commit in this PR has a paired regression test that fails on `main`
 ```
 
 If any line cannot be ticked or explicitly waived ("N/A — no Cargo.toml changes"), do not push. Fix it locally, re-run the gates, then push.
@@ -282,4 +360,4 @@ If any line cannot be ticked or explicitly waived ("N/A — no Cargo.toml change
 
 ## Provenance
 
-Patterns A–E (excluding A6, E3) were reverse-engineered from 16 Copilot review comments on [Shotloom PR #66 (STL-74)](https://github.com/CINEV/shotloom/pull/66), spanning three review rounds (2026-04-14). A6, E3, and Pattern group F (F1–F3) were added from PR #72 self-review gap analysis (2026-04-15, merged from the earlier `shotloom-review-patterns.md`). Each pattern maps to at least one real defect caught after push. Update this file whenever a new defect class shows up that this checklist doesn't cover — this is the **single source of truth** for Rust pre-PR review patterns. Both `shotloom-review-before-pr` (local) and `cci-codex-review-rust` (remote) load this file directly; do not maintain a parallel checklist.
+Patterns A–E (excluding A6, E3) were reverse-engineered from 16 Copilot review comments on [Shotloom PR #66 (STL-74)](https://github.com/CINEV/shotloom/pull/66), spanning three review rounds (2026-04-14). A6, E3, and Pattern group F (F1–F3) were added from PR #72 self-review gap analysis (2026-04-15, merged from the earlier `shotloom-review-patterns.md`). A7 was added 2026-04-17 from a P0 review comment on [PR #85](https://github.com/CINEV/shotloom/pull/85) where `vrm_rest::build_from_bytes` promised defensive `Result` returns but indexed directly. Group G (G1–G7) was added 2026-04-17 to cover structural / repo-convention defects surfaced across PR #85 round-2 review and the PR #95 self-review gap (missing regression test on a bug-fix PR). Each pattern maps to at least one real defect caught after push. Update this file whenever a new defect class shows up that this checklist doesn't cover — this is the **single source of truth** for Rust pre-PR review patterns. Both `shotloom-review-before-pr` (local) and `cci-codex-review-rust` (remote) load this file directly; do not maintain a parallel checklist.
