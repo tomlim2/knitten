@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""Archive this week's temp-learnings + ~/.codex docs into Obsidian vault.
+"""Archive this week's obsidian-staging + ~/.codex docs into Obsidian vault.
 
 Idempotent: skips files with existing valid frontmatter if already at destination.
 See SKILL.md for full spec.
+
+Machine-specific absolute paths are loaded from
+``~/.claude/private/machine-paths.json`` (keys: ``obsidian-staging``,
+``codex-home``, ``obsidian-vault-claude``). Missing keys abort the run with a
+clear message — on machines without an Obsidian vault (e.g. the work Mac) this
+script is not meant to run.
 """
 from __future__ import annotations
+import json
 import os
 import re
 import sys
@@ -13,9 +20,27 @@ from pathlib import Path
 from datetime import datetime, date
 
 HOME = Path.home()
-TEMP = HOME / "Desktop/www/caol-ila/claude/temp-learnings"
-CODEX = HOME / ".codex"
-VAULT = Path("/Users/younsoolim/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude")
+
+# ---------- load machine-specific paths ----------
+_PATHS_FILE = HOME / ".claude" / "private" / "machine-paths.json"
+try:
+    _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
+except FileNotFoundError:
+    sys.exit(f"archive.py: missing {_PATHS_FILE}. Populate it with obsidian-staging / codex-home / obsidian-vault-claude keys.")
+except json.JSONDecodeError as e:
+    sys.exit(f"archive.py: invalid JSON in {_PATHS_FILE}: {e}")
+
+
+def _require(key: str) -> Path:
+    val = _PATHS.get(key)
+    if not val:
+        sys.exit(f"archive.py: machine-paths.json missing required key '{key}'.")
+    return Path(val)
+
+
+TEMP = _require("obsidian-staging")
+CODEX = _require("codex-home")
+VAULT = _require("obsidian-vault-claude")
 
 WEEK_START = datetime(2026, 4, 13)
 WEEK_END = datetime(2026, 4, 18)  # exclusive
@@ -25,7 +50,7 @@ DRY_RUN = "--dry-run" in sys.argv
 # (src_rel_from_base, base, dest_rel_from_vault, tags, source_value, delete_source)
 MAPPING: list[tuple[Path, Path, Path, list[str], str, bool]] = []
 
-# ---------- temp-learnings/bevy-vrm/*.md -> projects/bevy-vrm/days/ ----------
+# ---------- obsidian-staging/bevy-vrm/*.md -> projects/bevy-vrm/days/ ----------
 BEVY_DEVLOGS = [
     "devlog-2026-04-13-arp-retargeter-inner-finding.md",
     "devlog-2026-04-13-diagnostic-layer.md",
@@ -65,7 +90,7 @@ for fn in BEVY_DEVLOGS:
         tags, "claude", True,
     ))
 
-# ---------- shotloom devlogs (in temp-learnings root) ----------
+# ---------- shotloom devlogs (in obsidian-staging root) ----------
 SHOTLOOM_DEVLOGS = [
     "devlog-2026-04-14-stl74-pr-open.md",
     "devlog-2026-04-14-stl74-revision.md",

@@ -1,9 +1,28 @@
 #!/usr/bin/env python3
-"""Consolidate semantic-duplicate tags in Obsidian vault."""
+"""Consolidate semantic-duplicate tags in Obsidian vault.
+
+Vault path is loaded from ``~/.claude/private/machine-paths.json``
+(key ``obsidian-vault-claude``). On machines without the vault this script
+exits early — there is nothing to consolidate.
+"""
+import json
 import re
+import sys
 from pathlib import Path
 
-VAULT = Path("/Users/younsoolim/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude")
+_PATHS_FILE = Path.home() / ".claude" / "private" / "machine-paths.json"
+try:
+    _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
+except FileNotFoundError:
+    sys.exit(f"tag_consolidate.py: missing {_PATHS_FILE}.")
+except json.JSONDecodeError as e:
+    sys.exit(f"tag_consolidate.py: invalid JSON in {_PATHS_FILE}: {e}")
+
+_VAULT = _PATHS.get("obsidian-vault-claude")
+if not _VAULT:
+    sys.exit("tag_consolidate.py: machine-paths.json missing 'obsidian-vault-claude' — no vault on this machine, nothing to consolidate.")
+
+VAULT = Path(_VAULT)
 
 TAG_MAP = {
     "retargeting": "retarget",

@@ -26,7 +26,7 @@ When debugging complex systems (retargeting, rendering, animation), ad-hoc trial
 ```
 Example: `/dev-log-experiment start bevy-vrm/retarget-shoulder`
 
-Creates `temp-learnings/<project>/experiments-<topic>.md` with session header.
+Creates `obsidian-staging/<project>/experiments-<topic>.md` with session header.
 
 ### Add an experiment
 ```
@@ -129,7 +129,7 @@ Dead ends: EXP-002 (Z-offset > 12° causes unnatural arm angle)
 ## File Structure
 
 ```
-temp-learnings/
+obsidian-staging/
 ├── bevy-vrm/
 │   ├── experiments-retarget-shoulder.md
 │   ├── experiments-retarget-wrist.md

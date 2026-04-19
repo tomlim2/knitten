@@ -10,12 +10,14 @@
 # Behavior:
 #   - Forces reasoning_effort=high (회사 토큰 적극 사용)
 #   - Forces Korean output via prompt prefix
-#   - Archives result to Obsidian (if available) or caol-ila/claude/temp-learnings/codex-runs/
+#   - Archives result to Obsidian (if available) or the obsidian-staging fallback
 #   - Logs a one-line summary on completion
 #
 # Output destination resolution:
 #   1. If repo-paths.json has 'obsidian' key AND that path exists → <obsidian>/claude/codex-runs/YYYY-MM-DD/
-#   2. Else → ~/Desktop/www/caol-ila/claude/temp-learnings/codex-runs/YYYY-MM-DD/
+#   2. Else → <obsidian-staging>/codex-runs/YYYY-MM-DD/ where obsidian-staging
+#      comes from ~/.claude/private/machine-paths.json, with a legacy
+#      fallback to ~/Desktop/www/caol-ila/claude/obsidian-staging/codex-runs/.
 
 set -euo pipefail
 
@@ -41,17 +43,24 @@ fi
 
 # Resolve archive directory
 REPO_PATHS="$HOME/.claude/private/repo-paths.json"
+MACHINE_PATHS="$HOME/.claude/private/machine-paths.json"
 OBSIDIAN=""
+STAGING=""
 if [ -f "$REPO_PATHS" ]; then
   OBSIDIAN=$(jq -r '.obsidian // empty' "$REPO_PATHS" 2>/dev/null || echo "")
+fi
+if [ -f "$MACHINE_PATHS" ]; then
+  STAGING=$(jq -r '."obsidian-staging" // empty' "$MACHINE_PATHS" 2>/dev/null || echo "")
 fi
 
 DATE=$(date +%Y-%m-%d)
 TIME=$(date +%H%M%S)
 if [ -n "$OBSIDIAN" ] && [ -d "$OBSIDIAN" ]; then
   OUT_DIR="$OBSIDIAN/claude/codex-runs/$DATE"
+elif [ -n "$STAGING" ]; then
+  OUT_DIR="$STAGING/codex-runs/$DATE"
 else
-  OUT_DIR="$HOME/Desktop/www/caol-ila/claude/temp-learnings/codex-runs/$DATE"
+  OUT_DIR="$HOME/Desktop/www/caol-ila/claude/obsidian-staging/codex-runs/$DATE"
 fi
 mkdir -p "$OUT_DIR"
 OUT_FILE="$OUT_DIR/${SKILL}-${TIME}.md"
@@ -100,5 +109,5 @@ echo "📝 Archived: $OUT_FILE"
 if [ -n "$OBSIDIAN" ] && [ -d "$OBSIDIAN" ]; then
   echo "   (Obsidian)"
 else
-  echo "   (caol-ila temp-learnings — Obsidian not configured)"
+  echo "   (obsidian-staging — Obsidian not configured)"
 fi

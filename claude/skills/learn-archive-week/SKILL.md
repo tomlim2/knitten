@@ -1,5 +1,5 @@
 ---
-description: "Weekly archive pass — sweep this week's temp-learnings + ~/.codex docs into Obsidian vault with frontmatter/wikilinks. Use on weekends to clear the weekday capture buffer."
+description: "Weekly archive pass — sweep this week's obsidian-staging + ~/.codex docs into Obsidian vault with frontmatter/wikilinks. Use on weekends to clear the weekday capture buffer."
 argument-hint: "[--dry-run]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(python3:*), Bash(find:*), Bash(ls:*), Bash(mkdir:*), Bash(rm:*)
 user-invocable: true
@@ -7,15 +7,17 @@ user-invocable: true
 
 # IMPORTANT: Permission gotcha
 
-Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iCloud Obsidian vault path (`/Users/younsoolim/Library/Mobile Documents/iCloud~md~obsidian/...`). Only the main Claude Code session does.
+Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iCloud Obsidian vault path (resolved via `obsidian-vault-claude` in `~/.claude/private/machine-paths.json`). Only the main Claude Code session does.
 
 **Therefore: run `archive.py` directly in the main session — do NOT delegate to subagents.**
 
 # learn-archive-week
 
-이번 주 평일에 `claude/temp-learnings/`에 쌓인 devlog/learning/ops 문서와 `~/.codex/`에 업데이트된 문서를 Obsidian vault로 아카이빙.
+이번 주 평일에 `claude/obsidian-staging/`에 쌓인 devlog/learning/ops 문서와 `~/.codex/`에 업데이트된 문서를 Obsidian vault로 아카이빙.
 
 평일 = 빠른 캡처 (frontmatter 없이), 주말 = vault로 정돈 (frontmatter, wikilink, 태그).
+
+> 머신 한정 절대경로(`obsidian-staging`, `codex-home`, `obsidian-vault-claude`)는 `~/.claude/private/machine-paths.json`에서 읽어온다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
 
 ---
 
@@ -34,16 +36,16 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 | 경로 | 처리 후 원본 |
 |------|--------------|
-| `caol-ila/claude/temp-learnings/*.md` (최상위) | 삭제 |
-| `caol-ila/claude/temp-learnings/bevy-vrm/**/*.md` | 삭제 |
-| `caol-ila/claude/temp-learnings/codex-runs/**/*.md` | 삭제 |
-| `caol-ila/claude/temp-learnings/private-learnings/**/*.md` | 삭제 |
-| `caol-ila/claude/temp-learnings/private-ops/**/*.md` | 삭제 |
-| `~/.codex/memories/*.md`, `~/.codex/order/*.md`, `~/.codex/rules/**/*.md`, `~/.codex/AGENTS.md` | **복사만** (런타임 설정이라 삭제 금지) |
+| `{obsidian-staging}/*.md` (최상위) | 삭제 |
+| `{obsidian-staging}/bevy-vrm/**/*.md` | 삭제 |
+| `{obsidian-staging}/codex-runs/**/*.md` | 삭제 |
+| `{obsidian-staging}/private-learnings/**/*.md` | 삭제 |
+| `{obsidian-staging}/private-ops/**/*.md` | 삭제 |
+| `{codex-home}/memories/*.md`, `{codex-home}/order/*.md`, `{codex-home}/rules/**/*.md`, `{codex-home}/AGENTS.md` | **복사만** (런타임 설정이라 삭제 금지) |
 
 ### Destination (Obsidian vault)
 
-`{vault}/claude/` 아래. `vault` = `~/.claude/private/repo-paths.json` 의 `obsidian` 키.
+`{obsidian-vault-claude}/` 아래. 경로는 `~/.claude/private/machine-paths.json` 의 `obsidian-vault-claude` 키에서 읽음.
 
 | 분류 | 목적지 |
 |------|--------|
@@ -76,7 +78,7 @@ python3 ~/.claude/skills/learn-archive-week/archive.py
 3. 기존 frontmatter 있으면 tag merge
 4. 중복 H1을 H2로 강등
 5. 목적지 덮어쓰기 전 `.bak` 백업
-6. temp-learnings 파일 삭제, ~/.codex 파일은 복사만
+6. obsidian-staging 파일 삭제, ~/.codex 파일은 복사만
 
 **매주 돌릴 때**: MAPPING 리스트를 그 주 파일에 맞게 업데이트 후 실행. (향후 자동 스캔 + 휴리스틱 분류로 개선 가능)
 
@@ -224,7 +226,7 @@ source: claude
 
 ```
 Week: 2026-04-13 Mon ~ 2026-04-17 Fri
-Scanned: 56 files (temp-learnings: 48, codex-base: 8)
+Scanned: 56 files (obsidian-staging: 48, codex-base: 8)
 Archived: 54 files
   devlog: 22 → claude/projects/{proj}/days/
   learning: 11 → claude/learnings/
@@ -233,7 +235,7 @@ Archived: 54 files
   reference: 5 → claude/references/codex-base/
 Skipped: 2 files
   - {reason}
-Deleted originals: 46 files (temp-learnings)
+Deleted originals: 46 files (obsidian-staging)
 Copied only: 8 files (~/.codex, kept in place)
 ```
 
