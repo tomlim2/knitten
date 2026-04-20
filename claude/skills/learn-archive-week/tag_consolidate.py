@@ -22,7 +22,10 @@ _VAULT = _PATHS.get("obsidian-vault-claude")
 if not _VAULT:
     sys.exit("tag_consolidate.py: machine-paths.json missing 'obsidian-vault-claude' — no vault on this machine, nothing to consolidate.")
 
-VAULT = Path(_VAULT)
+# obsidian-vault-claude points at {vault}/claude. Walk the whole vault for tag
+# consolidation, so broaden to the parent and exclude config directories.
+VAULT = Path(_VAULT).parent
+EXCLUDE_DIRS = {".trash", ".obsidian"}  # config only — all user docs included
 
 TAG_MAP = {
     "retargeting": "retarget",
@@ -32,6 +35,48 @@ TAG_MAP = {
     "daily-summary": "devlog",
     "pr-review": "pr-workflow",
     "codex-cli": "codex-base",
+    # 2026-04-18 additions
+    "naming": "conventions",
+    "privacy-rule": "conventions",
+    "review-patterns": "skill-review",
+    "self-review": "pr-workflow",
+    "server": "infra",
+    "rendering": "shader",
+    "world-space": "skeleton",
+    # 2026-04-18 (full vault pass)
+    "project/ue-live-scene-bridge": "ue-live-scene-bridge",
+    "www": "web",
+    "ue": "unreal-engine",  # non-versioned → umbrella
+    "unreal5d3": "ue5d3",   # normalize to ue<major>d<minor>
+    "unreal5d7": "ue5d7",
+    "npr": "toon-rendering",
+    "resources": "reference",  # plural → singular (vault convention)
+}
+
+# Umbrella tags: if file has any of keys, also add ALL values (doesn't replace).
+# Value can be a single string or a list.
+TAG_ADD: dict[str, list[str]] = {
+    # git
+    "lfs": ["git"],
+    "stash": ["git"],
+    "github-api": ["git"],
+    "pr-workflow": ["git"],
+    # drinks
+    "wine": ["drinks"],
+    "whisky": ["drinks"],
+    "champagne": ["drinks"],
+    # 3d-genai
+    "hyper3d": ["3d-genai"],
+    "nvidia": ["3d-genai"],
+    "mesh-generation": ["3d-genai"],
+    "world-generation": ["3d-genai"],
+    # mtoon → vrm + toon-rendering (MToon is VRM-spec toon shader)
+    "mtoon": ["vrm", "toon-rendering", "shader"],
+    # job-search
+    "interview": ["job-search"],
+    # ai umbrella
+    "llm": ["ai"],
+    "prompt": ["ai"],
 }
 
 FM_RE = re.compile(r"\A(---\s*\n)(.*?\n)(---\s*\n)", re.DOTALL)
@@ -90,10 +135,27 @@ def process_file(fp: Path) -> tuple[bool, list[str]]:
             continue
 
         if in_tags and not line.startswith("  "):
-            # left tags block
+            # left tags block — before leaving, apply TAG_ADD umbrellas
+            for trigger, umbrellas in TAG_ADD.items():
+                if trigger in seen_tags:
+                    for umbrella in umbrellas:
+                        if umbrella not in seen_tags:
+                            seen_tags.append(umbrella)
+                            out_lines.append(f"  - {umbrella}")
+                            changes.append(f"+{umbrella} (from {trigger})")
             in_tags = False
 
         out_lines.append(line)
+
+    # if tags block extends to end of FM, still apply TAG_ADD
+    if in_tags:
+        for trigger, umbrellas in TAG_ADD.items():
+            if trigger in seen_tags:
+                for umbrella in umbrellas:
+                    if umbrella not in seen_tags:
+                        seen_tags.append(umbrella)
+                        out_lines.append(f"  - {umbrella}")
+                        changes.append(f"+{umbrella} (from {trigger})")
 
     if not changes:
         return False, []
@@ -108,6 +170,8 @@ def main():
     changed_files = 0
     all_changes = []
     for fp in VAULT.rglob("*.md"):
+        if any(part in EXCLUDE_DIRS for part in fp.relative_to(VAULT).parts):
+            continue
         total_files += 1
         changed, changes = process_file(fp)
         if changed:

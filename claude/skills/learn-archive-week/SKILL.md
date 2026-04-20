@@ -1,6 +1,6 @@
 ---
-description: "Weekly archive pass — sweep this week's obsidian-staging + ~/.codex docs into Obsidian vault with frontmatter/wikilinks. Use on weekends to clear the weekday capture buffer."
-argument-hint: "[--dry-run]"
+description: "Weekly Obsidian maintenance — archive obsidian-staging + ~/.codex into vault, consolidate duplicate tags, fill missing tags from filenames. Three-stage pipeline: archive.py → tag_consolidate.py → fill_tags_from_name.py. Use on weekends."
+argument-hint: "[--dry-run] [--stage archive|consolidate|fill|all]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(python3:*), Bash(find:*), Bash(ls:*), Bash(mkdir:*), Bash(rm:*)
 user-invocable: true
 ---
@@ -13,9 +13,17 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 # learn-archive-week
 
-이번 주 평일에 `claude/obsidian-staging/`에 쌓인 devlog/learning/ops 문서와 `~/.codex/`에 업데이트된 문서를 Obsidian vault로 아카이빙.
+주간 Obsidian vault 정비 파이프라인. 평일에 `claude/obsidian-staging/`에 쌓인 devlog/learning/ops 문서와 `~/.codex/`에 업데이트된 문서를 주말에 vault로 정돈.
 
-평일 = 빠른 캡처 (frontmatter 없이), 주말 = vault로 정돈 (frontmatter, wikilink, 태그).
+## 3단계 파이프라인
+
+| 단계 | 스크립트 | 역할 |
+|------|---------|------|
+| 1. 아카이빙 | `archive.py` | temp-learnings + ~/.codex 문서를 vault로 이동 (frontmatter 자동 부여) |
+| 2. 태그 통합 | `tag_consolidate.py` | 의미 중복 태그 교체 (TAG_MAP) + 우산 태그 추가 (TAG_ADD). vault 전체 스캔 |
+| 3. 태그 보충 | `fill_tags_from_name.py` | 파일명/경로로부터 누락된 태그 추론해서 추가. vault 전체 스캔 |
+
+각 단계는 **idempotent** — 중복 실행해도 문제 없음. `.obsidian/`, `.trash/`만 제외하고 vault 전체가 관리 대상.
 
 > 머신 한정 절대경로(`obsidian-staging`, `codex-home`, `obsidian-vault-claude`)는 `~/.claude/private/machine-paths.json`에서 읽어온다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
 
@@ -62,16 +70,16 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 ## Workflow
 
-### 실제 실행 (권장)
+### 전체 실행 (주말 루틴)
 
 ```bash
-# dry-run 먼저
-python3 ~/.claude/skills/learn-archive-week/archive.py --dry-run
-
-# 실제 실행
-python3 ~/.claude/skills/learn-archive-week/archive.py
+cd ~/.claude/skills/learn-archive-week
+python3 archive.py            # 1. 이번 주 파일 아카이빙 (MAPPING 업데이트 필요)
+python3 tag_consolidate.py    # 2. 태그 통합 + 우산 적용
+python3 fill_tags_from_name.py # 3. 파일명 기반 태그 보충
 ```
 
+<<<<<<< HEAD
 스크립트가 하는 일:
 1. Hardcoded MAPPING (source → destination + tags) 기반 파일 처리
 2. Frontmatter 자동 부여 (title H1에서 추출, date 파일명/mtime에서)
@@ -79,23 +87,63 @@ python3 ~/.claude/skills/learn-archive-week/archive.py
 4. 중복 H1을 H2로 강등
 5. 목적지 덮어쓰기 전 `.bak` 백업
 6. obsidian-staging 파일 삭제, ~/.codex 파일은 복사만
+=======
+### Stage 1: archive.py
+>>>>>>> 273b30c (feat(skills): expand learn-archive-week to 3-stage pipeline)
 
-**매주 돌릴 때**: MAPPING 리스트를 그 주 파일에 맞게 업데이트 후 실행. (향후 자동 스캔 + 휴리스틱 분류로 개선 가능)
+이번 주 `{obsidian-staging}/*.md` + `{codex-home}/{memories,order,rules}/*.md` 을 vault로 이동 (경로는 `~/.claude/private/machine-paths.json`에서).
 
-### 태그 통합 (선택)
+- Hardcoded `MAPPING` 리스트 (source → destination + tags) 기반
+- Frontmatter 자동 부여 (title H1에서 추출, date 파일명/mtime에서)
+- 기존 frontmatter 있으면 tag merge
+- 중복 H1을 H2로 강등
+- 목적지 덮어쓰기 전 `.bak` 백업
+- obsidian-staging 파일 삭제, ~/.codex 파일은 복사만
 
-아카이빙 후 Obsidian 태그 풀에서 의미 중복(표기 차이) 정리:
+**매주 돌릴 때**: `MAPPING` 리스트를 그 주 파일에 맞게 업데이트 후 실행.
 
-```bash
-python3 ~/.claude/skills/learn-archive-week/tag_consolidate.py
-```
+**Permission gotcha**: iCloud vault 경로는 subagent write 권한 없음. 메인 세션에서만 실행.
 
-스크립트의 `TAG_MAP` 딕셔너리를 편집해서 추가 매핑 가능. 기본 포함된 매핑:
+### Stage 2: tag_consolidate.py
+
+vault 전체 스캔 → `TAG_MAP` (교체) + `TAG_ADD` (우산 추가) 적용.
+
+**현재 TAG_MAP (교체)**
 - `retargeting`, `shotloom-retarget` → `retarget`
 - `bevy`, `bevy_vrm1` → `bevy-vrm`
 - `daily-summary` → `devlog`
 - `pr-review` → `pr-workflow`
 - `codex-cli` → `codex-base`
+- `naming`, `privacy-rule` → `conventions`
+- `review-patterns` → `skill-review`
+- `self-review` → `pr-workflow`
+- `server` → `infra`
+- `rendering` → `shader`
+- `world-space` → `skeleton`
+- `project/ue-live-scene-bridge` → `ue-live-scene-bridge`
+- `www` → `web`
+- `ue` → `unreal-engine` (버전 태그 `ue5`/`ue4`/`ue5d3`/`ue5d7`은 유지)
+- `unreal5d3` → `ue5d3`, `unreal5d7` → `ue5d7`
+- `npr` → `toon-rendering`
+
+**현재 TAG_ADD (우산 — 원본 유지하고 umbrella 태그 추가)**
+- git 계열: `lfs`/`stash`/`github-api`/`pr-workflow` → +`git`
+- drinks 계열: `wine`/`whisky`/`champagne` → +`drinks`
+- 3d-genai 계열: `hyper3d`/`nvidia`/`mesh-generation`/`world-generation` → +`3d-genai`
+- VRM shader: `mtoon` → +`vrm`, +`toon-rendering`, +`shader`
+- job-search: `interview` → +`job-search`
+- ai 계열: `llm`/`prompt` → +`ai`
+
+새 규칙 추가 시 스크립트의 `TAG_MAP`/`TAG_ADD` 딕셔너리 편집.
+
+### Stage 3: fill_tags_from_name.py
+
+vault 전체 스캔 → 파일명/경로 토큰으로 누락 태그 추론 후 추가.
+
+- **RULES (파일명 정규식)**: `stash`/`pr-*`/`lfs`/`github-api` 등 → git 계열 태그 추가. `interview` → `interview`+`job-search`. `mtoon` → `mtoon`+`shader`. `wine`/`whisky`/`champagne` → `drinks`. `stl-NN` → `shotloom`. etc.
+- **PROJECT_DIR_TAG (경로 디렉토리)**: `projects/bevy-vrm/*` → `bevy-vrm` 태그 자동 추가. shotloom-rd, mmd-anju, matcap-painter, cinev-studio, krafton-hackathon, job-search-2026 등 매핑.
+
+이미 태그 있으면 skip (idempotent).
 
 ---
 
