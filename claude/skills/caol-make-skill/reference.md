@@ -348,3 +348,276 @@ git-commit-collector/
 ├── SKILL.md
 └── extract_commits.py (100 lines of logic)
 ```
+
+---
+
+## Subagent Pattern (`context: fork`)
+
+Use when a skill should run in an isolated context with no access to the main conversation. The skill body becomes the subagent's task prompt.
+
+```yaml
+---
+name: deep-research
+description: Research a topic thoroughly with read-only exploration
+context: fork
+agent: Explore
+---
+
+Research $ARGUMENTS thoroughly:
+
+1. Find relevant files using Glob and Grep.
+2. Read and analyze each match; do not edit.
+3. Return a summary with file:line references.
+```
+
+### Agent choices
+
+| Agent | Use for |
+|-------|---------|
+| `Explore` | Read-only codebase exploration. Ideal for research + summaries. |
+| `Plan` | Read-only planning — produces a plan, doesn't implement. |
+| `general-purpose` | Default; full tool access. |
+| custom (e.g. `my-reviewer`) | Defined in `.claude/agents/my-reviewer.md`. |
+
+**Gotcha:** `context: fork` only makes sense when SKILL.md contains an explicit task. Pure reference content ("use these conventions") in a forked skill gives the subagent instructions but no actionable prompt, and it returns empty. For reference-only skills, leave `context` unset (inline).
+
+---
+
+## Argument Passing Pattern
+
+### Full argstring
+
+```yaml
+---
+name: fix-issue
+description: Fix a GitHub issue by number
+disable-model-invocation: true
+---
+
+Fix GitHub issue $ARGUMENTS following our coding standards.
+
+1. Read the issue description
+2. Implement the fix
+3. Write tests
+4. Open a PR
+```
+
+`/fix-issue 123` → the body receives "Fix GitHub issue 123 ...".
+
+If the body does not mention `$ARGUMENTS`, Claude Code appends `ARGUMENTS: <input>` to the end so nothing is lost.
+
+### Positional arguments
+
+```yaml
+---
+name: migrate-component
+description: Migrate a component between frameworks
+---
+
+Migrate the $0 component from $1 to $2.
+Preserve behavior and tests.
+```
+
+`/migrate-component SearchBar React Vue` →
+- `$0` = `SearchBar`
+- `$1` = `React`
+- `$2` = `Vue`
+
+Quote multi-word arguments: `/migrate-component "Top Nav" React Vue` makes `$0 = "Top Nav"`.
+
+### Session-scoped artifacts
+
+```yaml
+---
+name: session-logger
+description: Append a line to this session's log file
+---
+
+Append $ARGUMENTS to logs/${CLAUDE_SESSION_ID}.log via:
+
+`mkdir -p logs && printf '%s\n' "$ARGUMENTS" >> logs/${CLAUDE_SESSION_ID}.log`
+```
+
+`${CLAUDE_SESSION_ID}` and `${CLAUDE_SKILL_DIR}` expand at invocation time — use `${CLAUDE_SKILL_DIR}` in skill-local script invocations so the command works regardless of the user's cwd.
+
+---
+
+## Dynamic Shell Injection
+
+### Inline preprocessing
+
+The `` !`command` `` form runs the shell command **before** the skill content reaches Claude. The command output replaces the backtick expression.
+
+```yaml
+---
+name: pr-summary
+description: Summarize changes in the current pull request
+context: fork
+agent: Explore
+allowed-tools: Bash(gh *)
+---
+
+## Pull request context
+
+- Diff: !`gh pr diff`
+- Comments: !`gh pr view --comments`
+- Files changed: !`gh pr diff --name-only`
+
+## Your task
+
+Summarize the PR's intent and flag risky changes.
+```
+
+Claude never sees the `` !`gh pr diff` `` literal — only the diff text.
+
+### Block form (multi-line)
+
+For more than one command, open a fenced code block with ` ```! `:
+
+````markdown
+## Local environment
+```!
+node --version
+pnpm --version
+git status --short
+```
+````
+
+### Policy kill-switch
+
+Add `"disableSkillShellExecution": true` to `settings.json` to replace every ` !`…` ` expression with `[shell command execution disabled by policy]` — useful for managed deployments. Bundled + managed skills are exempt.
+
+### Windows / PowerShell
+
+```yaml
+---
+name: build-win
+description: Windows build runner
+shell: powershell
+---
+
+Build: !`Get-Location; .\build.ps1`
+```
+
+Requires `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`.
+
+---
+
+## `paths`-Scoped Skills
+
+Auto-activation only when files matching the globs are in play. Great for monorepos and multi-stack repos.
+
+```yaml
+---
+name: frontend-conventions
+description: React + TS style and accessibility rules
+paths:
+  - "packages/frontend/**"
+  - "apps/web/**"
+---
+
+When editing frontend files:
+
+- Use the `Button` component from `packages/ui`, never a raw `<button>`.
+- All interactive elements need a visible focus state.
+- Prefer `useId` over hardcoded IDs for a11y.
+```
+
+Users can still invoke the skill manually with `/frontend-conventions` outside those paths — `paths` only gates **automatic** activation.
+
+String form also works:
+```yaml
+paths: "packages/frontend/**, apps/web/**"
+```
+
+---
+
+## User-Invocable vs Model-Invocable
+
+Two independent switches. Default: both true.
+
+| Goal | `disable-model-invocation` | `user-invocable` |
+|------|---------------------------|------------------|
+| Normal skill (both can invoke) | `false` (default) | `true` (default) |
+| Manual-only side-effects (deploy, send-slack) | `true` | `true` |
+| Background reference (Claude-only, hidden from `/`) | `false` | `false` |
+| Disabled (neither can invoke) | use deny rule in `/permissions` instead | |
+
+### Background reference example
+
+```yaml
+---
+name: legacy-auth-quirks
+description: Explains quirks of the legacy auth system. Use whenever touching /auth endpoints.
+user-invocable: false
+---
+
+The legacy auth module predates our JWT refresh flow...
+```
+
+Claude loads this when relevant, but it never appears in the `/` menu.
+
+---
+
+## Visual Output Pattern
+
+Skills can bundle scripts that generate interactive HTML and open it in a browser — useful for dashboards, tree views, dependency graphs, coverage reports.
+
+```yaml
+---
+name: codebase-visualizer
+description: Generate an interactive tree view of the repo
+allowed-tools: Bash(python:*)
+---
+
+Run:
+
+```
+python ${CLAUDE_SKILL_DIR}/scripts/visualize.py .
+```
+
+This writes `codebase-map.html` and opens it in the default browser.
+```
+
+Script location: `${CLAUDE_SKILL_DIR}/scripts/visualize.py`. The script generates a self-contained HTML file (inline CSS + JS, no external deps) and calls `webbrowser.open(...)`.
+
+For a full worked example including a Python script that emits an interactive HTML tree view, see the official docs: <https://code.claude.com/docs/en/skills#generate-visual-output>. This pattern pairs well with the existing `caol-browse-commands` skill (web dashboard of installed commands).
+
+---
+
+## Extended Thinking
+
+Include the literal word `ultrathink` anywhere in SKILL.md to opt the skill into extended-thinking mode:
+
+```yaml
+---
+name: review-architecture
+description: Deep architectural review
+---
+
+ultrathink
+
+Walk the dependency graph and flag layering violations...
+```
+
+---
+
+## Permission Rules for Skill Invocation
+
+Complementary to frontmatter, `/permissions` controls **who can use which skills**:
+
+```text
+# Deny all skills entirely
+Skill
+
+# Allow only specific skills
+Skill(commit)
+Skill(review-pr *)
+
+# Deny a particular skill
+Skill(deploy *)
+```
+
+Syntax: `Skill(name)` = exact match; `Skill(name *)` = prefix match with any args.
+
+`user-invocable: false` controls menu visibility only, **not** Skill tool access. To fully block Claude from invoking a skill, use `disable-model-invocation: true` or a deny rule.

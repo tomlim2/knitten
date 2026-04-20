@@ -93,6 +93,61 @@ allowed-tools: Read, Write, Bash(git:*)
 
 ---
 
+## Frontmatter Reference (Full)
+
+Commands and skills share the same frontmatter. All fields are optional; `description` is recommended. Canonical docs: <https://code.claude.com/docs/en/skills>.
+
+| Field | Type | Default | Purpose |
+|-------|------|---------|---------|
+| `name` | string | directory / file name | Display name (the `/slash-command`). Lowercase, digits, hyphens; max 64 chars. |
+| `description` | string | first paragraph | What the command/skill does and when to use it. Combined with `when_to_use` is capped at 1,536 chars in the listing. |
+| `when_to_use` | string | — | Additional trigger guidance (phrases, example requests). |
+| `argument-hint` | string | — | Autocomplete hint for required/optional args. |
+| `allowed-tools` | string or list | — | Tools usable without per-use approval while active. Does NOT restrict other tools. |
+| `disable-model-invocation` | boolean | `false` | `true` = user-only; Claude cannot auto-invoke. Use for deploys, commits, Slack sends. |
+| `user-invocable` | boolean | `true` | `false` = hide from `/` menu; Claude-only. Use for background/reference skills. |
+| `model` | string | session | Per-skill model override. |
+| `effort` | `low`\|`medium`\|`high`\|`xhigh`\|`max` | session | Per-skill effort override. |
+| `context` | `fork` | inline | Set to `fork` to run in a forked subagent context. |
+| `agent` | `Explore`\|`Plan`\|`general-purpose`\|custom | `general-purpose` | Subagent type when `context: fork`. |
+| `paths` | string or list of globs | — | Restricts auto-activation to matching files (monorepo support). |
+| `shell` | `bash`\|`powershell` | `bash` | Interpreter for `` !`command` `` injections. PowerShell needs `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`. |
+| `hooks` | object | — | Per-skill lifecycle hooks. |
+
+### Skill vs Command Precedence
+
+If `skills/foo/SKILL.md` and `commands/foo.md` exist with the same name, **the skill wins**. Existing `commands/*.md` files keep working with the same frontmatter, but new work should prefer skills since they support directories, supporting files, subagent execution (`context: fork`), and dynamic shell injection.
+
+Location priority (highest to lowest): `enterprise > personal (~/.claude/...) > project (.claude/...)`. Plugin skills live in a `plugin-name:skill-name` namespace and never conflict.
+
+### String Substitutions
+
+| Token | Meaning |
+|-------|---------|
+| `$ARGUMENTS` | Full argument string. If body omits this token, Claude Code appends `ARGUMENTS: <value>` at the end. |
+| `$ARGUMENTS[N]` / `$N` | 0-based positional argument. `$0` = first arg. Wrap multi-word args in quotes. |
+| `${CLAUDE_SESSION_ID}` | Current session ID. Use for per-session log files. |
+| `${CLAUDE_SKILL_DIR}` | Absolute dir of the current `SKILL.md`. Use when invoking bundled scripts so cwd doesn't matter. |
+
+### Dynamic Shell Injection
+
+```markdown
+Current branch: !`git rev-parse --abbrev-ref HEAD`
+```
+
+Multi-line fenced block:
+
+````markdown
+```!
+node --version
+npm --version
+```
+````
+
+Runs before Claude sees the content — Claude receives the command output, not the command text. Can be disabled globally via `"disableSkillShellExecution": true` in settings.
+
+---
+
 ## Common Command Patterns
 
 ### Pattern 1: Simple Workflow Command

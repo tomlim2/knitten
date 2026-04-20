@@ -70,9 +70,28 @@ Each name consists of three parts separated by hyphens:
 
 ## Frontmatter Quick Reference
 
-**Field order:** `description` → `argument-hint` → `allowed-tools`
+**Core field order for simple commands:** `description` → `argument-hint` → `allowed-tools`
 
 **NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, etc.
+
+**Advanced fields** (see `~/.claude/standards/slash-commands.md` "Frontmatter Reference (Full)" for the full table):
+
+- `name` — overrides directory/file-derived slash-name
+- `when_to_use` — extra trigger phrases, appended to description in the listing
+- `disable-model-invocation: true` — user-only, Claude cannot auto-invoke (deploys, commits)
+- `user-invocable: false` — Claude-only, hidden from `/` menu (background knowledge)
+- `context: fork` + `agent: Explore|Plan|general-purpose|<custom>` — run in isolated subagent
+- `paths: [glob, …]` — restrict auto-activation to matching files (monorepos)
+- `effort: low|medium|high|xhigh|max` — per-skill effort override
+- `shell: bash|powershell` — `` !`command` `` interpreter
+- `model` — per-skill model override
+- `hooks` — per-skill lifecycle automation
+
+**Skill vs command precedence:** If `skills/foo/SKILL.md` and `commands/foo.md` both exist, the skill wins.
+
+**String substitutions:** `$ARGUMENTS`, `$ARGUMENTS[N]`, `$0`/`$1`, `${CLAUDE_SESSION_ID}`, `${CLAUDE_SKILL_DIR}`. See standard for examples.
+
+**Dynamic shell injection:** Inline `` !`command` `` or fenced ` ```! ` block — executed before Claude sees the content.
 
 ---
 
