@@ -3,14 +3,14 @@ description: Check and update external skills from their source repos
 allowed-tools: Read, Write, Edit, WebFetch
 ---
 
-# meta-update-skills
+# caol-update-skills
 
 Check external skills for updates and apply them.
 
 ## Usage
 
 ```
-/meta-update-skills
+/caol-update-skills
 ```
 
 ## Workflow

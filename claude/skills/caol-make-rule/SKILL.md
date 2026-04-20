@@ -2,7 +2,7 @@
 description: "Structure and template for creating rules/*.md files (short enforcement constraints). Use when creating a new rule."
 ---
 
-# meta-make-rule
+# caol-make-rule
 
 Generator for `rules/*.md` — short must-follow constraints, one-liners.
 
@@ -16,7 +16,7 @@ Use this when:
 - The full rationale (if any) lives in a `standards/*.md` file that this rule links back to.
 
 Do NOT use this when:
-- The content needs explanation, examples, or alternatives → use `meta-make-standard` instead.
+- The content needs explanation, examples, or alternatives → use `caol-make-standard` instead.
 - The content is a one-off reminder for a specific task → put it in the relevant command/skill.
 
 ---
@@ -98,8 +98,8 @@ Structural rules:
 
 ## Related
 
-- `meta-make-standard` — long reference docs
-- `meta-make-skill` — reusable skills
-- `meta-make-command` — slash commands
+- `caol-make-standard` — long reference docs
+- `caol-make-skill` — reusable skills
+- `caol-make-command` — slash commands
 - `rules/index.md` — full index
 - `standards/index.md` — reference docs rules link to

@@ -3,7 +3,7 @@ description: Update CLAUDE.md project overview and language conventions
 allowed-tools: Glob, Grep, Read, Edit, Bash(git log:*), Bash(git diff:*)
 ---
 
-# meta-update-docs
+# caol-update-docs
 
 Scan the codebase and update the `CLAUDE.md` project overview and conventions to reflect the current state.
 ## Rules

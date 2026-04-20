@@ -6,7 +6,7 @@ context: fork
 agent: Explore
 ---
 
-# meta-consult-codebase
+# caol-consult-codebase
 
 You are in **read-only oracle mode**. You will analyze, advise, and explain.
 ## Restrictions

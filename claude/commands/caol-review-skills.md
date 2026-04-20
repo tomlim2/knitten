@@ -4,7 +4,7 @@ argument-hint: "[commands|skills|standards|all] [pattern]"
 allowed-tools: "Glob, Grep, Read, Edit, Write, AskUserQuestion"
 ---
 
-# meta-review-skills
+# caol-review-skills
 
 Scan command, skill, and standards files for format, content, and compatibility issues, then interactively fix them.
 
@@ -15,7 +15,7 @@ $ARGUMENTS
 
 **If no argument is provided, show usage and stop. NEVER auto-execute.**
 ```
-Usage: /meta-review-skills <scope> [pattern]
+Usage: /caol-review-skills <scope> [pattern]
 
 Scope:
   commands    — Review command files only
@@ -29,14 +29,14 @@ Pattern (optional):
   review-*    — Match review-related standards
 
 Examples:
-  /meta-review-skills all              — Review everything
-  /meta-review-skills commands         — Review all commands
-  /meta-review-skills skills           — Review all skills
-  /meta-review-skills standards        — Review all standards
-  /meta-review-skills commands art-*   — Review art-related commands only
-  /meta-review-skills skills ue-*      — Review UE-related skills only
-  /meta-review-skills standards review-* — Review code review standards only
-  /meta-review-skills all drink-*      — Review drink-related files
+  /caol-review-skills all              — Review everything
+  /caol-review-skills commands         — Review all commands
+  /caol-review-skills skills           — Review all skills
+  /caol-review-skills standards        — Review all standards
+  /caol-review-skills commands art-*   — Review art-related commands only
+  /caol-review-skills skills ue-*      — Review UE-related skills only
+  /caol-review-skills standards review-* — Review code review standards only
+  /caol-review-skills all drink-*      — Review drink-related files
 ```
 
 ## Command Checklist (12 checks)
@@ -137,7 +137,7 @@ Record per check:
 - `WARN` — minor issue (LOW severity)
 - `FAIL` — needs fix (HIGH severity)
 
-Skip this command's own file (`meta-review-skills.md`) from review.
+Skip this command's own file (`caol-review-skills.md`) from review.
 
 ### Step 4: Interactive Fix
 

@@ -2,7 +2,7 @@
 description: "Naming rules and templates for creating Claude Code commands and skills. Use when creating new commands or skills."
 ---
 
-# meta-make-command
+# caol-make-command
 
 Command and skill creation generator for Claude Code with comprehensive naming rules.
 
@@ -27,7 +27,7 @@ Each name consists of three parts separated by hyphens:
 1. **`category`**: Domain or project namespace
    - Lowercase, single word
    - Groups related functionality
-   - Examples: `git`, `tutoring`, `cci`, `ue`, `learn`, `meta`
+   - Examples: `git`, `tutoring`, `cci`, `ue`, `learn`, `caol`
 
 2. **`verb`**: Action performed
    - Present tense, active voice
@@ -63,7 +63,7 @@ Each name consists of three parts separated by hyphens:
 | `tutoring-*` | Tutoring business | `tutoring-open-invoice`, `tutoring-log-lesson` |
 | `learn-*` | Learning/docs | `learn-add-log` |
 | `drink-*` | Drink tracking | `drink-log-entry` |
-| `meta-*` | System tools | `meta-make-command`, `meta-make-skill` |
+| `caol-*` | caol-ila infra / meta tools | `caol-make-command`, `caol-make-skill` |
 | `review-*` | Code/skill reviews | `review-audit-web` |
 
 ---
@@ -96,8 +96,8 @@ For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the s
 
 ## Related Files
 
-- `commands/meta-make-command.md` - Command wrapper for this skill
-- `skills/meta-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
+- `commands/caol-make-command.md` - Command wrapper for this skill
+- `skills/caol-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
 - `commands/ue-make-skill.md` - UE-specific skill/command generator
 
 ## Additional Resources

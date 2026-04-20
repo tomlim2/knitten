@@ -76,7 +76,7 @@ Display as tables:
 If any refs have `missing` status, show:
 
 ```
-To register missing refs: /meta-register-refs <name> <path>
+To register missing refs: /caol-register-refs <name> <path>
 ```
 
 ### Step 5: Model Update Flow
@@ -91,14 +91,14 @@ To register missing refs: /meta-register-refs <name> <path>
 #### [1/4] Review Global CLAUDE.md
 
 Launch a Task subagent:
-- Read `~/.claude/commands/meta-review-claude-md.md`
+- Read `~/.claude/commands/caol-review-claude-md.md`
 - Execute that command's logic: fetch official docs, run 12 checks, auto-fix FAIL/WARN items
 - Return summary: number of issues found and fixed
 
 #### [2/4] Check External Skill Updates
 
 Launch a Task subagent:
-- Read `~/.claude/commands/meta-update-skills.md`
+- Read `~/.claude/commands/caol-update-skills.md`
 - Execute: check external-skills.json, compare with source repos, apply updates
 - Return summary: number of skills checked and updated
 
@@ -107,7 +107,7 @@ Launch a Task subagent:
 #### [3/4] Review All Skills, Commands & Standards
 
 Launch a Task subagent:
-- Read `~/.claude/commands/meta-review-skills.md`
+- Read `~/.claude/commands/caol-review-skills.md`
 - Execute with `all` scope: scan all commands, skills, and standards, apply checklists, auto-fix issues
 - Return summary: number of issues found and fixed
 
@@ -117,7 +117,7 @@ Launch a Task subagent:
 2. Filter to repos with `connected` status from Step 2
 3. **Exclude `caol-ila`** — its CLAUDE.md is the global config, already handled by [1/4]
 4. For each remaining connected repo, launch a Task subagent:
-   - Read `~/.claude/commands/meta-update-docs.md`
+   - Read `~/.claude/commands/caol-update-docs.md`
    - Execute that command's logic at the repo's path
    - Return summary of changes
 

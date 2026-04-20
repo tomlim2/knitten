@@ -3,7 +3,7 @@ description: Open the skill server dashboard
 allowed-tools: Bash(open:*)
 ---
 
-# meta-open-dashboard
+# caol-open-dashboard
 
 Start the local skill server and open the dashboard in browser.
 ## Execution

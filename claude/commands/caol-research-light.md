@@ -4,7 +4,7 @@ argument-hint: "<topic>"
 allowed-tools: Task, WebSearch, WebFetch, Read, Write
 ---
 
-# meta-research-light
+# caol-research-light
 
 Quick web research for everyday topics — wine, food, lifestyle, hobbies, general curiosity.
 ## Target

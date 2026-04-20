@@ -6,7 +6,7 @@ context: fork
 agent: Explore
 ---
 
-# meta-explore-codebase
+# caol-explore-codebase
 
 Fast, parallel exploration of the codebase from multiple angles.
 ## Target

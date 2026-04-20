@@ -4,7 +4,7 @@ argument-hint: "<topic or concept>"
 allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob
 ---
 
-# meta-research-web
+# caol-research-web
 
 Multi-angle web research with source verification and structured compilation.
 

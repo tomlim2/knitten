@@ -127,7 +127,7 @@
                 const res = await fetch('/api/skills');
                 const data = await res.json();
                 const browseSkills = data.skills.filter(s =>
-                    s.category === 'Browse' && s.id !== 'meta-browse-commands'
+                    s.category === 'Browse' && s.id !== 'caol-browse-commands'
                 ).slice(0, 3);
 
                 const grid = document.getElementById('relatedSkills');

@@ -2,7 +2,7 @@
 description: "Structure and template for creating Claude Code standards (long reference docs). Use when creating a new standard."
 ---
 
-# meta-make-standard
+# caol-make-standard
 
 Generator for `standards/*.md` — long-form reference docs read on-demand.
 
@@ -18,8 +18,8 @@ Use this when:
 - You have rationale + examples that are too long to live in a `rules/` file.
 
 Do NOT use this when:
-- The content is a short, must-follow constraint → use `meta-make-rule` instead.
-- The content is a reusable tool/script → use `meta-make-skill` instead.
+- The content is a short, must-follow constraint → use `caol-make-rule` instead.
+- The content is a reusable tool/script → use `caol-make-skill` instead.
 
 ---
 
@@ -98,14 +98,14 @@ Structural rules:
 ## After Creation
 
 - Fill the Scope, main sections, and Examples with real content.
-- If any bullet in the new standard is a hard must-follow rule, promote it to `~/.claude/rules/` via `meta-make-rule`.
+- If any bullet in the new standard is a hard must-follow rule, promote it to `~/.claude/rules/` via `caol-make-rule`.
 - Commit: `feat: add standards/{name}.md — {topic}`.
 
 ---
 
 ## Related
 
-- `meta-make-rule` — short enforcement rules (one-liners)
-- `meta-make-skill` — reusable skills
-- `meta-make-command` — slash commands
+- `caol-make-rule` — short enforcement rules (one-liners)
+- `caol-make-skill` — reusable skills
+- `caol-make-command` — slash commands
 - `standards/index.md` — full index

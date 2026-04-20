@@ -64,17 +64,17 @@ Experiment freeze: {deadline - 60min}
 |-----------|-------|-------------|
 | Unsure about approach | `/dev-decision-start` | 3-model parallel consult (Gemini+GPT-4o+Opus) |
 | Quick technical question | `/dev-ask-gemini` | Single model fast response |
-| Deep research needed | `/meta-research-web` | 2-agent parallel web research |
-| Light research | `/meta-research-light` | Single agent quick research |
+| Deep research needed | `/caol-research-web` | 2-agent parallel web research |
+| Light research | `/caol-research-light` | Single agent quick research |
 
 ### Step 4: Implementation
 
 | Situation | Skill | Description |
 |-----------|-------|-------------|
-| Full power mode | `/meta-work-ultra` | Mandatory tracking + run to completion |
+| Full power mode | `/caol-work-ultra` | Mandatory tracking + run to completion |
 | Bug found | `/dev-fix-bug` | RED→GREEN→REFACTOR proof-based fix |
 | Experiment tracking | `/dev-log-experiment` | Hypothesis→Measure→Conclude cycle |
-| Codebase analysis | `/meta-consult-codebase` | Read-only analysis mode |
+| Codebase analysis | `/caol-consult-codebase` | Read-only analysis mode |
 
 ### Step 5: Pre-submit Verification (last 30 minutes)
 

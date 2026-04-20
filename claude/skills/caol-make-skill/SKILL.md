@@ -2,7 +2,7 @@
 description: "Structure rules and templates for creating Claude Code skills. Use when creating new skills."
 ---
 
-# meta-make-skill
+# caol-make-skill
 
 Skill creation generator for Claude Code with comprehensive structure rules.
 
@@ -30,8 +30,8 @@ skills/{category}-{verb}-{subject}/
 
 **MANDATORY: All skills MUST follow the `{category}-{verb}-{subject}` pattern.**
 
-This is the SAME pattern as commands. See `meta-make-command` skill for complete naming rules:
-- `~/.claude/skills/meta-make-command/SKILL.md`
+This is the SAME pattern as commands. See `caol-make-command` skill for complete naming rules:
+- `~/.claude/skills/caol-make-command/SKILL.md`
 
 ### Quick Reference
 
@@ -47,8 +47,8 @@ This is the SAME pattern as commands. See `meta-make-command` skill for complete
 | `git-commit-collector` | git | commit | collector |
 | `ue-analyze-material` | ue | analyze | material |
 | `ue-validate-asset-name` | ue | validate | asset-name |
-| `meta-make-command` | meta | make | command |
-| `meta-make-skill` | meta | make | skill |
+| `caol-make-command` | caol | make | command |
+| `caol-make-skill` | caol | make | skill |
 | `skill-server` | skill | server | (implicit) |
 | `drink-log` | drink | log | (implicit) |
 
@@ -86,7 +86,7 @@ This is the SAME pattern as commands. See `meta-make-command` skill for complete
 ```
 User request: "Create a ue-analyze-texture skill"
 → Use: /ue-make-skill analyze texture
-→ NOT: /meta-make-skill ue analyze texture
+→ NOT: /caol-make-skill ue analyze texture
 ```
 
 ---

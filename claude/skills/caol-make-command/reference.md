@@ -1,4 +1,4 @@
-# meta-make-command Reference
+# caol-make-command Reference
 
 Full examples table, file structure specs, creation workflows, and convention rationale.
 
@@ -29,8 +29,8 @@ Full examples table, file structure specs, creation workflows, and convention ra
 | `cci-art-send-merge-result` | cci-art | send | merge-result | Send merge result |
 | `cci-art-prepare-merge` | cci-art | prepare | merge | Prepare art merge |
 | `cci-art-remove-branch` | cci-art | remove | branch | Remove old art branch |
-| `meta-make-command` | meta | make | command | Generate new command |
-| `meta-review-skills` | meta | review | skills | Review skill files |
+| `caol-make-command` | caol | make | command | Generate new command |
+| `caol-review-skills` | caol | review | skills | Review skill files |
 | `drink-log-entry` | drink | log | entry | Log wine/whisky |
 
 ---
@@ -224,7 +224,7 @@ This creates BOTH the skill AND the command automatically.
 2. Command: `ue-{verb}-{noun}.md` that calls the skill
 3. All necessary templates and wrappers
 
-**When to use meta-make-command for UE:**
+**When to use caol-make-command for UE:**
 - Simple wrapper commands for existing UE skills
 - Commands that only orchestrate existing UE tools
 - Commands without new Editor integration needs
@@ -234,7 +234,7 @@ This creates BOTH the skill AND the command automatically.
 User: "Create ue-analyze-texture command"
 → Use: /ue-make-skill analyze texture
 → Creates: ue-analyze-texture skill + command
-→ NOT: /meta-make-command ue analyze texture
+→ NOT: /caol-make-command ue analyze texture
 ```
 
 **Reference:**
@@ -245,8 +245,8 @@ User: "Create ue-analyze-texture command"
 
 ## Related Files
 
-- `commands/meta-make-command.md` - Command wrapper for this skill
-- `skills/meta-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
+- `commands/caol-make-command.md` - Command wrapper for this skill
+- `skills/caol-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
 - `commands/ue-make-skill.md` - UE-specific skill/command generator
 - `skills/ue-show-template/SKILL.md` - UE skill template
 - `CLAUDE.md` - Main workflow guidance (points to this skill)

@@ -2,7 +2,7 @@
 description: "Common design patterns for commands and skills with detailed examples. Use when designing new command workflows."
 ---
 
-# meta-show-patterns
+# caol-show-patterns
 
 Common design patterns for Claude Code commands and skills with detailed examples.
 

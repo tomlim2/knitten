@@ -14,12 +14,12 @@ $ARGUMENTS = `<category> <verb> <subject>`
 **If no argument is provided, show usage and ask. NEVER auto-execute.**
 
 ```
-Usage: /meta-make-command <category> <verb> <subject>
+Usage: /caol-make-command <category> <verb> <subject>
 
 Examples:
-  /meta-make-command git push remote
-  /meta-make-command tutoring export records
-  /meta-make-command ue validate blueprint
+  /caol-make-command git push remote
+  /caol-make-command tutoring export records
+  /caol-make-command ue validate blueprint
 ```
 
 ## Naming Rules Reference
@@ -27,7 +27,7 @@ Examples:
 **MANDATORY: Read the complete naming rules before creating any command.**
 
 ```
-~/.claude/skills/meta-make-command/SKILL.md
+~/.claude/skills/caol-make-command/SKILL.md
 ```
 
 This file contains:
@@ -64,7 +64,7 @@ User: "Create a ue-analyze-texture command"
 → Response: "For Unreal Engine export/analysis commands, use /ue-make-skill analyze texture which creates both the skill and command automatically."
 ```
 
-**When to use meta-make-command for UE:**
+**When to use caol-make-command for UE:**
 - Simple wrapper commands that call existing UE skills
 - Commands that don't need new UE Editor integration
 - Commands that only orchestrate existing UE tools

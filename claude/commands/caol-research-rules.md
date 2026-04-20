@@ -4,7 +4,7 @@ argument-hint: "<aspect or question>"
 allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob, Grep
 ---
 
-# meta-research-rules
+# caol-research-rules
 
 Find actionable criteria and rules for improving Claude Code agents and skill commands.
 ## Target

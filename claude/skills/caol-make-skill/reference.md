@@ -1,4 +1,4 @@
-# meta-make-skill Reference
+# caol-make-skill Reference
 
 Detailed implementation patterns, templates, and guidelines for creating Claude Code skills.
 
@@ -81,9 +81,9 @@ Use JSON for configuration:
 
 ### By Purpose
 
-**Meta Tools** (`meta-*`)
+**Caol Tools** (`caol-*`)
 - Create and manage commands/skills
-- Examples: `meta-make-command`, `meta-make-skill`
+- Examples: `caol-make-command`, `caol-make-skill`
 
 **Git Tools** (`git-*`)
 - Git operations and analysis
@@ -276,7 +276,7 @@ Example: `skill-server`
 Skill contains templates/rules -> Command prompts user -> Generates files
 ```
 
-Example: `meta-make-command`
+Example: `caol-make-command`
 - Skill: Contains all naming rules
 - Command: Generates new command files
 

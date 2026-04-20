@@ -4,7 +4,7 @@ argument-hint: "<topic-name>"
 allowed-tools: Read, Write, Edit
 ---
 
-# meta-make-standard
+# caol-make-standard
 
 Create a new `~/.claude/standards/{topic}.md` reference document following the standard structure.
 
@@ -15,19 +15,19 @@ Create a new `~/.claude/standards/{topic}.md` reference document following the s
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 ```
-Usage: /meta-make-standard <topic-name>
+Usage: /caol-make-standard <topic-name>
 
 Examples:
-  /meta-make-standard review-code-python
-  /meta-make-standard cinev-lighting
-  /meta-make-standard webgpu-patterns
+  /caol-make-standard review-code-python
+  /caol-make-standard cinev-lighting
+  /caol-make-standard webgpu-patterns
 ```
 
 ## Rules
 
 Read these first:
 
-- @~/.claude/skills/meta-make-standard/SKILL.md — structure, template, workflow
+- @~/.claude/skills/caol-make-standard/SKILL.md — structure, template, workflow
 - @~/.claude/standards/index.md — existing groups to slot the new file into
 
 ## Workflow
@@ -42,5 +42,5 @@ Read these first:
 
 Remind the user to:
 - Fill Scope, main sections, and Examples
-- Promote hard must-follow bullets to `rules/` via `/meta-make-rule`
+- Promote hard must-follow bullets to `rules/` via `/caol-make-rule`
 - Commit with `feat: add standards/{name}.md — {topic}`

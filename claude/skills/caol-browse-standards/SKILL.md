@@ -2,7 +2,7 @@
 description: "Browse standards documents in a web dashboard. Use when reviewing or looking up coding standards."
 ---
 
-# meta-browse-standards
+# caol-browse-standards
 
 Web-based browser for standards documents stored in standards/.
 

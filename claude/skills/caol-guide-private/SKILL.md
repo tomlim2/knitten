@@ -2,7 +2,7 @@
 description: "Guide to using private/ folder for personal data storage. Use when storing or accessing personal data in Claude Code."
 ---
 
-# meta-guide-private
+# caol-guide-private
 
 Complete guide to using the private/ folder for personal data storage in Claude Code.
 

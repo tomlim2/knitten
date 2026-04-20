@@ -23,8 +23,8 @@ claude/                          # Symlinked to ~/.claude
 ├── CLAUDE.md                    # This file (loaded every session)
 ├── commands/                    # Slash commands (.md files)
 ├── skills/                      # Skills with SKILL.md (directories)
-│   ├── meta-make-command/        # Command/skill naming rulebook
-│   └── meta-make-skill/          # Skill creation guide
+│   ├── caol-make-command/        # Command/skill naming rulebook
+│   └── caol-make-skill/          # Skill creation guide
 ├── standards/                   # Detailed reference docs (read on-demand)
 │   ├── slash-commands.md        # [REQUIRED] Command authoring standard
 │   └── ...                      # JS, UE C++, design system, etc.
@@ -63,14 +63,14 @@ Full reference: @~/.claude/standards/slash-commands.md
 **MANDATORY: `{category}-{verb}-{subject}` pattern.**
 
 - Lowercase only, hyphens as separators, max 64 characters
-- Categories: `meta`, `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
-- Examples: `git-collect-commits`, `ue-analyze-material`, `meta-make-command`
-- Full rules: @~/.claude/skills/meta-make-command/SKILL.md
+- Categories: `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
+- Examples: `git-collect-commits`, `ue-analyze-material`, `caol-make-command`
+- Full rules: @~/.claude/skills/caol-make-command/SKILL.md
 
 ### Creating New
 
-- **Command:** `/meta-make-command <category> <verb> <subject>`
-- **Skill:** `/meta-make-skill <category> <verb> <subject>`
+- **Command:** `/caol-make-command <category> <verb> <subject>`
+- **Skill:** `/caol-make-skill <category> <verb> <subject>`
 - **UE skill:** `/ue-make-skill <verb> <noun>` (uses special template)
 - **Command standard:** @~/.claude/standards/slash-commands.md
 
@@ -89,7 +89,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 - Extracted data (commits, UE assets, analysis)
 - Business data (invoices, tutoring logs, drinks)
 - Cached computations and notes
-- Full guide: @~/.claude/skills/meta-guide-private/SKILL.md
+- Full guide: @~/.claude/skills/caol-guide-private/SKILL.md
 
 ---
 

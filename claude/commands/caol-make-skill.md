@@ -14,12 +14,12 @@ $ARGUMENTS = `<category> <verb> <subject>`
 **If no argument is provided, show usage and ask. NEVER auto-execute.**
 
 ```
-Usage: /meta-make-skill <category> <verb> <subject>
+Usage: /caol-make-skill <category> <verb> <subject>
 
 Examples:
-  /meta-make-skill git analyze diff
-  /meta-make-skill tutoring export records
-  /meta-make-skill ue validate texture
+  /caol-make-skill git analyze diff
+  /caol-make-skill tutoring export records
+  /caol-make-skill ue validate texture
 ```
 
 ## Skill Structure Rules Reference
@@ -27,7 +27,7 @@ Examples:
 **MANDATORY: Read the complete skill structure rules before creating any skill.**
 
 ```
-~/.claude/skills/meta-make-skill/SKILL.md
+~/.claude/skills/caol-make-skill/SKILL.md
 ```
 
 This file contains:
@@ -180,7 +180,7 @@ app.listen(PORT, () => {
 ## After Creation
 
 1. **Test the skill**: Run implementation files directly
-2. **Create wrapper command**: Create `/meta-make-command {category} {verb} {subject}` to wrap this skill
+2. **Create wrapper command**: Create `/caol-make-command {category} {verb} {subject}` to wrap this skill
 3. **Register in skill-server** (if web skill)
 4. **Update CLAUDE.md** if new category added
 5. **Commit**: Add to version control
@@ -200,7 +200,7 @@ app.listen(PORT, () => {
 
 For complete naming rules, see:
 ```
-~/.claude/skills/meta-make-command/SKILL.md
+~/.claude/skills/caol-make-command/SKILL.md
 ```
 
 Skills follow the SAME naming pattern as commands: `{category}-{verb}-{subject}`

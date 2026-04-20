@@ -30,7 +30,7 @@ Search the following locations for hardcoded paths. Extract any absolute path th
 | `~/.claude/commands/cci-open-creator-launcher.md` | Windows `anju` paths |
 | `~/.claude/commands/cci-open-creator-shipper.md` | Windows `anju` paths |
 | `~/.claude/commands/cci-open-creator-character.md` | Windows `anju` paths |
-| `~/.claude/commands/meta-check-updates.md` | caol-ila path |
+| `~/.claude/commands/caol-check-updates.md` | caol-ila path |
 | `~/.claude/skills/cci-manage-art-branch/config.json` | `repo_key` values |
 
 For each discovered path, determine a suggested name based on the directory name (e.g., `E:\CINEVStudio` → `cinev`, `D:\vs\anju` → `anju-win`).
@@ -68,7 +68,7 @@ If no repos are registered, show: "No repos registered yet."
 
 | Name            | Path                                   | Referenced in                     |
 |-----------------|----------------------------------------|-----------------------------------|
-| caol-ila        | /Users/younsoolim/Desktop/www/caol-ila | meta-check-updates.md             |
+| caol-ila        | /Users/younsoolim/Desktop/www/caol-ila | caol-check-updates.md             |
 | cinev           | E:\CINEVStudio                         | cinev-git-workflow.md, cci-summarize-commit.md |
 ```
 
@@ -77,5 +77,5 @@ If all referenced paths are already registered, show: "All referenced paths are 
 **Footer:**
 
 ```
-To register: /meta-register-refs <name> <path> [description]
+To register: /caol-register-refs <name> <path> [description]
 ```

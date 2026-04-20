@@ -16,8 +16,8 @@ Register a repo name and path to `~/.claude/private/repo-paths.json`.
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 ```
-Usage: /meta-register-refs <repo-name> <path> [description]
-Example: /meta-register-refs anju /Users/me/www/anju "Graphics/shader experiments"
+Usage: /caol-register-refs <repo-name> <path> [description]
+Example: /caol-register-refs anju /Users/me/www/anju "Graphics/shader experiments"
 ```
 
 ## Execution

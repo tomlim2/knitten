@@ -364,7 +364,7 @@ If any WARN, ask user whether to proceed or abort.
 
 ```
 # 1. cci-make-mr 최신화 (회사 스킬 → 로컬 스킬에 반영)
-/meta-update-skills cci-make-mr
+/caol-update-skills cci-make-mr
 
 # 2. MR 생성
 /mr develop
@@ -407,7 +407,7 @@ Validation:
   [PASS/WARN] Redirectors
 
 MR:
-  [ ] /meta-update-skills cci-make-mr → /mr develop 실행 (없으면 /cci-make-mr develop)
+  [ ] /caol-update-skills cci-make-mr → /mr develop 실행 (없으면 /cci-make-mr develop)
   [ ] MR title convention 적용
   [ ] GitLab MR 생성 링크 제공
 ```

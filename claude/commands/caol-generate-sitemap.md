@@ -3,7 +3,7 @@ description: Generate sitemap of skill server routes
 allowed-tools: Bash(node:*), Read, Write
 ---
 
-# meta-generate-sitemap
+# caol-generate-sitemap
 
 Generate a complete sitemap of all skill server routes and pages.
 ## Current Structure

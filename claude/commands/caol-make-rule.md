@@ -4,7 +4,7 @@ argument-hint: "<topic-name>"
 allowed-tools: Read, Write, Edit
 ---
 
-# meta-make-rule
+# caol-make-rule
 
 Create a new `~/.claude/rules/{topic}.md` file — short, always-applied constraints.
 
@@ -15,19 +15,19 @@ Create a new `~/.claude/rules/{topic}.md` file — short, always-applied constra
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 ```
-Usage: /meta-make-rule <topic-name>
+Usage: /caol-make-rule <topic-name>
 
 Examples:
-  /meta-make-rule git-push
-  /meta-make-rule slack
-  /meta-make-rule testing
+  /caol-make-rule git-push
+  /caol-make-rule slack
+  /caol-make-rule testing
 ```
 
 ## Rules
 
 Read these first:
 
-- @~/.claude/skills/meta-make-rule/SKILL.md — structure, template, rule vs standard decision
+- @~/.claude/skills/caol-make-rule/SKILL.md — structure, template, rule vs standard decision
 - @~/.claude/rules/index.md — existing groups to slot the new file into
 
 ## Workflow

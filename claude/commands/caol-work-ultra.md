@@ -4,7 +4,7 @@ argument-hint: "<task description>"
 allowed-tools: Glob, Grep, Read, Edit, Write, Bash(git:*), Bash(npm:*), Bash(node:*), Bash(python:*), Bash(pytest:*), Bash(ls:*), Bash(cat:*), Task
 ---
 
-# meta-work-ultra
+# caol-work-ultra
 
 You are entering **ultrawork mode** - maximum intensity, zero shortcuts.
 ## Task

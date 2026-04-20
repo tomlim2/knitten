@@ -1,4 +1,4 @@
-# meta-show-patterns Reference
+# caol-show-patterns Reference
 
 Detailed examples for each design pattern.
 
@@ -285,7 +285,7 @@ Parse JSON and produce structured analysis.
 
 ### Example: Meta Make Command
 
-**Command** (`commands/meta-make-command.md`):
+**Command** (`commands/caol-make-command.md`):
 ```markdown
 ---
 description: Generate a new command following naming conventions
@@ -395,5 +395,5 @@ Read: !`ls ~/.claude/private/data.json`
 ## Related Files
 
 - `CLAUDE.md` - Main workflow guidance
-- `skills/meta-make-command/SKILL.md` - Command creation rules
-- `skills/meta-make-skill/SKILL.md` - Skill creation rules
+- `skills/caol-make-command/SKILL.md` - Command creation rules
+- `skills/caol-make-skill/SKILL.md` - Skill creation rules

@@ -85,7 +85,7 @@ Shared configuration in `claude/config/`:
 
 ## Skill Server
 
-Dashboard at `http://localhost:972`. Start with `/meta-open-dashboard`.
+Dashboard at `http://localhost:972`. Start with `/caol-open-dashboard`.
 
 - Browse commands, skills, standards
 - Usage tracking (Supabase-backed)

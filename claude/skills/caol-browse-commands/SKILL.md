@@ -2,7 +2,7 @@
 description: "Browse all Claude Code commands in a web dashboard. Use when exploring available commands or checking documentation."
 ---
 
-# meta-browse-commands
+# caol-browse-commands
 
 Web-based browser for Claude Code commands stored in commands/.
 

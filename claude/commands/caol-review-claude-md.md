@@ -3,7 +3,7 @@ description: "Review CLAUDE.md against official docs and update"
 allowed-tools: "Read, Edit, Write, Glob, Grep, WebFetch, WebSearch, AskUserQuestion"
 ---
 
-# meta-review-claude-md
+# caol-review-claude-md
 
 Periodic review and update of `~/.claude/CLAUDE.md` against the latest official Claude Code documentation.
 

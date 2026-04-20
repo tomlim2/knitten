@@ -13,8 +13,8 @@ Show skills, commands, and standards changed in caol-ila on a given date (defaul
 
 ```
 Usage:
-  /meta-check-updates              → Show today's changes
-  /meta-check-updates 2026-02-09   → Show changes for Feb 9
+  /caol-check-updates              → Show today's changes
+  /caol-check-updates 2026-02-09   → Show changes for Feb 9
 ```
 
 ## Execution

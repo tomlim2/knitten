@@ -119,7 +119,7 @@ function discoverSkills() {
                 'tutoring': 'Tutoring',
                 'dev': 'Dev Tools',
                 'ue': 'Unreal Engine',
-                'meta': 'Meta',
+                'caol': 'Caol',
                 'learn': 'Learning',
                 'drink': 'Personal',
                 'review': 'Review',
@@ -205,7 +205,7 @@ function discoverCommandOnly(skillNames) {
             'tutoring': 'Tutoring',
             'dev': 'Dev Tools',
             'ue': 'Unreal Engine',
-            'meta': 'Meta',
+            'caol': 'Caol',
             'learn': 'Learning',
             'drink': 'Personal',
             'review': 'Review',
@@ -333,7 +333,7 @@ app.get('/', (req, res) => {
         path.join(COMMANDS_DIR, 'cci-open-creator-launcher.md'),
         path.join(COMMANDS_DIR, 'cci-open-creator-shipper.md'),
         path.join(COMMANDS_DIR, 'cci-open-creator-character.md'),
-        path.join(COMMANDS_DIR, 'meta-check-updates.md'),
+        path.join(COMMANDS_DIR, 'caol-check-updates.md'),
     ];
 
     for (const file of scanTargets) {
@@ -794,7 +794,7 @@ app.get('/learnings', (req, res) => {
 });
 
 // 301 redirects from old skill pages
-app.get('/skills/meta-browse-standards', (req, res) => res.redirect(301, '/standards'));
+app.get('/skills/caol-browse-standards', (req, res) => res.redirect(301, '/standards'));
 app.get('/skills/learn-browse-entries', (req, res) => res.redirect(301, '/learnings'));
 
 // Serve skill static files (CSS, JS, etc.)

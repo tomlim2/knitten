@@ -2,8 +2,8 @@
 - **Lowercase only** — No capitals, no camelCase, no underscores, no spaces
 - **Hyphens as separators** — Multi-word subjects use hyphens (`creator-launcher`)
 - **Max 64 characters**
-- **Categories** — `meta`, `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
+- **Categories** — `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Keep verbs simple** — `make` not `generate`, `add` not `append`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
-- Full rationale and examples: @~/.claude/skills/meta-make-command/SKILL.md
+- Full rationale and examples: @~/.claude/skills/caol-make-command/SKILL.md
