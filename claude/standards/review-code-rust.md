@@ -192,6 +192,16 @@ Bare `#[allow(dead_code)]` is a code smell. Every instance must have a sibling c
 
 **Real defect:** Earlier round of PR #66 had bare `#![allow(dead_code)]` at module roots; reviewer made every one carry a justifying STL-74/STL-75 reference block.
 
+### D5 — No `#[non_exhaustive]` on workspace-internal types
+
+`docs/guidelines/error-handling.md` §6 (and §11's forbidden-anti-patterns list) is explicit: `#[non_exhaustive]` is **off by default inside this workspace**. It is meant for types that cross a SemVer boundary to non-workspace consumers (published crate, FFI/plugin API). Shotloom's crates are atomically built, so the annotation only suppresses the compiler exhaustiveness check — a new variant silently falls into `_ =>` catch-alls instead of producing a compile error. That is exactly the safety net the guideline wants preserved.
+
+The correct lever for boundary decoupling is **not re-exporting the type** across crates (keep it qualified as `other_crate::Error`). If a guideline exception is genuinely needed for a specific type, document it in `error-handling.md` with rationale — do not add the attribute silently.
+
+**Self-check:** `rg '#\[non_exhaustive\]' crates/<changed-crate>/src/`. Zero hits expected. If the attribute is present, grep for any `pub use other_crate::Error` that may have motivated it — remove the re-export, not the exhaustiveness check.
+
+**Real defect (PR #118):** `VrmRestError` in `shotloom-gltf` was marked `#[non_exhaustive]` to protect `shotloom-retarget::build_from_bytes` from future variant additions. Reviewer flagged it as P1 blocking per error-handling.md §6. Fix: remove `#[non_exhaustive]`; the already-applied re-export drop from `shotloom-retarget::lib` alone achieves the desired decoupling.
+
 ---
 
 ## Pattern E — Build / platform regressions
@@ -336,6 +346,7 @@ Run through this list every time, in order:
 [ ] D2 — No `.unwrap()` / `.expect()` in library hot paths
 [ ] D3 — No mixed-language comments in English-only crates
 [ ] D4 — Every `#[allow(dead_code)]` has a justifying comment
+[ ] D5 — No `#[non_exhaustive]` on workspace-internal types (use re-export boundary, not exhaustiveness suppression)
 
 [ ] E1 — `cargo metadata --filter-platform x86_64-unknown-linux-gnu` clean of audio/udev
 [ ] E2 — `Cargo.lock` regenerated after any `Cargo.toml` dep change
