@@ -1,6 +1,6 @@
 ---
 description: "Manage caol-config files (repo-paths, machine-paths, doc-paths, hardware). Use to add/remove repos or machine paths, validate all paths, or view full config state."
-argument-hint: "[show|validate|add|remove] [repo|machine] [key] [path] [desc]"
+argument-hint: "[show|validate|setup|add|remove] [repo|machine] [key] [path] [desc]"
 allowed-tools: Read, Write, Bash(ls:*), Bash(test:*)
 ---
 
@@ -137,3 +137,37 @@ Paths that don't exist are expected for cross-machine entries. Just flag them, d
 ```
 
 Same as remove repo but for `machine-paths.json`.
+
+---
+
+## Action: setup
+
+Interactive first-time setup for a new machine. Guides the user through filling in all required config files.
+
+```
+/caol-manage-config setup
+```
+
+### Steps
+
+1. **Check target directory** — Confirm `~/.claude/private/caol-config/` exists. Create if missing.
+
+2. **Read templates** — Load both template files from `${CLAUDE_SKILL_DIR}`:
+   - `repo-paths.template.json`
+   - `machine-paths.template.json`
+
+3. **Fill repo-paths** — For each key in the template, check if it already exists in `repo-paths.json`.
+   - If missing or empty, ask the user: `repo: <key> (<description>) — path?`
+   - User may press enter to skip (leave empty for repos not cloned on this machine).
+   - Write completed `repo-paths.json`.
+
+4. **Fill machine-paths** — Same for `machine-paths.json`.
+   - Keys: `obsidian`, `obsidian-vault-claude`, `obsidian-staging`, `blender`, `font-sarasa`, `font-sf-mono`
+   - User may skip any key not applicable to this machine.
+   - Write completed `machine-paths.json`.
+
+5. **doc-paths** — `doc-paths.json` is managed in the repo. If missing from `caol-config/`, note its canonical location in `caol-ila` and show path.
+
+6. **hardware.json** — Prompt user to run `/system-save-hardware` to populate hardware specs.
+
+7. **Summary** — Show all four files in the same format as the `show` action.
