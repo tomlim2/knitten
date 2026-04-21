@@ -3,6 +3,20 @@ title: "Shotloom — Learnings"
 tags:
   - learnings
   - shotloom
+  - gotcha
+  - graphics
+  - webgpu
+  - wgpu
+  - bevy
+  - srgb
+  - gamma-correction
+  - color-management
+  - texture-format
+  - file-formats
+  - vrm
+  - vrma
+  - animation
+  - retargeting
 date: 2026-04-21
 source: claude
 ---
@@ -104,3 +118,33 @@ The `shotloom-tauri` build path uses a native wgpu window surface, not the webvi
 - Shotloom PR on `fix/webgpu-gamma-render-path` — Phase 2 actual fix (surface `view_formats` override).
 - [wgpu `TextureFormat` docs](https://docs.rs/wgpu/latest/wgpu/enum.TextureFormat.html) — canonical format table.
 - [WebGPU spec §6.4 "GPUTextureFormat"](https://www.w3.org/TR/webgpu/#texture-formats) — authoritative on which formats are allowed where.
+
+### 2026-04-21 — `.vrm` vs `.vrma` — "VRM" as a file extension is ambiguous
+
+**Core confusion.** "VRM 파일 줘" / "VRM 애니메이션 있어?" conflates two separate file formats that both live under the VRM umbrella. Treating them interchangeably leads to pipeline wiring that expects the wrong payload — e.g. assuming an animation library ships `.vrm` files when it actually ships `.vrma`.
+
+**`.vrm` — model package.** A `.glb` (binary glTF) carrying a humanoid avatar: mesh, skeleton with VRM humanoid bone mapping, materials (often MToon), textures, BlendShape expressions, spring bones for secondary animation, LookAt config, first-person rendering rules, and metadata (author, license, avatar usage permissions). Two spec versions live in the wild: **VRM 0.x** (`VRM` extension root) and **VRM 1.0** (`VRMC_vrm` extension plus split sub-extensions `VRMC_springBone`, `VRMC_node_constraint`, `VRMC_materials_mtoon`). Shotloom targets VRM 1.0 and normalizes 0.x inputs via `shotloom-gltf::normalize_vrm` at import time.
+
+**`.vrma` — animation-only payload.** A `.glb` carrying only animation tracks (humanoid bones, expressions, LookAt), **no mesh, no materials**. Declared via the `VRMC_vrm_animation` extension. **VRM 1.0 exclusive** — there is no VRMA equivalent in VRM 0.x; a 0.x source must be migrated or re-authored. Tracks are keyed against the VRM humanoid bone vocabulary (`hips`, `leftUpperLeg`, `spine`, ...), not against a specific rig, which is what makes `.vrma` cross-avatar portable by construction.
+
+**Why the distinction matters — portability.** The VRM humanoid spec standardizes bone names, orientations, and hierarchy. A `.vrma` authored for one VRM 1.0 avatar applies "for free" to any other VRM 1.0 avatar, because both ends agree on the skeleton semantics. This is the opposite of FBX: an FBX animation is rig-specific, and applying it to a different skeleton requires explicit retargeting with bone-name maps, axis conversions, and rest-pose alignment — which is exactly what `shotloom-retarget` exists to do for the ARP → VRM path.
+
+**Shotloom pipeline today.**
+
+- **Character import:** `.vrm` only. Enters through `shotloom-import`, normalized via `shotloom-gltf`, rendered via `bevy_vrm1`.
+- **Motion import:** FBX (typically ARP / Auto-Rig Pro) → `shotloom-fbx-anim-importer` → `shotloom-retarget` → `TargetAnimation` on the VRM skeleton.
+- **VRMA route:** not wired. If the source motion is already `.vrma`, the retarget step is architecturally redundant — the animation is already in VRM humanoid coordinates — but we have no VRMA reader yet.
+
+**When a VRMA path would earn its keep.**
+
+- Importing community motion libraries (VRoid Hub, niconi-solid, etc.) that publish `.vrma` directly — skipping ARP export round-trips.
+- Letting an AI motion generator output VRMA natively, eliminating the FBX + ARP rig step entirely.
+- Exporting Shotloom-authored motion for reuse by third parties, without leaking a specific character rig.
+
+**Ecosystem caveat (why VRMA isn't a slam dunk yet).**
+
+- Spec is newer than VRM 1.0; tooling lags. Blender VRM addon, VRoid Studio, Three-VRM, and `bevy_vrm1` have varying degrees of support.
+- Many published `.vrma` files were authored by MMD → VRMA or Mixamo → VRMA converters with uneven quality (frame-rate assumptions, rest-pose mismatches, foot-IK omissions).
+- VRMA covers humanoid tracks only. Costume joints, hair/skirt spring bone drivers beyond the standard set, and face BlendShape variants outside the VRM expression catalogue are out of scope — those still need per-character data.
+
+**Tripwire for next time.** When someone says "VRM 애니메이션", clarify upfront: is the payload `.vrm` (model with embedded animation) or `.vrma` (animation-only)? The pipeline wiring, rig assumption, and retarget need are all different. If in doubt: `file --mime-type <path>` returns `application/octet-stream` for both (they're just GLBs), but `jq '.extensionsUsed' <(gltf-extract-json <file>)` reveals whether `VRMC_vrm_animation` is present.

@@ -3,6 +3,15 @@ title: "{PROJECT} — Learnings"
 tags:
   - learnings
   - "{PROJECT}"
+  # Add one tag per entry category you accumulate in this file:
+  # - convention
+  # - worked
+  # - failed
+  # - gotcha
+  # Add topical tags as entries land (kebab-case). Examples:
+  # - graphics
+  # - webgpu
+  # - file-formats
 date: YYYY-MM-DD
 source: claude
 ---
