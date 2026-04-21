@@ -41,6 +41,15 @@ git checkout <headRefName>
 git pull
 ```
 
+### Step 2.5: Classify each item by scope
+
+Apply [`~/.claude/standards/shotloom-pr-scope-policy.md`](../../standards/shotloom-pr-scope-policy.md) to every comment before resolving:
+- **in-scope** — proceed to resolve in this PR
+- **out-of-scope** — surface in the list as "needs new Linear issue", do NOT fix in this PR, do NOT create the issue automatically (user does that manually); no reply, no thread resolve
+- **ambiguous (≥9/10)** — surface for user decision; do NOT fix, do NOT reply, do NOT resolve
+
+Ambiguity scoring: ≤8 = pick best interpretation and proceed; ≥9 = surface.
+
 ### Step 3: List feedback items
 
 Parse all comments into a numbered table and show to the user:

@@ -74,7 +74,8 @@ Standards contain the rationale, examples, and templates that rules link back to
 | [`cinev-character-asset-naming.md`](cinev-character-asset-naming.md) | CINEV character asset naming |
 | [`cinev-vrm-shading.md`](cinev-vrm-shading.md) | CINEV VRM shading work |
 | [`cci-slack.md`](cci-slack.md) | Before Slack operations |
-| [`shotloom.md`](shotloom.md) | Shotloom project work |
+| [`shotloom.md`](shotloom.md) | Shotloom project overview (tech stack, architecture, perf budget) |
+| [`shotloom-programming.md`](shotloom-programming.md) | **Shotloom writing discipline** — 60+ rules mined from in-repo guidelines/ADRs. Read when writing Rust or TS/React in shotloom-github. Pair with `rules/shotloom.md` hub. |
 | [`arp-skeleton.md`](arp-skeleton.md) | ARP (Auto-Rig Pro) skeleton reference |
 
 ## Docs & System

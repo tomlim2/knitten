@@ -47,6 +47,40 @@ Example:
 
 ## Execution
 
+### Step 0.5: Check for reusable STL numbers
+
+Before creating a fresh issue, search the user's own abandoned issues for a candidate to repurpose. Goal: when you create → abandon → recreate, reuse the original STL-NN instead of burning a new one.
+
+1. Fetch via Linear MCP `list_issues` filter:
+   - `creator = me` OR `assignee = me`
+   - state ∈ {`Canceled`, `Backlog`} (also `Duplicate` if that state exists)
+   - AND `updatedAt < 30 days ago`
+
+2. Score each candidate by title-similarity to the new `$ARGUMENTS` title (simple word-overlap; low bar — even 30% overlap surfaces).
+
+3. If any candidates exist, present to user:
+   ```
+   ♻️ Reusable STL numbers (closest match first):
+   | STL | Old title | State | Updated | Similarity |
+   |-----|-----------|-------|---------|-----------|
+   | STL-55 | "early retarget spike" | Canceled | 90d ago | 42% |
+   | STL-72 | "skim VRM spec"         | Backlog  | 75d ago | 18% |
+
+   Options:
+   (a) Reuse STL-55 — rename, reset body, move to Backlog (or --state)
+   (b) Reuse STL-72 — same
+   (c) Create new STL — proceed to Step 1
+   ```
+
+4. If user picks reuse, SKIP Steps 1–7 and instead:
+   - Call `save_issue` with `id: STL-NN` and fields: new `title`, new `description`, `state: <target>`, new labels/priority/parent/milestone as parsed from `$ARGUMENTS`.
+   - Report: `♻️ Reused STL-55 with new content — title: "...", state: Backlog`.
+   - If the old issue was Canceled and target state is not Canceled, note the state change explicitly.
+
+5. If no candidates or user picks (c), proceed to Step 1.
+
+**Skip this check if:** `--no-reuse` flag is in `$ARGUMENTS`, or the user has already passed an explicit reuse target via `--reuse STL-NN` (jump straight to the reuse call).
+
 ### Step 1: Parse arguments
 
 Parse title and optional flags from `$ARGUMENTS`.
