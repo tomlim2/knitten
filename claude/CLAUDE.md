@@ -14,6 +14,19 @@ caol-ila/claude/  →  symlinked to  →  ~/.claude
 - **Skill server port:** 972
 - **Slack mention:** `<@U04MCMGPN05>` / emoji: `:arnyang_ugly:`
 
+### New machine config
+
+After symlinking, run `/caol-manage-config setup` to initialize `~/.claude/private/caol-config/`:
+
+| File | How it's created |
+|------|-----------------|
+| `repo-paths.json` | Interactive setup — fills in paths for each known repo |
+| `machine-paths.json` | Interactive setup — fills in tool/app paths (obsidian, blender, fonts) |
+| `doc-paths.json` | Already in repo under `caol-manage-config/` — copy manually if needed |
+| `hardware.json` | Run `/system-save-hardware` |
+
+Templates live in `skills/caol-manage-config/*.template.json` — source of truth for expected keys.
+
 ---
 
 ## Architecture
@@ -84,12 +97,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 ## Private Folder
 
-`private/` is the personal data vault. Gitignored. Never committed.
-
-- Extracted data (commits, UE assets, analysis)
-- Business data (invoices, tutoring logs, drinks)
-- Cached computations and notes
-- Full guide: @~/.claude/skills/caol-guide-private/SKILL.md
+`private/` is the personal data vault. Gitignored. Never committed. Full guide: @~/.claude/skills/caol-guide-private/SKILL.md
 
 ---
 
