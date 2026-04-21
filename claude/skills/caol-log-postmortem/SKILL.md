@@ -4,7 +4,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(wc:*), Bash(git:*), Bas
 argument-hint: "<project-path-or-repo-name> [subfolder]"
 ---
 
-# project-add-record
+# caol-log-postmortem
 
 Record a completed project or task by auto-exploring the codebase and generating a structured project record.
 
@@ -23,9 +23,9 @@ Used after completing a project or task to create a record for future reference.
 
 Usage:
 ```
-/project-add-record anju web/matcap-painter
-/project-add-record /Users/younsoolim/Desktop/www/some-project
-/project-add-record mega-melange
+/caol-log-postmortem anju web/matcap-painter
+/caol-log-postmortem /Users/younsoolim/Desktop/www/some-project
+/caol-log-postmortem mega-melange
 ```
 
 ---
@@ -45,7 +45,7 @@ Usage:
 
 | Purpose | Path |
 |---------|------|
-| **Record (always)** | `{obsidian}/claude/projects/records/{project-name}.md` |
+| **Postmortem (always)** | `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc postmortem`/{project-name}.md` |
 | **Portfolio (optional)** | `{obsidian}/claude/projects/ta-portfolio-content-design.md` |
 
 ---

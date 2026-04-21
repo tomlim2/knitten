@@ -20,11 +20,11 @@ When the user asks "what did I learn this week", it reads the log and shows a su
 
 ## Storage
 
-**Obsidian path:** Read `obsidian` key from `~/.claude/private/repo-paths.json`
+**Path:** !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc vocab`
 
 **File structure:**
 ```
-<obsidian>/30-resources/language/
+{RESOLVED_PATH}/
 ├── japanese.md
 ├── chinese.md
 ├── spanish.md
