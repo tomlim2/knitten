@@ -56,7 +56,7 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
 6. Report to user: "Auto-pr watching PR #<N>. Polling every 3 min."
 
 7. Schedule next tick via `ScheduleWakeup`:
-   - `delaySeconds: 180`
+   - `delaySeconds: 600`
    - `prompt: "/shotloom-auto-pr <N>"`
    - `reason: "auto-pr poll tick for PR #<N>"`
 
@@ -145,7 +145,32 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
    ```
    Reply body: `Fixed in <sha-short>. <brief>.`
 
-6. Resolve review threads via GraphQL mutation `resolveReviewThread` for each fixed in-scope comment (same pattern as `shotloom-respond-pr` Step 6).
+6. **Resolve review threads (MANDATORY, same cycle as the reply).** For every in-scope comment that received a reply in step 5, resolve its thread via GraphQL `resolveReviewThread`. Replying without resolving leaves stale "unresolved" threads on the PR page and forces the reviewer to click through each one — do not skip this.
+
+   Query thread IDs once per cycle:
+   ```bash
+   gh api graphql -f query='
+   query {
+     repository(owner: "CINEV", name: "shotloom") {
+       pullRequest(number: <N>) {
+         reviewThreads(first: 50) {
+           nodes {
+             id
+             isResolved
+             comments(first: 1) { nodes { databaseId } }
+           }
+         }
+       }
+     }
+   }' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not) | {thread: .id, first_comment: .comments.nodes[0].databaseId}'
+   ```
+
+   Then for each thread whose `first_comment` is an in-scope comment you replied to:
+   ```bash
+   gh api graphql -f query="mutation { resolveReviewThread(input: {threadId: \"<threadId>\"}) { thread { id isResolved } } }"
+   ```
+
+   Do NOT resolve threads for out-of-scope or ambiguous items — the reviewer's un-resolved state is the signal that a follow-up (new Linear issue or clarification) is still owed.
 
 7. **Out-of-scope items** — NO reply, NO resolve, NO Linear issue created. Add draft issue block to the briefing per policy.
 
@@ -244,6 +269,8 @@ Main thread stays as orchestrator: collect diffs, stage, commit, push, reply, lo
 - All file gates must pass before push — never push red.
 - `git add` by filename, never `-A` / `-f`.
 - If `state.json` is missing on a non-bootstrap tick, treat as fresh bootstrap (don't replay history, just re-baseline and continue).
+- **Default poll interval is 600s (10 min).** Do not drop below 600s unless a state transition is actively in flight (e.g., just pushed a fix, waiting for CI on that exact sha — even then, 270s minimum).
+- **Silent ticks emit ZERO user-facing text.** When the poll shows no new comments, no new reviews, no check transition, and no state change: update `state.json`, append one line to `log.md`, call `ScheduleWakeup`, and **stop without writing any chat message** — no "Tick N/30 idle", no "다음 XX:XX", no status bubble, nothing. Tool calls only. The next wake-up fires via the harness hook; the user doesn't need confirmation each cycle. Reserve chat output for cycles where the poll actually detected something (new comment, new review, check transition, state change, stop condition).
 
 ## Common failures
 
