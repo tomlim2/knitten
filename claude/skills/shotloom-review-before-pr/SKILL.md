@@ -21,7 +21,7 @@ Embedding the review inside `make-pr` meant you couldn't pre-check work without 
 ### Step 1: Sanity — branch state
 
 ```bash
-cd ~/Desktop/www/shotloom-github
+cd "$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)"
 git rev-parse --abbrev-ref HEAD                     # current branch
 git log --oneline origin/main..HEAD || git log --oneline main..HEAD
 git status --short                                   # surface unstaged work
@@ -65,7 +65,7 @@ If a repo-local Claude rule file exists (`~/.claude/rules/<repo>-*.md`, e.g. `sh
 For each group, run the matching grep / metadata commands. **Every hit is a candidate defect that needs human triage** — do not auto-classify as false positive.
 
 ```bash
-cd ~/Desktop/www/shotloom-github
+cd "$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)"
 
 # === Pattern A — Doc ↔ Code coherence ===
 

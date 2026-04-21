@@ -26,10 +26,20 @@ Supports supersedes workflow — if invoked with a prior PR number, generates re
 
 ## Workflow
 
+### Step 0: Resolve repo path
+
+All subsequent `cd` and `Read:` steps operate on the shotloom checkout. Resolve its absolute path once:
+
+```bash
+shotloom_root=$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)
+```
+
+Use `$shotloom_root` below. If reading files via Claude's `Read` tool, substitute the resolved absolute path.
+
 ### Step 1: Sanity — branch, identity, gh account
 
 ```bash
-cd ~/Desktop/www/shotloom-github
+cd "$shotloom_root"
 git status                                      # working tree clean
 git log -1 --format="%an <%ae>"                  # must be tomlim2 <deemo@vonvon.me>
 gh auth status 2>&1 | grep -E "Active|account"   # tomlim2 active, deemotl NOT active
@@ -44,18 +54,18 @@ If any check fails, stop and report. Do not proceed to gates or drafting.
 Re-read `docs/guidelines/pr-guideline.md` every invocation. The template and rules may have changed.
 
 ```
-Read: ~/Desktop/www/shotloom-github/docs/guidelines/pr-guideline.md
-Read: ~/Desktop/www/shotloom-github/.github/pull_request_template.md
-Read: ~/Desktop/www/shotloom-github/docs/guidelines/commit-guideline.md   # PR title format
+Read: $shotloom_root/docs/guidelines/pr-guideline.md
+Read: $shotloom_root/.github/pull_request_template.md
+Read: $shotloom_root/docs/guidelines/commit-guideline.md   # PR title format
 ```
 
 Also read any agent-operational guidance in `.agent/` if the folder
 exists:
 
 ```
-Read: ~/Desktop/www/shotloom-github/.agent/README.md          # index, if present
-Read: ~/Desktop/www/shotloom-github/.agent/working-rules.md   # repo-scoped agent rules
-Read: ~/Desktop/www/shotloom-github/.agent/checklists.md      # pre/post-task checklists
+Read: $shotloom_root/.agent/README.md          # index, if present
+Read: $shotloom_root/.agent/working-rules.md   # repo-scoped agent rules
+Read: $shotloom_root/.agent/checklists.md      # pre/post-task checklists
 ```
 
 `.agent/` holds informal operational rules the shotloom agents
@@ -70,7 +80,7 @@ does not exist in the current checkout, skip this step silently.
 Run in order. Any failure blocks PR creation.
 
 ```bash
-cd ~/Desktop/www/shotloom-github
+cd "$shotloom_root"
 cargo fmt --check                                           # formatting
 cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
 cargo check --workspace --exclude shotloom-desktop
@@ -200,6 +210,16 @@ If the PR references a Linear issue (Resolves/Related to STL-NN), add the PR URL
 ### Step 10: Report
 
 Post the PR URL and a one-line status. Do NOT push any subsequent commits without being asked.
+
+### Step 11: Offer auto-PR watcher
+
+After the PR URL is reported, ask the user once:
+
+> 자동 PR 응대(`/shotloom-auto-pr <N>`) 켤까요? CI/리뷰 감지 → 수정 → 푸시 → 인라인 응답을 per-comment 승인 없이 진행합니다. (y/n)
+
+- If **yes** → invoke `/shotloom-auto-pr <PR-number>` with the just-created PR number. Do not ask further approval — per `feedback_auto_pr_approval_exempt`, this skill is the single exception.
+- If **no** or skipped → stop here. User can manually run `/shotloom-watch-pr`, `/shotloom-respond-pr`, or `/shotloom-auto-pr` later.
+- Skip the prompt entirely if this invocation already ran inside `/shotloom-auto-pr` (avoid recursion).
 
 ## Common failures + fixes
 
