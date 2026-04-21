@@ -104,32 +104,33 @@ git branch -d "$current_branch" 2>&1 || echo "branch $current_branch not fully m
 
 Do NOT use `-D` (force delete) or `--force` on worktree removal unless the user explicitly opts in.
 
-### Step 5: Append day log
+### Step 5: Append day log via `/learn-log-day`
 
-Resolve the log destination via `machine-paths.json`:
+Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog` so the Obsidian-format conventions (frontmatter, tags, callouts, wikilinks, path resolution) are handled in one place.
 
-```bash
-base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/machine-paths.json)
-date_slug=$(date +%Y-%m-%d)
-log_path="$base/claude/projects/shotloom/daily/$date_slug.md"
-mkdir -p "$(dirname "$log_path")"
+Draft the entry body first from the resolved context (PR number/title/merge state, Linear transition, worktree path, commit shas, one-line summary from the PR body's `## Summary`). Then invoke:
+
+```
+/learn-log-day shotloom devlog
 ```
 
-Append one entry under today's file:
+When the learn-log-day skill opens the day file, paste the drafted entry under today's heading in this shape:
 
 ```markdown
 ## <HH:MM> — STL-NN closed (<mode>)
 
-**PR:** #<N> <title> — <MERGED|CLOSED|no-pr>
-**Linear:** <prev state> → <new state>
-**Branch:** <branch> (removed)
-**Worktree:** <path> (removed)
+**PR:** [#<N>](<pr-url>) <title> — <MERGED|CLOSED|no-pr>
+**Linear:** [STL-NN](<linear-url>) <prev state> → <new state>
+**Branch:** `<branch>` (<removed | kept — reason>)
+**Worktree:** `<path>` (<removed | preserved>)
 **Commits on branch:** <N> (<first sha> … <last sha>)
 
 **Summary:** <1-2 lines — what the task accomplished, key changes, blockers/learnings if any>
 ```
 
-The summary line is drafted from the PR body's `## Summary` section (if merged) or from the commit messages on the branch (otherwise). Keep it brief — the full story lives in the PR / commits.
+Keep it brief — the full story lives in the PR / commits. If the Obsidian vault is writable (`obsidian-vault-claude` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
+
+**After learn-log-day writes the file**, commit and push it from the caol-ila repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
 
 ### Step 6: Report
 
