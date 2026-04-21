@@ -29,18 +29,12 @@ Categories:
 
 ## Execution
 
-**Path resolution (2-hop via aliases, flat repo-paths.json):**
+**Path resolution:**
 
-The vault path for logical name `obsidian` is resolved through an alias layer so each machine can point `obsidian` at a different physical vault (work → `obsidian-staging`, home → `obsidian-home`, etc.) without per-skill branching.
-
-1. Read `~/.claude/private/hardware.json`. Look for `aliases.obsidian`:
-   - If present, use that string as the repo-paths key.
-   - If absent, fall back to `"obsidian"` as the literal repo-paths key (backward compat).
-2. Read `~/.claude/private/repo-paths.json` (flat map: key → absolute path). Look up the key from step 1.
-   - If the key is missing, error: `No entry '<key>' in repo-paths.json — register the vault with /caol-register-refs`.
-3. The base directory is `{vault_path}/learnings/`. Note: no extra `claude/` segment — each vault already has its own top-level scheme.
-
-Never fall back to cwd or an empty path. On any failure, surface a distinct, actionable error and stop.
+1. Read `~/.claude/private/machine-paths.json`. Use `obsidian` key as the vault root.
+   - If key is missing or directory doesn't exist, fall back to `obsidian-staging` key.
+   - On any failure, surface a distinct error and stop.
+2. Base directory: `{vault_path}/learnings/`
 
 ### Workflow
 

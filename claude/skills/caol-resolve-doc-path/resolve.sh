@@ -69,13 +69,8 @@ PROJECT="$ARG2"
 
 # Read obsidian root
 OBSIDIAN_ROOT=""
-if [[ -f "$REPO_PATHS" ]]; then
-  val=$(jq -r '.obsidian // empty' "$REPO_PATHS")
-  if echo "$val" | jq -e 'type == "object"' &>/dev/null 2>&1; then
-    OBSIDIAN_ROOT=$(echo "$val" | jq -r '.path // empty')
-  else
-    OBSIDIAN_ROOT="$val"
-  fi
+if [[ -f "$MACHINE_PATHS" ]]; then
+  OBSIDIAN_ROOT=$(jq -r '.obsidian // empty' "$MACHINE_PATHS")
 fi
 
 STAGING_ROOT=""
