@@ -34,7 +34,7 @@ if [[ -z "$ARG1" ]]; then
   exit 1
 fi
 
-# ── repo mode ────────────────────────────────────────────────────────────────
+# ── repo mode ─────────────────────────────────────────────────────────────────
 if [[ "$MODE" == "repo" ]]; then
   if [[ ! -f "$REPO_PATHS" ]]; then
     echo "ERROR: repo-paths.json not found" >&2; exit 1
@@ -43,12 +43,10 @@ if [[ "$MODE" == "repo" ]]; then
   if [[ -z "$val" ]]; then
     echo "ERROR: repo key '$ARG1' not found in repo-paths.json" >&2; exit 1
   fi
-  # Support object with .path
   if echo "$val" | jq -e 'type == "object"' &>/dev/null 2>&1; then
     val=$(echo "$val" | jq -r '.path')
   fi
-  val="${val/#\~/$HOME}"
-  echo "RESOLVED_PATH=$val"
+  echo "RESOLVED_PATH=${val/#\~/$HOME}"
   exit 0
 fi
 
@@ -61,8 +59,7 @@ if [[ "$MODE" == "tool" ]]; then
   if [[ -z "$val" ]]; then
     echo "ERROR: tool key '$ARG1' not found in machine-paths.json" >&2; exit 1
   fi
-  val="${val/#\~/$HOME}"
-  echo "RESOLVED_PATH=$val"
+  echo "RESOLVED_PATH=${val/#\~/$HOME}"
   exit 0
 fi
 
@@ -70,11 +67,8 @@ fi
 PURPOSE="$ARG1"
 PROJECT="$ARG2"
 
-# Read roots
+# Read obsidian root
 OBSIDIAN_ROOT=""
-STAGING_ROOT=""
-CAOL_ILA_ROOT=""
-
 if [[ -f "$REPO_PATHS" ]]; then
   val=$(jq -r '.obsidian // empty' "$REPO_PATHS")
   if echo "$val" | jq -e 'type == "object"' &>/dev/null 2>&1; then
@@ -82,15 +76,9 @@ if [[ -f "$REPO_PATHS" ]]; then
   else
     OBSIDIAN_ROOT="$val"
   fi
-
-  val=$(jq -r '."caol-ila" // empty' "$REPO_PATHS")
-  if echo "$val" | jq -e 'type == "object"' &>/dev/null 2>&1; then
-    CAOL_ILA_ROOT=$(echo "$val" | jq -r '.path // empty')
-  else
-    CAOL_ILA_ROOT="$val"
-  fi
 fi
 
+STAGING_ROOT=""
 if [[ -f "$MACHINE_PATHS" ]]; then
   STAGING_ROOT=$(jq -r '."obsidian-staging" // empty' "$MACHINE_PATHS")
 fi
@@ -100,16 +88,11 @@ if [[ -n "$OBSIDIAN_ROOT" && -d "$OBSIDIAN_ROOT" ]]; then
   VAULT_AVAILABLE="true"
 fi
 
-DOW=$(date +%u)
-WEEKDAY="false"
-[[ "$DOW" -le 5 ]] && WEEKDAY="true"
-
-if [[ "$WEEKDAY" == "true" ]]; then
-  SLOT=$(jq -r --arg p "$PURPOSE" '.purposes[$p].weekday // .purposes[$p].default // empty' "$DOC_PATHS")
-elif [[ "$VAULT_AVAILABLE" == "false" ]]; then
-  SLOT=$(jq -r --arg p "$PURPOSE" '.purposes[$p]["no-vault"] // .purposes[$p].default // empty' "$DOC_PATHS")
-else
+# Pick slot
+if [[ "$VAULT_AVAILABLE" == "true" ]]; then
   SLOT=$(jq -r --arg p "$PURPOSE" '.purposes[$p].default // empty' "$DOC_PATHS")
+else
+  SLOT=$(jq -r --arg p "$PURPOSE" '.purposes[$p]["no-vault"] // .purposes[$p].default // empty' "$DOC_PATHS")
 fi
 
 if [[ -z "$SLOT" ]]; then
@@ -118,13 +101,11 @@ fi
 
 ROOT_KEY="${SLOT%%:*}"
 REL_PATH="${SLOT#*:}"
-
 [[ -n "$PROJECT" ]] && REL_PATH="${REL_PATH//\{project\}/$PROJECT}"
 
 case "$ROOT_KEY" in
   obsidian) BASE="$OBSIDIAN_ROOT" ;;
   staging)  BASE="$STAGING_ROOT" ;;
-  caol-ila) BASE="$CAOL_ILA_ROOT" ;;
   ops)      BASE="$HOME/.claude/ops" ;;
   private)  BASE="$HOME/.claude/private" ;;
   *)        BASE="" ;;
@@ -132,10 +113,8 @@ esac
 
 BASE="${BASE/#\~/$HOME}"
 RESOLVED="$BASE${REL_PATH:+/$REL_PATH}"
-
 FORMAT=$(jq -r --arg k "$ROOT_KEY" '.format[$k] // "free"' "$DOC_PATHS")
 
 echo "RESOLVED_PATH=$RESOLVED"
 echo "FORMAT=$FORMAT"
-echo "WEEKDAY=$WEEKDAY"
 echo "VAULT_AVAILABLE=$VAULT_AVAILABLE"

@@ -34,8 +34,7 @@ Usage:
 
 Doc path: !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh devlog $0`
 
-`RESOLVED_PATH` 를 프로젝트 베이스 경로로 사용. `FORMAT=temp-md` 이면 Obsidian frontmatter 권장.
-없으면 → [프로젝트 초기 셋업](#프로젝트-초기-셋업) 실행
+`RESOLVED_PATH` 를 프로젝트 베이스 경로로 사용. 없으면 → [프로젝트 초기 셋업](#프로젝트-초기-셋업) 실행
 
 ---
 

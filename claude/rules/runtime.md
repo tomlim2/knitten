@@ -9,3 +9,5 @@
 - **Obsidian format** — ALWAYS read `~/.claude/standards/obsidian-format.md` before creating or editing Obsidian .md files. Frontmatter, wikilinks, tags required.
 - **Kill by PID** — NEVER broad-kill by process name. Find PID first, then kill specific PID.
 - **Delegate mechanical work** — For pure mechanical edits (bulk rename, sed-style replacements, file moves, boilerplate scaffolding, scoped cleanup passes), dispatch a subagent with `model: "haiku"` (single-file trivial) or `model: "sonnet"` (multi-file, light judgment), prefer `run_in_background: true`, and stay in conversation with the user in foreground while it works. Do NOT delegate: design decisions, debugging, test interpretation, anything requiring conversation context.
+- **No success feedback** — Say nothing on success. Report only when something fails or is blocked.
+- **Ambiguity scoring** — When evaluating whether to auto-execute an ambiguous action, score 1–10. 9+ = execute immediately without asking. When reporting a score, lead with what's missing (why it's not 10), not the positives.
