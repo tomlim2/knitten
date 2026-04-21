@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew *)",
+      "Bash(npm install *)",
+      "Bash(git *)",
+      "Bash(gh repo *)",
+      "Bash(gh auth *)",
+
+      "Bash(ls *)",
+      "Bash(ls -1d *)",
+      "Bash(ls -1 *)",
+      "Bash(wc *)",
+      "Bash(grep *)",
+      "Bash(awk *)",
+      "Bash(xargs *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(cat *)",
+      "Bash(curl *)",
+      "Bash(open *)",
+      "Bash(pbcopy)",
+      "Bash(pbpaste)",
+
+      "Bash(python3 *)",
+      "Bash(uv *)",
+      "Bash(source *)",
+      "Bash(export PATH=*)",
+      "Bash(sh -s -- -y)",
+
+      "Bash(cargo *)",
+      "Bash(rustc --version)",
+
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.rs)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+
+      "Read(//Users/{USERNAME}/Desktop/www/**)",
+      "Read(//Users/{USERNAME}/.claude/private/**)",
+      "Read(//tmp/**)"
+    ]
+  }
+}
