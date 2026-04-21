@@ -36,11 +36,23 @@ caol-ila repo pull 해서 회사 맥 커밋 받기. 집 맥의 `~/.claude/`는 c
 회사 맥은 Obsidian vault 없음 → `machine-paths.json`에 `obsidian-vault-claude` 키 없음. 집 맥은 있어야 함.
 
 ```bash
-cat ~/.claude/private/machine-paths.json | jq .
+cat ~/.claude/private/caol-config/machine-paths.json | jq .
 ```
 
 - `obsidian-vault-claude` 키 존재해야 함 (iCloud Obsidian MyNotes/claude)
 - 없으면 키 추가
+
+### 2-a. caol-config/ 경로 마이그레이션 (회사 맥에서 실행됨, 집 맥 동일 필요)
+
+활성 스킬 전부가 `~/.claude/private/caol-config/*.json` 경로 기대 (canonical). 기존 flat `~/.claude/private/*.json`은 드리프트. 집 맥에서도 동일하게 옮겨야 함:
+
+```bash
+mkdir -p ~/.claude/private/caol-config
+mv ~/.claude/private/repo-paths.json ~/.claude/private/caol-config/ 2>/dev/null
+mv ~/.claude/private/machine-paths.json ~/.claude/private/caol-config/ 2>/dev/null
+mv ~/.claude/private/hardware.json ~/.claude/private/caol-config/ 2>/dev/null
+jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json  # smoke test
+```
 
 ### 3. P0 버그 수정 검증
 
