@@ -19,7 +19,7 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 | 단계 | 스크립트 | 역할 |
 |------|---------|------|
-| 1. 아카이빙 | `archive.py` | temp-learnings + ~/.codex 문서를 vault로 이동 (frontmatter 자동 부여) |
+| 1. 아카이빙 | `archive.py` | obsidian-staging + ~/.codex 문서를 vault로 이동 (frontmatter 자동 부여) |
 | 2. 태그 통합 | `tag_consolidate.py` | 의미 중복 태그 교체 (TAG_MAP) + 우산 태그 추가 (TAG_ADD). vault 전체 스캔 |
 | 3. 태그 보충 | `fill_tags_from_name.py` | 파일명/경로로부터 누락된 태그 추론해서 추가. vault 전체 스캔 |
 
