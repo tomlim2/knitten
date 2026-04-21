@@ -12,5 +12,8 @@
   "codex-base":       { "path": "", "description": "Codex CLI config + prompts + session data (github.com/tomlim2/codex-base)" },
   "studio-weekend":   { "path": "", "description": "AI Game Studio Tycoon — Godot 사이드 프로젝트" },
   "krafton-hackathon":{ "path": "", "description": "Krafton AI hackathon 2026 project" },
-  "mmd-archive":      { "path": "", "description": "MMD archive" }
+  "mmd-archive":      { "path": "", "description": "MMD archive" },
+  "cinev-studio":     { "path": "", "description": "CINEVStudio UE project (main, Windows only)" },
+  "cinev-git":        { "path": "", "description": "CINEVStudio git working copy (Windows only)" },
+  "cinev-studio-git": { "path": "", "description": "CINEVStudio git for art branch ops (Windows only)" }
 }
