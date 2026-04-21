@@ -22,7 +22,7 @@ gh pr checks <N> 2>&1
 ## Step 3: Fix CI failures
 1. Read the failed job log: `gh run view <run_id> --job <job_id> --log-failed`
 2. Identify the error (compile error, test failure, lint, etc.)
-3. Checkout the PR branch in the shotloom repo at `/Users/younsoolim/Desktop/www/shotloom`
+3. Checkout the PR branch in the shotloom repo — read path from `repo-paths.json` key `shotloom`
 4. Fix the issue
 5. Run local gates: `cargo check --workspace --exclude shotloom-desktop`, `cargo clippy --workspace -- -D warnings`, `cargo fmt --check`, `cargo test -p shotloom-gltf --lib`, `cargo test -p shotloom-retarget --lib`
 6. Commit with message: `fix(<scope>): <description of CI fix>` + `Related to STL-NN` if applicable

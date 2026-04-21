@@ -1,6 +1,6 @@
 # Shotloom repo hub rule
 
-When working inside `/Users/deemooooooooo/Desktop/www/shotloom-github/`, these documents bind. Read at session start; re-read when task changes category.
+When working inside !`python3 -c "import json,os; d=json.load(open(os.path.expanduser('~/.claude/private/repo-paths.json'))); print(d['shotloom'])"`, these documents bind. Read at session start; re-read when task changes category.
 
 ## Mandatory reads by task category
 

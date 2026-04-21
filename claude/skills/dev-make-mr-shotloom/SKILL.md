@@ -18,14 +18,18 @@ Generate a GitLab Merge Request description for the shotloom project, following 
 
 ### Step 1: Gather Context
 
-1. Read shotloom conventions:
+1. Resolve paths from repo-paths.json:
+   - `caol-ila` key → caol-ila repo root
+   - `shotloom` key → shotloom repo root
+
+2. Read shotloom conventions if present:
 ```
-cat ~/Desktop/www/caol-ila/claude/ops/shotloom-vrm-import/conventions.md
+cat <caol-ila>/claude/ops/shotloom-vrm-import/conventions.md
 ```
 
-2. Get branch diff:
+3. Get branch diff:
 ```bash
-cd ~/Desktop/www/shotloom
+cd <shotloom>
 git log --oneline main..HEAD
 git diff --stat main..HEAD
 git diff main..HEAD

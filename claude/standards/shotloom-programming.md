@@ -8,7 +8,7 @@ Rules to follow **when writing code** in the Shotloom repo. Sourced from in-repo
 > - Project overview: [shotloom.md](shotloom.md)
 > - Hub rule: [../rules/shotloom.md](../rules/shotloom.md)
 
-**When this doc is authoritative:** any time you edit code under `/Users/deemooooooooo/Desktop/www/shotloom-github/`. Re-read at session start — guidelines drift.
+**When this doc is authoritative:** any time you edit code under !`python3 -c "import json,os; d=json.load(open(os.path.expanduser('~/.claude/private/repo-paths.json'))); print(d['shotloom'])"`. Re-read at session start — guidelines drift.
 
 ---
 
