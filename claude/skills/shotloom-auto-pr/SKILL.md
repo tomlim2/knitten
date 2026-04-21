@@ -167,7 +167,17 @@ Write final entry to `log.md` and report to user.
 
 ### Step 5.3: PR-closed journal entry (always on MERGED or CLOSED)
 
-Whenever the loop stops because the PR reached `MERGED` or `CLOSED`, append one entry to `~/.claude/private/ops/shotloom-pr-journal.md`:
+Whenever the loop stops because the PR reached `MERGED` or `CLOSED`, append one entry to the durable PR journal. Resolve the path via `machine-paths.json` (per `rules/runtime.md`):
+
+```bash
+# resolver: prefer vault, fallback to staging
+base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/machine-paths.json)
+journal_path="$base/shotloom-pr-journal.md"
+```
+
+On work Mac (vault absent) this resolves to `{caol-ila}/claude/obsidian-staging/shotloom-pr-journal.md`. On home Mac it resolves to `{vault}/claude/shotloom-pr-journal.md`. Never hardcode `~/.claude/private/ops/` for this — that directory is for transient per-PR cycle state only (`pr-<N>/log.md`, `state.json`), not durable records.
+
+Append format:
 
 ```markdown
 ## PR #<N> — <MERGED | CLOSED> <ISO timestamp>
