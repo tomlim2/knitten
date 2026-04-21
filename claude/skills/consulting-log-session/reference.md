@@ -6,43 +6,7 @@ Company file format template, full workflow details for all 3 actions, and notes
 
 ## Company File Format
 
-```markdown
-# {CompanyName} - Consulting History
-
-**Industry:** Gaming / Tech / etc.
-**Contact:** Name, role (if applicable)
-**Relationship:** Active / Completed / One-time
-**Total sessions:** N
-
----
-
-## Sessions
-
-### 2026-02-14 | Topic Title
-
-**Duration:** 2h
-**Format:** On-site / Remote / Async
-**Area:** UE optimization / Pipeline / Shader / etc.
-
-**Context:**
-Why this consulting happened. What they needed.
-
-**What I did:**
-- Specific technical work performed
-- Tools/techniques applied
-
-**Outcome:**
-Concrete results, metrics, deliverables.
-
-**Follow-up:**
-- [ ] Next steps if any
-
----
-
-### 2026-01-20 | Previous Session Topic
-
-...
-```
+@~/.claude/templates/consulting/company.md
 
 ---
 

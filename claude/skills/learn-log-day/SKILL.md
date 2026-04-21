@@ -58,48 +58,7 @@ hub(`devlog.md`) + 개별 day 파일(`days/day-{NN}.md`) 구조.
 
 #### day 파일 포맷 (`days/day-{NN}.md`)
 
-```markdown
----
-title: "Day {N} ({MM-DD}): {한줄 제목}"
-tags: [devlog, {project}, {도메인 태그들}]
-date: YYYY-MM-DD
-day: {N}
----
-
-# Day {N} ({MM-DD}): {한줄 제목}
-
-### 왜 이 작업을 했나
-
-{동기/배경 — 1-3문장}
-
-### 한 일
-
-**{서브제목}**
-- 불릿 포인트로 기술 내용
-- 코드 식별자는 `backtick`
-
-> [!tip] {핵심 발견}
-> {한줄 설명}. See [[{project}/learnings-index#{개념명}]]
-
-> [!warning] {실패한 시도}
-> {결과}. #failed
-
-### 배운 것
-
-{각 러닝을 **볼드 제목** + 설명으로}
-
-### 커밋 로그
-
-| Hash | Message |
-|------|---------|
-| `{hash}` | {message} |
-
-### 현재 상태
-
-| 항목 | 상태 | 비고 |
-|------|------|------|
-| {feature} | {status emoji} | {note} |
-```
+@~/.claude/templates/devlog/day.md
 
 **규칙:**
 - "왜 이 작업을 했나"는 반드시 포함 (맥락 보존)
@@ -111,50 +70,7 @@ day: {N}
 
 #### hub 파일 포맷 (`devlog.md`)
 
-```markdown
----
-title: "{프로젝트} 개발일지"
-tags: [devlog, {project}]
----
-
-# {프로젝트} 개발일지
-
-{한줄 설명}
-
----
-
-## 프로젝트 개요
-
-| 항목 | 내용 |
-|------|------|
-| 시작일 | YYYY-MM-DD |
-| 스택 | {tech stack} |
-| 목표 | {goal} |
-
----
-
-## 현재 상태 (YYYY-MM-DD 기준)
-
-| 기능 | 상태 | 비고 |
-|------|------|------|
-| {feature} | ✅/🚧/❌ | {note} |
-
----
-
-## TODO
-
-- [ ] {task}
-
----
-
-## Day {N} ({MM-DD}): {한줄 제목}
-- {한 일 요약 1-2줄}
-- 배운 것: {핵심 러닝 1-2개}
-- [[{project}/days/day-{NN}|상세]]
-
-## Day {N-1} ({MM-DD}): {한줄 제목}
-- ...
-```
+@~/.claude/templates/devlog/hub.md
 
 **규칙:**
 - hub 요약은 day당 3-4줄 이내
@@ -179,54 +95,7 @@ Context, Problem, Solution(worked/gotcha), Why(worked), Rule — 순서대로 �
 
 #### learnings-index.md 포맷
 
-```markdown
----
-title: "{프로젝트} Learnings"
-tags: [learnings, {project}]
-updated: YYYY-MM-DD
----
-
-# {프로젝트} Learnings
-
----
-
-## What Worked
-
-### {개념명}
-- **Date**: YYYY-MM-DD
-- **Context**: {상황 설명}
-- **Problem**: {무엇이 문제였는지}
-- **Solution**: {어떻게 해결했는지}
-- **Why it worked**: {왜 이 방법이 효과적인지}
-
-> [!abstract] Rule
-> {일반화된 교훈/패턴} #rule
-
----
-
-## What Failed
-
-### {시도명}
-- **Date**: YYYY-MM-DD
-- **Context**: {상황}
-- **Problem**: {왜 실패했는지}
-
-> [!abstract] Rule
-> {다음에 피해야 할 것} #rule
-
----
-
-## Gotcha
-
-### {함정명}
-- **Date**: YYYY-MM-DD
-- **Context**: {상황}
-- **Problem**: {비직관적인 동작}
-- **Solution**: {우회 방법} (있으면)
-
-> [!abstract] Rule
-> {기억해야 할 것} #rule
-```
+@~/.claude/templates/devlog/learnings.md
 
 **규칙:**
 - YAML frontmatter 필수 (`title`, `tags`, `updated`)
@@ -243,28 +112,7 @@ updated: YYYY-MM-DD
 
 #### topic 파일 포맷
 
-```markdown
----
-title: "{주제 제목}"
-tags: [{project}, {관련 태그들}]
-created: YYYY-MM-DD
----
-
-# {주제 제목}
-
-## Problem
-{설명}
-
-## Solution
-{코드 블록 + 구현 상세}
-
-## Why
-- 불릿 포인트
-
-## 환경
-- {프레임워크/엔진 버전}
-- {관련 파일 경로}
-```
+@~/.claude/templates/devlog/topic.md
 
 **규칙:**
 - 파일명: kebab-case (영문)
