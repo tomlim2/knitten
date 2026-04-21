@@ -29,19 +29,32 @@ Categories:
 
 ## Execution
 
-**Path resolution:** Read `~/.claude/private/repo-paths.json`, get `obsidian.path`, then use `{obsidian}/claude/learnings/` as the base directory.
+**Path resolution (2-hop via aliases, flat repo-paths.json):**
 
-1. **Resolve path** - Read `repo-paths.json` → `{obsidian.path}/claude/learnings/`
-2. **Parse arguments** - Extract project name and category
-3. **Check/create directory**: `{learnings}/projects/`
-4. **Read or create** project file: `{learnings}/projects/<project>.md`
-   - If new, copy from `{learnings}/_template.md`
-5. **Ask user** to describe the learning
-6. **Append** to appropriate section with today's date
-7. **용어 사전 (선택)** — 한글/영어 매칭이 직관적이지 않은 용어가 있으면 `_glossary.md`에도 추가
+The vault path for logical name `obsidian` is resolved through an alias layer so each machine can point `obsidian` at a different physical vault (work → `obsidian-staging`, home → `obsidian-home`, etc.) without per-skill branching.
+
+1. Read `~/.claude/private/hardware.json`. Look for `aliases.obsidian`:
+   - If present, use that string as the repo-paths key.
+   - If absent, fall back to `"obsidian"` as the literal repo-paths key (backward compat).
+2. Read `~/.claude/private/repo-paths.json` (flat map: key → absolute path). Look up the key from step 1.
+   - If the key is missing, error: `No entry '<key>' in repo-paths.json — register the vault with /caol-register-refs`.
+3. The base directory is `{vault_path}/learnings/`. Note: no extra `claude/` segment — each vault already has its own top-level scheme.
+
+Never fall back to cwd or an empty path. On any failure, surface a distinct, actionable error and stop.
+
+### Workflow
+
+1. **Resolve path** — Follow the 2-hop resolution above. Base: `{vault_path}/learnings/`.
+2. **Parse arguments** — Extract project name and category.
+3. **Check/create directory**: `{learnings}/projects/`.
+4. **Read or create** project file: `{learnings}/projects/<project>.md`.
+   - If new, copy from `{learnings}/_template.md`.
+5. **Ask user** to describe the learning.
+6. **Append** to appropriate section with today's date.
+7. **용어 사전 (선택)** — 한글/영어 매칭이 직관적이지 않은 용어가 있으면 `_glossary.md`에도 추가.
    - 파일: `{learnings}/_glossary.md`
    - 형식: `| 한글 (한자) | English | 뜻풀이 | 출처 링크 |`
-8. **Confirm** the addition
+8. **Confirm** the addition.
 
 ## Current Learnings
 
