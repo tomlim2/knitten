@@ -46,7 +46,7 @@ Consulting logs are stored in **Obsidian vault** (not `private/`):
 └── the-lab.md
 ```
 
-**Obsidian vault path:** Read `~/.claude/private/repo-paths.json` → key `obsidian` → `.path` → append `/claude/consulting/`
+**Obsidian vault path:** !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh consulting`
 
 Each company gets ONE file. Sessions accumulate in reverse chronological order (newest first).
 

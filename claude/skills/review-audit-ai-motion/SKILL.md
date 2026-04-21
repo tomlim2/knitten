@@ -42,7 +42,7 @@ Do NOT reimplement thresholds inline. Always cite the standard.
 Run the analysis script:
 
 ```bash
-/Applications/Blender.app/Contents/MacOS/Blender --background --python ~/.claude/skills/review-audit-ai-motion/analyze.py -- <source.fbx> [retargeted]
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh tool blender` --background --python ~/.claude/skills/review-audit-ai-motion/analyze.py -- <source.fbx> [retargeted]
 ```
 
 The script writes JSON to `/tmp/motion-audit/<filename>.json` with:

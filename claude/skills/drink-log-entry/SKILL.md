@@ -29,7 +29,7 @@ Or visit: http://localhost:972/skills/drink-log-entry
 
 ## Data Source
 
-Reads from: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/drinks/drinks.json`
+Reads from: `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc drinks`/drinks.json`
 
 ## Files
 
@@ -38,4 +38,4 @@ Reads from: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/cla
 ## Related Files
 
 - Command: `~/.claude/commands/drink-log-entry.md`
-- Data: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/drinks/drinks.json`
+- Data: `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc drinks`/drinks.json`

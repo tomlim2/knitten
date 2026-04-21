@@ -49,7 +49,7 @@ Command: `/open-invoice`
 
 ## File Locations
 - **Generated PDFs**: Downloads folder (move to Obsidian `claude/tutoring/invoices/` for archival)
-- **Student info (optional)**: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/tutoring/presets.json` - Store student/teacher info for reference
+- **Student info (optional)**: `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring``/presets.json - Store student/teacher info for reference
 
 ## Optional: Student Information Storage
 
@@ -57,7 +57,7 @@ You can maintain student and teacher information in Obsidian `claude/tutoring/pr
 
 ```bash
 # Copy example file
-cp skills/invoice-generator/presets.json.example "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/tutoring/presets.json"
+cp skills/invoice-generator/presets.json.example "$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring)/presets.json"
 ```
 
 **Note**: This file is for reference only. The web app does not auto-load this data.

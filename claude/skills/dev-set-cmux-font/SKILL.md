@@ -21,7 +21,7 @@ Usage: `/dev-set-cmux-font` or `/dev-set-cmux-font "JetBrains Mono"`
 - Alternatives: `D2Coding` (Naver, Korean-only), `Nanum Gothic Coding` (Korean-only). These lack JP/CN coverage so you still need a fallback.
 
 **For Latin-only users:**
-- `SF Mono` (preinstalled on macOS, `/System/Library/Fonts/SFNSMono.ttf`)
+- `SF Mono` (preinstalled on macOS, `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh tool font-sf-mono``)
 - `JetBrains Mono`, `Menlo`, `Monaco`
 
 **Anti-pattern:** Using `SF Mono` primary + `Apple SD Gothic Neo` fallback. SF Mono is mono, but Apple SD Gothic Neo is NOT a monospace face — CJK glyphs will render at proportional width, so Korean text looks misaligned even though Latin looks fine. If the user complains "cmux font looks wrong with Korean", this stack is almost always the cause.
@@ -87,7 +87,7 @@ font-size = 13
 
 The FIRST `font-family` line is the primary face. Subsequent lines are fallbacks for glyphs the primary doesn't cover. Use `Edit` to reorder or replace lines — do NOT rewrite the whole file unless necessary.
 
-If Sarasa Mono isn't installed yet, install with `brew install --cask font-sarasa-gothic` (confirm with user first). The cask ships a single `~/Library/Fonts/Sarasa-SuperTTC.ttc` that contains every regional variant.
+If Sarasa Mono isn't installed yet, install with `brew install --cask font-sarasa-gothic` (confirm with user first). The cask ships a single `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh tool font-sarasa`` that contains every regional variant.
 
 For cmux `settings.json` (JSONC — comments allowed), uncomment or add a `terminal` section following the schema. If the schema does not document a font key yet, prefer the Ghostty config path instead.
 
