@@ -71,15 +71,15 @@ Worker는 ops 디렉토리를 읽지 않는다. #1이 파일 경로와 라인 �
 - `snippets` 필드 없음. `files`에 `path:L시작-끝`으로 라인 범위 지정.
 - Worker가 해당 파일을 직접 Read.
 - 각 라인 범위 ≤50줄. task당 최대 3개 범위. 넘으면 subtask로 분할.
-- `report`, `context`, `references` 필드 생략 가능. report 경로는 convention (`~/.claude/private/ops/{task-id}-result.md`), context는 goal로 충분, references는 files로 대체.
+- `report`, `context`, `references` 필드 생략 가능. report 경로는 convention (`~/.claude/ops/{task-id}-result.md`), context는 goal로 충분, references는 files로 대체.
 
 ### #1 Dispatch Flow
 
 1. 변경 대상 파일 경로 + 라인 범위 확인
-2. JSON blob 작성 → `~/.claude/private/ops/{task-id}-dispatch.md`
+2. JSON blob 작성 → `~/.claude/ops/{task-id}-dispatch.md`
 3. `pbcopy`로 클립보드 복사
 4. timeline.md `## Now` + task 테이블 업데이트
-5. Worker 완료 후 `~/.claude/private/ops/{task-id}-result.md` Read
+5. Worker 완료 후 `~/.claude/ops/{task-id}-result.md` Read
 
 ### #1 복귀 Flow
 
@@ -91,7 +91,7 @@ Worker는 ops 디렉토리를 읽지 않는다. #1이 파일 경로와 라인 �
 
 ### Ownership
 - **timeline.md, log.md는 #1만 수정.** Worker는 건드리지 않음.
-- **Worker는 result 파일만 쓴다:** `~/.claude/private/ops/{task-id}-result.md`
+- **Worker는 result 파일만 쓴다:** `~/.claude/ops/{task-id}-result.md`
 - #1이 result를 읽고 timeline/log에 반영.
 
 ### Commits & MR

@@ -146,7 +146,7 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 
 - **Never force** (`-D`, `--force`) without explicit user confirmation. Uncommitted changes or unmerged branches are signals — pause and ask.
 - **Never remove a worktree without leaving it first.** `cd $shotloom_root` before `git worktree remove`.
-- **Day-log path is not `~/.claude/private/ops/`.** That directory is per-PR transient state. Durable records go to `machine-paths.json → obsidian-vault-claude` (fallback: `obsidian-staging`).
+- **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go to `machine-paths.json → obsidian-vault-claude` (fallback: `obsidian-staging`).
 - **PR-level lifecycle is `/shotloom-auto-pr`'s job when running.** This skill is the manual equivalent — if auto-pr already did the Linear move and worktree cleanup on MERGE, this skill detects that and only appends the day log.
 - **Abandoned PRs** — worktree removal still requires the branch to be pushed (or user-approved discard). Local-only work should never be dropped silently.
 

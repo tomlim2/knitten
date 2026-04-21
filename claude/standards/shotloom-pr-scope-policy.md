@@ -99,7 +99,7 @@ When you cannot confidently classify as in-scope or out-of-scope, **lean ambiguo
 
 ## End-of-cycle briefing
 
-Every auto-pr cycle that processed feedback must emit (to `~/.claude/private/ops/pr-<N>/log.md` AND to the user's next turn):
+Every auto-pr cycle that processed feedback must emit (to `~/.claude/ops/pr-<N>/log.md` AND to the user's next turn):
 
 ```
 ## <ISO timestamp> — review response cycle

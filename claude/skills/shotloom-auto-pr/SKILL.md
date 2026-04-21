@@ -34,7 +34,7 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
    - Else: `gh pr view --json number -q .number` (detects PR for current branch).
    - If no open PR, report and stop.
 
-3. Create ops dir: `~/.claude/private/ops/pr-<N>/`
+3. Create ops dir: `~/.claude/ops/pr-<N>/`
    - `log.md` — append-only briefing log
    - `state.json` — snapshot for diff (comment count, review count, check summary, last sha)
 
@@ -62,7 +62,7 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
 
 ### Step 2: Poll tick (every wake-up)
 
-1. Read `~/.claude/private/ops/pr-<N>/state.json` for prior snapshot.
+1. Read `~/.claude/ops/pr-<N>/state.json` for prior snapshot.
 
 2. Fetch fresh state in parallel (single message, multi Bash):
    ```bash
@@ -210,7 +210,7 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
 
 8. **Ambiguous items (≥9/10)** — NO reply, NO resolve, NO fix. Add comment quote + interpretations to the briefing per policy.
 
-9. Write the end-of-cycle briefing to `~/.claude/private/ops/pr-<N>/log.md` in the three-section format from the policy (auto-resolved / needs new issue / ambiguous). If all three sections empty, emit nothing.
+9. Write the end-of-cycle briefing to `~/.claude/ops/pr-<N>/log.md` in the three-section format from the policy (auto-resolved / needs new issue / ambiguous). If all three sections empty, emit nothing.
 
 10. Loop continues regardless of how many items ended up out-of-scope or ambiguous. Only the termination conditions in Step 5 stop the loop.
 
@@ -285,7 +285,7 @@ base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/pr
 journal_path="$base/shotloom-pr-journal.md"
 ```
 
-On work Mac (vault absent) this resolves to `{caol-ila}/claude/obsidian-staging/shotloom-pr-journal.md`. On home Mac it resolves to `{vault}/claude/shotloom-pr-journal.md`. Never hardcode `~/.claude/private/ops/` for this — that directory is for transient per-PR cycle state only (`pr-<N>/log.md`, `state.json`), not durable records.
+On work Mac (vault absent) this resolves to `{caol-ila}/claude/obsidian-staging/shotloom-pr-journal.md`. On home Mac it resolves to `{vault}/claude/shotloom-pr-journal.md`. Never hardcode `~/.claude/ops/` for this — that directory is for transient per-PR cycle state only (`pr-<N>/log.md`, `state.json`), not durable records.
 
 Append format:
 
