@@ -172,6 +172,40 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
 
    Do NOT resolve threads for out-of-scope or ambiguous items — the reviewer's un-resolved state is the signal that a follow-up (new Linear issue or clarification) is still owed.
 
+6.5. **Re-request review from the PR's actual reviewer roster (MANDATORY).**
+
+   After replying and resolving threads, re-request review so the reviewers get a fresh "review requested" notification. Without this, the PR appears "done" from their side even though you pushed new commits.
+
+   **Source of truth — query the PR's reviewer roster directly. Do NOT infer from comment authors (a drive-by commenter is not necessarily a reviewer, and a team reviewer who hasn't commented still counts).**
+
+   Build the roster as the union of:
+   ```bash
+   # Currently pending review requests (users + teams).
+   gh pr view <N> --json reviewRequests -q '.reviewRequests[].login' \
+     2>/dev/null
+   # Everyone who has submitted any review (APPROVED, CHANGES_REQUESTED,
+   # or COMMENTED). COMMENTED reviews don't show up in `latestReviews`,
+   # so hit the REST reviews endpoint instead.
+   gh api repos/CINEV/shotloom/pulls/<N>/reviews \
+     --jq '[.[].user.login] | unique | .[]'
+   ```
+
+   Dedup, drop the PR author (`gh pr view <N> --json author -q .author.login`), and for each remaining login:
+   ```bash
+   gh api -X POST /repos/CINEV/shotloom/pulls/<N>/requested_reviewers \
+     -f "reviewers[]=<login>"
+   ```
+
+   Skip re-request in any of these cases:
+   - No in-scope items were fixed in this cycle (nothing to re-review).
+   - Roster is empty after dedup/author-drop (solo PR with no reviewers — log `re-request skipped: no roster` and continue).
+   - The API returns 404 or 422 for a specific login — log `re-request skipped: <login> (<reason>)` and continue; this happens when the user is no longer a collaborator, or a team reviewer needs a different endpoint.
+
+   After success, append to the end-of-cycle briefing:
+   ```
+   Re-requested review: <login1>, <login2>
+   ```
+
 7. **Out-of-scope items** — NO reply, NO resolve, NO Linear issue created. Add draft issue block to the briefing per policy.
 
 8. **Ambiguous items (≥9/10)** — NO reply, NO resolve, NO fix. Add comment quote + interpretations to the briefing per policy.
@@ -320,7 +354,7 @@ Main thread stays as orchestrator: collect diffs, stage, commit, push, reply, lo
 - All file gates must pass before push — never push red.
 - `git add` by filename, never `-A` / `-f`.
 - If `state.json` is missing on a non-bootstrap tick, treat as fresh bootstrap (don't replay history, just re-baseline and continue).
-- **Default poll interval is 600s (10 min).** Do not drop below 600s unless a state transition is actively in flight (e.g., just pushed a fix, waiting for CI on that exact sha — even then, 270s minimum).
+- **Default poll interval is 180s (3 min).** Per user preference (2026-04-21). Raise to 600s+ only when the PR has been idle for multiple consecutive silent ticks and nothing is in-flight, to conserve cache. Lower (down to 60s floor) only while actively waiting on CI for a just-pushed sha.
 - **Silent ticks emit ZERO user-facing text.** When the poll shows no new comments, no new reviews, no check transition, and no state change: update `state.json`, append one line to `log.md`, call `ScheduleWakeup`, and **stop without writing any chat message** — no "Tick N/30 idle", no "다음 XX:XX", no status bubble, nothing. Tool calls only. The next wake-up fires via the harness hook; the user doesn't need confirmation each cycle. Reserve chat output for cycles where the poll actually detected something (new comment, new review, check transition, state change, stop condition).
 
 ## Common failures
