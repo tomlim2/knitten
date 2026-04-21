@@ -9,7 +9,7 @@ Build CINEVStudio, then launch in Unreal Editor.
 
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json`:
+1. Read `~/.claude/private/caol-config/repo-paths.json`:
    - `cinev-engine` → `.path` → UE engine root
    - `cinev-studio` → `.path` → project root
 2. Build paths:

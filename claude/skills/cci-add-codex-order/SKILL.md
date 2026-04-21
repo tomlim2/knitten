@@ -20,7 +20,7 @@ Scaffold a new Codex order brief under `~/.codex/codex-base/order/` so the Codex
 
 - `<issue-id>` — required, lowercase Linear identifier, e.g. `stl-89`
 - `<short-slug>` — required, kebab-case action phrase, e.g. `retarget-arp-to-vrm-wiring`
-- `[--target <repo>]` — target repo key from `~/.claude/private/repo-paths.json` (e.g. `shotloom`, `anju`). Defaults to `shotloom`.
+- `[--target <repo>]` — target repo key from `~/.claude/private/caol-config/repo-paths.json` (e.g. `shotloom`, `anju`). Defaults to `shotloom`.
 - `[--branch <name>]` — feature branch that Codex will work on. Defaults to `feat/<short-slug>`.
 - `[--mirror-to-agent]` — also write the same file as `<target-repo>/.agent/handoff-<issue-id>.md` so the repo checkout carries its own copy.
 
@@ -91,7 +91,7 @@ Run the checks in order. On the first failure, STOP, print the rule that failed 
 8. **Noun-only guard:** if the slug has no verb at all and every word is a noun (best-effort heuristic: no word in the allowed verb family anywhere in the slug), reject with "slug must include an action verb — `retarget-arp-to-vrm-wiring` not `rotation-order`".
 9. **Full-path cap:** assemble `~/.codex/codex-base/order/<issue-id>-<short-slug>.md`, compute length. Reject if > 128 chars.
 10. **codex-base present:** verify `~/.codex/codex-base/` exists and is a git repo. If not, exit with "codex-base not cloned — run `git clone https://github.com/tomlim2/codex-base ~/.codex/codex-base` first".
-11. **Target repo resolvable:** verify `<target-repo>` (default `shotloom`) resolves via `~/.claude/private/repo-paths.json`. Missing key → list available keys and ask the user to pick one. Do NOT default silently to `shotloom` if the user explicitly passed something that does not resolve.
+11. **Target repo resolvable:** verify `<target-repo>` (default `shotloom`) resolves via `~/.claude/private/caol-config/repo-paths.json`. Missing key → list available keys and ask the user to pick one. Do NOT default silently to `shotloom` if the user explicitly passed something that does not resolve.
 12. **No overwrite:** if `~/.codex/codex-base/order/<issue-id>-<short-slug>.md` already exists, STOP and show its first 30 lines. Ask whether to edit the existing file (in which case this skill exits and the user uses Edit directly) or pick a different slug (retry the skill).
 13. **Branch name sanity (if `--branch` was passed):** must match `^(feat|fix|chore|hotfix|release)/[a-z0-9][a-z0-9-]*$` per shotloom-git.md rule. Default `feat/<short-slug>` always passes.
 14. **Linear-id — Linear issue cross-check (best-effort):** if the Linear MCP is available, call `mcp__claude_ai_Linear__get_issue` with the uppercased id. If the returned title/state suggests the issue is already `Done` or `Completed`, warn and ask the user to confirm before proceeding. If the issue does not exist, warn but do not block — the user may be scaffolding an order for an issue they are about to create.

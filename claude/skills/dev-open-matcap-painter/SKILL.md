@@ -12,7 +12,7 @@ ES modules require an HTTP server (file:// blocked by CORS).
 ## Workflow
 
 ### Step 1: Resolve Path
-- Read `~/.claude/private/repo-paths.json` to get the `matcap-painter` repo path
+- Read `~/.claude/private/caol-config/repo-paths.json` to get the `matcap-painter` repo path
 
 ### Step 2: Start Server
 - Check if port 3003 is already in use via `lsof -i :3003`

@@ -281,7 +281,7 @@ Whenever the loop stops because the PR reached `MERGED` or `CLOSED`, append one 
 
 ```bash
 # resolver: prefer vault, fallback to staging
-base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/machine-paths.json)
+base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/caol-config/machine-paths.json)
 journal_path="$base/shotloom-pr-journal.md"
 ```
 

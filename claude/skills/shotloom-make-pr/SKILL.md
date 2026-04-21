@@ -31,7 +31,7 @@ Supports supersedes workflow — if invoked with a prior PR number, generates re
 All subsequent `cd` and `Read:` steps operate on the shotloom checkout. Resolve its absolute path once:
 
 ```bash
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)
+shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
 ```
 
 Use `$shotloom_root` below. If reading files via Claude's `Read` tool, substitute the resolved absolute path.

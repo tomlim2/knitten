@@ -31,7 +31,7 @@ Categories:
 
 **Path resolution:**
 
-1. Read `~/.claude/private/machine-paths.json`. Use `obsidian` key as the vault root.
+1. Read `~/.claude/private/caol-config/machine-paths.json`. Use `obsidian` key as the vault root.
    - If key is missing or directory doesn't exist, fall back to `obsidian-staging` key.
    - On any failure, surface a distinct error and stop.
 2. Base directory: `{vault_path}/learnings/`

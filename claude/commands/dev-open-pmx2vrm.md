@@ -9,7 +9,7 @@ Open the truepmx2vrm Next.js webapp for PMX to VRM conversion.
 
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json` to get the `anju` repo path
+1. Read `~/.claude/private/caol-config/repo-paths.json` to get the `anju` repo path
 2. Check if port 3001 is already running
 3. If not running, start the dev server in background
 4. Open browser to http://localhost:3001

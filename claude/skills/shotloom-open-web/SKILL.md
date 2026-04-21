@@ -20,14 +20,14 @@ Minimal orchestration around `pnpm dev:web`; handles the common environment gaps
 
 - **Never auto-open the browser.** Print the URL and let the user click. Avoids racing the WASM initialization.
 - **Never run in the foreground.** `pnpm dev:web` is a long-lived process; always launch in the background and hand control back to the user once the URL is ready.
-- **Respect repo path indirection.** Resolve the shotloom repo from `~/.claude/private/repo-paths.json` (key `shotloom`); never hardcode paths.
+- **Respect repo path indirection.** Resolve the shotloom repo from `~/.claude/private/caol-config/repo-paths.json` (key `shotloom`); never hardcode paths.
 - **Do not run destructive installs silently.** If `wasm-pack` / `pnpm` are missing, show the exact install command and ask before running.
 
 ## Workflow
 
 ### Step 1: Resolve the shotloom repo path
 
-Read `~/.claude/private/repo-paths.json` and look up the `shotloom` entry. If missing, abort and ask the user to register it first (`/caol-register-refs`).
+Read `~/.claude/private/caol-config/repo-paths.json` and look up the `shotloom` entry. If missing, abort and ask the user to register it first (`/caol-register-refs`).
 
 ### Step 2: Environment preflight
 

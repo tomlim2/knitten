@@ -24,7 +24,7 @@ Usage: /dev-setup-project <project-name> [repo-path]
 ### Step 1: 경로 확인
 
 1. `$ARGUMENTS`에서 project-name과 repo-path 파싱
-2. repo-path가 없으면 `~/.claude/private/repo-paths.json`에서 `anju` 경로를 읽고, `{anju}/{project-name}/` 을 기본 경로로 사용
+2. repo-path가 없으면 `~/.claude/private/caol-config/repo-paths.json`에서 `anju` 경로를 읽고, `{anju}/{project-name}/` 을 기본 경로로 사용
 3. 디렉토리 존재 여부 확인. 없으면 생성
 
 ### Step 2: Git 초기화
@@ -35,7 +35,7 @@ Usage: /dev-setup-project <project-name> [repo-path]
 
 ### Step 3: repo-paths.json 등록
 
-1. `~/.claude/private/repo-paths.json` 읽기
+1. `~/.claude/private/caol-config/repo-paths.json` 읽기
 2. project-name 키가 이미 있는지 확인
    - 있으면: 경로가 같으면 스킵, 다르면 업데이트할지 물어봄
    - 없으면: 새 키-값 추가
@@ -50,7 +50,7 @@ Usage: /dev-setup-project <project-name> [repo-path]
 
 ### Step 5: Obsidian 문서 폴더 생성
 
-1. `~/.claude/private/repo-paths.json`에서 `obsidian` 경로 읽기
+1. `~/.claude/private/caol-config/repo-paths.json`에서 `obsidian` 경로 읽기
 2. `{obsidian}/claude/projects/{project-name}/` 디렉토리 생성
 3. 기본 파일 생성:
    - `devlog.md` — 개발일지 (빈 템플릿)

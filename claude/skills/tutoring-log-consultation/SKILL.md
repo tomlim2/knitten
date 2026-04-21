@@ -45,7 +45,7 @@ Consultation logs are stored in **Obsidian vault** (not `private/`):
 └── {other students}.md
 ```
 
-**Obsidian vault path:** Read `~/.claude/private/repo-paths.json` → key `obsidian` → `.path` → append `/claude/tutoring/consultations/`
+**Obsidian vault path:** Read `~/.claude/private/caol-config/repo-paths.json` → key `obsidian` → `.path` → append `/claude/tutoring/consultations/`
 
 Each student gets ONE file. Consultations accumulate in reverse chronological order (newest first).
 

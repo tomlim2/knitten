@@ -5,11 +5,11 @@ allowed-tools: Read, Bash(git -C:*), Bash(test:*), Bash(ls:*)
 
 # Git Pull Repos
 
-Pull all git repositories registered in `~/.claude/private/repo-paths.json` that exist on this machine.
+Pull all git repositories registered in `~/.claude/private/caol-config/repo-paths.json` that exist on this machine.
 
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json`
+1. Read `~/.claude/private/caol-config/repo-paths.json`
 2. For each entry, resolve the path (handle both `{ "path": "..." }` and plain string formats)
 3. Filter: path exists on disk AND has a `.git/` directory
 4. Run `git -C <path> pull` in parallel for all matching repos

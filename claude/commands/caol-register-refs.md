@@ -6,7 +6,7 @@ allowed-tools: Read, Write
 
 # Register Refs
 
-Register a repo name and path to `~/.claude/private/repo-paths.json`.
+Register a repo name and path to `~/.claude/private/caol-config/repo-paths.json`.
 ## Arguments
 
 - `<repo-name>` - Name of the repo (e.g., `anju`, `caol-ila`)
@@ -23,9 +23,9 @@ Example: /caol-register-refs anju /Users/me/www/anju "Graphics/shader experiment
 ## Execution
 
 1. Parse `$ARGUMENTS[0]` as repo-name, `$ARGUMENTS[1]` as path, remaining as description
-2. Read existing `~/.claude/private/repo-paths.json` (or start with `{}` if not found)
+2. Read existing `~/.claude/private/caol-config/repo-paths.json` (or start with `{}` if not found)
 3. Add/update the entry: `{ "repo-name": { "path": "...", "description": "..." } }`
-4. Write back to `~/.claude/private/repo-paths.json`
+4. Write back to `~/.claude/private/caol-config/repo-paths.json`
 5. Confirm:
 
 ```

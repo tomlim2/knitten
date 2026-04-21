@@ -24,7 +24,7 @@ Usage: `/shotloom-close-task STL-114` or `/shotloom-close-task` from inside the 
 ### Step 1: Resolve context
 
 ```bash
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)
+shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
 cd "$shotloom_root"
 
 # current branch (if invoked from inside a worktree)

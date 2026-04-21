@@ -18,7 +18,7 @@ Build and run a Rust + Bevy + wgpu VRM viewer project.
 
 ### Step 1: Resolve Path
 - If `$ARGUMENTS` is provided, use it as the project path
-- Otherwise, read `~/.claude/private/repo-paths.json` to get the `anju` repo path, then use `<anju>/bevy-vrm/`
+- Otherwise, read `~/.claude/private/caol-config/repo-paths.json` to get the `anju` repo path, then use `<anju>/bevy-vrm/`
 - Verify `Cargo.toml` exists in the project directory
 
 ### Step 2: Check VRM Asset

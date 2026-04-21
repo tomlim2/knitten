@@ -5,7 +5,7 @@ allowed-tools: Read, Bash(ls:*), Bash(test:*)
 
 # caol-check-aliases
 
-Walk every logical alias declared in `~/.claude/private/hardware.json`, resolve it through `~/.claude/private/repo-paths.json`, and verify the resulting absolute path exists on disk. Report each alias as OK / MISSING / BROKEN.
+Walk every logical alias declared in `~/.claude/private/caol-config/hardware.json`, resolve it through `~/.claude/private/caol-config/repo-paths.json`, and verify the resulting absolute path exists on disk. Report each alias as OK / MISSING / BROKEN.
 
 Run this whenever:
 - A new logical alias is added.
@@ -23,7 +23,7 @@ Usage: `/caol-check-aliases`
 
 ### Step 1: Read config files
 
-Read `~/.claude/private/hardware.json` and `~/.claude/private/repo-paths.json`.
+Read `~/.claude/private/caol-config/hardware.json` and `~/.claude/private/caol-config/repo-paths.json`.
 
 - If `hardware.json` is missing: print `hardware.json not found — run /system-save-hardware first.` and stop.
 - If `repo-paths.json` is missing: print `repo-paths.json not found — register paths with /caol-register-refs first.` and stop.

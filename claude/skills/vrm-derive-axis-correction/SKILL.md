@@ -27,7 +27,7 @@ Usage: `/vrm-derive-axis-correction <fbx_filename> <frame>`
 
 ### Step 1: Validate
 
-- Check repo path from `~/.claude/private/repo-paths.json` (key: `vrm2u-bevy`)
+- Check repo path from `~/.claude/private/caol-config/repo-paths.json` (key: `vrm2u-bevy`)
 - If the FBX path is given without directory, assume `assets/fbx/`
 - Verify the frame is within the FBX's frame count (use `hand_fbx_dump` first if unsure)
 

@@ -14,7 +14,7 @@ Open the NZ temporary downloader HTML tool in the default browser.
 
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json` to get the `anju` repo path
+1. Read `~/.claude/private/caol-config/repo-paths.json` to get the `anju` repo path
 2. Open the NZ downloader HTML file:
 
 ```bash

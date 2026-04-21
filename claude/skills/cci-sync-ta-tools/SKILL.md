@@ -22,7 +22,7 @@ python ~/.claude/skills/cci-sync-ta-tools/sync.py --direction ta-tools   # ta-to
 
 ## Behavior
 
-1. Reads repo paths from `~/.claude/private/repo-paths.json`
+1. Reads repo paths from `~/.claude/private/caol-config/repo-paths.json`
 2. Compares files in each mapping pair (excludes `__pycache__`, `.env`, `*.pyc`)
 3. Determines sync direction per file:
    - Both exist → newer mtime wins

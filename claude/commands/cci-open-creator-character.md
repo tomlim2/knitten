@@ -8,7 +8,7 @@ allowed-tools: Bash(python:*), Read, Edit
 Launch the CINEV Character Creator GUI for creating user characters via UE commandlet.
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json` → key `anju` → `.path`
+1. Read `~/.claude/private/caol-config/repo-paths.json` → key `anju` → `.path`
 2. Run:
 
 ```bash

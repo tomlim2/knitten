@@ -10,7 +10,7 @@ Show all registered repos and discover path references in the codebase that aren
 
 ### Step 1: Read Registered Repos
 
-Read `~/.claude/private/repo-paths.json`.
+Read `~/.claude/private/caol-config/repo-paths.json`.
 
 - If file doesn't exist, note "No repos registered yet" and continue to Step 2.
 - If file exists, store all entries for comparison.

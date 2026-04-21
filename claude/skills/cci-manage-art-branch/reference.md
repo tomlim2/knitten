@@ -9,7 +9,7 @@ Detailed procedures for each sub-command. The orchestrator (SKILL.md) routes her
 ### Resolve Repo Path
 
 1. Read `config.json` → get `repo_key`
-2. Read `~/.claude/private/repo-paths.json` → look up path by key
+2. Read `~/.claude/private/caol-config/repo-paths.json` → look up path by key
 3. All git commands use `git -C <repo_path>`
 
 ### Read State

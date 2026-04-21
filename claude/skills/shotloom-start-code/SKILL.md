@@ -32,10 +32,10 @@ git log -1 --format="%an <%ae>"
 git status --short
 ```
 
-Resolve the expected shotloom repo path from `~/.claude/private/repo-paths.json`:
+Resolve the expected shotloom repo path from `~/.claude/private/caol-config/repo-paths.json`:
 
 ```bash
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)
+shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
 ```
 
 Verify:
@@ -90,7 +90,7 @@ Otherwise:
 
 3. Determine **worktree base** directory:
    ```bash
-   repo_root=$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)
+   repo_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
    if grep -qE '^\.?worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
      # prefer the convention already in .gitignore
      entry=$(grep -oE '^\.?worktrees/?' "$repo_root/.gitignore" | head -1 | tr -d '/')

@@ -192,7 +192,7 @@ Directly executable within this skill:
 
 ## Project Repo
 
-Before starting, read `~/.claude/private/repo-paths.json` for `krafton-hackathon` path. Work in that directory.
+Before starting, read `~/.claude/private/caol-config/repo-paths.json` for `krafton-hackathon` path. Work in that directory.
 
 ---
 

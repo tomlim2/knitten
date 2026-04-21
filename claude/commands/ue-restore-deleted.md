@@ -31,7 +31,7 @@ Examples:
 ## Prerequisites
 
 - Must be run from a git repository containing a UE project
-- Read `~/.claude/private/repo-paths.json` to resolve repo paths
+- Read `~/.claude/private/caol-config/repo-paths.json` to resolve repo paths
 - Detect UE project root: find the directory containing `.uproject`
 
 ## Execution

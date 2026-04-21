@@ -24,7 +24,7 @@ Usage:
 Per `standards/shotloom.md`, agent operational docs live at repo root `.agent/`:
 
 ```
-$(jq -r '.shotloom' ~/.claude/private/repo-paths.json)/.agent/handoff.md
+$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)/.agent/handoff.md
 ```
 
 If inside a worktree: path is `<worktree>/.agent/handoff.md` — each worktree has its own. The file is **tracked** (not gitignored) so it ships with the branch.

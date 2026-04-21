@@ -26,7 +26,7 @@ Usage:
 
 ### Step 2: Get changed files from git
 
-Read `~/.claude/private/repo-paths.json` → key `caol-ila` → `.path` to get the repo path. Then run:
+Read `~/.claude/private/caol-config/repo-paths.json` → key `caol-ila` → `.path` to get the repo path. Then run:
 
 ```bash
 git -C <caol-ila-path> log \

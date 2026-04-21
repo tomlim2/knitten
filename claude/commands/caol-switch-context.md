@@ -18,7 +18,7 @@ Context briefing and switcher. Shows where you left off across 회사/개인/부
 
 Read these files first:
 
-1. `~/.claude/private/repo-paths.json` — repo paths (each entry: `{ path, description }` or plain string)
+1. `~/.claude/private/caol-config/repo-paths.json` — repo paths (each entry: `{ path, description }` or plain string)
 2. `{obsidianClaudeDir}/contexts.json` — personal projects (fallback to defaults below if missing)
 3. `~/.claude/private/art-branches.json` — CINEV art branch state
 

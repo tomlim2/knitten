@@ -6,7 +6,7 @@ Git workflow rules for all CINEV project operations.
 
 ## Project Locations
 
-Read from `~/.claude/private/repo-paths.json` (use `entry.path` for filesystem path):
+Read from `~/.claude/private/caol-config/repo-paths.json` (use `entry.path` for filesystem path):
 
 | Key | Role |
 |-----|------|

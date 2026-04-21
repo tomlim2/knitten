@@ -8,7 +8,7 @@ Detailed workflow steps and project record template.
 
 ### Step 1: Resolve Project Path
 
-1. Read `~/.claude/private/repo-paths.json`
+1. Read `~/.claude/private/caol-config/repo-paths.json`
 2. If `$ARGUMENTS[0]` matches a registered repo name, use that path
 3. If `$ARGUMENTS[0]` is a path, use it directly
 4. If `$ARGUMENTS[1]` exists, append as subfolder
@@ -166,4 +166,4 @@ Use Task(Explore) agent to analyze:
 - Records: `{obsidian}/claude/projects/records/`
 - Portfolio: `{obsidian}/claude/projects/ta-portfolio-content-design.md`
 - Tech points: `{obsidian}/claude/projects/ta-portfolio-tech-points.md`
-- Repo paths: `~/.claude/private/repo-paths.json`
+- Repo paths: `~/.claude/private/caol-config/repo-paths.json`

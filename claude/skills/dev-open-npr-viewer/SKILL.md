@@ -10,7 +10,7 @@ Build and run the NPR Shader Viewer (Bevy + wgpu + WGSL custom materials).
 ## Workflow
 
 ### Step 1: Resolve Path
-- Read `~/.claude/private/repo-paths.json` to get the `anju` repo path
+- Read `~/.claude/private/caol-config/repo-paths.json` to get the `anju` repo path
 - Project directory: `<anju>/bevy-npr-viewer/`
 - Verify `Cargo.toml` exists
 

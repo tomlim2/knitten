@@ -41,7 +41,7 @@ Old individual commands (`/cci-art-create-branch`, `/cci-art-prepare-merge`, etc
 
 ## Configuration
 
-Read repo path via `config.json` → `repo_key`, then look up the actual path from `~/.claude/private/repo-paths.json`.
+Read repo path via `config.json` → `repo_key`, then look up the actual path from `~/.claude/private/caol-config/repo-paths.json`.
 
 All git commands run against the resolved repo path.
 

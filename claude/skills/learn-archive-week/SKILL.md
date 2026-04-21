@@ -7,7 +7,7 @@ user-invocable: true
 
 # IMPORTANT: Permission gotcha
 
-Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iCloud Obsidian vault path (resolved via `obsidian-vault-claude` in `~/.claude/private/machine-paths.json`). Only the main Claude Code session does.
+Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iCloud Obsidian vault path (resolved via `obsidian-vault-claude` in `~/.claude/private/caol-config/machine-paths.json`). Only the main Claude Code session does.
 
 **Therefore: run `archive.py` directly in the main session — do NOT delegate to subagents.**
 
@@ -25,7 +25,7 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 각 단계는 **idempotent** — 중복 실행해도 문제 없음. `.obsidian/`, `.trash/`만 제외하고 vault 전체가 관리 대상.
 
-> 머신 한정 절대경로(`obsidian-staging`, `codex-home`, `obsidian-vault-claude`)는 `~/.claude/private/machine-paths.json`에서 읽어온다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
+> 머신 한정 절대경로(`obsidian-staging`, `codex-home`, `obsidian-vault-claude`)는 `~/.claude/private/caol-config/machine-paths.json`에서 읽어온다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
 
 ---
 
@@ -53,7 +53,7 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 ### Destination (Obsidian vault)
 
-`{obsidian-vault-claude}/` 아래. 경로는 `~/.claude/private/machine-paths.json` 의 `obsidian-vault-claude` 키에서 읽음.
+`{obsidian-vault-claude}/` 아래. 경로는 `~/.claude/private/caol-config/machine-paths.json` 의 `obsidian-vault-claude` 키에서 읽음.
 
 | 분류 | 목적지 |
 |------|--------|
@@ -91,7 +91,7 @@ python3 fill_tags_from_name.py # 3. 파일명 기반 태그 보충
 ### Stage 1: archive.py
 >>>>>>> 273b30c (feat(skills): expand learn-archive-week to 3-stage pipeline)
 
-이번 주 `{obsidian-staging}/*.md` + `{codex-home}/{memories,order,rules}/*.md` 을 vault로 이동 (경로는 `~/.claude/private/machine-paths.json`에서).
+이번 주 `{obsidian-staging}/*.md` + `{codex-home}/{memories,order,rules}/*.md` 을 vault로 이동 (경로는 `~/.claude/private/caol-config/machine-paths.json`에서).
 
 - Hardcoded `MAPPING` 리스트 (source → destination + tags) 기반
 - Frontmatter 자동 부여 (title H1에서 추출, date 파일명/mtime에서)
@@ -151,7 +151,7 @@ vault 전체 스캔 → 파일명/경로 토큰으로 누락 태그 추론 후 �
 
 ### Step 1: 경로 + 주 범위 확정
 
-1. `~/.claude/private/repo-paths.json` 읽어서 `obsidian` 경로 추출
+1. `~/.claude/private/caol-config/repo-paths.json` 읽어서 `obsidian` 경로 추출
 2. 오늘 날짜 기준 이번 주 월요일 00:00 계산 (`--week-start` 있으면 덮어씀)
 3. 주 범위 = `[monday 00:00, today 23:59]`
 

@@ -38,7 +38,7 @@ Usage:
 
 ### Step 1: Validate
 - $ARGUMENTS 비었으면 사용법 출력.
-- bevy-vrm 레포 위치 확인: `~/.claude/private/repo-paths.json`의 `bevy-vrm` 키.
+- bevy-vrm 레포 위치 확인: `~/.claude/private/caol-config/repo-paths.json`의 `bevy-vrm` 키.
 - 파일 존재 확인. 없으면 안내.
 - shotloom-github 위치도 확인 (대상 레포).
 

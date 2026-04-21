@@ -193,7 +193,7 @@ Related to STL-NN
 - 짧고 단정적인 문장
 
 **Privacy / private repo 규칙 (엄수):**
-- **Shotloom Linear 이슈에 개인 private 레포를 절대 링크/언급하지 말 것.** 포함: `bevy-vrm`, `anju`, `mmd-anju`, `ta-portfolio`, `StoryPreviz`, 그 외 `~/.claude/private/repo-paths.json`에 등록되었지만 CINEV 소유가 아닌 모든 레포.
+- **Shotloom Linear 이슈에 개인 private 레포를 절대 링크/언급하지 말 것.** 포함: `bevy-vrm`, `anju`, `mmd-anju`, `ta-portfolio`, `StoryPreviz`, 그 외 `~/.claude/private/caol-config/repo-paths.json`에 등록되었지만 CINEV 소유가 아닌 모든 레포.
 - bevy-vrm에서 shotloom으로 "port"/"이식"하는 작업일 때도 원본을 **"prior internal prototype"** / **"선행 R&D 코드"** / **"upstream reference implementation"** 같은 추상 표현으로만 지칭. 레포 이름, URL, 커밋 해시, 파일 경로 포함 금지.
 - 허용되는 참조: shotloom 레포 내부 경로 (`crates/...`, `docs/...`), CINEV 조직 GitHub, STL-NN, ADR 번호, spec 문서명.
 - 애매할 때: "이 링크/경로가 shotloom 레포 안에 있는가?" — 아니면 제거.

@@ -8,7 +8,7 @@ allowed-tools: Bash(python:*)
 Launch the CINEV Creator Launcher GUI for downloading and running the latest build.
 ## Execution
 
-1. Read `~/.claude/private/repo-paths.json` → key `anju` → `.path`
+1. Read `~/.claude/private/caol-config/repo-paths.json` → key `anju` → `.path`
 2. Run:
 
 ```bash

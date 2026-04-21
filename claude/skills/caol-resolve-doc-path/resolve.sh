@@ -11,9 +11,9 @@
 set -euo pipefail
 
 PRIVATE="$HOME/.claude/private"
-REPO_PATHS="$PRIVATE/repo-paths.json"
-MACHINE_PATHS="$PRIVATE/machine-paths.json"
-DOC_PATHS="$PRIVATE/doc-paths.json"
+REPO_PATHS="$PRIVATE/caol-config/repo-paths.json"
+MACHINE_PATHS="$PRIVATE/caol-config/machine-paths.json"
+DOC_PATHS="$PRIVATE/caol-config/doc-paths.json"
 
 MODE="${1:-}"
 ARG1="${2:-}"

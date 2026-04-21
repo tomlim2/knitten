@@ -28,7 +28,7 @@ Check skill server, refs, and model version status. Auto-starts server if down. 
 
 ### Step 2: Check Refs
 
-1. Read `~/.claude/private/repo-paths.json`
+1. Read `~/.claude/private/caol-config/repo-paths.json`
    - Each entry is an object: `{ "path": "...", "description": "..." }`. Use `entry.path` for the filesystem path.
    - For backward compatibility, if an entry is a plain string, treat it as the path.
 2. Compare against expected refs list:
@@ -113,7 +113,7 @@ Launch a Task subagent:
 
 #### [4/4] Update Registered Repo Docs
 
-1. Read `~/.claude/private/repo-paths.json`
+1. Read `~/.claude/private/caol-config/repo-paths.json`
 2. Filter to repos with `connected` status from Step 2
 3. **Exclude `caol-ila`** — its CLAUDE.md is the global config, already handled by [1/4]
 4. For each remaining connected repo, launch a Task subagent:
