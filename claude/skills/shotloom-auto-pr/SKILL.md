@@ -180,6 +180,57 @@ Usage: `/shotloom-auto-pr` or `/shotloom-auto-pr 123`
 
 10. Loop continues regardless of how many items ended up out-of-scope or ambiguous. Only the termination conditions in Step 5 stop the loop.
 
+### Step 4.5: Auto-merge when mergeable
+
+Run this check at the end of every tick, AFTER steps 3 and 4 have settled the current cycle (i.e. any pending fix-commit has been pushed and CI has re-run to green). The purpose is to close out a PR that has nothing left for the reviewer to do.
+
+1. Fetch merge state:
+   ```bash
+   gh pr view <N> --json state,isDraft,mergeable,mergeStateStatus,reviewDecision,title,statusCheckRollup
+   ```
+
+2. Gate — ALL of the following must be true. Any single `false` → skip auto-merge, continue polling.
+
+   | Condition | Required value |
+   |-----------|---------------|
+   | `state` | `OPEN` |
+   | `isDraft` | `false` |
+   | `mergeable` | `MERGEABLE` (not `CONFLICTING`, not `UNKNOWN`) |
+   | `mergeStateStatus` | `CLEAN` or `UNSTABLE` |
+   | Required checks | all SUCCESS (non-required bot failures like `summary-pr / summary` are OK under `UNSTABLE`) |
+   | `reviewDecision` | **`APPROVED`** — MUST have at least one reviewer approval. Empty string is NOT acceptable; skip auto-merge until a human reviewer approves. Never `CHANGES_REQUESTED`. |
+   | Review comments | Every top-level review comment and every inline review thread must either be resolved OR classified in-scope and have a fix pushed in this PR. No open "please do X" request may remain unaddressed at merge time. |
+   | Title guard | does NOT contain `WIP`, `[wip]`, `[draft]`, `[no-automerge]`, or `do not merge` |
+   | Unresolved review threads | zero (query via GraphQL, same as Step 4.6) |
+
+   `UNSTABLE` vs `CLEAN`: `CLEAN` = every check green; `UNSTABLE` = required checks green, at least one non-required check failed. GitHub allows merging `UNSTABLE` when branch protection does not require that check. Treat both as mergeable — Shotloom's known flaky non-required check is `summary-pr / summary` (AI PR Summary bot).
+
+   **Explicit rule — no solo merge.** Even if the repo has no branch protection requiring a reviewer, auto-pr NEVER merges a PR that has `reviewDecision == ""`. A solo push-to-main via squash-merge bypasses the human-in-the-loop that this workflow exists to provide. The author is welcome to self-merge manually via `gh pr merge` if they want that shortcut; auto-pr will not do it for them.
+
+3. Merge:
+   ```bash
+   gh pr merge <N> --squash --delete-branch --auto=false
+   ```
+   Use `--squash` as the default strategy (match recent Shotloom merges — sample with `gh pr list --state merged --limit 5 --json mergeCommit` if unsure). `--delete-branch` removes the remote branch; local worktree cleanup is handled in Step 5.5.
+
+4. On success:
+   - Log:
+     ```
+     ## <ts> — auto-merged
+     PR #<N> squash-merged as <sha>. Remote branch deleted.
+     ```
+   - Fall through to Step 5 — the next tick will observe `state == MERGED` and trigger the normal stop path (journal entry + worktree cleanup + Linear Done).
+
+5. On failure (e.g., `gh pr merge` returns non-zero because branch protection rejected it, or a race condition changed the state):
+   - Log the stderr.
+   - Do NOT retry in this tick.
+   - Continue polling — next tick will re-evaluate.
+
+6. **Never auto-merge when:**
+   - The PR was opened in the current cycle (let at least one CI run complete first).
+   - The last push was within 60 seconds (CI may still be attaching checks; merge gate may be stale).
+   - A required reviewer exists and has not yet approved.
+
 ### Step 5: Stop conditions
 
 Stop (do NOT reschedule) when:
