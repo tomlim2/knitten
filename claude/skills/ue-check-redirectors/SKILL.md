@@ -36,12 +36,12 @@ This remotely executes the scan in UE Editor and immediately analyzes the result
 
 Option A - Remote execution from terminal:
 ```bash
-python "D:\vs\caol-ila\claude\skills\ue-check-redirectors\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-check-redirectors\check_redirectors.py"
+python "${CLAUDE_SKILL_DIR}/run_in_editor.py" "${CLAUDE_SKILL_DIR}/check_redirectors.py"
 ```
 
 Option B - Paste in UE Python console:
 ```python
-exec(open(r"D:\vs\caol-ila\claude\skills\ue-check-redirectors\check_redirectors.py").read())
+exec(open(r"${CLAUDE_SKILL_DIR}/check_redirectors.py").read())
 ```
 
 JSON is saved to `~/.claude/private/unreal/check-redirectors/redirectors.json`.

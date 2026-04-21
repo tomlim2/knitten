@@ -28,7 +28,7 @@ First run validation, then rename:
 
 Remote execution from terminal:
 ```bash
-python "D:\vs\caol-ila\claude\skills\cci-rename-mat-slot\run_in_editor.py" "D:\vs\caol-ila\claude\skills\cci-rename-mat-slot\rename_mat_slots.py"
+python "${CLAUDE_SKILL_DIR}/run_in_editor.py" "${CLAUDE_SKILL_DIR}/rename_mat_slots.py"
 ```
 
 ## Matching Algorithm

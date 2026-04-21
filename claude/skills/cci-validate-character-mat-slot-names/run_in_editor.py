@@ -15,14 +15,22 @@ import time
 import argparse
 
 # Add UE's Python plugin to path so we can import remote_execution
-_UE_PYTHON_PLUGIN_PATHS = [
-    os.path.join("E:", os.sep, "UE_CINEV", "Engine", "Plugins", "Experimental",
-                  "PythonScriptPlugin", "Content", "Python"),
-]
+def _get_ue_plugin_path():
+    import json
+    config = os.path.join(os.path.expanduser("~"), ".claude", "private", "caol-config", "machine-paths.json")
+    try:
+        with open(config) as _f:
+            _ue_root = json.load(_f).get("unreal-editor", "")
+        if _ue_root:
+            return os.path.join(_ue_root, "Engine", "Plugins", "Experimental",
+                                "PythonScriptPlugin", "Content", "Python")
+    except (FileNotFoundError, KeyError, ValueError):
+        pass
+    return None
 
-for _path in _UE_PYTHON_PLUGIN_PATHS:
-    if os.path.isdir(_path) and _path not in sys.path:
-        sys.path.insert(0, _path)
+_ue_plugin_path = _get_ue_plugin_path()
+if _ue_plugin_path and os.path.isdir(_ue_plugin_path) and _ue_plugin_path not in sys.path:
+    sys.path.insert(0, _ue_plugin_path)
 
 import remote_execution
 

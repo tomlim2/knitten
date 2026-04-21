@@ -35,12 +35,12 @@ This remotely executes the export script in UE Editor and immediately analyzes t
 
 Option A - Remote execution from terminal:
 ```bash
-python "D:\vs\caol-ila\claude\skills\cci-validate-character-mat-slot-names\run_in_editor.py" "D:\vs\caol-ila\claude\skills\cci-validate-character-mat-slot-names\export_character_mat_slot_data.py"
+python "${CLAUDE_SKILL_DIR}/run_in_editor.py" "${CLAUDE_SKILL_DIR}/export_character_mat_slot_data.py"
 ```
 
 Option B - Paste in UE Python console:
 ```python
-exec(open(r"D:\vs\caol-ila\claude\skills\cci-validate-character-mat-slot-names\export_character_mat_slot_data.py").read())
+exec(open(r"${CLAUDE_SKILL_DIR}/export_character_mat_slot_data.py").read())
 ```
 
 JSON is saved to `~/.claude/private/unreal/character-mat-slot-validate/{name}.json`.

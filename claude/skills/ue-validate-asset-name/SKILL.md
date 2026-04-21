@@ -43,12 +43,12 @@ This remotely validates and immediately shows results with fix suggestions.
 
 Option A - Remote execution:
 ```bash
-python "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\run_in_editor.py" "D:\vs\caol-ila\claude\skills\ue-validate-asset-name\validate_name.py"
+python "${CLAUDE_SKILL_DIR}/run_in_editor.py" "${CLAUDE_SKILL_DIR}/validate_name.py"
 ```
 
 Option B - Paste in UE Python console:
 ```python
-exec(open(r"D:\vs\caol-ila\claude\skills\ue-validate-asset-name\validate_name.py").read())
+exec(open(r"${CLAUDE_SKILL_DIR}/validate_name.py").read())
 ```
 
 JSON is saved to `~/.claude/private/unreal/name-validate/batch_YYYYMMDD_HHMMSS.json`.
@@ -119,7 +119,7 @@ See `unreal-engine-asset.md` for CJK translation rules and API limitations.
 
 ### UE Python API
 **Version:** 5.7
-**Reference examples:** `D:\vs\anju\python\`
+**Reference examples:** `<repo:anju>/python/`
 
 ## Related Files
 
