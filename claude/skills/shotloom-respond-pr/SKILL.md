@@ -117,12 +117,13 @@ Report to user at the end: "Added Pattern X to review-code-rust.md" or "No new p
 2. Run Shotloom CI-equivalent gates (parallel where possible):
    ```
    cargo fmt --check
-   cargo clippy --workspace -- -D warnings
+   cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
    cargo check --workspace --exclude shotloom-desktop
    cargo test -p shotloom-gltf --lib
    cargo test -p shotloom-retarget --lib
    node scripts/validate-doc-paths.mjs
    ```
+   (`shotloom-desktop` is excluded per `~/.claude/rules/shotloom-git.md` — pre-existing Tauri icon.png issue unrelated to our work.)
 
 3. If any test fails, fix the failing test or underlying code before proceeding. This is part of the review response — broken tests block the PR just like a review comment does.
 
@@ -143,9 +144,10 @@ Report to user at the end: "Added Pattern X to review-code-rust.md" or "No new p
 ### Step 6: Post inline replies
 
 1. For each resolved inline comment, draft a reply:
-   - Fixed items: "Fixed in <commit-sha-short>. <brief description of change>"
-   - Acknowledged items: "Acknowledged — tracking as STL-NN for follow-up."
-   - Disagreed items: "<brief technical rationale>"
+   - **Fixed:** "Fixed in <commit-sha-short>. <brief description of change>"
+   - **Deferred (with Linear issue):** "Follow-up tracked as STL-NN. <one-line rationale>"
+   - **Deferred (no issue yet):** "Acknowledged — will file a follow-up Linear issue before resolving this thread."
+   - **Disagreed:** "<brief technical rationale>"
 
 2. For suppressed/low-confidence items from the review body, draft a single review-level reply summarizing which were addressed and which are deferred.
 
@@ -164,38 +166,81 @@ Report to user at the end: "Added Pattern X to review-code-rust.md" or "No new p
 
 4. **Wait for explicit user approval.** NEVER auto-post.
 
-5. Post each reply, then resolve the conversation thread:
+5. Post each reply via the `/replies` endpoint:
    ```
-   # Reply
    gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<comment_id>/replies -f body="<reply>"
    ```
 
-6. After all replies are posted, fetch review thread IDs and resolve each fixed thread:
+### Step 7: Resolve review threads
+
+After replies are posted, fetch thread IDs and apply the **thread resolution policy** below.
+
+```
+# Get thread IDs (map comment databaseId to thread id)
+gh api graphql -f query='query {
+  repository(owner: "CINEV", name: "shotloom") {
+    pullRequest(number: <N>) {
+      reviewThreads(first: 50) {
+        nodes { id isResolved comments(first:1) { nodes { databaseId } } }
+      }
+    }
+  }
+}'
+# Resolve one thread
+gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<PRRT_...>"}) { thread { isResolved } } }'
+```
+
+**Thread resolution policy** — status drives whether the thread is resolved:
+
+| Status | Action |
+|--------|--------|
+| Fixed in pushed commit | **Resolve** |
+| Deferred with Linear STL-NN filed and link posted as follow-up reply | **Resolve** (follow-up is tracked externally; leaving open just clutters the PR) |
+| Deferred, no Linear issue yet | Leave open until the issue is filed. If the user authorizes issue creation in this session, file via `/shotloom-linear-create-issue`, post the STL-NN follow-up reply, then resolve |
+| Disagreed | Leave open until the reviewer acks. Never resolve your own disagreement |
+| Ambiguous / requires user decision | Leave open; do not reply, do not resolve (per Step 2.5) |
+
+### Step 8: Re-request review
+
+Only do this when the PR was in `CHANGES_REQUESTED` state when the skill started AND every originally-requested thread has now been either resolved or deliberately left open with a stated reason (disagreement or pending user decision). Do not re-request review while fixed-but-unresolved threads remain — resolve them first.
+
+1. Identify original reviewers from the first review fetch in Step 2:
    ```
-   # Get thread IDs (map comment databaseId to thread id)
-   gh api graphql -f query='query {
-     repository(owner: "CINEV", name: "shotloom") {
-       pullRequest(number: <N>) {
-         reviewThreads(first: 50) {
-           nodes { id isResolved comments(first:1) { nodes { databaseId } } }
-         }
-       }
-     }
-   }'
-   # Resolve each thread
-   gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<PRRT_...>"}) { thread { isResolved } } }'
+   jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' /tmp/pr<N>-reviews.json | sort -u
    ```
 
-6. Report final summary:
+2. Re-request each reviewer via the requested-reviewers endpoint:
    ```
-   ## Summary
+   gh api -X POST /repos/CINEV/shotloom/pulls/<N>/requested_reviewers -f 'reviewers[]=<login>'
+   ```
+   (GitHub treats a re-POST as a re-request even if they already reviewed — the reviewer gets a fresh notification and the PR page shows "Re-requested".)
 
-   | # | File | Status | Reply posted |
-   |---|------|--------|-------------|
-   | 1 | adr-0025.md:77 | fixed | yes |
-   | 2 | tech-debt:21 | fixed | yes |
-   | 3 | vrm_extract.rs:846 | deferred (STL-NN) | yes |
+3. If multiple reviewers, batch them in one call:
    ```
+   gh api -X POST /repos/CINEV/shotloom/pulls/<N>/requested_reviewers -f 'reviewers[]=alice' -f 'reviewers[]=bob'
+   ```
+
+4. Do **not** post a top-level "ready for re-review" PR comment — the re-request itself is the signal. Inline replies already summarize what changed.
+
+**Skip Step 8 entirely when:**
+- The PR was not in `CHANGES_REQUESTED` state (e.g. you responded to a comment-only review, or unsolicited inline comments on a `COMMENTED` review).
+- There are still unresolved *fixed* threads — resolve those first, then re-request.
+- The user invoked the skill with `--no-rerequest` (or equivalent signal in conversation).
+
+### Step 9: Report final summary
+
+```
+## Summary
+
+| # | File | Status | Linear | Thread | Reply |
+|---|------|--------|--------|--------|-------|
+| 1 | adr-0025.md:77 | fixed | — | resolved | posted |
+| 2 | tech-debt:21 | fixed | — | resolved | posted |
+| 3 | vrm_extract.rs:846 | deferred | STL-NN | resolved | posted |
+| 4 | foo.rs:42 | disagreed | — | open | posted |
+
+Re-requested review from: @reviewer1
+```
 
 ## Autonomy
 
@@ -234,6 +279,7 @@ Keep the main thread as orchestrator: gather results, stage files, commit, post 
 
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation workflow
 - `~/.claude/skills/shotloom-review-before-pr/SKILL.md` — pre-PR self-review
+- `~/.claude/skills/shotloom-linear-create-issue/SKILL.md` — spawn follow-up Linear issues for deferred review items
 - `~/.claude/rules/git.md` — git + PR comment rules
 - `~/.claude/rules/shotloom-git.md` — shotloom-specific pre-PR checks
 - `~/.claude/standards/review-code-rust.md` — 22-pattern Rust review checklist
