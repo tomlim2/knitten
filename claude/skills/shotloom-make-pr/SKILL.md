@@ -211,6 +211,74 @@ If the PR references a Linear issue (Resolves/Related to STL-NN), add the PR URL
 
 Post the PR URL and a one-line status. Do NOT push any subsequent commits without being asked.
 
+### Step 10b: Append Why/How/What devlog entry
+
+After the PR is live, write a devlog summarizing **why / how / what** of this work so future sessions (and the user) can recall the context without re-reading the PR. This is mandatory — do NOT skip even for trivial PRs.
+
+1. Resolve devlog base path:
+   ```bash
+   base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/caol-config/machine-paths.json)
+   date=$(date +%Y-%m-%d)
+   devlog="$base/shotloom-devlog-$date.md"
+   ```
+
+2. If `$devlog` does not exist, create it with frontmatter:
+   ```yaml
+   ---
+   title: "Shotloom devlog — <YYYY-MM-DD>"
+   tags:
+     - devlog
+     - shotloom
+     - <task-specific tags, e.g. gltf, vrm, retarget, bridge, testing>
+   date: <YYYY-MM-DD>
+   source: claude
+   ---
+
+   # Shotloom devlog — <YYYY-MM-DD>
+   ```
+
+3. Append a section for this PR with a lead paragraph then four H2s. **The lead paragraph must frame the work in the big picture** — which Shotloom subsystem it touches (VRM pipeline, timeline, bridge, rendering, retarget, stage, etc.), what larger goal it serves, what future work it unblocks. Per `rules/shotloom.md` answering style: lead with the big picture, not with the PR number or filename.
+
+   ```md
+   ---
+
+   ## <STL-NN> — <PR title>
+
+   <Big-picture lead, 2–4 sentences: which Shotloom subsystem, what larger goal this
+    serves inside the web-first / Bevy-WASM / crate-boundary architecture, what this
+    unblocks or protects downstream. Mention PR link and issue ID at the END of this
+    paragraph, not the start. The reader should be able to skip the rest and still
+    know why this matters.>
+
+   ### Big picture
+
+   <Optional — only if the lead can't fit everything. Call out affected crate(s),
+    relevant ADRs, upstream/downstream callers, and how this slots into the roadmap.
+    Skip this H3 if the lead already covers it.>
+
+   ### Why
+
+   <2–4 sentences. Immediate problem / motivation / who flagged it / what breaks if
+    not done. Contrast with Big picture: Why is narrow (this PR's trigger); Big
+    picture is wide (where this sits in Shotloom).>
+
+   ### How
+
+   <Approach, files touched, reused helpers, anything non-obvious about the path
+    taken. Mention contract/ADR/doc co-location if applicable.>
+
+   ### What
+
+   <Concrete output: new tests / new functions / new diagnostics / lines of code.
+    Include test counts, LOC, local-gate results.>
+   ```
+
+4. If the session produced any repo-convention surprises or gotchas worth remembering (branch-name rename, CI quirk, unexpected ADR interaction), add a `### 사이드 노트` bullet list under the PR section.
+
+5. Do NOT open the Obsidian vault to verify rendering — `obsidian-staging` gets swept by `/learn-archive-week` weekly; the file is durable the moment it lands on disk.
+
+6. Body language: Korean narrative, technical terms in English (match `shotloom-devlog-2026-04-21.md` tone). Code identifiers, file paths, and CLI commands stay in code spans.
+
 ### Step 11: Offer auto-PR watcher
 
 After the PR URL is reported, ask the user once:
