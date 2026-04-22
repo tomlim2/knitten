@@ -104,6 +104,19 @@ git branch -d "$current_branch" 2>&1 || echo "branch $current_branch not fully m
 
 Do NOT use `-D` (force delete) or `--force` on worktree removal unless the user explicitly opts in.
 
+### Step 4.5: Kill the auto-pr watcher if running
+
+Unless mode is `paused`, stop the background watcher for this PR so it doesn't keep polling a merged/closed/abandoned PR. (Watcher self-terminates on MERGED/CLOSED anyway, but `abandoned` and `done-no-pr` modes close the task before the next tick, and `paused` is the only mode where we want polling to continue.)
+
+```bash
+if [ -n "$pr_number" ] && [ "$mode" != "paused" ]; then
+  pid_file="$HOME/.claude/ops/pr-$pr_number/watcher.pid"
+  if [ -f "$pid_file" ]; then
+    bash ~/.claude/skills/shotloom-auto-pr/stop.sh "$pr_number"
+  fi
+fi
+```
+
 ### Step 5: Append day log via `/learn-log-day`
 
 Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog` so the Obsidian-format conventions (frontmatter, tags, callouts, wikilinks, path resolution) are handled in one place.

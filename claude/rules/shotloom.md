@@ -12,6 +12,10 @@ When working inside !`python3 -c "import json,os; d=json.load(open(os.path.expan
 | Project context / architecture / perf budget | [`standards/shotloom.md`](../standards/shotloom.md) — project overview |
 | In-repo source of truth (re-read every session) | `AGENTS.md`, `CONTRIBUTING.md`, `docs/guidelines/*`, `docs/adr/README.md`, `.agent/*` |
 
+## Answering style
+
+- **Lead with the big picture for any shotloom question.** When the user asks about a PR / issue / module / ADR / subsystem, start with what larger goal it serves — which subsystem (VRM pipeline, timeline, rendering, bridge, etc.), what future work it unblocks, why it matters now. Factual bits (branch name, CI status, reviewer state, file list) go at the end, not the top. The user can read titles themselves; the value-add is framing the item inside Shotloom's web-first / Bevy-WASM / crate-boundary architecture. Applies to every shotloom task question, not just "what is this?" phrasing.
+
 ## Hard overrides
 
 - **In-repo guidelines override mirrored Claude docs.** If `docs/guidelines/review-rust.md` says one thing and `~/.claude/standards/shotloom-programming.md` says another, the in-repo file wins. Mirror is advisory; source is authoritative.
