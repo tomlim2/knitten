@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="viewport" content="width=1080, height=1920" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
       * {
@@ -13,10 +13,68 @@
       html,
       body {
         margin: 0;
-        width: 1920px;
-        height: 1080px;
+        width: 1080px;
+        height: 1920px;
         overflow: hidden;
-        background: #000;
+        background: #1a1200;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      #bg {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 40%, #4a3800 0%, #1a1200 70%);
+      }
+      #today {
+        position: absolute;
+        top: 36%;
+        left: 50%;
+        font-size: 56px;
+        font-weight: 300;
+        color: #ffd966;
+        letter-spacing: 10px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      #weekday {
+        position: absolute;
+        top: 42%;
+        left: 50%;
+        font-size: 96px;
+        font-weight: 700;
+        color: #ffde4d;
+        letter-spacing: -2px;
+        text-shadow: 0 0 60px rgba(255, 222, 77, 0.4);
+        white-space: nowrap;
+      }
+      #date {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 120px;
+        font-weight: 800;
+        color: #ffe97a;
+        letter-spacing: -3px;
+        text-shadow: 0 0 70px rgba(255, 222, 77, 0.4);
+        white-space: nowrap;
+      }
+      #year {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        font-size: 180px;
+        font-weight: 900;
+        color: #fff3a0;
+        letter-spacing: 4px;
+        text-shadow: 0 0 100px rgba(255, 243, 160, 0.5);
+        white-space: nowrap;
+      }
+      #accent {
+        position: absolute;
+        top: 68%;
+        left: 50%;
+        width: 180px;
+        height: 4px;
+        background: linear-gradient(90deg, transparent, #ffde4d, transparent);
       }
     </style>
   </head>
@@ -25,26 +83,57 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
+      data-duration="6"
+      data-width="1080"
+      data-height="1920"
     >
-      
-      
-
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
-        </div>
-      -->
+      <div id="bg" class="clip" data-start="0" data-duration="6" data-track-index="0"></div>
+      <div id="today" class="clip" data-start="0.2" data-duration="5.8" data-track-index="1">
+        Today is
+      </div>
+      <div id="weekday" class="clip" data-start="0.6" data-duration="5.4" data-track-index="2">
+        Thursday
+      </div>
+      <div id="date" class="clip" data-start="1.0" data-duration="5.0" data-track-index="3">
+        Apr 23
+      </div>
+      <div id="year" class="clip" data-start="1.5" data-duration="4.5" data-track-index="4">
+        2026
+      </div>
+      <div id="accent" class="clip" data-start="1.9" data-duration="4.1" data-track-index="5"></div>
+      <audio
+        id="narration"
+        class="clip"
+        data-start="0.3"
+        data-duration="3.7"
+        data-track-index="6"
+        src="assets/narration.wav"
+      ></audio>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
+
+      gsap.set("#today, #weekday, #date, #year, #accent", { xPercent: -50, yPercent: -50 });
+
+      tl.fromTo("#today",
+          { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.3 },
+          { xPercent: -50, yPercent: -50, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(2.2)" }, 0.2)
+        .fromTo("#weekday",
+          { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.3 },
+          { xPercent: -50, yPercent: -50, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(2.2)" }, 0.6)
+        .fromTo("#date",
+          { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.3 },
+          { xPercent: -50, yPercent: -50, opacity: 1, scale: 1, duration: 0.8, ease: "back.out(2.2)" }, 1.0)
+        .fromTo("#year",
+          { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.3 },
+          { xPercent: -50, yPercent: -50, opacity: 1, scale: 1, duration: 1.0, ease: "back.out(2.6)" }, 1.5)
+        .fromTo("#accent",
+          { xPercent: -50, yPercent: -50, scaleX: 0 },
+          { xPercent: -50, yPercent: -50, scaleX: 1, duration: 0.8, ease: "power2.out" }, 2.1)
+        .to("#bg", { opacity: 0.75, duration: 1.2, ease: "power2.in" }, 4.8);
+
       window.__timelines["main"] = tl;
     </script>
   </body>

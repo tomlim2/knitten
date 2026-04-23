@@ -63,6 +63,7 @@ Thumbs.db
 hyperframes/node_modules/
 hyperframes/package-lock.json
 hyperframes/output/
+hyperframes/renders/
 hyperframes/.hyperframes/
 hyperframes/transcript.json
 hyperframes/*.mp4
