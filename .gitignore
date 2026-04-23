@@ -58,3 +58,13 @@ Thumbs.db
 
 # Stray root-level Claude Code runtime dir
 .claude/
+
+# Hyperframes runtime
+hyperframes/node_modules/
+hyperframes/package-lock.json
+hyperframes/output/
+hyperframes/.hyperframes/
+hyperframes/transcript.json
+hyperframes/*.mp4
+hyperframes/*.mov
+hyperframes/*.webm
