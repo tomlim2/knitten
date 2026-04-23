@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ADR-0029 · Normalizer Crate Layer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Inter", "Pretendard",
+          "Segoe UI", sans-serif;
+      }
+      .mono {
+        font-family: "SF Mono", "JetBrains Mono", "Menlo", monospace;
+      }
+      .flow-node {
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
+      }
+      .flow-node:hover {
+        transform: translateY(-2px);
+        border-color: rgba(167, 139, 250, 0.8);
+        box-shadow: 0 8px 24px rgba(167, 139, 250, 0.15);
+      }
+      .arrow {
+        stroke: rgba(148, 163, 184, 0.5);
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead);
+      }
+      .pulse-glow {
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.5);
+        animation: pulse 2.5s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 12px rgba(167, 139, 250, 0);
+        }
+      }
+      details > summary {
+        list-style: none;
+        cursor: pointer;
+      }
+      details > summary::-webkit-details-marker {
+        display: none;
+      }
+      details > summary::before {
+        content: "▸";
+        display: inline-block;
+        margin-right: 0.5rem;
+        transition: transform 0.2s;
+        color: rgb(167 139 250);
+      }
+      details[open] > summary::before {
+        transform: rotate(90deg);
+      }
+      .tab-btn.active {
+        background: rgba(167, 139, 250, 0.15);
+        color: rgb(196 181 253);
+        border-color: rgba(167, 139, 250, 0.5);
+      }
+      .step-dot {
+        transition: all 0.25s;
+      }
+      .step-line-bg {
+        background: linear-gradient(
+          to bottom,
+          rgb(22 163 74) 0%,
+          rgb(22 163 74) var(--progress, 11%),
+          rgba(148, 163, 184, 0.2) var(--progress, 11%),
+          rgba(148, 163, 184, 0.2) 100%
+        );
+      }
+    </style>
+  </head>
+  <body class="bg-slate-950 text-slate-100">
+    <!-- Header -->
+    <header class="border-b border-slate-800/60 sticky top-0 z-10 backdrop-blur bg-slate-950/80">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <span class="mono text-xs px-2 py-1 rounded bg-violet-500/10 text-violet-300 border border-violet-500/30">ADR-0029</span>
+          <h1 class="text-lg font-semibold">Normalizer Crate Layer</h1>
+          <span class="mono text-xs px-2 py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">Proposed</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <a href="https://github.com/CINEV/shotloom/pull/153" target="_blank" class="text-violet-300 hover:text-violet-200">PR #153 ↗</a>
+          <a href="https://linear.app/cinamon-corp/issue/STL-127" target="_blank" class="text-violet-300 hover:text-violet-200">STL-127 ↗</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10 space-y-16">
+      <!-- Hero / TL;DR -->
+      <section class="space-y-5">
+        <h2 class="text-4xl font-bold tracking-tight">한 문장 요약</h2>
+        <p class="text-xl text-slate-300 leading-relaxed max-w-3xl">
+          <span class="mono text-violet-300">shotloom-retarget</span> 안에 섞여있는 정규화 로직을
+          <span class="mono text-violet-300">두 개의 별도 크레이트</span>로 뽑고,
+          정규화 결과를 <span class="mono text-violet-300">CharacterModel 내부</span>에 실어서,
+          앞으로 A-pose 전환이 와도 retarget/engine/core 시그니처가 흔들리지 않게 만든다.
+        </p>
+        <div class="grid md:grid-cols-3 gap-4 pt-4">
+          <div class="p-5 rounded-lg border border-slate-800 bg-slate-900/40">
+            <div class="text-sm text-slate-400 mb-2">새 크레이트</div>
+            <div class="mono text-sm space-y-1">
+              <div class="text-emerald-300">shotloom-character-normalizer</div>
+              <div class="text-emerald-300">shotloom-animation-normalizer</div>
+            </div>
+          </div>
+          <div class="p-5 rounded-lg border border-slate-800 bg-slate-900/40">
+            <div class="text-sm text-slate-400 mb-2">CharacterModel 확장</div>
+            <div class="mono text-sm text-sky-300">#[serde(skip)] rest_pose: Option&lt;RestPose&gt;</div>
+            <div class="text-xs text-slate-500 mt-2">디스크 스키마 무변경, 런타임 전용</div>
+          </div>
+          <div class="p-5 rounded-lg border border-slate-800 bg-slate-900/40">
+            <div class="text-sm text-slate-400 mb-2">지금 안 하는 것</div>
+            <div class="mono text-sm text-rose-300 line-through opacity-70">CanonicalPoseId enum</div>
+            <div class="mono text-sm text-rose-300 line-through opacity-70">ACTIVE_CANONICAL_POSE const</div>
+            <div class="text-xs text-slate-500 mt-2">A-pose 올 때 결정</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pipeline Before / After Toggle -->
+      <section class="space-y-6">
+        <div class="flex items-baseline justify-between flex-wrap gap-4">
+          <h2 class="text-3xl font-bold">파이프라인 — Before / After</h2>
+          <div class="flex rounded-lg border border-slate-700 overflow-hidden">
+            <button id="btnBefore" class="tab-btn px-4 py-2 text-sm border-r border-slate-700 transition">현재 (today)</button>
+            <button id="btnAfter" class="tab-btn active px-4 py-2 text-sm transition">ADR-0029 적용 후</button>
+          </div>
+        </div>
+
+        <!-- AFTER diagram -->
+        <div id="viewAfter" class="space-y-4">
+          <p class="text-sm text-slate-400">
+            <span class="text-emerald-300">녹색</span>: 새로 생기는 크레이트 · <span class="text-sky-300">파랑</span>: 타입 이동 · <span class="text-slate-400">회색</span>: 변화 없음
+          </p>
+          <div class="relative p-8 rounded-xl border border-slate-800 bg-slate-900/30">
+            <svg viewBox="0 0 900 420" class="w-full">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="rgba(148,163,184,0.5)" />
+                </marker>
+              </defs>
+              <!-- Importers column -->
+              <g>
+                <rect x="20" y="50" width="180" height="60" rx="8" fill="rgba(30,41,59,0.6)" stroke="rgba(100,116,139,0.4)" />
+                <text x="110" y="75" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="monospace">ImportedVrmAsset</text>
+                <text x="110" y="95" text-anchor="middle" fill="#64748b" font-size="10">shotloom-import</text>
+
+                <rect x="20" y="300" width="180" height="60" rx="8" fill="rgba(30,41,59,0.6)" stroke="rgba(100,116,139,0.4)" />
+                <text x="110" y="325" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="monospace">ImportedFbxAnimation</text>
+                <text x="110" y="345" text-anchor="middle" fill="#64748b" font-size="10">shotloom-fbx-anim-importer</text>
+              </g>
+
+              <!-- Normalizers column (new) -->
+              <g>
+                <rect x="260" y="40" width="220" height="80" rx="8" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.5)" stroke-width="2" />
+                <text x="370" y="70" text-anchor="middle" fill="#6ee7b7" font-size="13" font-family="monospace" font-weight="600">character-normalizer</text>
+                <text x="370" y="90" text-anchor="middle" fill="#34d399" font-size="11">VRM → normalized</text>
+                <text x="370" y="107" text-anchor="middle" fill="#10b981" font-size="10">(new crate)</text>
+
+                <rect x="260" y="290" width="220" height="80" rx="8" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.5)" stroke-width="2" />
+                <text x="370" y="320" text-anchor="middle" fill="#6ee7b7" font-size="13" font-family="monospace" font-weight="600">animation-normalizer</text>
+                <text x="370" y="340" text-anchor="middle" fill="#34d399" font-size="11">FBX → normalized</text>
+                <text x="370" y="357" text-anchor="middle" fill="#10b981" font-size="10">(new crate)</text>
+              </g>
+
+              <!-- Outputs column -->
+              <g>
+                <rect x="540" y="40" width="200" height="80" rx="8" fill="rgba(56,189,248,0.08)" stroke="rgba(56,189,248,0.5)" stroke-width="2" />
+                <text x="640" y="68" text-anchor="middle" fill="#7dd3fc" font-size="13" font-family="monospace" font-weight="600">CharacterModel</text>
+                <text x="640" y="87" text-anchor="middle" fill="#38bdf8" font-size="10">+ rest_pose: Option&lt;RestPose&gt;</text>
+                <text x="640" y="105" text-anchor="middle" fill="#0ea5e9" font-size="10">shotloom-core (enriched)</text>
+
+                <rect x="540" y="290" width="200" height="80" rx="8" fill="rgba(30,41,59,0.6)" stroke="rgba(100,116,139,0.4)" />
+                <text x="640" y="320" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="monospace">NormalizedAnimation</text>
+                <text x="640" y="345" text-anchor="middle" fill="#64748b" font-size="10">source-agnostic keyframes</text>
+              </g>
+
+              <!-- Retargeter -->
+              <g>
+                <rect x="780" y="170" width="100" height="100" rx="10" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.6)" stroke-width="2" />
+                <text x="830" y="210" text-anchor="middle" fill="#c4b5fd" font-size="12" font-family="monospace" font-weight="600">retarget</text>
+                <text x="830" y="228" text-anchor="middle" fill="#a78bfa" font-size="10">pure math</text>
+                <text x="830" y="244" text-anchor="middle" fill="#8b5cf6" font-size="9">shotloom-retarget</text>
+              </g>
+
+              <!-- Arrows -->
+              <path class="arrow" d="M 200 80 L 260 80" />
+              <path class="arrow" d="M 200 330 L 260 330" />
+              <path class="arrow" d="M 480 80 L 540 80" />
+              <path class="arrow" d="M 480 330 L 540 330" />
+              <path class="arrow" d="M 740 80 Q 770 80 790 170" />
+              <path class="arrow" d="M 740 330 Q 770 330 790 270" />
+            </svg>
+          </div>
+          <div class="grid md:grid-cols-3 gap-3 text-sm">
+            <div class="p-3 rounded bg-emerald-500/5 border border-emerald-500/20">
+              <div class="text-emerald-300 mb-1">새 책임 경계</div>
+              <div class="text-slate-400">소스 포맷 지식은 normalizer 크레이트 안에만. 바깥 세상은 정규화된 형태만 본다.</div>
+            </div>
+            <div class="p-3 rounded bg-sky-500/5 border border-sky-500/20">
+              <div class="text-sky-300 mb-1">CharacterModel 단일 소스</div>
+              <div class="text-slate-400">rest pose, foot contact 등이 모델 안에. 다운스트림이 재유도하지 않는다.</div>
+            </div>
+            <div class="p-3 rounded bg-violet-500/5 border border-violet-500/20">
+              <div class="text-violet-300 mb-1">retarget는 순수 계산</div>
+              <div class="text-slate-400">입력이 canonical 임을 전제. VRM/FBX/PMX 구분 없음.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BEFORE diagram (hidden by default) -->
+        <div id="viewBefore" class="space-y-4 hidden">
+          <p class="text-sm text-slate-400">현재 <span class="mono text-amber-300">shotloom-retarget</span>이 소스 포맷 지식까지 떠안고 있는 상태.</p>
+          <div class="relative p-8 rounded-xl border border-slate-800 bg-slate-900/30">
+            <svg viewBox="0 0 900 420" class="w-full">
+              <defs>
+                <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="rgba(148,163,184,0.5)" />
+                </marker>
+              </defs>
+              <g>
+                <rect x="20" y="50" width="180" height="60" rx="8" fill="rgba(30,41,59,0.6)" stroke="rgba(100,116,139,0.4)" />
+                <text x="110" y="75" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="monospace">ImportedVrmAsset</text>
+                <text x="110" y="95" text-anchor="middle" fill="#64748b" font-size="10">shotloom-import</text>
+
+                <rect x="20" y="300" width="180" height="60" rx="8" fill="rgba(30,41,59,0.6)" stroke="rgba(100,116,139,0.4)" />
+                <text x="110" y="325" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="monospace">ImportedFbxAnimation</text>
+                <text x="110" y="345" text-anchor="middle" fill="#64748b" font-size="10">shotloom-fbx-anim-importer</text>
+
+                <rect x="260" y="30" width="380" height="360" rx="12" fill="rgba(251,146,60,0.06)" stroke="rgba(251,146,60,0.5)" stroke-dasharray="6 4" stroke-width="2" />
+                <text x="450" y="60" text-anchor="middle" fill="#fdba74" font-size="13" font-family="monospace" font-weight="600">shotloom-retarget (too much)</text>
+
+                <rect x="290" y="90" width="320" height="50" rx="6" fill="rgba(251,146,60,0.12)" stroke="rgba(251,146,60,0.4)" />
+                <text x="450" y="113" text-anchor="middle" fill="#fed7aa" font-size="12" font-family="monospace">adapters::arp_vrm::align_full_body_rest</text>
+                <text x="450" y="130" text-anchor="middle" fill="#fb923c" font-size="10">VRM 전용 리셰이프 로직</text>
+
+                <rect x="290" y="160" width="320" height="50" rx="6" fill="rgba(251,146,60,0.12)" stroke="rgba(251,146,60,0.4)" />
+                <text x="450" y="183" text-anchor="middle" fill="#fed7aa" font-size="12" font-family="monospace">vrm_rest, vrm_normalization</text>
+                <text x="450" y="200" text-anchor="middle" fill="#fb923c" font-size="10">오버랩되는 reshape 경로</text>
+
+                <rect x="290" y="230" width="320" height="50" rx="6" fill="rgba(251,146,60,0.12)" stroke="rgba(251,146,60,0.4)" />
+                <text x="450" y="253" text-anchor="middle" fill="#fed7aa" font-size="12" font-family="monospace">foot contact / sole offset</text>
+                <text x="450" y="270" text-anchor="middle" fill="#fb923c" font-size="10">캐릭터 데이터가 여기 붙어있음</text>
+
+                <rect x="290" y="300" width="320" height="60" rx="6" fill="rgba(167,139,250,0.12)" stroke="rgba(167,139,250,0.5)" />
+                <text x="450" y="328" text-anchor="middle" fill="#c4b5fd" font-size="12" font-family="monospace" font-weight="600">pass1_delta_retarget</text>
+                <text x="450" y="345" text-anchor="middle" fill="#a78bfa" font-size="10">진짜 retarget 계산</text>
+              </g>
+
+              <g>
+                <rect x="700" y="170" width="180" height="80" rx="8" fill="rgba(30,41,59,0.6)" stroke="rgba(100,116,139,0.4)" />
+                <text x="790" y="200" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="monospace">CharacterModel</text>
+                <text x="790" y="220" text-anchor="middle" fill="#64748b" font-size="10">serde metadata 만</text>
+                <text x="790" y="237" text-anchor="middle" fill="#64748b" font-size="10">rest pose 없음</text>
+              </g>
+
+              <path class="arrow" marker-end="url(#arrowhead2)" d="M 200 80 L 260 80" />
+              <path class="arrow" marker-end="url(#arrowhead2)" d="M 200 330 L 260 330" />
+              <path class="arrow" marker-end="url(#arrowhead2)" d="M 640 210 L 700 210" stroke-dasharray="4 4" />
+            </svg>
+          </div>
+          <div class="p-4 rounded border border-amber-500/30 bg-amber-500/5 text-sm text-amber-200/80">
+            <div class="font-semibold mb-2 text-amber-300">문제점</div>
+            <ul class="space-y-1 list-disc list-inside">
+              <li>retarget 크레이트가 소스 포맷(VRM 본 이름) 지식을 떠안고 있음</li>
+              <li>정규화 경로가 3군데에 분산 — 각 call site마다 다름</li>
+              <li>foot contact 같은 캐릭터 데이터가 모델이 아니라 retarget 안에 있음</li>
+              <li>FBX/PMX 소스 추가 = adapter 디렉토리 폭증</li>
+              <li>A-pose 전환 = 여러 크레이트에 걸친 refactor</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Decisions -->
+      <section class="space-y-6">
+        <h2 class="text-3xl font-bold">핵심 결정</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-6 rounded-lg border border-slate-800 bg-slate-900/40 space-y-3 flow-node">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded flex items-center justify-center bg-violet-500/10 text-violet-300 mono text-sm">01</span>
+              <h3 class="font-semibold">별도 크레이트 2개 (단일 아님)</h3>
+            </div>
+            <p class="text-sm text-slate-400">character 와 animation 은 입력 · 출력 · 변경 주기가 모두 분리. 단일 <span class="mono text-xs">shotloom-normalize</span> 크레이트로 묶으면 FBX importer 번프가 character 경로를 재빌드.</p>
+          </div>
+          <div class="p-6 rounded-lg border border-slate-800 bg-slate-900/40 space-y-3 flow-node">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded flex items-center justify-center bg-violet-500/10 text-violet-300 mono text-sm">02</span>
+              <h3 class="font-semibold">CharacterModel 내장 (#[serde(skip)])</h3>
+            </div>
+            <p class="text-sm text-slate-400">rest_pose 는 런타임 전용. 저장 JSON 형식은 변경 없음. 기존 저장 파일 그대로 역직렬화 가능.</p>
+          </div>
+          <div class="p-6 rounded-lg border border-slate-800 bg-slate-900/40 space-y-3 flow-node">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded flex items-center justify-center bg-violet-500/10 text-violet-300 mono text-sm">03</span>
+              <h3 class="font-semibold">RestPose 타입은 shotloom-core</h3>
+            </div>
+            <p class="text-sm text-slate-400">레이어링 방향은 단방향: <span class="mono text-xs">core ← normalizer ← retarget / engine</span>. core 가 normalizer 에 의존하지 않음.</p>
+          </div>
+          <div class="p-6 rounded-lg border border-slate-800 bg-slate-900/40 space-y-3 flow-node">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded flex items-center justify-center bg-violet-500/10 text-violet-300 mono text-sm">04</span>
+              <h3 class="font-semibold">소스 포맷 무관한 CharacterModel</h3>
+            </div>
+            <p class="text-sm text-slate-400">정규화 이후 다운스트림은 VRM 이었는지 FBX 였는지 PMX 였는지 모름. 모든 소스가 한 표현으로 수렴.</p>
+          </div>
+          <div class="p-6 rounded-lg border border-slate-800 bg-slate-900/40 space-y-3 flow-node">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded flex items-center justify-center bg-violet-500/10 text-violet-300 mono text-sm">05</span>
+              <h3 class="font-semibold">A-pose 데이터 모델은 지금 안 만듦</h3>
+            </div>
+            <p class="text-sm text-slate-400">CanonicalPoseId enum, per-asset 태그, 버전 캐시 키 — 전부 speculative. A-pose 작업 시작할 때 follow-up ADR 에서 결정.</p>
+          </div>
+          <div class="p-6 rounded-lg border border-slate-800 bg-slate-900/40 space-y-3 flow-node">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded flex items-center justify-center bg-violet-500/10 text-violet-300 mono text-sm">06</span>
+              <h3 class="font-semibold">7+ 캐릭터 스폰 floor</h3>
+            </div>
+            <p class="text-sm text-slate-400">설계가 동시 7+ 캐릭터를 깨뜨리면 안 된다. per-char 비용을 현재 수준으로 유지하는 방향. 검증 자체는 별도 follow-up.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Migration plan -->
+      <section class="space-y-6">
+        <h2 class="text-3xl font-bold">이행 계획 — 9단계</h2>
+        <p class="text-sm text-slate-400">각 단계는 별도 커밋 (큰 단계는 별도 PR). 매 중간 커밋에서 <span class="mono text-violet-300">canonical_regression</span> 테스트 녹색 유지.</p>
+        <div class="relative pl-10">
+          <!-- progress line -->
+          <div class="absolute left-4 top-3 bottom-3 w-0.5 step-line-bg" style="--progress: 11%"></div>
+          <ol class="space-y-5">
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-emerald-500 text-slate-950 font-bold mono text-xs flex items-center justify-center step-dot">0</div>
+              <div class="p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
+                <div class="flex items-center gap-2 mb-1">
+                  <strong>Step 0 — Land ADR-0029</strong>
+                  <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">in review</span>
+                </div>
+                <div class="text-sm text-slate-400">PR #153 로 ADR + plan + README 인덱스 등록. 리뷰 → Accepted 전환 대기.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">1</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 1 — Golden regression test</strong>
+                <div class="text-sm text-slate-400 mt-1"><span class="mono">retarget_arp_to_vrm</span> 본별 쿼터니언 bit-exact 또는 1e-6 오차로 핀. 어떤 이동도 silent drift 못 내게.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">2</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 2 — character-normalizer 크레이트 스캐폴드</strong>
+                <div class="text-sm text-slate-400 mt-1">스텁 구현이 기존 <span class="mono">adapters::arp_vrm</span> 을 delegate. 외부 호출자 변경 없음.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">3</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 3 — animation-normalizer 크레이트 스캐폴드</strong>
+                <div class="text-sm text-slate-400 mt-1">Step 2 미러링. 기존 mapping 로직 delegate.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">4</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 4 — RestPose 타입 + CharacterModel 필드</strong>
+                <div class="text-sm text-slate-400 mt-1"><span class="mono">shotloom-core</span> 에 <span class="mono">RestPose</span> 신규. CharacterModel 에 <span class="mono">#[serde(default, skip)]</span> 필드 추가.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">5</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 5 — align_full_body_rest 이전</strong>
+                <div class="text-sm text-slate-400 mt-1">가장 위험한 단계. Step 1 회귀 테스트가 유일한 방어. 매 중간 커밋에서 녹색 확인.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">6</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 6 — animation mapping 이전</strong>
+                <div class="text-sm text-slate-400 mt-1">NormalizedAnimation 타입이 새 크레이트 또는 shotloom-core 로 이동.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">7</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 7 — retarget public API 재구성</strong>
+                <div class="text-sm text-slate-400 mt-1"><span class="mono">retarget(&CharacterModel, &NormalizedAnimation, options)</span>. rest_pose 가 populated 되어있음을 전제.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">8</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 8 — shotloom-engine call site 재배선</strong>
+                <div class="text-sm text-slate-400 mt-1"><span class="mono">apply_motion_preview</span> 가 두 normalizer 를 차례로 호출한 후 retarget 에 전달.</div>
+              </div>
+            </li>
+            <li class="relative">
+              <div class="absolute -left-10 top-1 w-7 h-7 rounded-full bg-slate-700 text-slate-300 font-bold mono text-xs flex items-center justify-center step-dot">9</div>
+              <div class="p-4 rounded-lg border border-slate-800 bg-slate-900/30">
+                <strong>Step 9 — 고아 정규화 코드 삭제</strong>
+                <div class="text-sm text-slate-400 mt-1"><span class="mono">vrm_rest.rs</span>, <span class="mono">adapters/</span>, <span class="mono">vrm_normalization.rs</span> 중 새 크레이트가 덮은 부분.</div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- What's deferred -->
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold">지금 하지 않는 것 (의도적)</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-5 rounded-lg border border-rose-500/20 bg-rose-500/5">
+            <h3 class="font-semibold text-rose-300 mb-2">A-pose 데이터 모델</h3>
+            <p class="text-sm text-slate-400">
+              enum 변종, per-asset pose 태그, 버전 캐시 키. A-pose 가 실제로 올 때 별도 ADR 에서 결정.
+              하나의 변종만 있는 enum 은 죽은 코드 선언일 뿐.
+            </p>
+          </div>
+          <div class="p-5 rounded-lg border border-rose-500/20 bg-rose-500/5">
+            <h3 class="font-semibold text-rose-300 mb-2">MotionPreviewCache 버전 관리</h3>
+            <p class="text-sm text-slate-400">
+              정규화 출력 shape 이 바뀔 때 캐시 무효화. A-pose 전환 시점 문제.
+            </p>
+          </div>
+          <div class="p-5 rounded-lg border border-rose-500/20 bg-rose-500/5">
+            <h3 class="font-semibold text-rose-300 mb-2">RestPose 타입 상세 설계</h3>
+            <p class="text-sm text-slate-400">
+              본 목록 shape, transform 표현, metadata. ADR 수준이 아니라 구현 PR 에서 반복.
+            </p>
+          </div>
+          <div class="p-5 rounded-lg border border-rose-500/20 bg-rose-500/5">
+            <h3 class="font-semibold text-rose-300 mb-2">rest_pose 디스크 직렬화</h3>
+            <p class="text-sm text-slate-400">
+              지금은 런타임 전용 (<span class="mono text-xs">#[serde(skip)]</span>). 캐싱 최적화는 별도 추적.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alternatives -->
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold">거절된 대안들</h2>
+        <div class="space-y-2">
+          <details class="p-5 rounded-lg border border-slate-800 bg-slate-900/30">
+            <summary class="font-semibold">A. 정규화를 shotloom-retarget 안에 유지</summary>
+            <p class="text-sm text-slate-400 mt-3">이미 소스 포맷 adapter, rest-pose reshape, retarget math 가 섞여있음. 새 소스마다 adapter 경로 추가 → 크레이트가 덤프 그라운드화. VRM 하나일 때 나누는 비용이 적고, 나중에 나누는 건 multi-PR refactor.</p>
+          </details>
+          <details class="p-5 rounded-lg border border-slate-800 bg-slate-900/30">
+            <summary class="font-semibold">B. CanonicalPoseId enum + ACTIVE_CANONICAL_POSE const 를 지금 도입</summary>
+            <p class="text-sm text-slate-400 mt-3">변종이 하나만 inhabited 됨 (CinevArpV1). A-pose 변종 body 는 A-pose math 가 spec 될 때까지 쓸 수 없음. 두 번째 변종 없이 enum 두는 건 "미래 shape 을 광고하는 죽은 코드". per-asset 태그는 캐시 키까지 바꾸게 하고 직렬화 포맷을 오염시킴. A-pose 실제로 올 때 추가.</p>
+          </details>
+          <details class="p-5 rounded-lg border border-slate-800 bg-slate-900/30">
+            <summary class="font-semibold">C. 단일 shotloom-normalize 크레이트 (character / animation 모듈)</summary>
+            <p class="text-sm text-slate-400 mt-3">character 정규화 (skeleton, foot contact, sole offset) 와 animation 정규화 (keyframe, 본 이름 remap) 는 입력 · 출력 · 변경 주기가 disjoint. 한 크레이트에 묶으면 FBX animation importer 번프가 character 경로를 재빌드. 컴파일 타임 격리 값 있음.</p>
+          </details>
+          <details class="p-5 rounded-lg border border-slate-800 bg-slate-900/30">
+            <summary class="font-semibold">D. CharacterModel 에 직렬화되는 rest pose 필드 추가 (skip 아님)</summary>
+            <p class="text-sm text-slate-400 mt-3">CharacterModel 은 outliner, inspector, casting, dialog 시스템이 사용. 정규화 런타임 데이터를 serde schema 에 굽으면 그 시스템들이 normalizer 출력 shape 변화에 커플됨 — 이 ADR 이 피하려는 바로 그 커플링. <span class="mono">#[serde(skip)]</span> 로 disk 포맷 안정, shape 변경은 바이너리를 탐.</p>
+          </details>
+          <details class="p-5 rounded-lg border border-slate-800 bg-slate-900/30">
+            <summary class="font-semibold">E. CharacterModel 순수 유지, RestPose 별도 전달</summary>
+            <p class="text-sm text-slate-400 mt-3">retarget facade 가 <span class="mono">(&CharacterModel, &RestPose, &NormalizedAnimation)</span> 받고, 모든 다운스트림 caller 가 RestPose 를 CharacterModel 옆에 붙여서 convention 으로 운반. ADR-0029 가 원래 제안했던 구조 — 이 수정판이 명시적으로 뒤집음. 페어를 CharacterModel 안에 두면 caller 코드와 정규화 상태의 커플링 해소.</p>
+          </details>
+        </div>
+      </section>
+
+      <!-- Future A-pose preview -->
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold">미래 — A-pose 올 때 뭐가 바뀌나</h2>
+        <p class="text-sm text-slate-400">ADR-0029 의 레이어링 덕분에:</p>
+        <div class="grid md:grid-cols-3 gap-3">
+          <div class="p-5 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
+            <div class="text-xs text-emerald-400 mb-1">바뀜</div>
+            <div class="font-semibold mb-2">normalizer 크레이트 내부</div>
+            <p class="text-sm text-slate-400">출력 shape 이 ARP 레이아웃 → A-pose 레이아웃 으로 이동.</p>
+          </div>
+          <div class="p-5 rounded-lg border border-emerald-500/30 bg-emerald-500/5">
+            <div class="text-xs text-emerald-400 mb-1">바뀜</div>
+            <div class="font-semibold mb-2">retarget math</div>
+            <p class="text-sm text-slate-400">새 shape 소비하도록 알고리즘 업데이트. bind-delta 공식 재도출 여부는 그때 판단.</p>
+          </div>
+          <div class="p-5 rounded-lg border border-slate-700 bg-slate-900/40">
+            <div class="text-xs text-slate-500 mb-1">안 바뀜</div>
+            <div class="font-semibold mb-2">shotloom-core, shotloom-engine</div>
+            <p class="text-sm text-slate-400">시그니처 유지. CharacterModel.rest_pose 는 그냥 새 shape 값을 담는다.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="pt-10 border-t border-slate-800 text-sm text-slate-500 space-y-2">
+        <div>Generated from <a href="https://github.com/CINEV/shotloom/blob/chore/adr-0029-normalizer-layer/docs/adr/adr-0029-canonical-rest-pose-normalization.md" target="_blank" class="text-violet-400 hover:text-violet-300">adr-0029-canonical-rest-pose-normalization.md</a></div>
+        <div>Implementation plan: <a href="https://github.com/CINEV/shotloom/blob/chore/adr-0029-normalizer-layer/.agent/canonical-rest-pose-plan.md" target="_blank" class="text-violet-400 hover:text-violet-300">.agent/canonical-rest-pose-plan.md</a></div>
+        <div>Tracking: <a href="https://linear.app/cinamon-corp/issue/STL-127" target="_blank" class="text-violet-400 hover:text-violet-300">STL-127</a> · <a href="https://github.com/CINEV/shotloom/pull/153" target="_blank" class="text-violet-400 hover:text-violet-300">PR #153</a></div>
+      </footer>
+    </main>
+
+    <script>
+      const btnBefore = document.getElementById("btnBefore");
+      const btnAfter = document.getElementById("btnAfter");
+      const viewBefore = document.getElementById("viewBefore");
+      const viewAfter = document.getElementById("viewAfter");
+
+      btnBefore.addEventListener("click", () => {
+        btnBefore.classList.add("active");
+        btnAfter.classList.remove("active");
+        viewBefore.classList.remove("hidden");
+        viewAfter.classList.add("hidden");
+      });
+      btnAfter.addEventListener("click", () => {
+        btnAfter.classList.add("active");
+        btnBefore.classList.remove("active");
+        viewAfter.classList.remove("hidden");
+        viewBefore.classList.add("hidden");
+      });
+    </script>
+  </body>
+</html>
