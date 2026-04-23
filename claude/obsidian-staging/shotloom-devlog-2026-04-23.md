@@ -50,3 +50,20 @@ Fixup 커밋 `e0dde24`. 3 threads resolved, ryumiel 에게 re-request review —
 - **암묵적 native-only 계약은 WASM 빌드에서 터진다.** `CARGO_MANIFEST_DIR`, `std::fs`, 파일시스템 path helpers 는 browser runtime 에 의미가 없다. 그걸 쓰는 crate 가 WASM target 을 갖는 의존 그래프에 들어가 있다면 (`shotloom-common` 이 `web-sys` 를 조건부로 의존하듯), 컴파일러한테 알려주지 않는 한 host path string 이 브라우저 아티팩트에 silently bake 될 수 있다. `#[cfg(not(target_arch = "wasm32"))]` 는 이런 "사실상 native-only 인데 타입 시스템은 모른다" 케이스를 런타임 버그에서 컴파일 에러로 밀어올리는 가장 저렴한 수단이다.
 - **Cfg gate 는 transitive 하다.** 어떤 심볼을 `cfg(not(wasm32))` 로 막으면 그 심볼을 쓰는 다운스트림 crate 중 WASM 빌드에 포함되는 놈이 있는지 반드시 `cargo check -p <leaf-wasm-crate> --target wasm32-unknown-unknown` 으로 확인해야 한다. 중간 crate 에도 같은 gate 를 전파해야 빌드가 클린해진다. 이 PR 에서는 `shotloom-web → shotloom-retarget → fixture_paths` 경로였고, gate 가 리뷰 요청 범위를 넘어 `shotloom-retarget` 와 `shotloom-fbx-anim-importer` 에도 퍼졌다.
 - **Squash merge 는 `git branch -d` 를 실패시킨다.** PR 이 merged 되더라도 local 브랜치의 개별 commit SHA 는 main 의 squash commit 과 다르기 때문에 `-d` 가 "not fully merged" 로 거부된다. 이 경우 `-D` 가 정상 경로 (PR merge 상태를 GitHub 에서 확인한 뒤).
+
+---
+
+## 15:47 — STL-170 closed (merged)
+
+**PR:** [#155](https://github.com/CINEV/shotloom/pull/155) docs(adr): replace stale fixture names in ADR-0024 with directory layout — MERGED
+**Linear:** [STL-170](https://linear.app/cinamon-corp/issue/STL-170/) In Progress → Done (auto-transitioned on merge)
+**Branch:** `chore/adr-0024-fixture-names` (force-deleted, squash-merged as `cbeedf9`)
+**Worktree:** `.worktrees/pr-155-adr-0024` (removed)
+**Commits on branch:** 2 (`3975fec` initial + `47810dd` review-feedback fixup)
+
+**Summary:** ADR-0024 fixture 이름 교정 follow-up. STL-142 (PR #146) 에서 scope boundary 로 유예되었던 doc-only drift — `test_anim_{male,female,face}.fbx` 는 repo 에 존재한 적 없는 이름이라 실제 `assets/anims/{body,facial}/` 디렉토리 레이아웃을 언급하는 방향으로 교체 (Option B). 리뷰에서 ryumiel 의 P2/P3 nit 2개가 들어와 같은 bullet 위에서 merged: (1) "Upstream ARP export IDs" 는 body 전용 패턴이므로 facial 은 source-pipeline ID 로 구분, (2) `FbxImportMode::Body/Face` variant 명을 직접 인용하고 `facial/` 디렉토리가 `Face` 모드에 매핑된다는 점 명시. Fixup 커밋 `47810dd` — review 는 이미 APPROVED 상태라 re-request 불필요.
+
+## Learnings
+
+- **Doc-only PR 도 worktree 를 쓰는 게 안전하다.** main 의 다른 변경이 진행 중인 상태에서 빠르게 PR 에 응답하려면 worktree 분리가 치즈. 2줄 doc 편집에도 `.worktrees/pr-155-adr-0024/` 를 만들어 두니 본 worktree 의 uncommitted changes 에 영향 없이 작업/커밋/푸시가 끝났다.
+- **P2 + P3 nit 가 같은 라인에 겹치면 한 edit 으로 묶는 게 깔끔.** 각각 별도 commit 으로 쪼개면 diff 충돌이 나고 PR 타임라인만 늘어난다. 두 reviewer 의 diff 제안이 서로 호환되면 merge 해서 한 번에 반영, inline reply 에서 "merged with above" 로 양쪽 스레드 닫는 게 실무상 가장 효율적.
