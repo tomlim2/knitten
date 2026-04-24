@@ -6,7 +6,7 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Agent, Bash(git:*), Bash(gh:*), Ba
 
 # shotloom-respond-pr
 
-Read GitHub PR review comments on a Shotloom PR, resolve each item, commit fixes, and post inline replies.
+Read GitHub PR review comments on a Shotloom PR, fix each item, commit, post inline replies, and re-request review. Never auto-resolves threads — the reviewer owns resolution.
 
 ## Arguments
 
@@ -119,32 +119,33 @@ Post via `/replies` endpoint:
 gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<comment_id>/replies -f body="<reply>"
 ```
 
-### Step 7: Resolve review threads
+### Step 7: Do NOT resolve threads — leave for the reviewer
 
-Fetch thread IDs via graphql, apply policy:
+**Policy:** After posting replies, the skill never clicks "Resolve conversation" on review threads. Resolution is the reviewer's acknowledgement that the reply is adequate — the author pre-resolving removes that signal and makes the review state ambiguous for the reviewer on next pass.
 
-| Status | Action |
-|--------|--------|
-| Fixed in pushed commit | **Resolve** |
-| Deferred with Linear STL-NN filed and link posted | **Resolve** (tracked externally) |
-| Deferred, no Linear issue yet | Leave open until filed (then file via `/shotloom-linear-create-issue`, post reply, resolve) |
-| Disagreed | Leave open until reviewer acks. **Never resolve your own disagreement.** |
-| Ambiguous | Leave open; no reply, no resolve |
+- **Fixed** → reply posted in Step 6, thread stays open for reviewer to resolve.
+- **Deferred with Linear issue filed** → reply posted with STL-NN link, thread stays open.
+- **Deferred with no issue yet** → file via `/shotloom-linear-create-issue` first, post reply, thread stays open.
+- **Disagreed** → reply posted, thread stays open (never resolve your own disagreement).
+- **Ambiguous** → no reply, no resolve.
 
-See [reference.md](reference.md) for the graphql queries.
+The graphql thread-resolution queries in `reference.md` remain for historical context but are NOT invoked by this skill.
 
-### Step 8: Re-request review
+### Step 8: Re-request review (always, after replies posted)
 
-Only when PR was `CHANGES_REQUESTED` AND every originally-requested thread is resolved or deliberately left open with stated reason.
+Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply — independent of PR review state and independent of whether threads are resolved.
 
-1. Identify original reviewers: `jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' /tmp/pr<N>-reviews.json | sort -u`
-2. Re-request (single or batch):
+1. Identify reviewers to re-request:
+   - If PR was `CHANGES_REQUESTED`: the reviewers who requested changes.
+     `jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' /tmp/pr<N>-reviews.json | sort -u`
+   - Otherwise: the reviewers already on the PR (`gh pr view <N> --json reviewRequests,reviews`).
+2. Re-request:
    ```
    gh api -X POST /repos/CINEV/shotloom/pulls/<N>/requested_reviewers -f 'reviewers[]=<login>'
    ```
-3. Do **not** post a top-level "ready for re-review" comment — re-request is the signal.
+3. Do **not** post a top-level "ready for re-review" comment — the re-request is the signal.
 
-**Skip Step 8 when:** PR not `CHANGES_REQUESTED`, unresolved fixed threads remain (resolve first), or user said `--no-rerequest`.
+**Skip Step 8 only when:** no replies were posted in Step 6, or user passed `--no-rerequest`.
 
 ### Step 9: Report final summary
 
