@@ -75,13 +75,13 @@ Dispatch by event type:
 
 - **`new_comments` or `new_reviews` non-empty** → review auto-respond per `~/.claude/standards/shotloom-pr-scope-policy.md`:
   - classify in-scope / out-of-scope / ambiguous (≥9/10 only counts as ambiguous; ≤8 → pick closest interpretation)
-  - in-scope: apply fix, commit, push, inline reply, resolve thread, re-request review roster
-  - out-of-scope / ambiguous: briefing block in `log.md`, no reply, no resolve
+  - in-scope: apply fix, commit, push, inline reply, re-request review roster
+  - out-of-scope / ambiguous: briefing block in `log.md`, no reply
 
 Protocol details (same as the pre-split skill):
 
 - Inline replies only — `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<id>/replies`. Never top-level.
-- MANDATORY: resolve replied threads via GraphQL `resolveReviewThread`.
+- **Never resolve review threads.** The reviewer owns the "Resolve conversation" click — it is their signal that the fix landed and is acceptable. Claude replies and pushes; the thread stays open until a human resolves it. The merge gate's `zero unresolved threads` check then gives the reviewer explicit veto until they are satisfied.
 - MANDATORY: re-request review from PR roster union (`reviewRequests` + anyone in `/reviews` REST, dedup, drop author).
 - Commits: conventional, imperative, ≤80 char subject, no Co-Authored-By.
 - `git add` by filename; never `-A` / `-f`.
