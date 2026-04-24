@@ -273,9 +273,23 @@ The `shell` frontmatter field picks the interpreter (`bash` default, `powershell
 
 ---
 
-## Supporting Files + Compaction
+## Loading Lifecycle
 
-### Loading rules
+A skill passes through three phases: **discovery** (session start), **invocation** (when used), and **compaction** (when the session is summarized). Token cost differs at each phase — write SKILL.md with all three in mind.
+
+### Session start (discovery)
+
+At session start, Claude Code scans the skills directory and — per the official design — loads **only the frontmatter** (`name`, `description`, `when_to_use`) of each SKILL.md. The body is not read until the skill is invoked.
+
+- Target startup cost per skill: ~100 tokens (frontmatter only)
+- `description` + `when_to_use` are combined and capped at 1,536 chars in the listing
+- This is all Claude sees before deciding whether to invoke — **front-load the "when to use" phrase** so the right skill wins without loading its body
+
+> **Known gap:** [claude-code#14882](https://github.com/anthropics/claude-code/issues/14882) reports that `/context` shows skills consuming their full token count at startup instead of frontmatter-only. Status open, no official Anthropic response as of 2026-04. Until clarified, assume the worst case and keep SKILL.md lean — the rest of this section already optimizes for that.
+
+### Invocation (on use)
+
+When Claude invokes a skill, the full `SKILL.md` body is loaded into the conversation as a single message and stays there for the rest of the session (subject to compaction below).
 
 Files inside a skill directory other than `SKILL.md` are **loaded on-demand** — Claude reads them only when the SKILL.md body points at them.
 
@@ -299,9 +313,9 @@ Reference them explicitly so Claude knows what each contains:
 
 **Rule of thumb:** keep `SKILL.md` under 500 lines. Push heavy prose, long tables, and large examples to `reference.md` and `examples.md`.
 
-### Auto-compaction behavior
+### Compaction (auto-summarize)
 
-Invoked skills enter the conversation as a single message and stay there. When the session is summarized by auto-compaction:
+When the session is summarized by auto-compaction:
 
 - Only the **most recent invocation** of each skill is re-attached.
 - Only the **first 5,000 tokens** of each re-attached skill survive.
