@@ -1,13 +1,13 @@
 ---
-name: video-animate-gsap
+name: video-hyperframes-animate-gsap
 description: GSAP animation reference for HyperFrames — tweens, timelines, easing, stagger, performance. Use when writing GSAP animations in HyperFrames compositions.
 allowed-tools: Read, Edit
 ---
 
-# video-animate-gsap
+# video-hyperframes-animate-gsap
 
-caol-ila wrapper for the upstream GSAP skill.
+caol-ila wrapper for the upstream GSAP skill (heygen-com/hyperframes).
 
 ## Upstream skill
 
-@~/.agents/skills/gsap/SKILL.md
+@~/Desktop/www/knitten/vendor/hyperframes/skills/gsap/SKILL.md
