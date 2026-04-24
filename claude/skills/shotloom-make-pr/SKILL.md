@@ -12,173 +12,99 @@ Supports supersedes workflow — if invoked with a prior PR number, generates re
 
 ## Arguments
 
-- `[pr-number-to-supersede]` — Optional. Prior PR number that this PR replaces. Example: `/shotloom-make-pr 62` or `/shotloom-make-pr 62,64` for multiple.
+- `[pr-number-to-supersede]` — Optional. Example: `/shotloom-make-pr 62` or `/shotloom-make-pr 62,64`.
 
 **If no argument, proceed without supersedes linkage.**
 
-## Binding rules
+## Binding rules (CRITICAL)
 
 - **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git.md`.)
-- **Use `tomlim2` account only.** If `gh auth status` shows deemotl as active, abort and ask user to fix.
-- **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort and instruct user.
+- **Use `tomlim2` account only.** If `gh auth status` shows deemotl active, abort and ask user.
+- **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
-- All text in the PR body must be in English (Shotloom PR convention).
+- **All PR body text in English** (Shotloom convention).
 
 ## Workflow
 
 ### Step 0: Resolve repo path
 
-All subsequent `cd` and `Read:` steps operate on the shotloom checkout. Resolve its absolute path once:
-
 ```bash
 shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
 ```
-
-Use `$shotloom_root` below. If reading files via Claude's `Read` tool, substitute the resolved absolute path.
 
 ### Step 1: Sanity — branch, identity, gh account
 
 ```bash
 cd "$shotloom_root"
 git status                                      # working tree clean
-git log -1 --format="%an <%ae>"                  # must be tomlim2 <deemo@vonvon.me>
-gh auth status 2>&1 | grep -E "Active|account"   # tomlim2 active, deemotl NOT active
+git log -1 --format="%an <%ae>"                  # tomlim2 <deemo@vonvon.me>
+gh auth status 2>&1 | grep -E "Active|account"   # tomlim2 active
 git rev-parse --abbrev-ref HEAD                  # current branch
 git log --oneline origin/main..HEAD || git log --oneline main..HEAD
 ```
 
-If any check fails, stop and report. Do not proceed to gates or drafting.
+Stop on any failure.
 
-### Step 2: Read the guideline
-
-Re-read `docs/guidelines/pr-guideline.md` every invocation. The template and rules may have changed.
+### Step 2: Read guidelines (re-read every invocation)
 
 ```
 Read: $shotloom_root/docs/guidelines/pr-guideline.md
 Read: $shotloom_root/.github/pull_request_template.md
-Read: $shotloom_root/docs/guidelines/commit-guideline.md   # PR title format
+Read: $shotloom_root/docs/guidelines/commit-guideline.md
+Read: $shotloom_root/.agent/README.md / working-rules.md / checklists.md (if present)
 ```
 
-Also read any agent-operational guidance in `.agent/` if the folder
-exists:
-
-```
-Read: $shotloom_root/.agent/README.md          # index, if present
-Read: $shotloom_root/.agent/working-rules.md   # repo-scoped agent rules
-Read: $shotloom_root/.agent/checklists.md      # pre/post-task checklists
-```
-
-`.agent/` holds informal operational rules the shotloom agents
-(including Codex "돌쇠") share inside this repo. It is NOT a
-substitute for `docs/guidelines/` — treat it as additive guidance
-and honor any repo-scoped rules found there even if they are not
-yet reflected in `~/.claude/rules/shotloom-git.md`. If `.agent/`
-does not exist in the current checkout, skip this step silently.
+`.agent/` holds informal repo-scoped agent rules (incl. Codex "돌쇠"). Additive to `docs/guidelines/`; honor even if not yet in `~/.claude/rules/shotloom-git.md`. Silently skip if absent.
 
 ### Step 3: Local CI-equivalent gates
 
-Run in order. Any failure blocks PR creation.
+Any failure blocks PR.
 
 ```bash
-cd "$shotloom_root"
-cargo fmt --check                                           # formatting
+cargo fmt --check
 cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
 cargo check --workspace --exclude shotloom-desktop
-cargo test --workspace --exclude shotloom-desktop           # MUST pass — see rules/testing.md
-node scripts/validate-doc-paths.mjs                         # doc path validator
+cargo test --workspace --exclude shotloom-desktop
+node scripts/validate-doc-paths.mjs
 ```
 
-If `cargo test` fails because no tests exist in a changed crate, do NOT skip — that itself is a violation of `rules/testing.md`. Add tests first.
+If no tests in a changed crate, do NOT skip — that violates `rules/testing.md`. Add tests first.
 
-If CI fails on Linux-specific deps (e.g. `alsa-sys` when bevy is pulled in as a heavy dev-dep), narrow bevy features locally (`default-features = false`) before push.
+### Step 3b: Confirm `/shotloom-review-before-pr` was run
 
-### Step 3b: Confirm `/shotloom-review-before-pr` was run and reported clean
+`shotloom-make-pr` does NOT inline pattern-based review. That's `/shotloom-review-before-pr`'s job.
 
-`shotloom-make-pr` does **not** inline the pattern-based self-review. That work belongs to the dedicated `/shotloom-review-before-pr` skill, which loads `standards/review-code-rust.md` and walks 16 patterns against the current diff without any side effects.
-
-**Before proceeding to Step 4, ask the user:**
-
+Ask:
 > Did you run `/shotloom-review-before-pr` on this branch and resolve all findings? (y/n)
 
-- If **yes** → continue to Step 4.
-- If **no** → stop. Tell the user to run `/shotloom-review-before-pr` first, fix anything it finds, then re-invoke `/shotloom-make-pr`. Do NOT auto-run it from inside this skill — make-pr stays single-purpose (PR creation) and review-before-pr stays single-purpose (read-only review).
-- If the user insists on skipping → record the skip in the PR body's Test plan section as `- [ ] /shotloom-review-before-pr — SKIPPED on user request` so reviewers can see it was bypassed.
+- **yes** → continue
+- **no** → stop, instruct user to run it first. Do NOT auto-run — keep make-pr single-purpose.
+- **skip on insistence** → record `- [ ] /shotloom-review-before-pr — SKIPPED on user request` in Test plan so reviewers see it.
 
 ### Step 4: Sample recent merged PRs for tone
 
 ```bash
 gh pr list --state merged --limit 5 --json number,title,headRefName
-gh pr view <N> --json body -q .body    # sample 2-3 bodies to match tone
+gh pr view <N> --json body -q .body    # sample 2-3 bodies
 ```
 
-Match structure (Summary / Why / Changes / Impact / Test plan) to the most recent high-signal examples. Do not invent new sections unless the guideline expanded.
+Match structure (Summary / Why / Changes / Impact / Test plan) to high-signal examples.
 
 ### Step 5: Draft title + body
 
-**Title:** `<type>(<scope>): <short summary>` per commit-guideline subject line. Max 72 chars. Imperative mood. No trailing period.
+**Title:** `<type>(<scope>): <short summary>`. Max 72 chars. Imperative. No trailing period.
 
-**Body sections (expanded template for non-trivial changes):**
-
-```md
-## Summary
-
-- <1-3 bullets, main outcome, no filenames>
-
-## Why
-
-<2-4 sentences on the problem / motivation>
-
-## Changes
-
-<grouped by behavior or subsystem, NOT file-by-file>
-
-## Impact
-
-- User-facing impact: <or "none">
-- API/schema impact: <or "none">
-- Performance impact: <or "none">
-- Operational or rollout impact: <or "none">
-
-## Test plan
-
-- [x] `cargo fmt --check`
-- [x] `cargo clippy --workspace --exclude shotloom-desktop -- -D warnings`
-- [x] `cargo check --workspace --exclude shotloom-desktop`
-- [x] `cargo test --workspace --exclude shotloom-desktop`
-- [x] `node scripts/validate-doc-paths.mjs`
-- [ ] <feature-specific manual verification, if any>
-
-## Scope boundary
-
-<what is explicitly NOT in this PR and where it lands>
-
-## Related Issues
-
-<Resolves | Related to> STL-NN
-Supersedes #<prior-PR-number>    <!-- only if argument given -->
-```
-
-For trivial/minimal changes (<50 LOC, no new behavior), use the minimal template from `.github/pull_request_template.md` instead:
-
-```md
-## Summary
--
-## Validation
--
-## Related Issues
-Related to STL-NN
-```
+**Body:** see [reference.md](reference.md) for the full template (Summary, Why, Changes, Impact, Test plan, Scope boundary, Related Issues). For trivial changes (<50 LOC), use the minimal `.github/pull_request_template.md` form.
 
 ### Step 6: Present draft to user
 
-Print the drafted title + body and ask explicitly:
-
+Print drafted title + body, ask:
 > Draft title: `<title>`
 > Draft body: (shown above)
 >
 > `gh pr create` 실행해도 될까요? (draft / ready-for-review)
 
-**Wait for explicit user approval. Do NOT run `gh pr create` until the user says yes.**
+**Wait for explicit user approval. Do NOT run `gh pr create` until yes.**
 
 ### Step 7: On approval — create PR
 
@@ -191,120 +117,68 @@ EOF
 )"
 ```
 
-Default to `--draft` unless the user said "ready-for-review" explicitly. A draft can always be marked ready later; reverting from ready-to-draft is noisier.
+Default to `--draft` unless user explicitly said "ready-for-review". Draft → ready is easy; ready → draft is noisy.
 
 ### Step 8: Supersedes handling (if argument given)
-
-For each `<prior-pr>` in the argument list:
 
 ```bash
 gh pr comment <prior-pr> --body "Superseded by #<new-pr> — <one-line rationale>."
 ```
 
-Add `Supersedes #<prior-pr>` line to the new PR body (already in the template above).
+Add `Supersedes #<prior-pr>` to new PR body (in template).
 
-### Step 9: Link the PR in Linear
+### Step 9: Link PR in Linear
 
-If the PR references a Linear issue (Resolves/Related to STL-NN), add the PR URL as an attachment on the Linear issue via MCP, unless the Linear-GitHub integration will auto-link from the PR body text.
+If PR references STL-NN, add URL as attachment via MCP (unless Linear-GitHub integration auto-links from body).
 
 ### Step 10: Report
 
-Post the PR URL and a one-line status. Do NOT push any subsequent commits without being asked.
+PR URL + one-line status. Do NOT push further commits without being asked.
 
-### Step 10b: Append Why/How/What devlog entry
+### Step 10b: Append Why/How/What devlog (MANDATORY)
 
-After the PR is live, write a devlog summarizing **why / how / what** of this work so future sessions (and the user) can recall the context without re-reading the PR. This is mandatory — do NOT skip even for trivial PRs.
+Write devlog summarizing **why / how / what** so future sessions can recall context.
 
-1. Resolve devlog base path:
+1. Resolve path:
    ```bash
    base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/caol-config/machine-paths.json)
-   date=$(date +%Y-%m-%d)
-   devlog="$base/shotloom-devlog-$date.md"
+   devlog="$base/shotloom-devlog-$(date +%Y-%m-%d).md"
    ```
-
-2. If `$devlog` does not exist, create it with frontmatter:
-   ```yaml
-   ---
-   title: "Shotloom devlog — <YYYY-MM-DD>"
-   tags:
-     - devlog
-     - shotloom
-     - <task-specific tags, e.g. gltf, vrm, retarget, bridge, testing>
-   date: <YYYY-MM-DD>
-   source: claude
-   ---
-
-   # Shotloom devlog — <YYYY-MM-DD>
-   ```
-
-3. Append a section for this PR with a lead paragraph then four H2s. **The lead paragraph must frame the work in the big picture** — which Shotloom subsystem it touches (VRM pipeline, timeline, bridge, rendering, retarget, stage, etc.), what larger goal it serves, what future work it unblocks. Per `rules/shotloom.md` answering style: lead with the big picture, not with the PR number or filename.
-
-   ```md
-   ---
-
-   ## <STL-NN> — <PR title>
-
-   <Big-picture lead, 2–4 sentences: which Shotloom subsystem, what larger goal this
-    serves inside the web-first / Bevy-WASM / crate-boundary architecture, what this
-    unblocks or protects downstream. Mention PR link and issue ID at the END of this
-    paragraph, not the start. The reader should be able to skip the rest and still
-    know why this matters.>
-
-   ### Big picture
-
-   <Optional — only if the lead can't fit everything. Call out affected crate(s),
-    relevant ADRs, upstream/downstream callers, and how this slots into the roadmap.
-    Skip this H3 if the lead already covers it.>
-
-   ### Why
-
-   <2–4 sentences. Immediate problem / motivation / who flagged it / what breaks if
-    not done. Contrast with Big picture: Why is narrow (this PR's trigger); Big
-    picture is wide (where this sits in Shotloom).>
-
-   ### How
-
-   <Approach, files touched, reused helpers, anything non-obvious about the path
-    taken. Mention contract/ADR/doc co-location if applicable.>
-
-   ### What
-
-   <Concrete output: new tests / new functions / new diagnostics / lines of code.
-    Include test counts, LOC, local-gate results.>
-   ```
-
-4. If the session produced any repo-convention surprises or gotchas worth remembering (branch-name rename, CI quirk, unexpected ADR interaction), add a `### 사이드 노트` bullet list under the PR section.
-
-5. Do NOT open the Obsidian vault to verify rendering — `obsidian-staging` gets swept by `/learn-archive-week` weekly; the file is durable the moment it lands on disk.
-
-6. Body language: Korean narrative, technical terms in English (match `shotloom-devlog-2026-04-21.md` tone). Code identifiers, file paths, and CLI commands stay in code spans.
+2. Create with frontmatter if missing (see reference.md for frontmatter shape).
+3. Append PR section. **Lead paragraph must frame work in big picture** per `rules/shotloom.md`: which subsystem (VRM/timeline/bridge/rendering/retarget/stage), larger goal, what this unblocks. PR link + issue ID go at END of paragraph, not start.
+4. H2 sections: Big picture (optional) / Why / How / What. See reference.md for section contents and template.
+5. Convention surprises → `### 사이드 노트` bullet list.
+6. Do NOT open Obsidian to verify rendering — file is durable on disk.
+7. Body: Korean narrative, technical terms English. Code/paths/CLI in code spans.
 
 ### Step 11: Offer auto-PR watcher
 
-After the PR URL is reported, ask the user once:
-
 > 자동 PR 응대(`/shotloom-auto-pr <N>`) 켤까요? CI/리뷰 감지 → 수정 → 푸시 → 인라인 응답을 per-comment 승인 없이 진행합니다. (y/n)
 
-- If **yes** → invoke `/shotloom-auto-pr <PR-number>` with the just-created PR number. Do not ask further approval — per `feedback_auto_pr_approval_exempt`, this skill is the single exception.
-- If **no** or skipped → stop here. User can manually run `/shotloom-watch-pr`, `/shotloom-respond-pr`, or `/shotloom-auto-pr` later.
-- Skip the prompt entirely if this invocation already ran inside `/shotloom-auto-pr` (avoid recursion).
+- **yes** → invoke `/shotloom-auto-pr <PR-number>`. No further approval (per `feedback_auto_pr_approval_exempt`).
+- **no** → stop. User can manually run `/shotloom-watch-pr`, `/shotloom-respond-pr`, `/shotloom-auto-pr` later.
+- Skip entirely if invoked inside `/shotloom-auto-pr` (avoid recursion).
 
 ## Common failures + fixes
 
 | Symptom | Fix |
 |---|---|
-| `gh pr create` returns Invalid username/token | `gh auth status` shows deemotl active; run `gh auth switch -u tomlim2` |
+| `gh pr create` returns Invalid username/token | `gh auth switch -u tomlim2` |
 | Commit author wrong | `git config user.name tomlim2 && git config user.email deemo@vonvon.me && git commit --amend --reset-author --no-edit` |
-| `cargo test` fails on Linux CI only (alsa-sys etc.) | bevy dev-dep pulled default features; narrow to `default-features = false` + explicit feature list |
-| Doc-path validator fails | path you referenced in markdown doesn't exist; fix the reference, not the validator |
-| `cargo clippy` fires `unnecessary_map_or` | use `is_none_or` (stable in 2021 since 1.82) |
-| Let-chain used in crate on edition 2021 | rewrite as nested `if let` |
+| `cargo test` fails on Linux CI only (alsa-sys) | bevy dev-dep pulling default features; narrow to `default-features = false` + explicit feature list |
+| Doc-path validator fails | path referenced in markdown doesn't exist; fix reference, not validator |
+| clippy `unnecessary_map_or` | use `is_none_or` (stable since 1.82) |
+| Let-chain on edition 2021 | rewrite as nested `if let` |
 
 ## Related
 
-- `standards/review-code-rust.md` — **MANDATORY pre-PR self-review checklist** — load in Step 3b
-- `rules/shotloom-git.md` — per-PR approval, pre-PR checklist, account/identity rules
-- `rules/git.md` — global PR lifecycle approval rules
+- `standards/review-code-rust.md` — Step 3b mandatory pre-PR checklist
+- `rules/shotloom-git.md` — per-PR approval, pre-PR checklist, account/identity
+- `rules/git.md` — global PR lifecycle approval
 - `rules/testing.md` — unit test requirement
-- `standards/shotloom.md` — Shotloom project standard
-- `docs/guidelines/pr-guideline.md` (in shotloom repo) — authoritative PR format spec
+- `standards/shotloom.md` — project standard
+- `docs/guidelines/pr-guideline.md` (in shotloom repo) — authoritative PR spec
+
+## Additional Resources
+
+For the full PR body template (expanded + minimal variants), the devlog frontmatter shape, and the full Why/How/What section template with big-picture framing guidance, see [reference.md](reference.md).

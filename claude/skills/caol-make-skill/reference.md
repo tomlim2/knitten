@@ -621,3 +621,216 @@ Skill(deploy *)
 Syntax: `Skill(name)` = exact match; `Skill(name *)` = prefix match with any args.
 
 `user-invocable: false` controls menu visibility only, **not** Skill tool access. To fully block Claude from invoking a skill, use `disable-model-invocation: true` or a deny rule.
+
+---
+
+## Additional frontmatter examples (moved from SKILL.md)
+
+### User-only deploy with pre-approved tools
+
+```yaml
+---
+name: deploy
+description: Deploy the application to production
+disable-model-invocation: true
+allowed-tools: Bash(git add *) Bash(git commit *) Bash(git push *)
+---
+```
+
+### Research skill in forked Explore agent
+
+```yaml
+---
+name: deep-research
+description: Research a topic thoroughly
+context: fork
+agent: Explore
+---
+
+Research $ARGUMENTS thoroughly...
+```
+
+### Monorepo-scoped auto-activation
+
+```yaml
+---
+name: frontend-conventions
+description: React + TS style rules
+paths:
+  - "packages/frontend/**"
+  - "apps/web/**"
+---
+```
+
+---
+
+## String Substitutions — worked examples (moved from SKILL.md)
+
+SKILL.md content supports these substitutions at invocation time:
+
+| Token | Meaning |
+|-------|---------|
+| `$ARGUMENTS` | Full argument string. If not present in body, Claude Code appends `ARGUMENTS: <value>`. |
+| `$ARGUMENTS[N]` | 0-based indexed argument (shell-style quoting; wrap multi-word args in quotes). |
+| `$N` | Shorthand: `$0` = first arg, `$1` = second, etc. |
+| `${CLAUDE_SESSION_ID}` | Current session ID. Good for per-session log files. |
+| `${CLAUDE_SKILL_DIR}` | Absolute dir of the current SKILL.md. For plugin skills this is the skill subdir, not the plugin root. |
+
+### Full argstring
+
+```yaml
+---
+name: fix-issue
+description: Fix a GitHub issue by number
+---
+Fix GitHub issue $ARGUMENTS following our coding standards.
+```
+
+`/fix-issue 123` → "Fix GitHub issue 123..."
+
+### Positional
+
+```yaml
+---
+name: migrate-component
+description: Migrate a component between frameworks
+---
+Migrate the $0 component from $1 to $2.
+```
+
+`/migrate-component SearchBar React Vue` → `$0=SearchBar`, `$1=React`, `$2=Vue`.
+
+### Session log
+
+```yaml
+---
+name: session-logger
+description: Log activity for this session
+---
+Append to logs/${CLAUDE_SESSION_ID}.log:
+
+$ARGUMENTS
+```
+
+### Skill-local script
+
+```yaml
+---
+name: tree-view
+description: Render the codebase tree
+allowed-tools: Bash(python:*)
+---
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/tree.py .`
+```
+
+---
+
+## Dynamic Shell Injection — patterns (moved from SKILL.md)
+
+Skills can embed live shell output into the prompt before Claude sees it. This is **preprocessing** — Claude only receives the final rendered content, not the command text.
+
+### Inline form
+
+```markdown
+- Current branch: !`git rev-parse --abbrev-ref HEAD`
+- Staged files: !`git diff --cached --name-only`
+```
+
+### Block form (multi-line, fenced with `` ```! ``)
+
+````markdown
+## Environment
+```!
+node --version
+npm --version
+git status --short
+```
+````
+
+The `shell` frontmatter field picks the interpreter (`bash` default, `powershell` opt-in on Windows). Per-repo/user setting `disableSkillShellExecution: true` replaces each command with `[shell command execution disabled by policy]`.
+
+---
+
+## UE skills — why they're special (moved from SKILL.md)
+
+For any `ue-*` skill, use `/ue-make-skill <verb> <noun>` instead of `/caol-make-skill`.
+
+Template: `~/.claude/skills/ue-show-template/SKILL.md`
+
+### Why UE skills are special
+
+- Require specific Python patterns for Unreal Editor integration
+- Need `run_in_editor.py` wrapper for remote execution
+- Export JSON data to `~/.claude/private/unreal/{noun}-{verb}/`
+- Follow strict logging conventions with `[LogTag]` prefixes
+- Use `export_{noun}_data.py` naming pattern
+- Have specific error handling for `get_editor_property()` calls
+
+### When to use ue-make-skill
+
+- Any skill that exports data from Unreal Editor
+- Any skill that analyzes UE assets (materials, meshes, blueprints)
+- Any skill that validates UE naming conventions
+- Any skill that requires Python inside UE Editor
+
+### Example
+
+```
+User request: "Create a ue-analyze-texture skill"
+→ Use: /ue-make-skill analyze texture
+→ NOT: /caol-make-skill ue analyze texture
+```
+
+---
+
+## Full SKILL.md template (moved from SKILL.md)
+
+Every skill MUST have a `SKILL.md` with this structure:
+
+```markdown
+---
+description: "One-line description. Use when <trigger>."
+---
+
+# {category}-{verb}-{subject}
+
+[One-line description of what this skill does]
+
+## Purpose
+
+[Detailed explanation of what this skill does, why it exists, and when to use it]
+
+---
+
+## Usage
+
+[How to use this skill, with examples. Include both command-line and programmatic usage if applicable]
+
+---
+
+## Files
+
+- `script.py` - [Description of main script]
+- `config.json` - [Description of config file]
+- `reference.md` - [Detailed reference loaded on demand]
+
+---
+
+## [Optional Additional Sections]
+
+- Dependencies
+- Configuration
+- Output Format
+- Related Files
+- Examples
+- Troubleshooting
+```
+
+### Required Sections
+
+1. **Frontmatter** — at minimum `description`; add other fields as needed
+2. **Title** — `# {category}-{verb}-{subject}`
+3. **Description** — one-line summary
+4. **Purpose** — detailed explanation
+5. **Usage** — how to use with examples
+6. **Files** — list and describe all files in the skill

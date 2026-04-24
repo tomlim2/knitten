@@ -758,3 +758,66 @@ Available actions: create, merge-prep, merge-notice, merge-result, cleanup, stat
 > 3. 에러 복구 절차 — cherry-pick/rebase 충돌, push 실패, Slack 전송 실패 시 복구 방법
 > 4. 비개발자 RUNBOOK — 주 단위 체크리스트, FAQ, 긴급 상황 대응, 상태 리셋 가이드
 > 5. auto-suggest 강화 — 명확한 지시 + 이유 + 예상 다음 단계 표시
+
+---
+
+## Multi-Merge Support — `merges[]` JSON shape
+
+A single art branch can be merged multiple times per week. Merges are tracked in a `merges[]` array on the history entry:
+
+```json
+{
+  "branch": "art/art-main-1.5.0-r5",
+  "state": "created",
+  "merges": [
+    {
+      "number": 1,
+      "type": "mid-week",
+      "merge_branch": "art/merge/art-main-1.5.0-r5",
+      "merge_branch_head": "28ecdab9...",
+      "merged_at": "2026-02-26T08:00:00+09:00"
+    }
+  ]
+}
+```
+
+- `type`: `"mid-week"` or `"regular"`
+- `number`: sequential merge count per branch (1, 2, 3...)
+- Merge branch naming for #2+: `art/merge/art-main-1.5.0-r5-2`
+
+### Slack Broadcast Convention
+
+| Type | Broadcast message suffix |
+|------|-------------------------|
+| Regular | (없음) |
+| Mid-week | `(중간 머지 #N)` |
+
+### Legacy Data Inference
+
+If a history entry has no `state` field, infer it:
+
+| Condition | Inferred State |
+|-----------|---------------|
+| Is `current` AND no `merges` (or empty) | `created` |
+| Is `current` AND has `merges` but old format `merge_branch` field | migrate to `merges[]` |
+| Is NOT `current` | `archived` |
+
+When inferring state, write it back to `art-branches.json` so future reads are clean.
+
+---
+
+## Status Display Format
+
+```
+Art Branch Status
+─────────────────
+Branch:  art/art-main-1.5.0-r5
+State:   created (since 2026-02-24)
+Day:     Monday
+
+→ Suggested: status (branch already created this week)
+
+Available actions: create, merge-prep, merge-notice, merge-result, cleanup, status
+```
+
+If the user confirms the suggestion, execute the corresponding sub-command.

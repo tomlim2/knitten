@@ -8,58 +8,47 @@ Skill creation generator for Claude Code with comprehensive structure rules.
 
 ## Purpose
 
-This skill helps create new Claude Code skills following the standardized naming convention and structure. It serves as the authoritative rulebook for skill creation.
-
-Claude Code merged custom commands into skills: a file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy`. Skills are the recommended format — they support directories, supporting files, subagent execution, and dynamic context injection.
+Authoritative rulebook for skill creation. Claude Code merged custom commands into skills: a file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy`. Skills are the recommended format — they support directories, supporting files, subagent execution, dynamic context injection.
 
 ---
 
 ## Skill Structure
 
-Skills are reusable utilities that commands invoke. They consist of:
-
 ```
 skills/{category}-{verb}-{subject}/
-├── SKILL.md              # Skill documentation (required)
-├── script.py             # Main implementation
-├── config.json           # Optional configuration
-├── reference.md          # Detailed reference (loaded on-demand)
-├── examples.md           # Examples (loaded on-demand)
-└── scripts/              # Utility scripts (executed, not loaded)
+├── SKILL.md              # required
+├── script.py             # main implementation
+├── config.json           # optional config
+├── reference.md          # loaded on-demand
+├── examples.md           # loaded on-demand
+└── scripts/              # executed, not loaded as context
 ```
 
-`SKILL.md` is the only required file. Files inside the skill directory (`reference.md`, `examples.md`, `scripts/`) are **not auto-loaded** — Claude reads them on-demand when `SKILL.md` references them. See [Supporting Files + Compaction](#supporting-files--compaction).
+`SKILL.md` is the only required file. Other files inside the skill dir are **not auto-loaded** — Claude reads them on-demand when SKILL.md references them.
 
 ---
 
 ## Skill vs Command Precedence
 
-If a skill at `skills/foo/SKILL.md` and a command at `commands/foo.md` share the same name, **the skill wins**. Existing `commands/*.md` files still work with the same frontmatter, but new work should prefer skills.
+If skill `skills/foo/SKILL.md` and command `commands/foo.md` share a name, **the skill wins**.
 
-Location priority when the same skill name appears in multiple scopes:
-
+Location priority when the same skill appears in multiple scopes:
 ```
 enterprise > personal (~/.claude/skills/) > project (.claude/skills/)
 ```
 
-Plugin skills use a `plugin-name:skill-name` namespace so they never conflict.
+Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ---
 
-## Naming Convention
+## Naming Convention (MANDATORY)
 
-**MANDATORY: All skills MUST follow the `{category}-{verb}-{subject}` pattern.**
+**`{category}-{verb}-{subject}` pattern** — same as commands. See `caol-make-command` for complete rules.
 
-This is the SAME pattern as commands. See `caol-make-command` skill for complete naming rules:
-- `~/.claude/skills/caol-make-command/SKILL.md`
-
-### Quick Reference
-
-- **Lowercase only** - No capitals, no camelCase
-- **Hyphens as separators** - Never underscores
-- **Three parts**: `{category}-{verb}-{subject}`
-- **Multi-word subjects**: Use hyphens (e.g., `asset-name`)
-- **Max 64 characters** (per official docs: lowercase letters, numbers, hyphens only)
+- Lowercase only, no camelCase
+- Hyphens as separators, never underscores
+- Max 64 characters (per official docs: lowercase letters, numbers, hyphens)
+- Multi-word subjects: hyphens (e.g., `asset-name`)
 
 ### Examples
 
@@ -67,73 +56,42 @@ This is the SAME pattern as commands. See `caol-make-command` skill for complete
 |-----------------|----------|------|---------|
 | `git-commit-collector` | git | commit | collector |
 | `ue-analyze-material` | ue | analyze | material |
-| `ue-validate-asset-name` | ue | validate | asset-name |
-| `caol-make-command` | caol | make | command |
 | `caol-make-skill` | caol | make | skill |
-| `skill-server` | skill | server | (implicit) |
-| `drink-log` | drink | log | (implicit) |
 
 ---
 
-## Special Case: Unreal Engine Skills
+## UE skills — use the dedicated template
 
-**For `ue-*` (Unreal Engine) skills, use the dedicated template and command:**
-
-**Template Location:**
-```
-~/.claude/skills/ue-show-template/SKILL.md
-```
-
-**Command:**
-```
-/ue-make-skill <verb> <noun>
-```
-
-**Why UE skills are special:**
-- Require specific Python patterns for Unreal Editor integration
-- Need `run_in_editor.py` wrapper for remote execution
-- Export JSON data to `~/.claude/private/unreal/{noun}-{verb}/`
-- Follow strict logging conventions with `[LogTag]` prefixes
-- Use `export_{noun}_data.py` naming pattern
-- Have specific error handling for `get_editor_property()` calls
-
-**When to use ue-make-skill:**
-- Any skill that exports data from Unreal Editor
-- Any skill that analyzes UE assets (materials, meshes, blueprints, etc.)
-- Any skill that validates UE naming conventions
-- Any skill that requires running Python inside UE Editor
-
-**Example:**
-```
-User request: "Create a ue-analyze-texture skill"
-→ Use: /ue-make-skill analyze texture
-→ NOT: /caol-make-skill ue analyze texture
-```
+**For `ue-*` (Unreal Engine) skills**, use `/ue-make-skill <verb> <noun>`. Template at `~/.claude/skills/ue-show-template/SKILL.md`. UE skills require specific Python patterns (run_in_editor.py, JSON export to `~/.claude/private/unreal/{noun}-{verb}/`, `[LogTag]` prefixes, etc.) — see reference.md for the full rationale.
 
 ---
 
-## Frontmatter Fields
+## Frontmatter Fields (CRITICAL — full table)
 
-All fields are optional. Only `description` is recommended. Canonical source: <https://code.claude.com/docs/en/skills>.
+All fields are optional; only `description` is recommended. Canonical: <https://code.claude.com/docs/en/skills>.
 
 | Field | Type | Default | Purpose |
 |-------|------|---------|---------|
-| `name` | string | directory name | Display name for the skill. Lowercase letters, numbers, hyphens (max 64 chars). |
-| `description` | string | first paragraph of body | What the skill does and when to use it. Front-load the key use case — combined with `when_to_use`, capped at 1,536 chars in skill listing. |
-| `when_to_use` | string | — | Additional trigger guidance (phrases, example requests). Appended to `description` in the listing. |
-| `argument-hint` | string | — | Autocomplete hint. Example: `"[issue-number]"` or `"[filename] [format]"`. |
-| `allowed-tools` | string or list | — | Tools Claude can use without asking permission while skill is active. Space-separated string OR YAML list. Does NOT restrict other tools. |
-| `disable-model-invocation` | boolean | `false` | `true` = Claude cannot auto-invoke; user `/name` only. Use for side-effectful workflows (deploy, commit). |
-| `user-invocable` | boolean | `true` | `false` = hide from `/` menu; Claude-only. Use for background/reference skills. |
-| `model` | string | session default | Model override while skill is active. |
-| `effort` | `low`\|`medium`\|`high`\|`xhigh`\|`max` | inherits session | Per-skill effort override. Available levels depend on the model. |
-| `context` | `fork` | (inline) | Set to `fork` to run in a forked subagent context. |
-| `agent` | `Explore`\|`Plan`\|`general-purpose`\|custom | `general-purpose` | Subagent type when `context: fork`. Custom agents from `.claude/agents/` also allowed. |
-| `paths` | string or list of globs | — | Comma-separated string or YAML list. Auto-activation restricted to files matching patterns (monorepo support). |
-| `shell` | `bash`\|`powershell` | `bash` | Shell used for `` !`command` `` and ` ```! ` blocks. `powershell` requires `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`. |
-| `hooks` | object | — | Per-skill lifecycle hooks. See [Hooks in skills and agents](https://code.claude.com/docs/en/hooks#hooks-in-skills-and-agents). |
+| `name` | string | directory name | Display name. Lowercase, digits, hyphens; max 64 chars. |
+| `description` | string | first paragraph of body | What the skill does and when to use it. Front-load the key use case — combined with `when_to_use`, capped at 1,536 chars. |
+| `when_to_use` | string | — | Additional trigger guidance. Appended to `description`. |
+| `argument-hint` | string | — | Autocomplete hint, e.g. `"[issue-number]"`. |
+| `allowed-tools` | string or list | — | Tools usable without per-use approval. Does NOT restrict other tools. |
+| `disable-model-invocation` | boolean | `false` | `true` = user-only; Claude cannot auto-invoke. Use for deploys, commits. |
+| `user-invocable` | boolean | `true` | `false` = hide from `/` menu; Claude-only. Background/reference skills. |
+| `model` | string | session | Per-skill model override. |
+| `effort` | `low`\|`medium`\|`high`\|`xhigh`\|`max` | session | Per-skill effort override. |
+| `context` | `fork` | inline | Set to `fork` to run in a forked subagent context. |
+| `agent` | `Explore`\|`Plan`\|`general-purpose`\|custom | `general-purpose` | Subagent type when `context: fork`. |
+| `paths` | string or list of globs | — | Auto-activation restricted to matching files (monorepo). |
+| `shell` | `bash`\|`powershell` | `bash` | Interpreter for `` !`command` `` injections. PowerShell needs `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`. |
+| `hooks` | object | — | Per-skill lifecycle hooks. |
 
-### Example: minimal skill
+### Bash Tool Specificity
+
+**NEVER use bare `Bash`** in `allowed-tools`. Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, etc.
+
+### Canonical minimal example
 
 ```yaml
 ---
@@ -142,245 +100,83 @@ description: Explains code with visual diagrams and analogies. Use when explaini
 ---
 ```
 
-### Example: user-only deploy with pre-approved tools
-
-```yaml
----
-name: deploy
-description: Deploy the application to production
-disable-model-invocation: true
-allowed-tools: Bash(git add *) Bash(git commit *) Bash(git push *)
----
-```
-
-### Example: research skill in forked Explore agent
-
-```yaml
----
-name: deep-research
-description: Research a topic thoroughly
-context: fork
-agent: Explore
----
-
-Research $ARGUMENTS thoroughly...
-```
-
-### Example: monorepo-scoped auto-activation
-
-```yaml
----
-name: frontend-conventions
-description: React + TS style rules
-paths:
-  - "packages/frontend/**"
-  - "apps/web/**"
----
-```
-
-### Bash Tool Specificity
-
-**NEVER use bare `Bash`** in `allowed-tools`. Always use specific patterns:
-
-| Pattern | Use Case |
-|---------|----------|
-| `Bash(git:*)` | Git operations |
-| `Bash(python:*)` | Python script execution |
-| `Bash(npm:*)` | npm commands |
-| `Bash(open:*)` | App launchers |
-| `Bash(mv:*), Bash(ls:*)` | File operations |
+See [reference.md](reference.md) for examples of: user-only deploy with pre-approved tools, research skill in forked Explore agent, monorepo `paths`-scoped skill.
 
 ---
 
-## String Substitutions
+## String Substitutions (overview)
 
-SKILL.md content supports these substitutions at invocation time:
+- `$ARGUMENTS` — full arg string
+- `$ARGUMENTS[N]` / `$N` — 0-based positional ($0 = first)
+- `${CLAUDE_SESSION_ID}` — current session id
+- `${CLAUDE_SKILL_DIR}` — absolute dir of current SKILL.md
 
-| Token | Meaning |
-|-------|---------|
-| `$ARGUMENTS` | Full argument string as typed. If not present in body, Claude Code appends `ARGUMENTS: <value>` to the end. |
-| `$ARGUMENTS[N]` | 0-based indexed argument (shell-style quoting; wrap multi-word args in quotes). |
-| `$N` | Shorthand: `$0` = first arg, `$1` = second, etc. |
-| `${CLAUDE_SESSION_ID}` | Current session ID. Good for per-session log files. |
-| `${CLAUDE_SKILL_DIR}` | Absolute directory of the current `SKILL.md`. For plugin skills this is the skill subdirectory, not the plugin root. |
+Worked examples for each in [reference.md](reference.md).
 
-### Examples
+## Dynamic Shell Injection (overview)
 
-**Full argstring:**
-```yaml
----
-name: fix-issue
-description: Fix a GitHub issue by number
----
-Fix GitHub issue $ARGUMENTS following our coding standards.
-```
-`/fix-issue 123` → "Fix GitHub issue 123..."
-
-**Positional:**
-```yaml
----
-name: migrate-component
-description: Migrate a component between frameworks
----
-Migrate the $0 component from $1 to $2.
-```
-`/migrate-component SearchBar React Vue` → `$0=SearchBar`, `$1=React`, `$2=Vue`.
-
-**Session log:**
-```yaml
----
-name: session-logger
-description: Log activity for this session
----
-Append to logs/${CLAUDE_SESSION_ID}.log:
-
-$ARGUMENTS
-```
-
-**Skill-local script:**
-```yaml
----
-name: tree-view
-description: Render the codebase tree
-allowed-tools: Bash(python:*)
----
-Run: `python ${CLAUDE_SKILL_DIR}/scripts/tree.py .`
-```
+Skills can embed live shell output into the prompt before Claude sees it (preprocessing — Claude sees the rendered content, not the command). Inline: `` !`git rev-parse --abbrev-ref HEAD` ``. Block form: ` ```! ` fenced. Full patterns in reference.md.
 
 ---
 
-## Dynamic Shell Injection
+## Loading Lifecycle (CRITICAL)
 
-Skills can embed live shell output into the prompt before Claude sees it. This is **preprocessing** — Claude only receives the final rendered content, not the command text.
-
-**Inline form:**
-```markdown
-- Current branch: !`git rev-parse --abbrev-ref HEAD`
-- Staged files: !`git diff --cached --name-only`
-```
-
-**Block form** (multi-line, fenced with ` ```! `):
-````markdown
-## Environment
-```!
-node --version
-npm --version
-git status --short
-```
-````
-
-The `shell` frontmatter field picks the interpreter (`bash` default, `powershell` opt-in on Windows). Per-repo/user setting `disableSkillShellExecution: true` replaces each command with `[shell command execution disabled by policy]`.
-
----
-
-## Loading Lifecycle
-
-A skill passes through three phases: **discovery** (session start), **invocation** (when used), and **compaction** (when the session is summarized). Token cost differs at each phase — write SKILL.md with all three in mind.
+Three phases: **discovery** (session start), **invocation** (when used), **compaction** (when summarized).
 
 ### Session start (discovery)
 
-At session start, Claude Code scans the skills directory and — per the official design — loads **only the frontmatter** (`name`, `description`, `when_to_use`) of each SKILL.md. The body is not read until the skill is invoked.
+Claude Code scans skills and loads **only the frontmatter** (`name`, `description`, `when_to_use`). Body not read until invoked.
 
-- Target startup cost per skill: ~100 tokens (frontmatter only)
-- `description` + `when_to_use` are combined and capped at 1,536 chars in the listing
-- This is all Claude sees before deciding whether to invoke — **front-load the "when to use" phrase** so the right skill wins without loading its body
+- Target startup cost: ~100 tokens (frontmatter only)
+- `description` + `when_to_use` capped at 1,536 chars in listing
+- **Front-load the "when to use" phrase** so the right skill wins without loading its body.
 
-> **Known gap:** [claude-code#14882](https://github.com/anthropics/claude-code/issues/14882) reports that `/context` shows skills consuming their full token count at startup instead of frontmatter-only. Status open, no official Anthropic response as of 2026-04. Until clarified, assume the worst case and keep SKILL.md lean — the rest of this section already optimizes for that.
+> **Known gap:** [claude-code#14882](https://github.com/anthropics/claude-code/issues/14882) reports `/context` shows skills consuming full token count at startup instead of frontmatter-only. Status open as of 2026-04. Assume worst case — keep SKILL.md lean.
 
 ### Invocation (on use)
 
-When Claude invokes a skill, the full `SKILL.md` body is loaded into the conversation as a single message and stays there for the rest of the session (subject to compaction below).
+Full `SKILL.md` body loads into conversation as a single message and stays for the session (subject to compaction). Files other than SKILL.md are **loaded on-demand** — only when SKILL.md body points at them.
 
-Files inside a skill directory other than `SKILL.md` are **loaded on-demand** — Claude reads them only when the SKILL.md body points at them.
-
-```
-my-skill/
-├── SKILL.md       (loaded when invoked)
-├── reference.md   (loaded only if SKILL.md references it)
-├── examples.md    (loaded only if SKILL.md references it)
-└── scripts/
-    └── helper.py  (executed, not loaded as context)
-```
-
-Reference them explicitly so Claude knows what each contains:
+Reference them explicitly:
 
 ```markdown
 ## Additional resources
-
 - API details → see [reference.md](reference.md)
 - Worked examples → see [examples.md](examples.md)
 ```
 
-**Rule of thumb:** keep `SKILL.md` under 500 lines. Push heavy prose, long tables, and large examples to `reference.md` and `examples.md`.
+### Rule of thumb (HARD RULES)
+
+- **Target: ≤ 200 lines.** Fits comfortably inside 5k compaction budget (≈2-3k tokens), leaves headroom, minimizes startup payload if #14882 is real.
+- **Hard limit: ≤ 500 lines.** Matches 5k budget ceiling — over this, critical rules risk truncation.
+- Over 200: push heavy prose, long tables, large examples to `reference.md` / `examples.md`. Keep critical rules, checklists, invariants in SKILL.md.
 
 ### Compaction (auto-summarize)
 
-When the session is summarized by auto-compaction:
-
+When session is summarized:
 - Only the **most recent invocation** of each skill is re-attached.
 - Only the **first 5,000 tokens** of each re-attached skill survive.
-- Re-attached skills share a combined **25,000-token budget**, filled most-recent-first — older skills may be dropped entirely.
+- Re-attached skills share a combined **25,000-token budget**, filled most-recent-first — older skills may be dropped.
 
-**Therefore:** put the critical rules, checklists, and invariants in the first ~5,000 tokens of `SKILL.md`. Long reference material that survives compaction poorly belongs in `reference.md` (where it can be re-fetched on demand).
-
----
-
-## SKILL.md Structure (Required)
-
-Every skill MUST have a `SKILL.md` file with this exact structure:
-
-### Template
-
-```markdown
----
-description: "One-line description. Use when <trigger>."
----
-
-# {category}-{verb}-{subject}
-
-[One-line description of what this skill does]
-
-## Purpose
-
-[Detailed explanation of what this skill does, why it exists, and when to use it]
+**Therefore:** put critical rules, checklists, and invariants in the **first ~5,000 tokens** of SKILL.md. Long reference material that survives compaction poorly belongs in `reference.md`.
 
 ---
 
-## Usage
+## SKILL.md Required Sections
 
-[How to use this skill, with examples. Include both command-line and programmatic usage if applicable]
+1. **Frontmatter** — at minimum `description`
+2. **Title** — `# {category}-{verb}-{subject}`
+3. **Description** — one-line summary
+4. **Purpose** — detailed explanation
+5. **Usage** — how to use with examples
+6. **Files** — list + describe all files in the skill
 
----
+Optional: Dependencies / Configuration / Output Format / Related Files / Examples / Troubleshooting.
 
-## Files
-
-- `script.py` - [Description of main script]
-- `config.json` - [Description of config file]
-- `reference.md` - [Detailed reference loaded on demand]
-
----
-
-## [Optional Additional Sections]
-
-- Dependencies
-- Configuration
-- Output Format
-- Related Files
-- Examples
-- Troubleshooting
-```
-
-### Required Sections
-
-1. **Frontmatter**: at minimum `description`; add other fields from the table above as needed
-2. **Title**: `# {category}-{verb}-{subject}`
-3. **Description**: One-line summary
-4. **Purpose**: Detailed explanation
-5. **Usage**: How to use with examples
-6. **Files**: List and describe all files in the skill
+Full template in [reference.md](reference.md).
 
 ## Additional Resources
 
-For detailed implementation patterns, templates, and code examples — including the subagent pattern, dynamic shell injection patterns, `paths`-scoped skills, and visual-output skills — see [reference.md](reference.md).
+For the full SKILL.md template, detailed frontmatter examples (user-only deploy, forked agent, monorepo `paths`), String Substitutions worked examples, Dynamic Shell Injection patterns, UE-skill rationale, and subagent/visual-output patterns, see [reference.md](reference.md).
 
 Canonical docs: <https://code.claude.com/docs/en/skills>. Slash-commands standard: `~/.claude/standards/slash-commands.md`.
