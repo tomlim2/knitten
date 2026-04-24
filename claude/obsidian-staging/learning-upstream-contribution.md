@@ -111,3 +111,9 @@ git fetch upstream main
 
 - [[devlog-2026-04-18]] - 첫 OSS 기여 실전 로그
 - PR #58, #59, #60 모두 `bevy_vrm1` upstream으로
+
+---
+
+## Release shipped
+
+- **2026-04-20:** [bevy_vrm1 v0.7.1](https://github.com/not-elm/bevy_vrm1/releases/tag/v0.7.1) 릴리스에 PR #58, #60 반영 — crates.io publish 완료, fork patch 제거 가능. 릴리스 노트 `New Contributors`에 `@tomlim2` 등재.
