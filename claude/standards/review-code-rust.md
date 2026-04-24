@@ -79,6 +79,22 @@ If a rustdoc on a `Result`-returning function promises defensive behavior ("Retu
 
 **Real defect (PR #85):** `vrm_rest::build_from_bytes` doc promised *"Returns `VrmRestError` if the GLB JSON structure is inconsistent... `Result` exists for API consistency and defensive robustness"*, but the body used `locals[node_index]` and `global_mats[node_index]` at four sites. The invariant came from `build_humanoid_node_map`, and `HumanoidMap.node_to_vrm` was `pub` — so the panic was reachable. Fix: replace each `v[i]` with `v.get(i).ok_or_else(|| VrmRestError::InvalidHumanoidNodeIndex { ... })?` and reuse the existing error variant.
 
+### A8 — Category-changing rename: sweep the concept word, not just the identifier
+
+When a rename crosses a **category boundary** — "importer" → "parser", "service" → "worker", "handler" → "dispatcher", "client" → "consumer" — the hyphenated identifier is only half of the drift surface. The other half is the English-language self-description in package metadata, module headers, README ledes, and ADR prose. Those surfaces use the *word* ("importer"), not the *token* ("foo-bar-importer"), so a token-only `rg` reports clean while the crate still describes itself as the old category.
+
+**Self-check:** for every rename PR whose rationale is "the old name describes the wrong category", identify the old role-noun (the category word) and grep each touched crate for that word as a whole word (`rg -w <word>`). Cover at minimum:
+
+- `Cargo.toml` — `description`, `keywords`, any doc comment above `[package]`
+- `src/lib.rs` / `src/mod.rs` — `//!` headers (first ~30 lines)
+- `README.md` — lede (first 3–5 lines) and the "Scope" / "Purpose" section
+- ADR prose paragraphs that name the crate (don't limit to ADRs edited in this PR — sibling ADRs that reference the renamed crate also drift)
+- Cross-crate docs that name the crate by role: `MAP.md`, guideline files, tech-debt entries
+
+A single rename PR that fails A8 signals the whole point of the rename is half-delivered: the name changed, but the self-description still asserts the old category.
+
+**Real defect (PR for STL-172):** crate renamed `shotloom-fbx-anim-importer` → `shotloom-fbx-anim` because "Layer 1 is a parser, not an importer; `shotloom-import` is the importer." Initial commit swept the hyphenated identifier across 28 files cleanly. Token-only self-review reported all 22 patterns clean. Concept-word sweep (`rg -w importer crates/shotloom-fbx-anim/`) then found three residual self-descriptions still calling the crate an "importer": the `Cargo.toml` package `description`, the `README.md` lede, and the `src/lib.rs` `//!` header. Fix: rename the role-noun in all three to "parser" in a follow-up commit on the same branch.
+
 ---
 
 ## Pattern B — Classifier / dispatch asymmetry

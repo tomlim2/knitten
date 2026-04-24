@@ -18,16 +18,31 @@ Embedding the review inside `make-pr` meant you couldn't pre-check work without 
 
 ## Workflow
 
-### Step 1: Sanity — branch state
+### Step 1: Sanity — branch state + cwd verification
+
+**Critical:** every sweep below reads `git grep` / `git diff` output from the current working directory's repo. If your cwd is the main shotloom checkout but the branch you want to review lives in a worktree (or vice versa), the sweep reviews the **wrong branch** and reports clean while real defects sit unreviewed. This has happened. Always explicitly verify.
 
 ```bash
-cd "$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)"
-git rev-parse --abbrev-ref HEAD                     # current branch
-git log --oneline origin/main..HEAD || git log --oneline main..HEAD
-git status --short                                   # surface unstaged work
+# Resolve the target: if a worktree for the branch you want to review
+# exists under <shotloom>/.worktrees/, `cd` into that worktree, NOT
+# the main checkout.
+shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
+# Pick the worktree directory if you are reviewing a feat/fix/chore
+# branch created via /shotloom-start-code; otherwise the repo root.
+cd <worktree_dir_or_$shotloom_root>
+
+pwd                                                   # MUST match intended target
+git rev-parse --abbrev-ref HEAD                       # MUST be the branch you want to review, NOT `main`
+git log --oneline origin/main..HEAD                   # MUST show the branch commits
+git status --short                                    # surface unstaged work
 ```
 
-If the branch has no commits ahead of `main`, abort — there's nothing to review.
+Refuse to proceed if:
+- `git rev-parse --abbrev-ref HEAD` returns `main` or the repo's default branch — you are almost certainly in the wrong directory.
+- `git log origin/main..HEAD` is empty — no commits to review.
+- `pwd` does not match the directory the user named (or the worktree they were just working in).
+
+If you recently chained bash commands in a long session, cwd may have silently reset between tool calls. Run `pwd` every time before the first grep of each review pass.
 
 ### Step 2: Load the standard
 
@@ -37,7 +52,7 @@ The standard contains 22 patterns derived from real Copilot review defects on Sh
 
 | Group | Patterns | Class |
 |---|---|---|
-| **A** | A1–A7 | Doc ↔ code coherence (7) |
+| **A** | A1–A8 | Doc ↔ code coherence (8) |
 | **B** | B1–B2 | Classifier / dispatch asymmetry (2) |
 | **C** | C1–C3 | Silent fallback in hot path (3) |
 | **D** | D1–D4 | Library hygiene (4) |
@@ -106,6 +121,29 @@ git diff origin/main..HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -i '~?\s*[0-9]+\s*(MB|MiB|GB|GiB|minutes?|hours?|[kK]|[mM]illion|x\b)'
 # For each hit, re-derive from std::mem::size_of / a constant / a bench.
+
+# A8: category-changing rename — sweep the concept word, not just the token.
+# Only runs when the PR renames an identifier whose role-noun changed
+# (importer/parser, service/worker, handler/dispatcher, client/consumer).
+# Identify the old role-noun from the commit subject or PR description and
+# grep each touched crate for that word as a whole word. Example: if the
+# subject says "rename foo-importer to foo-parser", the old role-noun is
+# "importer" and the sweep is:
+#
+#   old_role_noun="importer"   # ← set per PR
+#   for crate_dir in $(git diff --name-only origin/main..HEAD -- 'crates/*/Cargo.toml' | xargs -n1 dirname | sort -u); do
+#     echo "=== $crate_dir ==="
+#     rg -n -w "$old_role_noun" \
+#       "$crate_dir/Cargo.toml" \
+#       "$crate_dir/README.md" \
+#       "$crate_dir/src/lib.rs" \
+#       "$crate_dir/src/mod.rs" 2>/dev/null
+#   done
+#   # Also grep sibling docs that name the crate by role:
+#   rg -n -w "$old_role_noun" MAP.md docs/adr/ docs/guidelines/ docs/tech-debt/ 2>/dev/null
+#
+# For every hit, decide: keep the old word (valid historical reference) or
+# swap to the new role-noun (drifted self-description).
 
 # === Pattern B — Classifier / dispatch asymmetry ===
 
