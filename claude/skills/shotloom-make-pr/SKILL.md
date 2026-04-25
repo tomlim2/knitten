@@ -96,6 +96,89 @@ Match structure (Summary / Why / Changes / Impact / Test plan) to high-signal ex
 
 **Body:** see [reference.md](reference.md) for the full template (Summary, Why, Changes, Impact, Test plan, Scope boundary, Related Issues). For trivial changes (<50 LOC), use the minimal `.github/pull_request_template.md` form.
 
+### Step 5b: Self-audit PR body via Codex (MANDATORY)
+
+Before presenting the body to the user, hand the drafted body + the
+branch diff to Codex (`gpt-5.4`, high reasoning) and ask it to flag:
+
+- **Numeric / comparative claims** that do not derive from the diff or
+  from a linked constant / benchmark ("well below the f32 ulp", "8x
+  faster", "reduces allocs by half"). Direction of inequality must be
+  correct and the magnitude re-derivable.
+- **Marketing / exaggeration phrases** ("easily handles", "trivially
+  extends", "hugely improves", "dramatically", "seamlessly"). Either
+  drop or replace with a concrete quantitative statement.
+- **Assertions not backed by a command** in the Test details list
+  (e.g. claiming "CI clean" without a matching `cargo test`/`clippy`
+  line).
+- **Summary / Changes bullets** whose subject does not appear in
+  `git diff --stat` (body claims a change that the diff does not ship).
+- **Count / cardinality claims** ("52 bones", "34 files") — verify
+  against the actual artifact (snapshot, ls-files output, etc.).
+
+Recent real defects this catches:
+
+- "well below the f32 ulp near 1.0" on a `1e-6` tolerance (1e-6 is
+  ~8x **above** the ulp, not below — direction inverted).
+- "all 52 non-root bones flipped digest" when the snapshot has 53
+  bones and the injection hit all of them.
+
+```bash
+prompt_file=$(mktemp -t shotloom-pr-body-audit.XXXXXX.md)
+{
+  cat <<'PROMPT_HEAD'
+You are auditing a Shotloom PR body for overclaims and drift from the
+actual diff. For every sentence / bullet, flag it if it matches any
+of these classes:
+
+1. Quantitative claim that cannot be re-derived from the diff or a
+   cited constant/bench. Check the direction of every inequality.
+2. Marketing / subjective phrase ("easily", "trivially", "huge",
+   "seamlessly", "well below"). Replace with a concrete number or drop.
+3. Assertion not backed by a command in the Test details list.
+4. Change described in Summary / Changes that is absent from the diff.
+5. Count / cardinality mismatch between body and artifacts.
+
+Output format per finding:
+
+- body line <N>: "<quoted>" — <why unsupported or wrong> — <concrete
+  fix suggestion>
+
+If nothing is wrong, answer literally `OK`. Do not rewrite the body;
+only report. Do not comment on code-level concerns (that is
+`/shotloom-review-before-pr`'s job).
+PROMPT_HEAD
+  echo
+  echo "## Drafted PR body"
+  echo
+  cat "<path-to-drafted-body>"
+  echo
+  echo "## Branch diff (git diff origin/main..HEAD)"
+  echo
+  echo '```diff'
+  git diff origin/main..HEAD
+  echo '```'
+} > "$prompt_file"
+
+bash ~/.claude/lib/cci-codex/run-codex.sh audit-pr-body --file "$prompt_file"
+```
+
+Triage the output:
+
+- **`OK` → continue to Step 6.**
+- **Findings that are real** → fix the body inline, re-run this step
+  (idempotent). Do NOT hand-wave past a finding; either fix it or
+  justify dropping it in a one-line note under the Test details.
+- **Findings that are false positives** (e.g. the claim IS in the
+  diff but Codex misread) → briefly note why the body is correct and
+  continue. Log the miss pattern so the prompt can be tightened.
+
+Skip **only** when:
+
+- PR is trivial (< 50 LOC) AND the body has zero quantitative claims
+  AND no Test details beyond the template boilerplate.
+- User explicitly says "skip body audit" for this specific PR.
+
 ### Step 6: Present draft to user
 
 Print drafted title + body, ask:
