@@ -95,6 +95,30 @@ A single rename PR that fails A8 signals the whole point of the rename is half-d
 
 **Real defect (PR for STL-172):** crate renamed `shotloom-fbx-anim-importer` → `shotloom-fbx-anim` because "Layer 1 is a parser, not an importer; `shotloom-import` is the importer." Initial commit swept the hyphenated identifier across 28 files cleanly. Token-only self-review reported all 22 patterns clean. Concept-word sweep (`rg -w importer crates/shotloom-fbx-anim/`) then found three residual self-descriptions still calling the crate an "importer": the `Cargo.toml` package `description`, the `README.md` lede, and the `src/lib.rs` `//!` header. Fix: rename the role-noun in all three to "parser" in a follow-up commit on the same branch.
 
+### A9 — Parsed / derived struct fields must be cross-checked or dropped
+
+If a parser populates struct fields (`schema_version`, `source_path`, `expected_frame_count`) and the consumer never validates or correlates them, those fields are dead weight pretending to be a contract. A schema bump, a fixture-path swap, or a hand-edit that desyncs the header from the body silently loads stale data — the parser reports success and the compare/consume stage can't see the drift.
+
+The same failure mode applies to **derived summary fields** (a top-level `frame_count` that should equal `max(bones[i].rotations.len())`): if the consumer only checks the per-bone fields, the summary floats free and a reviewer can't tell from reading the output whether it was asserted or just copied.
+
+**Fix options (pick one; don't leave the field as dead weight):**
+
+1. **Cross-check at parse time** — validate version/identity fields against the current compile-time constant, matching whatever other validation the parser already does (e.g., `bone_count` equals the length of the bone array):
+   ```rust
+   if golden.schema != SCHEMA_VERSION {
+       return Err(format!(
+           "snapshot schema {} but this test expects {SCHEMA_VERSION} — regenerate via {REGEN_ENV_VAR}=1",
+           golden.schema
+       ));
+   }
+   ```
+2. **Assert in the compare stage** — for derived summary fields, recompute from the current data and emit a structural diff on mismatch.
+3. **Drop the field** — if neither the parser nor the consumer has a use for it, remove it from the struct + file format entirely.
+
+**Self-check:** for every parser `fn parse(...) -> Result<Struct, _>` in touched files, list the fields it populates and grep the rest of the module for each field name. Every field must be either read-and-validated, read-and-cross-checked against a derived value, or deleted.
+
+**Real defect (PR #172, comments 3140687008 + 3140687021):** `body_retarget_regression.rs::Golden::parse` populated `schema`, `vrm`, `fbx`, and a top-level `frame_count` field. Only `bone_count` was cross-checked; the other four silently floated. A `SCHEMA_VERSION` bump or a `VRM_RELATIVE` / `FBX_RELATIVE` swap without regen would have loaded a stale golden with no error. Fix: added schema / vrm / fbx equality checks next to the existing `bone_count` check, and added a `max(per-bone frame_count) == golden.frame_count` assertion in `compare()`.
+
 ---
 
 ## Pattern B — Classifier / dispatch asymmetry
@@ -128,6 +152,32 @@ If a function runs N stages and stage K bails early, stages K+1..N are dropped s
 **Self-check:** every `if foo.is_empty() { return ...; }` near the top of a multi-stage function — ask "does this skip work that the *other* stages also need to do?"
 
 **Real defect:** `align_full_body_rest` returned early when `axis_map` was empty, dropping DirectCopy and UserCalibrated for rigs without finger candidates. Only ScalarCurl actually needed `axis_map`.
+
+### B3 — Helper `assert!` / `panic!` on edge input must not preempt the caller's structured error path
+
+When a helper is called from a pipeline whose *whole purpose* is to produce a readable diff/report on bad input (a test comparator, a validator, a diagnostics collector), `assert!(x > 0, ...)` or `panic!("bad input")` inside the helper throws away the caller's error-reporting value. The test fails with a raw backtrace that doesn't name the offending entity (bone, row, field) — exactly the thing the pipeline was designed to surface.
+
+This hits hardest in **two-stage diff pipelines**:
+```
+stage 1: collect current state into a comparable shape (may touch helpers)
+stage 2: compare against golden, accumulate per-item diffs, render a report
+```
+If stage 1 panics on an edge input (zero-length track, missing field, duplicate key), stage 2 never runs and the report never prints. The test's diff machinery is wasted — you get a Rust backtrace instead of "bone `J_Bip_R_Hand`: frame_count 1764 → 0".
+
+**Fix pattern:** helpers in a diff/validate pipeline should accept edge inputs and produce a value the comparator can flag:
+```rust
+fn sample_positions(frame_count: usize) -> Vec<usize> {
+    if frame_count == 0 {
+        return Vec::new(); // caller's compare() will surface `frame_count 0` per bone
+    }
+    ...
+}
+```
+Keep `assert!` / `panic!` for *pipeline-wide invariants* that genuinely can't be reported per-item (e.g. the fixture file is missing entirely) — not for per-item edge cases the comparator was written to handle.
+
+**Self-check:** for every helper called from a test/validator pipeline, ask "if this input is degenerate, does the caller's report surface it more cleanly?" `rg 'assert!\(.+>\s*0' crates/<changed-crate>/tests/` is a good starting point.
+
+**Real defect (PR #172, comment 3140687015):** `sample_positions(0)` had `assert!(frame_count > 0, "cannot sample an empty rotation track")`. A future retargeter regression that emitted a zero-frame bone would panic from inside `Golden::from_animation` before `compare()` ran — the test's otherwise-polished diff report with bone name + frame-count mismatch never printed. Fix: return `Vec::new()` and let `compare()`'s existing `rotations.len() != expected.frame_count` branch surface the bone name and `0 → N` delta.
 
 ---
 
@@ -171,6 +221,24 @@ A user who writes `"ScalaCurl"` in a JSON config gets zero feedback and a confus
 **Self-check:** every `match name.as_str() { ... _ => default }` in a config-parsing path is a candidate.
 
 **Real defect:** `rest_sync_strategy` had `_ => Skip` with no warning surface. Fixed by adding `parse_strategy_name` + `validate_rest_sync_rules` called once at Stage 4 entry.
+
+### C4 — `HashMap::insert` / `BTreeMap::insert` with discarded return silently overwrites on duplicate key
+
+Building a lookup table with `map.insert(k, v);` and discarding the return value means a second entry with the same key wipes the first with no signal. If the keys come from data that is *supposed* to be unique (deduped bone names, stage IDs, asset handles), the ignored `Option<V>` is the only place the duplicate is detectable — and the later consumer can't tell 1 → 1 from N → 1.
+
+This bites hardest in test or diagnostic code that exists specifically to catch upstream regressions: the test index silently absorbs the duplicate, and the very class of bug the test is meant to catch becomes invisible.
+
+**Fix pattern:**
+```rust
+if map.insert(k, v).is_some() {
+    report.structural.push(format!("duplicate `{k}` in output"));
+}
+```
+Or, when building a final map: collect into a `Vec<(K, V)>` and assert uniqueness, or use `map.entry(k).or_insert(v)` if "first wins" is the intended semantic.
+
+**Self-check:** `rg '\.insert\([^)]+\);$' crates/<changed-crate>/` — every hit where the key is supposed to be unique is a candidate. Pay special attention when the map is built from user output / retargeter output / any collection whose upstream contract is "no duplicates."
+
+**Real defect (PR #172, comment 3140687013):** `current_by_name.insert(&bone.vrm_bone_name, &bone.rotations);` in the body retarget regression test built a lookup map by `vrm_bone_name`. If the retargeter ever emitted two bones with the same name (the exact regression class this test was written to guard against), the second silently overwrote the first and the later compare-loop could not see the duplicate. Fixed by checking `.is_some()` on the return and pushing a structural diff.
 
 ---
 
@@ -217,6 +285,50 @@ The correct lever for boundary decoupling is **not re-exporting the type** acros
 **Self-check:** `rg '#\[non_exhaustive\]' crates/<changed-crate>/src/`. Zero hits expected. If the attribute is present, grep for any `pub use other_crate::Error` that may have motivated it — remove the re-export, not the exhaustiveness check.
 
 **Real defect (PR #118):** `VrmRestError` in `shotloom-gltf` was marked `#[non_exhaustive]` to protect `shotloom-retarget::build_from_bytes` from future variant additions. Reviewer flagged it as P1 blocking per error-handling.md §6. Fix: remove `#[non_exhaustive]`; the already-applied re-export drop from `shotloom-retarget::lib` alone achieves the desired decoupling.
+
+### D6 — Umbrella plugin must not re-export internal asset paths or sub-plugins
+
+When a "facade" plugin (`MaterialsPlugin`, `ShotloomVrmPlugin`) wraps internal plugins to enforce an invariant — e.g. ADR-0031 Decision #4 *"one shared `Handle<StandardMaterial>` constructed at startup, read by callers via `Res<PlaceholderMaterial>`"* — every public sibling of the canonical entry point becomes an alternate route that silently defeats the invariant. Two specific shapes recur:
+
+1. **`pub const ASSET_PATH: &str = "..."`** re-exported from the crate root. A caller can `asset_server.load(ASSET_PATH)` and wrap their own `StandardMaterial` around it — same image, **different material handle**, ADR violated with no compile-time signal.
+2. **`pub struct InnerPlugin`** re-exported alongside the umbrella plugin. A caller can `add_plugins(InnerPlugin)` instead of the umbrella, bypassing whatever wiring the umbrella adds (resource init order, cross-cutting `add_systems`, additional sub-plugins).
+
+The fix is the umbrella precedent already used in the same crate: re-export only the umbrella plugin and the read-only Resource; demote everything else to `pub(crate)`. Sibling examples in `shotloom-engine`: `ShotloomVrmPlugin` hides `VrmPlugin`, `DEBUG_CHARACTER_VRM_PATH` is `pub(crate)`.
+
+**Self-check:** for every new or modified `pub use` line in a crate's `lib.rs` / `mod.rs`, walk each re-exported item and ask: *"is this item the only path to the invariant the umbrella plugin owns?"* If the item is a path constant, a sub-plugin, or anything else the umbrella plugin's contract assumes nobody else touches, demote it to `pub(crate)`. Then verify there is no other crate already importing it — if there is, the demotion is a public-API break and must be reviewed first. `rg 'pub use [a-z_]+::\{[^}]*PATH' crates/<changed-crate>/src/` and `rg 'pub use [a-z_]+::\{[^}]*Plugin' crates/<changed-crate>/src/` are good starting greps.
+
+**Real defect (PR #166, comment 3140592023):** [`shotloom-engine/src/lib.rs`](https://github.com/CINEV/shotloom/blob/main/crates/shotloom-engine/src/lib.rs) re-exported `MaterialsPlugin, PlaceholderMaterial, PlaceholderMaterialPlugin, PLACEHOLDER_CHECKER_PATH` from `materials::*`. Reviewer flagged P1 blocking: the path constant + inner plugin gave callers two ways to bypass the "one shared handle" invariant ADR-0031 Decision #4 promised. Fix in d19aa39: re-export reduced to `MaterialsPlugin, PlaceholderMaterial`; the constant and inner plugin are `pub(crate)`.
+
+### D7 — Invariant-bearing `Resource` fields must be private with accessor
+
+When a `Resource` exists to enforce a "one X constructed at startup, read-only by callers" contract — `PlaceholderMaterial(pub Handle<StandardMaterial>)`, `BridgeResource`, `ShotEntityIdComponent`, `EngineUploadStaging`, `DebugCharacterCounter` — a `pub` tuple field or `pub` named field lets any system holding `ResMut<TheResource>` overwrite the invariant at runtime with zero compile-time signal. There is no `Resource`-level "frozen after init" attribute; the only way to make the invariant a *type-level* contract is to close the field.
+
+The codebase convention for invariant-bearing Resources is:
+
+```rust
+#[derive(Resource, Clone, Debug)]
+pub struct PlaceholderMaterial {
+    handle: Handle<StandardMaterial>,
+}
+
+impl PlaceholderMaterial {
+    pub(crate) fn new(handle: Handle<StandardMaterial>) -> Self {
+        Self { handle }
+    }
+
+    pub fn handle(&self) -> &Handle<StandardMaterial> {
+        &self.handle
+    }
+}
+```
+
+Avoid `impl Deref<Target = Inner>` on the Resource — `Deref` re-opens the *"is this the canonical handle or a clone with different identity"* ambiguity the private field exists to eliminate.
+
+**Bag-of-data Resources** (configuration values, DTO-like state with no invariant the runtime relies on) may keep `pub` fields. The pattern fires only when the Resource's docstring or owning ADR makes a *uniqueness* / *identity* / *constructed-once* claim.
+
+**Self-check:** for every `#[derive(Resource)]` in the diff, read the type's docstring and the ADR it cites. If the contract uses words like *"one"*, *"shared"*, *"canonical"*, *"constructed at startup"*, *"invariant"*, the field must be private with a `pub(crate) fn new` + `pub fn accessor(&self) -> &Inner`. `rg '#\[derive\([^)]*Resource[^)]*\)\]' -A 2 crates/<changed-crate>/src/` lists every Resource — check each.
+
+**Real defect (PR #166, comment 3140592033):** [`shotloom-engine/src/materials/placeholder.rs`](https://github.com/CINEV/shotloom/blob/main/crates/shotloom-engine/src/materials/placeholder.rs) defined `pub struct PlaceholderMaterial(pub Handle<StandardMaterial>);`. Reviewer flagged P1 blocking: any system with `ResMut<PlaceholderMaterial>` could swap `.0` to a different handle, breaking ADR-0031 Decision #4's "one shared handle" invariant at runtime. Fix in d19aa39: closed the field, added `new()` (pub(crate)) + `handle()` (pub) accessor; in-file test reads via `resource.handle()`.
 
 ---
 
@@ -336,6 +448,29 @@ Per `rules/testing.md`, a bug fix must ship a test that fails on `main` and pass
 
 **Real defect (PR #95 self-review, 2026-04-17):** Fix commit `714ff7f` (accessor panic guard) opened the PR without a regression test. Pattern-clean across A–F but testing.md violated. Added `fb137e0 test(gltf): add regression test for accessor out-of-bounds panic` after self-review flagged it.
 
+### G8 — Snapshot / fixture regen paths must assert structural invariants before overwriting the canonical
+
+A test or tool that regenerates a golden file behind an env var (`SHOTLOOM_REGEN_SNAPSHOT=1`, `UPDATE_SNAPSHOTS=1`, `--accept`) runs *after* the code-under-test. If the code-under-test is broken (retargeter yielding 12 bones instead of 53, parser dropping half the input, classifier miscategorizing every entry), the regen path writes the broken output to disk and the canonical fixture is clobbered. A developer who runs regen on a red branch — a common reflex while iterating — commits the regression as the new golden.
+
+The unconditional write is the bug. Snapshot infrastructure should refuse to overwrite the canonical unless the current output passes basic structural gates (bone count within expected band, at least N records, required schema fields populated). The guard is cheap and narrow — the alternative is `git diff` on a binary-ish text blob to notice the regression after the fact.
+
+**Fix pattern:** before `fs::write(&snapshot, ...)`, gate on a minimum sanity floor matching whatever structural property the fixture is *supposed* to have:
+```rust
+if current.bones.len() < 50 {
+    panic!(
+        "refusing to regen snapshot with only {} bones — body retarget should produce ~53. \
+         Investigate fixtures or retargeter before regen.",
+        current.bones.len()
+    );
+}
+fs::write(&snapshot, current.to_text()).expect("write snapshot");
+```
+Set the floor at "obviously broken" — not at the exact expected value. The goal is blocking "I deleted half the bones and regenerated" catastrophes, not catching subtle drift (that's what the compare path is for).
+
+**Self-check:** for every test/script with a regen branch (`rg 'REGEN|UPDATE_SNAPSHOT|accept' tests/ scripts/`), grep the branch body for `fs::write` / `std::fs::write` / equivalent. Every `write_to_canonical` call must be preceded by at least one `assert!` or `if ... panic!` on a structural property of the current output.
+
+**Real defect (PR #172, comment 3140687025):** `body_retarget_preset1_matches_golden` wrote `body_retarget_preset1.snap` unconditionally when `SHOTLOOM_REGEN_SNAPSHOT=1`. A broken branch producing 12 bones would have overwritten the 53-bone canonical with zero signal. Fix: added `if current.bones.len() < 50 { panic!(...) }` immediately before `fs::create_dir_all` in the regen branch.
+
 ---
 
 ## Self-review checklist (before push)
@@ -350,19 +485,24 @@ Run through this list every time, in order:
 [ ] A5 — Every new test name describes its actual setup
 [ ] A6 — Numeric claims in comments re-derived from types / constants / bench
 [ ] A7 — Every `pub fn -> Result<_, _>` whose doc promises defensive behavior uses `.get`/`checked_*` — no `[]`, `unwrap`, or unchecked arithmetic on caller-influenced indices
+[ ] A9 — Every parsed / derived struct field is cross-checked against a compile-time constant or a correlated value — no dead header fields
 
 [ ] B1 — Every classifier bucket is the only input to its handler
 [ ] B2 — No early return drops downstream stages that don't need the missing data
+[ ] B3 — No `assert!` / `panic!` in helpers that a caller's diff/validate pipeline would report per-item
 
 [ ] C1 — No `unwrap_or(default)` where `default` overlaps a real measurement
 [ ] C2 — No magnitude check immediately after `normalize_or_zero`
 [ ] C3 — No silent `_ =>` arm in config parsing without a warning surface
+[ ] C4 — No `map.insert(k, v);` discarding the return when `k` is supposed to be unique
 
 [ ] D1 — No `eprintln!` / `println!` / `dbg!` in library code
 [ ] D2 — No `.unwrap()` / `.expect()` in library hot paths
 [ ] D3 — No mixed-language comments in English-only crates
 [ ] D4 — Every `#[allow(dead_code)]` has a justifying comment
 [ ] D5 — No `#[non_exhaustive]` on workspace-internal types (use re-export boundary, not exhaustiveness suppression)
+[ ] D6 — Umbrella plugin re-exports only the facade + read-only Resource; sub-plugins and asset path constants are `pub(crate)`
+[ ] D7 — Every invariant-bearing `Resource` (uniqueness / identity / constructed-once contract) has private fields + `pub(crate) fn new` + `pub fn accessor`
 
 [ ] E1 — `cargo metadata --filter-platform x86_64-unknown-linux-gnu` clean of audio/udev
 [ ] E2 — `Cargo.lock` regenerated after any `Cargo.toml` dep change
@@ -379,6 +519,7 @@ Run through this list every time, in order:
 [ ] G5 — ADR added/updated or tech-debt entry added/deleted when structure shifts
 [ ] G6 — `node scripts/validate-doc-paths.mjs` clean + Rust comment path refs spot-checked
 [ ] G7 — Every `fix:` commit in this PR has a paired regression test that fails on `main`
+[ ] G8 — Every snapshot / fixture regen path asserts a structural floor before overwriting the canonical
 ```
 
 If any line cannot be ticked or explicitly waived ("N/A — no Cargo.toml changes"), do not push. Fix it locally, re-run the gates, then push.
@@ -387,4 +528,4 @@ If any line cannot be ticked or explicitly waived ("N/A — no Cargo.toml change
 
 ## Provenance
 
-Patterns A–E (excluding A6, E3) were reverse-engineered from 16 Copilot review comments on [Shotloom PR #66 (STL-74)](https://github.com/CINEV/shotloom/pull/66), spanning three review rounds (2026-04-14). A6, E3, and Pattern group F (F1–F3) were added from PR #72 self-review gap analysis (2026-04-15, merged from the earlier `shotloom-review-patterns.md`). A7 was added 2026-04-17 from a P0 review comment on [PR #85](https://github.com/CINEV/shotloom/pull/85) where `vrm_rest::build_from_bytes` promised defensive `Result` returns but indexed directly. Group G (G1–G7) was added 2026-04-17 to cover structural / repo-convention defects surfaced across PR #85 round-2 review and the PR #95 self-review gap (missing regression test on a bug-fix PR). Each pattern maps to at least one real defect caught after push. Update this file whenever a new defect class shows up that this checklist doesn't cover — this is the **single source of truth** for Rust pre-PR review patterns. Both `shotloom-review-before-pr` (local) and `cci-codex-review-rust` (remote) load this file directly; do not maintain a parallel checklist.
+Patterns A–E (excluding A6, E3) were reverse-engineered from 16 Copilot review comments on [Shotloom PR #66 (STL-74)](https://github.com/CINEV/shotloom/pull/66), spanning three review rounds (2026-04-14). A6, E3, and Pattern group F (F1–F3) were added from PR #72 self-review gap analysis (2026-04-15, merged from the earlier `shotloom-review-patterns.md`). A7 was added 2026-04-17 from a P0 review comment on [PR #85](https://github.com/CINEV/shotloom/pull/85) where `vrm_rest::build_from_bytes` promised defensive `Result` returns but indexed directly. Group G (G1–G7) was added 2026-04-17 to cover structural / repo-convention defects surfaced across PR #85 round-2 review and the PR #95 self-review gap (missing regression test on a bug-fix PR). C4, A9, B3, and G8 were all added 2026-04-25 from the [PR #172 (STL-179)](https://github.com/CINEV/shotloom/pull/172) review cycle — reverse-engineered from eight inline comments + one review-body P1 on the body retarget regression test. C4 (`insert()` discards return → silent overwrite) from comment 3140687013. A9 (parsed / derived struct fields must be cross-checked or dropped) from comments 3140687008 (snapshot `schema`/`vrm`/`fbx` parsed but never validated) and 3140687021 (top-level `frame_count` field derived but never asserted). B3 (helper `assert!`/`panic!` on edge input must not preempt the caller's diff path) from comment 3140687015 (`sample_positions(0)` panicked inside `from_animation` before `compare()` could surface the bone name). G8 (snapshot regen path must assert a structural floor before overwriting) from comment 3140687025 (`SHOTLOOM_REGEN_SNAPSHOT=1` on a broken branch would clobber the 53-bone golden with 12-bone garbage). Three inline comments (#4 redundant `.abs()`, #5 inline `glam::`/`std::` prefix vs hoisted import, #7 missing explanatory comment on a `continue`) were filtered as ad-hoc / style / local semantic, not recurring shapes. D6 and D7 were added 2026-04-25 from two P1 blocking review comments on [PR #166 (STL-186)](https://github.com/CINEV/shotloom/pull/166): comment 3140592023 (umbrella plugin re-exporting the inner plugin + asset path constant gave callers a path around the ADR-0031 "one shared handle" invariant) and comment 3140592033 (`pub` tuple field on the invariant-bearing `PlaceholderMaterial` Resource let any `ResMut` holder swap the handle out at runtime). Each pattern maps to at least one real defect caught after push. Update this file whenever a new defect class shows up that this checklist doesn't cover — this is the **single source of truth** for Rust pre-PR review patterns. Both `shotloom-review-before-pr` (local) and `cci-codex-review-rust` (remote) load this file directly; do not maintain a parallel checklist.

@@ -76,7 +76,16 @@ Filters:
 - **Add** → fix is "replace this construct with that", rule is greppable, senior reviewer would catch mechanically.
 - **Skip** → ad-hoc rename, typo, local semantic bug without recurring shape.
 
-Report: "Added Pattern X" or "No new pattern — {reason}".
+**Mandatory output — one line per resolved finding, before Step 5 begins:**
+
+```
+Pattern capture:
+  finding 1 (<file>:<line>) → matched A7 (added Real defect line)
+  finding 2 (<file>:<line>) → new D6 (added pattern + checklist + provenance)
+  finding 3 (<file>:<line>) → skipped — ad-hoc rename, no recurring shape
+```
+
+Every resolved finding from Step 4 must appear in this block. **Step 5 (Validate + commit) is gated on this block being printed.** If the block is missing or has fewer entries than Step 4 had findings, return to Step 4.5 and complete it before staging files. The block is the proof that Step 4.5 actually ran — without it, the step gets silently skipped (this happened on PR #166).
 
 ### Step 5: Validate + commit
 
@@ -149,7 +158,23 @@ Re-request is the signal that "I'm done with this round; please re-review." It r
 
 ### Step 9: Report final summary
 
-Table: # | File | Status | Linear | Thread | Reply. Plus line "Re-requested review from: @reviewer".
+Table: **# | File | Status | Linear | Thread | Reply | Pattern**. The Pattern column carries the Step 4.5 outcome for each finding (e.g. `A7`, `new D6`, `skipped — typo`). An empty Pattern cell is a Step 4.5 miss — go back and fill it before declaring the workflow complete.
+
+Plus line "Re-requested review from: @reviewer".
+
+## User briefing — lower-resolution Korean framing
+
+When briefing back to the user (NOT the reply text posted to GitHub), default to **Korean, one altitude higher than the reviewer comment**. The user is the author of the PR and already knows the code; what they need is the *shape* of the round-trip, not a literal translation.
+
+**Rules:**
+- **Frame, don't translate.** Lead with what larger goal the PR serves and what invariant / contract / subsystem each finding actually pokes at. Then say what was done about it. The reviewer's exact words are not the value-add; the framing is.
+- **Group by theme, not by comment id.** Two findings that both attack the same invariant from different angles get one paragraph, not two literal translations.
+- **Mark deferrals plainly.** If something was acknowledged-but-not-fixed (P3 nit, follow-up PR), say so in one sentence with the reason — don't re-translate the reviewer's full Recommendation block.
+- **End with state, not reply text.** Last line names the SHA pushed, that replies are posted inline, and that re-review is requested. Do NOT paste the GitHub reply bodies back to the user — they wrote the PR; they can read the thread.
+
+**Applies to:** Step 3 listing (when summarizing items for proceed-confirmation) and Step 9 final summary. Step 6 reply *drafts* shown for batch approval stay as the literal English bodies that will hit GitHub — those are not for briefing.
+
+Reference example: see the closing brief on PR #166 (2026-04-25) — "ADR-0031 인변량 → 두 우회로 닫음 + 한 건 후속 PR로 이월" framing rather than per-comment translation.
 
 ## Autonomy
 
