@@ -20,9 +20,23 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 - `~/.claude/rules/shotloom-git.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
 - `~/.claude/projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md`
 
-**Auto-approved inside the react cycle:** `git commit`, `git push`, inline review replies (`POST /pulls/<N>/comments/<id>/replies`), reviewer re-request (`POST /pulls/<N>/requested_reviewers`).
+**Auto-approved inside the react cycle:**
 
-**Still requires explicit per-action user approval, even inside auto-pr:** `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit --base/--title`, top-level PR comments (`gh pr comment`), thread resolution. The ready-to-merge report below is logged, not invoked.
+- `git commit`, `git push`
+- inline review replies (`POST /pulls/<N>/comments/<id>/replies`)
+- suppressed-item review-level summary reply (`POST /pulls/<N>/reviews` with `event=COMMENT`)
+- reviewer re-request (`POST /pulls/<N>/requested_reviewers`)
+- PR body refresh (`gh pr edit <N> --body …`) — body content only, no state mutation
+
+**Still requires explicit per-action user approval, even inside auto-pr:**
+
+- `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr ready`
+- `gh pr edit --base`, `--title`, `--draft`, `--label` (any state-changing flag)
+- top-level PR comments via `/issues/<N>/comments` or `gh pr comment`
+- `gh pr review --approve` / `--request-changes` (any review with non-`COMMENT` event)
+- thread resolution (graphql `resolveReviewThread`)
+
+The ready-to-merge report below is logged, not invoked. This list is mirrored in [`~/.claude/rules/shotloom-git.md`](../../rules/shotloom-git.md) and [`~/.claude/projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md`](../../projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md); change all three together.
 
 The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffected and keeps the per-comment batch approval gate.
 
@@ -95,25 +109,41 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
 Dispatch by event type:
 
 - **`fail_checks` non-empty (set diff, NOT current full failure set)** → CI auto-fix:
-  - `last-event.json` carries failed check **names**, not job or run ids. Resolution is two hops because `gh run view --log-failed --job <id>` needs a **job id**, not the **run id** that `gh run list` returns.
+  - `last-event.json` carries failed check **names** plus the head `sha` (`new_fail_checks` and `sha` fields written by `watch.sh`). Resolution is two hops because `gh run view --log-failed --job <id>` needs a **job id**, not the **run id** that `gh run list` returns. Filter `gh run list` by the event's commit `sha`, NOT by branch name — branch filtering matches every workflow that ever ran on the branch and can return an old failing run from a prior push instead of the current tick's failure.
 
     ```bash
-    # Step 1: name → run id (databaseId is the workflow run id)
-    run_id=$(gh run list --branch "$head" \
+    EVENT_FILE="$HOME/.claude/ops/pr-$PR/last-event.json"
+    sha=$(jq -r '.sha' "$EVENT_FILE")                       # head commit on the PR at this tick
+    failed_name=$(jq -r '.fail_checks[0]' "$EVENT_FILE")    # process one failing check at a time
+
+    # Step 1: (sha, name) → run id. Filter by --commit so we only see the runs
+    # for the tick's actual head commit, not every historical run on the branch.
+    run_id=$(gh run list --commit "$sha" \
       --json databaseId,name,conclusion \
       --jq ".[] | select(.name==\"$failed_name\" and .conclusion==\"failure\") | .databaseId" \
       | head -1)
+    if [[ -z "$run_id" ]]; then
+      echo "no failing run for $failed_name @ $sha — likely re-run cleared it; skip CI fix" >> "$LOG"
+      exit 0
+    fi
 
     # Step 2: run id → failing job id (a run can have multiple jobs)
     job_id=$(gh run view "$run_id" --json jobs \
       --jq ".jobs[] | select(.conclusion==\"failure\") | .databaseId" \
       | head -1)
+    if [[ -z "$job_id" ]]; then
+      echo "run $run_id reports failure but no failing job; skip CI fix" >> "$LOG"
+      exit 0
+    fi
 
     # Step 3: pull the failing job's log
     gh run view --log-failed --job "$job_id"
+
+    # Loop the same recipe over the rest of new_fail_checks if multiple checks
+    # flipped this tick — process them sequentially against the same sha.
     ```
 
-    Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id and the call will silently return nothing useful.
+    Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id and the call will silently return nothing useful. Do NOT use `--branch` instead of `--commit` — branch filter is sha-agnostic and can hand back a run from a previous push that happens to share the same workflow name.
   - classify: fmt / clippy / test / doc-paths / complex
   - apply fix, re-run the **canonical gate bundle** by delegating to `/shotloom-check-gates` (full). Do NOT cherry-pick a subset here — drift between auto-pr's gate set and the make-pr / commit / respond-pr bundle is exactly the fault the 2026-04-25 audit flagged.
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
@@ -121,14 +151,20 @@ Dispatch by event type:
 
 - **`new_comments` or `new_reviews` non-empty** → review auto-respond per `~/.claude/standards/shotloom-pr-scope-policy.md`:
   - classify in-scope / out-of-scope / ambiguous (≥9/10 only counts as ambiguous; ≤8 → pick closest interpretation)
-  - in-scope: apply fix, then **gate commit on pattern capture** (see below), commit, push, inline reply, re-request review roster
-  - out-of-scope / ambiguous: briefing block in `log.md`, no reply
-  - **MANDATORY pattern-capture gate (mirrors `shotloom-respond-pr` Step 4.5):** for every resolved finding, walk the Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`. Either match an existing pattern (append a one-line "Real defect" reference citing PR + comment id) or draft a new pattern entry (title, `**Self-check:**`, `**Real defect:**`, add to Self-review checklist block, append Provenance line). Then emit a `Pattern capture:` block to `log.md` with one line per resolved finding (`matched A7` / `new D6` / `skipped — typo`).
-  - **Commit is gated on this block.** If the count of `Pattern capture:` lines does not match the count of fixed findings, do NOT `git add` — return to capture step. The block is the only proof the step ran; without the gate, the step gets silently skipped (this happened on PR #166).
+  - **inline vs suppressed split** — every finding is either an inline comment (has `comment_id` in the `/comments` REST array) or a suppressed/review-body item (lives only inside a `/reviews` body). The two groups have different reply surfaces and must NOT be conflated:
+    - **inline in-scope** → apply fix, gate commit on pattern capture, commit, push, **inline reply** via `POST /pulls/<N>/comments/<comment_id>/replies` (one per finding)
+    - **suppressed in-scope** → apply fix, gate commit on pattern capture, commit, push, **single review-level summary** via `POST /pulls/<N>/reviews` with `event=COMMENT` (one bundled body covering every suppressed finding addressed this tick — never one review per finding, never event=APPROVE/REQUEST_CHANGES)
+  - re-request review roster runs once per react cycle, after both reply paths above have posted
+  - out-of-scope / ambiguous (either inline or suppressed) → briefing block in `log.md`, no reply, no resolve
+  - **MANDATORY pattern-capture gate (mirrors `shotloom-respond-pr` Step 4.5):** for every resolved finding (inline AND suppressed), walk the Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`. Either match an existing pattern (append a one-line "Real defect" reference citing PR + comment/review id) or draft a new pattern entry (title, `**Self-check:**`, `**Real defect:**`, add to Self-review checklist block, append Provenance line). Then emit a `Pattern capture:` block to `log.md` with one line per resolved finding (`matched A7` / `new D6` / `skipped — typo`).
+  - **Commit is gated on this block.** If the count of `Pattern capture:` lines does not match the count of fixed findings (inline + suppressed combined), do NOT `git add` — return to capture step. The block is the only proof the step ran; without the gate, the step gets silently skipped (this happened on PR #166).
 
 Protocol details (same as the pre-split skill):
 
-- Inline replies only — `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<id>/replies`. Never top-level.
+- Two reply surfaces, used in parallel within one react cycle (see split above):
+  - Inline-comment findings: `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<id>/replies` — one call per finding.
+  - Suppressed/review-body findings: `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/reviews -f event=COMMENT -f body=…` — one bundled call per cycle, never multiple.
+  - Top-level PR comments via `/issues/<N>/comments` (or `gh pr comment`) are **forbidden** — they bypass the review thread surface that the merge gate's "zero unresolved threads" check is meant to drive.
 - **Never resolve review threads.** The reviewer owns the "Resolve conversation" click — it is their signal that the fix landed and is acceptable. Claude replies and pushes; the thread stays open until a human resolves it. The merge gate's `zero unresolved threads` check then gives the reviewer explicit veto until they are satisfied.
 - MANDATORY: re-request review from PR roster union (`reviewRequests` + anyone in `/reviews` REST, dedup, drop author).
 - Commits: conventional, imperative, ≤80 char subject, no Co-Authored-By.
