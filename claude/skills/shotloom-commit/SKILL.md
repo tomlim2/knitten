@@ -31,9 +31,9 @@ git log -1 --format="%an <%ae>"
 
 ### Step 2: Run gates
 
-Unless `--skip-gates` provided, delegate to `/shotloom-check-gates --fast`. If any gate fails, stop — do not attempt the commit. Report which gate and where.
+Unless `--skip-gates` provided, delegate to `/shotloom-check-gates` (default = full bundle: fmt + clippy + check + **test** + doc-paths). If any gate fails, stop — do not attempt the commit. Report which gate and where.
 
-`--full` gates are for pre-push, not pre-commit. Fast gates only.
+The earlier convention split "fast for commit / full for push" produced PRs where commit-time gates passed and CI-equivalent push-time gates surfaced test regressions. The Shotloom canonical bundle now runs the same set every time so CI parity is a build-time guarantee, not a per-skill flag. If the user wants to skip tests for a docs-only commit, pass `/shotloom-commit --skip-gates` and explain in the commit body.
 
 ### Step 3: Draft commit message
 
@@ -44,7 +44,7 @@ Read the staged diff, classify, and draft per `docs/guidelines/commit-guideline.
 
 <body — why, not what; 80-char wraps; grouped by behavior>
 
-Related to STL-NN   (or "Resolves STL-NN" for closing work; or omit for chore/style)
+Related to STL-NN   (commit footer only — never use "Resolves STL-NN" in commits per rules/shotloom-git.md; closing linkage belongs in the PR description)
 ```
 
 Type rules:

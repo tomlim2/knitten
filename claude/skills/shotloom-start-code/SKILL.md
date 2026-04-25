@@ -1,12 +1,12 @@
 ---
 description: Pre-write gate for Shotloom coding — Linear fetch, conventions re-read, category-targeted standard load, Ready briefing
 argument-hint: "[STL-NN | linear-url | category]"
-allowed-tools: Read, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(code:*)
+allowed-tools: Read, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(code:*), Bash(jq:*)
 ---
 
 # shotloom-start-code
 
-Mandatory pre-write flow before editing any Shotloom code. Auto-invoked by the `shotloom-linear-detect` hook when a Linear reference appears while cwd is under `shotloom-github`. Can also be invoked manually.
+Mandatory pre-write flow before editing any Shotloom code. Auto-invoked by the `shotloom-linear-detect` hook when a Linear reference appears while cwd is under the `shotloom` repo (main checkout or any worktree under `.worktrees/` / `.claude/worktrees/`). Can also be invoked manually.
 
 ## Arguments
 
@@ -43,7 +43,7 @@ Verify:
 
 ### Step 2: Resolve Linear issue
 
-Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, branch prefix `feat/stl-NN-…`, commit body `Related to STL-NN`.
+Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body `Related to STL-NN` on the current branch. Do **not** parse the branch name for an STL prefix — Shotloom branches use `feat/<description>` per `rules/shotloom-git.md` and never carry an STL ID. Linear's auto-suggested `deemo/stl-NN-…` shape is a Linear UI hint, not the canonical branch name.
 
 If identifier found, fetch via `mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__get_issue`. Extract: problem statement, acceptance criteria, affected modules/crates, linked ADRs, linked specs.
 
@@ -59,7 +59,7 @@ Skip if the current branch already matches the Linear issue. Otherwise:
 4. **Worktree dir name:** `<worktree_base>/stl-<NN>-<kebab-summary>` (STL-NN here for human clarity — this is a local path, not a branch).
 5. **Create from latest `origin/main`:**
    ```bash
-   cd "$repo_root"
+   cd "$shotloom_root"
    git fetch origin main
    git worktree add "<worktree_dir>" -b "<branch>" origin/main
    ```
@@ -124,7 +124,7 @@ Fixed sequence: **gates pass → commit → push → `/shotloom-review-before-pr
 
 The review is also required before `/shotloom-make-pr`, `gh pr create`, or declaring "done" — even with no recent push.
 
-Walks `~/.claude/standards/review-code-rust.md` (22 patterns, groups A–F). Fix every hit before opening PR.
+Walks `~/.claude/standards/review-code-rust.md` (groups A–G; pattern count grows over time, do not memorize). Fix every hit before opening PR.
 
 **Skip only when:** branch contains zero Rust/TS source changes (docs/md/ADR-only), OR user explicitly says "skip review" for this specific PR.
 

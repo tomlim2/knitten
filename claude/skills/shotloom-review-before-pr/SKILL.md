@@ -1,6 +1,6 @@
 ---
-description: Pre-PR self-review for Shotloom Rust changes. Walks the 22-pattern checklist from review-code-rust.md against the current diff and reports defects locally before pushing. Does NOT create a PR.
-allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*)
+description: Pre-PR self-review for Shotloom Rust changes. Walks the pattern-based checklist in review-code-rust.md against the current diff and reports defects locally before pushing. Does NOT create a PR.
+allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*), Bash(gh:*), Bash(jq:*)
 ---
 
 # shotloom-review-before-pr
@@ -41,19 +41,19 @@ Run `pwd` every time before first grep — cwd may silently reset between tool c
 
 ### Step 2: Load the standard (MANDATORY)
 
-**Read `~/.claude/standards/review-code-rust.md` in full.** This is mandatory. The file is the authoritative checklist; this skill only orchestrates.
+**Read `~/.claude/standards/review-code-rust.md` in full.** This is mandatory. The file is the authoritative checklist; this skill only orchestrates. Do NOT memorize the pattern count — patterns get added each time a new defect class is caught on a PR. Groups currently span:
 
-22 patterns (derived from real Copilot defects on PR #66 + PR #72 gap analysis):
+| Group | Class |
+|---|---|
+| **A** | Doc ↔ code coherence |
+| **B** | Classifier / dispatch asymmetry |
+| **C** | Silent fallback in hot path |
+| **D** | Library hygiene |
+| **E** | Build / platform regressions |
+| **F** | Cross-crate & inherited-pattern hygiene |
+| **G** | Structural / repo-convention coherence |
 
-| Group | Patterns | Class |
-|---|---|---|
-| **A** | A1–A8 | Doc ↔ code coherence (8) |
-| **B** | B1–B2 | Classifier / dispatch asymmetry (2) |
-| **C** | C1–C3 | Silent fallback in hot path (3) |
-| **D** | D1–D4 | Library hygiene (4) |
-| **E** | E1–E3 | Build / platform regressions (3) |
-| **F** | F1–F3 | Cross-crate & inherited-pattern hygiene (3) |
-| **G** | G1–G7 | Structural / repo-convention coherence (7) |
+For the canonical pattern list (with current per-pattern IDs and Real-defect references), read the standard. Do not list specific Pattern IDs in this skill — they drift.
 
 ### Step 2.5: Load repo conventions (MANDATORY)
 
@@ -89,7 +89,7 @@ rg '\.unwrap\(\)|\.expect\(' $(git diff --name-only origin/main..HEAD -- 'crates
 node scripts/validate-doc-paths.mjs 2>&1 | tail -2
 ```
 
-See reference.md for the full sweep per pattern (A1–A8, B1–B2, C1–C3, D1–D4, E1–E3, F1–F3, G1–G7).
+See reference.md for the full sweep catalog. The catalog mirrors the IDs in `review-code-rust.md` — when the standard adds a new pattern, mirror it into reference.md at the same time.
 
 ### Step 4: Triage — group findings by pattern
 
@@ -109,14 +109,54 @@ See reference.md for the full sweep per pattern (A1–A8, B1–B2, C1–C3, D1�
 
 1. **All patterns clean** →
    ```
-   All 22 patterns clean. Ready to run /shotloom-make-pr.
+   All patterns clean (groups A–G, see standards/review-code-rust.md for current list). Ready to run /shotloom-make-pr.
    ```
 2. **Findings, fixable locally** → list them, ask whether to fix now or later. Do **NOT** auto-fix.
 3. **Findings requiring design judgment** → list, explain tradeoff, ask user. Usually B1/B2 or C1.
 
+### Step 5.5: Pattern capture (mirrors `shotloom-respond-pr` Step 4.5)
+
+If a finding represents a defect class **not yet captured** in `review-code-rust.md` — e.g. a recurring "replace this construct with that" rule that the current pattern set does not name — propose adding it to the standard. Self-review is one of the two natural ingestion points for new patterns; the other is post-PR review (handled by `shotloom-respond-pr`). Without this step, patterns only grow when reviewers catch the defect, never when the author does first.
+
+For each finding the user asks you to fix:
+
+1. Re-read Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`.
+2. **Match existing patterns first.** If a clearer instance of A1/B2/C3 etc., add a one-line "Real defect" reference citing this branch + commit sha (PR number not yet known).
+3. **If nothing matches, draft a new pattern entry** with title, short description, `**Self-check:**` one-liner, `**Real defect:**` line.
+4. Add to the Self-review checklist block at the bottom.
+5. Append one-line to Provenance (date, branch / sha, pattern).
+
+Filters (same as respond-pr):
+
+- **Add** → fix is "replace this construct with that", rule is greppable, senior reviewer would catch mechanically.
+- **Skip** → ad-hoc rename, typo, local semantic bug without recurring shape.
+
+**Mandatory output — one line per fixed finding, after Step 5:**
+
+```
+Pattern capture (self-review):
+  finding 1 (<file>:<line>) → matched A7 (added Real defect line)
+  finding 2 (<file>:<line>) → new D6 (added pattern + checklist + provenance)
+  finding 3 (<file>:<line>) → skipped — typo, no recurring shape
+```
+
+Skip the block entirely if no findings were fixed (clean review).
+
 ### Step 6: Loop
 
 If user fixes findings and asks to re-check, restart from Step 1. Skill is idempotent.
+
+## User briefing — lower-resolution Korean framing
+
+When briefing the findings table back to the user (NOT the raw `git diff` lines or pattern-sweep output), default to **Korean, one altitude higher than the per-pattern list**. The user wrote the diff and already knows what changed; what they need is the *shape* of the defects: which invariant / contract / subsystem each finding pokes at, grouped by theme.
+
+**Rules:**
+- **Frame, don't enumerate.** Lead with the diff's larger goal (which crate, which subsystem, which ADR it advances). Then group findings by what they actually attack — invariant break, classifier asymmetry, doc drift — rather than by Pattern ID order.
+- **Group by theme, not by Pattern ID.** Two A1 findings + one A2 finding that all hit the same renamed identifier get one paragraph. Two C1 findings on different invariants stay separate even though they share an ID.
+- **Keep the literal evidence below the briefing.** The framing comes first; the per-pattern list with line refs comes after, so the user can verify but isn't forced to read raw output to understand.
+- **Skip framing on a clean review.** If all patterns are clean, just say so — don't manufacture a narrative.
+
+The literal pattern enumeration (Step 4 output) and the Pattern-capture block (Step 5.5) stay in English/code-quote form so they're greppable for the next session.
 
 ## Binding rules (CRITICAL)
 
@@ -135,4 +175,4 @@ If user fixes findings and asks to re-check, restart from Step 1. Skill is idemp
 
 ## Additional Resources
 
-For the full bash sweep commands for every pattern (A1–A8, B1–B2, C1–C3, D1–D4, E1–E3, F1–F3, G1–G7), see [reference.md](reference.md).
+For the full bash sweep commands for every pattern (groups A–G, IDs current in `review-code-rust.md`), see [reference.md](reference.md). Re-read both files when patterns are added.

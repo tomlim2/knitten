@@ -3,7 +3,9 @@
 # invokes claude -p only when an actual change is detected.
 #
 # Usage: watch.sh <pr-number>
-# Called by launchd every N seconds. Designed to exit 0 silently on no-change.
+# Called by start.sh's nohup sleep loop every N seconds (NOT launchd —
+# launchd is blocked from ~/.claude/ by macOS TCC). Designed to exit 0
+# silently on no-change.
 
 set -euo pipefail
 

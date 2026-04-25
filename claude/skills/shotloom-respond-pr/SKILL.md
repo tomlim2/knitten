@@ -93,16 +93,15 @@ Every resolved finding from Step 4 must appear in this block. **Step 5 (Validate
    - Read current body, update Summary (new fixes, deleted files, deps), refresh Validation (test counts, doc-path counts), correct stale statements.
    - `gh pr edit $ARGUMENTS --body "..."`
 
-2. Run CI-equivalent gates (parallel):
+2. Run the canonical Shotloom gate bundle by delegating to `/shotloom-check-gates` (full, default):
    ```
    cargo fmt --check
    cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
    cargo check --workspace --exclude shotloom-desktop
-   cargo test -p shotloom-gltf --lib
-   cargo test -p shotloom-retarget --lib
+   cargo test --workspace --exclude shotloom-desktop
    node scripts/validate-doc-paths.mjs
    ```
-   (`shotloom-desktop` excluded per `rules/shotloom-git.md`.)
+   `shotloom-desktop` is excluded per `rules/shotloom-git.md`. **Do not** substitute crate-specific `cargo test -p` lines — review-response pushes must validate against the same workspace test set as pre-PR pushes, otherwise regressions in unrelated crates surface only after CI fails. Targeted `cargo test -p <crate> --lib` invocations are fine as **additive diagnostics** when narrowing a failing test, but they never replace the workspace bundle.
 
 3. Fix failing tests before proceeding. Broken tests block the PR.
 

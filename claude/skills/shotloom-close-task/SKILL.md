@@ -23,18 +23,37 @@ Usage: `/shotloom-close-task STL-114` or `/shotloom-close-task` from inside the 
 
 ### Step 1: Resolve context
 
-```bash
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
-cd "$shotloom_root"
+Capture invocation cwd **before** any `cd` so worktree detection sees where the user actually invoked from. Hard-resetting to the repo-paths root would target the main checkout instead of the active worktree.
 
-# current branch (if invoked from inside a worktree)
-current_branch=$(git rev-parse --abbrev-ref HEAD)
+```bash
+# Capture invocation cwd first
+invoked_from=$(pwd)
+
+# Detect worktree from invocation cwd — do NOT cd to shotloom_root yet
+toplevel=$(git -C "$invoked_from" rev-parse --show-toplevel 2>/dev/null) || toplevel=""
+remote=$(git -C "${toplevel:-$invoked_from}" remote get-url origin 2>/dev/null || true)
+
+case "$remote" in
+  *CINEV/shotloom*|*CINEV/shotloom.git)
+    worktree="$toplevel"
+    current_branch=$(git -C "$worktree" rev-parse --abbrev-ref HEAD)
+    ;;
+  *)
+    # Not inside a shotloom worktree — fall back to the main checkout
+    # (only valid if user passed STL-NN explicitly so we know what to close)
+    worktree=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-config/repo-paths.json)
+    current_branch=""  # unknown until user provides STL-NN
+    ;;
+esac
+
+shotloom_root=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-config/repo-paths.json)
 
 # resolve STL-NN from (in order):
 #   1. $ARGUMENTS
-#   2. PR body `Related to STL-NN` / `Resolves STL-NN`
-#   3. recent commit body on the branch
-#   4. branch name prefix (rare — shotloom convention excludes STL prefix)
+#   2. PR body `Related to STL-NN` (NOT "Resolves STL-NN" in commits — that
+#      string only appears in PR descriptions per rules/shotloom-git.md)
+#   3. recent commit body on the branch (Related to STL-NN footer)
+#   4. (do NOT parse branch name — Shotloom branches never carry STL-NN)
 ```
 
 Fetch the Linear issue via MCP (`mcp__…__get_issue`) to get current state and title.

@@ -93,10 +93,12 @@ The cron prompt should instruct Claude to:
    - If comment or review count increased — fetch new ones and summarize
    - For new review comments, show the body text so user can respond
 
-4. **On new review comments — offer to start fix flow:**
-   - Show the comment content
-   - Ask user if they want to address it now
-   - If yes, switch to code fix mode on the relevant file
+4. **On new review comments — hand off, do NOT switch into code-fix mode:**
+   - Show the comment content (delta only, no rewriting / framing).
+   - State the explicit handoff options without taking either:
+     - "Run `/shotloom-respond-pr <N>` to fix manually with batch reply approval."
+     - "Run `/shotloom-auto-pr start <N>` to enable autonomous responder."
+   - This skill is **read-only by design** — it polls and reports. Editing files, committing, pushing, or posting replies all belong to the actor skills (`shotloom-respond-pr` / `shotloom-auto-pr`). Mixing watcher + actor in one tool muddied the passive/active boundary in earlier versions.
 
 ### Step 4: Report changes
 
@@ -127,6 +129,17 @@ Report final status on stop.
 - `gh` CLI must be authenticated as `tomlim2` (same as all shotloom ops).
 - The cron job lives only in the current session — exits when Claude exits.
 - Multiple PRs can be watched simultaneously by invoking multiple times.
+- **Reports stay terse.** This is a polling skill; output is delta-only status updates ("Checks: 3/3 pass", "New comment from @reviewer"). The lower-resolution Korean briefing rule used in `shotloom-respond-pr` does NOT apply here — watchers must stay scannable, not narrative. When `auto-pr` is the right fit (long sessions, autonomous reactor), prefer it over this skill.
+
+## When to use this skill vs `shotloom-auto-pr`
+
+| Scenario | Pick |
+|---|---|
+| Short session, want passive notifications | `shotloom-watch-pr` (this skill) |
+| Long-running PR, want autonomous CI fixes + review responses | `shotloom-auto-pr start <N>` |
+| Want to merge gh-CLI fail-fast checks into Claude reactor | `shotloom-auto-pr` |
+
+`shotloom-auto-pr` superseded the active half of this skill (PR reaction). Watch-pr remains for short-lived, attended monitoring where you don't want a background watcher process.
 
 ## Related
 
