@@ -32,7 +32,7 @@ Stop on any failure.
 Save each fetch to a per-PR cache file so later steps (Step 8 reviewer roster) can re-read without re-fetching:
 
 ```bash
-gh pr view "$ARGUMENTS" --json title,body,headRefName,baseRefName,state,number,reviewRequests \
+gh pr view "$ARGUMENTS" --json title,body,headRefName,baseRefName,state,number,reviewRequests,reviewDecision \
   > "/tmp/pr${ARGUMENTS}-view.json"
 gh api "repos/CINEV/shotloom/pulls/${ARGUMENTS}/comments" \
   > "/tmp/pr${ARGUMENTS}-comments.json"
@@ -40,9 +40,11 @@ gh api "repos/CINEV/shotloom/pulls/${ARGUMENTS}/reviews" \
   > "/tmp/pr${ARGUMENTS}-reviews.json"
 ```
 
-- `pr<N>-comments.json` — inline (`id`, `path`, `line`, `body`, `diff_hunk`)
-- `pr<N>-reviews.json` — reviews including `state` and `user.login`; required by Step 8 to compute the `CHANGES_REQUESTED` reviewer roster.
-- `pr<N>-view.json` — current `reviewRequests` for the fallback re-request path.
+- `pr<N>-comments.json` — array of inline comments (`id`, `path`, `line`, `body`, `diff_hunk`, `user.login`)
+- `pr<N>-reviews.json` — array of reviews with `state` and `user.login`; Step 8 reads this to compute the `CHANGES_REQUESTED` reviewer roster.
+- `pr<N>-view.json` — object with current `reviewRequests`, `reviewDecision`, and PR metadata. Step 8 uses `reviewDecision` to decide which roster path to take and `reviewRequests` for the fallback union.
+
+Note the file shapes are different (object vs array). Step 8 jq must run filters against the matching file — never mix `.reviewRequests` and `.[]` filters in one jq invocation across both files.
 
 Checkout PR branch if needed: `git checkout <headRefName> && git pull`.
 
@@ -148,10 +150,18 @@ Re-request from: @reviewer1, @reviewer2  (rationale: CHANGES_REQUESTED resolved 
 
 **Show ALL reply drafts AND the re-request roster in one batch. Wait for explicit user approval. NEVER auto-post any of them.** One approval covers the whole batch (replies + re-request); a second approval is not required at Step 8.
 
-Post replies via `/replies` endpoint:
+Post **inline** replies via the `/replies` endpoint (one per inline comment id):
 ```
 gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<comment_id>/replies -f body="<reply>"
 ```
+
+Post the **suppressed-item summary reply** as a new review with `event=COMMENT`. Suppressed items are review-body items without an inline comment id; they cannot use `/replies`. The top-level PR comment endpoint is forbidden by binding rules. The correct surface is the same `/reviews` endpoint a human reviewer uses to leave a review-level note:
+```
+gh api -X POST /repos/CINEV/shotloom/pulls/<N>/reviews \
+  -f event=COMMENT \
+  -f body="<one summary reply addressing all suppressed items, with sub-bullets per finding>"
+```
+Use this exactly once per cycle even when there are multiple suppressed items — bundle them in one review body. If there are zero suppressed items, skip this call entirely. Do NOT use `/issues/<N>/comments` (top-level) and do NOT pass `event=APPROVE` or `event=REQUEST_CHANGES` — the author replying to their own PR review must be `COMMENT` only.
 
 ### Step 7: Do NOT resolve threads — leave for the reviewer
 
@@ -169,19 +179,27 @@ The graphql thread-resolution queries in `reference.md` remain for historical co
 
 Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply — independent of PR review state and independent of whether threads are resolved. **Approval was already collected in Step 6's batch** — do not prompt the user again here.
 
-1. Identify reviewers to re-request from the cache files Step 2 saved:
-   - If the PR's review state was `CHANGES_REQUESTED`: the reviewers who requested changes.
-     ```
-     jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' "/tmp/pr${ARGUMENTS}-reviews.json" | sort -u
-     ```
-   - Otherwise: the union of pending review requests + everyone who has reviewed (drop the author).
-     ```
-     jq -r '
-       (.reviewRequests[]?.login),
-       (.reviews[]?.user.login)
-     ' "/tmp/pr${ARGUMENTS}-view.json" "/tmp/pr${ARGUMENTS}-reviews.json" | sort -u
-     ```
-   - If neither cache file exists (e.g. cleared between sessions), re-fetch with `gh pr view <N> --json reviewRequests,reviews` rather than guessing.
+1. Identify reviewers to re-request from the cache files Step 2 saved. The two files have different shapes — view is an object, reviews is an array — so jq filters MUST run against the matching file. Mixing them in one `jq … fileA fileB` invocation crashes with `Cannot index array with string "reviewRequests"`.
+
+   ```bash
+   # Branch on cached reviewDecision (object field on view)
+   DECISION=$(jq -r '.reviewDecision // ""' "/tmp/pr${ARGUMENTS}-view.json")
+
+   if [[ "$DECISION" == "CHANGES_REQUESTED" ]]; then
+     # Reviewers who requested changes — array of review records
+     jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' \
+       "/tmp/pr${ARGUMENTS}-reviews.json" | sort -u
+   else
+     # Union of pending review requests + everyone who has reviewed.
+     # Run two jq invocations against the right file each, then union.
+     {
+       jq -r '.reviewRequests[]?.login' "/tmp/pr${ARGUMENTS}-view.json"
+       jq -r '.[]?.user.login' "/tmp/pr${ARGUMENTS}-reviews.json"
+     } | sort -u
+   fi | grep -v "^$(gh api user --jq '.login')$" || true   # drop self from roster (GitHub rejects self re-request)
+   ```
+
+   - If neither cache file exists (e.g. cleared between sessions), re-fetch with `gh pr view <N> --json reviewRequests,reviews,reviewDecision` rather than guessing. The shape returned by `gh pr view --json reviews` differs from the REST `/reviews` array — when re-fetching this way both `.reviewRequests` and `.reviews` are object fields on a single document, so a single jq invocation is fine on the re-fetch path.
 2. Re-request:
    ```
    gh api -X POST /repos/CINEV/shotloom/pulls/<N>/requested_reviewers -f 'reviewers[]=<login>'
@@ -196,25 +214,54 @@ Table: **# | File | Status | Linear | Thread | Reply | Pattern**. The Pattern co
 
 Plus line "Re-requested review from: @reviewer".
 
-## User briefing — lower-resolution Korean framing
+## User briefing — Korean framing + full translation block
 
-When briefing back to the user (NOT the reply text posted to GitHub), default to **Korean, one altitude higher than the reviewer comment**. The user is the author of the PR and already knows the code; what they need is the *shape* of the round-trip, not a literal translation.
+When briefing back to the user (NOT the reply text posted to GitHub), default to Korean. The briefing has **two mandatory parts** serving different purposes — both must be present, neither replaces the other.
 
-**Rules:**
-- **Frame, don't translate.** Lead with what larger goal the PR serves and what invariant / contract / subsystem each finding actually pokes at. Then say what was done about it. The reviewer's exact words are not the value-add; the framing is.
-- **Group by theme, not by comment id.** Two findings that both attack the same invariant from different angles get one paragraph, not two literal translations.
-- **Mark deferrals plainly.** If something was acknowledged-but-not-fixed (P3 nit, follow-up PR), say so in one sentence with the reason — don't re-translate the reviewer's full Recommendation block.
-- **End with state, not reply text.** Last line names the SHA pushed, that replies are posted inline, and that re-review is requested. Do NOT paste the GitHub reply bodies back to the user — they wrote the PR; they can read the thread.
+### Part 1 — Framing (altitude: one above the reviewer comment)
 
-**Applies to:** Step 3 listing (when summarizing items for proceed-confirmation) and Step 9 final summary. Step 6 reply *drafts* shown for batch approval stay as the literal English bodies that will hit GitHub — those are not for briefing.
+Purpose: give the user the *shape* of the round-trip so they can decide what it means for the PR without reading every comment verbatim.
 
-Reference example: see the closing brief on PR #166 (2026-04-25) — "ADR-0031 인변량 → 두 우회로 닫음 + 한 건 후속 PR로 이월" framing rather than per-comment translation.
+- **Frame, don't translate HERE.** Lead with what larger goal the PR serves and what invariant / contract / subsystem each finding pokes at. Then say what was done about it. In this part the reviewer's exact words are not the value-add; the framing is.
+- **Group by theme, not by comment id.** Two findings that attack the same invariant from different angles get one paragraph.
+- **Mark deferrals plainly.** If something was acknowledged-but-not-fixed (P3 nit, follow-up PR), say so in one sentence with the reason — don't re-translate the reviewer's full Recommendation block here.
+- **End with state.** Last line names the SHA pushed, that replies are posted inline, and the re-request decision (sent / skipped / why).
+
+### Part 2 — Full Korean translation block (verbatim, per finding)
+
+Purpose: give the user an **auditable Korean record** of "what was said to me and what I said back" without them having to open the GitHub thread.
+
+For every finding addressed in this response-pr cycle (both `fix` and `keep-as-is` rows from Step 2.5; skip `out-of-scope` and `ambiguous` rows since those have no reply):
+
+- **리뷰어 원문 완역:** full Korean translation of the reviewer comment, verbatim. Preserve structure — P-level tag, bold title, reasoning, `Recommendation:` line.
+- **내 리플라이 완역:** full Korean translation of the English reply that was (or will be) posted inline on GitHub. Do not summarize — translate the reply as posted.
+
+**This block coexists with Part 1 and does not replace it.** Part 1 tells the user *what it means*; Part 2 gives them the *verbatim audit trail* in their native language. Yes, it means the same content appears twice at different altitudes — that is the point.
+
+### When each part runs
+
+| Step | Part 1 framing | Part 2 translation block |
+|------|----------------|---------------------------|
+| Step 3 (item listing for proceed-confirmation) | required | optional — items haven't been addressed yet, so there are no replies to translate yet. Skip unless user explicitly asks. |
+| Step 6 (batch approval of drafts) | not required — the batch is about approving English drafts that will actually post | required when drafts exist — translate reviewer comment + draft English reply for each, so the user can verify the reply addresses the point before it goes live. The English drafts themselves remain the authoritative text that hits GitHub. |
+| Step 9 (final summary) | required | required — every resolved finding gets a translation block |
+
+Reference example: closing brief on PR #172 (2026-04-25) — framing summary + per-finding `리뷰어 원문 완역` / `내 리플라이 완역` block.
 
 ## Autonomy
 
-Invoking this skill is blanket authorization for the workflow. **Do NOT pause for per-step approval.** Code edits, commits, pushes all automatic. Only stop on CI failure or genuinely unexpected event. The user reviews the final summary, not each step.
+Invoking this skill is blanket authorization for the workflow. **Do NOT pause for per-step approval.** The following actions are auto-approved inside the skill:
 
-**EXCEPTION:** Step 6 (posting replies + reviewer re-request roster) STILL requires explicit batch approval per `~/.claude/rules/shotloom-git.md` (the Shotloom-specific override of `rules/git.md`). The auto-commit/auto-push exemption in `shotloom-git.md` covers commits and pushes only — PR comments and reviewer-roster mutations are explicitly outside that exemption for this skill. (`/shotloom-auto-pr` carries its own broader exemption; `/shotloom-respond-pr` does not.)
+- File edits, `git add`, `git commit`, `git push` (per `shotloom-git.md` auto-commit exemption).
+- `gh pr edit $ARGUMENTS --body "..."` in Step 5-4 — **body-only** edit, scoped to refreshing Summary / Validation / fix log so the PR description matches the now-pushed branch. This is not a state-changing PR mutation; it cannot affect mergeability, base, title, draft state, or labels. Only stop on CI failure or genuinely unexpected event.
+
+**EXCEPTION (still requires explicit per-action approval, even inside this skill):**
+
+- Step 6 (posting inline replies + the suppressed-item review-level summary + reviewer re-request roster) — show all drafts in one batch and wait for explicit user OK per `~/.claude/rules/shotloom-git.md` and `~/.claude/rules/git.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
+- `gh pr edit --base`, `--title`, `--draft`, label changes — never done by this skill; if they were, they would still need approval.
+- `gh pr merge`, `gh pr close`, `gh pr ready`, `gh pr review --approve`/`--request-changes`, top-level PR comments via `/issues/<N>/comments` — never done by this skill.
+
+(`/shotloom-auto-pr` carries its own broader exemption that auto-approves Step 6 inside its react cycle. `/shotloom-respond-pr` does not.)
 
 ## Subagent Usage
 

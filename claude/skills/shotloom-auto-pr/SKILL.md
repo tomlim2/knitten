@@ -75,8 +75,14 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
 
 ```json
 {"pr": 141, "kind": "change"|"terminal", "state": "OPEN|MERGED|CLOSED",
- "sha": "...", "new_comments": [...], "new_reviews": [...], "fail_checks": [...]}
+ "sha": "...",
+ "new_comments": [...],          // comment ids new since last tick, bot-authored excluded
+ "new_reviews": [...],           // review ids new since last tick, bot-authored excluded
+ "fail_checks": [...],           // checks newly flipped from green to red this tick
+ "all_fail_checks": [...]}       // current full failing-check set; for diagnostic context, NOT a trigger
 ```
+
+**Trigger semantics:** dispatch CI auto-fix only on `fail_checks` (the set diff). `all_fail_checks` exists so the reactor can show the full red surface in `log.md` without re-firing on persisted failures. If `fail_checks` is empty but `all_fail_checks` is not, the change came from comments/reviews — do not enter the CI-fix branch on that tick.
 
 ### kind == "terminal" (MERGED / CLOSED)
 
@@ -88,7 +94,7 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
 
 Dispatch by event type:
 
-- **`fail_checks` non-empty** → CI auto-fix:
+- **`fail_checks` non-empty (set diff, NOT current full failure set)** → CI auto-fix:
   - `last-event.json` carries failed check **names**, not job or run ids. Resolution is two hops because `gh run view --log-failed --job <id>` needs a **job id**, not the **run id** that `gh run list` returns.
 
     ```bash

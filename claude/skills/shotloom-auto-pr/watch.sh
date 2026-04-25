@@ -38,9 +38,17 @@ else
 fi
 
 # ---- fetch ----
+# BOT_LOGIN: this watcher's own gh user. Bot-authored comments and reviews
+# must be excluded from the change-detection sets, otherwise the inline
+# replies the reactor itself posts trigger another react cycle on the next
+# tick — self-induced loop.
+BOT_LOGIN=$(gh api user --jq '.login' 2>/dev/null || echo "")
+
 PR_VIEW=$(gh pr view "$PR" --repo "$REPO" --json state,reviewDecision,headRefOid,mergeable,mergeStateStatus,isDraft,title,headRefName,baseRefName)
-COMMENT_IDS=$(gh api "repos/$REPO/pulls/$PR/comments" --jq '[.[].id] | sort')
-REVIEW_IDS=$(gh api "repos/$REPO/pulls/$PR/reviews" --jq '[.[] | select(.state != "PENDING") | .id] | sort')
+COMMENT_IDS=$(gh api "repos/$REPO/pulls/$PR/comments" \
+  --jq "[.[] | select(.user.login != \"$BOT_LOGIN\") | .id] | sort")
+REVIEW_IDS=$(gh api "repos/$REPO/pulls/$PR/reviews" \
+  --jq "[.[] | select(.state != \"PENDING\") | select(.user.login != \"$BOT_LOGIN\") | .id] | sort")
 CHECKS=$(gh pr checks "$PR" --repo "$REPO" --json name,state 2>/dev/null || echo '[]')
 
 STATE_NOW=$(jq -r '.state' <<<"$PR_VIEW")
@@ -143,12 +151,14 @@ jq -n \
   --arg pr "$PR" \
   --argjson new_comments "$NEW_COMMENTS" \
   --argjson new_reviews "$NEW_REVIEWS" \
-  --argjson fail_checks "$FAIL_CHECKS" \
+  --argjson new_fail_checks "$NEW_FAIL_CHECKS" \
+  --argjson all_fail_checks "$FAIL_CHECKS" \
   --arg state "$STATE_NOW" \
   --arg sha "$SHA_NOW" \
   '{pr: ($pr|tonumber), kind: "change", state: $state, sha: $sha,
     new_comments: $new_comments, new_reviews: $new_reviews,
-    fail_checks: $fail_checks}' > "$EVENT"
+    fail_checks: $new_fail_checks,
+    all_fail_checks: $all_fail_checks}' > "$EVENT"
 
 # headless claude invocation — reacts once and exits
 claude -p "/shotloom-auto-pr react $PR" >>"$OPS_DIR/react.log" 2>&1 &
