@@ -20,10 +20,21 @@ EVENT="$OPS_DIR/last-event.json"
 mkdir -p "$OPS_DIR"
 
 # single-instance lock (bail silently if another watcher tick is running)
-exec 9>"$LOCK"
-if ! /usr/bin/flock -n 9 2>/dev/null; then
-  # flock not on all macs; fall back to mkdir lock
-  :
+# Try flock first; if unavailable on this host, fall back to atomic mkdir.
+LOCK_MODE=""
+if command -v flock >/dev/null 2>&1; then
+  exec 9>"$LOCK"
+  if ! flock -n 9; then
+    exit 0
+  fi
+  LOCK_MODE="flock"
+else
+  MKDIR_LOCK="$OPS_DIR/watch.lock.d"
+  if ! mkdir "$MKDIR_LOCK" 2>/dev/null; then
+    exit 0
+  fi
+  LOCK_MODE="mkdir"
+  trap 'rmdir "$MKDIR_LOCK" 2>/dev/null || true' EXIT
 fi
 
 # ---- fetch ----
@@ -43,13 +54,13 @@ if [[ ! -f "$STATE" ]]; then
   OLD_SHA=""
   OLD_COMMENT_IDS="[]"
   OLD_REVIEW_IDS="[]"
-  OLD_FAIL_COUNT=0
+  OLD_FAIL_CHECKS="[]"
 else
   OLD_STATE=$(jq -r '.state // "(none)"' "$STATE")
   OLD_SHA=$(jq -r '.headRefOid // ""' "$STATE")
   OLD_COMMENT_IDS=$(jq -c '.comment_ids // []' "$STATE")
   OLD_REVIEW_IDS=$(jq -c '.review_ids // []' "$STATE")
-  OLD_FAIL_COUNT=$(jq -r '.fail_count // 0' "$STATE")
+  OLD_FAIL_CHECKS=$(jq -c '.fail_checks // []' "$STATE")
 fi
 
 # ---- diff ----
@@ -58,13 +69,19 @@ NEW_REVIEWS=$(jq --argjson old "$OLD_REVIEW_IDS" '. - $old' <<<"$REVIEW_IDS")
 NEW_COMMENT_COUNT=$(jq 'length' <<<"$NEW_COMMENTS")
 NEW_REVIEW_COUNT=$(jq 'length' <<<"$NEW_REVIEWS")
 
+# Set-diff on fail_checks rather than count comparison: a check that was
+# previously passing and is now failing must trigger react even if another
+# check became green at the same time (count unchanged, set differs).
+NEW_FAIL_CHECKS=$(jq --argjson old "$OLD_FAIL_CHECKS" '. - $old' <<<"$FAIL_CHECKS")
+NEW_FAIL_COUNT=$(jq 'length' <<<"$NEW_FAIL_CHECKS")
+
 CHANGED=0
 REASONS=()
 
 [[ "$STATE_NOW" != "$OLD_STATE" ]] && { CHANGED=1; REASONS+=("state:$OLD_STATE→$STATE_NOW"); }
 (( NEW_COMMENT_COUNT > 0 )) && { CHANGED=1; REASONS+=("+$NEW_COMMENT_COUNT comments"); }
 (( NEW_REVIEW_COUNT > 0 )) && { CHANGED=1; REASONS+=("+$NEW_REVIEW_COUNT reviews"); }
-(( FAIL_COUNT > OLD_FAIL_COUNT )) && { CHANGED=1; REASONS+=("check fail: $(jq -r 'join(",")' <<<"$FAIL_CHECKS")"); }
+(( NEW_FAIL_COUNT > 0 )) && { CHANGED=1; REASONS+=("newly failing: $(jq -r 'join(",")' <<<"$NEW_FAIL_CHECKS")"); }
 
 # ---- write state (always, even on no-change — timestamps move forward) ----
 jq -n \

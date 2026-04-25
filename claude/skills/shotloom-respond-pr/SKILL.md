@@ -29,18 +29,35 @@ Stop on any failure.
 
 ### Step 2: Read PR + comments (parallel)
 
-1. `gh pr view $ARGUMENTS --json title,body,headRefName,baseRefName,state,number`
-2. `gh api repos/CINEV/shotloom/pulls/$ARGUMENTS/comments` — inline (`id`, `path`, `line`, `body`, `diff_hunk`)
-3. `gh api repos/CINEV/shotloom/pulls/$ARGUMENTS/reviews` — reviews (suppressed items in body)
+Save each fetch to a per-PR cache file so later steps (Step 8 reviewer roster) can re-read without re-fetching:
+
+```bash
+gh pr view "$ARGUMENTS" --json title,body,headRefName,baseRefName,state,number,reviewRequests \
+  > "/tmp/pr${ARGUMENTS}-view.json"
+gh api "repos/CINEV/shotloom/pulls/${ARGUMENTS}/comments" \
+  > "/tmp/pr${ARGUMENTS}-comments.json"
+gh api "repos/CINEV/shotloom/pulls/${ARGUMENTS}/reviews" \
+  > "/tmp/pr${ARGUMENTS}-reviews.json"
+```
+
+- `pr<N>-comments.json` — inline (`id`, `path`, `line`, `body`, `diff_hunk`)
+- `pr<N>-reviews.json` — reviews including `state` and `user.login`; required by Step 8 to compute the `CHANGES_REQUESTED` reviewer roster.
+- `pr<N>-view.json` — current `reviewRequests` for the fallback re-request path.
 
 Checkout PR branch if needed: `git checkout <headRefName> && git pull`.
 
 ### Step 2.5: Classify each item by scope
 
 Apply [`~/.claude/standards/shotloom-pr-scope-policy.md`](../../standards/shotloom-pr-scope-policy.md):
-- **in-scope** → resolve in this PR
-- **out-of-scope** → surface as "needs new Linear issue"; do NOT fix, reply, or resolve thread
-- **ambiguous (≥9/10)** → surface for user decision; do NOT fix, reply, or resolve
+
+| Bucket | Step 2.5 action | Step 4 action | Step 6 reply |
+|---|---|---|---|
+| **in-scope — fix now** | route to Step 4 fix queue | apply fix | "Fixed in `<sha>`. …" |
+| **in-scope — defer with follow-up** (large but legitimate scope inside this PR's domain) | route to Step 4 with `defer-with-issue` flag | acknowledge, file STL-NN via `/shotloom-linear-create-issue` | "Follow-up tracked as STL-NN. …" |
+| **out-of-scope** (different subsystem / unrelated concern) | surface to user as "needs separate issue"; do NOT fix, do NOT reply, do NOT resolve thread | skip | (no reply) |
+| **ambiguous (≥9/10)** | surface to user for routing decision; do NOT fix, do NOT reply, do NOT resolve | skip until user decides | (no reply) |
+
+**Key distinction:** "out-of-scope" and "defer-with-issue" both involve filing a Linear ticket, but they differ on whether to reply on this PR. Out-of-scope = the comment shouldn't have been on this PR at all → no reply, surface separately to user. Defer-with-issue = legitimate concern inside the PR's domain that's too large to land here → reply with STL-NN link so the reviewer sees the trail. Step 7 only governs the in-scope rows.
 
 Ambiguity scoring: ≤8 = pick best interpretation and proceed; ≥9 = surface.
 
@@ -87,13 +104,11 @@ Pattern capture:
 
 Every resolved finding from Step 4 must appear in this block. **Step 5 (Validate + commit) is gated on this block being printed.** If the block is missing or has fewer entries than Step 4 had findings, return to Step 4.5 and complete it before staging files. The block is the proof that Step 4.5 actually ran — without it, the step gets silently skipped (this happened on PR #166).
 
-### Step 5: Validate + commit
+### Step 5: Validate + commit + push + refresh PR body
 
-1. **Always update PR description** after resolving feedback:
-   - Read current body, update Summary (new fixes, deleted files, deps), refresh Validation (test counts, doc-path counts), correct stale statements.
-   - `gh pr edit $ARGUMENTS --body "..."`
+Order matters: gates first, then commit, then push, then PR body. Updating the PR description before gates pass leaves the body claiming a state the branch hasn't reached — when a gate then fails the body and the branch contradict each other.
 
-2. Run the canonical Shotloom gate bundle by delegating to `/shotloom-check-gates` (full, default):
+1. Run the canonical Shotloom gate bundle by delegating to `/shotloom-check-gates` (full, default):
    ```
    cargo fmt --check
    cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
@@ -103,14 +118,19 @@ Every resolved finding from Step 4 must appear in this block. **Step 5 (Validate
    ```
    `shotloom-desktop` is excluded per `rules/shotloom-git.md`. **Do not** substitute crate-specific `cargo test -p` lines — review-response pushes must validate against the same workspace test set as pre-PR pushes, otherwise regressions in unrelated crates surface only after CI fails. Targeted `cargo test -p <crate> --lib` invocations are fine as **additive diagnostics** when narrowing a failing test, but they never replace the workspace bundle.
 
-3. Fix failing tests before proceeding. Broken tests block the PR.
+2. Fix failing tests before proceeding. Broken tests block the PR.
 
-4. On green:
+3. On green:
    - `git add <files>` (by name, not `-A`)
    - Commit per `docs/guidelines/commit-guideline.md` (conventional, imperative, ≤80 char subject)
    - `git push`
 
-### Step 6: Post inline replies (MUST get approval)
+4. **After push lands**, refresh the PR description so it matches the now-pushed branch:
+   - Read current body, update Summary (new fixes, deleted files, deps), refresh Validation (test counts, doc-path counts), correct stale statements.
+   - `gh pr edit $ARGUMENTS --body "..."`
+   - If a gate failed at step 1 and you never pushed, do NOT touch the PR body — the body still describes the prior good state.
+
+### Step 6: Post inline replies + queue reviewer re-request (MUST get approval)
 
 Draft a reply per resolved item:
 - **Fixed:** "Fixed in <sha-short>. <brief description>"
@@ -120,9 +140,15 @@ Draft a reply per resolved item:
 
 For suppressed items, draft one review-level summary reply.
 
-**Show ALL drafts in one batch, wait for explicit user approval. NEVER auto-post.**
+Also draft the **reviewer re-request roster** for Step 8 right now, so the user approves replies and the re-request as one batch (Step 8 is itself a PR action and falls under the same per-PR-action approval gate per `rules/shotloom-git.md` and `rules/git.md`):
 
-Post via `/replies` endpoint:
+```
+Re-request from: @reviewer1, @reviewer2  (rationale: CHANGES_REQUESTED resolved | review round complete)
+```
+
+**Show ALL reply drafts AND the re-request roster in one batch. Wait for explicit user approval. NEVER auto-post any of them.** One approval covers the whole batch (replies + re-request); a second approval is not required at Step 8.
+
+Post replies via `/replies` endpoint:
 ```
 gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<comment_id>/replies -f body="<reply>"
 ```
@@ -141,12 +167,21 @@ The graphql thread-resolution queries in `reference.md` remain for historical co
 
 ### Step 8: Re-request review (always, after replies posted)
 
-Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply — independent of PR review state and independent of whether threads are resolved.
+Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply — independent of PR review state and independent of whether threads are resolved. **Approval was already collected in Step 6's batch** — do not prompt the user again here.
 
-1. Identify reviewers to re-request:
-   - If PR was `CHANGES_REQUESTED`: the reviewers who requested changes.
-     `jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' /tmp/pr<N>-reviews.json | sort -u`
-   - Otherwise: the reviewers already on the PR (`gh pr view <N> --json reviewRequests,reviews`).
+1. Identify reviewers to re-request from the cache files Step 2 saved:
+   - If the PR's review state was `CHANGES_REQUESTED`: the reviewers who requested changes.
+     ```
+     jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' "/tmp/pr${ARGUMENTS}-reviews.json" | sort -u
+     ```
+   - Otherwise: the union of pending review requests + everyone who has reviewed (drop the author).
+     ```
+     jq -r '
+       (.reviewRequests[]?.login),
+       (.reviews[]?.user.login)
+     ' "/tmp/pr${ARGUMENTS}-view.json" "/tmp/pr${ARGUMENTS}-reviews.json" | sort -u
+     ```
+   - If neither cache file exists (e.g. cleared between sessions), re-fetch with `gh pr view <N> --json reviewRequests,reviews` rather than guessing.
 2. Re-request:
    ```
    gh api -X POST /repos/CINEV/shotloom/pulls/<N>/requested_reviewers -f 'reviewers[]=<login>'
@@ -179,7 +214,7 @@ Reference example: see the closing brief on PR #166 (2026-04-25) — "ADR-0031 �
 
 Invoking this skill is blanket authorization for the workflow. **Do NOT pause for per-step approval.** Code edits, commits, pushes all automatic. Only stop on CI failure or genuinely unexpected event. The user reviews the final summary, not each step.
 
-**EXCEPTION:** Step 6 (posting replies) STILL requires explicit batch approval per `rules/git.md`.
+**EXCEPTION:** Step 6 (posting replies + reviewer re-request roster) STILL requires explicit batch approval per `~/.claude/rules/shotloom-git.md` (the Shotloom-specific override of `rules/git.md`). The auto-commit/auto-push exemption in `shotloom-git.md` covers commits and pushes only — PR comments and reviewer-roster mutations are explicitly outside that exemption for this skill. (`/shotloom-auto-pr` carries its own broader exemption; `/shotloom-respond-pr` does not.)
 
 ## Subagent Usage
 
@@ -191,9 +226,10 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 
 ## Binding Rules
 
+- **Repo-specific rule wins.** `~/.claude/rules/shotloom-git.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git.md` is supplementary — it applies only where shotloom-git.md does not override.
 - **Reply inline on each individual review comment**, NOT top-level PR comment (per `rules/git.md`).
 - **Suppressed items** — evaluate honestly; OK to defer scope-exceeding work.
-- **Commit message** — conventional, imperative, ≤80 char subject.
+- **Commit message** — conventional, imperative, ≤80 char subject (per `docs/guidelines/commit-guideline.md` in the shotloom repo).
 - **No Co-Authored-By line.**
 
 ## Common Failures

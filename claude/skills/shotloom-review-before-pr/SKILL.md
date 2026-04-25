@@ -20,11 +20,25 @@ Splitting lets you iterate on the diff until review is clean, then make the PR i
 
 ### Step 1: Sanity — branch state + cwd verification (CRITICAL)
 
-Every sweep reads `git grep`/`git diff` from cwd. If cwd is the main checkout but the branch lives in a worktree (or vice versa), the sweep reviews the **wrong branch** and reports clean while real defects sit unreviewed. Always explicitly verify.
+Every sweep reads `git grep`/`git diff` from cwd. If cwd is the main checkout but the branch lives in a worktree (or vice versa), the sweep reviews the **wrong branch** and reports clean while real defects sit unreviewed. Always resolve the worktree from cwd, not from `repo-paths.json`.
 
 ```bash
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
-cd <worktree_dir_or_$shotloom_root>
+# Resolve the worktree from the *current working directory*, not from
+# repo-paths.json. The repo-paths entry points at the main checkout, which
+# is almost never the branch the user is asking to review.
+toplevel=$(git rev-parse --show-toplevel 2>/dev/null) || {
+  echo "ERROR: not inside a git repo"; exit 1; }
+remote=$(git -C "$toplevel" remote get-url origin 2>/dev/null || true)
+case "$remote" in
+  *CINEV/shotloom*|*CINEV/shotloom.git) ;;
+  *)
+    echo "ERROR: cwd is not a shotloom worktree (origin: $remote)"
+    echo "  cd into the worktree whose branch you want to review."
+    exit 1
+    ;;
+esac
+worktree="$toplevel"
+cd "$worktree"
 
 pwd                                                   # MUST match intended target
 git rev-parse --abbrev-ref HEAD                       # MUST be branch to review, NOT main
@@ -32,10 +46,12 @@ git log --oneline origin/main..HEAD                   # MUST show branch commits
 git status --short                                    # surface unstaged work
 ```
 
+`repo-paths.json → shotloom` remains a fallback for cross-worktree cleanup, but the review target is whatever cwd resolves to. This matches the cwd-based discipline in `shotloom-make-pr`.
+
 **Refuse to proceed if:**
 - `HEAD` is `main` or default branch — almost certainly wrong dir.
 - `git log origin/main..HEAD` is empty — no commits to review.
-- `pwd` doesn't match the named/worked directory.
+- The remote check above fails — cwd is not a shotloom worktree.
 
 Run `pwd` every time before first grep — cwd may silently reset between tool calls in long sessions.
 
@@ -114,34 +130,6 @@ See reference.md for the full sweep catalog. The catalog mirrors the IDs in `rev
 2. **Findings, fixable locally** → list them, ask whether to fix now or later. Do **NOT** auto-fix.
 3. **Findings requiring design judgment** → list, explain tradeoff, ask user. Usually B1/B2 or C1.
 
-### Step 5.5: Pattern capture (mirrors `shotloom-respond-pr` Step 4.5)
-
-If a finding represents a defect class **not yet captured** in `review-code-rust.md` — e.g. a recurring "replace this construct with that" rule that the current pattern set does not name — propose adding it to the standard. Self-review is one of the two natural ingestion points for new patterns; the other is post-PR review (handled by `shotloom-respond-pr`). Without this step, patterns only grow when reviewers catch the defect, never when the author does first.
-
-For each finding the user asks you to fix:
-
-1. Re-read Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`.
-2. **Match existing patterns first.** If a clearer instance of A1/B2/C3 etc., add a one-line "Real defect" reference citing this branch + commit sha (PR number not yet known).
-3. **If nothing matches, draft a new pattern entry** with title, short description, `**Self-check:**` one-liner, `**Real defect:**` line.
-4. Add to the Self-review checklist block at the bottom.
-5. Append one-line to Provenance (date, branch / sha, pattern).
-
-Filters (same as respond-pr):
-
-- **Add** → fix is "replace this construct with that", rule is greppable, senior reviewer would catch mechanically.
-- **Skip** → ad-hoc rename, typo, local semantic bug without recurring shape.
-
-**Mandatory output — one line per fixed finding, after Step 5:**
-
-```
-Pattern capture (self-review):
-  finding 1 (<file>:<line>) → matched A7 (added Real defect line)
-  finding 2 (<file>:<line>) → new D6 (added pattern + checklist + provenance)
-  finding 3 (<file>:<line>) → skipped — typo, no recurring shape
-```
-
-Skip the block entirely if no findings were fixed (clean review).
-
 ### Step 6: Loop
 
 If user fixes findings and asks to re-check, restart from Step 1. Skill is idempotent.
@@ -156,7 +144,7 @@ When briefing the findings table back to the user (NOT the raw `git diff` lines 
 - **Keep the literal evidence below the briefing.** The framing comes first; the per-pattern list with line refs comes after, so the user can verify but isn't forced to read raw output to understand.
 - **Skip framing on a clean review.** If all patterns are clean, just say so — don't manufacture a narrative.
 
-The literal pattern enumeration (Step 4 output) and the Pattern-capture block (Step 5.5) stay in English/code-quote form so they're greppable for the next session.
+The literal pattern enumeration (Step 4 output) stays in English/code-quote form so it's greppable for the next session. Pattern capture into `~/.claude/standards/review-code-rust.md` is **not** done by this skill — it is a write step and lives in `/shotloom-respond-pr` (Step 4.5), where there is a real fix landing in a PR to attach a "Real defect" reference to. Self-review is read-only by contract; if a review-time finding looks like a new pattern class, surface it to the user in Step 5 and let them decide whether to fix-and-capture inside the next PR cycle.
 
 ## Binding rules (CRITICAL)
 

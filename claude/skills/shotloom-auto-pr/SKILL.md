@@ -15,7 +15,16 @@ Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing noth
 
 ## Approval exemption
 
-Explicitly exempt from `~/.claude/rules/git.md` per-comment / per-push approval gate (scope = this skill only, authorized 2026-04-21). See `memory/feedback_auto_pr_approval_exempt.md`.
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git.md` and `~/.claude/rules/shotloom-git.md` impose. Authorized 2026-04-21 (user). See:
+
+- `~/.claude/rules/shotloom-git.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
+- `~/.claude/projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md`
+
+**Auto-approved inside the react cycle:** `git commit`, `git push`, inline review replies (`POST /pulls/<N>/comments/<id>/replies`), reviewer re-request (`POST /pulls/<N>/requested_reviewers`).
+
+**Still requires explicit per-action user approval, even inside auto-pr:** `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit --base/--title`, top-level PR comments (`gh pr comment`), thread resolution. The ready-to-merge report below is logged, not invoked.
+
+The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffected and keeps the per-comment batch approval gate.
 
 ## Subcommands
 
@@ -80,7 +89,25 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
 Dispatch by event type:
 
 - **`fail_checks` non-empty** → CI auto-fix:
-  - `last-event.json` carries failed check **names**, not job ids. Resolve via `gh run list --branch <head> --json databaseId,name,conclusion --jq '.[] | select(.name==<failed-name> and .conclusion=="failure")' | head -1`, then `gh run view --log-failed --job <id>`.
+  - `last-event.json` carries failed check **names**, not job or run ids. Resolution is two hops because `gh run view --log-failed --job <id>` needs a **job id**, not the **run id** that `gh run list` returns.
+
+    ```bash
+    # Step 1: name → run id (databaseId is the workflow run id)
+    run_id=$(gh run list --branch "$head" \
+      --json databaseId,name,conclusion \
+      --jq ".[] | select(.name==\"$failed_name\" and .conclusion==\"failure\") | .databaseId" \
+      | head -1)
+
+    # Step 2: run id → failing job id (a run can have multiple jobs)
+    job_id=$(gh run view "$run_id" --json jobs \
+      --jq ".jobs[] | select(.conclusion==\"failure\") | .databaseId" \
+      | head -1)
+
+    # Step 3: pull the failing job's log
+    gh run view --log-failed --job "$job_id"
+    ```
+
+    Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id and the call will silently return nothing useful.
   - classify: fmt / clippy / test / doc-paths / complex
   - apply fix, re-run the **canonical gate bundle** by delegating to `/shotloom-check-gates` (full). Do NOT cherry-pick a subset here — drift between auto-pr's gate set and the make-pr / commit / respond-pr bundle is exactly the fault the 2026-04-25 audit flagged.
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
@@ -88,9 +115,10 @@ Dispatch by event type:
 
 - **`new_comments` or `new_reviews` non-empty** → review auto-respond per `~/.claude/standards/shotloom-pr-scope-policy.md`:
   - classify in-scope / out-of-scope / ambiguous (≥9/10 only counts as ambiguous; ≤8 → pick closest interpretation)
-  - in-scope: apply fix, commit, push, inline reply, re-request review roster
+  - in-scope: apply fix, then **gate commit on pattern capture** (see below), commit, push, inline reply, re-request review roster
   - out-of-scope / ambiguous: briefing block in `log.md`, no reply
-  - **MANDATORY: pattern capture per fixed finding.** Before commit, walk the same Step 4.5 logic as `shotloom-respond-pr` — for each fix, decide if it represents a new pattern class for `review-code-rust.md` or matches an existing one, and emit the `Pattern capture: …` block to `log.md`. Without this step, autonomous review fixes silently bypass checklist growth and the same finding will resurface on later PRs.
+  - **MANDATORY pattern-capture gate (mirrors `shotloom-respond-pr` Step 4.5):** for every resolved finding, walk the Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`. Either match an existing pattern (append a one-line "Real defect" reference citing PR + comment id) or draft a new pattern entry (title, `**Self-check:**`, `**Real defect:**`, add to Self-review checklist block, append Provenance line). Then emit a `Pattern capture:` block to `log.md` with one line per resolved finding (`matched A7` / `new D6` / `skipped — typo`).
+  - **Commit is gated on this block.** If the count of `Pattern capture:` lines does not match the count of fixed findings, do NOT `git add` — return to capture step. The block is the only proof the step ran; without the gate, the step gets silently skipped (this happened on PR #166).
 
 Protocol details (same as the pre-split skill):
 
@@ -167,7 +195,7 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 | Symptom | Fix |
 |---------|-----|
 | `claude: command not found` in `watcher.log` | `~/.local/bin` not on PATH for the nohup process; export PATH in `start.sh` or use the absolute claude path |
-| Lockfile leftover | `rm ~/.claude/ops/pr-<N>/watch.lock` |
+| Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback (no flock on host): `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap usually cleans the mkdir lock automatically; only manual cleanup needed if the watcher was SIGKILL'd. |
 | Watcher not firing | `kill -0 $(cat ~/.claude/ops/pr-<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick. |
 | `gh` auth prompt in nohup ctx | keychain locked at login; run `gh auth status` interactively in a regular shell once |
 | Duplicate react runs | `flock` in `watch.sh` prevents concurrent ticks; overlapping `claude -p` sessions are fine — each diffs state.json fresh and is idempotent |
