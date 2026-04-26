@@ -29,16 +29,16 @@ Categories:
 
 ## Execution
 
-**Path resolution:**
+**Path resolution — ALWAYS go through `caol-resolve-doc-path`. Never read `machine-paths.json` directly.**
 
-1. Read `~/.claude/private/caol-config/machine-paths.json`. Use `obsidian` key as the vault root.
-   - If key is missing or directory doesn't exist, fall back to `obsidian-staging` key.
-   - On any failure, surface a distinct error and stop.
-2. Base directory: `{vault_path}/learnings/`
+Vault root: !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh tool obsidian`
+
+The output's `RESOLVED_PATH` is the vault root. Learnings base is `{RESOLVED_PATH}/learnings/`.
+If the resolver errors (no vault key), it surfaces the error itself — propagate up and stop.
 
 ### Workflow
 
-1. **Resolve path** — Follow the 2-hop resolution above. Base: `{vault_path}/learnings/`.
+1. **Resolve path** — Read `RESOLVED_PATH` from the line above. Base: `{RESOLVED_PATH}/learnings/`.
 2. **Parse arguments** — Extract project name and category.
 3. **Check/create directory**: `{learnings}/projects/`.
 4. **Read or create** project file: `{learnings}/projects/<project>.md`.
