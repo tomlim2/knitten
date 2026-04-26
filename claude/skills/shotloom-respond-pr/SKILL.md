@@ -259,7 +259,7 @@ Invoking this skill is blanket authorization for the workflow. **Do NOT pause fo
 
 - Step 6 (posting inline replies + the suppressed-item review-level summary + reviewer re-request roster) — show all drafts in one batch and wait for explicit user OK per `~/.claude/rules/shotloom-git.md` and `~/.claude/rules/git.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
 - `gh pr edit --base`, `--title`, `--draft`, label changes — never done by this skill; if they were, they would still need approval.
-- `gh pr merge`, `gh pr close`, `gh pr ready`, `gh pr review --approve`/`--request-changes`, top-level PR comments via `/issues/<N>/comments` — never done by this skill.
+- `gh pr merge`, `gh pr close`, `gh pr reopen`, `gh pr ready`, `gh pr update-branch`, `gh pr review --approve`/`--request-changes`, top-level PR comments via `/issues/<N>/comments` — never done by this skill.
 
 (`/shotloom-auto-pr` carries its own broader exemption that auto-approves Step 6 inside its react cycle. `/shotloom-respond-pr` does not.)
 

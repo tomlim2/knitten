@@ -30,8 +30,9 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 
 **Still requires explicit per-action user approval, even inside auto-pr:**
 
-- `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr ready`
+- `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr reopen`, `gh pr ready`
 - `gh pr edit --base`, `--title`, `--draft`, `--label` (any state-changing flag)
+- `gh pr update-branch` (rebase/merge of base into PR head)
 - top-level PR comments via `/issues/<N>/comments` or `gh pr comment`
 - `gh pr review --approve` / `--request-changes` (any review with non-`COMMENT` event)
 - thread resolution (graphql `resolveReviewThread`)
@@ -92,11 +93,19 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
  "sha": "...",
  "new_comments": [...],          // comment ids new since last tick, bot-authored excluded
  "new_reviews": [...],           // review ids new since last tick, bot-authored excluded
- "fail_checks": [...],           // checks newly flipped from green to red this tick
- "all_fail_checks": [...]}       // current full failing-check set; for diagnostic context, NOT a trigger
+ "fail_checks": [{"name": "...", "workflow": "...", "link": "..."}, ...],
+                                 // checks failing on this tick that count as new
+                                 // (set diff against prior tick OR all current
+                                 // failures when sha changed since last tick)
+ "all_fail_checks": [...]}       // current full failing-check set, same shape;
+                                 // diagnostic context, NOT a trigger
 ```
 
-**Trigger semantics:** dispatch CI auto-fix only on `fail_checks` (the set diff). `all_fail_checks` exists so the reactor can show the full red surface in `log.md` without re-firing on persisted failures. If `fail_checks` is empty but `all_fail_checks` is not, the change came from comments/reviews — do not enter the CI-fix branch on that tick.
+**Trigger semantics:**
+- Dispatch CI auto-fix only on `fail_checks` (the set diff or, when the head commit moved this tick, the full current failure set re-treated as new).
+- `all_fail_checks` exists so the reactor can show the full red surface in `log.md` without re-firing on persisted failures.
+- If `fail_checks` is empty but `all_fail_checks` is not, the change came from comments/reviews — do not enter the CI-fix branch on that tick.
+- The `link` field on each entry is the canonical lookup key for the failing run (and, when single-job, the failing job). Reactor must prefer `link` over `name` for `gh run view --log-failed --job <id>` resolution.
 
 ### kind == "terminal" (MERGED / CLOSED)
 
@@ -108,42 +117,59 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
 
 Dispatch by event type:
 
-- **`fail_checks` non-empty (set diff, NOT current full failure set)** → CI auto-fix:
-  - `last-event.json` carries failed check **names** plus the head `sha` (`new_fail_checks` and `sha` fields written by `watch.sh`). Resolution is two hops because `gh run view --log-failed --job <id>` needs a **job id**, not the **run id** that `gh run list` returns. Filter `gh run list` by the event's commit `sha`, NOT by branch name — branch filtering matches every workflow that ever ran on the branch and can return an old failing run from a prior push instead of the current tick's failure.
+- **`fail_checks` non-empty (set diff against prior tick — sha change resets the diff so post-push failures count as new)** → CI auto-fix:
+  - `last-event.json`'s `fail_checks` is an array of **objects** `{name, workflow, link}` written by `watch.sh`. Use `link` as the canonical lookup key — it is the github.com URL to the failing check run and embeds both `run_id` and (when single-job) `job_id`. Name-based matching against `gh run list` is unreliable: multi-job workflows have one check per job whose `name` differs from the workflow's `name`, so `gh run list` filtered by check name can miss the run entirely.
 
     ```bash
     EVENT_FILE="$HOME/.claude/ops/pr-$PR/last-event.json"
-    sha=$(jq -r '.sha' "$EVENT_FILE")                       # head commit on the PR at this tick
-    failed_name=$(jq -r '.fail_checks[0]' "$EVENT_FILE")    # process one failing check at a time
+    sha=$(jq -r '.sha' "$EVENT_FILE")
 
-    # Step 1: (sha, name) → run id. Filter by --commit so we only see the runs
-    # for the tick's actual head commit, not every historical run on the branch.
-    run_id=$(gh run list --commit "$sha" \
-      --json databaseId,name,conclusion \
-      --jq ".[] | select(.name==\"$failed_name\" and .conclusion==\"failure\") | .databaseId" \
-      | head -1)
-    if [[ -z "$run_id" ]]; then
-      echo "no failing run for $failed_name @ $sha — likely re-run cleared it; skip CI fix" >> "$LOG"
-      exit 0
-    fi
+    # Iterate every newly-failing check; one log fetch per check.
+    jq -c '.fail_checks[]' "$EVENT_FILE" | while read -r check; do
+      name=$(jq -r '.name' <<<"$check")
+      link=$(jq -r '.link // ""' <<<"$check")
 
-    # Step 2: run id → failing job id (a run can have multiple jobs)
-    job_id=$(gh run view "$run_id" --json jobs \
-      --jq ".jobs[] | select(.conclusion==\"failure\") | .databaseId" \
-      | head -1)
-    if [[ -z "$job_id" ]]; then
-      echo "run $run_id reports failure but no failing job; skip CI fix" >> "$LOG"
-      exit 0
-    fi
+      # Preferred path: parse run_id (and job_id when present) from link.
+      # Examples:
+      #   .../actions/runs/12345678                  -> run-only
+      #   .../actions/runs/12345678/job/87654321     -> run + job
+      run_id=$(sed -nE 's|.*/actions/runs/([0-9]+).*|\1|p' <<<"$link")
+      job_id=$(sed -nE 's|.*/job/([0-9]+).*|\1|p' <<<"$link")
 
-    # Step 3: pull the failing job's log
-    gh run view --log-failed --job "$job_id"
+      # Fallback: link missing (older check format) → resolve via sha + name.
+      # Filter by --commit so the tick's actual head commit is the lookup
+      # key, not every historical run on the branch.
+      if [[ -z "$run_id" ]]; then
+        run_id=$(gh run list --commit "$sha" \
+          --json databaseId,name,conclusion \
+          --jq ".[] | select(.name==\"$name\" and .conclusion==\"failure\") | .databaseId" \
+          | head -1)
+      fi
+      if [[ -z "$run_id" ]]; then
+        echo "no failing run for $name @ $sha — re-run may have cleared it; skip" >> "$LOG"
+        continue
+      fi
 
-    # Loop the same recipe over the rest of new_fail_checks if multiple checks
-    # flipped this tick — process them sequentially against the same sha.
+      # If link gave only run_id, resolve job_id from that run.
+      if [[ -z "$job_id" ]]; then
+        job_id=$(gh run view "$run_id" --json jobs \
+          --jq ".jobs[] | select(.conclusion==\"failure\") | .databaseId" \
+          | head -1)
+      fi
+      if [[ -z "$job_id" ]]; then
+        echo "run $run_id reports failure but no failing job; skip $name" >> "$LOG"
+        continue
+      fi
+
+      gh run view --log-failed --job "$job_id"
+      # ... apply fix per failed check, then re-run gates and commit (below)
+    done
     ```
 
-    Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id and the call will silently return nothing useful. Do NOT use `--branch` instead of `--commit` — branch filter is sha-agnostic and can hand back a run from a previous push that happens to share the same workflow name.
+    Constraints:
+    - Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id and the call silently returns nothing useful.
+    - Do NOT use `--branch` instead of `--commit` — branch filter is sha-agnostic and can hand back a run from a previous push that happens to share the same workflow name.
+    - Do NOT match `gh run list` by check `name` alone in a multi-job workflow — the check name is per-job, not per-workflow. The link-based path above is failure-immune to this; the fallback path is best-effort and will correctly skip when name resolution fails.
   - classify: fmt / clippy / test / doc-paths / complex
   - apply fix, re-run the **canonical gate bundle** by delegating to `/shotloom-check-gates` (full). Do NOT cherry-pick a subset here — drift between auto-pr's gate set and the make-pr / commit / respond-pr bundle is exactly the fault the 2026-04-25 audit flagged.
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`

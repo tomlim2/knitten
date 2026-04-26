@@ -49,11 +49,15 @@ COMMENT_IDS=$(gh api "repos/$REPO/pulls/$PR/comments" \
   --jq "[.[] | select(.user.login != \"$BOT_LOGIN\") | .id] | sort")
 REVIEW_IDS=$(gh api "repos/$REPO/pulls/$PR/reviews" \
   --jq "[.[] | select(.state != \"PENDING\") | select(.user.login != \"$BOT_LOGIN\") | .id] | sort")
-CHECKS=$(gh pr checks "$PR" --repo "$REPO" --json name,state 2>/dev/null || echo '[]')
+# `link` is the URL to the failing check run on github.com — it embeds the
+# workflow run id (and sometimes job id) so the reactor can resolve directly
+# instead of guessing from check name. Multi-job workflows have one check per
+# job, each with its own link, so this avoids name → run ambiguity.
+CHECKS=$(gh pr checks "$PR" --repo "$REPO" --json name,state,workflow,link 2>/dev/null || echo '[]')
 
 STATE_NOW=$(jq -r '.state' <<<"$PR_VIEW")
 SHA_NOW=$(jq -r '.headRefOid' <<<"$PR_VIEW")
-FAIL_CHECKS=$(jq -r '[.[] | select(.state=="FAILURE" or .state=="FAILING" or .state=="TIMED_OUT" or .state=="STARTUP_FAILURE") | .name]' <<<"$CHECKS")
+FAIL_CHECKS=$(jq -c '[.[] | select(.state=="FAILURE" or .state=="FAILING" or .state=="TIMED_OUT" or .state=="STARTUP_FAILURE") | {name, workflow, link}]' <<<"$CHECKS")
 FAIL_COUNT=$(jq 'length' <<<"$FAIL_CHECKS")
 
 # ---- load prior state (bootstrap if missing) ----
@@ -77,19 +81,38 @@ NEW_REVIEWS=$(jq --argjson old "$OLD_REVIEW_IDS" '. - $old' <<<"$REVIEW_IDS")
 NEW_COMMENT_COUNT=$(jq 'length' <<<"$NEW_COMMENTS")
 NEW_REVIEW_COUNT=$(jq 'length' <<<"$NEW_REVIEWS")
 
-# Set-diff on fail_checks rather than count comparison: a check that was
-# previously passing and is now failing must trigger react even if another
-# check became green at the same time (count unchanged, set differs).
-NEW_FAIL_CHECKS=$(jq --argjson old "$OLD_FAIL_CHECKS" '. - $old' <<<"$FAIL_CHECKS")
-NEW_FAIL_COUNT=$(jq 'length' <<<"$NEW_FAIL_CHECKS")
-
 CHANGED=0
 REASONS=()
+
+# When the head commit moves, every failing check on the new commit is a
+# fresh event — even if the check name is identical to one that was already
+# failing on the prior sha. Without this the watcher silently drops "same
+# check name keeps failing across pushes" cases and the reactor never re-runs.
+# Reset OLD_FAIL_CHECKS to empty so the set-diff treats current failures
+# as new for this tick.
+SHA_CHANGED=0
+if [[ -n "$OLD_SHA" && "$SHA_NOW" != "$OLD_SHA" ]]; then
+  SHA_CHANGED=1
+  REASONS+=("head: ${OLD_SHA:0:7}→${SHA_NOW:0:7}")
+  CHANGED=1
+  OLD_FAIL_CHECKS="[]"
+fi
+
+# Set-diff on fail_checks rather than count comparison: a check that was
+# previously passing and is now failing must trigger react even if another
+# check became green at the same time (count unchanged, set differs). Diff
+# happens AFTER the sha-change reset above so post-push failures count as new.
+# Compare by name only — link/workflow may shift between runs even on the
+# same sha (rerun changes run id), but `.name` identifies the check stably.
+NEW_FAIL_CHECKS=$(jq --argjson old "$OLD_FAIL_CHECKS" \
+  '. as $now | $now | map(select(.name as $n | ($old | map(.name)) | index($n) | not))' \
+  <<<"$FAIL_CHECKS")
+NEW_FAIL_COUNT=$(jq 'length' <<<"$NEW_FAIL_CHECKS")
 
 [[ "$STATE_NOW" != "$OLD_STATE" ]] && { CHANGED=1; REASONS+=("state:$OLD_STATE→$STATE_NOW"); }
 (( NEW_COMMENT_COUNT > 0 )) && { CHANGED=1; REASONS+=("+$NEW_COMMENT_COUNT comments"); }
 (( NEW_REVIEW_COUNT > 0 )) && { CHANGED=1; REASONS+=("+$NEW_REVIEW_COUNT reviews"); }
-(( NEW_FAIL_COUNT > 0 )) && { CHANGED=1; REASONS+=("newly failing: $(jq -r 'join(",")' <<<"$NEW_FAIL_CHECKS")"); }
+(( NEW_FAIL_COUNT > 0 )) && { CHANGED=1; REASONS+=("newly failing: $(jq -r '[.[].name] | join(",")' <<<"$NEW_FAIL_CHECKS")"); }
 
 # ---- write state (always, even on no-change — timestamps move forward) ----
 jq -n \
