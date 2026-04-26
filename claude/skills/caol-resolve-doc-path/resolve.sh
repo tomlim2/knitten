@@ -103,8 +103,18 @@ case "$ROOT_KEY" in
   staging)  BASE="$STAGING_ROOT" ;;
   ops)      BASE="$HOME/.claude/ops" ;;
   private)  BASE="$HOME/.claude/private" ;;
-  *)        BASE="" ;;
+  *)        echo "ERROR: unknown root namespace '$ROOT_KEY' for purpose '$PURPOSE' (expected: obsidian|staging|ops|private)" >&2; exit 1 ;;
 esac
+
+# Contract validation (structural — not semantic)
+if [[ -z "$BASE" ]]; then
+  echo "ERROR: namespace '$ROOT_KEY' resolved to empty path (check machine-paths.json for missing key)" >&2
+  exit 1
+fi
+if [[ "$REL_PATH" == *"{project}"* ]]; then
+  echo "ERROR: purpose '$PURPOSE' path template contains {project} but no project arg was given" >&2
+  exit 1
+fi
 
 BASE="${BASE/#\~/$HOME}"
 RESOLVED="$BASE${REL_PATH:+/$REL_PATH}"

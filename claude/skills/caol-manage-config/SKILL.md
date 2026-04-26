@@ -1,7 +1,7 @@
 ---
-description: "Manage caol-config files (repo-paths, machine-paths, doc-paths, hardware). Use to add/remove repos or machine paths, validate all paths, or view full config state."
-argument-hint: "[show|validate|setup|add|remove] [repo|machine] [key] [path] [desc]"
-allowed-tools: Read, Write, Bash(ls:*), Bash(test:*)
+description: "Manage caol-config files (repo-paths, machine-paths, doc-paths, hardware). Use to add/remove repos or machine paths, validate all paths, scan for orphan doc-purposes, or view full config state."
+argument-hint: "[show|validate|orphans|setup|add|remove] [repo|machine] [key] [path] [desc]"
+allowed-tools: Read, Write, Bash(ls:*), Bash(test:*), Bash(jq:*), Bash(grep:*)
 ---
 
 # caol-manage-config
@@ -10,7 +10,7 @@ CRUD manager for `~/.claude/private/caol-config/`.
 
 ## Arguments
 
-- `[action]` — `show` (default), `validate`, `add`, `remove`
+- `[action]` — `show` (default), `validate`, `orphans`, `add`, `remove`
 - `[target]` — `repo` or `machine`
 - `[key]` — entry name
 - `[path]` — file system path
@@ -22,6 +22,7 @@ CRUD manager for `~/.claude/private/caol-config/`.
 Usage:
   /caol-manage-config                          → show all configs
   /caol-manage-config validate                 → check all paths exist
+  /caol-manage-config orphans                  → find doc-paths purposes with no consumer
   /caol-manage-config add repo <key> <path> [desc]
   /caol-manage-config add machine <key> <path>
   /caol-manage-config remove repo <key>
@@ -87,6 +88,38 @@ Summary: 12 ok, 1 not found
 ```
 
 Paths that don't exist are expected for cross-machine entries. Just flag them, don't delete.
+
+---
+
+## Action: orphans
+
+Scan `doc-paths.json` purposes for **orphan entries** — purposes registered in config but not referenced by any skill or command. Detects Layer 1 ↔ Layer 2 drift.
+
+Run this one-liner to scan:
+
+```bash
+# NOTE: pass scan dirs as separate args (NOT a single space-joined var) — zsh
+# doesn't word-split unquoted vars, so $SCAN_DIRS would be one literal arg.
+DOC_PATHS=~/.claude/private/caol-config/doc-paths.json
+echo "## Orphan Purpose Scan"
+echo ""
+for p in $(jq -r '.purposes | keys[]' "$DOC_PATHS"); do
+  # Match both legacy form `resolve.sh <purpose>` and modern `resolve.sh doc <purpose>`
+  hits=$(grep -rlE "resolve\.sh\s+(doc\s+)?${p}\b" \
+    "$HOME/.claude/skills" "$HOME/.claude/commands" 2>/dev/null \
+    | wc -l | tr -d ' ')
+  if [[ "$hits" -eq 0 ]]; then
+    echo "⚠ ORPHAN  $p   (no consumer found)"
+  else
+    echo "✓ used    $p   ($hits caller(s))"
+  fi
+done
+```
+
+Report orphans to the user. **Do not delete** — orphans may be:
+- Reserved for future skills (intentional)
+- Used by ad-hoc raw resolver calls in conversation (legitimate)
+- Truly unused (candidate for removal — user decision)
 
 ---
 
