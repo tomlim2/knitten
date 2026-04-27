@@ -173,6 +173,19 @@ of these classes:
    separate ADR" appeared in Scope boundary; ADR-0030 §Out of
    scope explicitly punted it. User flagged as noise, removed via
    `gh pr edit --body`.
+7. Issue linkage verb mismatch in `## Related Issues`. Per
+   pr-guideline.md §4: `Resolves STL-NN` = PR fully closes (single-
+   PR sub-issue) → Linear moves to Done; `Part of STL-NN` = work
+   continues after merge (multi-PR issue) → Linear stays In
+   Progress. Decision rule: "after this PR merges, is there
+   meaningful work left in the named issue?" Yes → Part of, No →
+   Resolves. Also flag if any **umbrella / parent issue** appears
+   in the linkage line — the Linear parent-child relation handles
+   the tree; listing the umbrella with `Part of` drags it back to
+   In Progress on every child merge. Real defect (PR #179):
+   originally `Part of STL-208, STL-127` — both wrong (STL-208 is
+   single-PR = Resolves, STL-127 is umbrella = drop). Correct:
+   `Resolves STL-208`.
 
 Output format per finding:
 

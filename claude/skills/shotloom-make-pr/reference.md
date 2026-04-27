@@ -66,7 +66,37 @@ Removed via `gh pr edit --body` after PR open.
 
 ## Related Issues
 
-<Resolves | Related to> STL-NN
+<Resolves | Part of> STL-NN
+
+<!--
+ISSUE LINKAGE VERB — pick per docs/guidelines/pr-guideline.md §4:
+
+- `Resolves STL-NN` — this PR FULLY closes the issue. Linear moves
+  to **Done** on merge. Use when the issue was created specifically
+  for this PR's scope (single-PR sub-issue).
+- `Part of STL-NN` — this PR contributes to but DOES NOT complete
+  the issue. Linear moves to **In Progress** (intentional). Use ONLY
+  when the issue's stated scope genuinely needs multiple PRs.
+- `No issue: <reason>` — chore / style / release prep with no tracked
+  issue.
+
+DECISION RULE: Ask "after merging this PR, is there meaningful work
+left in the named issue?" Yes → `Part of`. No → `Resolves`.
+
+DO NOT include umbrella / parent issues here just because they are
+ancestors. Linear's parent-child relation already shows the tree;
+listing the umbrella with `Part of` causes Linear to drag the
+umbrella back to In Progress on every child-PR merge — noise.
+For an umbrella, set the Linear `parentId` once (when creating the
+sub-issue) and leave it out of the PR description.
+
+Real defect (PR #179): originally `Part of STL-208, STL-127` —
+both wrong. STL-208 is a single-PR sub-issue (= Resolves), and
+STL-127 is the grandparent umbrella that this PR doesn't close
+(= drop entirely; Linear parent-chain handles it). Correct line:
+`Resolves STL-208`.
+-->
+
 Supersedes #<prior-PR-number>    <!-- only if argument given -->
 ```
 
