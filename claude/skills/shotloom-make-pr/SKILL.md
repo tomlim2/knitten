@@ -161,6 +161,18 @@ of these classes:
 3. Assertion not backed by a command in the Test details list.
 4. Change described in Summary / Changes that is absent from the diff.
 5. Count / cardinality mismatch between body and artifacts.
+6. Scope boundary placeholders the source ADR / Linear issue did
+   NOT commit to. Punt phrases ("separate decision", "if
+   consolidation is justified later", "may revisit", "future ADR
+   decides") mean the item is explicitly not on a roadmap. Drop —
+   listing them makes the reviewer ask "what's X?" instead of
+   "why isn't X here?". Only keep deferrals that satisfy the
+   inclusion criteria in reference.md Scope boundary section
+   (diff-adjacent + explicitly committed + concrete).
+   Real defect (PR #179): "NormalizedAnimation shared type —
+   separate ADR" appeared in Scope boundary; ADR-0030 §Out of
+   scope explicitly punted it. User flagged as noise, removed via
+   `gh pr edit --body`.
 
 Output format per finding:
 

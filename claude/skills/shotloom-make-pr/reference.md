@@ -39,6 +39,31 @@ Expanded detail for the shotloom-make-pr skill. SKILL.md holds the gate sequence
 
 <what is explicitly NOT in this PR and where it lands>
 
+<!--
+INCLUSION CRITERIA — a deferred item belongs here only if ALL three:
+
+1. Diff-adjacent — a reviewer reading this PR's diff would naturally
+   ask "why didn't you also do X?".
+2. Explicitly committed — an ADR / Linear issue / pinned roadmap item
+   names X with a concrete plan, trigger, or successor PR.
+3. Concrete — X has a name a reviewer can grep for or open, not a
+   hypothetical future type.
+
+DROP if the source ADR / doc uses punt language: "separate decision",
+"if consolidation is justified later", "may revisit", "future ADR
+will decide". Those mean the item is explicitly NOT committed, not
+deferred. Listing such items in Scope boundary makes the reviewer
+ask "what's X?" instead of "why isn't X here?" — net negative.
+
+Real defect (PR #179): "NormalizedAnimation shared type — separate
+ADR" was listed in Scope boundary. ADR-0030 §Out of scope explicitly
+punted it ("whether those outputs later consolidate into a shared
+type is a separate decision"). User asked "이거 머임?" then "안 하기로
+함?" — exactly the reviewer-confusion the criteria above prevent.
+Removed via `gh pr edit --body` after PR open.
+-->
+
+
 ## Related Issues
 
 <Resolves | Related to> STL-NN
