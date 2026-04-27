@@ -17,7 +17,10 @@ tags:
   - vrma
   - animation
   - retargeting
-date: 2026-04-21
+  - normalizer
+  - adr-0030
+  - crate-architecture
+date: 2026-04-27
 source: claude
 ---
 
@@ -28,6 +31,68 @@ Project wisdom vault for Shotloom (CINEV's web-first cinematic scene editor). Ea
 ---
 
 ## Convention
+
+### 2026-04-27 — Three normalizer crates: input/output/canonical separation (ADR-0030)
+
+**Definition.** Shotloom의 import → retarget 파이프라인에서 normalization 책임은 세 개의 독립 crate로 분리된다 — `shotloom-character-normalizer`, `shotloom-body-anim-normalizer`, `shotloom-facial-anim-normalizer`. 세 crate는 서로 의존하지 않고, 각자 다른 입력/출력/canonical target을 가진다. 합류는 caller (retarget driver) 가 한다. 이 패턴이 "왜 세 개여야 하는가"의 답이 되는 동시에 "왜 한 crate / 두 crate 안 되는가"의 답이기도 하다.
+
+**Three-way contract.**
+
+| Crate | 입력 | 출력 | Canonical target | Cadence |
+|---|---|---|---|---|
+| `character-normalizer` | `ImportedVrmAsset` (VRM 파일) | rest pose 정렬 + foot contact / sole offset + per-character VRM expression binding | **CR rest pose** (CINEV ARP rig, 임시 — A-pose 마이그레이션은 후속 ADR) | VRM importer 따라감 |
+| `body-anim-normalizer` | `ImportedFbxAnimation` (Body 모드) | source 본 이름 → canonical 본 이름 매핑 + 좌표 변환된 skeletal motion | **CR rest pose** (임시) | DCC source 따라감 |
+| `facial-anim-normalizer` | `ImportedFbxAnimation` (Face 모드) | ARKit 52 채널 이름으로 매핑된 blendshape weight track | **ARKit 52 baseline + 확장 registry** (안정) | AI 모델 변화 따라감 |
+
+`ImportedFbxAnimation` 은 cache descriptor (artifact path + content hash + mode + diagnostics) 이지 parsed bone graph 가 아니다. body / face normalizer 가 descriptor 의 artifact path 에 대해 `shotloom_fbx_anim::parse_with_config` 를 다시 호출해서 parsed graph 을 얻는다.
+
+**Data flow.**
+
+```
+[VRM 파일]               [Body FBX]              [Face FBX]
+    │                       │                       │
+    ▼ shotloom-import       ▼                       ▼
+ImportedVrmAsset        ImportedFbxAnimation    ImportedFbxAnimation
+    │                       │ (mode=Body)           │ (mode=Face)
+    ▼                       ▼                       ▼
+character-normalizer    body-anim-normalizer    facial-anim-normalizer
+    │                       │                       │
+    │ (rest pose +          │ (canonical 본 +       │ (ARKit 52 ch +
+    │  foot contact +       │  좌표 변환된           │  per-character
+    │  per-char binding)    │  skeletal motion)      │  VRM expression
+    │                       │                        │  binding)
+    └─────────┬─────────────┴───────────┬────────────┘
+              │                         │
+              ▼                         ▼
+         [retarget]                [face binding/playback]
+              │                         │
+              └─────────┬───────────────┘
+                        ▼
+                  shotloom-engine
+                  (Bevy AnimationClip 재생)
+```
+
+**Why three (not one, not two).** 세 도메인이 공유 surface 0:
+- 입력 의미론: 정적 본 hierarchy + skin mesh / 시간축 본 회전·위치 track / 시간축 blendshape weight track
+- Validation 규칙: VRM humanoid 본 매핑 완전성 / ARP marker 존재성 / blendshape track 존재성
+- Canonical 미래: A-pose 마이그레이션 / A-pose 마이그레이션 / ARKit 52 안정 + 확장 registry
+- 다운스트림: retarget math / retarget math / per-character VRM expression binding (retarget math 안 탐)
+
+→ 한 crate에 묶으면 한쪽 변경이 항상 세쪽 다 rebuild + API 변경이 다른 쪽 review burden. 공유 surface 0인데 묶으면 결합만 늘고 이득 없음.
+
+**Sibling 의존 금지.** Cargo.toml 에서 sibling normalizer 의존 X. 각자 독립 컴파일·테스트·버저닝. 합류 지점은 caller.
+
+**Direction invariant.** `parsers → import → normalizer → retarget → engine` 단방향. 위쪽만 의존, 아래쪽 의존 금지 (오늘은 types-only transitional 허용 — `BoneTrack`/`RetargetConfig`/`VrmRestPose` 등 retarget 내부 타입을 normalizer 가 시그니처에 사용하는 경우. STL-183에서 `SourceAsset`/`SourceFormat` 분리 후 완전히 끊을 예정).
+
+**Why ARKit 52 for face canonical.** AI generation 호환성 (Audio2Face, MediaPipe, ElevenLabs lip-sync, EMO, SadTalker 모두 ARKit 52 native), render-ready (named blendshapes, FLAME/FACS 와 달리 solver 불필요), VRM-compatible (per-character binding table 로 매핑), superset extensibility (MetaHuman 236 이 strict superset). VRM 1.x Expression Manifest (~15 그룹) 는 너무 coarse — canonical 이 아니라 per-character binding target 으로만 사용.
+
+**Tools/experience.** ADR-0030 이 패턴 제정 (2026-04-22 proposed). PR [#153](https://github.com/CINEV/shotloom/pull/153) review 에서 Step 1 의 call-site 4 종 (RestAlignOverride 타입 / align_finger_rest re-export / retargeter.rs:193 호출 site / arp_vrm_user_pose.rs disposition) 으로 scope 확정. 첫 구현은 STL-127 umbrella 아래 STL-195 (character normalizer scaffold).
+
+**Trip-wires for next time.**
+- "이거 어느 normalizer 에 들어가지?" → 입력 형식 + canonical target 매트릭스 보고 결정. character vs anim 헷갈리면: **character = 정적 (한번 import 시 산출)**, **anim = 시간축 (애니 클립별 산출)**.
+- 새 source 형식 (PMX character, alternative DCC) 추가 → exactly one normalizer 만 건드린다. retarget / engine / 다른 normalizer 손대면 layer violation.
+- normalizer 가 `shotloom-retarget` 함수를 호출하려는 코드 → reject. types-only 의존만 허용.
+- 두 normalizer 가 서로 import 하려는 코드 → reject. caller 가 합쳐야 함.
 
 ---
 
