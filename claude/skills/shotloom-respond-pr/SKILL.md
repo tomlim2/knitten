@@ -80,27 +80,26 @@ Ask user which to address. Default: all. Proceed without further approval — in
 3. Apply the fix (also PR description + docs if implied).
 4. Briefly report each change.
 
-### Step 4.5: Capture defect as a reusable pattern (CRITICAL)
+### Step 4.5: Cross-check fix against in-repo review spec (CRITICAL)
 
-After a fix lands, decide if it represents a new pattern class. Prevents the same finding resurfacing on future PRs.
+After a fix lands, confirm it aligns with the rules in `docs/guidelines/review-rust.md`. If the finding surfaces a class of defect not yet covered by the in-repo spec, draft a follow-up to amend that file in a separate PR.
 
 For each resolved finding:
-1. Re-read Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`.
-2. **Match existing patterns first.** If a clearer instance of A1/B2/C3 etc., add one-line "Real defect" reference citing this PR + comment id.
-3. **If nothing matches, draft a new pattern entry** with title, short description, `**Self-check:**` one-liner, `**Real defect:**` line.
-4. Add to the Self-review checklist block at the bottom.
-5. Append one-line to Provenance (date, PR, pattern).
+1. Re-read `docs/guidelines/review-rust.md` and `docs/guidelines/code-review-guideline.md`.
+2. **Match existing rules first.** If the finding maps to an existing rule, note the section name in the capture block.
+3. **If nothing matches**, flag as a potential new-rule candidate to surface to the user. Do NOT silently amend the in-repo spec from this skill — that requires its own PR.
 
 Filters:
-- **Add** → fix is "replace this construct with that", rule is greppable, senior reviewer would catch mechanically.
+- **Match** → finding is covered by an existing in-repo rule.
+- **New-rule candidate** → finding represents a recurring defect class not yet documented.
 - **Skip** → ad-hoc rename, typo, local semantic bug without recurring shape.
 
 **Mandatory output — one line per resolved finding, before Step 5 begins:**
 
 ```
-Pattern capture:
-  finding 1 (<file>:<line>) → matched A7 (added Real defect line)
-  finding 2 (<file>:<line>) → new D6 (added pattern + checklist + provenance)
+Review-rule capture:
+  finding 1 (<file>:<line>) → matched <section name in review-rust.md>
+  finding 2 (<file>:<line>) → new-rule candidate: <one-line description, surface to user>
   finding 3 (<file>:<line>) → skipped — ad-hoc rename, no recurring shape
 ```
 
@@ -295,7 +294,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 - `~/.claude/skills/shotloom-review-before-pr/SKILL.md`
 - `~/.claude/skills/shotloom-linear-create-issue/SKILL.md`
 - `~/.claude/rules/git.md`, `shotloom-git.md`
-- `~/.claude/standards/review-code-rust.md` — 22-pattern Rust checklist
+- `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
 
 ## Additional Resources
 

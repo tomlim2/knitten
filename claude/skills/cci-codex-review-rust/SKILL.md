@@ -16,7 +16,7 @@ Codex(`gpt-5.4`)에게 **Rust 변경분 정밀 리뷰**를 시킨다. high reaso
 - 성능 핫패스 (불필요한 alloc, clone)
 - 동시성/Send/Sync
 - 에러 메시지 품질
-- **Rust 반복 실수 22 패턴** (A1–A6 doc/code coherence, B1–B2 classifier asymmetry, C1–C3 silent fallback, D1–D4 library hygiene, E1–E3 build/platform, F1–F3 cross-crate) — PR #66 copilot findings + PR #72 self-review gap analysis를 단일 체크리스트로 통합. `~/.claude/standards/review-code-rust.md`가 단일 소스. shotloom 레포 dispatch 시 기본 컨텍스트로 자동 포함.
+- **Rust 일반 베스트 프랙티스** — shotloom 레포의 경우 in-repo `docs/guidelines/review-rust.md`가 단일 소스. 사용자가 `--context-docs docs/guidelines/review-rust.md`로 직접 지정해야 하며 자동 포함은 하지 않는다.
 
 ## Arguments
 
@@ -62,11 +62,9 @@ $ARGUMENTS 파싱:
 - `--context-docs <path>` (반복) → 각 경로를 `Read`로 전체 내용 읽어둠
 - `--phase` / `--out-of-scope` / `--constraints` → Scope Context 플레이스홀더에 치환. 플래그 미지정 시 해당 라인 자체를 드롭 (literal `<PHASE>` 로 남기지 말 것).
 
-**Shotloom auto-context** (shotloom 레포일 때만 자동 포함, 사용자 플래그 불필요):
-- 현재 git remote에 `shotloom` 문자열이 포함되면 `~/.claude/standards/review-code-rust.md` 전체 내용을 `## Rust Review Patterns (mandatory)` 섹션으로 프롬프트에 자동 임베드.
-- 이 파일은 Rust 전반의 단일 소스 체크리스트(A1–F3, 22 패턴). 별도 `shotloom-review-patterns.md`는 redirect stub이므로 읽지 말 것.
-- 이 섹션은 `## Binding ADRs` 보다 아래, `## 리뷰 체크리스트` 보다 위에 위치.
-- 프롬프트 본문에 다음 문장을 추가: "Apply every pattern in the Rust Review Patterns section to every changed file. Report per-pattern match/clean with severity BLOCK/SHOULD/NIT."
+**Shotloom 레포 컨텍스트** (자동 포함 없음):
+- shotloom 레포의 Rust 리뷰 SSOT는 in-repo `docs/guidelines/review-rust.md`. 사용자가 `--context-docs docs/guidelines/review-rust.md`로 직접 지정해야 한다.
+- 자동 임베드 동작은 제거되었다 (`~/.claude/standards/review-code-rust.md` 카탈로그는 폐기됨).
 
 수집한 diff를 다음 프롬프트 본문에 끼워넣는다:
 

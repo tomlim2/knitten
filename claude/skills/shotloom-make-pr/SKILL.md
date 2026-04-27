@@ -363,11 +363,11 @@ Skip entirely when:
 
 ## Related
 
-- `standards/review-code-rust.md` — Step 3b mandatory pre-PR checklist
+- `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT for Step 3b pre-PR checklist
 - `rules/shotloom-git.md` — per-PR approval, pre-PR checklist, account/identity
 - `rules/git.md` — global PR lifecycle approval
 - `rules/testing.md` — unit test requirement
-- `standards/shotloom.md` — project standard
+- `README.md` + `AGENTS.md` (in shotloom repo) — project overview
 - `docs/guidelines/pr-guideline.md` (in shotloom repo) — authoritative PR spec
 
 ## Additional Resources

@@ -111,9 +111,9 @@ Per-category additions (still in-repo):
 | `test` | (covered by `review-rust.md`) |
 | `mixed` | everything |
 
-Pattern catalog (Claude-side, in-repo lacks equivalent):
+In-repo Rust review SSOT:
 
-- `~/.claude/standards/review-code-rust.md` — 22-pattern pre-PR self-review checklist derived from real Shotloom PR defects. Walk this against the diff before push. Loaded by `/shotloom-review-before-pr`.
+- `docs/guidelines/review-rust.md` — formal Rust review spec. Walk this against the diff before push. Loaded by `/shotloom-review-before-pr`.
 
 For Rust, also scan `docs/adr/` for ADRs relevant to the affected crate.
 
@@ -134,7 +134,7 @@ Fixed sequence: **gates pass → commit → push → `/shotloom-review-before-pr
 
 The review is also required before `/shotloom-make-pr`, `gh pr create`, or declaring "done" — even with no recent push.
 
-Walks `~/.claude/standards/review-code-rust.md` (groups A–G; pattern count grows over time, do not memorize). Fix every hit before opening PR.
+Walks `docs/guidelines/review-rust.md` (in-repo formal Rust review spec; re-read every invocation). Fix every hit before opening PR.
 
 **Skip only when:** branch contains zero Rust/TS source changes (docs/md/ADR-only), OR user explicitly says "skip review" for this specific PR.
 
@@ -154,7 +154,7 @@ Auto-commit/push cadence (per `rules/shotloom-git.md`) does NOT bypass the revie
 - Hook: `~/.claude/hooks/shotloom-linear-detect.sh` (auto-invoker)
 - [`~/.claude/rules/shotloom.md`](../../rules/shotloom.md) — hub
 - in-repo `docs/guidelines/*` — writing rules (authoritative)
-- [`~/.claude/standards/review-code-rust.md`](../../standards/review-code-rust.md) — pre-PR review pattern catalog (Claude-side, in-repo lacks equivalent)
+- in-repo `docs/guidelines/review-rust.md` — formal Rust review SSOT for pre-PR self-review
 - [`~/.claude/rules/shotloom-git.md`](../../rules/shotloom-git.md) — Claude-side PR gates / auto-commit policy
 
 ## Additional Resources

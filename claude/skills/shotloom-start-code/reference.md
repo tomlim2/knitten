@@ -69,7 +69,7 @@ git worktree add "<worktree_dir>" "<branch>"
 
 **Branch:** <current-branch>  (base: <base>)  <N> commits ahead, <clean|N dirty files>
 
-**Standards loaded:** programming.md §<list>, review-code-rust.md (ready on pre-PR)
+**Standards loaded:** programming.md §<list>, docs/guidelines/review-rust.md (ready on pre-PR)
 **ADRs to honor:** <list>
 **Ask-first triggers for this task:** <filtered from §16>
 

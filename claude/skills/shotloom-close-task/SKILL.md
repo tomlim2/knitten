@@ -147,7 +147,7 @@ Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day sho
 - **Single header line** with PR link only — no separate **PR / Linear / Branch / Worktree / Commits** metadata block. The PR link is enough; everything else is one click away.
 - **Numbered "지적" items** (criticisms / corrections received) — one per finding, each in this shape:
   - **What** the reviewer (or CI, or the rule) pointed out, with a direct quote when meaningful.
-  - **Why** it was right — the underlying principle (ADR-NNNN section, standard ID, `review-code-rust.md` pattern letter, etc.).
+  - **Why** it was right — the underlying principle (ADR-NNNN section, standard ID, `docs/guidelines/review-rust.md` section, etc.).
   - **What changed** in the PR as a result (commit SHA, file).
 - **`> [!tip]` callout** — the single most important insight from this PR. The thing future-me would want to remember in 6 months. Often a meta-insight: tooling drift, skill drift, process gap, missed convention.
 - **`> [!abstract] Rule` callout** — a one-line generalizable rule extracted from this PR's lessons, written so it could go straight into `~/.claude/rules/` or a standard. Tagged `#rule`.

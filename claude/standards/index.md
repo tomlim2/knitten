@@ -55,7 +55,6 @@ Standards contain the rationale, examples, and templates that rules link back to
 |----------|-------------|
 | [`review-template.md`](review-template.md) | Base review template |
 | [`review-ai-motion.md`](review-ai-motion.md) | **AI-generated motion** grading — 7 metrics (foot skate, penetration, jitter, contact accuracy, pose plausibility, root correlation, loop gap) + fault attribution matrix (Generator / Rig / Retarget / Physics / Viewer). Paired with `review-audit-ai-motion` skill. |
-| [`review-code-rust.md`](review-code-rust.md) | **Rust** code review — pattern-based pre-PR self-review checklist (16 patterns derived from real Copilot defects on Shotloom PR #66). Load before pushing any Rust PR. |
 | [`review-code-javascript.md`](review-code-javascript.md) | JS code review |
 | [`review-code-css.md`](review-code-css.md) | CSS code review |
 | [`review-code-tsl.md`](review-code-tsl.md) | Three.js TSL shader review |
@@ -74,7 +73,6 @@ Standards contain the rationale, examples, and templates that rules link back to
 | [`cinev-character-asset-naming.md`](cinev-character-asset-naming.md) | CINEV character asset naming |
 | [`cinev-vrm-shading.md`](cinev-vrm-shading.md) | CINEV VRM shading work |
 | [`cci-slack.md`](cci-slack.md) | Before Slack operations |
-| [`shotloom.md`](shotloom.md) | Shotloom project overview (tech stack, architecture, perf budget) |
 | [`shotloom-programming.md`](shotloom-programming.md) | **Shotloom writing discipline** — 60+ rules mined from in-repo guidelines/ADRs. Read when writing Rust or TS/React in shotloom-github. Pair with `rules/shotloom.md` hub. |
 | [`arp-skeleton.md`](arp-skeleton.md) | ARP (Auto-Rig Pro) skeleton reference |
 

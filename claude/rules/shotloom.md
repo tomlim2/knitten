@@ -7,12 +7,13 @@ When working inside !`python3 -c "import json,os; d=json.load(open(os.path.expan
 | Task | Read (in order) |
 |------|------|
 | Writing code (Rust or TS/React) | in-repo `docs/guidelines/review-rust.md`, `error-handling.md`, `review-typescript.md` (TS only) |
-| Reviewing code (self-review or reviewing others) | in-repo `docs/guidelines/review-rust.md` + [`standards/review-code-rust.md`](../standards/review-code-rust.md) (22-pattern catalog from real PR defects, no in-repo equivalent) |
-| Opening / updating a PR | in-repo `docs/guidelines/pr-guideline.md`, `commit-guideline.md` + [`rules/shotloom-git.md`](shotloom-git.md) (Claude-side gates: gh auth, auto-commit, CI exclude flags) |
-| Project context / architecture / perf budget | [`standards/shotloom.md`](../standards/shotloom.md) — project overview (no in-repo equivalent) |
+| Reviewing code (self-review or reviewing others) | in-repo `docs/guidelines/review-rust.md` + `code-review-guideline.md` |
+| Opening / updating a PR | in-repo `docs/guidelines/pr-guideline.md`, `commit-guideline.md` + [`rules/shotloom-git.md`](shotloom-git.md) (Claude-side meta: gh auth, auto-commit, CI exclude flags) |
+| Project context / architecture | in-repo `README.md`, `AGENTS.md`, `docs/adr/README.md` |
+| PR review reply scope policy | [`standards/shotloom-pr-scope-policy.md`](../standards/shotloom-pr-scope-policy.md) — Claude-side classification (in-scope auto-resolve / out-of-scope brief / ambiguous skip) |
 | In-repo source of truth (re-read every session) | `AGENTS.md`, `CONTRIBUTING.md`, `docs/guidelines/*`, `docs/adr/README.md`, `.agent/*` |
 
-**Authority order:** in-repo `docs/guidelines/` always wins over any Claude-side mirror. Claude-side standards exist only when in-repo lacks the content (review pattern catalog, project philosophy, PR scope policy).
+**Authority order:** in-repo `docs/guidelines/` is the only source for code-writing and review rules. Claude-side `standards/` carries only Claude-side meta (PR response policy). When in doubt, read the in-repo file.
 
 ## Answering style
 
@@ -20,23 +21,13 @@ When working inside !`python3 -c "import json,os; d=json.load(open(os.path.expan
 
 ## Hard overrides
 
-- **In-repo `docs/guidelines/` is the single source of truth for code-writing and review rules.** Claude-side `standards/` only carries content the in-repo lacks (review-code-rust pattern catalog, project overview, PR scope policy).
+- **In-repo `docs/guidelines/` is the single source of truth for code-writing and review rules.** Claude-side `standards/` only carries content the in-repo lacks (PR scope policy).
 - **Repo-specific `shotloom-git.md` overrides generic `git.md`** for this repo.
 - **Hard rules from repo `CLAUDE.md`** (e.g. "no `git add -f`") are non-negotiable.
 
 ## Strictness
 
-Shotloom is stricter than average Claude work. Apply:
-
-- **No `unwrap`/`expect`/`panic!`** on user-facing paths — `Result` instead.
-- **No `any` in production TS** — narrowing or discriminated unions.
-- **Every `unsafe` block needs `// SAFETY:` comment.**
-- **Every `#[allow(...)]` needs justifying comment.**
-- **Every new module ships with unit tests in the same PR.**
-- **Bridge contract change = same-PR TS update.**
-- **Never `--no-verify`, never `git add -f`, never push to `main`.**
-
-Full rule set: in-repo `docs/guidelines/` directory (read at session start).
+Shotloom is stricter than average Claude work. The full rule set lives in in-repo `docs/guidelines/` (`review-rust.md`, `error-handling.md`, `review-typescript.md`, `pr-guideline.md`, `commit-guideline.md`). Read those at session start; do not memorize a summary here — the in-repo files update via PR review.
 
 ## Ask-first matrix
 
@@ -55,7 +46,7 @@ Before doing any of these, ask the user (per repo `AGENTS.md`):
 All Shotloom workflow live here — prefer these over ad-hoc commands:
 
 - `/shotloom-make-pr` — draft + open PR with pre-flight gates
-- `/shotloom-review-before-pr` — pre-PR self-review against 22-pattern checklist
+- `/shotloom-review-before-pr` — pre-PR self-review against in-repo `docs/guidelines/review-rust.md`
 - `/shotloom-respond-pr` — read review comments, fix, commit, post inline replies (with approval gate)
 - `/shotloom-auto-pr` — fully-automatic watcher/responder (approval-exempt, this skill only)
 - `/shotloom-watch-pr` — passive polling watcher

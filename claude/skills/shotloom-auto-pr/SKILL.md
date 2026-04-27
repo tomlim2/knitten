@@ -182,7 +182,7 @@ Dispatch by event type:
     - **suppressed in-scope** → apply fix, gate commit on pattern capture, commit, push, **single review-level summary** via `POST /pulls/<N>/reviews` with `event=COMMENT` (one bundled body covering every suppressed finding addressed this tick — never one review per finding, never event=APPROVE/REQUEST_CHANGES)
   - re-request review roster runs once per react cycle, after both reply paths above have posted
   - out-of-scope / ambiguous (either inline or suppressed) → briefing block in `log.md`, no reply, no resolve
-  - **MANDATORY pattern-capture gate (mirrors `shotloom-respond-pr` Step 4.5):** for every resolved finding (inline AND suppressed), walk the Pattern A–G taxonomy in `~/.claude/standards/review-code-rust.md`. Either match an existing pattern (append a one-line "Real defect" reference citing PR + comment/review id) or draft a new pattern entry (title, `**Self-check:**`, `**Real defect:**`, add to Self-review checklist block, append Provenance line). Then emit a `Pattern capture:` block to `log.md` with one line per resolved finding (`matched A7` / `new D6` / `skipped — typo`).
+  - **MANDATORY review-rules gate (mirrors `shotloom-respond-pr` Step 4.5):** for every resolved finding (inline AND suppressed), confirm the fix matches a rule in in-repo `docs/guidelines/review-rust.md` or, if the finding surfaces a new rule class not yet documented there, draft a follow-up to add it via a separate PR against that file. Emit a `Review-rule capture:` block to `log.md` with one line per resolved finding (matched section name / new-rule-needed: <one-line> / `skipped — typo`).
   - **Commit is gated on this block.** If the count of `Pattern capture:` lines does not match the count of fixed findings (inline + suppressed combined), do NOT `git add` — return to capture step. The block is the only proof the step ran; without the gate, the step gets silently skipped (this happened on PR #166).
 
 Protocol details (same as the pre-split skill):
@@ -275,5 +275,5 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 - `~/.claude/skills/shotloom-respond-pr/SKILL.md` — manual review response (with approval gate)
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation
 - `~/.claude/standards/shotloom-pr-scope-policy.md` — in-scope classification
-- `~/.claude/standards/review-code-rust.md` — Rust review patterns
+- `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
 - `~/.claude/rules/shotloom-git.md` — pre-PR gates

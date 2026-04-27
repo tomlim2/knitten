@@ -1,11 +1,13 @@
 ---
-description: Pre-PR self-review for Shotloom Rust changes. Walks the pattern-based checklist in review-code-rust.md against the current diff and reports defects locally before pushing. Does NOT create a PR.
+description: Pre-PR self-review for Shotloom Rust changes. Walks the in-repo formal Rust review spec (docs/guidelines/review-rust.md) against the current diff and reports defects locally before pushing. Does NOT create a PR.
 allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*), Bash(gh:*), Bash(jq:*)
 ---
 
 # shotloom-review-before-pr
 
-Self-review pass for a Shotloom branch **before** opening a PR. Loads the pattern-based Rust review standard, walks every pattern against the current diff, reports findings. Does **not** push, **not** call `gh pr create`, **not** modify files — reports only.
+Self-review pass for a Shotloom branch **before** opening a PR. Loads the in-repo formal Rust review spec (`docs/guidelines/review-rust.md`) and the review process (`docs/guidelines/code-review-guideline.md`), walks them against the current diff, reports findings. Does **not** push, **not** call `gh pr create`, **not** modify files — reports only.
+
+> **Note:** The legacy 22-pattern catalog (`~/.claude/standards/review-code-rust.md`) has been retired. The in-repo `docs/guidelines/review-rust.md` is now the single source of truth for what counts as a Rust defect on this repo.
 
 Run repeatedly during development. When the report comes back clean, then `/shotloom-make-pr` to open the PR.
 
@@ -55,27 +57,16 @@ git status --short                                    # surface unstaged work
 
 Run `pwd` every time before first grep — cwd may silently reset between tool calls in long sessions.
 
-### Step 2: Load the standards (MANDATORY, in-repo first)
+### Step 2: Load the standards (MANDATORY, in-repo only)
 
-**The shotloom in-repo guidelines are the primary authority.** Read in this order:
+**The shotloom in-repo guidelines are the only authority now.** Read in this order:
 
-1. **`docs/guidelines/review-rust.md`** (in-repo) — primary source of truth for what counts as a defect on this repo. Read in full. Anything in this file overrides anything below.
+1. **`docs/guidelines/review-rust.md`** (in-repo) — formal Rust review spec. Single source of truth for what counts as a defect on this repo. Read in full.
 2. **`docs/guidelines/code-review-guideline.md`** (in-repo) — review process, P0/P1/P2/P3 priorities, reviewer expectations.
-3. **`~/.claude/standards/review-code-rust.md`** (mine) — supplementary pattern catalog accumulated from real shotloom PR defects. Use as a checklist after the in-repo guidelines, NOT as a replacement. If a pattern here conflicts with in-repo guidelines, in-repo wins.
 
-Do NOT memorize the pattern count — patterns get added each time a new defect class is caught on a PR. Groups in the supplementary catalog currently span:
+The legacy 22-pattern catalog (`~/.claude/standards/review-code-rust.md`) has been retired. Use the in-repo formal spec as the checklist; do not load any external supplementary catalog.
 
-| Group | Class |
-|---|---|
-| **A** | Doc ↔ code coherence |
-| **B** | Classifier / dispatch asymmetry |
-| **C** | Silent fallback in hot path |
-| **D** | Library hygiene |
-| **E** | Build / platform regressions |
-| **F** | Cross-crate & inherited-pattern hygiene |
-| **G** | Structural / repo-convention coherence |
-
-For the canonical pattern list (with current per-pattern IDs and Real-defect references), read the standard. Do not list specific Pattern IDs in this skill — they drift.
+Re-read both files every invocation — they get amended as new defect classes are found.
 
 ### Step 2.5: Load repo conventions (MANDATORY)
 
@@ -111,7 +102,7 @@ rg '\.unwrap\(\)|\.expect\(' $(git diff --name-only origin/main..HEAD -- 'crates
 node scripts/validate-doc-paths.mjs 2>&1 | tail -2
 ```
 
-See reference.md for the full sweep catalog. The catalog mirrors the IDs in `review-code-rust.md` — when the standard adds a new pattern, mirror it into reference.md at the same time.
+See reference.md for the full sweep catalog. The catalog is keyed against `docs/guidelines/review-rust.md` — when the in-repo spec gains a new rule class, update reference.md at the same time.
 
 ### Step 4: Triage — group findings by pattern
 
@@ -129,9 +120,9 @@ See reference.md for the full sweep catalog. The catalog mirrors the IDs in `rev
 
 ### Step 5: Recommend next action
 
-1. **All patterns clean** →
+1. **All rules clean** →
    ```
-   All patterns clean (groups A–G, see standards/review-code-rust.md for current list). Ready to run /shotloom-make-pr.
+   All rules in docs/guidelines/review-rust.md clean. Ready to run /shotloom-make-pr.
    ```
 2. **Findings, fixable locally** → list them, ask whether to fix now or later. Do **NOT** auto-fix.
 3. **Findings requiring design judgment** → list, explain tradeoff, ask user. Usually B1/B2 or C1.
@@ -150,11 +141,11 @@ When briefing the findings table back to the user (NOT the raw `git diff` lines 
 - **Keep the literal evidence below the briefing.** The framing comes first; the per-pattern list with line refs comes after, so the user can verify but isn't forced to read raw output to understand.
 - **Skip framing on a clean review.** If all patterns are clean, just say so — don't manufacture a narrative.
 
-The literal pattern enumeration (Step 4 output) stays in English/code-quote form so it's greppable for the next session. Pattern capture into `~/.claude/standards/review-code-rust.md` is **not** done by this skill — it is a write step and lives in `/shotloom-respond-pr` (Step 4.5), where there is a real fix landing in a PR to attach a "Real defect" reference to. Self-review is read-only by contract; if a review-time finding looks like a new pattern class, surface it to the user in Step 5 and let them decide whether to fix-and-capture inside the next PR cycle.
+The literal rule enumeration (Step 4 output) stays in English/code-quote form so it's greppable for the next session. Self-review is read-only by contract; if a review-time finding looks like a new rule class not yet covered by `docs/guidelines/review-rust.md`, surface it to the user in Step 5 and let them decide whether to fix-and-amend the in-repo spec inside the next PR cycle.
 
 ## Binding rules (CRITICAL)
 
-- **Read `~/.claude/standards/review-code-rust.md` in full every invocation.** Do not summarize from memory — re-read.
+- **Read `docs/guidelines/review-rust.md` and `docs/guidelines/code-review-guideline.md` in full every invocation.** Do not summarize from memory — re-read.
 - **Do NOT modify any file.** Read-only. Even fixing a typo while reviewing creates ambiguity.
 - **Do NOT push.** User pushes when ready.
 - **Do NOT call `gh pr create`.** That's `shotloom-make-pr`'s job.
@@ -162,11 +153,12 @@ The literal pattern enumeration (Step 4 output) stays in English/code-quote form
 
 ## Related
 
-- `standards/review-code-rust.md` — **authoritative 22-pattern checklist** loaded at Step 2
+- `docs/guidelines/review-rust.md` (in shotloom repo) — **authoritative Rust review SSOT** loaded at Step 2
+- `docs/guidelines/code-review-guideline.md` (in shotloom repo) — review process / priorities
 - `skills/shotloom-make-pr/SKILL.md` — next step after clean report
 - `rules/shotloom-git.md` — pre-PR identity / build / commit conventions
 - `rules/testing.md` — unit test requirement (orthogonal to this checklist)
 
 ## Additional Resources
 
-For the full bash sweep commands for every pattern (groups A–G, IDs current in `review-code-rust.md`), see [reference.md](reference.md). Re-read both files when patterns are added.
+For the full bash sweep commands keyed against the in-repo `docs/guidelines/review-rust.md` rules, see [reference.md](reference.md). Re-read both when the in-repo spec gains new rules.
