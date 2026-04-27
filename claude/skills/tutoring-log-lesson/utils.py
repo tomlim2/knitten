@@ -1,15 +1,30 @@
 #!/usr/bin/env python3
 """Shared utilities for tutoring skill."""
 
+import json
 import os
 import re
+import sys
 from pathlib import Path
 from datetime import datetime
 
+_MACHINE_PATHS = Path.home() / ".claude" / "private" / "caol-config" / "machine-paths.json"
+
 
 def get_obsidian_claude_dir() -> Path:
-    """Get the Obsidian claude directory path."""
-    return Path.home() / "Library" / "Mobile Documents" / "iCloud~md~obsidian" / "Documents" / "MyNotes" / "claude"
+    """Resolve the Obsidian claude directory from machine-paths.json.
+
+    Falls back to obsidian-staging on machines without an iCloud vault. Exits
+    with a clear message if neither key is configured.
+    """
+    try:
+        paths = json.loads(_MACHINE_PATHS.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        sys.exit(f"tutoring/utils.py: missing {_MACHINE_PATHS} — populate obsidian-vault-claude or obsidian-staging.")
+    target = paths.get("obsidian-vault-claude") or paths.get("obsidian-staging")
+    if not target:
+        sys.exit("tutoring/utils.py: machine-paths.json has neither 'obsidian-vault-claude' nor 'obsidian-staging'.")
+    return Path(target)
 
 
 def get_lessons_dir() -> Path:

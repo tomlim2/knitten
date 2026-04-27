@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-_PATHS_FILE = Path.home() / ".claude" / "private" / "machine-paths.json"
+_PATHS_FILE = Path.home() / ".claude" / "private" / "caol-config" / "machine-paths.json"
 try:
     _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
 except FileNotFoundError:

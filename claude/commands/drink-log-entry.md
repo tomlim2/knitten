@@ -13,7 +13,7 @@ Input: $ARGUMENTS
 
 ## Data Storage
 
-- **Drinks database**: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/drinks/drinks.json`
+- **Drinks database**: `{vault_claude}/drinks/drinks.json` where `{vault_claude}` is `jq -r '."obsidian-vault-claude"' ~/.claude/private/caol-config/machine-paths.json` (falls back to `obsidian-staging` key on machines without an iCloud vault)
 - **Format**: JSON array with drink entries
 
 ## Behavior
@@ -35,7 +35,7 @@ Examples:
 
 ### If `list` argument:
 
-Read `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/drinks/drinks.json` and display all drinks in a table:
+Read `{vault_claude}/drinks/drinks.json` and display all drinks in a table:
 
 ```
 ## Your Drink Collection
@@ -54,7 +54,7 @@ Show the 5 most recent drinks from the database.
 ### If drink name provided:
 
 1. **Check existing database**
-   - Read `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/drinks/drinks.json`
+   - Read `{vault_claude}/drinks/drinks.json`
    - If drink exists, show details and ask if user wants to update notes
 
 2. **Search for drink info on Vivino** (PRIMARY SOURCE)
@@ -100,7 +100,7 @@ Show the 5 most recent drinks from the database.
      - Date (default: today)
 
 5. **Save to database**
-   - Create `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/claude/drinks/` directory if needed
+   - Create `{vault_claude}/drinks/` directory if needed
    - Read existing `drinks.json` (or create empty array)
    - Append new entry:
    ```json

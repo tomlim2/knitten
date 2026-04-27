@@ -18,15 +18,15 @@ const PRIVATE_DIR = path.join(CLAUDE_DIR, 'private');
 const COMMANDS_DIR = path.join(CLAUDE_DIR, 'commands');
 const STANDARDS_DIR = path.join(CLAUDE_DIR, 'standards');
 const OBSIDIAN_CLAUDE_DIR = (() => {
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    // Canonical: machine-paths.json → obsidian-vault-claude (vault/claude subdir).
+    // Falls back to obsidian-staging on machines without an iCloud vault.
+    const machinePathsFile = path.join(PRIVATE_DIR, 'caol-config', 'machine-paths.json');
     try {
-        const repos = JSON.parse(fs.readFileSync(repoPathsFile, 'utf-8'));
-        const entry = repos.obsidian;
-        const obsidianPath = typeof entry === 'string' ? entry : entry?.path;
-        if (obsidianPath) return path.join(obsidianPath, 'claude');
-    } catch {}
-    // fallback: macOS iCloud path
-    return path.join(require('os').homedir(), 'Library', 'Mobile Documents', 'iCloud~md~obsidian', 'Documents', 'MyNotes', 'claude');
+        const paths = JSON.parse(fs.readFileSync(machinePathsFile, 'utf-8'));
+        return paths['obsidian-vault-claude'] || paths['obsidian-staging'] || null;
+    } catch {
+        return null;
+    }
 })();
 
 // View engine

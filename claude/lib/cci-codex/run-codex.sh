@@ -13,11 +13,10 @@
 #   - Archives result to Obsidian (if available) or the obsidian-staging fallback
 #   - Logs a one-line summary on completion
 #
-# Output destination resolution:
-#   1. If repo-paths.json has 'obsidian' key AND that path exists → <obsidian>/claude/codex-runs/YYYY-MM-DD/
-#   2. Else → <obsidian-staging>/codex-runs/YYYY-MM-DD/ where obsidian-staging
-#      comes from ~/.claude/private/machine-paths.json, with a legacy
-#      fallback to ~/Desktop/www/caol-ila/claude/obsidian-staging/codex-runs/.
+# Output destination resolution (all paths from caol-config/machine-paths.json):
+#   1. obsidian-vault-claude (if directory exists) → <vault>/codex-runs/YYYY-MM-DD/
+#   2. obsidian-staging → <staging>/codex-runs/YYYY-MM-DD/
+#   3. legacy fallback → ~/Desktop/www/caol-ila/claude/temp-learnings/codex-runs/
 
 set -euo pipefail
 
@@ -42,25 +41,22 @@ if [ -z "$SKILL" ] || [ -z "$PROMPT" ]; then
 fi
 
 # Resolve archive directory
-REPO_PATHS="$HOME/.claude/private/repo-paths.json"
-MACHINE_PATHS="$HOME/.claude/private/machine-paths.json"
-OBSIDIAN=""
+MACHINE_PATHS="$HOME/.claude/private/caol-config/machine-paths.json"
+VAULT_CLAUDE=""
 STAGING=""
-if [ -f "$REPO_PATHS" ]; then
-  OBSIDIAN=$(jq -r '.obsidian // empty' "$REPO_PATHS" 2>/dev/null || echo "")
-fi
 if [ -f "$MACHINE_PATHS" ]; then
+  VAULT_CLAUDE=$(jq -r '."obsidian-vault-claude" // empty' "$MACHINE_PATHS" 2>/dev/null || echo "")
   STAGING=$(jq -r '."obsidian-staging" // empty' "$MACHINE_PATHS" 2>/dev/null || echo "")
 fi
 
 DATE=$(date +%Y-%m-%d)
 TIME=$(date +%H%M%S)
-if [ -n "$OBSIDIAN" ] && [ -d "$OBSIDIAN" ]; then
-  OUT_DIR="$OBSIDIAN/claude/codex-runs/$DATE"
+if [ -n "$VAULT_CLAUDE" ] && [ -d "$VAULT_CLAUDE" ]; then
+  OUT_DIR="$VAULT_CLAUDE/codex-runs/$DATE"
 elif [ -n "$STAGING" ]; then
   OUT_DIR="$STAGING/codex-runs/$DATE"
 else
-  OUT_DIR="$HOME/Desktop/www/caol-ila/claude/obsidian-staging/codex-runs/$DATE"
+  OUT_DIR="$HOME/Desktop/www/caol-ila/claude/temp-learnings/codex-runs/$DATE"
 fi
 mkdir -p "$OUT_DIR"
 OUT_FILE="$OUT_DIR/${SKILL}-${TIME}.md"

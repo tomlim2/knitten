@@ -25,7 +25,7 @@ def load_config():
 
 
 def load_repo_paths():
-    repo_paths_file = Path.home() / ".claude" / "private" / "repo-paths.json"
+    repo_paths_file = Path.home() / ".claude" / "private" / "caol-config" / "repo-paths.json"
     with open(repo_paths_file, "r", encoding="utf-8") as f:
         return json.load(f)
 

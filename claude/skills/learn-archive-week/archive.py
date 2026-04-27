@@ -5,7 +5,7 @@ Idempotent: skips files with existing valid frontmatter if already at destinatio
 See SKILL.md for full spec.
 
 Machine-specific absolute paths are loaded from
-``~/.claude/private/machine-paths.json`` (keys: ``obsidian-staging``,
+``~/.claude/private/caol-config/machine-paths.json`` (keys: ``obsidian-staging``,
 ``codex-home``, ``obsidian-vault-claude``). Missing keys abort the run with a
 clear message — on machines without an Obsidian vault (e.g. the work Mac) this
 script is not meant to run.
@@ -22,7 +22,7 @@ from datetime import datetime, date
 HOME = Path.home()
 
 # ---------- load machine-specific paths ----------
-_PATHS_FILE = HOME / ".claude" / "private" / "machine-paths.json"
+_PATHS_FILE = HOME / ".claude" / "private" / "caol-config" / "machine-paths.json"
 try:
     _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
 except FileNotFoundError:
