@@ -262,19 +262,26 @@ ADR-0030의 한 줄짜리 큰 그림은 **"normalize ≠ retarget, 크레이트 
 
 ---
 
-## 15:36 — STL-193 closed (merged)
+## 15:36 — STL-193 closed ([#177](https://github.com/CINEV/shotloom/pull/177))
 
-**PR:** [#177](https://github.com/CINEV/shotloom/pull/177) docs(adr): propose ARKit 52 canonical + scaffold facial-anim-normalizer — MERGED 2026-04-27 06:36 UTC
-**Linear:** [STL-193](https://linear.app/cinamon-corp/issue/STL-193/featretarget-scaffold-shotloom-facial-anim-normalizer-arkit-52-adr) In Progress → Done (auto via `Resolves STL-193` on merge)
-**Branch:** `feat/adr-0032-arkit-52-facial` (deleted; tip was `cd96b95`)
-**Worktree:** `.worktrees/stl-193-arkit-52-facial` (removed)
-**Commits on branch:** 8 (`e883edb` … `cd96b95`)
-**Parent:** STL-127 (ADR-0030 normalizer 3-crate 추출 umbrella) — Step 3
+회고 — 리뷰에서 어떤 지적을 당했나, 무엇을 배웠나.
 
-**Summary:** ADR-0033이 Accepted로 land. ARKit 52 채널 가치 시맨틱 (`[0,1]` clamp, bilateral 쌍 독립, 채널 비배타, scalar-weight 출력) + `x.<source>.<name>` 확장 namespace + baseline-shadowing 금지를 pin. 결정만 ~80줄, ADR-0030이 미뤘던 두 항목을 정확히 닫음. 52 채널 이름 표는 ADR에서 빠지고 `shotloom-facial-anim-normalizer/lib.rs`의 `pub const ARKIT_52_CHANNEL_NAMES: &[&str; 52]`로 이동, length / uniqueness / per-group alphabetical-order 테스트 3개로 drift를 구조적으로 차단. 리뷰에서 잡힌 Jaw 알파벳 anomaly (`jawForward, jawLeft, jawRight, jawOpen` — `jawOpen`이 `jawRight` 앞에 와야 자체 규칙 충족)는 `groups_are_contiguous_and_alphabetical` 테스트가 자동 수정.
+**지적 1 — ADR이 245줄, 결정은 ~60줄.** ryumiel: "ADR-0030이 이미 canonical 결정을 내렸고, 이 ADR의 진짜 새 결정은 가치 시맨틱 + extension namespace 두 개뿐. 나머지는 restatement, Apple이 published한 채널 이름 나열, 또는 §4가 자기 deferred하면서 반쯤 적은 binding shape." → ADR ~80줄 decision-only로 재작성.
 
-> [!tip] Skill drift fixed mid-PR
-> ADR이 245줄로 비대해진 근본 원인은 `shotloom-draft-adr` 스킬이 자체 inline Markdown skeleton을 들고 있어서 `docs/guidelines/adr-template.md`와 어긋나 있던 것. 같은 세션에서 스킬을 in-repo 템플릿 단일 소스 강제로 재작성 (H2 list verbatim, no additions/removals, G10 self-check 추가, inventory/grammar는 source code로 보내야 함을 명시). caol-ila 커밋 `fb1be60`. 다음 ADR PR부터 같은 defect class 발생 안 함. PR 본문에도 process note 남김 ([issuecomment-4324546875](https://github.com/CINEV/shotloom/pull/177#issuecomment-4324546875)).
+**지적 2 — 52-채널 list는 ADR이 아니라 source가 owns해야 한다.** "Markdown 표는 자기 자신과 drift 가능. `pub const` + length assert + group test는 drift 불가능, PR diff 동일하게 보이고, Apple이 sole external source of truth로 유지된다." → `ARKIT_52_CHANNEL_NAMES` 상수로 이동, 테스트 3개 (length/uniqueness/per-group alphabetical) 추가.
 
-> [!info] Review cycle
-> ryumiel: 두 라운드 구조 비판 (04:30 + 05:40) — "ADR 245줄, 진짜 결정은 ~60줄. 52-channel list는 source가 owns해야 한다." plan A (재구성) 수용 → 커밋 `01f7580`로 ADR 슬림화 + 상수 추가. APPROVED 후 5개 P3 nits (Status flip, README index move, Cargo description, empty `[dependencies]` drop, VRM citation 구체화) → 커밋 `0744ca2` + URL fix `cd96b95` (lychee가 VRM URL 404 잡아 `main` → `master` 정정).
+**지적 3 — Jaw 알파벳 anomaly가 ADR이 자기 규칙을 어겼다는 증거.** `jawForward, jawLeft, jawRight, jawOpen` — 자체 "각 그룹 내 알파벳 순" 규칙 위반 (`jawOpen`이 `jawRight` 앞이 맞음). "상수 + 테스트가 있었으면 안 머지됐을 것." → 테스트가 자동으로 잡아 정정.
+
+**지적 4 (트림 후 한 발 더) — 같은 기준 적용하면 더 자른다.** "§1 표는 inventory가 됐고 결정은 §3+'Sum 52'로 충분. §4 grammar bullets는 underspec parser spec — 작성된 대로 구현 불가. §5는 'schema deferred'라면서 같은 문단에서 categorical 나열. §6는 §4 grammar로 구현 불가능한 parser commitment." → §1 표 → const, §4 grammar → parser scope defer, §5 categorical drop, §6 placement 한 줄로 축소.
+
+> [!tip] 가장 중요한 배운 것 — 스킬이 drift origin이었다
+> ADR이 245줄로 비대해진 진짜 근본 원인은 내가 쓴 게 아니라 `shotloom-draft-adr` 스킬이 자체 inline Markdown skeleton을 들고 있어서 in-repo `docs/guidelines/adr-template.md`와 어긋나 있던 것. 작가(나)가 스킬이 주는 골격을 신뢰했다 = 작가의 잘못이 아니라 도구의 잘못. 같은 세션에서 스킬을 in-repo 템플릿 단일 소스 강제로 재작성 (H2 list verbatim, G10 self-check 추가, inventory/grammar는 code로 가야 함). caol-ila `fb1be60`. PR 본문에도 process note ([issuecomment-4324546875](https://github.com/CINEV/shotloom/pull/177#issuecomment-4324546875)).
+
+> [!abstract] Rule
+> ADR은 결정+근거만. inventory(목록), grammar(문법), schema(half-deferred) 셋 다 보이면 → 코드로 보내거나 별 PR로 defer. ADR에 N개짜리 literal list가 들어있다면 그건 거의 항상 `pub const` + 테스트가 더 적합한 surface다.
+
+> [!warning] 머지 직전까지 따라온 P3 nits 5개
+> APPROVED 받은 뒤에도 thread 5개 미해결로 BLOCKED 됐음 (룰셋 `required_review_thread_resolution: true`). Status flip, README index move, Cargo description, empty `[dependencies]` 제거, VRM citation 구체화. 5개 cheap이라 한 커밋으로 처리. **교훈:** "Approved + CI green = mergeable" 아님. ruleset에 thread resolution이 있는지 확인하고 코멘트 남자마자 즉시 처리.
+
+> [!warning] CI Link Check가 잡은 외부 URL 404
+> VRM citation에 `https://github.com/vrm-c/vrm-specification/blob/main/...` 적었더니 lychee 404. 해당 repo의 default branch는 `main`이 아니라 `master`였음. **교훈:** 외부 git repo 링크 적기 전에 default branch 확인. 또는 `tree/<commit-sha>` 같은 immutable ref 사용.

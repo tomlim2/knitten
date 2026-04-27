@@ -136,31 +136,60 @@ if [ -n "$pr_number" ] && [ "$mode" != "paused" ]; then
 fi
 ```
 
-### Step 5: Append day log via `/learn-log-day`
+### Step 5: Append day log via `/learn-log-day` — RETROSPECTIVE ONLY
 
-Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog` so the Obsidian-format conventions (frontmatter, tags, callouts, wikilinks, path resolution) are handled in one place.
+Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog` so Obsidian-format conventions (frontmatter, tags, callouts, wikilinks, path resolution) are handled in one place.
 
-Draft the entry body first from the resolved context (PR number/title/merge state, Linear transition, worktree path, commit shas, one-line summary from the PR body's `## Summary`). Then invoke:
+**The entry is a retrospective, not a status report.** PR number, branch name, commit SHAs, file lists, summary of the change — all of that already lives in the PR description and `git log`. Duplicating them in the devlog buries the only thing future-me actually needs: **what was pointed out in review and what to do differently next time**.
 
-```
-/learn-log-day shotloom devlog
-```
+#### What the entry MUST contain
 
-When the learn-log-day skill opens the day file, paste the drafted entry under today's heading in this shape:
+- **Single header line** with PR link only — no separate **PR / Linear / Branch / Worktree / Commits** metadata block. The PR link is enough; everything else is one click away.
+- **Numbered "지적" items** (criticisms / corrections received) — one per finding, each in this shape:
+  - **What** the reviewer (or CI, or the rule) pointed out, with a direct quote when meaningful.
+  - **Why** it was right — the underlying principle (ADR-NNNN section, standard ID, `review-code-rust.md` pattern letter, etc.).
+  - **What changed** in the PR as a result (commit SHA, file).
+- **`> [!tip]` callout** — the single most important insight from this PR. The thing future-me would want to remember in 6 months. Often a meta-insight: tooling drift, skill drift, process gap, missed convention.
+- **`> [!abstract] Rule` callout** — a one-line generalizable rule extracted from this PR's lessons, written so it could go straight into `~/.claude/rules/` or a standard. Tagged `#rule`.
+- **`> [!warning]` callouts** — process gotchas worth flagging for next time (e.g. "APPROVED + CI green ≠ mergeable when ruleset requires thread resolution"; "external repo default branch is `master`, lychee caught the 404"). Each ends with **교훈:** (lesson) — one sentence.
+
+#### What the entry MUST NOT contain
+
+- **No Branch / Worktree / Commit-list metadata block.** PR link covers it.
+- **No "what the PR did" summary.** That's the PR's `## Summary` — duplicating adds zero retrospective value.
+- **No celebratory framing** ("merged successfully", "all tests pass"). The retrospective is for what was *wrong*, not what worked.
+- **No agentless-register violations carried over from PR text.** Devlog can be first-person Korean (internal notes, not repo artifact); but still cite the standard / rule / file:line that drives each lesson, not "the reviewer told me X".
+
+#### Skeleton
 
 ```markdown
-## <HH:MM> — STL-NN closed (<mode>)
+## <HH:MM> — STL-NN closed ([#<N>](<pr-url>))
 
-**PR:** [#<N>](<pr-url>) <title> — <MERGED|CLOSED|no-pr>
-**Linear:** [STL-NN](<linear-url>) <prev state> → <new state>
-**Branch:** `<branch>` (<removed | kept — reason>)
-**Worktree:** `<path>` (<removed | preserved>)
-**Commits on branch:** <N> (<first sha> … <last sha>)
+회고 — 리뷰에서 어떤 지적을 당했나, 무엇을 배웠나.
 
-**Summary:** <1-2 lines — what the task accomplished, key changes, blockers/learnings if any>
+**지적 1 — <one-line summary>.** <reviewer/CI quote when meaningful>. <why the principle is right>. → <what changed: commit SHA, file>.
+
+**지적 2 — <…>.** …
+
+**지적 3 — <…>.** …
+
+> [!tip] 가장 중요한 배운 것 — <one-line>
+> <2-3 sentences. The meta-insight. Often: tool/skill/process drift that fed the original defect.>
+
+> [!abstract] Rule
+> <One-line generalizable rule. Could be lifted into ~/.claude/rules/ or a standard verbatim.>
+
+> [!warning] <process gotcha>
+> <What happened, why it bit.> **교훈:** <one-sentence lesson.>
 ```
 
-Keep it brief — the full story lives in the PR / commits. If the Obsidian vault is writable (`obsidian-vault-claude` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
+Skip any callout that has no real content — empty callouts are worse than absent ones.
+
+#### Length budget
+
+If the PR was uneventful (clean approval, no nits, no ruleset blockers), one paragraph is fine. If it carried multiple review rounds + CI failures + skill-drift discovery (like STL-193), three to five 지적 items + 1 tip + 1 rule + 1-2 warnings is the right shape. Past ~30 lines, audit for restated PR content.
+
+If the Obsidian vault is writable (`obsidian-vault-claude` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
 
 **After learn-log-day writes the file**, commit and push it from the caol-ila repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
 
