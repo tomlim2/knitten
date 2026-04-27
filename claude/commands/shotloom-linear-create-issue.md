@@ -248,8 +248,12 @@ description: formatted description
 
 ### Step 6: External references (shotloom 레포 내부만)
 
-- ADR / spec / 파일 경로는 shotloom 레포 기준 상대 경로: `docs/adr/adr-0022-....md`, `crates/shotloom-retarget/src/lib.rs`
-- CINEV org GitHub commit/PR: `[commit abc1234](https://github.com/CINEV/shotloom/commit/abc1234)` 허용
+- ADR / spec / 파일 경로는 shotloom 레포 기준 상대 경로를 **항상 backtick** 으로: `` `docs/adr/adr-0022-....md` ``, `` `crates/shotloom-retarget/src/lib.rs` ``
+- **Markdown link `[text](repo-relative-path)` 는 repo-relative 경로에 절대 사용 금지.** Linear 본문은 GitHub 컨텍스트 없이 렌더되므로 `[ADR-0030](docs/adr/adr-0030-....md)` 같은 markdown link 를 클릭하면 `https://linear.app/.../docs/adr/...` 라는 깨진 URL 로 감. 백틱 또는 절대 GitHub URL 둘 중 하나만 사용.
+  - 상대 경로 단순 언급: `` `docs/adr/adr-0030-...md` `` (백틱, 링크 X) ✅
+  - 클릭 가능하게 만들려면: `[ADR-0030](https://github.com/CINEV/shotloom/blob/main/docs/adr/adr-0030-...md)` (절대 URL) ✅
+  - `[ADR-0030](docs/adr/adr-0030-...md)` (상대 경로 markdown link) ❌
+- CINEV org GitHub commit/PR: `[commit abc1234](https://github.com/CINEV/shotloom/commit/abc1234)`, `[#172](https://github.com/CINEV/shotloom/pull/172)` 허용 (절대 URL)
 - **Private 개인 레포 링크/경로 절대 금지** (Step 2 Privacy 규칙 참고). bevy-vrm, anju, mmd-anju 등 언급 시 `"prior internal prototype"` 같은 추상 표현으로 치환.
 - Slack thread: 팀이 쓰는 패턴이면 `## 공유` 섹션에 추가
 
