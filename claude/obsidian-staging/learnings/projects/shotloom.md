@@ -34,13 +34,13 @@ Project wisdom vault for Shotloom (CINEV's web-first cinematic scene editor). Ea
 
 ### 2026-04-27 — Three normalizer crates: input/output/canonical separation (ADR-0030)
 
-**Definition.** Shotloom의 import → retarget 파이프라인에서 normalization 책임은 세 개의 독립 crate로 분리된다 — `shotloom-character-normalizer`, `shotloom-body-anim-normalizer`, `shotloom-facial-anim-normalizer`. 세 crate는 서로 의존하지 않고, 각자 다른 입력/출력/canonical target을 가진다. 합류는 caller (retarget driver) 가 한다. 이 패턴이 "왜 세 개여야 하는가"의 답이 되는 동시에 "왜 한 crate / 두 crate 안 되는가"의 답이기도 하다.
+**Definition.** Shotloom의 import → retarget 파이프라인에서 normalization 책임은 세 개의 독립 crate로 분리된다 — `shotloom-character-model-normalizer`, `shotloom-body-anim-normalizer`, `shotloom-facial-anim-normalizer`. 세 crate는 서로 의존하지 않고, 각자 다른 입력/출력/canonical target을 가진다. 합류는 caller (retarget driver) 가 한다. 이 패턴이 "왜 세 개여야 하는가"의 답이 되는 동시에 "왜 한 crate / 두 crate 안 되는가"의 답이기도 하다.
 
 **Three-way contract.**
 
 | Crate | 입력 | 출력 | Canonical target | Cadence |
 |---|---|---|---|---|
-| `character-normalizer` | `ImportedVrmAsset` (VRM 파일) | rest pose 정렬 + foot contact / sole offset + per-character VRM expression binding | **CR rest pose** (CINEV ARP rig, 임시 — A-pose 마이그레이션은 후속 ADR) | VRM importer 따라감 |
+| `character-model-normalizer` | `ImportedVrmAsset` (VRM 파일) | rest pose 정렬 + foot contact / sole offset + per-character VRM expression binding | **CR rest pose** (CINEV ARP rig, 임시 — A-pose 마이그레이션은 후속 ADR) | VRM importer 따라감 |
 | `body-anim-normalizer` | `ImportedFbxAnimation` (Body 모드) | source 본 이름 → canonical 본 이름 매핑 + 좌표 변환된 skeletal motion | **CR rest pose** (임시) | DCC source 따라감 |
 | `facial-anim-normalizer` | `ImportedFbxAnimation` (Face 모드) | ARKit 52 채널 이름으로 매핑된 blendshape weight track | **ARKit 52 baseline + 확장 registry** (안정) | AI 모델 변화 따라감 |
 
@@ -55,7 +55,8 @@ Project wisdom vault for Shotloom (CINEV's web-first cinematic scene editor). Ea
 ImportedVrmAsset        ImportedFbxAnimation    ImportedFbxAnimation
     │                       │ (mode=Body)           │ (mode=Face)
     ▼                       ▼                       ▼
-character-normalizer    body-anim-normalizer    facial-anim-normalizer
+character-model-       body-anim-              facial-anim-
+normalizer             normalizer              normalizer
     │                       │                       │
     │ (rest pose +          │ (canonical 본 +       │ (ARKit 52 ch +
     │  foot contact +       │  좌표 변환된           │  per-character
