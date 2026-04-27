@@ -245,3 +245,17 @@ ADR-0030의 한 줄짜리 큰 그림은 **"normalize ≠ retarget, 크레이트 
 - **ADR 가 prerequisite을 명시한 것의 가치**: ADR-0030 §Dependency direction의 "until STL-183 lands" 한 줄 덕분에, cycle 만났을 때 "이건 ADR이 이미 인정한 임시 단계" 라고 즉시 framing 가능했음. ADR이 미래 한계점을 미리 적어두면 staging 결정이 훨씬 빨라진다.
 - **`character-normalizer` rename 예고**: 사용자가 `shotloom-character-normalizer` → `shotloom-character-model-normalizer` 로 rename 할 예정이라고 알려줌. 내 PR엔 현재 이름으로 그대로 둠 — rename PR이 ADR-0030 + 모든 cross-reference를 sweep할 때 자동으로 픽스됨 (Pattern A8 concept-word sweep). 미리 바꾸면 ADR과 어긋나서 리뷰어 confuse.
 - **PR base가 `test/body-retarget-regression`**: stack PR. PR #172 가 main으로 머지되면 GitHub가 자동으로 base를 main으로 옮겨줌. 그동안 diff에 #172 변경분이 안 섞여 보임.
+
+---
+
+## 11:55 — STL-179 closed (merged)
+
+**PR:** [#172](https://github.com/CINEV/shotloom/pull/172) `test(retarget): pin body retarget output via golden regression` — MERGED 2026-04-27 02:20 UTC
+**Linear:** [STL-179](https://linear.app/cinamon-corp/issue/STL-179) In Progress → **Done**
+**Branch:** `test/body-retarget-regression` (squash-merged, force-deleted)
+**Worktree:** `.worktrees/stl-127-body-retarget-regression` (removed)
+**Parent:** STL-127 (ADR-0030 normalizer 3-crate 추출 umbrella)
+
+**Summary:** ADR-0030 Step 0 안전망 — body retargeter의 per-bone 회전 출력을 golden snapshot으로 pin해서 Step 1-3 crate 이동 중 silent 수학 회귀를 잡는다. fixtures.json preset 1 (1764 frames × 53 bones), bone당 5개 균등 샘플 quaternion, `Quat::angle_between` 5e-3 rad tolerance, snapshot header에 tolerance 명시(코드 수정 없이 조정 가능). LFS pointer 미다운로드 가드 + 회귀 시 stderr에 전체 snapshot dump → CI 로그만으로 regen 가능. 이로써 Step 1 (PR #177/#178/#179 — facial/character/body normalizer scaffold) 이 silent regression 없이 진행됨이 보장.
+
+**Side note:** close-task 실행 시점에 `~/.claude/private/caol-config/doc-paths.json` 누락 확인 → 같은 세션에서 layer-1 config 생성. 13개 purpose (devlog/learning/topic/postmortem/consulting/research/notes/experiment/tutoring/drinks/vocab/private-data/ops) × {default, no-vault} 매핑. 이제 `/learn-log-day` 정상 동작.
