@@ -291,6 +291,28 @@ Write devlog summarizing **why / how / what** so future sessions can recall cont
 6. Do NOT open Obsidian to verify rendering — file is durable on disk.
 7. Body: Korean narrative, technical terms English. Code/paths/CLI in code spans.
 
+### Step 10c: Trigger Claude review after CI passes (MANDATORY)
+
+`/claude-review` is **NOT** a Claude Code skill — it is a **literal text comment posted on the PR** that triggers the Claude review GitHub App / workflow on the CI side. Posting it before CI completes wastes a review cycle on a red PR; posting it after the user manually requested a human reviewer creates noise.
+
+Sequence (after Step 10 reports the PR URL):
+
+1. **Wait for CI to finish.** Poll `gh pr checks <PR-number> --watch` or `gh pr view <N> --json statusCheckRollup` until every check is `SUCCESS`, `FAILURE`, or `SKIPPED` (no `PENDING` / `IN_PROGRESS`).
+2. **If any check failed** → do NOT post `/claude-review`. Surface the failure to the user and stop; CI failures are author-fix territory, not reviewer territory.
+3. **If all checks passed** → ask user:
+   > CI 통과 ✅. `/claude-review` 코멘트로 Claude 리뷰 트리거할까요? (y/n)
+4. **On user `yes`** → post the literal text `/claude-review` as a top-level PR comment:
+   ```bash
+   gh pr comment <PR-number> --body "/claude-review"
+   ```
+   This is a **PR-level comment** — the post itself is a one-time author-initiated action authorized by the user's `yes` here, separate from the per-comment approval gate that covers reply-to-reviewer comments.
+5. **On user `no`** → skip, proceed to Step 11.
+
+Skip entirely when:
+- The PR is `--draft` AND the user did not promote to ready-for-review (Claude review on a draft is wasted).
+- Invoked inside `/shotloom-auto-pr` (auto-pr handles its own review cadence).
+- The user already requested a specific human reviewer in this PR (overlapping signals).
+
 ### Step 11: Offer auto-PR watcher
 
 > 자동 PR 응대(`/shotloom-auto-pr <N>`) 켤까요? CI/리뷰 감지 → 수정 → 푸시 → 인라인 응답을 per-comment 승인 없이 진행합니다. (y/n)
