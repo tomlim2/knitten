@@ -90,20 +90,30 @@ Classify as `rust` / `ts` / `bridge` / `docs` / `test` / `mixed`. Priority:
 4. Branch name hint
 5. Ask user if ambiguous
 
-### Step 5: Load targeted standards
+### Step 5: Load targeted standards (in-repo authoritative)
 
-Always load: `~/.claude/standards/shotloom-programming.md` §1, §2, §14, §15.
+Always load from the shotloom repo:
 
-Per-category additions:
+- `docs/guidelines/error-handling.md` — typed error discipline
+- `docs/guidelines/review-rust.md` — panic / unwrap / unsafe / ECS / WASM rules
+- `docs/guidelines/commit-guideline.md` — conventional commits format
+- `docs/guidelines/pr-guideline.md` — PR title / body / review-reply policy
+- `CONTRIBUTING.md` — repo language, branch naming, pre-commit hooks
 
-| Category | Additional sections |
-|----------|---------------------|
-| `rust` | §1–§8 all |
-| `ts` | §9, §5, §10 |
-| `bridge` | §5, §6, §9, §10 + `docs/ipc/bridge-contract.md` |
-| `docs` | §12 + `docs/guidelines/documentation-standard.md` |
-| `test` | §13, §11 |
+Per-category additions (still in-repo):
+
+| Category | Additional reads |
+|----------|------------------|
+| `rust` | none beyond the always-load set |
+| `ts` | `docs/guidelines/review-typescript.md` |
+| `bridge` | `docs/ipc/bridge-contract.md` + `review-typescript.md` |
+| `docs` | `docs/guidelines/documentation-standard.md` |
+| `test` | (covered by `review-rust.md`) |
 | `mixed` | everything |
+
+Pattern catalog (Claude-side, in-repo lacks equivalent):
+
+- `~/.claude/standards/review-code-rust.md` — 22-pattern pre-PR self-review checklist derived from real Shotloom PR defects. Walk this against the diff before push. Loaded by `/shotloom-review-before-pr`.
 
 For Rust, also scan `docs/adr/` for ADRs relevant to the affected crate.
 
@@ -143,9 +153,9 @@ Auto-commit/push cadence (per `rules/shotloom-git.md`) does NOT bypass the revie
 
 - Hook: `~/.claude/hooks/shotloom-linear-detect.sh` (auto-invoker)
 - [`~/.claude/rules/shotloom.md`](../../rules/shotloom.md) — hub
-- [`~/.claude/standards/shotloom-programming.md`](../../standards/shotloom-programming.md) — writing rules
-- [`~/.claude/standards/review-code-rust.md`](../../standards/review-code-rust.md) — review patterns
-- [`~/.claude/rules/shotloom-git.md`](../../rules/shotloom-git.md) — PR gates
+- in-repo `docs/guidelines/*` — writing rules (authoritative)
+- [`~/.claude/standards/review-code-rust.md`](../../standards/review-code-rust.md) — pre-PR review pattern catalog (Claude-side, in-repo lacks equivalent)
+- [`~/.claude/rules/shotloom-git.md`](../../rules/shotloom-git.md) — Claude-side PR gates / auto-commit policy
 
 ## Additional Resources
 

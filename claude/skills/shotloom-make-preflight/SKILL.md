@@ -19,7 +19,7 @@ Usage: `/shotloom-make-preflight`
 
 - Start of each work day (first shotloom session)
 - After pulling changes to `docs/guidelines/**`, `docs/adr/**`, `AGENTS.md`, `CONTRIBUTING.md`, `CLAUDE.md`, or `.agent/**`
-- After updating `~/.claude/standards/shotloom-programming.md` or `review-code-rust.md`
+- After updating `~/.claude/standards/review-code-rust.md`
 - After merging a PR that touches repo rules
 
 If unsure, recreate. Cheap insurance.
@@ -55,13 +55,13 @@ Then enumerate and read every file under:
 
 ### Step 3: Read global Shotloom standards (parallel)
 
-From `~/.claude/`:
+From `~/.claude/` (Claude-side only — in-repo `docs/guidelines/` is the SSOT for writing/review rules and is loaded in Step 2):
 
-- `standards/shotloom.md`
-- `standards/shotloom-programming.md`
-- `standards/review-code-rust.md`
-- `rules/shotloom.md`
-- `rules/shotloom-git.md`
+- `standards/shotloom.md` — project overview (no in-repo equivalent)
+- `standards/review-code-rust.md` — 22-pattern pre-PR review catalog (no in-repo equivalent)
+- `standards/shotloom-pr-scope-policy.md` — PR scope classification policy (no in-repo equivalent)
+- `rules/shotloom.md` — hub rule (routing + answering style)
+- `rules/shotloom-git.md` — Claude-side gates (gh auth, auto-commit, CI exclude flags)
 
 ### Step 4: Read ADR index entries
 
@@ -78,7 +78,7 @@ Emit:
 **shotloom HEAD:** <short-sha>
 **Loaded:**
 - Repo: AGENTS, CONTRIBUTING, CLAUDE, ADR index, N guideline files, M .agent files
-- Global: shotloom.md, shotloom-programming.md, review-code-rust.md, rules/shotloom*.md
+- Claude-side: shotloom.md, review-code-rust.md, shotloom-pr-scope-policy.md, rules/shotloom*.md
 - ADR titles indexed: <count>
 
 **Fork this session for each work task.**
