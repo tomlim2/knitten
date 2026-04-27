@@ -259,3 +259,22 @@ ADR-0030의 한 줄짜리 큰 그림은 **"normalize ≠ retarget, 크레이트 
 **Summary:** ADR-0030 Step 0 안전망 — body retargeter의 per-bone 회전 출력을 golden snapshot으로 pin해서 Step 1-3 crate 이동 중 silent 수학 회귀를 잡는다. fixtures.json preset 1 (1764 frames × 53 bones), bone당 5개 균등 샘플 quaternion, `Quat::angle_between` 5e-3 rad tolerance, snapshot header에 tolerance 명시(코드 수정 없이 조정 가능). LFS pointer 미다운로드 가드 + 회귀 시 stderr에 전체 snapshot dump → CI 로그만으로 regen 가능. 이로써 Step 1 (PR #177/#178/#179 — facial/character/body normalizer scaffold) 이 silent regression 없이 진행됨이 보장.
 
 **Side note:** close-task 실행 시점에 `~/.claude/private/caol-config/doc-paths.json` 누락 확인 → 같은 세션에서 layer-1 config 생성. 13개 purpose (devlog/learning/topic/postmortem/consulting/research/notes/experiment/tutoring/drinks/vocab/private-data/ops) × {default, no-vault} 매핑. 이제 `/learn-log-day` 정상 동작.
+
+---
+
+## 15:36 — STL-193 closed (merged)
+
+**PR:** [#177](https://github.com/CINEV/shotloom/pull/177) docs(adr): propose ARKit 52 canonical + scaffold facial-anim-normalizer — MERGED 2026-04-27 06:36 UTC
+**Linear:** [STL-193](https://linear.app/cinamon-corp/issue/STL-193/featretarget-scaffold-shotloom-facial-anim-normalizer-arkit-52-adr) In Progress → Done (auto via `Resolves STL-193` on merge)
+**Branch:** `feat/adr-0032-arkit-52-facial` (deleted; tip was `cd96b95`)
+**Worktree:** `.worktrees/stl-193-arkit-52-facial` (removed)
+**Commits on branch:** 8 (`e883edb` … `cd96b95`)
+**Parent:** STL-127 (ADR-0030 normalizer 3-crate 추출 umbrella) — Step 3
+
+**Summary:** ADR-0033이 Accepted로 land. ARKit 52 채널 가치 시맨틱 (`[0,1]` clamp, bilateral 쌍 독립, 채널 비배타, scalar-weight 출력) + `x.<source>.<name>` 확장 namespace + baseline-shadowing 금지를 pin. 결정만 ~80줄, ADR-0030이 미뤘던 두 항목을 정확히 닫음. 52 채널 이름 표는 ADR에서 빠지고 `shotloom-facial-anim-normalizer/lib.rs`의 `pub const ARKIT_52_CHANNEL_NAMES: &[&str; 52]`로 이동, length / uniqueness / per-group alphabetical-order 테스트 3개로 drift를 구조적으로 차단. 리뷰에서 잡힌 Jaw 알파벳 anomaly (`jawForward, jawLeft, jawRight, jawOpen` — `jawOpen`이 `jawRight` 앞에 와야 자체 규칙 충족)는 `groups_are_contiguous_and_alphabetical` 테스트가 자동 수정.
+
+> [!tip] Skill drift fixed mid-PR
+> ADR이 245줄로 비대해진 근본 원인은 `shotloom-draft-adr` 스킬이 자체 inline Markdown skeleton을 들고 있어서 `docs/guidelines/adr-template.md`와 어긋나 있던 것. 같은 세션에서 스킬을 in-repo 템플릿 단일 소스 강제로 재작성 (H2 list verbatim, no additions/removals, G10 self-check 추가, inventory/grammar는 source code로 보내야 함을 명시). caol-ila 커밋 `fb1be60`. 다음 ADR PR부터 같은 defect class 발생 안 함. PR 본문에도 process note 남김 ([issuecomment-4324546875](https://github.com/CINEV/shotloom/pull/177#issuecomment-4324546875)).
+
+> [!info] Review cycle
+> ryumiel: 두 라운드 구조 비판 (04:30 + 05:40) — "ADR 245줄, 진짜 결정은 ~60줄. 52-channel list는 source가 owns해야 한다." plan A (재구성) 수용 → 커밋 `01f7580`로 ADR 슬림화 + 상수 추가. APPROVED 후 5개 P3 nits (Status flip, README index move, Cargo description, empty `[dependencies]` drop, VRM citation 구체화) → 커밋 `0744ca2` + URL fix `cd96b95` (lychee가 VRM URL 404 잡아 `main` → `master` 정정).
