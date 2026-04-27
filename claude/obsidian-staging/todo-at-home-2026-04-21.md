@@ -42,27 +42,18 @@ cat ~/.claude/private/caol-config/machine-paths.json | jq .
 - `obsidian-vault-claude` 키 존재해야 함 (iCloud Obsidian MyNotes/claude)
 - 없으면 키 추가
 
-### 2-a. caol-config/ 경로 마이그레이션 (회사 맥에서 실행됨, 집 맥 동일 필요)
+### 2-a. caol-config/ 경로 마이그레이션 ✅ (2026-04-27 완료)
 
-활성 스킬 전부가 `~/.claude/private/caol-config/*.json` 경로 기대 (canonical). 기존 flat `~/.claude/private/*.json`은 드리프트. 집 맥에서도 동일하게 옮겨야 함:
+집 맥에서도 `caol-config/` 서브디렉토리에 이미 정착되어 있었음. 추가로 발견된 드리프트 정리:
+- `archive.py`, `tag_consolidate.py`, `fill_tags_from_name.py` — 옛 `private/machine-paths.json` 경로 → `caol-config/machine-paths.json`로 수정
+- `lib/cci-codex/run-codex.sh` — 같은 경로 + `obsidian` 키를 repo-paths에서 찾던 버그 → `obsidian-vault-claude` (machine-paths)로 수정
+- `cci-sync-ta-tools/sync.py` — `private/repo-paths.json` → `caol-config/repo-paths.json`
+- `machine-paths.json`에 `codex-home` 키 추가 (`~/.codex`)
+- `obsidian-staging` 키를 실제 데이터 위치(`caol-ila/claude/obsidian-staging`)로 정정 — 빈 `temp-learnings/`를 가리키던 드리프트 해소
 
-```bash
-mkdir -p ~/.claude/private/caol-config
-mv ~/.claude/private/repo-paths.json ~/.claude/private/caol-config/ 2>/dev/null
-mv ~/.claude/private/machine-paths.json ~/.claude/private/caol-config/ 2>/dev/null
-mv ~/.claude/private/hardware.json ~/.claude/private/caol-config/ 2>/dev/null
-jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json  # smoke test
-```
+### 3. P0 버그 수정 검증 ✅ (2026-04-27 완료)
 
-### 3. P0 버그 수정 검증
-
-`~/.claude/skills/learn-archive-week/fill_tags_from_name.py` 실제로 돌려보기. 회사 맥에서는 vault 없어서 graceful exit만 확인 가능했음. 집에서 정상 경로 타는지 확인:
-
-```bash
-python3 ~/.claude/skills/learn-archive-week/fill_tags_from_name.py
-```
-
-에러 없이 실행되고, `/Users/younsoolim/...` 하드코드가 더이상 없는지 재확인.
+`fill_tags_from_name.py` 정상 실행 확인 (519 files scanned, 2 changed). vault 경로 정상 해석.
 
 ### 4. P1 Obsidian vault 경로 중앙화 (집 맥에서만 검증 가능)
 
