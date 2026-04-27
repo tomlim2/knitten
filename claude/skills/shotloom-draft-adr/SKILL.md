@@ -16,6 +16,12 @@ Draft a new Architecture Decision Record under `docs/adr/` following the Shotloo
 
 Usage: `/shotloom-draft-adr vrm-axis-correction-in-import`
 
+## Drafting principles
+
+- **Use the in-repo template AS-IS.** If `docs/adr/_template.md` exists, copy it verbatim. Don't add sections that aren't in the template (no `Phase X`, no `Stack note`, no `Next steps`).
+- **Single-operator framing.** Write the ADR and any companion plan files (`.agent/*.md`, migration plans) as if the user (one operator) will execute them. Do NOT inject "Delegate: 돌쇠 can do this mechanically" lines, do NOT split steps between human and Codex agent. The user works solo by default and adds delegation language explicitly when needed (e.g. "이건 돌쇠한테 넘기자"). `standards/shotloom.md` defines the agent's existence; it does not require every plan to pre-allocate work to it.
+- **Blast radius / rollback / acceptance** notes are useful regardless of operator — keep those.
+
 ## Workflow
 
 ### Step 1: Determine ADR number (provisional)
