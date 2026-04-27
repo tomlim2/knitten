@@ -73,6 +73,18 @@ frontmatter
 | devlog | `devlog`, 프로젝트명 |
 | learnings | `learnings`, 프로젝트명 |
 | 채용 관련 | `job-search` |
+| 이미지/비디오 프롬프트 레퍼런스 | `reference`, `image-prompt` 또는 `video-prompt`, **사용한 도구/모델 전부** (예: `gpt-image-2`, `seedance-2-0`, `midjourney-v7`, `flux-dev`, `gemini-image-3`, `runway-gen-4`) |
+| 코드/라이브러리 레퍼런스 | `reference`, **기술 스택** (예: `rust`, `bevy-0-15`, `react-19`, `webgpu`) |
+
+### 기술 스택 태그 규칙
+
+레퍼런스 문서(프롬프트, 코드 스니펫, 워크플로우 등)에는 **사용한 도구·모델·라이브러리를 모두 태그로 명시**한다. 미래에 같은 도구로 다른 작업을 할 때 검색 한 번으로 모이게 하기 위함.
+
+- **kebab-case 강제** — `GPT Image 2` → `gpt-image-2`, `Seedance 2.0` → `seedance-2-0`, `Three.js` → `three-js`
+- **버전은 마이너까지** — `bevy-0-15` (`0-15-1`까지 적지 말 것), `react-19`, `gpt-image-2`
+- **여러 도구 같이 썼으면 전부** — 프롬프트 1개에 GPT Image 2 + Seedance 2.0 둘 다 썼으면 둘 다 태그
+- **카테고리 태그도 같이** — 도구 태그만 있으면 안 됨. `reference` + `image-prompt`도 함께
+- **기존 태그 그대로 사용** — 같은 도구 새로 태그하기 전에 vault 검색해서 기존 표기 확인 (`gpt-4o-image` vs `gpt-image-4o` 같은 표기 분기 방지)
 
 ---
 
