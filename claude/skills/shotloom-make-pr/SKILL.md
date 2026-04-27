@@ -113,17 +113,16 @@ Match structure (Summary / Why / Changes / Impact / Test plan) to high-signal ex
 
 ### Step 5: Draft title + body
 
-**Title:** `<type>(<scope>): <short summary>`. Max 72 chars. Imperative. No trailing period.
+**The shotloom in-repo guidelines are the sole source of truth.** Use them AS-IS — do not invent additional sections, do not propagate templates from prior sessions or from `reference.md` that don't appear in the in-repo files. `reference.md` is implementation hints, not the template.
 
-**Body:** see [reference.md](reference.md) for the full template (Summary, Why, Changes, Impact, Test plan, Scope boundary, Related Issues). For trivial changes (<50 LOC), use the minimal `.github/pull_request_template.md` form.
+**Title:** Format and rules per `docs/guidelines/commit-guideline.md` § 1 (PR titles inherit commit subject rules per `pr-guideline.md` § 1). Max 80 chars per commit-guideline §1, lowercase type + scope, imperative, no trailing period. **Do not embed provisional ADR numbers (`ADR-NNNN`) in the title** — ADR numbers are only locked once the ADR file lands on `main`; a parallel PR can claim the same slot first and force a renumber (real precedent: STL-193 PR #177 renumbered ADR-0032 → ADR-0033 after PR #169 claimed 0032). Use a descriptive title; cite the ADR by number only in body content where edits are cheap.
 
-**Scope discipline (apply to every section):** every line in the body must directly serve **this PR's diff** or **this PR's roadmap edge** (the immediate predecessor / successor PR, the immediate gating issue). **Drop sibling, parallel, or umbrella content** — that context belongs in the Linear umbrella issue or sibling sub-issues, not here. Concrete tests:
+**Body sections** — pick exactly one source:
 
-- A `Scope boundary` bullet is on-topic only if a reviewer reading **this** diff would naturally ask "why didn't you also do X?" — sibling normalizers / parallel rename PRs / future cleanups in adjacent crates fail this test.
-- A `Next steps` bullet is on-topic only if it's **this PR's** direct successor (the next PR in the same crate / sub-issue chain) or its **single gating dependency**. Tracking sibling work or "monitor parallel PR" lines belong in the umbrella issue, not the PR body.
-- The `Why` section may set umbrella context in **one** sentence (which ADR / which umbrella) but should not enumerate sibling crates / parallel sub-issues.
+- **Expanded** (non-trivial changes): copy the template from `docs/guidelines/pr-guideline.md` § 3. Sections: Summary, Why, Changes, Impact, Testing, Breaking Changes, Related Issues. **Nothing else** — no `Scope boundary`, no `Next steps`, no `Stack note`, no invented headings. If a fact doesn't fit one of those seven sections, fit it into the closest section or drop it.
+- **Minimal** (<50 LOC, no new behavior): copy `.github/pull_request_template.md`. Sections: Summary, Validation, Related Issues.
 
-If a fact about a sibling normalizer / sibling crate / parallel work is genuinely needed to understand this PR's diff (e.g. "we renamed X because sibling Y also uses it"), state the fact inline where it applies — don't open a section about the sibling.
+**Issue linkage in `## Related Issues`** — pick `Resolves` / `Part of` / `No issue` per `docs/guidelines/pr-guideline.md` § 4. Decision rule: "after this PR merges, is there meaningful work left in the named issue?" Yes → `Part of`, No → `Resolves`. Do NOT include umbrella / parent issues — Linear's parent-child relation already shows the tree.
 
 ### Step 5b: Self-audit PR body via Codex (MANDATORY)
 
@@ -169,33 +168,27 @@ of these classes:
 3. Assertion not backed by a command in the Test details list.
 4. Change described in Summary / Changes that is absent from the diff.
 5. Count / cardinality mismatch between body and artifacts.
-6. Scope boundary placeholders the source ADR / Linear issue did
-   NOT commit to. Punt phrases ("separate decision", "if
-   consolidation is justified later", "may revisit", "future ADR
-   decides") mean the item is explicitly not on a roadmap. Drop —
-   listing them makes the reviewer ask "what's X?" instead of
-   "why isn't X here?". Only keep deferrals that satisfy the
-   inclusion criteria in reference.md Scope boundary section
-   (diff-adjacent + explicitly committed + concrete).
-   Real defect (PR #179): "NormalizedAnimation shared type —
-   separate ADR" appeared in Scope boundary; ADR-0030 §Out of
-   scope explicitly punted it. User flagged as noise, removed via
-   `gh pr edit --body`.
-7. **Off-topic content** — any sentence / bullet that describes
-   sibling, parallel, or umbrella work instead of THIS PR's diff or
-   its direct roadmap edge (immediate predecessor / successor PR,
-   single gating issue). Failing patterns: Scope boundary bullets
-   for sibling normalizers ("character normalizer Step 1", "facial
-   PR #177"); Next steps bullets that monitor parallel work; Why
-   paragraphs that enumerate the full umbrella tree beyond a single
-   context-setting sentence. Real defect (PR #179): Scope boundary
-   listed `shotloom-character-normalizer Step 1` and
-   `shotloom-facial-anim-normalizer Step 3 (STL-193 / PR #177)`,
-   and Next steps tracked sibling PRs and a character-rename PR.
-   None of those affect a reviewer's read of THIS body-anim diff —
-   user removed them via `gh pr edit --body` after open. The
-   sibling context belongs in the Linear umbrella (STL-194 /
-   STL-127), not in each child PR's body.
+6. **Sections not in the in-repo template** —
+   `pr-guideline.md` § 3 (expanded: Summary / Why / Changes /
+   Impact / Testing / Breaking Changes / Related Issues) and
+   `.github/pull_request_template.md` (minimal: Summary /
+   Validation / Related Issues) are exhaustive. Headings like
+   `Scope boundary`, `Next steps`, `Stack note`, `Phase X` —
+   none of those exist in the repo template. Drop the section
+   entirely; if the content is essential, fit it into Why or
+   Changes. Real defect (PR #179): `Scope boundary` and
+   `Next steps` sections were prior-session inventions that
+   propagated through `reference.md`; user asked "저 자기
+   발명 섹션은 어디서 온거임?" — neither section exists in
+   shotloom guidelines.
+7. **Sibling / umbrella content** — text that describes parallel
+   sub-issues, sibling crates, or umbrella-level roadmap items
+   rather than THIS PR's diff. The Linear umbrella owns that
+   content; child-PR bodies stay focused on what they ship.
+   Real defect (PR #179): Why paragraph enumerated three
+   normalizer crates, deferral bullets named sibling Step 1 /
+   Step 3 work, monitoring lines tracked parallel PR #177 — all
+   removed.
 8. Issue linkage verb mismatch in `## Related Issues`. Per
    pr-guideline.md §4: `Resolves STL-NN` = PR fully closes (single-
    PR sub-issue) → Linear moves to Done; `Part of STL-NN` = work

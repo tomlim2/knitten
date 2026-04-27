@@ -1,121 +1,20 @@
 # shotloom-make-pr reference
 
-Expanded detail for the shotloom-make-pr skill. SKILL.md holds the gate sequence and approval rules; this file holds the PR body template and devlog template.
+Expanded detail for the shotloom-make-pr skill. SKILL.md holds the gate sequence and approval rules; this file holds the devlog template.
 
 ---
 
-## PR body template (expanded — non-trivial changes)
+## PR body
 
-```md
-## Summary
+**Authoritative template lives in the shotloom repo, not here.** Use AS-IS:
 
-- <1-3 bullets, main outcome, no filenames>
+- **Expanded template** — `docs/guidelines/pr-guideline.md` § 3. Sections: Summary, Why, Changes, Impact, Testing, Breaking Changes, Related Issues.
+- **Minimal template** — `.github/pull_request_template.md`. Sections: Summary, Validation, Related Issues.
+- **Issue linkage verb** — `docs/guidelines/pr-guideline.md` § 4 (Resolves / Part of / No issue, decision rule + umbrella exclusion).
 
-## Why
+**Do NOT add sections not in those templates** (no "Scope boundary", no "Next steps", no "Stack note", no invented headings). If a fact doesn't fit Summary / Why / Changes / Impact / Testing / Breaking Changes / Related Issues, either drop it or fit it into the existing section that best matches.
 
-<2-4 sentences on the problem / motivation>
-
-## Changes
-
-<grouped by behavior or subsystem, NOT file-by-file>
-
-## Impact
-
-- User-facing impact: <or "none">
-- API/schema impact: <or "none">
-- Performance impact: <or "none">
-- Operational or rollout impact: <or "none">
-
-## Test plan
-
-- [x] `cargo fmt --check`
-- [x] `cargo clippy --workspace --exclude shotloom-desktop -- -D warnings`
-- [x] `cargo check --workspace --exclude shotloom-desktop`
-- [x] `cargo test --workspace --exclude shotloom-desktop`
-- [x] `node scripts/validate-doc-paths.mjs`
-- [ ] <feature-specific manual verification, if any>
-
-## Scope boundary
-
-<what is explicitly NOT in this PR — limited to items in THIS PR's
-crate / sub-issue chain. Sibling normalizers, parallel rename PRs,
-and umbrella-level work do NOT belong here even if they're in the
-same multi-PR initiative. Test: would a reviewer of THIS diff
-naturally ask "why didn't you also do X?" If no, drop X.>
-
-<!--
-INCLUSION CRITERIA — a deferred item belongs here only if ALL three:
-
-1. Diff-adjacent — a reviewer reading this PR's diff would naturally
-   ask "why didn't you also do X?".
-2. Explicitly committed — an ADR / Linear issue / pinned roadmap item
-   names X with a concrete plan, trigger, or successor PR.
-3. Concrete — X has a name a reviewer can grep for or open, not a
-   hypothetical future type.
-
-DROP if the source ADR / doc uses punt language: "separate decision",
-"if consolidation is justified later", "may revisit", "future ADR
-will decide". Those mean the item is explicitly NOT committed, not
-deferred. Listing such items in Scope boundary makes the reviewer
-ask "what's X?" instead of "why isn't X here?" — net negative.
-
-Real defect (PR #179): "NormalizedAnimation shared type — separate
-ADR" was listed in Scope boundary. ADR-0030 §Out of scope explicitly
-punted it ("whether those outputs later consolidate into a shared
-type is a separate decision"). User asked "이거 머임?" then "안 하기로
-함?" — exactly the reviewer-confusion the criteria above prevent.
-Removed via `gh pr edit --body` after PR open.
--->
-
-
-## Related Issues
-
-<Resolves | Part of> STL-NN
-
-<!--
-ISSUE LINKAGE VERB — pick per docs/guidelines/pr-guideline.md §4:
-
-- `Resolves STL-NN` — this PR FULLY closes the issue. Linear moves
-  to **Done** on merge. Use when the issue was created specifically
-  for this PR's scope (single-PR sub-issue).
-- `Part of STL-NN` — this PR contributes to but DOES NOT complete
-  the issue. Linear moves to **In Progress** (intentional). Use ONLY
-  when the issue's stated scope genuinely needs multiple PRs.
-- `No issue: <reason>` — chore / style / release prep with no tracked
-  issue.
-
-DECISION RULE: Ask "after merging this PR, is there meaningful work
-left in the named issue?" Yes → `Part of`. No → `Resolves`.
-
-DO NOT include umbrella / parent issues here just because they are
-ancestors. Linear's parent-child relation already shows the tree;
-listing the umbrella with `Part of` causes Linear to drag the
-umbrella back to In Progress on every child-PR merge — noise.
-For an umbrella, set the Linear `parentId` once (when creating the
-sub-issue) and leave it out of the PR description.
-
-Real defect (PR #179): originally `Part of STL-208, STL-127` —
-both wrong. STL-208 is a single-PR sub-issue (= Resolves), and
-STL-127 is the grandparent umbrella that this PR doesn't close
-(= drop entirely; Linear parent-chain handles it). Correct line:
-`Resolves STL-208`.
--->
-
-Supersedes #<prior-PR-number>    <!-- only if argument given -->
-```
-
-## PR body template (minimal — trivial changes, <50 LOC, no new behavior)
-
-From `.github/pull_request_template.md`:
-
-```md
-## Summary
--
-## Validation
--
-## Related Issues
-Related to STL-NN
-```
+**Do NOT add `Resolves` / `Part of` for umbrella / parent issues** — Linear's parent-child relation already shows the tree. The linkage line is for the issue this PR directly closes or directly contributes to. Rule and decision tree are in pr-guideline.md § 4.
 
 ---
 
@@ -182,11 +81,13 @@ If the session produced repo-convention surprises or gotchas worth remembering (
 
 ---
 
-## Big-picture framing guidance
+## Big-picture framing guidance (for the post-create report, NOT the PR body)
 
-Per `rules/shotloom.md` answering style:
+Per `rules/shotloom.md` answering style — applies to Step 10 + Step 11 verbal report only:
 
 - Lead with the big picture for any shotloom question / artifact.
 - Which subsystem (VRM pipeline, timeline, rendering, bridge, etc.), what larger goal, why it matters now.
 - Factual bits (branch name, PR number, CI status, file list) go at the end, not the top.
 - The user can read titles themselves; the value-add is framing inside Shotloom's web-first / Bevy-WASM / crate-boundary architecture.
+
+The PR body itself stays under the in-repo template — framing is for verbal Korean report only.

@@ -55,9 +55,15 @@ git status --short                                    # surface unstaged work
 
 Run `pwd` every time before first grep — cwd may silently reset between tool calls in long sessions.
 
-### Step 2: Load the standard (MANDATORY)
+### Step 2: Load the standards (MANDATORY, in-repo first)
 
-**Read `~/.claude/standards/review-code-rust.md` in full.** This is mandatory. The file is the authoritative checklist; this skill only orchestrates. Do NOT memorize the pattern count — patterns get added each time a new defect class is caught on a PR. Groups currently span:
+**The shotloom in-repo guidelines are the primary authority.** Read in this order:
+
+1. **`docs/guidelines/review-rust.md`** (in-repo) — primary source of truth for what counts as a defect on this repo. Read in full. Anything in this file overrides anything below.
+2. **`docs/guidelines/code-review-guideline.md`** (in-repo) — review process, P0/P1/P2/P3 priorities, reviewer expectations.
+3. **`~/.claude/standards/review-code-rust.md`** (mine) — supplementary pattern catalog accumulated from real shotloom PR defects. Use as a checklist after the in-repo guidelines, NOT as a replacement. If a pattern here conflicts with in-repo guidelines, in-repo wins.
+
+Do NOT memorize the pattern count — patterns get added each time a new defect class is caught on a PR. Groups in the supplementary catalog currently span:
 
 | Group | Class |
 |---|---|

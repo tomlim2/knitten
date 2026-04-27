@@ -18,13 +18,19 @@ Usage: `/shotloom-draft-adr vrm-axis-correction-in-import`
 
 ## Workflow
 
-### Step 1: Determine ADR number
+### Step 1: Determine ADR number (provisional)
 
 ```bash
 ls docs/adr/ | grep -oE 'adr-[0-9]+' | sort -u | tail -1
 ```
 
 Next number = last + 1, zero-padded to 4 digits. Example: last is `adr-0025` → new is `adr-0026`.
+
+**The ADR number is provisional until this PR merges.** A parallel PR may claim the same slot first and force a renumber. Real precedent: STL-193 PR #177 had to rename `ADR-0032 → ADR-0033` after PR #169 (`upload-staging-policy`) claimed 0032 while PR #177 was open.
+
+**Therefore:** do NOT embed `ADR-NNNN` in the **branch name**, **PR title**, or **Linear issue title**. Use a descriptive title (e.g. `feat/normalizer-extraction-adr`, `propose normalizer extraction ADR`) and only cite `ADR-NNNN` inside body content (commit body, PR description, ADR file content, Linear description) where the cost of a renumber edit is one find/replace.
+
+When the ADR PR merges to `main`, the number locks. From that moment on, downstream PRs / commits / docs may freely reference `ADR-NNNN`.
 
 ### Step 2: Scan existing ADRs for relevance
 
