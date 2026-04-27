@@ -18,9 +18,12 @@ Usage: `/shotloom-draft-adr vrm-axis-correction-in-import`
 
 ## Drafting principles
 
-- **Use the in-repo template AS-IS.** If `docs/adr/_template.md` exists, copy it verbatim. Don't add sections that aren't in the template (no `Phase X`, no `Stack note`, no `Next steps`).
+- **The in-repo template is the single source of truth.** It lives at `docs/guidelines/adr-template.md` (fallback: `docs/adr/_template.md`). READ IT every run. Copy its section list **verbatim** — same headings, same order, no additions, no removals, no renames. If it has `## Status / ## Context / ## Decision / ## Consequences / ## Alternatives considered`, the new ADR has exactly those, in that order.
+- **Do NOT add sections the template doesn't have.** No `Phase X`, no `Stack note`, no `Next steps`, no `Scope`, no `Out of scope`, no `Open questions`, no `Acceptance criteria`, no `References` unless the template has it. Ad-hoc subsections (e.g. `### 1. Baseline`, `### 2. Value semantics`) inside template sections are allowed only when they carry decision content; if it's inventory or grammar that drift-tests can catch, it belongs in source code, not in the ADR (G10 — ADR scope discipline).
+- **Decision-only content.** Every line should be a decision, a rationale for a decision, or a rejected alternative. Strip restatements of prior ADRs, strip enumerations of externally-published facts (use a citation + link), strip half-specified schema/grammar that the ADR itself defers. Target: ≤ ~80 lines for most ADRs. If draft exceeds 150 lines, audit for inventory/grammar/restatement bloat before submitting.
+- **Inventory and grammar live in code, not in ADRs.** A list of N enum values, a parser grammar, or a channel-name table belongs in a `pub const` + length assertion + test in the owning crate — not in a Markdown table that can drift from the source of truth. Cite the external source (e.g. Apple docs, IETF RFC) in the ADR; let the code own the literal list.
 - **Single-operator framing.** Write the ADR and any companion plan files (`.agent/*.md`, migration plans) as if the user (one operator) will execute them. Do NOT inject "Delegate: 돌쇠 can do this mechanically" lines, do NOT split steps between human and Codex agent. The user works solo by default and adds delegation language explicitly when needed (e.g. "이건 돌쇠한테 넘기자"). `standards/shotloom.md` defines the agent's existence; it does not require every plan to pre-allocate work to it.
-- **Blast radius / rollback / acceptance** notes are useful regardless of operator — keep those.
+- **Blast radius / rollback / acceptance** notes — only if the in-repo template has a section for them. Otherwise drop.
 
 ## Workflow
 
@@ -47,57 +50,26 @@ Grep for keywords from the title across `docs/adr/` — flag any ADR that might 
 
 Report matches to user before writing.
 
-### Step 3: Read template
+### Step 3: Read template (MANDATORY)
 
-If `docs/adr/_template.md` exists, use it as base. Otherwise, use the skeleton below.
+Read `docs/guidelines/adr-template.md` (fallback: `docs/adr/_template.md`). Extract the section list and order from its `## Template` fenced block. **This is the structural contract for every new ADR — not a suggestion, not a starting point that can be extended.**
+
+If the template lists `## Status / ## Context / ## Decision / ## Consequences / ## Alternatives considered`, the new ADR has exactly those H2s in exactly that order. Period.
+
+If the template has changed since this skill was written, the template wins — adjust the draft to match the current template, do not fall back to the skeleton below.
 
 ### Step 4: Draft the ADR
 
 File: `docs/adr/adr-<NNNN>-<kebab-title>.md`
 
-```markdown
-# ADR-<NNNN>: <Human-readable title>
+Copy the section headings from `docs/guidelines/adr-template.md` verbatim. Do not add `**Status:**` / `**Date:**` / `**Author:**` / `**Supersedes:**` / `**Related:**` frontmatter blocks unless the template has them — most repos put status as `## Status` body, not a frontmatter line. Keep filling each section with decision-only content per "Drafting principles" above.
 
-**Status:** Proposed
-**Date:** <YYYY-MM-DD>
-**Author:** <git user.name>
-**Supersedes:** <ADR-NNNN or "none">
-**Related:** <ADR-NNNN, ...>
-
-## Context
-
-<What problem forced this decision? What constraints are in play? What was tried or considered and ruled out? Cite specs/tech-debt/PRs.>
-
-## Decision
-
-<The decision — one concise paragraph. State it as a fact, not a suggestion.>
-
-## Consequences
-
-**Positive**
-- <...>
-
-**Negative / Costs**
-- <...>
-
-**Neutral**
-- <...>
-
-## Alternatives considered
-
-### Alternative A — <name>
-<Why rejected>
-
-### Alternative B — <name>
-<Why rejected>
-
-## References
-
-- Linked Linear: STL-NN
-- Linked PRs: #NN
-- Related ADRs: <...>
-- Related specs: <path>
-```
+Self-check before saving:
+1. Does every H2 appear in the template? (If a heading isn't in the template, delete the section.)
+2. Does the H2 order match the template order? (If not, reorder.)
+3. Is every paragraph either a decision, rationale, or rejected alternative? (If not, delete or move to source code.)
+4. Total line count ≤ ~80? (If > 150, audit for bloat.)
+5. Any literal lists of N items (channel names, enum values, grammar rules)? (If yes, move to a `pub const` + test in the owning crate; ADR cites the source of truth and links to the const.)
 
 ### Step 5: Update ADR index
 
