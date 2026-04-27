@@ -117,6 +117,14 @@ Match structure (Summary / Why / Changes / Impact / Test plan) to high-signal ex
 
 **Body:** see [reference.md](reference.md) for the full template (Summary, Why, Changes, Impact, Test plan, Scope boundary, Related Issues). For trivial changes (<50 LOC), use the minimal `.github/pull_request_template.md` form.
 
+**Scope discipline (apply to every section):** every line in the body must directly serve **this PR's diff** or **this PR's roadmap edge** (the immediate predecessor / successor PR, the immediate gating issue). **Drop sibling, parallel, or umbrella content** — that context belongs in the Linear umbrella issue or sibling sub-issues, not here. Concrete tests:
+
+- A `Scope boundary` bullet is on-topic only if a reviewer reading **this** diff would naturally ask "why didn't you also do X?" — sibling normalizers / parallel rename PRs / future cleanups in adjacent crates fail this test.
+- A `Next steps` bullet is on-topic only if it's **this PR's** direct successor (the next PR in the same crate / sub-issue chain) or its **single gating dependency**. Tracking sibling work or "monitor parallel PR" lines belong in the umbrella issue, not the PR body.
+- The `Why` section may set umbrella context in **one** sentence (which ADR / which umbrella) but should not enumerate sibling crates / parallel sub-issues.
+
+If a fact about a sibling normalizer / sibling crate / parallel work is genuinely needed to understand this PR's diff (e.g. "we renamed X because sibling Y also uses it"), state the fact inline where it applies — don't open a section about the sibling.
+
 ### Step 5b: Self-audit PR body via Codex (MANDATORY)
 
 When the same overclaim pattern recurs across PRs (e.g. "well below the f32 ulp" inverted-direction inequalities, off-by-one cardinality claims), capture it: append a one-line entry to a body-audit miss-pattern appendix in `~/.claude/skills/shotloom-make-pr/reference.md` so the audit prompt can be tightened over time. Without this, Codex re-discovers the same false-positive shapes every PR.
@@ -173,7 +181,22 @@ of these classes:
    separate ADR" appeared in Scope boundary; ADR-0030 §Out of
    scope explicitly punted it. User flagged as noise, removed via
    `gh pr edit --body`.
-7. Issue linkage verb mismatch in `## Related Issues`. Per
+7. **Off-topic content** — any sentence / bullet that describes
+   sibling, parallel, or umbrella work instead of THIS PR's diff or
+   its direct roadmap edge (immediate predecessor / successor PR,
+   single gating issue). Failing patterns: Scope boundary bullets
+   for sibling normalizers ("character normalizer Step 1", "facial
+   PR #177"); Next steps bullets that monitor parallel work; Why
+   paragraphs that enumerate the full umbrella tree beyond a single
+   context-setting sentence. Real defect (PR #179): Scope boundary
+   listed `shotloom-character-normalizer Step 1` and
+   `shotloom-facial-anim-normalizer Step 3 (STL-193 / PR #177)`,
+   and Next steps tracked sibling PRs and a character-rename PR.
+   None of those affect a reviewer's read of THIS body-anim diff —
+   user removed them via `gh pr edit --body` after open. The
+   sibling context belongs in the Linear umbrella (STL-194 /
+   STL-127), not in each child PR's body.
+8. Issue linkage verb mismatch in `## Related Issues`. Per
    pr-guideline.md §4: `Resolves STL-NN` = PR fully closes (single-
    PR sub-issue) → Linear moves to Done; `Part of STL-NN` = work
    continues after merge (multi-PR issue) → Linear stays In

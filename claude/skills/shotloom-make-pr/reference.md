@@ -37,7 +37,11 @@ Expanded detail for the shotloom-make-pr skill. SKILL.md holds the gate sequence
 
 ## Scope boundary
 
-<what is explicitly NOT in this PR and where it lands>
+<what is explicitly NOT in this PR — limited to items in THIS PR's
+crate / sub-issue chain. Sibling normalizers, parallel rename PRs,
+and umbrella-level work do NOT belong here even if they're in the
+same multi-PR initiative. Test: would a reviewer of THIS diff
+naturally ask "why didn't you also do X?" If no, drop X.>
 
 <!--
 INCLUSION CRITERIA — a deferred item belongs here only if ALL three:
