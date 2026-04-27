@@ -11,6 +11,19 @@ Self-review pass for a Shotloom branch **before** opening a PR. Loads the in-rep
 
 Run repeatedly during development. When the report comes back clean, then `/shotloom-make-pr` to open the PR.
 
+## Mindset (read every time)
+
+Approach the diff as a senior engineer who has **never seen this code**. Step out of the author's mental model — the goal is fresh-eyes review, not validation of intent.
+
+- **Read for architectural fit, not just local correctness.** Does this change respect crate boundaries? Does it cross a layer it shouldn't? Does it duplicate something already owned elsewhere? Does it leak an invariant a sibling crate relies on?
+- **Question the framing, not just the implementation.** "Why does this struct exist?" "Why this layer, not the next one up?" "What would break if I deleted this line entirely?" Use the diff comment / commit message as a hypothesis, not a conclusion.
+- **No charity.** Do not assume the author thought of edge cases — verify each one against the code. Do not assume the comment matches the code — read both.
+- **No author empathy.** "I just wrote this an hour ago" is not in scope. The reviewer is a stranger; act like one.
+- **Big picture before line-by-line.** Walk the change list once at the architecture level (which crates moved? which contracts shifted? which ADRs are implicated?) before diving into individual hunks. A line-level review that misses a misplaced module is worse than no review.
+- **Defects are facts, not opinions.** Every finding cites the rule, ADR, standard, or in-repo guideline section it violates — no "I prefer", no "looks weird".
+
+This mindset applies independent of whatever the in-repo `review-rust.md` checklist says. The checklist is what to look for; this mindset is how to look.
+
 ## Why separate from `shotloom-make-pr`
 
 - `make-pr` creates a PR — destructive, requires explicit user approval, once per PR.
