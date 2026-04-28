@@ -124,6 +124,14 @@ Match structure (Summary / Why / Changes / Impact / Test plan) to high-signal ex
 
 **Issue linkage in `## Related Issues`** — pick `Resolves` / `Part of` / `No issue` per `docs/guidelines/pr-guideline.md` § 4. Decision rule: "after this PR merges, is there meaningful work left in the named issue?" Yes → `Part of`, No → `Resolves`. Do NOT include umbrella / parent issues — Linear's parent-child relation already shows the tree.
 
+**Do NOT write while drafting (active suppression):**
+
+- Marketing/qualitative adjectives: `easily`, `seamlessly`, `robust`, `elegant`, `well below`, `dramatically`, `huge`, `trivially`. Replace with a concrete number or drop.
+- Future/deferred work: `Next steps`, `Phase 2`, `will follow up`, `deferred to`. The Linear parent issue owns roadmap; this body describes only what THIS PR ships.
+- Sibling/umbrella content: parallel PR numbers, sibling crate names, parent-issue scope. If it's not in `git diff --stat`, it's not in the body.
+- Invented sections: `Scope boundary`, `Stack note`, `Next steps`, `Phase X`, `Monitoring`. Only the 7 expanded / 3 minimal template sections exist. If a fact doesn't fit one, fit it into the closest section or drop it.
+- Quantitative claims not re-derivable from the diff or a cited constant. If you can't point to a line/file/snapshot, drop the number.
+
 ### Step 5b: Self-audit PR body via Codex (OPT-IN — default skip)
 
 **Default behavior: SKIP this step and proceed to Step 6.** The Codex audit
