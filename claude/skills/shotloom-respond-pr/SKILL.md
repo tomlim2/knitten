@@ -177,6 +177,12 @@ Order matters: gates first, then commit, then push, then PR body. Updating the P
 
 ### Step 6: Post inline replies + queue reviewer re-request (MUST get approval)
 
+**Reply discipline (same negative checklist as `shotloom-make-pr` Step 5):**
+
+- Inputs for the reply text: only the diff of your fix commit + the reviewer's specific comment. Do NOT echo the reviewer's tone or wording back; do NOT pull context from past PRs, the Linear issue body, sibling PRs, `.agent/`, or `reference.md`.
+- Banned in reply text: marketing/qualitative adjectives (`great catch`, `nice point`, `elegant`, `cleanly`, `nicely`), future/deferred-without-issue language (`will improve later`, `Phase 2`, `next steps`), internal tooling self-refs (`/shotloom-review-before-pr`, `/shotloom-check-gates`), and any quantitative claim not re-derivable from the fix commit.
+- Keep replies surgical: state the fix or the rationale in one or two sentences. The reviewer does not need a thank-you, a roadmap, or a tour of related work.
+
 Draft a reply per resolved item:
 - **Fixed:** "Fixed in <sha-short>. <brief description>"
 - **Deferred (with issue):** "Follow-up tracked as STL-NN. <rationale>"

@@ -134,6 +134,12 @@ Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--
 
 ### Step 4: Triage — group findings by pattern
 
+**Finding text discipline (same negative checklist as `shotloom-make-pr` Step 5):**
+
+- Inputs for finding text: only the current diff + `docs/guidelines/review-rust.md` (and the in-repo conventions loaded in Step 2.5). Do NOT pull from past PRs, prior review threads, Linear issue bodies, `.agent/`, or `reference.md`.
+- Banned in finding text: marketing/qualitative adjectives (`cleanly`, `elegantly`, `nicely`), future/deferred speculation (`could later`, `next pass`, `Phase 2`), internal-tool self-refs, and any quantitative claim not re-derivable from the diff.
+- One finding = one file:line + one concrete defect + (if non-obvious) the fix direction. No editorial commentary on style choices outside the rule being checked.
+
 ```
 ## Findings
 
