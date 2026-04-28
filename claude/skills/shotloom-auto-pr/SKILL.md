@@ -15,10 +15,10 @@ Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing noth
 
 ## Approval exemption
 
-This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git.md` and `~/.claude/rules/shotloom-git.md` impose. Authorized 2026-04-21 (user). See:
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git.md` and shotloom's `.claude/rules/shotloom-git.md` impose. Authorized 2026-04-21 (user). See:
 
-- `~/.claude/rules/shotloom-git.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
-- `~/.claude/projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md`
+- shotloom's `.claude/rules/shotloom-git.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
+- `(deleted memory file)`
 
 **Auto-approved inside the react cycle:**
 
@@ -37,7 +37,7 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 - `gh pr review --approve` / `--request-changes` (any review with non-`COMMENT` event)
 - thread resolution (graphql `resolveReviewThread`)
 
-The ready-to-merge report below is logged, not invoked. This list is mirrored in [`~/.claude/rules/shotloom-git.md`](../../rules/shotloom-git.md) and [`~/.claude/projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md`](../../projects/-Users-younsoolim-Desktop-www-shotloom/memory/feedback_auto_pr_approval_exempt.md); change all three together.
+The ready-to-merge report below is logged, not invoked. This list is mirrored in shotloom's `.claude/rules/shotloom-git.md` and ``(deleted memory file)``; change all three together.
 
 The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffected and keeps the per-comment batch approval gate.
 
@@ -175,7 +175,7 @@ Dispatch by event type:
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
   - red / ambiguous: log "needs human" in `log.md`, exit without comment
 
-- **`new_comments` or `new_reviews` non-empty** → review auto-respond per `~/.claude/standards/shotloom-pr-scope-policy.md`:
+- **`new_comments` or `new_reviews` non-empty** → review auto-respond per shotloom's `.claude/standards/shotloom-pr-scope-policy.md`:
   - classify in-scope / out-of-scope / ambiguous (≥9/10 only counts as ambiguous; ≤8 → pick closest interpretation)
   - **inline vs suppressed split** — every finding is either an inline comment (has `comment_id` in the `/comments` REST array) or a suppressed/review-body item (lives only inside a `/reviews` body). The two groups have different reply surfaces and must NOT be conflated:
     - **inline in-scope** → apply fix, gate commit on pattern capture, commit, push, **inline reply** via `POST /pulls/<N>/comments/<comment_id>/replies` (one per finding)
@@ -274,6 +274,6 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 
 - `~/.claude/skills/shotloom-respond-pr/SKILL.md` — manual review response (with approval gate)
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation
-- `~/.claude/standards/shotloom-pr-scope-policy.md` — in-scope classification
+- shotloom's `.claude/standards/shotloom-pr-scope-policy.md` — in-scope classification
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
-- `~/.claude/rules/shotloom-git.md` — pre-PR gates
+- shotloom's `.claude/rules/shotloom-git.md` — pre-PR gates

@@ -44,7 +44,7 @@ Read the staged diff, classify, and draft per `docs/guidelines/commit-guideline.
 
 <body — why, not what; 80-char wraps; grouped by behavior>
 
-Related to STL-NN   (commit footer only — never use "Resolves STL-NN" in commits per rules/shotloom-git.md; closing linkage belongs in the PR description)
+Related to STL-NN   (commit footer only — never use "Resolves STL-NN" in commits per shotloom's .claude/rules/shotloom-git.md; closing linkage belongs in the PR description)
 ```
 
 Type rules:
@@ -93,4 +93,4 @@ If the pre-commit hook failed at Step 5 (possible if repo hook is stricter than 
 
 - This skill commits on the current branch/worktree. Does not push.
 - Use `/shotloom-make-pr` to open PR after pushing.
-- Follows `rules/shotloom-git.md`: never `--no-verify`, never force-push, author must be tomlim2.
+- Follows shotloom's `.claude/rules/shotloom-git.md`: never `--no-verify`, never force-push, author must be tomlim2.

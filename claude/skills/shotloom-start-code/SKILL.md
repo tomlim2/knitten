@@ -43,7 +43,7 @@ Verify:
 
 ### Step 2: Resolve Linear issue
 
-Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body `Related to STL-NN` on the current branch. Do **not** parse the branch name for an STL prefix — Shotloom branches use `feat/<description>` per `rules/shotloom-git.md` and never carry an STL ID. Linear's auto-suggested `deemo/stl-NN-…` shape is a Linear UI hint, not the canonical branch name.
+Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body `Related to STL-NN` on the current branch. Do **not** parse the branch name for an STL prefix — Shotloom branches use `feat/<description>` per shotloom's `.claude/rules/shotloom-git.md` and never carry an STL ID. Linear's auto-suggested `deemo/stl-NN-…` shape is a Linear UI hint, not the canonical branch name.
 
 If identifier found, fetch via `mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__get_issue`. Extract: problem statement, acceptance criteria, affected modules/crates, linked ADRs, linked specs.
 
@@ -138,7 +138,7 @@ Walks `docs/guidelines/review-rust.md` (in-repo formal Rust review spec; re-read
 
 **Skip only when:** branch contains zero Rust/TS source changes (docs/md/ADR-only), OR user explicitly says "skip review" for this specific PR.
 
-Auto-commit/push cadence (per `rules/shotloom-git.md`) does NOT bypass the review — commits/push go out freely, but the review runs automatically right after, and the PR gate holds until review has passed.
+Auto-commit/push cadence (per shotloom's `.claude/rules/shotloom-git.md`) does NOT bypass the review — commits/push go out freely, but the review runs automatically right after, and the PR gate holds until review has passed.
 
 ## Binding rules
 
@@ -152,10 +152,10 @@ Auto-commit/push cadence (per `rules/shotloom-git.md`) does NOT bypass the revie
 ## Related
 
 - Hook: `~/.claude/hooks/shotloom-linear-detect.sh` (auto-invoker)
-- [`~/.claude/rules/shotloom.md`](../../rules/shotloom.md) — hub
+- shotloom's `.claude/rules/shotloom.md` — hub
 - in-repo `docs/guidelines/*` — writing rules (authoritative)
 - in-repo `docs/guidelines/review-rust.md` — formal Rust review SSOT for pre-PR self-review
-- [`~/.claude/rules/shotloom-git.md`](../../rules/shotloom-git.md) — Claude-side PR gates / auto-commit policy
+- shotloom's `.claude/rules/shotloom-git.md` — Claude-side PR gates / auto-commit policy
 
 ## Additional Resources
 

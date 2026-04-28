@@ -54,7 +54,7 @@ Checkout PR branch if needed: `git checkout <headRefName> && git pull`.
 
 #### Axis 1 — Scope check
 
-Apply [`~/.claude/standards/shotloom-pr-scope-policy.md`](../../standards/shotloom-pr-scope-policy.md):
+Apply shotloom's `.claude/standards/shotloom-pr-scope-policy.md`:
 
 | Bucket | Step 2.5 action | Step 4 action | Step 6 reply |
 |---|---|---|---|
@@ -161,7 +161,7 @@ Order matters: gates first, then commit, then push, then PR body. Updating the P
    cargo test --workspace --exclude shotloom-desktop
    node scripts/validate-doc-paths.mjs
    ```
-   `shotloom-desktop` is excluded per `rules/shotloom-git.md`. **Do not** substitute crate-specific `cargo test -p` lines — review-response pushes must validate against the same workspace test set as pre-PR pushes, otherwise regressions in unrelated crates surface only after CI fails. Targeted `cargo test -p <crate> --lib` invocations are fine as **additive diagnostics** when narrowing a failing test, but they never replace the workspace bundle.
+   `shotloom-desktop` is excluded per shotloom's `.claude/rules/shotloom-git.md`. **Do not** substitute crate-specific `cargo test -p` lines — review-response pushes must validate against the same workspace test set as pre-PR pushes, otherwise regressions in unrelated crates surface only after CI fails. Targeted `cargo test -p <crate> --lib` invocations are fine as **additive diagnostics** when narrowing a failing test, but they never replace the workspace bundle.
 
 2. Fix failing tests before proceeding. Broken tests block the PR.
 
@@ -185,7 +185,7 @@ Draft a reply per resolved item:
 
 For suppressed items, draft one review-level summary reply.
 
-Also draft the **reviewer re-request roster** for Step 8 right now, so the user approves replies and the re-request as one batch (Step 8 is itself a PR action and falls under the same per-PR-action approval gate per `rules/shotloom-git.md` and `rules/git.md`):
+Also draft the **reviewer re-request roster** for Step 8 right now, so the user approves replies and the re-request as one batch (Step 8 is itself a PR action and falls under the same per-PR-action approval gate per shotloom's `.claude/rules/shotloom-git.md` and `rules/git.md`):
 
 ```
 Re-request from: @reviewer1, @reviewer2  (rationale: CHANGES_REQUESTED resolved | review round complete)
@@ -295,12 +295,12 @@ Reference example: closing brief on PR #172 (2026-04-25) — framing summary + p
 
 Invoking this skill is blanket authorization for the workflow. **Do NOT pause for per-step approval.** The following actions are auto-approved inside the skill:
 
-- File edits, `git add`, `git commit`, `git push` (per `shotloom-git.md` auto-commit exemption).
+- File edits, `git add`, `git commit`, `git push` (per shotloom's `.claude/rules/shotloom-git.md` auto-commit exemption).
 - `gh pr edit $ARGUMENTS --body "..."` in Step 5-4 — **body-only** edit, scoped to refreshing Summary / Validation / fix log so the PR description matches the now-pushed branch. This is not a state-changing PR mutation; it cannot affect mergeability, base, title, draft state, or labels. Only stop on CI failure or genuinely unexpected event.
 
 **EXCEPTION (still requires explicit per-action approval, even inside this skill):**
 
-- Step 6 (posting inline replies + the suppressed-item review-level summary + reviewer re-request roster) — show all drafts in one batch and wait for explicit user OK per `~/.claude/rules/shotloom-git.md` and `~/.claude/rules/git.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
+- Step 6 (posting inline replies + the suppressed-item review-level summary + reviewer re-request roster) — show all drafts in one batch and wait for explicit user OK per shotloom's `.claude/rules/shotloom-git.md` and `~/.claude/rules/git.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
 - `gh pr edit --base`, `--title`, `--draft`, label changes — never done by this skill; if they were, they would still need approval.
 - `gh pr merge`, `gh pr close`, `gh pr reopen`, `gh pr ready`, `gh pr update-branch`, `gh pr review --approve`/`--request-changes`, top-level PR comments via `/issues/<N>/comments` — never done by this skill.
 
@@ -316,7 +316,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 
 ## Binding Rules
 
-- **Repo-specific rule wins.** `~/.claude/rules/shotloom-git.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git.md` is supplementary — it applies only where shotloom-git.md does not override.
+- **Repo-specific rule wins.** shotloom's `.claude/rules/shotloom-git.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git.md` is supplementary — it applies only where shotloom-git.md does not override.
 - **Reply inline on each individual review comment**, NOT top-level PR comment (per `rules/git.md`).
 - **Suppressed items** — evaluate honestly; OK to defer scope-exceeding work.
 - **Commit message** — conventional, imperative, ≤80 char subject (per `docs/guidelines/commit-guideline.md` in the shotloom repo).
@@ -337,7 +337,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 - `~/.claude/skills/shotloom-make-pr/SKILL.md`
 - `~/.claude/skills/shotloom-review-before-pr/SKILL.md`
 - `~/.claude/skills/shotloom-linear-create-issue/SKILL.md`
-- `~/.claude/rules/git.md`, `shotloom-git.md`
+- `~/.claude/rules/git.md`, shotloom's `.claude/rules/shotloom-git.md`
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
 
 ## Additional Resources
