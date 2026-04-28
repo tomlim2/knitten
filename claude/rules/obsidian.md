@@ -11,4 +11,4 @@
   - **If the diff mixes Obsidian docs with code/config**, fall back to generic `rules/git.md` — split the commit (Obsidian docs in one auto-flow commit, the rest under normal approval) or get explicit approval for the bundled commit.
   - **PR operations still require per-PR approval** per `rules/git.md` — `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit`, and any review/issue comment are NEVER auto-exempt, even for Obsidian-only PRs.
   - **Repo-specific stricter rules win.** If a repo has its own pre-PR/pre-push gates (e.g. `~/.claude/rules/shotloom.md`'s fmt/clippy/check/doc-paths chain) and the Obsidian commit happens inside that repo, run those gates first; the Obsidian exception only removes the verbal-approval step, not validation.
-- Full format spec + tag conventions: @~/.claude/standards/obsidian-format.md
+- Full format spec + tag conventions (Read before creating/editing Obsidian docs): `~/.claude/standards/obsidian-format.md`

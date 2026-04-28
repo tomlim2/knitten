@@ -19,4 +19,4 @@
   - If superseding a prior PR, the redirect comment and the prior PR number are prepared in the new PR description.
 - **Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated Claude-side meta in `~/.claude/rules/<repo>.md`, consult and satisfy it in addition to the generic bullets above:
   - shotloom (CINEV/shotloom) → @~/.claude/rules/shotloom.md
-- Full reference: @~/.claude/standards/cinev-git-workflow.md
+- Full reference (Read on demand): `~/.claude/standards/cinev-git-workflow.md`

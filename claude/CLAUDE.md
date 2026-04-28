@@ -63,7 +63,7 @@ If both exist with the same name, the skill takes precedence. Skills are the rec
 
 Essential: `description` (recommended), `allowed-tools` (never bare `Bash` — use `Bash(git:*)` etc.), `argument-hint`
 Advanced: `name`, `disable-model-invocation`, `user-invocable`, `context`/`agent`/`model`, `hooks`
-Full reference: @~/.claude/standards/slash-commands.md
+Full reference (READ before authoring): `~/.claude/standards/slash-commands.md`
 
 ### Key Patterns
 
@@ -78,14 +78,14 @@ Full reference: @~/.claude/standards/slash-commands.md
 - Lowercase only, hyphens as separators, max 64 characters
 - Categories: `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `project`, `system`, `caol`
 - Examples: `git-collect-commits`, `ue-analyze-material`, `caol-make-command`
-- Full rules: @~/.claude/skills/caol-make-command/SKILL.md
+- Full rules (READ before creating commands/skills): `~/.claude/skills/caol-make-command/SKILL.md`
 
 ### Creating New
 
 - **Command:** `/caol-make-command <category> <verb> <subject>`
 - **Skill:** `/caol-make-skill <category> <verb> <subject>`
 - **UE skill:** `/ue-make-skill <verb> <noun>` (uses special template)
-- **Command standard:** @~/.claude/standards/slash-commands.md
+- **Command standard:** `~/.claude/standards/slash-commands.md` (Read on demand)
 
 ---
 
@@ -97,7 +97,7 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 ## Private Folder
 
-`private/` is the personal data vault. Gitignored. Never committed. Full guide: @~/.claude/skills/caol-guide-private/SKILL.md
+`private/` is the personal data vault. Gitignored. Never committed. Full guide (Read on demand): `~/.claude/skills/caol-guide-private/SKILL.md`
 
 ---
 

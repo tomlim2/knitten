@@ -3,4 +3,4 @@
 - **Field order:** `description` → `argument-hint` → `allowed-tools`
 - **Argument validation** — If a command accepts arguments, it MUST validate them. If no argument is provided, show usage and ask the user. **NEVER auto-execute.**
 - **Required sections:** Frontmatter, H1 title, Arguments (if applicable), Workflow
-- Full authoring guide: @~/.claude/standards/slash-commands.md
+- Full authoring guide (Read on demand): `~/.claude/standards/slash-commands.md`

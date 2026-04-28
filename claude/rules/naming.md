@@ -17,4 +17,4 @@
   - No local logic inside a wrapper — if logic is needed, make it a separate non-wrapper skill
   - One wrapper per user-facing role, not one per vendor sub-skill (exception: vendor ships orthogonal sub-skills with distinct roles, e.g. CLI vs authoring)
 - **Disambiguation** — when multiple similar skills exist (e.g. many `design-*`), every `description` must carry a unique keyword, and wrappers should include a `when_to_use:` frontmatter field with `NO when:` negative conditions pointing to sibling skills.
-- Full rationale and examples: @~/.claude/skills/caol-make-command/SKILL.md
+- Full rationale and examples (Read on demand): `~/.claude/skills/caol-make-command/SKILL.md`

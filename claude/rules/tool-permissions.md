@@ -1,4 +1,4 @@
 - **NEVER use bare `Bash`** in `allowed-tools` — Always specify patterns
 - **Pattern examples:** `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, `Bash(mv:*), Bash(ls:*)`
 - **Principle:** Grant the minimum permission that lets the command work
-- Full frontmatter reference: @~/.claude/standards/slash-commands.md
+- Full frontmatter reference (Read on demand): `~/.claude/standards/slash-commands.md`
