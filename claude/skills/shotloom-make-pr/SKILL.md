@@ -124,12 +124,24 @@ Match structure (Summary / Why / Changes / Impact / Test plan) to high-signal ex
 
 **Issue linkage in `## Related Issues`** — pick `Resolves` / `Part of` / `No issue` per `docs/guidelines/pr-guideline.md` § 4. Decision rule: "after this PR merges, is there meaningful work left in the named issue?" Yes → `Part of`, No → `Resolves`. Do NOT include umbrella / parent issues — Linear's parent-child relation already shows the tree.
 
-### Step 5b: Self-audit PR body via Codex (MANDATORY)
+### Step 5b: Self-audit PR body via Codex (OPT-IN — default skip)
+
+**Default behavior: SKIP this step and proceed to Step 6.** The Codex audit
+adds 1–3 minutes per invocation (high-reasoning model + full body + full
+diff) and the user has chosen latency over the extra check by default. Run
+this step only when:
+
+- User explicitly opts in for this PR ("run codex audit", "코덱스 돌려",
+  "audit body", etc.), OR
+- The PR body contains specific quantitative claims the author themselves
+  flagged as wanting verification.
+
+If skipping, drop directly to Step 6.
 
 When the same overclaim pattern recurs across PRs (e.g. "well below the f32 ulp" inverted-direction inequalities, off-by-one cardinality claims), capture it: append a one-line entry to a body-audit miss-pattern appendix in `~/.claude/skills/shotloom-make-pr/reference.md` so the audit prompt can be tightened over time. Without this, Codex re-discovers the same false-positive shapes every PR.
 
-Before presenting the body to the user, hand the drafted body + the
-branch diff to Codex (`gpt-5.4`, high reasoning) and ask it to flag:
+When opted in, hand the drafted body + the branch diff to Codex
+(`gpt-5.4`, high reasoning) and ask it to flag:
 
 - **Numeric / comparative claims** that do not derive from the diff or
   from a linked constant / benchmark ("well below the f32 ulp", "8x
@@ -237,11 +249,7 @@ Triage the output:
   diff but Codex misread) → briefly note why the body is correct and
   continue. Log the miss pattern so the prompt can be tightened.
 
-Skip **only** when:
-
-- PR is trivial (< 50 LOC) AND the body has zero quantitative claims
-  AND no Test details beyond the template boilerplate.
-- User explicitly says "skip body audit" for this specific PR.
+(Skip rules moved to the top of this step — default is now skip.)
 
 ### Step 6: Present draft to user
 
