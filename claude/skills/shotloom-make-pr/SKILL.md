@@ -68,14 +68,28 @@ Stop on any failure. **Refuse to proceed if `HEAD` is `main` or the default bran
 
 ### Step 2: Read guidelines (re-read every invocation)
 
+**Hard input whitelist for drafting the PR body. Read ONLY these:**
+
 ```
 Read: $worktree/docs/guidelines/pr-guideline.md
 Read: $worktree/.github/pull_request_template.md
-Read: $worktree/docs/guidelines/commit-guideline.md
-Read: $worktree/.agent/README.md / working-rules.md / checklists.md (if present)
+Read: $worktree/docs/guidelines/commit-guideline.md   # title format only
+git diff origin/main..HEAD                            # the actual code
+git diff --stat origin/main..HEAD                     # file list for grounding
 ```
 
-`.agent/` holds informal repo-scoped agent rules (incl. Codex "돌쇠"). Additive to `docs/guidelines/`; honor even if not yet in `~/.claude/rules/shotloom.md`. Silently skip if absent.
+**Do NOT read for drafting purposes:**
+
+- Past merged PR bodies (no `gh pr view`, no `gh pr list` for tone)
+- Linear issue body / description (it has aspirational future-tense language)
+- Branch commit messages (`git log` for body content — only use for title format check)
+- `.agent/` directory (handoff notes, working-rules)
+- `~/.claude/skills/shotloom-make-pr/reference.md` (implementation hints, not template — drift vector)
+- Devlogs (`obsidian-vault-claude/shotloom-devlog-*.md`)
+- Sibling/umbrella PR descriptions
+- Reviewer comments from prior PRs
+
+If a fact you want to write doesn't come from `pr-guideline.md` (template) or the `git diff` (content), DROP it. No exceptions, no "but this is useful context" — if it didn't make it into the diff it doesn't belong in the body.
 
 ### Step 3: Local CI-equivalent gates
 
@@ -104,7 +118,7 @@ Ask:
 
 ### Step 5: Draft title + body
 
-**The shotloom in-repo guidelines are the sole source of truth.** Use them AS-IS — do not invent additional sections, do not propagate templates from prior sessions or from `reference.md` that don't appear in the in-repo files. `reference.md` is implementation hints, not the template.
+**Two inputs only — `pr-guideline.md` (structure) + `git diff` (content). Nothing else.** If the fact is not in the diff, do not write it. If the section is not in the in-repo template, do not add it. See Step 2 for the full input blacklist (past PRs, Linear issue body, commit messages, `.agent/`, `reference.md`, devlogs).
 
 **Title:** Format and rules per `docs/guidelines/commit-guideline.md` § 1 (PR titles inherit commit subject rules per `pr-guideline.md` § 1). Max 80 chars per commit-guideline §1, lowercase type + scope, imperative, no trailing period. **Do not embed provisional ADR numbers (`ADR-NNNN`) in the title** — ADR numbers are only locked once the ADR file lands on `main`; a parallel PR can claim the same slot first and force a renumber (real precedent: STL-193 PR #177 renumbered ADR-0032 → ADR-0033 after PR #169 claimed 0032). Use a descriptive title; cite the ADR by number only in body content where edits are cheap.
 
