@@ -314,3 +314,122 @@ for sha in $(git log origin/main..HEAD --format='%H' --grep='^fix'); do
 done
 # A fix: commit without a paired regression test violates rules/testing.md.
 ```
+
+---
+
+## Pattern H — Doc & comment discipline (post-in-repo-review pass)
+
+These run **after** the formal `docs/guidelines/review-rust.md` sweeps (A–G) clear. They catch doc/comment drift the in-repo spec does not enforce: speculative future-tense, stale status claims, broken cross-crate citations, and naming-convention incoherence in newly added types/modules.
+
+Mindset: **doc must describe what IS, not what MIGHT BE.** A comment that promises future work without a concrete issue ID is not specification — it is a wish. A comment that claims "scaffold only" after the file gained 200 lines of logic is a lie. A "lives in `crate-x`" reference where `crate-x` does not exist breaks the next reader's grep. Default verdict on every H finding: rewrite to current-state-only, or cite a specific STL-NN that exists.
+
+### H1: future-tense / speculation in changed comments
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '\b(will\s+(?:add|land|move|become|expose|introduce|migrate|emit)|future\b|follow[- ]up|lands?\s+in|planned|TODO|will\s+be|to\s+be\s+(?:added|defined|implemented))\b' \
+  | rg -v 'STL-[0-9]+'
+```
+
+For each hit:
+- Cite a concrete `STL-NN` that exists and is open, **or**
+- Drop the future-work claim entirely and describe only the current state.
+- "lands in a follow-up" / "planned" / "future work" without a specific issue = nit; rewrite.
+- Pre-existing TODO comments untouched by the diff are out of scope for this sweep.
+
+### H2: status-claim accuracy on touched files
+
+```bash
+for f in $(git diff --name-only origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs'); do
+  echo "=== $f ==="
+  head -40 "$f" | rg -in '\b(scaffold|stub|WIP|placeholder|reserved|empty|TODO|coming soon|not yet)\b'
+done
+```
+
+For each hit, verify against the current file:
+- "scaffold only" / "empty" / "reserved" — does the file actually contain only the boilerplate? `wc -l src/*.rs` and skim.
+- "WIP" / "not yet" — is the work still in flight, or did it land and the comment never got cleaned?
+- A status word that no longer matches the code is a lie that misleads every future reader. Rewrite or delete.
+
+### H3: cross-crate citation accuracy
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '(lives in|moved to|owned by|owns|consumes|now in|re-exported (?:from|via))\s+`?(shotloom-[a-z0-9-]+|shotloom_[a-z0-9_]+)' \
+  | sort -u
+```
+
+For each hit verify:
+- The cited crate / module path exists (`ls crates/<crate>/src/` or `rg <symbol> crates/<crate>/`).
+- The cited symbol is actually owned / re-exported there (not just a planned move).
+- "moved to X (STL-NN)" — confirm STL-NN is the issue that did the move, not an arbitrary related issue.
+
+### H4: naming-convention coherence for new public identifiers
+
+```bash
+# 1. New crate names
+git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/Cargo.toml' \
+  | xargs -I{} dirname {} | xargs -I{} basename {}
+# Each MUST match shotloom-<domain>-<role> (e.g. shotloom-body-anim-normalizer).
+# Sibling alignment: if two new normalizer crates land, their roles must use the
+# same suffix shape (-normalizer, -anim-normalizer, -model-normalizer, etc.).
+
+# 2. New public types / traits / fns in changed files
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+  | rg '^\+pub (struct|enum|trait|fn|const|type) [A-Za-z_]'
+# For each, verify against sibling crate's analogue:
+#   - Trait BodyMappingConfig ↔ FacialMappingConfig (same suffix shape)
+#   - Struct SourceAnimBody ↔ SourceAnimFacial (same prefix + role suffix)
+#   - Fn normalize_body ↔ normalize_facial (same verb + role)
+# A new type whose name does not mirror its sibling is either a new pattern
+# (justify in PR body) or a naming bug (rename to mirror).
+
+# 3. New module file layout vs sibling crates
+for new_crate in $(git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/src/lib.rs' | xargs -I{} dirname {}); do
+  echo "=== $new_crate ==="
+  ls "$new_crate"
+done
+# Sibling crates with the same role should mirror module layout
+# (config.rs / mapping.rs / source_anim.rs / types.rs is the normalizer shape).
+# Asymmetry is allowed but must be intentional, not accidental.
+```
+
+### H5: doc ↔ ADR section coherence
+
+```bash
+# Every ADR-NNNN cited in changed comments must exist + the section/claim must be present.
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -o 'ADR-[0-9]{4}' \
+  | sort -u \
+  | while read adr; do
+      lower=$(echo "$adr" | tr 'A-Z' 'a-z')
+      hits=$(rg -l "^# .*$adr|^title: .*$adr" docs/adr/ 2>/dev/null | head -1)
+      if [ -z "$hits" ]; then
+        # fallback: look for adr-NNNN-*.md pattern
+        hits=$(ls docs/adr/${lower}-*.md 2>/dev/null | head -1)
+      fi
+      if [ -z "$hits" ]; then
+        echo "MISSING ADR FILE for $adr"
+      fi
+    done
+# For each ADR cited with a section ref like "ADR-0030 §Dependency direction":
+#   manually open the ADR and confirm the section heading exists.
+```
+
+### H6: claimed Out-of-Scope items are honored by the diff
+
+```bash
+# When the PR body or commit body says "Out of Scope: X", verify the diff does
+# not silently include X. Common false claims:
+#   - "Out of scope: behavior change" but a method signature changed.
+#   - "Out of scope: new deps" but Cargo.toml grew a dep line.
+git diff --name-only origin/main..HEAD | rg -q 'Cargo\.toml' && \
+  git log origin/main..HEAD --format='%B' | rg -i 'out of scope.*dep' && \
+  echo "VERIFY: PR claims no new deps but Cargo.toml changed — list newly-added deps."
+
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' | rg '^\+pub fn|^\-pub fn' | head -20
+# Cross-check against any "Out of scope: API change" claim.
+```

@@ -117,6 +117,21 @@ node scripts/validate-doc-paths.mjs 2>&1 | tail -2
 
 See reference.md for the full sweep catalog. The catalog is keyed against `docs/guidelines/review-rust.md` — when the in-repo spec gains a new rule class, update reference.md at the same time.
 
+### Step 3.5: Pattern H — doc & comment discipline (post-in-repo-review)
+
+**Run after groups A–G clear.** These sweeps catch doc/comment drift the in-repo `docs/guidelines/review-rust.md` does not enforce:
+
+- **H1** — future-tense / speculation without a concrete `STL-NN` (e.g. `lands in a follow-up issue`, `planned`, `will be added`).
+- **H2** — stale status claims on touched lib/mod docs (`scaffold` / `stub` / `WIP` / `empty` after the file gained real logic).
+- **H3** — broken `lives in <crate>` / `moved to <crate>` cross-crate citations (path / symbol / STL-NN must resolve).
+- **H4** — naming-convention coherence for new public identifiers (sibling-mirror trait/struct/fn names; sibling-mirror crate / module layout).
+- **H5** — `ADR-NNNN` cited in changed comments must exist as a file; section refs (`§Decision`, `§Out of scope`) must be present in that ADR.
+- **H6** — claimed Out-of-Scope items (in PR body / commit body) must actually be honored by the diff.
+
+Mindset: **doc must describe what IS, not what MIGHT BE.** Comments that promise future work without a concrete issue ID are wishes, not specification. Comments that claim "scaffold" after 200 lines of logic land are lies. Default verdict on any H finding: rewrite to current-state-only, or cite a specific `STL-NN` that exists.
+
+Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--doc--comment-discipline-post-in-repo-review-pass). H findings are typically nits, but accumulated nits become onboarding tax for the next reader — do not let them slide just because the in-repo spec doesn't list them.
+
 ### Step 4: Triage — group findings by pattern
 
 ```
