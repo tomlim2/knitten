@@ -122,6 +122,7 @@ Ask:
 - Sibling/umbrella content: parallel PR numbers, sibling crate names, parent-issue scope. If it's not in `git diff --stat`, it's not in the body.
 - Invented sections: `Scope boundary`, `Stack note`, `Next steps`, `Phase X`, `Monitoring`. Only the 7 expanded / 3 minimal template sections exist. If a fact doesn't fit one, fit it into the closest section or drop it.
 - Quantitative claims not re-derivable from the diff or a cited constant. If you can't point to a line/file/snapshot, drop the number.
+- Internal tooling self-references: `/shotloom-review-before-pr`, `/shotloom-check-gates`, `/shotloom-make-pr`, "verified via our skill", "ran the audit". Reviewers don't have these; they're noise. State the result (`cargo clippy clean`, `cargo test pass`) without naming the wrapper that ran it.
 
 ### Step 6: Present draft to user
 
