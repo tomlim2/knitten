@@ -48,14 +48,18 @@ Note the file shapes are different (object vs array). Step 8 jq must run filters
 
 Checkout PR branch if needed: `git checkout <headRefName> && git pull`.
 
-### Step 2.5: Classify each item by scope
+### Step 2.5: Classify each item by scope AND justification
+
+**Two axes, applied in order. A finding only reaches Step 4 if BOTH pass.**
+
+#### Axis 1 — Scope check
 
 Apply [`~/.claude/standards/shotloom-pr-scope-policy.md`](../../standards/shotloom-pr-scope-policy.md):
 
 | Bucket | Step 2.5 action | Step 4 action | Step 6 reply |
 |---|---|---|---|
-| **in-scope — fix now** | route to Step 4 fix queue | apply fix | "Fixed in `<sha>`. …" |
-| **in-scope — defer with follow-up** (large but legitimate scope inside this PR's domain) | route to Step 4 with `defer-with-issue` flag | acknowledge, file STL-NN via `/shotloom-linear-create-issue` | "Follow-up tracked as STL-NN. …" |
+| **in-scope — fix now** | route to Axis 2 (justification) | apply fix if Axis 2 passes | "Fixed in `<sha>`. …" |
+| **in-scope — defer with follow-up** (large but legitimate scope inside this PR's domain) | route to Axis 2 (justification) | acknowledge, file STL-NN via `/shotloom-linear-create-issue` | "Follow-up tracked as STL-NN. …" |
 | **out-of-scope** (different subsystem / unrelated concern) | surface to user as "needs separate issue"; do NOT fix, do NOT reply, do NOT resolve thread | skip | (no reply) |
 | **ambiguous (≥9/10)** | surface to user for routing decision; do NOT fix, do NOT reply, do NOT resolve | skip until user decides | (no reply) |
 
@@ -63,22 +67,62 @@ Apply [`~/.claude/standards/shotloom-pr-scope-policy.md`](../../standards/shotlo
 
 Ambiguity scoring: ≤8 = pick best interpretation and proceed; ≥9 = surface.
 
+#### Axis 2 — Justification check (reviewers can be wrong)
+
+For every in-scope finding, before adding it to the Step 4 fix queue, run a justification check. The reviewer is not the authority — the standard is. A finding is actionable only if the rule it cites actually applies and the proposed fix actually improves things.
+
+| Bucket | When to use | Step 2.5 action | Step 4 action | Step 6 reply |
+|---|---|---|---|---|
+| **justified — fix as recommended** | rule cited maps to the finding; recommended fix is the right shape and the right strength | proceed to Step 4 | apply as recommended | "Fixed in `<sha>`. …" |
+| **justified — fix differently** | rule applies, but the recommended fix is weaker / stronger / shaped differently than the rule justifies (e.g. reviewer says "downgrade `pub` to `pub(crate)`" but the alias has zero consumers and full deletion is cleaner; or reviewer says "extract to new crate" but a sentinel test pins the same invariant for free) | **surface to user as "reviewer says X, my read is Y, your call"** before deciding; do NOT silently go stronger or weaker than the recommendation | apply the agreed-on fix | "Fixed in `<sha>`. … [explain divergence from recommendation, citing rule]" |
+| **pushback candidate** | rule cited doesn't actually apply; reviewer mis-read the diff; the cure is worse than the disease; symmetric-treatment argument is actually asymmetric; finding is real but better fixed by a broader follow-up the reviewer themselves filed | **surface to user with the counterpoint framing** before replying; do NOT auto-fix and do NOT auto-defer-with-issue | skip until user decides | drafted with user input; cites the rule (or the reason the cited rule doesn't apply), not the reviewer |
+| **disagree outright** | rule cited is correctly named but the reviewer's interpretation is wrong | surface to user for the disagree-or-fix decision | typically skip | "<technical rationale>" — never `Done` / `Fixed` |
+
+Justification triggers (any one is enough to drop a finding out of "justified — fix as recommended"):
+
+- The cited rule's section is about a different defect class (e.g. "speculative public API" cited at a `pub` symbol that has a live consumer is a misread).
+- The recommended fix is **stronger** than the rule requires (rule says "no `pub` without consumer"; finding has zero consumers; reviewer says "downgrade to `pub(crate)`" but **delete entirely** is the rule's natural conclusion). Stronger != worse, but it's a judgment call worth surfacing.
+- The recommended fix is **weaker** than the rule requires (rule says "no in-place ADR rewrite"; reviewer says "add `[Updated]` parenthetical"; full section-level supersession banner may actually be the rule's natural conclusion).
+- Symmetric-treatment argument: reviewer cites a precedent set elsewhere in the PR ("apply ADR-0023 §6 fix to ADR-0024 §1"), but the two cases differ in a material way (e.g. one is a Decision rewrite, the other is a Context bullet update; the Decision is durable record, Context bullets aren't).
+- Reviewer themselves filed a broader follow-up issue tracking the pattern, AND that broader issue is the natural home for this fix. Doing it twice (once narrowly here, once broadly there) is churn.
+- Reviewer admitted to missing it in the prior pass ("I missed in the prior round"). This isn't a disqualifier on its own — they may be right now and wrong before — but it's a flag to verify the new reading independently before fixing.
+
+**Operational rule:** when a finding lands in `justified — fix differently` or `pushback candidate`, do NOT silently execute the reviewer's exact recommendation. Surface the alternative to the user with one of these framings before Step 3 default-approval kicks in:
+
+- "Reviewer recommends X. My read is Y because Z. Which way?"
+- "Reviewer cites rule R, but R is about defect class A and this is class B. Skip the fix and reply with the rule mismatch?"
+- "Reviewer asks for symmetric treatment with prior fix P. The two cases differ in W. Apply or push back?"
+
+**Why this exists:** PR #188 round 2 (2026-04-28) trigger — 4 actionable findings were addressed without explicitly asking "should this be in this PR" (e.g. ADR-0024 §1 supersession when the broader pattern is already tracked in STL-220) or "is the reviewer's symmetric-treatment argument actually airtight." User feedback after the fact: always evaluate scope AND justification, reviewer can be wrong, do not blindly accept and fix.
+
 ### Step 3: List feedback items
 
-Parse all comments into a numbered table (# | Source | File | Line | Summary). Inline = has `id` (directly repliable); suppressed = review body items.
+Parse all comments into a numbered table (# | Source | File | Line | Summary | **Scope** | **Justification**). Inline = has `id` (directly repliable); suppressed = review body items.
 
-Ask user which to address. Default: all. Proceed without further approval — invoking this skill authorizes the full workflow.
+The **Scope** column carries the Axis 1 bucket from Step 2.5 (`fix-now` / `defer-with-issue` / `out-of-scope` / `ambiguous`). The **Justification** column carries the Axis 2 bucket (`justified-as-rec` / `justified-fix-different` / `pushback` / `disagree`). A row only auto-proceeds to Step 4 fix queue if Scope is in-scope AND Justification is `justified-as-rec`. Any other combination requires explicit user input before fixing.
+
+"Default: all" no longer applies blindly. The default is: every `in-scope + justified-as-rec` row proceeds; every other row gets surfaced for user decision. Invoking this skill authorizes the workflow on the un-flagged rows; the flagged ones still need a per-row call.
 
 ### Step 4: Resolve each item
 
+For each finding routed here from Step 2.5 / Step 3:
+
 1. Read target file at indicated line with context.
-2. Evaluate:
+2. **Justification beat (mandatory, before applying anything).** Re-read the cited rule at its current location. Confirm:
+   - The rule's defect class actually matches the finding (not just the keyword).
+   - The recommended fix is the right shape and the right strength for that rule (not weaker, not stronger).
+   - If a precedent inside this same PR is cited for symmetric treatment, the precedent case and this case match on the dimensions that the rule cares about.
+   - If the reviewer themselves tracks the broader pattern in another issue, the in-this-PR fix is not duplicating that follow-up.
+
+   If any of these checks fail, route the finding back to Step 2.5 Axis 2 (`justified-fix-different` / `pushback` / `disagree`) and surface to the user — do NOT proceed to step 3 below.
+3. Choose action:
    - **Direct suggestion** (code block) → apply via Edit if correct
-   - **Valid concern** → implement the fix
+   - **Valid concern, justified as recommended** → implement the fix exactly as recommended
+   - **Valid concern, justified differently** → apply the user-agreed fix (Step 2.5 Axis 2 already surfaced this); reply text cites the rule and explains the divergence from the recommendation
    - **Design concern / large scope** → acknowledge, defer to STL-NN
-   - **Disagree** → prepare explanation for reply
-3. Apply the fix (also PR description + docs if implied).
-4. Briefly report each change.
+   - **Pushback / disagree** → prepare explanation for reply citing the rule (or the reason the cited rule doesn't apply)
+4. Apply the fix (also PR description + docs if implied).
+5. Briefly report each change, including the justification verdict (`as-rec` / `differently — <reason>` / `pushback` / `disagree`).
 
 ### Step 4.5: Cross-check fix against in-repo review spec (CRITICAL)
 
