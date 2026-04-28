@@ -433,3 +433,137 @@ git diff --name-only origin/main..HEAD | rg -q 'Cargo\.toml' && \
 git diff origin/main..HEAD -- 'crates/*/src/*.rs' | rg '^\+pub fn|^\-pub fn' | head -20
 # Cross-check against any "Out of scope: API change" claim.
 ```
+
+---
+
+## Pattern I — Reverse-side audit (PR-induced staleness)
+
+These run **after** Pattern H clears. Where A1 / H3 sweep `^+` lines for forward issues, Pattern I sweeps the converse: when this PR removes / moves / renames a symbol, grep the repo for **unchanged** prose that cites the OLD location and is now stale because of *this PR's change*.
+
+Mindset: **A1/H3 catch what the PR adds; I catches what the PR breaks elsewhere.** "Pre-existing line" is not an excuse — the diff caused the staleness, so the diff owns the fix.
+
+### I1: symbols this PR removes from a crate's public surface
+
+```bash
+# List public re-exports the PR drops from any crate's lib.rs.
+git diff origin/main..HEAD -- 'crates/*/src/lib.rs' \
+  | rg '^-\s*pub use ' \
+  | rg -o '`?[A-Za-z_][A-Za-z0-9_]*`?' \
+  | sort -u
+```
+
+For each removed symbol `X` from old crate `shotloom-y`:
+
+```bash
+# Look for unchanged prose / docs / ADRs / READMEs that still claim ownership.
+rg -n "shotloom_y::X|shotloom-y.*\bX\b" crates/ docs/ MAP.md AGENTS.md 2>/dev/null
+```
+
+Triage per hit: legitimate historical mention (keep) vs stale ownership claim (fix in this PR).
+
+### I2: file deletions / renames
+
+```bash
+# Files this PR removes or renames.
+git diff --name-status origin/main..HEAD | rg '^[DR]'
+
+# For each old path, grep prose for citations.
+old_path="crates/shotloom-gltf/src/vrm_foot_contact.rs"   # ← per finding
+rg -n "$old_path|$(basename "$old_path" .rs)" crates/ docs/ 2>/dev/null
+```
+
+If the old file was named in a comment / ADR / README and the citation does not name the new location, flag.
+
+### I3: module-internal imports removed from a non-test source file
+
+```bash
+# Imports the PR drops; their fully-qualified path may still be cited in prose.
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+  | rg '^-use\s+(shotloom_[a-z_]+::[A-Za-z0-9_:]+)' \
+  | rg -o 'shotloom_[a-z_]+::[A-Za-z0-9_:]+' \
+  | sort -u
+```
+
+For each removed fully-qualified path, grep ADRs / READMEs / module-doc comments:
+
+```bash
+qualified="shotloom_gltf::extract_foot_contact_data"        # ← per finding
+rg -n "$qualified" crates/ docs/ 2>/dev/null
+```
+
+Same triage as I1.
+
+---
+
+## Pattern T — Test coverage on changed behavior
+
+`~/.claude/rules/testing.md` mandates that every modified public function, every new struct/enum with behavior, and every bug fix ships with a corresponding unit test in the **same** PR. The in-repo `docs/guidelines/review-rust.md` does not enforce this directly. Pattern T closes the gap by mapping changed signatures against new test functions in the same diff.
+
+Mindset: **a changed `impl From<X>` whose source type moved across crates is a behavior change**, even when the body is byte-identical. Field-mapping invariants need a regression-grade pin in the same PR, not a smoke test through a caller.
+
+### T1: public surface added or modified
+
+```bash
+# Added / modified public items: pub fn, pub struct, pub enum, conversion impls.
+git diff origin/main..HEAD --unified=0 -- 'crates/*/src/*.rs' \
+  | rg '^\+\s*(pub fn|pub struct|pub enum|impl(?:\s+<[^>]+>)?\s+(?:From<|TryFrom<|Default for|Display for))' \
+  | sort -u
+```
+
+### T2: new test functions added in the same diff
+
+```bash
+# Test functions newly added in the diff (under cfg(test) or tests/).
+git diff origin/main..HEAD --unified=0 -- 'crates/*/src/*.rs' 'crates/*/tests/*.rs' \
+  | rg -B 2 '^\+\s*fn ' \
+  | rg -B 1 '#\[test\]'
+```
+
+### T3: cross-reference T1 ↔ T2
+
+For each T1 hit:
+
+- Is there a T2 test in the same diff exercising it? Check by name (the test function name typically references the symbol under test) and by file (tests live in the same crate).
+- If no T2 mapping exists, the PR body must name a pre-existing test that covers it. "Covered by smoke test through a caller" is **not** sufficient for type-mapping invariants — `From<X>` and similar conversion impls need a direct field-by-field assertion test.
+
+Surface as finding:
+
+```
+T3: <crate>/src/<file>.rs +impl From<NewType> for X — no new test maps to it.
+    Fix: add test in <crate>/src/<file>.rs::tests with distinct per-field values to pin the mapping, OR cite the pre-existing test name in PR body.
+```
+
+### T4: tests referencing private items in OTHER crates by name
+
+```bash
+# Test functions / cfg(test) blocks that mention a function name that is private in another crate.
+# Approach: list callable identifiers cited in test comments / bodies; cross-check against pub surface.
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+  | rg '^\+' \
+  | rg -B 5 '#\[test\]|#\[cfg\(test\)\]' \
+  | rg -o '\b(compute_|extract_|build_|parse_|normalize_)[a-z_]+\b' \
+  | sort -u
+```
+
+For each cited identifier, find its definition crate and visibility:
+
+```bash
+ident="compute_foot_contact"   # ← per finding
+rg -n "fn $ident\b" crates/ 2>/dev/null
+# Look at the file's pub-or-not and the crate's lib.rs re-exports.
+```
+
+If the test is in crate `A` and the identifier is private in crate `B`, the test's comment is a leaky abstraction — rewrite around `B`'s **public** surface so a future internal rename in `B` does not invalidate `A`'s test prose.
+
+---
+
+## Sweep order summary
+
+Reviewers should run in this order, stopping at the first failed group only when triaging is interactive:
+
+1. **A–G** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
+2. **H** — doc & comment discipline (added lines).
+3. **I** — reverse-side audit (unchanged lines newly stale).
+4. **T** — test coverage on changed behavior (`rules/testing.md` enforcement).
+
+Groups H/I/T are post-spec sweeps that the in-repo rust-review document does not cover. Findings in those groups are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.

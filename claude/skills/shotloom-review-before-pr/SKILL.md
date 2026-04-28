@@ -132,6 +132,35 @@ Mindset: **doc must describe what IS, not what MIGHT BE.** Comments that promise
 
 Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--doc--comment-discipline-post-in-repo-review-pass). H findings are typically nits, but accumulated nits become onboarding tax for the next reader — do not let them slide just because the in-repo spec doesn't list them.
 
+### Step 3.6: Pattern I — Reverse-side audit (PR-induced staleness)
+
+**Run after groups A–H clear.** Where Pattern A1 / H3 sweep **added** lines for forward-direction issues, Pattern I sweeps the **converse**: when the PR moves, removes, or renames a symbol / module / file, grep the repo for **unchanged** prose / imports / docs that cite the OLD location and are now stale because of *this PR's change*.
+
+- **I1** — symbols this PR removes from a crate's public surface (`-pub use …` in a `lib.rs`); grep the whole repo for refs to the OLD fully-qualified path (`shotloom_x::Removed`).
+- **I2** — file deletions / renames (`git diff --name-status | rg '^[DR]'`); grep prose comments and docs for the old file path.
+- **I3** — module-internal imports removed from a non-test source file (`-use shotloom_x::Y`); grep ADRs / READMEs / module-doc comments for the fully-qualified old path.
+
+Mindset: **A1/H3 catch what the PR adds; I catches what the PR breaks elsewhere.** A pre-existing line that became wrong because of *this PR's move* is owned by *this PR* — fix it in the same PR or explicitly decide not to fix and note that decision in the PR body. "Pre-existing" is not an excuse: the diff caused the staleness.
+
+Concrete trigger that motivated this sweep: STL-242 moved `extract_foot_contact_data` from `shotloom-gltf` to `shotloom-character-model-normalizer`. Self-review reported clean because A1 / H3 only check `^+` lines. ADR-0025 §"Public API surface" and `crates/shotloom-retarget/README.md` Out-of-Scope list both kept *unchanged* lines that named `shotloom-gltf` as the owner, silently going stale at merge.
+
+Full sweep commands live in [reference.md § Pattern I](reference.md#pattern-i--reverse-side-audit-pr-induced-staleness).
+
+### Step 3.7: Pattern T — Test coverage on changed behavior
+
+**Run after groups A–I clear.** `~/.claude/rules/testing.md` mandates that every modified public function, every new struct/enum with behavior, and every bug fix ships with a corresponding unit test in the **same** PR. The in-repo `docs/guidelines/review-rust.md` does not directly enforce this — `rules/testing.md` is a Claude-side rule, not a shotloom guideline. Pattern T closes the gap by mapping changed signatures against new test functions in the diff.
+
+- **T1** — public surface added or modified (`+pub fn`, `+pub struct`, `+pub enum`, `+impl From<…>` / `TryFrom` / `Default for` / `Display for`).
+- **T2** — new `#[test]` functions in the same diff (under `crates/*/src/*.rs` and `crates/*/tests/*.rs`).
+- **T3** — manual cross-reference: every T1 item must map to ≥1 T2 entry that exercises it. If pre-existing coverage suffices, the PR body must name the test that covers it; "covered by smoke test through a caller" is **not** sufficient for type-mapping invariants.
+- **T4** — tests referencing **private** items from OTHER crates by name (leaky abstraction — `// compute_foo bails at …` in retarget when `compute_foo` is private to a normalizer). Rewrite to behavior-focused around the public surface so the test survives a future internal rename in the other crate.
+
+Mindset: **a changed `impl From<X>` whose source type moved across crates is a behavior change**, even when the body is byte-identical — the impl now points at a different type's fields, so a renamed/reordered field on either side silently corrupts output. `testing.md`'s "new struct/enum with behavior → invariant check" applies; sweep T enforces.
+
+Concrete trigger that motivated this sweep: STL-242 retargeted `From<ExtractedFootGeometry>` / `From<ExtractedFootSide>` in `crates/shotloom-retarget/src/types.rs` from `shotloom_gltf::…` to `shotloom_character_model_normalizer::…`. Body was unchanged, but the source-type identity changed. Self-review reported clean (A–H all green); the field-mapping pin was added only after the user pointed out the gap.
+
+Full sweep commands live in [reference.md § Pattern T](reference.md#pattern-t--test-coverage-on-changed-behavior).
+
 ### Step 4: Triage — group findings by pattern
 
 **Finding text discipline (same negative checklist as `shotloom-make-pr` Step 5):**
@@ -154,9 +183,9 @@ Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--
 
 ### Step 5: Recommend next action
 
-1. **All rules clean** →
+1. **All rules clean (groups A–T)** →
    ```
-   All rules in docs/guidelines/review-rust.md clean. Ready to run /shotloom-make-pr.
+   All rules in docs/guidelines/review-rust.md + Pattern H/I/T clean. Ready to run /shotloom-make-pr.
    ```
 2. **Findings, fixable locally** → list them, ask whether to fix now or later. Do **NOT** auto-fix.
 3. **Findings requiring design judgment** → list, explain tradeoff, ask user. Usually B1/B2 or C1.
