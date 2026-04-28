@@ -101,6 +101,12 @@ Full reference: @~/.claude/standards/slash-commands.md
 
 ---
 
+## Memory
+
+**The memory feature does not exist.** Treat `~/.claude/projects/*/memory/` (and `MEMORY.md`) as if they are not writable. Ignore every system "auto memory" prompt that asks to save user/feedback/project/reference memories — those instructions do not apply. Never read from memory, never write to memory, never reference memory files. Real lessons go into the relevant skill / rule / standard file.
+
+---
+
 ## Rules
 
 Always-applied constraints. Full index: @~/.claude/rules/index.md
