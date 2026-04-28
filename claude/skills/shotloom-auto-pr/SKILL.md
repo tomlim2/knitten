@@ -175,7 +175,7 @@ Dispatch by event type:
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
   - red / ambiguous: log "needs human" in `log.md`, exit without comment
 
-- **`new_comments` or `new_reviews` non-empty** → review auto-respond per shotloom's `.claude/standards/shotloom-pr-scope-policy.md`:
+- **`new_comments` or `new_reviews` non-empty** → review auto-respond per the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md`:
   - classify in-scope / out-of-scope / ambiguous (≥9/10 only counts as ambiguous; ≤8 → pick closest interpretation)
   - **inline vs suppressed split** — every finding is either an inline comment (has `comment_id` in the `/comments` REST array) or a suppressed/review-body item (lives only inside a `/reviews` body). The two groups have different reply surfaces and must NOT be conflated:
     - **inline in-scope** → apply fix, gate commit on pattern capture, commit, push, **inline reply** via `POST /pulls/<N>/comments/<comment_id>/replies` (one per finding)
@@ -274,6 +274,6 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 
 - `~/.claude/skills/shotloom-respond-pr/SKILL.md` — manual review response (with approval gate)
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation
-- shotloom's `.claude/standards/shotloom-pr-scope-policy.md` — in-scope classification
+- the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — in-scope classification
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
 - `~/.claude/rules/shotloom.md` — pre-PR gates

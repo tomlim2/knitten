@@ -54,7 +54,7 @@ Checkout PR branch if needed: `git checkout <headRefName> && git pull`.
 
 #### Axis 1 — Scope check
 
-Apply shotloom's `.claude/standards/shotloom-pr-scope-policy.md`:
+Apply the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md`:
 
 | Bucket | Step 2.5 action | Step 4 action | Step 6 reply |
 |---|---|---|---|

@@ -56,7 +56,7 @@ Then enumerate and read every file under:
 
 From `~/.claude/` (Claude-side only — in-repo `docs/guidelines/` is the SSOT for writing/review rules and is loaded in Step 2):
 
-- shotloom's `.claude/standards/shotloom-pr-scope-policy.md` — PR scope classification policy (no in-repo equivalent)
+- the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — PR scope classification policy (no in-repo equivalent)
 - `~/.claude/rules/shotloom.md` — hub rule (routing + answering style)
 - `~/.claude/rules/shotloom.md` — Claude-side gates (gh auth, auto-commit, CI exclude flags)
 
@@ -75,7 +75,7 @@ Emit:
 **shotloom HEAD:** <short-sha>
 **Loaded:**
 - Repo: AGENTS, CONTRIBUTING, CLAUDE, ADR index, N guideline files, M .agent files
-- Claude-side: shotloom-pr-scope-policy.md, rules/shotloom*.md
+- Claude-side: ~/.claude/rules/shotloom.md, ~/.claude/skills/shotloom-auto-pr/reference.md (PR-scope policy)
 - ADR titles indexed: <count>
 
 **Fork this session for each work task.**
