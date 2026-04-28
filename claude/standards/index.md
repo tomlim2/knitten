@@ -75,8 +75,6 @@ Standards contain the rationale, examples, and templates that rules link back to
 | [`cci-slack.md`](cci-slack.md) | Before Slack operations |
 | [`arp-skeleton.md`](arp-skeleton.md) | ARP (Auto-Rig Pro) skeleton reference |
 
-Repo-specific standards live inside the repo at `<repo-root>/.claude/standards/` (e.g. shotloom's `.claude/standards/shotloom-pr-scope-policy.md`).
-
 ## Docs & System
 
 | Standard | When to read |

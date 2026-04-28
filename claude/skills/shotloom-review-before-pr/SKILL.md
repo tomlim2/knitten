@@ -93,7 +93,7 @@ Read in full, in order:
 5. `docs/adr/README.md` — ADR index; note crate-boundary ADRs for G1/G5.
 6. Last 3–5 merged PRs (`gh pr list --state merged --limit 5`) for shape reference.
 
-If a repo-local rule file exists (`~/.claude/rules/<repo>-*.md`, e.g. shotloom's `.claude/rules/shotloom-git.md`), load that too — it overrides generic rules.
+If a repo-local rule file exists (`~/.claude/rules/<repo>-*.md`, e.g. `~/.claude/rules/shotloom.md`), load that too — it overrides generic rules.
 
 ### Step 3: Run pattern sweeps against the current diff
 
@@ -184,7 +184,7 @@ The literal rule enumeration (Step 4 output) stays in English/code-quote form so
 - `docs/guidelines/review-rust.md` (in shotloom repo) — **authoritative Rust review SSOT** loaded at Step 2
 - `docs/guidelines/code-review-guideline.md` (in shotloom repo) — review process / priorities
 - `skills/shotloom-make-pr/SKILL.md` — next step after clean report
-- shotloom's `.claude/rules/shotloom-git.md` — pre-PR identity / build / commit conventions
+- `~/.claude/rules/shotloom.md` — pre-PR identity / build / commit conventions
 - `rules/testing.md` — unit test requirement (orthogonal to this checklist)
 
 ## Additional Resources

@@ -68,6 +68,6 @@ For any failure: include the first 20 lines of error output inline, followed by 
 
 ## Notes
 
-- Build gate MUST use `--exclude shotloom-desktop` per shotloom's `.claude/rules/shotloom-git.md` (Tauri icon.png pre-existing issue).
+- Build gate MUST use `--exclude shotloom-desktop` per `~/.claude/rules/shotloom.md` (Tauri icon.png pre-existing issue).
 - `cargo clippy -- -D warnings` is what CI runs — any warning is a block.
 - If on a worktree and binaries live in shared `target/`, first run may trigger rebuild. Subsequent runs are incremental.

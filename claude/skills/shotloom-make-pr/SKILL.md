@@ -75,7 +75,7 @@ Read: $worktree/docs/guidelines/commit-guideline.md
 Read: $worktree/.agent/README.md / working-rules.md / checklists.md (if present)
 ```
 
-`.agent/` holds informal repo-scoped agent rules (incl. Codex "돌쇠"). Additive to `docs/guidelines/`; honor even if not yet in shotloom's `.claude/rules/shotloom-git.md`. Silently skip if absent.
+`.agent/` holds informal repo-scoped agent rules (incl. Codex "돌쇠"). Additive to `docs/guidelines/`; honor even if not yet in `~/.claude/rules/shotloom.md`. Silently skip if absent.
 
 ### Step 3: Local CI-equivalent gates
 
@@ -314,7 +314,7 @@ Write devlog summarizing **why / how / what** so future sessions can recall cont
    devlog="$base/shotloom-devlog-$(date +%Y-%m-%d).md"
    ```
 2. Create with frontmatter if missing (see reference.md for frontmatter shape).
-3. Append PR section. **Lead paragraph must frame work in big picture** per shotloom's `.claude/rules/shotloom.md`: which subsystem (VRM/timeline/bridge/rendering/retarget/stage), larger goal, what this unblocks. PR link + issue ID go at END of paragraph, not start.
+3. Append PR section. **Lead paragraph must frame work in big picture** per `~/.claude/rules/shotloom.md`: which subsystem (VRM/timeline/bridge/rendering/retarget/stage), larger goal, what this unblocks. PR link + issue ID go at END of paragraph, not start.
 4. H2 sections: Big picture (optional) / Why / How / What. See reference.md for section contents and template.
 5. Convention surprises → `### 사이드 노트` bullet list.
 6. Do NOT open Obsidian to verify rendering — file is durable on disk.
@@ -364,7 +364,7 @@ Skip entirely when:
 ## Related
 
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT for Step 3b pre-PR checklist
-- shotloom's `.claude/rules/shotloom-git.md` — per-PR approval, pre-PR checklist, account/identity
+- `~/.claude/rules/shotloom.md` — per-PR approval, pre-PR checklist, account/identity
 - `rules/git.md` — global PR lifecycle approval
 - `rules/testing.md` — unit test requirement
 - `README.md` + `AGENTS.md` (in shotloom repo) — project overview

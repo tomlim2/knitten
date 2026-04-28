@@ -17,6 +17,6 @@
   - PR title and description match team conventions — sample 3–5 recent merged PRs in the same repo/team if unsure.
   - Any referenced Linear/GitHub issues exist, are in the right project, and are cross-linked.
   - If superseding a prior PR, the redirect comment and the prior PR number are prepared in the new PR description.
-- **Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has its own `.claude/rules/*.md`, consult and satisfy it in addition to the generic bullets above. Examples:
-  - shotloom (CINEV/shotloom) — `.claude/rules/shotloom-git.md` (gh account, identity, cargo gates, doc/CI validators, agentless register, auto-commit/push exemption)
+- **Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated Claude-side meta in `~/.claude/rules/<repo>.md`, consult and satisfy it in addition to the generic bullets above:
+  - shotloom (CINEV/shotloom) → @~/.claude/rules/shotloom.md
 - Full reference: @~/.claude/standards/cinev-git-workflow.md

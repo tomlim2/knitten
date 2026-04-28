@@ -83,7 +83,7 @@ If the session produced repo-convention surprises or gotchas worth remembering (
 
 ## Big-picture framing guidance (for the post-create report, NOT the PR body)
 
-Per shotloom's `.claude/rules/shotloom.md` answering style — applies to Step 10 + Step 11 verbal report only:
+Per `~/.claude/rules/shotloom.md` answering style — applies to Step 10 + Step 11 verbal report only:
 
 - Lead with the big picture for any shotloom question / artifact.
 - Which subsystem (VRM pipeline, timeline, rendering, bridge, etc.), what larger goal, why it matters now.

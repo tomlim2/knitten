@@ -31,9 +31,4 @@ Unlike `standards/` (long reference docs read on-demand), rules here are **must-
 | [`obsidian.md`](obsidian.md) | Obsidian vault document format |
 | [`cinev-git.md`](cinev-git.md) | CINEV project git ops (UE lock check) |
 | [`multi-agent.md`](multi-agent.md) | When assigned 지통실 #1 (1호기) |
-
-## Repo-local rules (live inside the repo)
-
-Repo-specific rules live at `<repo-root>/.claude/rules/` and Claude Code auto-loads them when cwd is in that repo. Resolve a repo path at runtime with `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo <key>` (returns `RESOLVED_PATH=…`).
-
-- **shotloom** — `.claude/rules/shotloom.md` (hub) + `.claude/rules/shotloom-git.md` (pre-PR / auto-commit / agentless register) + `.claude/standards/shotloom-pr-scope-policy.md` (PR review scope policy)
+| [`shotloom.md`](shotloom.md) | Shotloom Claude-side meta — gh account, commit identity, build flag, auto-commit/push exemption, `/shotloom-auto-pr` exemption, `/claude-review` trigger. Project rules themselves live in shotloom's own `docs/guidelines/` etc. |

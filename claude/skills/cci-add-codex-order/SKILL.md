@@ -12,7 +12,7 @@ Scaffold a new Codex order brief under `~/.codex/codex-base/order/` so the Codex
 
 - **Primary target:** a Linear STL-NN issue that is next-in-line for Codex to work on.
 - **Canonical location:** `~/.codex/codex-base/order/<issue-id>-<short-slug>.md`
-- **Optional mirror:** `<target-repo>/.agent/handoff-<issue-id>.md` (repo-scoped operational memory per the shotloom `.agent/` convention in shotloom's `.claude/rules/shotloom-git.md`).
+- **Optional mirror:** `<target-repo>/.agent/handoff-<issue-id>.md` (repo-scoped operational memory per the shotloom `.agent/` convention in `~/.claude/rules/shotloom.md`).
 - **Source of truth:** if the target repo has a `.agent/` dir, treat the repo-side copy as canonical and the order/ copy as a cache. Otherwise the order/ file itself is canonical.
 - **Out of scope:** running the work, creating the Linear issue (use `shotloom-linear-create-issue` / `cci-linear-create-issue`), committing/pushing the codex-base repo (user decides when to `git push`).
 
@@ -108,7 +108,7 @@ Show user: full path, mirror path (if used), `git -C ~/.codex/codex-base status`
 
 - `~/.codex/codex-base/AGENTS.md` — Primary Queue rule
 - `~/.codex/codex-base/order/README.md` — order/ conventions
-- shotloom's `.claude/rules/shotloom-git.md` — `.agent/` folder convention
+- `~/.claude/rules/shotloom.md` — `.agent/` folder convention
 - `claude/skills/shotloom-linear-create-issue/` — sibling for creating Linear issues
 - `claude/skills/cci-codex-review-rust/` — sibling Codex CLI skill
 

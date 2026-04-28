@@ -15,9 +15,9 @@ Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing noth
 
 ## Approval exemption
 
-This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git.md` and shotloom's `.claude/rules/shotloom-git.md` impose. Authorized 2026-04-21 (user). See:
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git.md` and `~/.claude/rules/shotloom.md` impose. Authorized 2026-04-21 (user). See:
 
-- shotloom's `.claude/rules/shotloom-git.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
+- `~/.claude/rules/shotloom.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
 - `(deleted memory file)`
 
 **Auto-approved inside the react cycle:**
@@ -37,7 +37,7 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 - `gh pr review --approve` / `--request-changes` (any review with non-`COMMENT` event)
 - thread resolution (graphql `resolveReviewThread`)
 
-The ready-to-merge report below is logged, not invoked. This list is mirrored in shotloom's `.claude/rules/shotloom-git.md` and ``(deleted memory file)``; change all three together.
+The ready-to-merge report below is logged, not invoked. This list is mirrored in `~/.claude/rules/shotloom.md` and ``(deleted memory file)``; change all three together.
 
 The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffected and keeps the per-comment batch approval gate.
 
@@ -276,4 +276,4 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation
 - shotloom's `.claude/standards/shotloom-pr-scope-policy.md` — in-scope classification
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
-- shotloom's `.claude/rules/shotloom-git.md` — pre-PR gates
+- `~/.claude/rules/shotloom.md` — pre-PR gates

@@ -57,8 +57,8 @@ Then enumerate and read every file under:
 From `~/.claude/` (Claude-side only — in-repo `docs/guidelines/` is the SSOT for writing/review rules and is loaded in Step 2):
 
 - shotloom's `.claude/standards/shotloom-pr-scope-policy.md` — PR scope classification policy (no in-repo equivalent)
-- shotloom's `.claude/rules/shotloom.md` — hub rule (routing + answering style)
-- shotloom's `.claude/rules/shotloom-git.md` — Claude-side gates (gh auth, auto-commit, CI exclude flags)
+- `~/.claude/rules/shotloom.md` — hub rule (routing + answering style)
+- `~/.claude/rules/shotloom.md` — Claude-side gates (gh auth, auto-commit, CI exclude flags)
 
 ### Step 4: Read ADR index entries
 
@@ -103,4 +103,4 @@ If the user asks to work on code in this session, refuse and tell them to fork f
 ## Related
 
 - [`shotloom-start-code`](../shotloom-start-code/SKILL.md) — run inside the forked session for per-task setup (Linear fetch, worktree, category detect)
-- shotloom's `.claude/rules/shotloom.md` — hub
+- `~/.claude/rules/shotloom.md` — hub
