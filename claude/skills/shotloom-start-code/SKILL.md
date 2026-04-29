@@ -117,9 +117,26 @@ In-repo Rust review SSOT:
 
 For Rust, also scan `docs/adr/` for ADRs relevant to the affected crate.
 
+### Step 5b: Cross-check Linear AC against cited primitives (mandatory)
+
+For each acceptance criterion in the Linear issue that cites a repo primitive — template, standard, rule, ADR section, in-repo guideline — open the primitive's actual file and confirm:
+
+1. The cited section / clause exists at the named path.
+2. The pattern the AC asks you to enforce is actually codified in that primitive.
+
+If the cited pattern is **not codified** (template Usage Notes doesn't mention it; the rule file doesn't carry the constraint; the ADR section points elsewhere), the AC is **wrong-shape** — it asks you to enforce a standard that doesn't exist.
+
+**Default response: reject the AC. Do NOT apply Option-A/B/C workarounds.** The right move is:
+
+- Surface the AC ↔ primitive mismatch in the Step 6 Ready briefing as a separate bullet.
+- Propose splitting the work: file a follow-up issue to *codify the cited pattern in the primitive* as its own PR, then revisit this AC after the primitive is updated.
+- Do NOT smuggle the uncodified pattern into a single ADR / file in this PR. Single-file standard invention recreates the defect class the AC was trying to enforce against, and round 1 review will P2-Block it.
+
+Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style (`Accepted (amended YYYY-MM-DD)`)", but `docs/guidelines/adr-template.md` Usage Notes did not codify that form. The author noticed the gap at briefing time but applied "Option A" (use the form in this one ADR). Reviewer P2 Blocking forced revert. The right call at briefing time was to reject AC #2 and split.
+
 ### Step 6: Ready briefing
 
-Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist. **Stop. Do NOT edit yet — wait for user confirmation.**
+Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC ↔ primitive cross-check verdict for every AC that cited a primitive (codified ✓ / wrong-shape ✗ with proposed split)**. **Stop. Do NOT edit yet — wait for user confirmation.**
 
 ### Step 7: Mandatory post-write self-review (before any PR)
 
