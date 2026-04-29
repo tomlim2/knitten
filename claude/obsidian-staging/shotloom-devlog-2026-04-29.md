@@ -241,3 +241,44 @@ PR ready-for-review (not draft) 로 #208 오픈. Linear STL-247 In Progress → 
 > [!warning] 카르브아웃(carve-out) 프레이밍 vs 도메인 한정
 > `vrm0x-` 파일이 diagnostic 을 emit 하지만 `_backward` suffix 안 가지는 케이스를 처음에 "carve-out (예외)" 로 framing → user 가 *"backward 가 0.x 의 default 인데 예외라고 부르는 게 맞나"* 지적. 더 정확한 모델은 **"`_backward` 는 `vrm1x-*` 네임스페이스에서만 의미"** 라는 domain-bounded rule. exception 을 두는 대신 rule 의 도메인을 한정하면 exception 자체가 사라짐. **교훈:** "예외" 가 떠오르면 한 번 더 의심 — 진짜 예외인지, 규칙의 도메인을 잘못 잡은 건지.
 
+
+---
+
+## STL-248 — VRM fixture suffix 컨벤션을 carve-out 에서 domain-bounded rule 로 reframe
+
+VRM normalization fixture taxonomy 가 STL-245 에서 *"emit diag → `_backward` suffix"* 라는 broad rule 로 자리잡았는데, 그 rule 이 `vrm0x-*` 파일 두 건 (vrm0x-vroid-f-a/b) 을 carve-out 으로 처리해야 했음. STL-245 머지 후 user 가 *"backward 가 0.x 의 default 인데 예외라고 부르는 게 맞나"* 짚어줘서 cleaner 모델 — `_backward` 는 `vrm1x-*` 네임스페이스에서만 의미를 갖는 domain-bounded rule — 로 reframe. 부수적으로 STL-245 에서 발견됐던 moth/ghostpumpking 의 prefix-vs-flavor 불일치 (filename 은 `vrm1x-` 인데 parser 는 `Vrm0`) 도 같은 PR 으로 정정. PR [#209](https://github.com/CINEV/shotloom/pull/209), STL-248.
+
+### Why
+
+STL-245 의 `_backward` row 가 *"emits `normalized_backward_root_180y_vrm1` (1.x native) or `normalized_backward_root_180y` (0.x → 1.x conversion path)"* 라는 두 갈래 criterion 으로 자리잡으면서, vrm0x-vroid-f-a/b 두 파일이 후자에 매치되지만 suffix 가 없는 케이스가 carve-out 처리됨. 즉 "rule + 예외" 구조. 0.x 스펙은 root 가 +Y 의 반대쪽을 향하는 게 컨벤션이라, 0.x 에서 root-180Y 는 결함이 아니라 spec convention 자체. carve-out 이 아니라 **rule 의 도메인이 처음부터 `vrm1x-*` 로 한정** 됐었어야 함.
+
+추가로 STL-245 머지 직후 STL-248 follow-up 으로 잡아둔 prefix-vs-flavor 불일치 — moth 와 ghostpumpking 가 `vrm1x-` prefix 임에도 parser 가 `VrmFlavor::Vrm0` 로 읽음 — 이 두 가지 결함이 사실상 같은 design 갭의 표면 두 곳이라 한 PR 으로 묶어 처리.
+
+### How
+
+세 갈래 동시 적용:
+
+- **`git mv` × 2 (`_backward` drop 포함):**
+  - `vrm1x-cmm-x-moth_backward.vrm` → `vrm0x-cmm-x-moth.vrm`
+  - `vrm1x-cmm-x-ghostpumpking_backward_curled.vrm` → `vrm0x-cmm-x-ghostpumpking_curled.vrm`
+- **`assets/README.md` Variant suffixes 재작성:** `backward` row 의 Meaning 을 *"Within the `vrm1x-*` namespace only"* 로 시작하게 바꿈, Detection criterion 도 `_vrm1` diagnostic 만 남김. `_curled` / `_nofingers` 두 row 에 *"Independent of spec version, applies in either namespace"* 명시. 끝의 carve-out 단락을 *"namespace bound on the rule"* 로 reframe — 첫 cross-namespace example 인 `vrm0x-cmm-x-ghostpumpking_curled.vrm` 도 같은 단락에 박음.
+- **`fixtures.json` preset 7/11:** `version` 필드 `1x` → `0x`, `model` 경로 새 파일명, `desc` 도 *"Current artifact is VRM 1.x by metadata"* 같은 부정확한 표현 제거하고 0.x source + (ghostpumpking 의 경우) `_curled` quirk 만 기술.
+
+LFS pointer oid 두 건 모두 유지 (`81cfbb98` moth, `a654eda4` ghostpumpking). `_backward` test selector 가 사용하는 yoya / minjoon fixture 는 이번 PR 영향 0.
+
+### What
+
+실제 변경 (4 files, 21+/17-, draft PR):
+
+- `assets/README.md` — variant catalog 3행 reframe + 끝 단락 reframe + Examples 리스트 갱신
+- `assets/models/vrm0x-cmm-x-moth.vrm` (rename from `vrm1x-cmm-x-moth_backward.vrm`)
+- `assets/models/vrm0x-cmm-x-ghostpumpking_curled.vrm` (rename from `vrm1x-cmm-x-ghostpumpking_backward_curled.vrm`)
+- `crates/shotloom-retarget/examples/fixtures.json` — preset 7/11 갱신
+
+게이트: `cargo fmt --check`, `cargo clippy --workspace --exclude shotloom-desktop --all-targets -- -D warnings`, `cargo test --workspace --exclude shotloom-desktop`, `node scripts/validate-doc-paths.mjs` (958/145). 옛 basename grep 0 hit.
+
+### 사이드 노트
+
+- STL-245 머지 직후 user 의 한 줄 질문 (*"근데 그건 있음 왜 예외라고 정의하죠? backward가 기본이니까?"*) 이 정확히 design model 의 결함을 짚었음. carve-out 이라는 단어가 떠올랐을 때 *"진짜 예외인지 도메인을 잘못 잡은 건지"* 를 한 번 더 묻는 습관이 필요. carve-out + 예외 + 단서 조항 같은 단어가 reframe 의 신호일 때가 많음.
+- `_curled` / `_nofingers` 가 사실 spec-version-independent 인 physical property 였는데 STL-245 시점엔 두 마커 모두 `vrm1x-*` 안에서만 등장해서 그 점이 안 드러남. 이번 PR 이 `vrm0x-cmm-x-ghostpumpking_curled.vrm` 라는 첫 cross-namespace 케이스를 만들면서 그 사실이 자연스럽게 문서에 박힘.
+- STL-248 issue 본문은 user reframe 토론 *이전* 에 작성된 거라 Plan A (`vrm0x-cmm-x-moth_backward.vrm` — `_backward` 유지) 를 명시. PR 은 토론 결과 (Plan B — `_backward` drop) 를 따랐고, AC 본문 텍스트 vs 구현이 표면상 어긋남. PR body 의 Summary 가 reframe 결정의 근거 (`_backward` 를 vrm1x-only 로 한정) 를 명시해서 reviewer 가 그 disambiguation 을 PR 안에서 읽을 수 있게 함.
