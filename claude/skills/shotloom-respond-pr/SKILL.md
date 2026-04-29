@@ -197,6 +197,37 @@ Also draft the **reviewer re-request roster** for Step 8 right now, so the user 
 Re-request from: @reviewer1, @reviewer2  (rationale: CHANGES_REQUESTED resolved | review round complete)
 ```
 
+#### APPROVED-state branch (mandatory — do NOT default to bundled re-request)
+
+Inspect cached PR review state before bundling the re-request with the reply drafts:
+
+```bash
+DECISION=$(jq -r '.reviewDecision // ""' "/tmp/pr${ARGUMENTS}-view.json")
+LATEST_REVIEW_STATE=$(jq -r '[.[] | select(.state != "COMMENTED")] | sort_by(.submitted_at) | last | .state // ""' "/tmp/pr${ARGUMENTS}-reviews.json")
+```
+
+When `DECISION == "APPROVED"` OR `LATEST_REVIEW_STATE == "APPROVED"` AND every addressed finding from Step 2.5 is non-blocking (P3 nit, or reviewer body explicitly says "non-blocking" / "optional" / "author's call"), do NOT silently bundle the re-request into the Step 6 batch. Re-requesting an already-APPROVED reviewer for optional nits is courtesy ping noise that the reviewer didn't ask for.
+
+The **default action** in this branch is **reply + resolve, NO re-request** — the cycle closes from the author side because the reviewer has already approved and the addressed nits don't need a second look. Resolving the threads signals "I addressed your optional notes; nothing else needed from you." This is the only scenario where this skill resolves threads (cf. Step 7's general no-resolve policy — APPROVED + non-blocking is the documented exception, not a rewrite of the rule).
+
+Present a **three-way choice** to the user, in addition to the standard reply-batch approval:
+
+> 리뷰어가 이미 APPROVED 한 상태에서 optional/non-blocking 한 nit 만 처리됐습니다. 어떻게 처리할까요?
+>
+> - **`y`** (default) — 인라인 reply N건 + 해당 N개 thread `resolveReviewThread`. 재리뷰 요청 안 보냄. (cycle 종료 신호 — author 쪽에서 닫음)
+> - **`with-rerequest`** — 위 + `@<reviewer>` 재리뷰 요청까지. 드뭄 — 변경이 의도대로 반영됐는지 확인을 원할 때만.
+> - **`skip-everything`** — reply 도 resolve 도 안 함. 사이클 무음 종료. 드뭄.
+
+Wait for explicit user input. The default routing rule below ("**Show ALL reply drafts AND the re-request roster in one batch**") only applies when the APPROVED-state branch does NOT trigger.
+
+Set session-local flags from the user's choice:
+
+- `y` (default) → set `RESPOND_PR_SKIP_RE_REQUEST=1` AND `RESPOND_PR_RESOLVE_THREADS=1`. Post replies (Step 6 mechanics), resolve threads (Step 7 exception), skip re-request (Step 8 skip rule).
+- `with-rerequest` → set `RESPOND_PR_RESOLVE_THREADS=1` only. Post replies, resolve threads, AND re-request.
+- `skip-everything` → exit the skill without posting; do NOT proceed to Step 6 posting, Step 7, or Step 8.
+
+#### Default (no APPROVED branch)
+
 **Show ALL reply drafts AND the re-request roster in one batch. Wait for explicit user approval. NEVER auto-post any of them.** One approval covers the whole batch (replies + re-request); a second approval is not required at Step 8.
 
 Post **inline** replies via the `/replies` endpoint (one per inline comment id):
@@ -212,21 +243,30 @@ gh api -X POST /repos/CINEV/shotloom/pulls/<N>/reviews \
 ```
 Use this exactly once per cycle even when there are multiple suppressed items — bundle them in one review body. If there are zero suppressed items, skip this call entirely. Do NOT use `/issues/<N>/comments` (top-level) and do NOT pass `event=APPROVE` or `event=REQUEST_CHANGES` — the author replying to their own PR review must be `COMMENT` only.
 
-### Step 7: Do NOT resolve threads — leave for the reviewer
+### Step 7: Resolve threads — only in the APPROVED-state exception
 
-**Policy:** After posting replies, the skill never clicks "Resolve conversation" on review threads. Resolution is the reviewer's acknowledgement that the reply is adequate — the author pre-resolving removes that signal and makes the review state ambiguous for the reviewer on next pass.
+**Default policy:** After posting replies, the skill does NOT click "Resolve conversation" on review threads. Resolution is the reviewer's acknowledgement that the reply is adequate — the author pre-resolving removes that signal and makes the review state ambiguous for the reviewer on next pass.
 
-- **Fixed** → reply posted in Step 6, thread stays open for reviewer to resolve.
+- **Fixed** (default) → reply posted in Step 6, thread stays open for reviewer to resolve.
 - **Deferred with Linear issue filed** → reply posted with STL-NN link, thread stays open.
 - **Deferred with no issue yet** → file via `/shotloom-linear-create-issue` first, post reply, thread stays open.
 - **Disagreed** → reply posted, thread stays open (never resolve your own disagreement).
 - **Ambiguous** → no reply, no resolve.
 
-The graphql thread-resolution queries in `reference.md` remain for historical context but are NOT invoked by this skill.
+**Exception — APPROVED-state branch (`RESPOND_PR_RESOLVE_THREADS=1` set in Step 6):** when the reviewer has already APPROVED the PR and the addressed findings were all non-blocking nits the reviewer marked optional, the skill DOES resolve every thread it just replied to. Rationale: the reviewer pre-acknowledged in the APPROVE that they don't need to re-confirm these notes; leaving threads open after the cycle closes accumulates UI noise on the next round-trip without giving the reviewer any signal they want. The author closes the threads on behalf of the closed cycle.
 
-### Step 8: Re-request review (always, after replies posted)
+When the flag is set, run the graphql sequence:
 
-Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply — independent of PR review state and independent of whether threads are resolved. **Approval was already collected in Step 6's batch** — do not prompt the user again here.
+1. List threads: `gh api graphql -f query='query { repository(owner:"CINEV", name:"shotloom") { pullRequest(number:<N>) { reviewThreads(first:50) { nodes { id isResolved comments(first:1) { nodes { databaseId } } } } } } }'`
+2. For each comment_id we replied to in Step 6, find the thread whose first-comment `databaseId` matches and capture `id` (`PRRT_…`).
+3. Resolve each: `gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<PRRT_…>"}) { thread { isResolved } } }'`
+4. Skip threads that are already `isResolved=true` or that don't map to any of our replied comment_ids.
+
+The graphql queries live in `reference.md` § "Step 7 — graphql thread-resolution queries". They are invoked **only** when `RESPOND_PR_RESOLVE_THREADS=1` is set; do not generalize this exception to other paths.
+
+### Step 8: Re-request review (after replies posted, conditional)
+
+Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply, EXCEPT when the Step 6 APPROVED-state branch fired and the user picked `reply-only` (which sets `RESPOND_PR_SKIP_RE_REQUEST=1`). **Approval was already collected in Step 6's batch** — do not prompt the user again here.
 
 1. Identify reviewers to re-request from the cache files Step 2 saved. The two files have different shapes — view is an object, reviews is an array — so jq filters MUST run against the matching file. Mixing them in one `jq … fileA fileB` invocation crashes with `Cannot index array with string "reviewRequests"`.
 
@@ -255,7 +295,7 @@ Re-request is the signal that "I'm done with this round; please re-review." It r
    ```
 3. Do **not** post a top-level "ready for re-review" comment — the re-request is the signal.
 
-**Skip Step 8 only when:** no replies were posted in Step 6, or user passed `--no-rerequest`.
+**Skip Step 8 only when:** no replies were posted in Step 6, OR user passed `--no-rerequest`, OR the Step 6 APPROVED-state branch fired and the user picked `reply-only` (`RESPOND_PR_SKIP_RE_REQUEST=1`).
 
 ### Step 9: Report final summary
 
