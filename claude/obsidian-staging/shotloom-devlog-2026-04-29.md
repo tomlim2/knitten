@@ -125,3 +125,27 @@ PR #188 round-1 은 `RestAlignTrack` rustdoc 에 mirror invariant 를 명문화 
 - `let X { ... } = t;` 패턴 destructure 는 rust 에서 field-set 핀의 표준 idiom 인데, body 안에서 한 번 사용하고 버리는 형태로 충분히 컴파일 에러 enforcement 가 작동함. 별도 `assert_eq!` 나 `const _: ()` 트릭 없이 패턴 자체가 lint 역할을 함. `..` rest pattern 을 빼는 게 핵심.
 - ADR vs arch doc 인용 위계: ADR 은 결정 근거 (왜 세 크레이트로 split 했는지) 의 SSOT, arch doc (`normalizer-pipeline.md`) 는 토폴로지 룰 (어느 크레이트가 어디에 의존할 수 있는지) 의 SSOT. 둘이 같은 invariant 를 다루더라도 인용은 룰의 SSOT 쪽으로 가야 함. 다음 cross-crate 룰 인용도 이 분리를 따라가는 게 좋음.
 - shotloom CONTRIBUTING.md 의 branch type 화이트리스트 (`feat/`, `fix/`, `chore/`, `hotfix/`, `release/`) 는 conventional commit type 보다 좁음. commit subject 는 `refactor:` 로 가도 branch 는 `chore/...` 로 만들어야 함. 이번 STL-222 도 commit 은 `refactor(body-anim-normalizer):` 였지만 branch 는 `chore/bonetrack-field-name-sentinel`.
+
+---
+
+## 14:10 — STL-222 closed ([#207](https://github.com/CINEV/shotloom/pull/207))
+
+회고 — ryumiel `/pr-review` 가 LGTM 으로 APPROVE 하면서 P3 nit 3건 inline 으로 깜. 모두 doc/style 한정, 비블로킹. self-review 가 못 잡고 reviewer 가 잡은 두 가지 패턴이 있어서 그게 본 회고의 핵심.
+
+**지적 1 — rustdoc 이 sentinel 의 coverage 를 over-claim 함.** RestAlignTrack rustdoc 이 한 단락 안에서 "any field rename, type change, or visibility change" 와 "the strongest available pin" 을 병치 → full coverage 로 읽힘. 실제 sentinel 은 destructure pattern 의 본질상 이름 + 개수만 핀하지 type / visibility 는 못 잡음 (`_` 바인딩이 타입을 무시, 같은-크레이트 destructure 가 visibility 를 무시). 리뷰어 지적: "rustdoc 자체는 기술적으로 정확하지만 병치가 full coverage 처럼 읽힐 수 있음" — 정확함. 핀의 *기능적* 한계를 doc 이 *언어적으로* 가린 케이스. → 양쪽 rustdoc 에 "Pins the *field set* (names + count) only; type-only and visibility-only edits still rely on review" 명시 추가 (`033a5be`).
+
+**지적 2 — 컴파일타임 체크에 `#[test]` ceremony 를 쓴 게 부적절.** sentinel 이 `#[test] fn` 안에 inner fn + dead-code-suppression `let _ =` 으로 짜여 있었음. `cargo test` 출력에 0 assertion test 가 "ok" 로 나오는 게 의도 misrepresent. 리뷰어 지적: "module 스코프의 `const _: fn(BoneTrack) = |track| { … };` 가 의도를 더 직접 표현". 더 강한 이유 — `#[test]` 형태를 미래 maintainer 가 "tightening" 한답시고 runtime `assert!` 박을 위험이 있음 (그리고 그 가드를 한 줄 주석에 의존하는 건 약함). const item 형태는 closure body 가 type-check 만 되고 실행 안 되는 게 *구조적으로* 보장돼서 tightening 시도 자체가 dead — runtime assertion 이 절대 fire 안 함. → `#[test]` → module-scope `const _: fn(BoneTrack)` 이행 (`033a5be`), 양쪽 rustdoc cross-reference 도 새 const sentinel 가리키도록 갱신.
+
+**지적 3 — destructure rustdoc 의 orphan line break.** "This destructure / without a `..` rest pattern" 에서 prepositional phrase 가 거의 빈 줄로 떨어짐 — cosmetic. self-review (Pattern H 단계) 에서 봤지만 minimum-scope 핑계로 미뤘던 것. 리뷰어가 정확히 그 부분 짚음. const item 으로 옮기면서 reflow 가 자연스럽게 따라옴. → `033a5be` 에 같이 묶임.
+
+> [!tip] 가장 중요한 배운 것 — Rust 컴파일타임 sentinel 의 표준 idiom 은 `#[test]` 가 아니라 `const _: fn(T)`
+> "compile-time only field-set pin" 같은 패턴을 짤 때 첫 instinct 는 `#[cfg(test)]` 안의 `#[test] fn` 인데, 이건 두 가지가 잘못됨: (1) test runner output 에 0-assertion ok 라인이 misleading, (2) 미래 maintainer 가 안에 `assert!` 박을 위험이 *prose* 가드에 의존. 더 정확한 idiom 은 module-scope `const _: fn(T) = |t| { let T { ... } = t; };` — 같은 컴파일 에러를 internal-mechanism 으로 강제하면서, closure body 가 type-check 만 되고 nothing ever calls it 이라 future-tightening 이 *structurally* 차단됨. doc 에서 prose 로 약속하지 말고 construct 로 강제하는 게 핵심.
+
+> [!abstract] Rule
+> Rust 에서 "compile-time only" 의도를 가진 sentinel / pin / type-equivalence check 는 `#[test]` 대신 module-scope `const _: fn(T) = |t| { … };` (또는 `const _: ()` w/ `let X { … } = …` 패턴 동등 형태) 로 표현. test ceremony 는 runtime assertion 의 의미가 있을 때만. doc 에서 "this is compile-time only" 라고 *prose* 로 promise 하지 말고 construct 자체가 그렇게 *make* 되도록 짠다. #rule
+
+> [!warning] APPROVED 후 optional nit 만 남은 사이클에서 자동 재리뷰 요청은 noise
+> 기존 `/shotloom-respond-pr` 는 reply 1건만 posted 돼도 reviewer 재리뷰 요청을 always run 하게 짜여 있었음. APPROVED + 모든 finding 이 reviewer 가 명시적으로 non-blocking 이라고 표시한 nit 인 케이스에서, 추가 ping 은 reviewer 가 요청한 적 없는 알림이 됨 → user feedback 으로 스킬 자체에 APPROVED-state branch 를 박음. default 가 `reply + resolve, no re-request` 로 바뀌고, re-request 는 `with-rerequest` 옵션으로 숨겨짐. 같은 cycle 에 Step 7 의 "never resolve threads" 정책도 이 case 에 한해 예외 (graphql `resolveReviewThread` 호출) 로 명시. **교훈:** reviewer 가 이미 닫은 round 에서 author 가 thread 닫고 사이클 종료를 본인 쪽에서 하는 게 정상; 매번 ping 보내는 게 아니라.
+
+> [!warning] `gh repo view` 가 cwd 가 외부면 `--jq` flag 없이 호출되면 stderr 로 나감
+> `/shotloom-auto-pr start 207` 시도가 `gh repo view -q .nameWithOwner` 호출 단계에서 fail (cwd 가 shotloom worktree 가 아닌 Claude 하니스 worktree 였음, 그리고 `-q` 가 `--json` 없이 들어가서 거부됨). watcher 프로세스도 안 떴고 PID 파일도 없음. 결과적으로 user 가 `/shotloom-auto-pr` 를 안 쓰겠다고 했지만, 실패 원인 자체는 cwd 문제 + cli flag 문제 두 layer. **교훈:** auto-pr start 전에 `gh repo view -q .nameWithOwner` 가 실제 shotloom 을 가리키는지 직접 확인. cwd-aware skill 들 (auto-pr, make-pr, respond-pr, review-before-pr) 모두 동일 패턴 — Claude 하니스 worktree 안에서 invoke 하면 cwd 가 거기에 묶여 있어 shotloom 명령이 실패할 수 있음.
