@@ -58,7 +58,7 @@ hub(`devlog.md`) + 개별 day 파일(`days/day-{NN}.md`) 구조.
 
 #### day 파일 포맷 (`days/day-{NN}.md`)
 
-@~/.claude/templates/devlog/day.md
+Template: see `~/.claude/templates/devlog/day.md`
 
 **규칙:**
 - "왜 이 작업을 했나"는 반드시 포함 (맥락 보존)
@@ -70,7 +70,7 @@ hub(`devlog.md`) + 개별 day 파일(`days/day-{NN}.md`) 구조.
 
 #### hub 파일 포맷 (`devlog.md`)
 
-@~/.claude/templates/devlog/hub.md
+Hub template: see `~/.claude/templates/devlog/hub.md`
 
 **규칙:**
 - hub 요약은 day당 3-4줄 이내
@@ -95,7 +95,7 @@ Context, Problem, Solution(worked/gotcha), Why(worked), Rule — 순서대로 �
 
 #### learnings-index.md 포맷
 
-@~/.claude/templates/devlog/learnings.md
+Template: see `~/.claude/templates/devlog/learnings.md`
 
 **규칙:**
 - YAML frontmatter 필수 (`title`, `tags`, `updated`)
@@ -112,7 +112,7 @@ Context, Problem, Solution(worked/gotcha), Why(worked), Rule — 순서대로 �
 
 #### topic 파일 포맷
 
-@~/.claude/templates/devlog/topic.md
+Template: see `~/.claude/templates/devlog/topic.md`
 
 **규칙:**
 - 파일명: kebab-case (영문)
