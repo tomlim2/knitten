@@ -282,3 +282,40 @@ LFS pointer oid 두 건 모두 유지 (`81cfbb98` moth, `a654eda4` ghostpumpking
 - STL-245 머지 직후 user 의 한 줄 질문 (*"근데 그건 있음 왜 예외라고 정의하죠? backward가 기본이니까?"*) 이 정확히 design model 의 결함을 짚었음. carve-out 이라는 단어가 떠올랐을 때 *"진짜 예외인지 도메인을 잘못 잡은 건지"* 를 한 번 더 묻는 습관이 필요. carve-out + 예외 + 단서 조항 같은 단어가 reframe 의 신호일 때가 많음.
 - `_curled` / `_nofingers` 가 사실 spec-version-independent 인 physical property 였는데 STL-245 시점엔 두 마커 모두 `vrm1x-*` 안에서만 등장해서 그 점이 안 드러남. 이번 PR 이 `vrm0x-cmm-x-ghostpumpking_curled.vrm` 라는 첫 cross-namespace 케이스를 만들면서 그 사실이 자연스럽게 문서에 박힘.
 - STL-248 issue 본문은 user reframe 토론 *이전* 에 작성된 거라 Plan A (`vrm0x-cmm-x-moth_backward.vrm` — `_backward` 유지) 를 명시. PR 은 토론 결과 (Plan B — `_backward` drop) 를 따랐고, AC 본문 텍스트 vs 구현이 표면상 어긋남. PR body 의 Summary 가 reframe 결정의 근거 (`_backward` 를 vrm1x-only 로 한정) 를 명시해서 reviewer 가 그 disambiguation 을 PR 안에서 읽을 수 있게 함.
+
+---
+
+## 15:44 — STL-247 closed ([#208](https://github.com/CINEV/shotloom/pull/208))
+
+회고 — ADR-0023 documentation discipline cleanup. 리뷰 round 1 에서 ryumiel 이 P2 Blocking 2건 + P3 Nit 2건 + claude[bot] 가 §3/§4 mismatch 1건 잡음. 핵심은 **Linear 이슈가 cite 한 standard 자체를 본인이 검증 안 했던 것** — AC #2 가 "ADR template Usage Notes canonical amendment style" 을 enforce 하라고 했는데, 정작 template 본문에는 그 패턴이 codify 돼 있지 않은 상태였음. 이 자체를 Step 6 Ready briefing 단계에서 표면화하고 Option A 로 우회했지만, 우회 결과가 "그래도 한 ADR 에 적용은 함" 이었던 게 round 1 P2 Blocking 의 root cause.
+
+**지적 1 — Status enum 확장 (P2 Blocking).** ryumiel 인용: "The template (`docs/guidelines/adr-template.md:20`) defines exactly three Status values: `Proposed | Accepted | Superseded`. `Accepted (amended 2026-04-29)` invents a fourth form not covered by the template." 정확. AFDS-conformance PR 의 취지가 "기존 표준 enforce" 인데 새 enum 형태를 한 ADR 에 단독 도입하면 내부 모순. amendment 날짜는 이미 Amendments H3 헤딩 (`### 2026-04-29 — Documentation discipline cleanup`) 에 보존됨 → suffix 는 redundant. → `48958c0` 에서 `Accepted (amended 2026-04-29)` → `Accepted` revert. (Linear AC #2 자체가 잘못된 전제 위에 쓰인 것이라, AC 를 충족시키는 게 아니라 AC 의 가정을 부정하는 게 옳은 답이었음.)
+
+**지적 2 — Affected-sections list 가 diff 와 불일치 (P2 Blocking).** Amendments block 의 opening prose 는 "Decision **and Consequences** sections" 라고 광고했지만 bullet list 는 Decision 만 (§4, §5, §7, §9) 열거. 실제 diff 는 Context (`each subsequent Phase B session` reframe), §10 (Session-3 cross-ref → Decision-4 cross-link), Consequences Neutral ("Phase B is four sessions" bullet 삭제) 도 손댔음. AFDS-conformance PR 의 자체 audit trail 이 자기 자신의 diff 와 불일치 — meta-doc 이 self-contradicting. → `48958c0` 에서 Context / §10 / Consequences (Neutral) bullet 추가. 이제 1:1 일치.
+
+**지적 3 — §9 supersession callout 부재 (P3 Nit, deferred).** §6 가 가진 `> **Section status: superseded by [ADR-0034]**` callout 이 §9 에는 없음. ADR-0025 가 `evaluate_pipeline` → `retarget_arp_to_vrm` 으로 §9 를 supersede 하는데, ADR-0025 가 아직 `Proposed` 상태라 reviewer 도 "track as follow-up, optional in this PR" 권장. → STL-251 (Backlog, Low) 발행. Trigger: ADR-0025 가 `Accepted` 로 land 한 직후.
+
+**지적 4 — wording uniformity (P3 Nit).** "`IdentityRetargeter`: `pub(crate)` as a rubric-C passthrough fixture **used by tests**, not a production retargeter." 의 "used by tests" 가 current-usage 톤이라 주변 pure-decision bullet (`retarget` dropped, `pub(crate)` for X) 과 톤 mismatch. → `48958c0` 에서 "for tests" 로 1-token 교체. role-statement 통일.
+
+**지적 5 — §3 vs §4 mismatch (claude[bot] MEDIUM, round 0 self-catch).** Amendments block 이 "removed trailing italic paragraph deferring marker implementation" 을 §3 으로 적었는데, 실제로는 §4 (Type-level "both inputs validated" contract) 의 마지막 italic. 원인: Edit 단계에서 *italic 삭제 + §5 통째 삭제* 를 한 Edit 으로 묶었는데 (둘 다 visually adjacent), 그 Edit 의 `old_string` 안에서 §4 와 §5 사이의 italic 이 어느 쪽 소속인지 ambiguous → 그 후 Amendments block 작성 시 §3 으로 잘못 mapping. → `0a5fce1` 에서 §3 → §4 fix.
+
+> [!tip] 가장 중요한 배운 것 — Linear 이슈의 acceptance criteria 가 cite 하는 primitive (template / standard / rule) 는 *그 primitive 본문* 을 직접 열어서 검증해야 한다
+> AC #2 가 "ADR template Usage Notes canonical amendment style (`Accepted (amended YYYY-MM-DD)`)" 을 enforce 하라고 했고, Step 6 Ready briefing 단계에서 "template Usage Notes 본문에는 그 패턴이 codify 안 돼 있음" 까지는 인지했음. 그런데 그 다음 결정이 *AC 자체가 잘못된 전제 위에 쓰여 있다* 가 아니라 *Option A 로 우회 (이 ADR 에만 적용)* 였던 게 round 1 P2 Blocking 으로 직결. AC 가 cite 하는 standard 가 codify 안 됐다면 AC 자체가 wrong-shape — Option A/B/C 같은 우회가 아니라 "AC 를 reject 하고 standard codification 을 별도 PR 로 분리" 가 1차 답이 됐어야 함. **Linear 이슈 작성자도 사람이고, AC 자체가 wrong primitive 위에 쓰여 있을 수 있다** 가 본질.
+
+> [!abstract] Rule
+> Linear 이슈의 acceptance criterion 이 repo standard / template / rule / ADR 을 cite 하면, 그 primitive 본문을 *직접 열어서* AC 의 가정이 실제로 codify 됐는지 확인. AC 가 cite 하는 패턴이 primitive 에 없으면 AC 자체가 wrong-shape — 우회 옵션 (A/B/C) 으로 부분 적용하는 게 아니라 AC 를 reject 하고 primitive 의 codification 을 별도 PR 로 분리 제안한다. AC 충족이 목적이 아니라 codified 표준 enforcement 가 목적. #rule
+
+> [!warning] AFDS-conformance PR 은 자기 자신의 audit trail 부터 diff 와 일치해야 한다
+> Amendments block 의 opening prose 는 "Decision **and Consequences** sections" 라고 광고했는데 정작 bullet list 는 Decision 만 enumerate 함. PR 자체가 "documentation discipline cleanup" 인데 그 cleanup 의 self-doc 이 self-contradicting — 한 단계 더 들어가서 *meta-doc 이 main artifact 와 일치하는지* 도 검사 대상이라는 걸 놓침. **교훈:** 메타 정리 PR 은 한번 작성한 다음 *meta-doc 본문 ↔ diff* 를 한 번 더 cross-check 하는 패스를 강제. 일반 PR 의 "PR body ↔ diff" 패스보다 한 layer 안쪽까지 들어가야 함.
+
+> [!warning] Edit 으로 인접한 두 섹션을 동시 수정하면 어느 섹션 소속인지 ambiguous
+> §4 의 trailing italic + §5 통째 삭제를 한 Edit 의 `old_string` 으로 묶음 → 그 italic 이 §4 의 closing 인지 §5 의 opening 인지 ambiguous → 후속 Amendments block 작성 시 §3 으로 잘못 적음 (실제로는 §4). claude[bot] review 가 catch. **교훈:** 인접한 두 section 을 한 Edit 으로 묶지 말고 Edit 을 분리. 또는 묶었으면 그 다음 paragraph 의 소속을 *주변 section 의 surviving heading* 을 기준으로 다시 read 해서 확정.
+
+> [!warning] Linear AC 에 의존해 wrong-shape standard 패턴을 한 ADR 에 단독 도입하면 round 1 P2 Blocking
+> AC #2 의 `Accepted (amended YYYY-MM-DD)` 형태를 본 PR 에서 *Option A 로 적용* 했더니 P2 Blocking 으로 revert 요구. revert + plain `Accepted` 가 옳은 답이었음. AC 자체가 잘못된 전제. **교훈:** AC 의 cite 가 codify 안 됐으면 그 적용 자체를 reject — "한 ADR 에만 적용" 같은 부분-우회는 standards-enforcement PR 에서는 self-contradicting.
+
+### 사이드 노트
+
+- claude[bot] review 가 round 0 으로 §3/§4 mismatch 를 catch. 자동 review 가 P3-shaped finding 도 잡아주는 건 작동 확인 (PR body 와 ADR Amendments block 이 같은 사실을 *다른 layer 에 다른 section number* 로 적은 mismatch — 사람이 한 번에 catch 하기 어려운 패턴).
+- ryumiel review 의 P2 Blocking 둘 다 *content* 가 아니라 *meta-discipline* 영역 — Status enum 준수, audit trail 정합성. 이 PR 의 도메인 (ADR documentation hygiene) 자체가 meta layer 라 어쩌면 당연한 결과지만, 일반 feature PR 에서는 잘 등장하지 않는 layer.
+- STL-247 paired work (`/shotloom-review-before-pr` Pattern H 에 ADR-discipline sweep 명문화) 는 본 PR 과 paired 인 별도 PR 로 남아있음 — Linear 이슈 Notes 에 명시. 본 회고가 그 작업의 input.
