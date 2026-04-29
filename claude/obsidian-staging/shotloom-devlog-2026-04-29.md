@@ -149,3 +149,95 @@ PR #188 round-1 은 `RestAlignTrack` rustdoc 에 mirror invariant 를 명문화 
 
 > [!warning] `gh repo view` 가 cwd 가 외부면 `--jq` flag 없이 호출되면 stderr 로 나감
 > `/shotloom-auto-pr start 207` 시도가 `gh repo view -q .nameWithOwner` 호출 단계에서 fail (cwd 가 shotloom worktree 가 아닌 Claude 하니스 worktree 였음, 그리고 `-q` 가 `--json` 없이 들어가서 거부됨). watcher 프로세스도 안 떴고 PID 파일도 없음. 결과적으로 user 가 `/shotloom-auto-pr` 를 안 쓰겠다고 했지만, 실패 원인 자체는 cwd 문제 + cli flag 문제 두 layer. **교훈:** auto-pr start 전에 `gh repo view -q .nameWithOwner` 가 실제 shotloom 을 가리키는지 직접 확인. cwd-aware skill 들 (auto-pr, make-pr, respond-pr, review-before-pr) 모두 동일 패턴 — Claude 하니스 worktree 안에서 invoke 하면 cwd 가 거기에 묶여 있어 shotloom 명령이 실패할 수 있음.
+
+---
+
+## STL-247 — ADR-0023 documentation discipline 정리 ([#208](https://github.com/CINEV/shotloom/pull/208))
+
+Shotloom 의 retarget 파이프라인 contract (ADR-0023 — diagnostic / quality-grade boundary, marker-newtype 입력 검증, `evaluate_pipeline` 단일 진입점) 자체는 이미 머지된 durable 결정인데, ADR 문서 본문이 그 결정과 함께 port 시점의 4-session 실행 plan + STL-74 같은 Linear ID 인용 + "will land in a later session" 류 TODO 까지 들고 있었음. AFDS v2 (`docs/guidelines/documentation-standard.md`) §5.7 / §2.8 가 ADR 은 *durable why* 만 들고 progress tracker / 실행 상태는 들지 말라고 명시한 부분과 정면 충돌. PR #205 리뷰 (ryumiel) 에서 이 부분이 out-of-scope 로 표면화 → 본 PR 이 별도 follow-up 정리. 영향 범위는 retarget contract 문서 한 파일이지만, ADR 위생 자체가 다른 ADR (ADR-0024, ADR-0030 follow-up 들) 의 reference cleanup 사이클에 영향 주는 메타 작업.
+
+### Why
+
+ADR-0023 가 들고 있던 위반 카테고리는 세 종류로 정리됐음.
+
+첫째, **status mismatch.** 헤더는 `Proposed` 인데 README index (`docs/adr/README.md`) 와 ADR-0034 가 둘 다 ADR-0023 을 Accepted 로 취급하고 있었음 (§6 가 ADR-0034 로 이미 supersede 된 상태). 헤더만 stale.
+
+둘째, **port-history prose 가 Decision 본문에 inline 으로 들어 있음.** Decision 7 의 `Revised during port (STL-74):` 블록, Decision 9 의 `Session 2 public surface` / `Session 2 ports them` / `Session 3's marker gate`, §5 Phasing 전체 (4-session breakdown). 이 prose 는 *결정* 이 아니라 *어떻게 굴러갔는지* — durable why 와 다른 종류의 정보. ADR 본문에 들어 있는 이상 후속 PR 이 같은 ADR 을 reference 할 때 어디까지가 contract 고 어디부터가 stale 한 실행 plan 인지 매번 reader 가 분류해야 하는 cognitive cost.
+
+셋째, **execution-state 가 deferred TODO 형태로 박혀 있음.** Decision 4 trailing italic 의 "*This ADR defines the contract shape. The actual marker implementation lands in a later Phase B session…*" — markers 는 이미 landed 인데 paragraph 는 그대로 남아있어 reader 에게 "이 contract 는 부분적으로만 active" 라는 잘못된 신호를 보냄.
+
+세 케이스 다 *문서 위생* 차원이고 코드 동작에 영향 없음. 하지만 어제 (2026-04-27) STL-208 / STL-195 close 회고에서 같은 패밀리 결함 (ADR 을 progress tracker 로 쓰는) 이 동시 다발로 잡혔던 맥락이 있고, 후속 룰 보강이 retired Claude-side standard 에 들어갔다가 in-repo SSOT 이전 중에 검사 사이드에서 사라진 상태라서 — 검사 sweep 이 catch 못 하는 동안 잔존 위반은 직접 fix 해야 함.
+
+### How
+
+**1. Status / Amendments — canonical amendment style 도입.**
+
+`Status: Proposed` → `Status: Accepted (amended 2026-04-29)`. 그 아래 `## Amendments` 섹션을 신설해 2026-04-29 cleanup 의 affected sections (§3 / §5 / §7 / §9) 를 enumerate. Linear 이슈가 ADR 템플릿의 "canonical amendment style" 을 따르라고 명시했지만 `docs/guidelines/adr-template.md` 자체에는 이 패턴이 codify 안 돼 있는 상태 — 본 PR 은 ADR-0023 한 파일에만 적용하고 템플릿 codification 은 별도 follow-up 으로 미룸 (Option A — 사용자 결정).
+
+**2. Decision 본문은 in-place rewrite.**
+
+Linear 이슈는 "in-place rewrite 하지 말고 amendment block 으로 분리" 라고 권했지만, 본문이 *완전히 잘못된 결정* 을 들고 있는 게 아니라 *맞는 결정을 잘못된 verb 로 서술* 하는 케이스. amendment block 에 "session-numbered verbs replaced with durable factual statements" 라고 메타로 기록하고 본문은 직접 reframe — diff 가 121 라인이지만 의미적 변화는 없음 (decision 자체는 byte-identical 한 contract). reviewer 가 git blame 따라가도 amendment block 이 변경 의도를 carry.
+
+**3. §5 Phasing 은 section 통째 삭제.**
+
+이건 "rewrite 할 게 없는" 케이스 — 4-session breakdown 자체가 progress-tracker prose 라 fidelity 보존할 게 없음. 단, ADR-0034 가 "ADR-0023 §6" 라고 reference 하고 있어서 *renumber 는 금지*. heading numeric ID 는 explicit (`### 6.`, `### 7.` …) 이라 §5 만 빼면 §6 이하는 그대로 resolve. amendment block 에 "section number 5 is retired so cross-ADR references continue to resolve" 라고 명시.
+
+**4. Decision 9 는 verb-level rewrite.**
+
+`Session 2 ports them` → `The shotloom port reduces their visibility`, `Session 3's marker gate protecting` → `the marker-gate contract (Decision 4) protect`, `pub(crate) only if a Session 2 test requires it` → `pub(crate) as a rubric-C passthrough fixture used by tests`. 결정의 *내용* (`retarget` / `retarget_with_skeleton` dropped, `ArpRetargeterInner` / `IdentityRetargeter` `pub(crate)`, `evaluate_pipeline` 단일 entry) 은 1:1 보존.
+
+**5. 검증.**
+
+Acceptance criterion #1 의 `rg 'STL-\d+|Session \d|will land in' docs/adr/adr-0023-*` sweep 을 broaden 해서 `Phase B` 까지 같이 잡음. 첫 patch 후 §3 closing italic + §10 cross-ref + Context / Consequences blurb 에 잔존 hits 있어서 추가 cleanup 한 번 더 돔. 최종 결과: 0 hits anywhere (Status / Amendments 블록 포함 — 더 strict 한 결과).
+
+### What
+
+* **`docs/adr/adr-0023-retargeter-validation-contract.md`** (+61 / -62)
+    * Status header rewrite + 신설 `## Amendments` 섹션 (라인 3-37)
+    * §3 Decision 4 trailing italic paragraph 삭제
+    * §5 Phasing 섹션 통째 삭제 (라인 187-203 → gone)
+    * §7 `Revised during port (STL-74)` 블록 → 현재 시제 factual statement
+    * §9 title + body 의 session-numbered verbs reframe (visibility decisions byte-identical 보존)
+    * §10 cross-reference: "Session 3's marker work" → "marker-gate contract (Decision 4)"
+    * Context (`each subsequent Phase B session risks`) + Consequences (`Phase B is four sessions instead of one`) blurb reframe
+
+Branch: `chore/strip-linear-id-prose-adr-0023`. Commit `1839801`. Worktree: `.worktrees/stl-247-strip-linear-id-prose-adr-0023`.
+
+Gates 전부 green: fmt / clippy / check / test / doc-paths (959 refs, 145 files) / ci-rust-coverage (20 crates) / markdownlint (0 errors) / mermaid (none). CI 는 docs-only 라 path filter 가 Rust/Web lane 전부 skip; Code Gate / Doc Path Validation / Link Check / Audit Gate / Markdown Lint / Mermaid Validation 만 active 하게 돌고 모두 pass.
+
+PR ready-for-review (not draft) 로 #208 오픈. Linear STL-247 In Progress → In Review 자동 이행.
+
+> [!info] §6 는 건드리지 않음
+> ADR-0034 가 ADR-0023 §6 를 section-level supersede 하면서 "§6 retains its original wording as the historical record" 라고 명시. 본 cleanup PR 은 §6 의 STL-74 / "absorb into shotloom-retarget" prose 를 그대로 둠 — historical record 는 stale 한 채로 보존하는 게 supersession 계약. Amendment block 에 "§6 supersession is recorded inline at the head of §6 and is not duplicated here" 라고 cross-ref.
+
+> [!tip] ADR amendment 패턴 의 표준화는 별도 issue
+> Linear 이슈 acceptance criterion #2 가 "ADR template Usage Notes canonical amendment style (`Accepted (amended YYYY-MM-DD)`)" 를 cite 하는데 `docs/guidelines/adr-template.md` 본체에는 이 패턴이 아직 codify 안 돼 있음 — Usage Notes 가 "mark as superseded" 만 다룸. 본 PR 은 ADR-0023 한 파일에만 적용 (Option A). 템플릿 codification 은 follow-up 으로 미룰 후보 — 현재 ADR 문서 다수가 amendment 패턴을 ad-hoc 하게 들고 있음 (ADR-0022 line 268: "amended to clarify…", ADR-0034 의 `## Supersedes` 블록). 템플릿 차원에서 패턴 한 줄 명시 + 기존 ADR 점검이 필요한 시점.
+
+### 사이드 노트
+
+- `node scripts/validate-doc-paths.mjs` 는 ADR 본문의 `[documentation-standard.md](../guidelines/documentation-standard.md)` relative link 를 정상 검증함 — `docs/adr/` 에서 `../guidelines/` 로 올라가는 패턴이 이미 다른 ADR 들에서 쓰이는 표준 link form. 잘못된 absolute path 로 시작했다면 validator 가 잡았을 것.
+- 시도하지는 않았지만 `pnpm exec markdownlint-cli2` 를 worktree 안에서 직접 호출하면 `Command "markdownlint-cli2" not found` — pnpm workspace 가 worktree 에 hoisted 안 돼 있어서. main checkout 에서 호출하거나 pre-commit hook 에 의존. (pre-commit 시점에는 잘 돔 — commit output 에 `Summary: 0 error(s)` 확인.)
+- shotloom 자동-commit/push 면제는 작동 — gates 통과 직후 별도 verbal approval 없이 commit + push 실행. PR 작성 단계에서만 user approval gate.
+
+### 회고 — STL-245 머지 후 ([#206](https://github.com/CINEV/shotloom/pull/206))
+
+리뷰 2 라운드 + audit 1 회 거치면서 받은 지적과 배운 것.
+
+**지적 1 — `_backward` 가 load-bearing convention 인 걸 놓침.** ryumiel round-1 P2: `crates/shotloom-gltf/tests/vrm1_backward_fixture.rs` 가 `_backward` filename suffix 를 `normalized_backward_root_180y_vrm1` diagnostic 의 marker 로 쓰고 있고 (테스트 selector!), `docs/tech-debt/vrm-backward-facing-audit-policy.md` 도 root-180Y 단일 의미. PR 초안이 finger length-axis flip 으로 redefine 하면 gltf 테스트 invariant 가 silently drift. → `1442c0e` 에서 Meaning/Detection criterion 을 root-180Y 기반으로 재작성, finger-axis flip 은 *symptom* 으로 격하.
+
+**지적 2 — 자체 검증 probe scope 가 좁아서 shimaenaga miss.** ryumiel round-2 P1: round-1 probe 가 moth/ghostpumpking 만 cover, shimaenaga 는 "no fingers 케이스는 직교할 것" 이라고 가정해서 빠뜨림. 실제로는 shimaenaga 도 `normalized_backward_root_180y_vrm1` emit → 내가 설치한 criterion 이 자기 examples 에 일관 적용 안 됨. → `fa708c3` 에서 shimaenaga → `_backward_nofingers` 재명명 + audit 을 13 fixture 전체로 확장 (round 3 면역).
+
+**지적 3 — Linear 티켓의 `_backward` 정의 자체가 repo evidence 와 어긋남.** 이슈 작성자(나) 가 *"기존 컨벤션 `_backward` 는 yoya / phainon 에 적용 중 (= bone-length 축이 VRM 표준의 반대)"* 라고 적었는데 사실은 root-180Y 가 본질. 티켓 작성 시 **repo 의 in-code marker 사용처를 grep 안 하고** 외부 분석 결과만으로 의미를 부여. → 이건 PR 안에서 고친 것보다, 다음 부터 새 컨벤션 도입 전에 `grep -r "_keyword" crates/ tests/` 로 load-bearing usage 확인하는 습관이 진짜 fix.
+
+> [!tip] 가장 중요한 배운 것 — convention 이름 바꾸기/확장은 grep 으로 사용처 먼저 확인
+> 파일명 suffix / 진단 코드 / config key 같이 코드/테스트가 selector 로 쓰는 string 은 load-bearing. 새 의미를 부여하기 전에 `git grep -F '<keyword>'` 로 sibling 의존부 확인 안 하면 silently drift. STL-245 round 1 P2 가 정확히 이 결함이었음.
+
+> [!abstract] Rule
+> Convention names that double as in-repo markers (filename suffix, diagnostic code, config key) MUST be `git grep`-ed across `crates/`, `tests/`, `docs/specs/`, `docs/tech-debt/` before redefinition. Doc-side rewrite without re-grepping the marker's load-bearing usage is a defect class. #rule
+
+> [!warning] 자체 검증 probe 의 scope 누락
+> round-1 verification 이 moth/ghostpumpking 만 돌리고 shimaenaga 를 "직교 케이스" 로 가정 → ryumiel 이 round-2 P1 으로 shimaenaga miss 잡아냄. **교훈:** criterion 을 install 할 때 그 criterion 이 자기 example set 에 일관 적용되는지 — example set 전체로 probe 돌려서 확인. partial probe 는 partial confidence.
+
+> [!warning] 카르브아웃(carve-out) 프레이밍 vs 도메인 한정
+> `vrm0x-` 파일이 diagnostic 을 emit 하지만 `_backward` suffix 안 가지는 케이스를 처음에 "carve-out (예외)" 로 framing → user 가 *"backward 가 0.x 의 default 인데 예외라고 부르는 게 맞나"* 지적. 더 정확한 모델은 **"`_backward` 는 `vrm1x-*` 네임스페이스에서만 의미"** 라는 domain-bounded rule. exception 을 두는 대신 rule 의 도메인을 한정하면 exception 자체가 사라짐. **교훈:** "예외" 가 떠오르면 한 번 더 의심 — 진짜 예외인지, 규칙의 도메인을 잘못 잡은 건지.
+
