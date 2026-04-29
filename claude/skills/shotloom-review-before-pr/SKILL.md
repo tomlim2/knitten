@@ -127,8 +127,9 @@ See reference.md for the full sweep catalog. The catalog is keyed against `docs/
 - **H4** — naming-convention coherence for new public identifiers (sibling-mirror trait/struct/fn names; sibling-mirror crate / module layout).
 - **H5** — `ADR-NNNN` cited in changed comments must exist as a file; section refs (`§Decision`, `§Out of scope`) must be present in that ADR.
 - **H6** — claimed Out-of-Scope items (in PR body / commit body) must actually be honored by the diff.
+- **H7** — ADR-discipline: no `STL-NN` citations or session-plan / port-plan prose (`Session 2 ports them`, `will land in a later session`, `Revised during port`) inside Decision / Consequences / Alternatives sections — those belong only in a Status / Amendment block. Material Decision-section edits must bump Status to `Accepted (amended YYYY-MM-DD)` and add an Amendment block (per `docs/guidelines/documentation-standard.md` §5.7 + §2.8 and `docs/guidelines/adr-template.md` Usage Notes), not rewrite in place. Treat as P1 when the PR's primary scope IS the ADR; nit otherwise — still flag, drift accumulates silently.
 
-Mindset: **doc must describe what IS, not what MIGHT BE.** Comments that promise future work without a concrete issue ID are wishes, not specification. Comments that claim "scaffold" after 200 lines of logic land are lies. Default verdict on any H finding: rewrite to current-state-only, or cite a specific `STL-NN` that exists.
+Mindset: **doc must describe what IS, not what MIGHT BE.** Comments that promise future work without a concrete issue ID are wishes, not specification. Comments that claim "scaffold" after 200 lines of logic land are lies. ADRs that carry execution-plan prose are progress trackers, not durable rationale. Default verdict on any H finding: rewrite to current-state-only, or cite a specific `STL-NN` that exists.
 
 Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--doc--comment-discipline-post-in-repo-review-pass). H findings are typically nits, but accumulated nits become onboarding tax for the next reader — do not let them slide just because the in-repo spec doesn't list them.
 

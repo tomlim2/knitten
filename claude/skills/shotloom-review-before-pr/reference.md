@@ -434,6 +434,75 @@ git diff origin/main..HEAD -- 'crates/*/src/*.rs' | rg '^\+pub fn|^\-pub fn' | h
 # Cross-check against any "Out of scope: API change" claim.
 ```
 
+### H7: ADR-discipline — Linear-ID citations, session-plan prose, amendment style
+
+ADRs are durable decision records, not progress trackers. The in-repo
+`docs/guidelines/documentation-standard.md` §5.7 binds: "ADRs preserve
+durable why; do not use for temporary task notes, brainstorming with
+no decision outcome, or active execution status." §2.8 reinforces:
+"Durable repo knowledge only — the repository stores durable knowledge,
+not ephemeral run-state owned by an external harness."
+
+Three sub-sweeps (run on every PR that touches `docs/adr/*.md`, even
+when the PR's primary scope is elsewhere — drift accumulates silently):
+
+```bash
+# H7a — Linear-ID citations in changed ADR prose.
+# Linear-IDs are task-tracker state, not decision rationale. They DO belong
+# in a Status / Amendments block ("Amendment 2026-04-29: rewrite Decision 9
+# per STL-247"); they do NOT belong inside the Decision / Consequences /
+# Alternatives sections.
+git diff origin/main..HEAD -- 'docs/adr/*.md' \
+  | rg '^\+' \
+  | rg -in 'STL-[0-9]+' \
+  | rg -v 'Status:|Amendment'
+```
+
+```bash
+# H7b — session-plan / port-plan / execution-status language.
+# "Session 2 ports them", "will land in a later session", "defers to
+# whenever its first caller appears" — these are run-state owned by an
+# external harness, not durable rationale. Rewrite as a current-state
+# decision + why (e.g. "the public surface is intentionally narrow until
+# a real consumer needs the broader cut").
+git diff origin/main..HEAD -- 'docs/adr/*.md' \
+  | rg '^\+' \
+  | rg -in '\b(Session\s+[0-9]|Phase\s+[0-9]|will\s+land\s+(?:in|when)|ports?\s+them|defers?\s+to\s+whenever|Revised during port|incremental port)\b'
+```
+
+```bash
+# H7c — in-place rewrite of Decision section vs. canonical amendment style.
+# When an ADR's Decision section materially changes, the canonical pattern
+# (per docs/guidelines/adr-template.md Usage Notes) is:
+#   1. Bump Status to `Accepted (amended YYYY-MM-DD)`.
+#   2. Add an Amendment block at top of body summarizing what changed +
+#      why, with the change date.
+#   3. Edit the Decision section in place AFTER the Amendment block
+#      records the supersession.
+# An ADR with a rewritten Decision and an unchanged Status banner has
+# silently rewritten history — the next reader can't tell what was
+# decided when.
+for adr in $(git diff --name-only origin/main..HEAD -- 'docs/adr/*.md'); do
+  echo "=== $adr ==="
+  rg -n '^\*\*Status:\*\*|^Status:' "$adr"
+  # Did the diff materially edit Decision / Consequences / Alternatives?
+  git diff origin/main..HEAD -- "$adr" \
+    | rg '^[-+].*##\s+(Decision|Consequences|Alternatives)' && \
+    echo "  WARN: decision-section header changed in diff — verify Status banner reflects amendment"
+done
+```
+
+For each hit:
+- **H7a (Linear-ID in prose):** drop the citation, rewrite the sentence around the durable rationale. If the Linear-ID is the only anchor for the decision, move it to a Status / Amendment block instead.
+- **H7b (session-plan language):** rewrite as decision + why ("X is `pub(crate)` because no consumer outside the crate needs it"), not execution plan ("Session 2 will promote X to `pub` once the rubric module lands").
+- **H7c (in-place rewrite without Status bump):** add the canonical `Accepted (amended YYYY-MM-DD)` Status line and an Amendment block summarizing the change. The Decision section can then be edited in place — but the supersession is recorded.
+
+This pattern recurs even when the in-repo `docs/guidelines/review-rust.md` is fully clean; the Rust review spec doesn't cover ADR prose discipline. Treat H7 hits as nits **only** when the ADR is touched as a side effect of an unrelated change; treat them as P1 when the PR's scope IS the ADR (every line of the changed ADR is in scope).
+
+Real precedent for this rule:
+- PR #178 / PR #179 (2026-04-27): same ADR-discipline failure surfaced in two parallel PRs same day → root cause identified as skill-side gate absence in retrospective (caol-ila commits `427638b`, `89396d2`).
+- PR #205 (2026-04-29): ADR-0023 Decision 9 still carries `STL-74` / `STL-75` citations + "Session 2 public surface" prose flagged by reviewer; tracked as STL-247 follow-up.
+
 ---
 
 ## Pattern I — Reverse-side audit (PR-induced staleness)
