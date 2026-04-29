@@ -1,5 +1,5 @@
 ---
-description: "Live showcase of Design System components with copyable HTML examples. Use when building UI or checking available components."
+description: "Live Design System component showcase with copyable HTML examples."
 ---
 
 # design-show-components

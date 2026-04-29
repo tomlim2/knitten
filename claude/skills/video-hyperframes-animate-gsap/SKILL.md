@@ -1,6 +1,6 @@
 ---
 name: video-hyperframes-animate-gsap
-description: GSAP animation reference for HyperFrames — tweens, timelines, easing, stagger, performance. Use when writing GSAP animations in HyperFrames compositions.
+description: GSAP animation reference for HyperFrames — tweens, timelines, easing, stagger, performance patterns.
 allowed-tools: Read, Edit
 ---
 

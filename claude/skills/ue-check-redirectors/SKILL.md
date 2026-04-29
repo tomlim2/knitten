@@ -1,5 +1,5 @@
 ---
-description: "Scan /Game/ for ObjectRedirectors and identify broken redirectors. Use when checking for stale redirectors after asset moves/renames."
+description: "Scan /Game/ for ObjectRedirectors and identify broken redirectors after asset moves or renames."
 ---
 
 # ue-check-redirectors

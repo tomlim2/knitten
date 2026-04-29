@@ -1,5 +1,5 @@
 ---
-description: "Parse and analyze VMD (Vocaloid Motion Data) binary files. Use when analyzing MMD animation keyframes, bone movements, arm extensions, angular velocities, or debugging bloom/effect triggers."
+description: "Parse VMD (Vocaloid Motion Data) binary files — MMD keyframes, bone movements, arm extensions, angular velocities."
 argument-hint: "<vmd_path> [--mode summary|keyframes|angles|velocity|extensions] [--bones list] [--seconds n]"
 allowed-tools:
   - Read

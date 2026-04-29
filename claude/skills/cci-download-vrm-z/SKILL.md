@@ -1,5 +1,5 @@
 ---
-description: "Download VRM file from CINEV cloud storage by character ID. Use when downloading character VRM files for analysis or material inspection."
+description: "Download VRM from CINEV cloud storage by character ID — for analysis or material inspection."
 ---
 
 # cci-download-vrm-z

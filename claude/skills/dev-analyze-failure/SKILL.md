@@ -1,5 +1,5 @@
 ---
-description: "Analyze why an approach failed by asking abstract questions to external AI (Gemini, GPT-4o). Use when stuck — all attempts failing, need fundamental insight to pivot."
+description: "Diagnose why an approach failed via external AI (Gemini, GPT-4o) — use when stuck and all attempts have failed."
 allowed-tools: Read, Write, Bash(pbcopy:*), Bash(python3:*)
 argument-hint: "<what_failed>"
 ---

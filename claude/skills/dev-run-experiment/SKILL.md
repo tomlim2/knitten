@@ -1,5 +1,5 @@
 ---
-description: "Run ML experiments with safeguards — cwd verification, GPU check, smoke test, result saving. Use when running PyTorch training, ML experiments, or any GPU-heavy computation."
+description: "Run PyTorch / ML experiments with safeguards — cwd check, GPU check, smoke test, result saving."
 argument-hint: "<script_path> [--device mps|cpu] [--epochs N] [--smoke-first] [--sweep config.yaml] [--seed-check N]"
 allowed-tools: Bash(python3:*), Bash(cd:*), Bash(ps:*), Bash(kill:*), Bash(date:*), Bash(ls:*), Bash(wc:*), Read, Write, Edit, Glob, Grep
 ---

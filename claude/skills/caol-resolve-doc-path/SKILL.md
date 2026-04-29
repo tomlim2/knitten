@@ -1,5 +1,5 @@
 ---
-description: "Single source of truth for document storage paths. Use when determining where to save a doc (Obsidian vault, staging, private/, ops/). All doc-writing skills MUST go through here. If the destination isn't in doc-paths.json yet, ADD the purpose first; never bypass with tool mode + manual subpath."
+description: "Resolve doc storage paths (vault, staging, private/, ops/). All doc-writing skills route here; add new purposes first."
 argument-hint: "<purpose> [project]"
 allowed-tools: Bash(bash:*)
 user-invocable: true

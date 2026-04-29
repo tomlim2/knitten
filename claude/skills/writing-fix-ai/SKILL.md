@@ -1,5 +1,5 @@
 ---
-description: "Remove signs of AI-generated writing from English text. English only — not designed for Korean or other languages. Detects 24 AI writing patterns including inflated symbolism, promotional language, em dash overuse, AI vocabulary words, and excessive conjunctive phrases."
+description: "Remove AI writing patterns from English text (not Korean) — inflated symbolism, em dash overuse, AI vocabulary."
 allowed-tools:
   - Read
   - Write

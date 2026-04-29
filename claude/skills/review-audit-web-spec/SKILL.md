@@ -1,5 +1,5 @@
 ---
-description: "Audit spec documents for completeness and quality. Use when reviewing technical specs, PRDs, or website specifications across engineering, design, brand, and audience perspectives."
+description: "Audit technical specs and PRDs across engineering, design, brand, and audience perspectives for completeness."
 ---
 
 # review-audit-web-spec

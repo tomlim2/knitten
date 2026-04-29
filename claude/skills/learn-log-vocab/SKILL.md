@@ -1,5 +1,5 @@
 ---
-description: "Log and review foreign language words, phrases, and grammar. Use when the user inputs foreign words/sentences to learn, or asks to review what they learned."
+description: "Log and review foreign language vocabulary, phrases, and grammar — input words to save or review past entries."
 argument-hint: "[word/sentence] or [review [language] [week|today|month]]"
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: "Validate character SkeletalMesh material slot names from DataTable. Use when checking character meshes have required material slots like Body_MTL."
+description: "Validate character SkeletalMesh material slot names against DataTable — checks required slots like Body_MTL."
 ---
 
 # cci-validate-character-mat-slot-names

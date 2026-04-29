@@ -1,5 +1,5 @@
 ---
-description: "Final publish review cycle. Runs code quality, UX/UI, UX writing, and deploy readiness checks in parallel. Auto-fixes critical issues. Use when preparing to publish a web project."
+description: "Final publish review — parallel code quality, UX/UI, UX writing, and deploy readiness checks with auto-fix."
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(npx:*)
 argument-hint: "[directory or file]"
 ---

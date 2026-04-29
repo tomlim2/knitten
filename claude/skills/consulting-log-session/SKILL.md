@@ -1,5 +1,5 @@
 ---
-description: "Log technical consulting sessions per company with cumulative history. Use when recording consulting work for companies or reviewing past consulting history."
+description: "Log technical consulting sessions per company with cumulative history — record or review past consulting work."
 allowed-tools:
   - Read
   - Write

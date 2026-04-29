@@ -1,5 +1,5 @@
 ---
-description: "Monitor and kill stale processes — check running python/node processes, kill those exceeding time limit. Use when running experiments, solvers, or any compute tasks that should finish quickly."
+description: "Kill stale python/node processes exceeding a time limit — for experiments, solvers, or quick compute tasks."
 allowed-tools: Bash(ps:*), Bash(kill:*), Bash(ls:*)
 argument-hint: "[time_limit_seconds]"
 ---

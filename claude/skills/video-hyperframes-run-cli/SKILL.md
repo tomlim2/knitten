@@ -1,6 +1,6 @@
 ---
 name: video-hyperframes-run-cli
-description: Run HyperFrames CLI — init, lint, preview, render, transcribe, tts, doctor. Use when scaffolding a project, linting compositions, previewing in studio, rendering to MP4, generating TTS, or troubleshooting the HyperFrames environment.
+description: Run HyperFrames CLI — init, lint, preview, render, transcribe, tts, doctor. Scaffold, render MP4, troubleshoot.
 allowed-tools: Bash(npx:*), Read
 ---
 

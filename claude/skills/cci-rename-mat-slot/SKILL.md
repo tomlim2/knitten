@@ -1,5 +1,5 @@
 ---
-description: "Rename invalid material slot names on character SkeletalMesh assets. Fixes slots like Body_MTL1 -> Body_MTL based on validation results."
+description: "Rename invalid SkeletalMesh material slot names — e.g. Body_MTL1 -> Body_MTL based on validation results."
 disable-model-invocation: true
 ---
 

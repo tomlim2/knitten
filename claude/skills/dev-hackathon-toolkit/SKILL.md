@@ -1,5 +1,5 @@
 ---
-description: "Hackathon toolkit — quick-access hub for timed problem solving. Use when starting a hackathon, competition, or timed coding challenge."
+description: "Quick-access hub for hackathons, competitions, and timed coding challenges."
 argument-hint: "[problem description]"
 allowed-tools: Bash(python3:*), Bash(cd:*), Bash(ps:*), Bash(kill:*), Bash(date:*), Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep
 ---

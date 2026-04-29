@@ -1,5 +1,5 @@
 ---
-description: "Browse wine and whisky collection with tasting notes and pricing. Use when recording a new drink or searching past entries."
+description: "Log wine and whisky entries with tasting notes and pricing — record new drinks or search past entries."
 ---
 
 # drink-log-entry

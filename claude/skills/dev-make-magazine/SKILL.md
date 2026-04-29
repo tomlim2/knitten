@@ -1,5 +1,5 @@
 ---
-description: "Generate a magazine of approaches (접근법 탄창) for a problem — pre-made task instructions ready to dispatch to idle agents. Use when tackling hard problems requiring multiple parallel attempts."
+description: "Generate a magazine of approaches (접근법 탄창) — pre-made task instructions ready to dispatch to parallel agents."
 allowed-tools: Read, Write, Edit, Bash(pbcopy:*)
 argument-hint: "<problem_description>"
 ---

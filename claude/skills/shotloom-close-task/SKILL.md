@@ -1,5 +1,5 @@
 ---
-description: End-of-work cleanup for a Shotloom task — close Linear, remove worktree, append day log. Run after a PR merges or when stepping away from a task.
+description: End-of-work cleanup for a Shotloom task — close Linear, remove worktree, append day log.
 argument-hint: "[STL-NN]"
 allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*)
 ---

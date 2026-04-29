@@ -1,5 +1,5 @@
 ---
-description: "Log daily work, learnings, and topic files to Obsidian project docs. Use when recording implementation progress, learnings, or topic references."
+description: "Log daily work, learnings, and topic files to Obsidian project docs — devlog, learning, or topic references."
 argument-hint: "<project> [devlog|learning|topic] [category|name]"
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash(date:*), Bash(git:*)
 user-invocable: true

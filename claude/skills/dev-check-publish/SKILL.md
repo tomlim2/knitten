@@ -1,5 +1,5 @@
 ---
-description: "Pre-publication audit for web apps targeting GitHub Pages or static hosting. Use when deploying a web project publicly for the first time, or after significant changes before re-deployment."
+description: "Pre-publication audit for GitHub Pages / static hosting — before first deploy or after significant changes."
 ---
 
 # dev-check-publish

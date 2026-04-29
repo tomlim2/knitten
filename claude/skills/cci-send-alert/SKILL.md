@@ -1,6 +1,6 @@
 ---
 name: cci-send-alert
-description: Send automated alert messages to CINEV team Slack channel via Arnyang. Use for team-wide auto-notifications (CI status, PR updates, deploy alerts). Separate from cci-art-send-notice which targets the art channel.
+description: Send automated alerts to CINEV team Slack via Arnyang — CI status, PR updates, deploy alerts. Not the art channel.
 argument-hint: "<message> [--thread-ts TS]"
 allowed-tools: Read, Bash(python3:*)
 disable-model-invocation: true

@@ -1,5 +1,5 @@
 ---
-description: "Weekly Obsidian maintenance — archive obsidian-staging + ~/.codex into vault, consolidate duplicate tags, fill missing tags from filenames. Three-stage pipeline: archive.py → tag_consolidate.py → fill_tags_from_name.py. Use on weekends."
+description: "Weekly Obsidian maintenance — archive obsidian-staging + ~/.codex into vault, consolidate tags, fill missing tags."
 argument-hint: "[--dry-run] [--stage archive|consolidate|fill|all]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(python3:*), Bash(find:*), Bash(ls:*), Bash(mkdir:*), Bash(rm:*)
 user-invocable: true

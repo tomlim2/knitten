@@ -1,5 +1,5 @@
 ---
-description: "Validate VMD-PMX compatibility. Use when checking bone matching, IK conflicts, source model detection, and cross-model retarget issues between VMD motion files and PMX models."
+description: "Validate VMD-PMX compatibility — bone matching, IK conflicts, source model detection, cross-model retarget issues."
 argument-hint: "<vmd_path> <pmx_path>"
 allowed-tools:
   - Read

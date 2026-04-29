@@ -1,5 +1,5 @@
 ---
-description: "Log parent consultations for tutoring students with cumulative history. Use when recording parent consultations for tutoring students or reviewing past consultation history."
+description: "Log parent consultations for tutoring students with cumulative history — record or review past consultations."
 allowed-tools:
   - Read
   - Write

@@ -1,6 +1,6 @@
 ---
 name: design-huashu-make-prototype
-description: HTML-native interactive prototypes, editable slide decks, infographics, and motion (MP4/GIF) via Huashu Design. 20 design philosophies + 5-axis design review + "3 directions" exploration. Outputs ship in 3-30 minutes without Figma or AE.
+description: HTML-native prototypes, slide decks, infographics, and motion (MP4/GIF) via Huashu Design — no Figma or AE needed.
 when_to_use: |
   YES when the user asks for any of:
     - Clickable interactive prototype (phone frame, screen transitions)

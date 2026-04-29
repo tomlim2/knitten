@@ -1,5 +1,5 @@
 ---
-description: "Manage caol-config files (repo-paths, machine-paths, doc-paths, hardware). Use to add/remove repos or machine paths, validate all paths, scan for orphan doc-purposes, or view full config state."
+description: "Manage caol-config files — add/remove repo-paths, machine-paths, doc-paths; validate all paths; view config state."
 argument-hint: "[show|validate|orphans|setup|add|remove] [repo|machine] [key] [path] [desc]"
 allowed-tools: Read, Write, Bash(ls:*), Bash(test:*), Bash(jq:*), Bash(grep:*)
 ---

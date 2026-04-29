@@ -1,5 +1,5 @@
 ---
-description: Pre-PR self-review for Shotloom Rust changes. Walks the in-repo formal Rust review spec (docs/guidelines/review-rust.md) against the current diff and reports defects locally before pushing. Does NOT create a PR.
+description: Pre-PR self-review for Shotloom Rust — walks review-rust.md against the diff, reports defects. Does NOT create a PR.
 allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*), Bash(gh:*), Bash(jq:*)
 ---
 

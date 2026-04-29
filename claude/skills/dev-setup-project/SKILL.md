@@ -1,5 +1,5 @@
 ---
-description: "Set up a new project with git, repo-paths, skill linking, and Obsidian docs. Use when starting a new project, hackathon, or side project that needs full workspace setup."
+description: "Set up a new project — git, repo-paths, skill linking, and Obsidian docs for hackathons or side projects."
 argument-hint: "<project-name> [repo-path]"
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(ls:*), Bash(mkdir:*)
 ---

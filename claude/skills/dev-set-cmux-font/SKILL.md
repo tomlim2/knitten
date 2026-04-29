@@ -1,6 +1,6 @@
 ---
 name: dev-set-cmux-font
-description: Set cmux terminal font to a monospace font (Sarasa Mono K for full CJK coverage, or SF Mono for Latin-only). Use when the user wants to change, check, or fix cmux's terminal font — especially when non-monospace fonts like "Apple SD Gothic Neo" have ended up as the primary face, or when they want Korean/Japanese/Chinese glyphs to render at monospace width.
+description: Set cmux terminal font to Sarasa Mono K (CJK) or SF Mono (Latin). Fixes non-monospace fonts like Apple SD Gothic Neo.
 allowed-tools: Read, Edit, Write, Bash(ls:*), Bash(grep:*), Bash(defaults:*), Bash(find:*), Bash(plutil:*), Bash(cat:*), Bash(brew:*)
 ---
 

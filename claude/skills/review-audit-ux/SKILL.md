@@ -1,5 +1,5 @@
 ---
-description: "Audit HTML/CSS/JS for UX/UI issues. Use when reviewing user experience quality, layout problems, interaction patterns, accessibility, and visual consistency."
+description: "Audit HTML/CSS/JS for UX/UI — layout, interaction, accessibility, and visual consistency via 70+ item checklist."
 ---
 
 # review-audit-ux

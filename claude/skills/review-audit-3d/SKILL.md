@@ -1,5 +1,5 @@
 ---
-description: "Audit Three.js/WebGPU/WebGL code for 3D rendering performance issues. Use when reviewing draw call overhead, shader efficiency, texture memory, GPU pipeline stalls, and frame budget in Chromium-based web 3D projects."
+description: "Audit Three.js/WebGPU/WebGL 3D rendering — draw calls, shaders, texture memory, GPU pipeline, frame budget."
 ---
 
 # review-audit-3d

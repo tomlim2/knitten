@@ -1,5 +1,5 @@
 ---
-description: "Convert EXR image files to PNG or JPG. Use when converting HDR/EXR textures (matcaps, lightmaps, etc.) to standard image formats."
+description: "Convert EXR/HDR image files to PNG or JPG — matcaps, lightmaps, and other HDR textures to standard formats."
 allowed-tools: Bash(python3:*)
 ---
 

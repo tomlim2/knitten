@@ -1,6 +1,6 @@
 ---
 name: vrm-derive-axis-correction
-description: Derive per-bone axis-correction quaternions for VRM retargeting from ARP FBX animations. Use when the VRM retargeter transfers rotation magnitude correctly but the axis is systematically off, causing arms or other bones to rotate in wrong directions. Compares ARP source delta axes against VRM retargeter output axes at a specific frame, computes Quat::from_rotation_arc for each bone, outputs Rust code ready to paste into the AXIS_CORRECTION table.
+description: Derive per-bone axis-correction quaternions for VRM retargeting from ARP FBX — Rust AXIS_CORRECTION table entries.
 ---
 
 # vrm-derive-axis-correction

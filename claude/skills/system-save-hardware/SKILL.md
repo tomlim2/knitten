@@ -1,5 +1,5 @@
 ---
-description: "Collect and save hardware specs to private/caol-config/hardware.json. Use when other skills need to check local machine capabilities (GPU, RAM, chip model) for compatibility decisions."
+description: "Collect and save macOS hardware specs (GPU, RAM, chip) to private/caol-config/hardware.json for capability checks."
 allowed-tools: Bash(system_profiler:*), Bash(sw_vers:*), Write, Read
 ---
 

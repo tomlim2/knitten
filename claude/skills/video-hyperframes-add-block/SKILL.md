@@ -1,6 +1,6 @@
 ---
 name: video-hyperframes-add-block
-description: Install and wire HyperFrames registry blocks and components into compositions. Use when running hyperframes add, installing a reusable block or component, or working with hyperframes.json.
+description: Install and wire HyperFrames registry blocks into compositions — run hyperframes add or edit hyperframes.json.
 allowed-tools: Bash(npx:*), Read, Edit
 ---
 

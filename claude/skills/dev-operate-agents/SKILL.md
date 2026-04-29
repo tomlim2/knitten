@@ -1,5 +1,5 @@
 ---
-description: "Multi-agent ops — set up N parallel Claude Code instances with role assignment, scenario planning, and monitoring. Use when running hackathons, complex tasks, or any work requiring parallel agents."
+description: "Multi-agent ops — spin up N parallel Claude Code instances with role assignment, scenario planning, and monitoring."
 allowed-tools: Read, Write, Edit, Bash(pbcopy:*), Bash(ps:*), Bash(kill:*), Bash(ls:*)
 argument-hint: "<num_agents> <task_description>"
 ---
