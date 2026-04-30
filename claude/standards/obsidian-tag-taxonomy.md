@@ -136,6 +136,14 @@ Examples: `tech/sdf`, `tech/pbr`, `tech/ray-marching`, `tech/gaussian-splatting`
 
 ---
 
+### `hobby/` — Personal hobby / interest
+
+Use for notes about personal hobbies and interests outside work. Replaces drink/leisure tags that were incorrectly placed in `area/`.
+
+Examples: `hobby/wine`, `hobby/whisky`, `hobby/champagne`, `hobby/cocktail`, `hobby/tasting`, `hobby/travel`, `hobby/gaming`.
+
+---
+
 ### `status/` — Workflow state (optional, actionable notes only)
 
 Use only when the note is an active work item (experiment, decision, investigation). Omit for completed historical records.
@@ -244,7 +252,7 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Full vault as of 2026-05-01. 154 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ status/.
+Full vault as of 2026-05-01. 154 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ hobby/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
 ### type/ (6 tags, 599 usages)
