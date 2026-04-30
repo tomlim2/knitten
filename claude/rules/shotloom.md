@@ -22,6 +22,14 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path
 
 - Posting the literal text `/claude-review` as a **top-level PR comment** fires the Claude review GitHub App on the CI side. Post **only after** every CI check is green (`gh pr checks <N> --watch`) AND with explicit per-PR user approval. Never on a red PR (wasted review cycle). Never on a draft unless promoted to ready. Never inside `/shotloom-auto-pr` (auto-pr owns its review cadence). Author-side flow lives in `/shotloom-make-pr` Step 10c.
 
+## Obsidian note structure
+
+- **Single project folder: `claude/projects/shotloom/`.** Never create sibling folders (`shotloom-rd/`, `shotloom-v2/`, etc.). If a folder like that exists, it's a migration artifact — consolidate into `shotloom/`.
+- **days/ naming: `YYYY-MM-DD[-slug].md` only.** No prefixes (`devlog-`, `shotloom-`, `shotloom-daily-`, `shotloom-devlog-`). The folder name already provides context.
+- **Learnings go in `shotloom/learnings/`, never in `claude/learnings/`.** `claude/learnings/` is for cross-project learnings only.
+- **No files at `claude/` root.** Every shotloom note lives inside `claude/projects/shotloom/` or its subfolders. Never drop files at `claude/shotloom-*.md`.
+- **Subfolders:** `days/` devlogs · `learnings/` lessons · `topics/` concept analysis · `asks/` handoffs · `plans/` per-ticket plans · `specs/` specs & ADRs · `ops/` operational records.
+
 ## Linear AC ↔ primitive cross-check
 
 - **Verify the primitive an AC cites before applying the AC.** When a Linear acceptance criterion cites a repo primitive (template, standard, rule, ADR section, in-repo guideline), open the primitive's actual file and confirm the cited pattern is codified there. ACs that cite uncodified patterns are **wrong-shape** — reject the AC and propose splitting into a primitive-codification PR + a follow-up apply-the-codified-pattern PR. Do NOT apply Option-A/B/C workarounds (single-file standard invention) to smuggle the pattern in; that recreates the defect class the AC was trying to enforce against and round 1 review will P2-Block it. Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style" not actually in `adr-template.md`; Option-A workaround forced a P2 revert. Full enforcement in `/shotloom-start-code` Step 5b.
