@@ -140,7 +140,7 @@ Examples: `tech/sdf`, `tech/pbr`, `tech/ray-marching`, `tech/gaussian-splatting`
 
 Use for notes about personal hobbies and interests outside work. Replaces drink/leisure tags that were incorrectly placed in `area/`.
 
-Examples: `hobby/wine`, `hobby/whisky`, `hobby/champagne`, `hobby/cocktail`, `hobby/tasting`, `hobby/travel`, `hobby/gaming`.
+Examples: `hobby/wine`, `hobby/whisky`, `hobby/champagne`, `hobby/cocktail`, `hobby/tasting`, `hobby/travel`, `hobby/gaming`, `hobby/streaming`.
 
 ---
 
@@ -292,7 +292,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/just-wander` | 2 | |
 | `project/megamelange` | 2 | |
 | `project/second-raid` | 2 | |
-| `project/chzzk` | 1 | consolidate if no new docs |
+| `project/chzzk` | 1 | 치지직 — 취미 스트리밍 (Twitch 류) |
 | `project/hyper3d` | 1 | consolidate if no new docs |
 | `project/hyperframes` | 1 | consolidate if no new docs |
 | `project/matcap-painter` | 1 | consolidate if no new docs |
