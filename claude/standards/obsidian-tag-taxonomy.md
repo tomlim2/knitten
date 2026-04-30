@@ -37,11 +37,12 @@ Always required (unless note is cross-project). Exactly one per note.
 
 | Tag | Project |
 |-----|---------|
-| `project/shotloom` | Shotloom (CINEV) |
+| `project/shotloom` | Shotloom — 시나몬(Cinamon) 회사 프로젝트 |
+| `project/cinev` | cinev — 시나몬 회사 프로젝트 (shotloom 외 전반) |
+| `project/hsa` | HSA — 외부 회사 클라이언트 작업 |
 | `project/bevy-vrm` | bevy-vrm renderer |
 | `project/mmd-anju` | MMD Anju player |
 | `project/codex-base` | Codex base workspace |
-| `project/cinev` | CINEV studio (non-shotloom) |
 | `project/caol-ila` | Claude config / skills repo |
 
 Add new rows here as new projects appear. Do not invent a new tag mid-session without adding it to this table.
@@ -50,51 +51,73 @@ Add new rows here as new projects appear. Do not invent a new tag mid-session wi
 
 ### `area/` — Domain / feature area
 
-Optional. Use when the note is scoped to a sub-domain that you'll want to filter across projects or across time.
+Optional. Use when the note is scoped to a sub-domain that you'll want to filter across projects or across time. File formats, named software, and libraries have dedicated axes — do not put them in `area/`.
 
-| Tag | Domain |
+Examples: `area/retarget`, `area/shader`, `area/animation`, `area/skeleton`, `area/toon-rendering`, `area/optimization`, `area/unreal-engine`.
+
+---
+
+### `fmt/` — File format / spec
+
+Use when the note is specifically about a file format, interchange spec, or material spec.
+
+| Tag | Format |
 |-----|--------|
-| `area/retarget` | Motion retargeting |
-| `area/shader` | Shader / material |
-| `area/vrm` | VRM format / spec |
-| `area/animation` | Animation system |
-| `area/joint-limit` | Joint constraint / limit |
-| `area/profiling` | Performance profiling |
-| `area/nanite` | UE Nanite |
-| `area/ecs` | Entity-component-system |
-| `area/ui` | UI / frontend |
-| `area/ci` | CI / build pipeline |
-| `area/auth` | Authentication |
+| `fmt/vrm` | VRM character format |
+| `fmt/vrma` | VRM Animation format |
+| `fmt/fbx` | FBX exchange format |
+| `fmt/pmx` | PMX (MikuMikuDance) format |
+| `fmt/gltf` | glTF 2.0 |
+| `fmt/mtoon` | MToon material spec |
 
 ---
 
-### `lang/` — Tech stack (for reference and topic notes)
+### `lang/` — Programming language / shader language
 
-Optional. Use when the note is language- or library-specific and you want to find all notes for that stack later.
+Use for the core language a note is written in or about. Does not include libraries or frameworks (use `lib/`).
 
-| Tag | Stack |
-|-----|-------|
+| Tag | Language |
+|-----|---------|
 | `lang/rust` | Rust |
-| `lang/typescript` | TypeScript / JavaScript |
+| `lang/cpp` | C++ |
 | `lang/python` | Python |
-| `lang/wgsl` | WGSL shader |
-| `lang/glsl` | GLSL shader |
-| `lang/bevy` | Bevy engine (additive with `lang/rust`) |
-| `lang/react` | React (additive with `lang/typescript`) |
-
-Version suffix only when the version is the point of the note: `lang/bevy-0-15`.
+| `lang/javascript` | JavaScript |
+| `lang/glsl` | GLSL |
+| `lang/hlsl` | HLSL |
+| `lang/webgpu` | WebGPU API / WGSL |
 
 ---
 
-### `tool/` — AI tools / models (for reference notes only)
+### `lib/` — Library / framework
 
-Required on `type/reference` notes that document a prompt, workflow, or output from an AI tool. Use alongside `type/reference`.
+Use for named libraries and frameworks (not languages, not standalone software).
 
-Format: `tool/{name}-{major-version}` in kebab-case.
+Examples: `lib/threejs`, `lib/p5js`, `lib/react`, `lib/wgpu`, `lib/bevy`, `lib/mermaid`.
 
-Examples: `tool/gpt-image-2`, `tool/midjourney-v7`, `tool/seedance-2-0`, `tool/flux-dev`, `tool/gemini-image-3`, `tool/runway-gen-4`.
+---
 
-Before tagging, search the vault for existing `tool/` tags to avoid `tool/gpt-4o-image` vs `tool/gpt-image-4o` drift.
+### `sys/` — Named software / engine subsystem
+
+Use for standalone DCC tools and named engine subsystems that are proper nouns, not domain concepts.
+
+| Tag | System |
+|-----|--------|
+| `sys/blender` | Blender DCC |
+| `sys/blueprint` | UE Blueprint visual scripting |
+| `sys/nanite` | UE Nanite virtualized geometry |
+| `sys/niagara` | UE Niagara particle system |
+| `sys/vrm4u` | VRM4U UE plugin |
+| `sys/arp` | Auto-Rig Pro (Blender) |
+
+---
+
+### `llm/` — AI model / service
+
+Use on `type/reference` notes that document a prompt, workflow, or output from an AI model. Format: `llm/{provider-or-model}-{version}` in kebab-case.
+
+Examples: `llm/gpt-image-2`, `llm/gemini`, `llm/seedance-2-0`, `llm/flux-dev`, `llm/runway-gen-4`.
+
+Before tagging, search existing `llm/` tags to avoid naming drift.
 
 ---
 
@@ -221,7 +244,7 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Full vault as of 2026-04-30. 154 unique tags, 2205 usages, 0 flat tags. Axes: type/ project/ area/ lang/ tech/ tool/ status/.
+Full vault as of 2026-05-01. 154 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
 ### type/ (6 tags, 599 usages)
@@ -239,10 +262,10 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `project/cinev` | 133 | |
+| `project/cinev` | 133 | 시나몬 회사 프로젝트 |
 | `project/bevy-vrm` | 127 | |
 | `project/cross-project` | 106 | |
-| `project/shotloom` | 62 | |
+| `project/shotloom` | 62 | 시나몬 회사 프로젝트 |
 | `project/job-search` | 33 | |
 | `project/ue-live-scene-bridge` | 31 | |
 | `project/mmd-anju` | 15 | |
@@ -256,7 +279,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/consulting` | 4 | |
 | `project/drinks` | 4 | |
 | `project/tycoon` | 4 | |
-| `project/hsa` | 3 | |
+| `project/hsa` | 3 | 외부 회사 클라이언트 |
 | `project/oss` | 3 | |
 | `project/just-wander` | 2 | |
 | `project/megamelange` | 2 | |
@@ -268,7 +291,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/minecraft` | 1 | consolidate if no new docs |
 | `project/weekend-survivor` | 1 | consolidate if no new docs |
 
-### area/ (98 tags, 835 usages)
+### area/ (77 tags, 716 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
@@ -276,12 +299,10 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/retarget` | 99 | |
 | `area/shader` | 92 | |
 | `area/skeleton` | 58 | |
-| `area/vrm` | 52 | |
 | `area/animation` | 21 | |
 | `area/character` | 20 | |
 | `area/material` | 17 | |
 | `area/ai` | 16 | |
-| `area/fbx` | 16 | |
 | `area/toon-rendering` | 16 | |
 | `area/ux` | 15 | |
 | `area/backend` | 14 | |
@@ -291,12 +312,9 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/optimization` | 11 | |
 | `area/build` | 9 | |
 | `area/mcp` | 9 | |
-| `area/pmx` | 9 | |
 | `area/web-graphics` | 9 | |
 | `area/graphics` | 8 | |
-| `area/mtoon` | 8 | |
 | `area/normalizer` | 8 | |
-| `area/blueprint` | 7 | |
 | `area/game-dev` | 7 | |
 | `area/pr` | 7 | |
 | `area/adr` | 6 | |
@@ -314,11 +332,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/conventions` | 3 | |
 | `area/finger` | 3 | |
 | `area/fixtures` | 3 | |
-| `area/gltf` | 3 | |
-| `area/pbr` | 3 | |
 | `area/quaternion` | 3 | |
-| `area/tonemapping` | 3 | |
-| `area/vrm4u` | 3 | |
 | `area/workflow` | 3 | |
 | `area/algorithm` | 2 | |
 | `area/camera` | 2 | |
@@ -328,35 +342,25 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/geometry` | 2 | |
 | `area/landscape` | 2 | |
 | `area/math` | 2 | |
-| `area/nanite` | 2 | |
-| `area/niagara` | 2 | |
 | `area/pipeline` | 2 | |
 | `area/plugin` | 2 | |
-| `area/procedural` | 2 | |
 | `area/prompt-engineering` | 2 | |
 | `area/rubric` | 2 | |
 | `area/vegetation` | 2 | |
 | `area/wine` | 2 | |
 | `area/ai-behavior` | 1 | |
-| `area/arp` | 1 | |
 | `area/champagne` | 1 | merge into `area/wine`? |
 | `area/decal` | 1 | |
 | `area/file-formats` | 1 | |
 | `area/frontend` | 1 | |
-| `area/gaussian-splatting` | 1 | |
-| `area/gpgpu` | 1 | |
 | `area/image-gen` | 1 | |
 | `area/infra` | 1 | |
 | `area/level-design` | 1 | |
 | `area/linear` | 1 | |
-| `area/masking` | 1 | |
-| `area/mesh-generation` | 1 | |
 | `area/metrics` | 1 | |
 | `area/packaging` | 1 | |
 | `area/pose` | 1 | |
-| `area/ray-marching` | 1 | |
 | `area/refactor` | 1 | |
-| `area/sdf` | 1 | |
 | `area/shadow` | 1 | |
 | `area/skills` | 1 | |
 | `area/slack` | 1 | |
@@ -366,28 +370,54 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/trait-design` | 1 | |
 | `area/travel` | 1 | |
 | `area/video` | 1 | |
-| `area/vrma` | 1 | VRM Animation format — distinct from `area/vrm` (model spec) |
 | `area/weather` | 1 | |
 | `area/whisky` | 1 | |
-| `area/world-generation` | 1 | |
 
-### lang/ (13 tags, 144 usages)
+### fmt/ (7 tags, 89 usages)
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `fmt/vrm` | 52 | |
+| `fmt/fbx` | 16 | |
+| `fmt/pmx` | 9 | |
+| `fmt/mtoon` | 5 | |
+| `fmt/gltf` | 3 | |
+| `fmt/vrm4u` | 3 | VRM4U → sys/vrm4u 정리 필요 |
+| `fmt/vrma` | 1 | |
+
+### lang/ (9 tags, 123 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
 | `lang/rust` | 77 | |
-| `lang/threejs` | 14 | |
 | `lang/glsl` | 12 | |
 | `lang/cpp` | 10 | |
 | `lang/python` | 9 | |
 | `lang/javascript` | 6 | |
-| `lang/p5js` | 5 | |
 | `lang/webgpu` | 4 | |
 | `lang/hlsl` | 3 | |
-| `lang/react` | 1 | |
 | `lang/wasm` | 1 | |
 | `lang/webgl` | 1 | |
-| `lang/wgpu` | 1 | merge into `lang/webgpu`? |
+
+### lib/ (5 tags, 21 usages)
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `lib/threejs` | 13 | |
+| `lib/p5js` | 5 | |
+| `lib/mermaid` | 1 | |
+| `lib/react` | 1 | |
+| `lib/wgpu` | 1 | |
+
+### sys/ (5 tags, 29 usages)
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `sys/blender` | 17 | |
+| `sys/blueprint` | 7 | |
+| `sys/nanite` | 2 | |
+| `sys/niagara` | 2 | |
+| `sys/arp` | 1 | |
 
 ### tech/ (10 tags, 15 usages)
 
@@ -404,16 +434,14 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `tech/sdf` | 1 | |
 | `tech/world-generation` | 1 | |
 
-### tool/ (9 tags, 27 usages)
+### llm/ (7 tags, 9 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `tool/blender` | 17 | |
-| `tool/3d-genai` | 2 | rename to specific model when known |
-| `tool/gemini` | 2 | |
-| `tool/anthropic` | 1 | |
-| `tool/gpt-image-2` | 1 | |
-| `tool/mermaid` | 1 | |
-| `tool/nvidia` | 1 | too broad — rename to specific model |
-| `tool/openai` | 1 | |
-| `tool/seedance-2-0` | 1 | |
+| `llm/3d-genai` | 2 | rename to specific model when known |
+| `llm/gemini` | 2 | |
+| `llm/anthropic` | 1 | |
+| `llm/gpt-image-2` | 1 | |
+| `llm/nvidia` | 1 | too broad — rename to specific model |
+| `llm/openai` | 1 | |
+| `llm/seedance-2-0` | 1 | |
