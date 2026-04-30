@@ -366,7 +366,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/trait-design` | 1 | |
 | `area/travel` | 1 | |
 | `area/video` | 1 | |
-| `area/vrma` | 1 | merge into `area/vrm`? |
+| `area/vrma` | 1 | VRM Animation format — distinct from `area/vrm` (model spec) |
 | `area/weather` | 1 | |
 | `area/whisky` | 1 | |
 | `area/world-generation` | 1 | |
