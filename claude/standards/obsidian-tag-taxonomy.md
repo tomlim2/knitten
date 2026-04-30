@@ -45,6 +45,7 @@ Always required (unless note is cross-project). Exactly one per note.
 | `project/mmd-anju` | MMD Anju player |
 | `project/codex-base` | Codex base workspace |
 | `project/caol-ila` | Claude config / skills repo |
+| `project/personal` | Personal notes, journal, passwords, hobby lists |
 
 Add new rows here as new projects appear. Do not invent a new tag mid-session without adding it to this table.
 
@@ -253,7 +254,7 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Full vault as of 2026-05-01. 154 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ hobby/ status/.
+Full vault as of 2026-04-30. 155 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ hobby/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
 ### type/ (7 tags, 600 usages)
@@ -268,21 +269,22 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `type/decision` | 7 | |
 | `type/glossary` | 1 | |
 
-### project/ (28 tags, 600 usages)
+### project/ (29 tags, 600 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `project/cinev` | 133 | 시나몬 회사 프로젝트 |
-| `project/bevy-vrm` | 127 | |
-| `project/cross-project` | 106 | |
-| `project/shotloom` | 62 | 시나몬 회사 프로젝트 |
-| `project/job-search` | 33 | |
+| `project/cinev` | 146 | 시나몬 회사 프로젝트 |
+| `project/bevy-vrm` | 139 | |
+| `project/shotloom` | 73 | 시나몬 회사 프로젝트 |
+| `project/job-search` | 36 | |
+| `project/cross-project` | 36 | |
 | `project/ue-live-scene-bridge` | 31 | |
+| `project/personal` | 19 | 개인 노트·일기·취미 목록 |
+| `project/caol-ila` | 20 | |
 | `project/mmd-anju` | 15 | |
-| `project/studio-weekend` | 13 | |
+| `project/studio-weekend` | 14 | |
 | `project/tutoring` | 12 | |
 | `project/codex-base` | 11 | |
-| `project/caol-ila` | 9 | |
 | `project/krafton-hackathon` | 8 | |
 | `project/nestcc` | 5 | |
 | `project/roblox` | 5 | |
