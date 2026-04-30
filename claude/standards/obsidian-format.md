@@ -57,7 +57,7 @@ content
 5. **Code / paths** — inline `backtick`, block with triple backtick
 6. **Images** — `![[folder/file.png]]` wikilink only (no markdown image links)
 7. **Internal links** — `[[Note Name]]` wikilink
-8. **External links** — `[text](URL)` markdown link
+8. **External links** — `[text](URL)` markdown link. **Never add external links in `type/devlog` documents** — devlogs rot quickly and dead links accumulate. Reference resources via `[[wikilink]]` to a dedicated reference note instead.
 9. **Callouts** — `> [!tip]`, `> [!warning]`, `> [!info]`, etc.
 10. **Tags** — use frontmatter `tags` field; inline `#tag` only at document footer
 
