@@ -30,6 +30,16 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path
 - **No files at `claude/` root.** Every shotloom note lives inside `claude/projects/shotloom/` or its subfolders. Never drop files at `claude/shotloom-*.md`.
 - **Subfolders:** `days/` devlogs · `learnings/` lessons · `topics/` concept analysis · `asks/` handoffs · `plans/` per-ticket plans · `specs/` specs & ADRs · `ops/` operational records.
 
+## File naming convention
+
+- **Filename = slug only — never repeat the folder, project, or type in the name.**
+  - Bad: `learnings/learning-bootstrap.md`, `specs/shotloom-preflight-spec.md`
+  - Good: `learnings/bootstrap.md`, `specs/preflight-spec.md`
+- **`days/` is the only folder that uses dates.** Format: `YYYY-MM-DD[-slug].md`. No dates in filenames outside `days/`.
+- **Draft status belongs in frontmatter, not the filename.** Use `status/draft` tag; never a `-draft` suffix.
+- **Kebab-case, 2–5 word slug.** No camelCase, no underscores; abbreviations only if universal (adr, vrm, pmx).
+- **Multi-agent mission files live in `ops/` with a shared mission prefix.** Example: a VRM import mission → `ops/vrm-import.md`, `ops/vrm-import-briefing.md`, `ops/vrm-import-log.md`. Never scatter these at the project root.
+
 ## Linear AC ↔ primitive cross-check
 
 - **Verify the primitive an AC cites before applying the AC.** When a Linear acceptance criterion cites a repo primitive (template, standard, rule, ADR section, in-repo guideline), open the primitive's actual file and confirm the cited pattern is codified there. ACs that cite uncodified patterns are **wrong-shape** — reject the AC and propose splitting into a primitive-codification PR + a follow-up apply-the-codified-pattern PR. Do NOT apply Option-A/B/C workarounds (single-file standard invention) to smuggle the pattern in; that recreates the defect class the AC was trying to enforce against and round 1 review will P2-Block it. Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style" not actually in `adr-template.md`; Option-A workaround forced a P2 revert. Full enforcement in `/shotloom-start-code` Step 5b.
