@@ -40,7 +40,7 @@ Always required. Exactly one per note.
 
 ### `project/` — Which project
 
-Always required (unless note is cross-project). Exactly one per note.
+Always required. Exactly one per note.
 
 | Tag | Project |
 |-----|---------|
@@ -52,6 +52,7 @@ Always required (unless note is cross-project). Exactly one per note.
 | `project/codex-base` | Codex base workspace |
 | `project/caol-ila` | Claude config / skills repo |
 | `project/personal` | Personal notes, journal, passwords, hobby lists |
+| `project/graphics-study` | Standalone graphics/3D/shader study notes (Blender, GLSL, Three.js, rendering theory) |
 
 Add new rows here as new projects appear. Do not invent a new tag mid-session without adding it to this table.
 
@@ -281,7 +282,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `type/glossary` | 3 | |
 | `type/experiment` | 1 | |
 
-### project/ (29 tags, 600 usages)
+### project/ (28 tags, 600 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
@@ -289,10 +290,10 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/bevy-vrm` | 139 | |
 | `project/shotloom` | 74 | 시나몬 회사 프로젝트 |
 | `project/job-search` | 36 | |
-| `project/cross-project` | 35 | |
 | `project/ue-live-scene-bridge` | 31 | |
-| `project/personal` | 19 | 개인 노트·일기·취미 목록 |
-| `project/caol-ila` | 20 | |
+| `project/graphics-study` | 25 | Blender·GLSL·Three.js·rendering theory |
+| `project/personal` | 24 | 개인 노트·일기·취미 목록 |
+| `project/caol-ila` | 21 | |
 | `project/mmd-anju` | 15 | |
 | `project/studio-weekend` | 14 | |
 | `project/tutoring` | 12 | |
@@ -300,7 +301,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/krafton-hackathon` | 8 | |
 | `project/nestcc` | 5 | |
 | `project/roblox` | 5 | |
-| `project/consulting` | 4 | |
+| `project/consulting` | 7 | |
 | `project/drinks` | 4 | |
 | `project/tycoon` | 4 | |
 | `project/hsa` | 3 | 외부 회사 클라이언트 |
