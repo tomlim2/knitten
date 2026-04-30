@@ -26,6 +26,7 @@ Always required. Exactly one per note.
 | `type/learning` | Extracted lesson — worked, failed, gotcha |
 | `type/topic` | Self-contained reference on one concept |
 | `type/reference` | External resource — prompt, snippet, workflow |
+| `type/glossary` | Term / vocabulary collection you look things up in |
 | `type/decision` | ADR-style decision record |
 | `type/experiment` | Hypothesis → measure → conclude cycle |
 
@@ -255,7 +256,7 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 Full vault as of 2026-05-01. 154 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ hobby/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
-### type/ (6 tags, 599 usages)
+### type/ (7 tags, 600 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
@@ -265,6 +266,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `type/learning` | 96 | |
 | `type/review` | 19 | |
 | `type/decision` | 7 | |
+| `type/glossary` | 1 | |
 
 ### project/ (28 tags, 600 usages)
 
