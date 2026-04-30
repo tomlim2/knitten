@@ -11,6 +11,7 @@
 - **Lowercase kebab-case only** — `project/bevy-vrm`, never `Project/BeVrm`
 - **Singular nouns** — `area/shader` not `area/shaders`
 - **Max 5 tags per note** — more signals the taxonomy is wrong, not the note
+- **Proper nouns → `[[wikilinks]]`, not tags** — named software, plugins, and libraries (Blender, Three.js, MToon, VRM4U, Niagara, Nanite, etc.) belong as `[[links]]` in the body, not as frontmatter tags. Tags are metadata; links are entity relationships. Exception: programming languages and platform-level domains stay as `lang/` or `area/` (e.g. `lang/rust`, `area/unreal-engine`).
 
 ---
 
@@ -221,7 +222,7 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Full vault as of 2026-04-30. 154 unique tags, 2205 usages, 0 flat tags. Axes: type/ project/ area/ lang/ tech/ tool/ status/.
+Full vault as of 2026-04-30. 144 unique tags, 2151 usages, 0 flat tags. Axes: type/ project/ area/ lang/ tech/ tool/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
 ### type/ (6 tags, 599 usages)
@@ -268,7 +269,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/minecraft` | 1 | consolidate if no new docs |
 | `project/weekend-survivor` | 1 | consolidate if no new docs |
 
-### area/ (98 tags, 835 usages)
+### area/ (83 tags, 804 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
@@ -294,9 +295,8 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/pmx` | 9 | |
 | `area/web-graphics` | 9 | |
 | `area/graphics` | 8 | |
-| `area/mtoon` | 8 | |
 | `area/normalizer` | 8 | |
-| `area/blueprint` | 7 | |
+| `area/blueprint` | 7 | UE visual scripting paradigm — not a proper noun |
 | `area/game-dev` | 7 | |
 | `area/pr` | 7 | |
 | `area/adr` | 6 | |
@@ -315,10 +315,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/finger` | 3 | |
 | `area/fixtures` | 3 | |
 | `area/gltf` | 3 | |
-| `area/pbr` | 3 | |
 | `area/quaternion` | 3 | |
-| `area/tonemapping` | 3 | |
-| `area/vrm4u` | 3 | |
 | `area/workflow` | 3 | |
 | `area/algorithm` | 2 | |
 | `area/camera` | 2 | |
@@ -328,35 +325,25 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/geometry` | 2 | |
 | `area/landscape` | 2 | |
 | `area/math` | 2 | |
-| `area/nanite` | 2 | |
-| `area/niagara` | 2 | |
 | `area/pipeline` | 2 | |
 | `area/plugin` | 2 | |
-| `area/procedural` | 2 | |
 | `area/prompt-engineering` | 2 | |
 | `area/rubric` | 2 | |
 | `area/vegetation` | 2 | |
 | `area/wine` | 2 | |
 | `area/ai-behavior` | 1 | |
-| `area/arp` | 1 | |
 | `area/champagne` | 1 | merge into `area/wine`? |
 | `area/decal` | 1 | |
 | `area/file-formats` | 1 | |
 | `area/frontend` | 1 | |
-| `area/gaussian-splatting` | 1 | |
-| `area/gpgpu` | 1 | |
 | `area/image-gen` | 1 | |
 | `area/infra` | 1 | |
 | `area/level-design` | 1 | |
 | `area/linear` | 1 | |
-| `area/masking` | 1 | |
-| `area/mesh-generation` | 1 | |
 | `area/metrics` | 1 | |
 | `area/packaging` | 1 | |
 | `area/pose` | 1 | |
-| `area/ray-marching` | 1 | |
 | `area/refactor` | 1 | |
-| `area/sdf` | 1 | |
 | `area/shadow` | 1 | |
 | `area/skills` | 1 | |
 | `area/slack` | 1 | |
@@ -369,25 +356,21 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/vrma` | 1 | VRM Animation format — distinct from `area/vrm` (model spec) |
 | `area/weather` | 1 | |
 | `area/whisky` | 1 | |
-| `area/world-generation` | 1 | |
 
-### lang/ (13 tags, 144 usages)
+### lang/ (10 tags, 124 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
 | `lang/rust` | 77 | |
-| `lang/threejs` | 14 | |
 | `lang/glsl` | 12 | |
 | `lang/cpp` | 10 | |
 | `lang/python` | 9 | |
 | `lang/javascript` | 6 | |
-| `lang/p5js` | 5 | |
 | `lang/webgpu` | 4 | |
 | `lang/hlsl` | 3 | |
 | `lang/react` | 1 | |
 | `lang/wasm` | 1 | |
 | `lang/webgl` | 1 | |
-| `lang/wgpu` | 1 | merge into `lang/webgpu`? |
 
 ### tech/ (10 tags, 15 usages)
 
@@ -404,16 +387,14 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `tech/sdf` | 1 | |
 | `tech/world-generation` | 1 | |
 
-### tool/ (9 tags, 27 usages)
+### tool/ (7 tags, 9 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `tool/blender` | 17 | |
 | `tool/3d-genai` | 2 | rename to specific model when known |
 | `tool/gemini` | 2 | |
 | `tool/anthropic` | 1 | |
 | `tool/gpt-image-2` | 1 | |
-| `tool/mermaid` | 1 | |
 | `tool/nvidia` | 1 | too broad — rename to specific model |
 | `tool/openai` | 1 | |
 | `tool/seedance-2-0` | 1 | |
