@@ -42,177 +42,183 @@ TEMP = _require("obsidian-staging")
 CODEX = _require("codex-home")
 VAULT = _require("obsidian-vault-claude")
 
-WEEK_START = datetime(2026, 4, 13)
-WEEK_END = datetime(2026, 4, 18)  # exclusive
+WEEK_START = datetime(2026, 4, 27)
+WEEK_END = datetime(2026, 5, 4)  # exclusive
 
 DRY_RUN = "--dry-run" in sys.argv
 
 # (src_rel_from_base, base, dest_rel_from_vault, tags, source_value, delete_source)
 MAPPING: list[tuple[Path, Path, Path, list[str], str, bool]] = []
 
-# ---------- obsidian-staging/bevy-vrm/*.md -> projects/bevy-vrm/days/ ----------
-BEVY_DEVLOGS = [
-    "devlog-2026-04-13-arp-retargeter-inner-finding.md",
-    "devlog-2026-04-13-diagnostic-layer.md",
-    "devlog-2026-04-13-foot-rs-dead-code.md",
-    "devlog-2026-04-13-hand-dir-alignment.md",
-    "devlog-2026-04-13-metric-assumption-mismatch.md",
-    "devlog-2026-04-13-orchestrator.md",
-    "devlog-2026-04-13-phase2-3-landing-plus-axis-realization.md",
-    "devlog-2026-04-13-pipeline-gating.md",
-    "devlog-2026-04-13-postprocess-promotion.md",
-    "devlog-2026-04-13-rubric-b12-fix.md",
-    "devlog-2026-04-13-rubric-c12-fix.md",
-    "devlog-2026-04-13-source-anim-split.md",
-    "devlog-2026-04-13-sweep-baseline.md",
-    "devlog-2026-04-13-sweep-bin-pipeline-entry.md",
-    "devlog-2026-04-13-tier1-retargeter-contract.md",
-    "devlog-2026-04-14-c11-c14-residual.md",
-    "devlog-2026-04-14-fbx-animation-importer-rename.md",
-]
-for fn in BEVY_DEVLOGS:
-    tags = ["bevy-vrm", "devlog"]
-    # topic inference from slug
-    slug = fn.replace(".md", "").lower()
-    if "retarget" in slug or "rubric" in slug or "phase" in slug or "tier1" in slug or "pipeline-gat" in slug:
-        tags.append("retarget")
-    elif "fbx" in slug or "importer" in slug:
-        tags.append("rust")
-    elif "hand-dir" in slug or "foot" in slug:
-        tags.append("retarget")
-    elif "diagnostic" in slug or "orchestrator" in slug or "sweep" in slug or "metric" in slug:
-        tags.append("retarget")
-    elif "postprocess" in slug or "source-anim" in slug:
-        tags.append("retarget")
-    MAPPING.append((
-        Path(fn), TEMP / "bevy-vrm",
-        Path("projects/bevy-vrm/days") / fn,
-        tags, "claude", True,
-    ))
-
-# ---------- shotloom devlogs (in obsidian-staging root) ----------
+# ---------- shotloom devlogs (this week, in obsidian-staging root) ----------
 SHOTLOOM_DEVLOGS = [
-    "devlog-2026-04-14-stl74-pr-open.md",
-    "devlog-2026-04-14-stl74-revision.md",
-    "devlog-2026-04-15-stl78-fbx-importer-planning.md",
-    "devlog-2026-04-15-stl78-merge-stl89-prep.md",
-    "devlog-2026-04-15-stl78-port-handoff.md",
-    "devlog-2026-04-15-stl78-pr-flow.md",
-    "shotloom-devlog-2026-04-16.md",
-    "shotloom-devlog-2026-04-17.md",
+    "shotloom-devlog-2026-04-27.md",
+    "shotloom-devlog-2026-04-28.md",
+    "shotloom-devlog-2026-04-29.md",
+    "shotloom-devlog-2026-04-30.md",
 ]
 for fn in SHOTLOOM_DEVLOGS:
-    tags = ["shotloom", "devlog", "rust"]
+    tags = ["shotloom", "devlog", "rust", "retarget"]
     MAPPING.append((
         Path(fn), TEMP,
         Path("projects/shotloom-rd/days") / fn,
         tags, "claude", True,
     ))
 
-# ---------- shotloom plans ----------
-for fn in ["stl-99-plan.md", "stl-114-plan.md"]:
-    MAPPING.append((
-        Path(fn), TEMP,
-        Path("projects/shotloom-rd/plans") / fn,
-        ["shotloom", "spec"], "claude", True,
-    ))
-
-# ---------- shotloom conventions ----------
+# ---------- caol-ila personal todo ----------
 MAPPING.append((
-    Path("shotloom-conventions-summary-2026-04-15.md"), TEMP,
-    Path("projects/shotloom-rd/shotloom-conventions-summary-2026-04-15.md"),
-    ["shotloom", "reference"], "claude", True,
+    Path("todo-at-home-2026-04-21.md"), TEMP,
+    Path("projects/caol-ila/todo-at-home-2026-04-21.md"),
+    ["caol-ila", "todo"], "claude", True,
 ))
 
-# ---------- codex-runs -> bevy-vrm/ops ----------
-for fn in ["analyze-motion-112359.md", "port-bevy-112847.md"]:
-    MAPPING.append((
-        Path("codex-runs/2026-04-14") / fn, TEMP,
-        Path("projects/bevy-vrm/ops/codex-runs/2026-04-14") / fn,
-        ["bevy-vrm", "reference"], "claude", True,
-    ))
-
-# ---------- learning-* -> learnings/ ----------
-LEARNING_FILES = {
-    "learning-bootstrap.md": ["learnings", "rust"],
-    "learning-contract-surface.md": ["learnings", "rust"],
-    "learning-contradiction.md": ["learnings"],
-    "learning-entanglement.md": ["learnings"],
-    "learning-honest-caveat.md": ["learnings"],
-    "learning-minecraft-server-infra.md": ["learnings", "reference"],
-    "learning-rust-bin-vs-lib.md": ["learnings", "rust"],
-    "learning-rust-crates.md": ["learnings", "rust"],
-    "learning-rust-traits.md": ["learnings", "rust"],
-    "learning-scaffold.md": ["learnings", "rust"],
-    "learning-telemetry.md": ["learnings", "rust"],
-}
-for fn, tags in LEARNING_FILES.items():
-    MAPPING.append((
-        Path(fn), TEMP,
-        Path("learnings") / fn,
-        tags, "claude", True,
-    ))
-
-# ---------- resource-* -> references/ ----------
+# ---------- codex-runs (this week) -> shotloom ops ----------
 MAPPING.append((
-    Path("resource-tegaki.md"), TEMP,
-    Path("references/tegaki.md"),
-    ["reference"], "claude", True,
+    Path("codex-runs/2026-04-29/audit-pr-body-091709.md"), TEMP,
+    Path("projects/shotloom-rd/ops/codex-runs/2026-04-29/audit-pr-body-091709.md"),
+    ["shotloom", "reference", "codex-base"], "codex-base", True,
 ))
 
-# ---------- word-of-the-day ----------
+# ---------- carry-over sweep: shotloom devlogs from prior weeks ----------
 MAPPING.append((
-    Path("word-of-the-day-2026-04-13.md"), TEMP,
-    Path("learnings/word-of-the-day/2026-04-13.md"),
-    ["learnings"], "claude", True,
-))
-
-# ---------- private-ops -> projects/bevy-vrm/ops/ ----------
-PRIVATE_OPS = [
-    "R-017-result.md",
-    "R-018-dispatch.md", "R-018-result.md",
-    "R-019-dispatch.md", "R-019-result.md",
-    "R-020-dispatch.md", "R-020-result.md",
-    "R-021-dispatch.md", "R-021-result.md",
-    "R-022-dispatch.md", "R-022-result.md",
-    "R-024-result.md",
-]
-for fn in PRIVATE_OPS:
-    MAPPING.append((
-        Path("private-ops") / fn, TEMP,
-        Path("projects/bevy-vrm/ops") / fn,
-        ["bevy-vrm", "reference"], "claude", True,
-    ))
-
-# ---------- private-learnings ----------
-MAPPING.append((
-    Path("private-learnings/projects/bevy-vrm-fbx-arm-scan.md"), TEMP,
-    Path("learnings/projects/bevy-vrm-fbx-arm-scan.md"),
-    ["bevy-vrm", "learnings"], "claude", True,
+    Path("shotloom-devlog-2026-04-20.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-devlog-2026-04-20.md"),
+    ["shotloom", "devlog"], "claude", True,
 ))
 MAPPING.append((
-    Path("private-learnings/projects/bevy-vrm.md"), TEMP,
-    Path("learnings/projects/bevy-vrm.md"),
-    ["bevy-vrm", "learnings"], "claude", True,
+    Path("shotloom-devlog-2026-04-21.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-devlog-2026-04-21.md"),
+    ["shotloom", "devlog", "workflow"], "claude", True,
+))
+# 04-22 collision: vault root has different shotloom-devlog-2026-04-22.md (8.5K)
+# staging is 16K different content. Rename to coexist.
+MAPPING.append((
+    Path("shotloom-devlog-2026-04-22.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-devlog-2026-04-22-vrm-normalization.md"),
+    ["shotloom", "devlog", "vrm", "normalizer"], "claude", True,
+))
+MAPPING.append((
+    Path("shotloom-devlog-2026-04-23.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-devlog-2026-04-23.md"),
+    ["shotloom", "devlog", "fixtures"], "claude", True,
+))
+# 04-24 collision: vault has /days/devlog-2026-04-24.md (3.4K, learn-log-day)
+# staging is 5.4K Claude session log. Rename to coexist.
+MAPPING.append((
+    Path("shotloom-devlog-2026-04-24.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-devlog-2026-04-24-stl172-crate-rename.md"),
+    ["shotloom", "devlog", "stl-172"], "claude", True,
 ))
 
-# ---------- ~/.codex/ -> references/codex-base/ (copy only) ----------
-CODEX_FILES = [
-    ("memories/order-priority-preference.md", ["reference", "codex-base"]),
-    ("order/stl-89-retarget-arp-to-vrm-wiring.md", ["reference", "codex-base", "shotloom"]),
-    ("order/README.md", ["reference", "codex-base"]),
-    ("order/stl-89-next-steps.md", ["reference", "codex-base", "shotloom"]),
-    ("rules/README.md", ["reference", "codex-base"]),
-    ("rules/shotloom/engineering-guide.md", ["reference", "codex-base", "shotloom"]),
-    ("rules/shotloom/README.md", ["reference", "codex-base", "shotloom"]),
-    ("AGENTS.md", ["reference", "codex-base"]),
-]
-for rel, tags in CODEX_FILES:
-    MAPPING.append((
-        Path(rel), CODEX,
-        Path("references/codex-base") / rel,
-        tags, "codex-base", False,
-    ))
+# ---------- carry-over: shotloom specs / ops / handoffs ----------
+MAPPING.append((
+    Path("shotloom-adr-pmx-import-placeholder-draft.md"), TEMP,
+    Path("projects/shotloom-rd/specs/shotloom-adr-pmx-import-placeholder-draft.md"),
+    ["shotloom", "adr", "draft"], "claude", True,
+))
+MAPPING.append((
+    Path("shotloom-pr-journal.md"), TEMP,
+    Path("projects/shotloom-rd/ops/shotloom-pr-journal.md"),
+    ["shotloom", "ops"], "claude", True,
+))
+MAPPING.append((
+    Path("shotloom-preflight-spec.md"), TEMP,
+    Path("projects/shotloom-rd/specs/shotloom-preflight-spec.md"),
+    ["shotloom", "spec"], "claude", True,
+))
+MAPPING.append((
+    Path("shotloom-stl-154-handoff.md"), TEMP,
+    Path("projects/shotloom-rd/ops/shotloom-stl-154-handoff.md"),
+    ["shotloom", "handoff", "stl-154"], "claude", True,
+))
+
+# ---------- carry-over: projects/shotloom/* learnings + daily ----------
+MAPPING.append((
+    Path("projects/shotloom/finger-rest-align-glossary.md"), TEMP,
+    Path("projects/shotloom-rd/learnings/finger-rest-align-glossary.md"),
+    ["shotloom", "learnings", "retarget", "finger"], "claude", True,
+))
+MAPPING.append((
+    Path("projects/shotloom/finger-retarget-scalar-rationale.md"), TEMP,
+    Path("projects/shotloom-rd/learnings/finger-retarget-scalar-rationale.md"),
+    ["shotloom", "learnings", "retarget", "finger"], "claude", True,
+))
+MAPPING.append((
+    Path("projects/shotloom/import-normalize-retarget-pipeline.md"), TEMP,
+    Path("projects/shotloom-rd/learnings/import-normalize-retarget-pipeline.md"),
+    ["shotloom", "learnings", "architecture", "pipeline"], "claude", True,
+))
+# Daily ops logs — rename to shotloom-daily-* to distinguish from full devlogs.
+MAPPING.append((
+    Path("projects/shotloom/daily/2026-04-21.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-daily-2026-04-21.md"),
+    ["shotloom", "devlog"], "claude", True,
+))
+MAPPING.append((
+    Path("projects/shotloom/daily/2026-04-27.md"), TEMP,
+    Path("projects/shotloom-rd/days/shotloom-daily-2026-04-27.md"),
+    ["shotloom", "devlog"], "claude", True,
+))
+# 2026-04-30 daily is duplicate of vault shotloom-devlog-2026-04-30.md — handled
+# as staging-only delete after archive.py run (see Stage 1.5 below).
+
+# ---------- carry-over: bevy-vrm + plain devlogs + codex-runs(04-24) ----------
+MAPPING.append((
+    Path("bevy-vrm/devlog-2026-04-18.md"), TEMP,
+    Path("projects/bevy-vrm/days/devlog-2026-04-18.md"),
+    ["bevy-vrm", "devlog", "oss"], "claude", True,
+))
+# 04-21 plain devlog — primary topic Shotloom PR review, secondary cci skill.
+# Rename to disambiguate from #shotloom-devlog-2026-04-21 already in MAPPING.
+MAPPING.append((
+    Path("devlog-2026-04-21.md"), TEMP,
+    Path("projects/shotloom-rd/days/devlog-2026-04-21-pr-review.md"),
+    ["shotloom", "devlog", "pr-review"], "claude", True,
+))
+MAPPING.append((
+    Path("devlog-2026-04-23.md"), TEMP,
+    Path("projects/caol-ila/devlog-2026-04-23.md"),
+    ["caol-ila", "devlog", "hyperframes"], "claude", True,
+))
+MAPPING.append((
+    Path("codex-runs/2026-04-24/review-rust-195535.md"), TEMP,
+    Path("projects/shotloom-rd/ops/codex-runs/2026-04-24/review-rust-195535.md"),
+    ["shotloom", "reference", "codex-base", "stl-179"], "codex-base", True,
+))
+
+# ---------- carry-over: learnings + references + personal ----------
+MAPPING.append((
+    Path("learning-upstream-contribution.md"), TEMP,
+    Path("learnings/learning-upstream-contribution.md"),
+    ["learnings", "oss", "workflow"], "claude", True,
+))
+MAPPING.append((
+    Path("learnings/_template.md"), TEMP,
+    Path("learnings/_template.md"),
+    ["learnings", "template"], "claude", True,
+))
+MAPPING.append((
+    Path("learnings/projects/cinev.md"), TEMP,
+    Path("learnings/projects/cinev.md"),
+    ["learnings", "cinev"], "claude", True,
+))
+# OVERWRITE: staging is superset of vault learnings/projects/shotloom.md.
+# archive.py creates .bak of the vault version automatically.
+MAPPING.append((
+    Path("learnings/projects/shotloom.md"), TEMP,
+    Path("learnings/projects/shotloom.md"),
+    ["learnings", "shotloom"], "claude", True,
+))
+MAPPING.append((
+    Path("references/image-prompts/character-pose-grid-4x4.md"), TEMP,
+    Path("references/image-prompts/character-pose-grid-4x4.md"),
+    ["reference", "image-prompt"], "claude", True,
+))
+MAPPING.append((
+    Path("monthly-subscriptions.md"), TEMP,
+    Path("notes/monthly-subscriptions.md"),
+    ["personal", "subscriptions"], "claude", True,
+))
 
 
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?\n)---\s*\n", re.DOTALL)
