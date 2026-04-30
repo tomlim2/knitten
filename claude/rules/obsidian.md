@@ -3,7 +3,7 @@
 - **Section separators** — `---` horizontal rule between major sections
 - **Wikilinks for images** — `![[folder/file.png]]`, NEVER markdown image links for vault content
 - **Wikilinks for internal references** — `[[Note Name]]`
-- **Markdown links for external** — `[text](URL)`
+- **Markdown links for external** — `[text](URL)` — **NEVER in `type/devlog` documents**; use `[[wikilink]]` to a reference note instead
 - **Lists use `-`** — Ordered lists use `1.`
 - **Tags in frontmatter** — use 3-axis structured tags (`type/`, `project/`, `area/`/`lang/`/`tool/`); inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`)
 - **Location:** `{obsidian-vault}/claude/` for all Claude-authored docs
