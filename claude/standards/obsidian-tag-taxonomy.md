@@ -206,121 +206,184 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Current tags in vault as of 2026-04-30. Update this table when adding or retiring a tag.
-Count = number of docs using the tag. Tags with count 1 are candidates for consolidation or renaming.
+Full vault as of 2026-04-30. 154 unique tags, 1759 usages, 0 flat tags.
+Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
-### type/
+### type/ (6 tags, 435 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `type/devlog` | 96 | |
-| `type/learning` | 72 | |
-| `type/reference` | 68 | |
+| `type/devlog` | 148 | |
+| `type/reference` | 125 | |
+| `type/learning` | 94 | |
 | `type/topic` | 45 | |
 | `type/review` | 16 | |
-| `type/decision` | 6 | |
+| `type/decision` | 7 | |
 
-### project/
+### project/ (28 tags, 429 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
 | `project/bevy-vrm` | 126 | |
+| `project/cinev` | 76 | |
 | `project/shotloom` | 57 | |
-| `project/job-search` | 26 | |
-| `project/cinev` | 21 | |
+| `project/job-search` | 33 | |
+| `project/ue-live-scene-bridge` | 29 | |
 | `project/mmd-anju` | 15 | |
 | `project/studio-weekend` | 13 | |
+| `project/tutoring` | 11 | |
 | `project/codex-base` | 11 | |
 | `project/cross-project` | 9 | |
 | `project/krafton-hackathon` | 8 | |
-| `project/tutoring` | 5 | |
-| `project/caol-ila` | 4 | |
+| `project/nestcc` | 5 | |
+| `project/roblox` | 4 | |
 | `project/drinks` | 4 | |
+| `project/consulting` | 4 | |
+| `project/caol-ila` | 4 | |
 | `project/tycoon` | 4 | |
 | `project/oss` | 3 | |
-| `project/consulting` | 2 | |
+| `project/just-wander` | 2 | |
 | `project/megamelange` | 2 | |
-| `project/hyper3d` | 1 | consider consolidating if no new docs |
-| `project/hyperframes` | 1 | consider consolidating if no new docs |
-| `project/matcap-painter` | 1 | consider consolidating if no new docs |
-| `project/minecraft` | 1 | consider consolidating if no new docs |
-| `project/weekend-survivor` | 1 | consider consolidating if no new docs |
+| `project/second-raid` | 2 | |
+| `project/hyper3d` | 1 | consolidate if no new docs |
+| `project/minecraft` | 1 | consolidate if no new docs |
+| `project/matcap-painter` | 1 | consolidate if no new docs |
+| `project/hyperframes` | 1 | consolidate if no new docs |
+| `project/weekend-survivor` | 1 | consolidate if no new docs |
+| `project/chzzk` | 1 | consolidate if no new docs |
+| `project/ue-live-scene-bridge/roblox` | 1 | fix: should be `project/roblox` |
 
-### area/
+### area/ (98 tags, 734 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
+| `area/unreal-engine` | 102 | |
 | `area/retarget` | 96 | |
+| `area/shader` | 76 | |
 | `area/skeleton` | 58 | |
-| `area/vrm` | 33 | |
-| `area/unreal-engine` | 30 | |
-| `area/shader` | 23 | |
-| `area/animation` | 19 | |
-| `area/git` | 8 | |
+| `area/vrm` | 44 | |
+| `area/animation` | 20 | |
+| `area/material` | 17 | |
+| `area/toon-rendering` | 16 | |
+| `area/ai` | 16 | |
+| `area/backend` | 14 | |
+| `area/llm` | 13 | |
+| `area/git` | 12 | |
+| `area/optimization` | 11 | |
+| `area/character` | 9 | |
+| `area/web-graphics` | 9 | |
+| `area/mcp` | 9 | |
 | `area/normalizer` | 8 | |
-| `area/game-dev` | 7 | |
+| `area/graphics` | 8 | |
 | `area/pr` | 7 | |
+| `area/fbx` | 7 | |
+| `area/game-dev` | 7 | |
+| `area/blueprint` | 7 | |
+| `area/architecture` | 6 | |
 | `area/adr` | 6 | |
-| `area/fbx` | 5 | |
-| `area/architecture` | 4 | |
-| `area/conventions` | 3 | |
+| `area/texture` | 6 | |
+| `area/environment` | 6 | |
+| `area/skin-color` | 6 | |
+| `area/web` | 5 | |
+| `area/automation` | 5 | |
+| `area/profiling` | 5 | |
+| `area/mtoon` | 4 | |
+| `area/interaction` | 4 | |
+| `area/prompt` | 4 | |
+| `area/lighting` | 4 | |
+| `area/troubleshooting` | 4 | |
 | `area/fixtures` | 3 | |
+| `area/ux` | 3 | |
+| `area/quaternion` | 3 | |
+| `area/workflow` | 3 | |
+| `area/conventions` | 3 | |
+| `area/build` | 3 | |
 | `area/gltf` | 3 | |
-| `area/mtoon` | 3 | |
-| `area/toon-rendering` | 3 | |
-| `area/character` | 2 | |
-| `area/cocktail` | 2 | |
-| `area/design` | 2 | |
-| `area/finger` | 2 | |
-| `area/rubric` | 2 | |
+| `area/vrm4u` | 3 | |
+| `area/pbr` | 3 | |
+| `area/tonemapping` | 3 | |
+| `area/color` | 2 | |
 | `area/wine` | 2 | |
-| `area/workflow` | 2 | |
-| `area/ai-behavior` | 1 | |
-| `area/algorithm` | 1 | |
-| `area/arp` | 1 | |
-| `area/build` | 1 | |
+| `area/rubric` | 2 | |
+| `area/pmx` | 2 | |
+| `area/finger` | 2 | |
+| `area/pipeline` | 2 | |
+| `area/design` | 2 | |
+| `area/cocktail` | 2 | |
+| `area/algorithm` | 2 | |
+| `area/niagara` | 2 | |
+| `area/ci` | 2 | |
+| `area/prompt-engineering` | 2 | |
+| `area/geometry` | 2 | |
+| `area/camera` | 2 | |
+| `area/plugin` | 2 | |
+| `area/math` | 2 | |
+| `area/procedural` | 2 | |
+| `area/vegetation` | 2 | |
+| `area/landscape` | 2 | |
+| `area/nanite` | 2 | |
+| `area/travel` | 1 | |
 | `area/champagne` | 1 | merge into `area/wine`? |
-| `area/color` | 1 | |
-| `area/file-formats` | 1 | |
-| `area/gaussian-splatting` | 1 | |
-| `area/graphics` | 1 | |
-| `area/image-gen` | 1 | |
-| `area/infra` | 1 | |
-| `area/linear` | 1 | |
+| `area/whisky` | 1 | |
 | `area/mesh-generation` | 1 | |
-| `area/metrics` | 1 | |
-| `area/niagara` | 1 | |
-| `area/pipeline` | 1 | |
-| `area/pmx` | 1 | |
+| `area/world-generation` | 1 | |
+| `area/infra` | 1 | |
+| `area/image-gen` | 1 | |
 | `area/pose` | 1 | |
+| `area/video` | 1 | |
+| `area/metrics` | 1 | |
+| `area/trait-design` | 1 | |
+| `area/arp` | 1 | |
+| `area/slack` | 1 | |
 | `area/refactor` | 1 | |
 | `area/skills` | 1 | |
-| `area/slack` | 1 | |
 | `area/tasting` | 1 | |
+| `area/linear` | 1 | |
 | `area/testing` | 1 | |
-| `area/texture` | 1 | |
-| `area/trait-design` | 1 | |
-| `area/travel` | 1 | |
-| `area/ux` | 1 | |
-| `area/video` | 1 | |
+| `area/ai-behavior` | 1 | |
+| `area/gaussian-splatting` | 1 | |
+| `area/file-formats` | 1 | |
 | `area/vrma` | 1 | merge into `area/vrm`? |
-| `area/whisky` | 1 | |
-| `area/world-generation` | 1 | |
+| `area/ray-marching` | 1 | |
+| `area/packaging` | 1 | |
+| `area/shadow` | 1 | |
+| `area/sdf` | 1 | |
+| `area/ta` | 1 | |
+| `area/frontend` | 1 | |
+| `area/gpgpu` | 1 | |
+| `area/masking` | 1 | |
+| `area/weather` | 1 | |
+| `area/decal` | 1 | |
+| `area/level-design` | 1 | |
 
-### lang/
+### lang/ (13 tags, 135 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `lang/rust` | 76 | |
+| `lang/rust` | 77 | |
+| `lang/threejs` | 14 | |
+| `lang/glsl` | 12 | |
+| `lang/javascript` | 6 | |
+| `lang/p5js` | 5 | |
+| `lang/python` | 5 | |
+| `lang/cpp` | 5 | |
 | `lang/webgpu` | 4 | |
+| `lang/hlsl` | 3 | |
 | `lang/wasm` | 1 | |
 | `lang/wgpu` | 1 | merge into `lang/webgpu`? |
+| `lang/react` | 1 | |
+| `lang/webgl` | 1 | |
 
-### tool/
+### tool/ (9 tags, 26 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
+| `tool/blender` | 16 | |
 | `tool/3d-genai` | 2 | rename to specific model when known |
+| `tool/gemini` | 2 | |
+| `tool/nvidia` | 1 | too broad — rename to specific model |
 | `tool/gpt-image-2` | 1 | |
-| `tool/nvidia` | 1 | too broad — rename to specific model/tool |
 | `tool/seedance-2-0` | 1 | |
+| `tool/mermaid` | 1 | |
+| `tool/openai` | 1 | |
+| `tool/anthropic` | 1 | |
