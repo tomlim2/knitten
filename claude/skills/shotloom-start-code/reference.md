@@ -34,15 +34,16 @@ For Shotloom today this resolves to `<shotloom>/.worktrees/`.
 
 ## Branch-name derivation example
 
-Linear title: `feat(retarget): ARP 스켈레톤 표준 적용`
+Pattern: `<type>/<scope>-<verb>-<subject>` (≤50 chars, lowercase + hyphens, no STL-NN).
 
-1. Strip type prefix → `ARP 스켈레톤 표준 적용`
-2. Translate Korean → English → `ARP skeleton standard apply`
-3. Reorder for English idiom → `arp skeleton standard`
-4. Kebab-case, lowercase, ≤50 chars → `arp-skeleton-standard`
+Linear title `test(retarget): 4-finger alignment baseline — xiao + yoya`:
+- type → `feat` (test→chore mapping; here `feat` because the work also touches `finger_axis_map.rs` source)
+- scope → `retarget`
+- verb → `verify`
+- subject → `finger-baseline-xiao-yoya`
 
-Final branch: `feat/arp-skeleton-standard`
-Worktree dir: `.worktrees/stl-99-arp-skeleton-standard/` (STL-NN included for local path clarity — NOT in the branch name)
+Branch: `feat/retarget-verify-finger-baseline-xiao-yoya` (45 chars).
+Worktree dir: `.worktrees/stl-246-retarget-verify-finger-baseline-xiao-yoya/` (same body, `stl-NN-` prefix).
 
 ## Create worktree — single-branch fallback
 

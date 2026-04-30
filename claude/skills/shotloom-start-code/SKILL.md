@@ -53,10 +53,15 @@ If no identifier and no args, skip — rely on git state for category detection.
 
 Skip if the current branch already matches the Linear issue. Otherwise:
 
-1. **Type prefix** from Linear title (`feat`/`fix`/`chore`/`refactor`/`docs`/`test`/`perf`/`build`/`ops`/`style`); `bug` label → `fix`; default → `feat`.
-2. **Branch name** (repo rule: no STL-NN in branch): `<type>/<kebab-summary>`, summary from Linear title, max 50 chars, no trailing hyphen.
+1. **Type prefix** from Linear title — must be one of repo-allowed `feat`/`fix`/`chore`/`hotfix`/`release` per `CONTRIBUTING.md`. `test`/`docs`/`refactor`/`style`/`perf`/`build`/`ops` Linear titles all map to `chore/` (line 119: "default branch type for docs-only, style-only, test-only, build-only, ops-only, and repository maintenance work"). `bug` label → `fix`. Default → `feat`.
+2. **Branch name** (repo rule: no STL-NN in branch): `<type>/<scope>-<verb>-<subject>`, max 50 chars, lowercase + hyphens only, no trailing hyphen.
+   - `<scope>` = conventional commit scope from Linear title (`retarget`, `engine`, `editor`, `bridge`, `gltf`, `fbx`, `import`, `core`, `web`, `desktop`, `assets`, `docs`, `ci`, `timeline`, `normalizer`, etc.). Same scope used in commit messages — so branch name and `type(scope):` commit headers stay aligned.
+   - `<verb>` = imperative action (`add`, `verify`, `fix`, `align`, `wire`, `extract`, `pin`, `rename`, `split`, `move`, `scope`, `update`, `remove`).
+   - `<subject>` = concise object of the work.
+   - Example: Linear `test(retarget): 4-finger alignment baseline — xiao + yoya` → `feat/retarget-verify-finger-baseline-xiao-yoya`.
+   - Linear's `gitBranchName` field (`deemo/stl-NN-…`) is a UI hint — ignore it.
 3. **Worktree base:** prefer `.worktrees/` if gitignored, else `<parent>/shotloom-worktrees/`. For Shotloom today this is `<shotloom>/.worktrees/`.
-4. **Worktree dir name:** `<worktree_base>/stl-<NN>-<kebab-summary>` (STL-NN here for human clarity — this is a local path, not a branch).
+4. **Worktree dir name:** `<worktree_base>/stl-<NN>-<scope>-<verb>-<subject>` — same kebab body as the branch with `stl-<NN>-` prefix prepended for local-path identification (worktree dir is local-only, never pushed; not a repo rule).
 5. **Create from latest `origin/main`:**
    ```bash
    cd "$shotloom_root"
