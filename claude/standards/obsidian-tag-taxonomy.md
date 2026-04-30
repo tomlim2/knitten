@@ -98,6 +98,21 @@ Before tagging, search the vault for existing `tool/` tags to avoid `tool/gpt-4o
 
 ---
 
+### `tech/` — Rendering technique / algorithm
+
+Use when the note is specifically about a technique or algorithm as a concept — not just a file that happens to use it. The distinction from `area/`:
+
+- `area/shader` — you're working in the shader domain
+- `tech/sdf` — you're specifically studying or documenting the SDF technique itself
+
+A note can carry both: a toon-shader file that digs into SDF face shadow gets `area/shader` + `tech/sdf`.
+
+Do **not** use `tech/` as a substitute for `area/` on domain notes. If in doubt, use `area/`.
+
+Examples: `tech/sdf`, `tech/pbr`, `tech/ray-marching`, `tech/gaussian-splatting`, `tech/tonemapping`, `tech/procedural`, `tech/gpgpu`.
+
+---
+
 ### `status/` — Workflow state (optional, actionable notes only)
 
 Use only when the note is an active work item (experiment, decision, investigation). Omit for completed historical records.
@@ -206,7 +221,7 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Full vault as of 2026-04-30. 154 unique tags, 2205 usages, 0 flat tags.
+Full vault as of 2026-04-30. 154 unique tags, 2205 usages, 0 flat tags. Axes: type/ project/ area/ lang/ tech/ tool/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
 ### type/ (6 tags, 599 usages)
@@ -373,6 +388,21 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `lang/wasm` | 1 | |
 | `lang/webgl` | 1 | |
 | `lang/wgpu` | 1 | merge into `lang/webgpu`? |
+
+### tech/ (10 tags, 15 usages)
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `tech/pbr` | 3 | |
+| `tech/tonemapping` | 3 | |
+| `tech/procedural` | 2 | |
+| `tech/gaussian-splatting` | 1 | |
+| `tech/gpgpu` | 1 | |
+| `tech/masking` | 1 | |
+| `tech/mesh-generation` | 1 | |
+| `tech/ray-marching` | 1 | |
+| `tech/sdf` | 1 | |
+| `tech/world-generation` | 1 | |
 
 ### tool/ (9 tags, 27 usages)
 
