@@ -22,13 +22,19 @@ Always required. Exactly one per note.
 
 | Tag | Use when |
 |-----|----------|
-| `type/devlog` | Daily work log (hub or day file) |
+| `type/devlog` | Dated work diary entry (hub or day file) |
 | `type/learning` | Extracted lesson — worked, failed, gotcha |
-| `type/topic` | Self-contained reference on one concept |
-| `type/reference` | External resource — prompt, snippet, workflow |
+| `type/reference` | How-to guide, lookup table, workflow recipe, external resource |
+| `type/brief` | Project/task orientation doc — "read this first" context, handoff |
+| `type/spec` | Technical specification document (system design, module contract) |
+| `type/plan` | Next-session / execution plan for a specific task or ticket |
+| `type/analysis` | Structured investigation, audit, or proof — no hypothesis cycle |
+| `type/experiment` | Hypothesis → test → measure → conclude cycle |
 | `type/glossary` | Term / vocabulary collection you look things up in |
-| `type/decision` | ADR-style decision record |
-| `type/experiment` | Hypothesis → measure → conclude cycle |
+| `type/decision` | ADR-style decision record (why we chose X over Y) |
+| `type/profile` | Structured personal career record (resume data, role summaries) |
+| `type/note` | Freeform personal note, hobby log, inbox capture — no formal structure |
+| `type/review` | Code or asset review document |
 
 ---
 
@@ -254,20 +260,26 @@ Do not add any other inline tags. All filterable metadata lives in frontmatter.
 
 ## Live Tag Inventory
 
-Full vault as of 2026-04-30. 155 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ hobby/ status/.
+Full vault as of 2026-05-01. 160 unique tags, 2201 usages, 0 flat tags. Axes: type/ project/ area/ fmt/ lang/ lib/ sys/ tech/ llm/ hobby/ status/.
 Update counts when adding or retiring a tag. Count=1 tags are candidates for consolidation.
 
-### type/ (7 tags, 600 usages)
+### type/ (13 tags, 600 usages)
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `type/devlog` | 181 | |
-| `type/reference` | 165 | |
-| `type/topic` | 131 | |
-| `type/learning` | 96 | |
+| `type/reference` | 215 | |
+| `type/devlog` | 188 | |
+| `type/learning` | 102 | |
 | `type/review` | 19 | |
+| `type/brief` | 14 | project/task orientation, handoff docs |
+| `type/analysis` | 13 | structured investigation/audit/proof |
+| `type/spec` | 11 | technical specification documents |
+| `type/note` | 11 | freeform personal note / hobby log |
+| `type/profile` | 8 | personal career records |
+| `type/plan` | 7 | next-session / execution plans |
 | `type/decision` | 7 | |
-| `type/glossary` | 1 | |
+| `type/glossary` | 3 | |
+| `type/experiment` | 1 | |
 
 ### project/ (29 tags, 600 usages)
 
@@ -275,9 +287,9 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 |-----|------:|-------|
 | `project/cinev` | 146 | 시나몬 회사 프로젝트 |
 | `project/bevy-vrm` | 139 | |
-| `project/shotloom` | 73 | 시나몬 회사 프로젝트 |
+| `project/shotloom` | 74 | 시나몬 회사 프로젝트 |
 | `project/job-search` | 36 | |
-| `project/cross-project` | 36 | |
+| `project/cross-project` | 35 | |
 | `project/ue-live-scene-bridge` | 31 | |
 | `project/personal` | 19 | 개인 노트·일기·취미 목록 |
 | `project/caol-ila` | 20 | |
