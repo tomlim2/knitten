@@ -201,3 +201,126 @@ Inline `#tag` is reserved for learnings-specific semantic markers inside the not
 - `#gotcha` — marking a non-obvious trap
 
 Do not add any other inline tags. All filterable metadata lives in frontmatter.
+
+---
+
+## Live Tag Inventory
+
+Current tags in vault as of 2026-04-30. Update this table when adding or retiring a tag.
+Count = number of docs using the tag. Tags with count 1 are candidates for consolidation or renaming.
+
+### type/
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `type/devlog` | 96 | |
+| `type/learning` | 72 | |
+| `type/reference` | 68 | |
+| `type/topic` | 45 | |
+| `type/review` | 16 | |
+| `type/decision` | 6 | |
+
+### project/
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `project/bevy-vrm` | 126 | |
+| `project/shotloom` | 57 | |
+| `project/job-search` | 26 | |
+| `project/cinev` | 21 | |
+| `project/mmd-anju` | 15 | |
+| `project/studio-weekend` | 13 | |
+| `project/codex-base` | 11 | |
+| `project/cross-project` | 9 | |
+| `project/krafton-hackathon` | 8 | |
+| `project/tutoring` | 5 | |
+| `project/caol-ila` | 4 | |
+| `project/drinks` | 4 | |
+| `project/tycoon` | 4 | |
+| `project/oss` | 3 | |
+| `project/consulting` | 2 | |
+| `project/megamelange` | 2 | |
+| `project/hyper3d` | 1 | consider consolidating if no new docs |
+| `project/hyperframes` | 1 | consider consolidating if no new docs |
+| `project/matcap-painter` | 1 | consider consolidating if no new docs |
+| `project/minecraft` | 1 | consider consolidating if no new docs |
+| `project/weekend-survivor` | 1 | consider consolidating if no new docs |
+
+### area/
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `area/retarget` | 96 | |
+| `area/skeleton` | 58 | |
+| `area/vrm` | 33 | |
+| `area/unreal-engine` | 30 | |
+| `area/shader` | 23 | |
+| `area/animation` | 19 | |
+| `area/git` | 8 | |
+| `area/normalizer` | 8 | |
+| `area/game-dev` | 7 | |
+| `area/pr` | 7 | |
+| `area/adr` | 6 | |
+| `area/fbx` | 5 | |
+| `area/architecture` | 4 | |
+| `area/conventions` | 3 | |
+| `area/fixtures` | 3 | |
+| `area/gltf` | 3 | |
+| `area/mtoon` | 3 | |
+| `area/toon-rendering` | 3 | |
+| `area/character` | 2 | |
+| `area/cocktail` | 2 | |
+| `area/design` | 2 | |
+| `area/finger` | 2 | |
+| `area/rubric` | 2 | |
+| `area/wine` | 2 | |
+| `area/workflow` | 2 | |
+| `area/ai-behavior` | 1 | |
+| `area/algorithm` | 1 | |
+| `area/arp` | 1 | |
+| `area/build` | 1 | |
+| `area/champagne` | 1 | merge into `area/wine`? |
+| `area/color` | 1 | |
+| `area/file-formats` | 1 | |
+| `area/gaussian-splatting` | 1 | |
+| `area/graphics` | 1 | |
+| `area/image-gen` | 1 | |
+| `area/infra` | 1 | |
+| `area/linear` | 1 | |
+| `area/mesh-generation` | 1 | |
+| `area/metrics` | 1 | |
+| `area/niagara` | 1 | |
+| `area/pipeline` | 1 | |
+| `area/pmx` | 1 | |
+| `area/pose` | 1 | |
+| `area/refactor` | 1 | |
+| `area/skills` | 1 | |
+| `area/slack` | 1 | |
+| `area/tasting` | 1 | |
+| `area/testing` | 1 | |
+| `area/texture` | 1 | |
+| `area/trait-design` | 1 | |
+| `area/travel` | 1 | |
+| `area/ux` | 1 | |
+| `area/video` | 1 | |
+| `area/vrma` | 1 | merge into `area/vrm`? |
+| `area/whisky` | 1 | |
+| `area/world-generation` | 1 | |
+
+### lang/
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `lang/rust` | 76 | |
+| `lang/webgpu` | 4 | |
+| `lang/wasm` | 1 | |
+| `lang/wgpu` | 1 | merge into `lang/webgpu`? |
+
+### tool/
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `tool/3d-genai` | 2 | rename to specific model when known |
+| `tool/gpt-image-2` | 1 | |
+| `tool/nvidia` | 1 | too broad — rename to specific model/tool |
+| `tool/seedance-2-0` | 1 | |
