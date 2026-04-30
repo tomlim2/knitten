@@ -80,4 +80,5 @@ Standards contain the rationale, examples, and templates that rules link back to
 | Standard | When to read |
 |----------|-------------|
 | [`obsidian-format.md`](obsidian-format.md) | Before creating or migrating Obsidian documents (see also [`rules/obsidian.md`](../rules/obsidian.md)) |
+| [`obsidian-tag-taxonomy.md`](obsidian-tag-taxonomy.md) | Before tagging any Obsidian document — 3-axis system (`type/`, `project/`, `area/`, `lang/`, `tool/`) |
 | [`repo-paths-keys.md`](repo-paths-keys.md) | Before registering repos or setting up a new machine |
