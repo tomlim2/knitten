@@ -1,18 +1,23 @@
 # LLM-First Document Standard
 
-Default for every artifact Claude writes.
+**Default for every artifact Claude writes.** Token-efficient, structured, no rhetoric.
 
-Applies to (non-exhaustive):
+## When this standard applies
+
+Applies unless one of three switches fires (see below). Non-exhaustive list of LLM-first artifacts:
+
 - `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
 - Every agent-to-agent handoff: `asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts
-- Repo `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
+- Repo `README.md` (yes — even README), `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
 - PR bodies, commit messages, code comments, issue descriptions
 
-Does NOT apply to (exceptions):
-- Obsidian vault notes written for the user: `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md`
-- Chat responses summarizing to the user in conversation
+## Switch to human-friendly only when
 
-If unsure, treat the doc as LLM-first.
+1. **User explicitly asks.** "Make this README friendlier", "write as a story", "expand for humans". Without an explicit ask, stay LLM-first even on docs that traditionally feel human-facing.
+2. **Writing vault notes for the user's own recall** — `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md`. Narrative and analogies welcome.
+3. **Speaking in chat to the user.** The conversation itself uses natural prose.
+
+If unsure, default LLM-first.
 
 ---
 

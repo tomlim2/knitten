@@ -9,14 +9,17 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 ## LLM-first docs — default for everything written
 
-Every artifact you produce is LLM-first by default. Read `standards/llm-first-docs.md` before the first such write in a session. Run its self-audit checklist before committing.
+**Every artifact you produce is LLM-first by default.** Token-efficient, structured, no rhetoric, no marketing prose. Read `standards/llm-first-docs.md` before the first such write in a session. Run its self-audit checklist before committing.
 
-Two exceptions only:
+Switch to human-friendly style **only** when one of these triggers fires:
 
-1. **Obsidian vault notes you write for the user** — `claude/projects/*/days/*.md` and `claude/projects/*/learnings/*.md`. These are the user's personal recall storage; narrative and analogies are welcome.
-2. **Chat responses summarizing to the user** — natural prose is fine in the conversation itself.
+1. **The user explicitly asks for it.** ("make this README friendlier", "write this as a story", "expand for humans".) Without an explicit ask, stay LLM-first even on docs that traditionally feel human-facing (README, CONTRIBUTING, etc.).
+2. **You are writing a vault note for the user's own recall** — `claude/projects/*/days/*.md` or `claude/projects/*/learnings/*.md`. Narrative and analogies welcome here.
+3. **You are speaking in chat to the user.** The conversation itself can use natural prose.
 
-Everything else follows LLM-first rules. Explicitly includes: CLAUDE.md, rules, skills, commands, standards, repo READMEs, ADRs, PR bodies, commit messages, AGENTS.md, code comments, **and every agent-to-agent handoff** (`asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts).
+Everything else stays LLM-first. Explicitly includes: CLAUDE.md, rules, skills, commands, standards, repo READMEs (yes — even README), ADRs, PR bodies, commit messages, AGENTS.md, CONTRIBUTING.md, code comments, **and every agent-to-agent handoff** (`asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts).
+
+If unsure, default LLM-first. The user can ask you to humanize a specific doc when they want it.
 
 ---
 
