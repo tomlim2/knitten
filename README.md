@@ -1,6 +1,8 @@
 # caol-ila
 
-Global Claude Code configuration. Commands, skills, standards, and config — all in one place, symlinked to `~/.claude`.
+**LLM-first repository.** Global Claude Code configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. Symlinked to `~/.claude`.
+
+Charter, operational rules, and editing standard: [`claude/CLAUDE.md`](claude/CLAUDE.md) → [`claude/standards/llm-first-docs.md`](claude/standards/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 ## Architecture
 

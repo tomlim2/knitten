@@ -7,6 +7,20 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 ---
 
+## Repository charter
+
+`caol-ila` is an **LLM-first repository.** Every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:
+
+1. **Efficiency** — minimum tokens for maximum signal.
+2. **Accuracy** — explicit, unambiguous, no hidden assumptions.
+3. **Clarity** — decision trees over prose, tables over paragraphs, paired examples over description.
+
+The user is the architect; the LLM is the primary reader and operator. Human-readable output is delivered only on explicit user request.
+
+When choosing between two ways to write or organize anything in this repo, ask: **"would a cold-start LLM session parse this correctly in the fewest tokens?"** If not, restructure. Operational rules below (`standards/llm-first-docs.md`) translate this charter into per-document checks.
+
+---
+
 ## LLM-first docs — default for everything written
 
 Every artifact you produce is LLM-first by default. Read `standards/llm-first-docs.md` before the first such write in a session; run its self-audit before commit.
