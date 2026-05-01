@@ -85,7 +85,7 @@ Both create `/slash-commands`. When names collide, skill (`skills/{name}/SKILL.m
 
 @~/.claude/rules/session-start.md
 
-@~/.claude/rules/coding.md
+@~/.claude/rules/behavior.md
 
 @~/.claude/rules/verify-before-report.md
 

@@ -82,6 +82,8 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 | "I keep failing the self-audit on the same defect" | 7 (validator) — the audit becomes a script |
 | "A bullet in an existing rule has a more specific trigger than the rule it lives in" | Split — extract the bullet into its own triggered rule; cite by path from the original rule if needed |
 | "An auto-rule body is approaching the auto-rule cap (40 body lines)" | Split — push triggered content out of auto into new triggered rules |
+| "A bullet does not counter a default LLM bias" | It's not auto material — make it triggered. Auto is reserved for rules that the harness violates by default and that intent-formation needs to see at cold start. |
+| "A rule's bullets cluster around distinct lifecycle phases (e.g. PR open, PR comment, PR merge)" | Split per phase — each phase becomes its own triggered rule with the phase as the trigger condition. |
 | "The whole stance just shifted" | 1 (charter) — then re-derive layers 2–7 |
 
 ---

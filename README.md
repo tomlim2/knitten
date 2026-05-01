@@ -109,14 +109,15 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 ---
 
-## Rules (18)
+## Rules (22)
 
 Always-applied constraints in `claude/rules/`. Loaded every session via CLAUDE.md `@import`.
 
 | Group | Files |
 |-------|-------|
-| Core (auto) | `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md` |
-| Workflow (triggered) | `reread-repo-conventions.md`, `testing.md`, `slack.md`, `writing.md`, `doc-write.md` |
+| Core (auto, default-counters) | `git.md`, `behavior.md`, `verify-before-report.md`, `security.md`, `session-start.md` |
+| Workflow (triggered) | `coding.md`, `reread-repo-conventions.md`, `testing.md`, `slack.md`, `writing.md`, `doc-write.md` |
+| PR lifecycle (triggered) | `pr-mutate.md`, `pr-comment.md`, `pr-create.md` |
 | Authoring (triggered) | `naming.md`, `command-frontmatter.md`, `tool-permissions.md` |
 | Domain (triggered) | `obsidian.md`, `cinev-git.md`, `multi-agent.md`, `shotloom.md` |
 | Index | `index.md` |
