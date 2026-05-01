@@ -81,5 +81,5 @@ These skills call `shotloom-linear-move` programmatically and do NOT require per
 
 ## Notes
 
-- Backward moves (Done → In Progress, etc.) always require explicit user confirmation even from auto-callers.
+- Backward moves (Done → In Progress, or similar reverse moves) always require explicit user confirmation even from auto-callers.
 - If Linear API returns permission error, surface the error and stop — don't retry with different state IDs.

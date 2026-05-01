@@ -22,7 +22,7 @@ When given text to humanize:
 1. **Identify AI patterns** - Scan for the patterns listed below
 2. **Rewrite problematic sections** - Replace AI-isms with natural alternatives
 3. **Preserve meaning** - Keep the core message intact
-4. **Maintain voice** - Match the intended tone (formal, casual, technical, etc.)
+4. **Maintain voice** - Match the intended tone (formal, casual, technical, and other tones)
 5. **Add soul** - Don't just remove bad patterns; inject actual personality
 
 ---

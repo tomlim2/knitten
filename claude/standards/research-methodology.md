@@ -136,7 +136,7 @@ site:github.com [Technology] production
 - Check service limits and pricing docs
 
 #### Programming Languages
-- Prefer: Official language docs (rust-lang.org, python.org, etc.)
+- Prefer: Official language docs (e.g. rust-lang.org, python.org)
 - RFCs/PEPs/Proposals for language evolution
 - Look for "idiomatic [language]" or "[language] style guide"
 

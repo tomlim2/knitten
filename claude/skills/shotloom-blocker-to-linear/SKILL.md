@@ -64,5 +64,5 @@ Call `save_comment` with `issueId = STL-NN` and the approved body.
 ## Notes
 
 - If Linear MCP returns auth error, surface it — user may need to re-authenticate. Do not retry silently.
-- Do NOT auto-transition the issue state (In Progress → Blocked etc.) — just the comment. State transitions are a separate deliberate action.
+- Do NOT auto-transition the issue state (In Progress → Blocked) — just the comment. State transitions are a separate deliberate action.
 - Language: write comment in the language the user typed (Korean OK, Linear allows it per `CONTRIBUTING.md`).

@@ -167,7 +167,7 @@ If the basis works for one animation but breaks others, it's not a systematic er
 ### Mistake 3: correcting bones with small rotation magnitude
 
 For rotations under ~30°, quaternion axis extraction is numerically unstable. The derived axis can swing wildly frame-to-frame even though the rotation is nearly identity. Do NOT derive corrections for:
-- Hand bones (usually small rotations)
+- Hand bones (small rotations)
 - Any bone where `ARP magnitude < 30°` in the analysis output
 
 Filter these out in Step 4.
@@ -218,7 +218,7 @@ Step 5 of the workflow (stability check across frames) exists precisely for this
 **If the axis error varies across cases**:
 - Derive the correction per case (animation or motion-direction)
 - Do NOT collapse to a single "average" correction — it breaks all cases
-- Consider extending the data model to include case-keyed corrections
+- Extend the data model to include case-keyed corrections
 
 ## Related
 

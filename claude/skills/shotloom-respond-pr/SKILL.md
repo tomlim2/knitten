@@ -58,8 +58,8 @@ Apply the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md`:
 
 | Bucket | Step 2.5 action | Step 4 action | Step 6 reply |
 |---|---|---|---|
-| **in-scope — fix now** | route to Axis 2 (justification) | apply fix if Axis 2 passes | "Fixed in `<sha>`. …" |
-| **in-scope — defer with follow-up** (large but legitimate scope inside this PR's domain) | route to Axis 2 (justification) | acknowledge, file STL-NN via `/shotloom-linear-create-issue` | "Follow-up tracked as STL-NN. …" |
+| **in-scope — fix now** | route to Axis 2 (justification) | apply fix if Axis 2 passes | "Fixed in `<sha>`." |
+| **in-scope — defer with follow-up** (large but legitimate scope inside this PR's domain) | route to Axis 2 (justification) | acknowledge, file STL-NN via `/shotloom-linear-create-issue` | "Follow-up tracked as STL-NN." |
 | **out-of-scope** (different subsystem / unrelated concern) | surface to user as "needs separate issue"; do NOT fix, do NOT reply, do NOT resolve thread | skip | (no reply) |
 | **ambiguous (≥9/10)** | surface to user for routing decision; do NOT fix, do NOT reply, do NOT resolve | skip until user decides | (no reply) |
 
@@ -73,10 +73,10 @@ For every in-scope finding, before adding it to the Step 4 fix queue, run a just
 
 | Bucket | When to use | Step 2.5 action | Step 4 action | Step 6 reply |
 |---|---|---|---|---|
-| **justified — fix as recommended** | rule cited maps to the finding; recommended fix is the right shape and the right strength | proceed to Step 4 | apply as recommended | "Fixed in `<sha>`. …" |
-| **justified — fix differently** | rule applies, but the recommended fix is weaker / stronger / shaped differently than the rule justifies (e.g. reviewer says "downgrade `pub` to `pub(crate)`" but the alias has zero consumers and full deletion is cleaner; or reviewer says "extract to new crate" but a sentinel test pins the same invariant for free) | **surface to user as "reviewer says X, my read is Y, your call"** before deciding; do NOT silently go stronger or weaker than the recommendation | apply the agreed-on fix | "Fixed in `<sha>`. … [explain divergence from recommendation, citing rule]" |
+| **justified — fix as recommended** | rule cited maps to the finding; recommended fix is the right shape and the right strength | proceed to Step 4 | apply as recommended | "Fixed in `<sha>`." |
+| **justified — fix differently** | rule applies, but the recommended fix is weaker / stronger / shaped differently than the rule justifies (e.g. reviewer says "downgrade `pub` to `pub(crate)`" but the alias has zero consumers and full deletion is cleaner; or reviewer says "extract to new crate" but a sentinel test pins the same invariant for free) | **surface to user as "reviewer says X, my read is Y, your call"** before deciding; do NOT silently go stronger or weaker than the recommendation | apply the agreed-on fix | "Fixed in `<sha>`. [explain divergence from recommendation, citing rule]" |
 | **pushback candidate** | rule cited doesn't actually apply; reviewer mis-read the diff; the cure is worse than the disease; symmetric-treatment argument is actually asymmetric; finding is real but better fixed by a broader follow-up the reviewer themselves filed | **surface to user with the counterpoint framing** before replying; do NOT auto-fix and do NOT auto-defer-with-issue | skip until user decides | drafted with user input; cites the rule (or the reason the cited rule doesn't apply), not the reviewer |
-| **disagree outright** | rule cited is correctly named but the reviewer's interpretation is wrong | surface to user for the disagree-or-fix decision | typically skip | "<technical rationale>" — never `Done` / `Fixed` |
+| **disagree outright** | rule cited is correctly named but the reviewer's interpretation is wrong | surface to user for the disagree-or-fix decision | default skip | "<technical rationale>" — never `Done` / `Fixed` |
 
 Justification triggers (any one is enough to drop a finding out of "justified — fix as recommended"):
 

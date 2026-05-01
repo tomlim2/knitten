@@ -263,7 +263,7 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 | Symptom | Fix |
 |---------|-----|
 | `claude: command not found` in `watcher.log` | `~/.local/bin` not on PATH for the nohup process; export PATH in `start.sh` or use the absolute claude path |
-| Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback (no flock on host): `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap usually cleans the mkdir lock automatically; only manual cleanup needed if the watcher was SIGKILL'd. |
+| Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback (no flock on host): `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap cleans the mkdir lock automatically; only manual cleanup needed if the watcher was SIGKILL'd. |
 | Watcher not firing | `kill -0 $(cat ~/.claude/ops/pr-<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick. |
 | `gh` auth prompt in nohup ctx | keychain locked at login; run `gh auth status` interactively in a regular shell once |
 | Duplicate react runs | `flock` in `watch.sh` prevents concurrent ticks; overlapping `claude -p` sessions are fine — each diffs state.json fresh and is idempotent |

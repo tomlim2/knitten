@@ -23,7 +23,7 @@ Based on the user's request, apply the writing voice template:
 1. Identify the content type and audience from the arguments
 2. Select the appropriate preset (portfolio, blog, linkedin, readme) or create custom voice settings
 3. Generate content following the template constraints:
-   - No AI clichés (delve, leverage, robust, etc.)
+   - No AI clichés (delve, leverage, robust)
    - No generic openings
    - Mix sentence lengths
    - Strong hook first sentence

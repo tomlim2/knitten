@@ -9,7 +9,7 @@ Unified orchestrator for CINEV art branch lifecycle. Run daily — it reads curr
 
 ## Purpose
 
-Replaces 5+ separate commands with one entry point. Old commands (`/cci-art-create-branch`, `/cci-art-prepare-merge`, etc.) are thin redirects.
+Replaces 5+ separate commands with one entry point. Old commands (`/cci-art-create-branch`, `/cci-art-prepare-merge`, and other variants) are thin redirects.
 
 ---
 

@@ -123,7 +123,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that techn
 - 💡 👁 **No bare element selectors in components** — Component stylesheets use class selectors, not bare `header {}`, `a {}`, `ul {}` which affect the entire page
   - *ARCH-03 · css.md Code Smells*
 
-- 💡 👁 **Consistent naming convention** — All class names follow the project's chosen convention (BEM, OOCSS, etc.) consistently. No mixing conventions
+- 💡 👁 **Consistent naming convention** — All class names follow the project's chosen convention (e.g. BEM, OOCSS) consistently. No mixing conventions
   - *ARCH-04 · css.md Naming Conventions*
 
 - 💡 👁 **No undoing styles** — Declarations that reset previous styles (`border: none`, `padding: 0` to counteract) indicate the original rule was too broad. Build styles additively

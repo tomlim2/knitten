@@ -13,7 +13,7 @@ Validate VMD motion file compatibility with a target PMX model.
 
 ## Purpose
 
-Analyze VMD↔PMX bone matching, detect source model signatures (ミリシタ, etc.), identify IK/FK conflicts, check twist bone coverage, flag extreme arm rotations, and produce a compatibility score. Useful for diagnosing cross-model retarget issues.
+Analyze VMD↔PMX bone matching, detect source model signatures (ミリシタ, and similar), identify IK/FK conflicts, check twist bone coverage, flag extreme arm rotations, and produce a compatibility score. Useful for diagnosing cross-model retarget issues.
 
 ---
 

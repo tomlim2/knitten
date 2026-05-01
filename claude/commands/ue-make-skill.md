@@ -36,7 +36,7 @@ Read the reference implementation for style:
 Before generating files, ask the user:
 
 1. **What UE asset types should this skill support?**
-   - e.g., StaticMesh, SkeletalMesh, AnimSequence, Blueprint, Texture2D, etc.
+   - e.g., StaticMesh, SkeletalMesh, AnimSequence, Blueprint, Texture2D
    - For each type, what's the `unreal.ClassName` for isinstance checks?
 
 2. **What data should be extracted?**

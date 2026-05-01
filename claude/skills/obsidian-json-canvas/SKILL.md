@@ -52,7 +52,7 @@ A canvas file (`.canvas`) contains two top-level arrays following the [JSON Canv
 
 1. Read and parse the `.canvas` file as JSON
 2. Locate the target node or edge by `id`
-3. Modify the desired attributes (text, position, color, etc.)
+3. Modify the desired attributes (text, position, color, and other node fields)
 4. Write the updated JSON back to the file
 5. **Validate**: Re-check all ID uniqueness and edge reference integrity after editing
 

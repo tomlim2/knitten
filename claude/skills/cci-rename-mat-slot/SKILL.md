@@ -35,7 +35,7 @@ python "${CLAUDE_SKILL_DIR}/run_in_editor.py" "${CLAUDE_SKILL_DIR}/rename_mat_sl
 
 For each missing slot (e.g., `Body_MTL`):
 1. Search existing slots for pattern: `{missing_slot}` + single digit (1-9)
-2. Candidates: `Body_MTL1`, `Body_MTL2`, etc.
+2. Candidates: `Body_MTL1`, `Body_MTL2`, and other numbered variants.
 3. Pick shortest name (closest match)
 4. If no match found, skip with warning
 

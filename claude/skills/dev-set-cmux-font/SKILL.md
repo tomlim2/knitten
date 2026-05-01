@@ -32,7 +32,7 @@ cmux persists settings across multiple locations, in this precedence order:
 
 1. `~/.config/cmux/settings.json` — JSONC, file-managed overrides (highest precedence). Schema: `https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux-settings.schema.json`
 2. `~/Library/Application Support/cmux/` — app runtime + fallback settings
-3. `~/Library/Preferences/com.cmuxterm.app.plist` — macOS defaults (window state, appearance, etc. — font is NOT stored here)
+3. `~/Library/Preferences/com.cmuxterm.app.plist` — macOS defaults (window state, appearance, and other UI settings — font is NOT stored here)
 4. `~/.config/ghostty/config` — Ghostty backend config. cmux inherits this when no app-level override is set. Format: one `font-family = <name>` line per fallback, in order.
 
 **Key trap:** Ghostty treats `font-family` lines as a fallback stack in order. If `Apple SD Gothic Neo` (proportional-ish Korean face) is listed before `SF Mono`, it wins for Latin glyphs too and the terminal looks non-monospace. Monospace family must come FIRST.

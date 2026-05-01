@@ -46,7 +46,7 @@ The `private/` directory is your **personal data vault** for Claude Code. This g
 **Business Data:**
 - Tutoring invoices and lesson logs
 - Client information
-- Personal tracking data (drinks, expenses, etc.)
+- Personal tracking data (drinks, expenses, and similar personal data)
 
 ### ❌ No - Store Elsewhere
 

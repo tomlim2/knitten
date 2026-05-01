@@ -40,12 +40,12 @@ Goal: get the actual label image so the color palette is real, not guessed.
 
 1. WebSearch: `"<drink_name>" wine label OR bottle illustration`
 2. If a candidate page is found (Vivino, official site, retailer), `WebFetch` it.
-   - Vivino is usually 403 — try the producer's official site first.
+   - Vivino returns 403 — try the producer's official site first.
    - **Important:** even when WebFetch's text reply says "this is just CSS / I can't see the label", it often **silently downloads images** to `tool-results/webfetch-*.jpg`. Check the message body for `[Binary content (image/jpeg, ... saved to ...]`.
 3. Use the `Read` tool on the saved image path. The multimodal model will SEE the label.
 4. Extract from what you see:
    - 2–4 dominant colors (background, ink/text, highlights, accent) — guess hex codes
-   - Illustration style (line art, watercolor, photo, vintage, minimal, etc.)
+   - Illustration style (line art, watercolor, photo, vintage, minimal)
    - Key motifs (animal, object, pattern, typography quirks)
    - Region / origin (e.g., "Marlborough New Zealand")
    - **Typography** — this carries the label's 감성, capture it precisely:
@@ -63,8 +63,8 @@ If after 2–3 search attempts you still have no label image, ask the user to:
 ### Step 2b: Research the region — landmarks, specialties, traditions
 Goal: ground the diorama in the drink's **actual hometown** so it feels specific, not generic "wine village". Once you know the region from Step 2, WebSearch for:
 
-1. `"<region>" famous landmarks OR iconic buildings` — pick 1 hero landmark (clock tower, cathedral, lighthouse, bridge, mountain silhouette…) for the Step 3 `{landmark}` slot
-2. `"<region>" local specialties OR traditional food` — 2–3 items to scatter as miniature props (cheese wheels, oysters, chocolate, bread, mussels…)
+1. `"<region>" famous landmarks OR iconic buildings` — pick 1 hero landmark (clock tower, cathedral, lighthouse, bridge, mountain silhouette) for the Step 3 `{landmark}` slot
+2. `"<region>" local specialties OR traditional food` — 2–3 items to scatter as miniature props (cheese wheels, oysters, chocolate, bread, mussels)
 3. `"<region>" traditional craft OR folk culture` — textile patterns, pottery, festivals, signage styles (these enrich the hand-painted signage from the typography block)
 4. Native flora/fauna specific to the region — trees, birds, animals beyond generic grape vines
 
@@ -134,7 +134,7 @@ Iterate freely **before** spending an API call. Common pre-generation tweaks:
 | "고양이 빼" | Remove characters from City contents |
 | "더 코지" | Change `{mood adjective}` to `cozy warm` |
 | "더 청량" | Change to `crisp fresh zesty` |
-| "더 어둡게" | Change to `moody nocturnal` (and consider darker palette) |
+| "더 어둡게" | Change to `moody nocturnal` (and use darker palette) |
 
 ### Step 5: Dispatch to dev-run-t2i
 **Skip this step entirely if `PROMPT_ONLY = true`.**
@@ -145,7 +145,7 @@ Once the user confirms, invoke the `dev-run-t2i` skill via the **Skill tool** wi
 - **--aspect 1:1** (the iso-city composition is square)
 - **--out** `~/Desktop/gemini-out/<slug>.png`
 
-**Slug rules:** lowercase the drink name, hyphenate, append `-iso-city`. For follow-ups, increment: `<slug>-v2.png`, `-v3.png`. Never overwrite previous versions — the user usually wants to compare.
+**Slug rules:** lowercase the drink name, hyphenate, append `-iso-city`. For follow-ups, increment: `<slug>-v2.png`, `-v3.png`. Never overwrite previous versions — the user wants to compare.
 
 Examples:
 - `"Knitten Sauvignon Blanc"` → `knitten-sauv-blanc-iso-city.png`
@@ -175,6 +175,6 @@ For each iteration, build a fresh prompt and dispatch `dev-run-t2i` again with a
 
 ## Notes
 
-- **Signature style is non-negotiable:** strict 3-color palette + iso 35° + clay-line hybrid + Wes Anderson mood. Photoreal, anime, watercolor, etc. are different styles — use a different skill for those.
+- **Signature style is non-negotiable:** strict 3-color palette + iso 35° + clay-line hybrid + Wes Anderson mood. Photoreal, anime, watercolor are different styles — use a different skill for those.
 - **Why prompt-building is its own skill:** the hard part is *not* the API call (dev-run-t2i handles that in 30 lines). The hard part is researching the label, extracting real colors, and structuring a prompt that survives Gemini's tendency to drift. That logic is what's worth saving.
 - **Output dir:** `~/Desktop/gemini-out/` is the convention shared with other Gemini image skills. Keep it consistent so the user has one folder to check.

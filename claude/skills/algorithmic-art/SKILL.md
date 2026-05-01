@@ -25,7 +25,7 @@ To begin, create an ALGORITHMIC PHILOSOPHY (not static images or templates) that
 - What is created: An algorithmic philosophy/generative aesthetic movement.
 - What happens next: The same version receives the philosophy and EXPRESSES IT IN CODE - creating p5.js sketches that are 90% algorithmic generation, 10% essential parameters.
 
-Consider this approach:
+Use this approach:
 - Write a manifesto for a generative art movement
 - The next phase involves writing the algorithm that brings it to life
 
@@ -166,17 +166,17 @@ let params = {
 
 To express the philosophy through code, avoid thinking "which pattern should I use?" and instead think "how to express this philosophy through code?"
 
-If the philosophy is about **organic emergence**, consider using:
+If the philosophy is about **organic emergence**, use:
 - Elements that accumulate or grow over time
 - Random processes constrained by natural rules
 - Feedback loops and interactions
 
-If the philosophy is about **mathematical beauty**, consider using:
+If the philosophy is about **mathematical beauty**, use:
 - Geometric relationships and ratios
 - Trigonometric functions and harmonics
 - Precise calculations creating unexpected patterns
 
-If the philosophy is about **controlled chaos**, consider using:
+If the philosophy is about **controlled chaos**, use:
 - Random variation within strict boundaries
 - Bifurcation and phase transitions
 - Order emerging from disorder
@@ -247,7 +247,7 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
   - Number of parameter controls
   - Parameter names
   - Min/max/step values for sliders
-  - Control types (sliders, inputs, etc.)
+  - Control types (sliders, inputs, dropdowns)
 - Colors section (optional):
   - Some art needs color pickers
   - Some art might use fixed colors
@@ -259,7 +259,7 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
 ### REQUIRED FEATURES
 
 **1. Parameter Controls**
-- Sliders for numeric parameters (particle count, noise scale, speed, etc.)
+- Sliders for numeric parameters (particle count, noise scale, speed, and similar)
 - Color pickers for palette colors
 - Real-time updates when parameters change
 - Reset button to restore defaults
@@ -348,7 +348,7 @@ The HTML artifact works immediately:
 
 The artifact includes seed navigation by default (prev/next/random buttons), allowing users to explore variations without creating multiple files. If the user wants specific variations highlighted:
 
-- Include seed presets (buttons for "Variation 1: Seed 42", "Variation 2: Seed 127", etc.)
+- Include seed presets (buttons for "Variation 1: Seed 42", "Variation 2: Seed 127", and similar)
 - Add a "Gallery Mode" that shows thumbnails of multiple seeds side-by-side
 - All within the same single artifact
 

@@ -10,7 +10,7 @@ Wraps up one Shotloom task cleanly: transition Linear to Done, remove the worktr
 
 Use when:
 - A PR has merged and `/shotloom-auto-pr` wasn't running to auto-cleanup, OR
-- You want to manually close a task (abandoned, moved to next issue, etc.), OR
+- You want to manually close a task (abandoned, moved to next issue, or related), OR
 - You want a single command for the end-of-work routine.
 
 ## Arguments
@@ -147,7 +147,7 @@ Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day sho
 - **Single header line** with PR link only — no separate **PR / Linear / Branch / Worktree / Commits** metadata block. The PR link is enough; everything else is one click away.
 - **Numbered "지적" items** (criticisms / corrections received) — one per finding, each in this shape:
   - **What** the reviewer (or CI, or the rule) pointed out, with a direct quote when meaningful.
-  - **Why** it was right — the underlying principle (ADR-NNNN section, standard ID, `docs/guidelines/review-rust.md` section, etc.).
+  - **Why** it was right — the underlying principle (ADR-NNNN section, standard ID, `docs/guidelines/review-rust.md` section, or similar).
   - **What changed** in the PR as a result (commit SHA, file).
 - **`> [!tip]` callout** — the single most important insight from this PR. The thing future-me would want to remember in 6 months. Often a meta-insight: tooling drift, skill drift, process gap, missed convention.
 - **`> [!abstract] Rule` callout** — a one-line generalizable rule extracted from this PR's lessons, written so it could go straight into `~/.claude/rules/` or a standard. Tagged `#rule`.
@@ -201,7 +201,7 @@ One compact line back to the user:
 STL-NN closed (<mode>). Linear: → Done. Worktree removed. Logged to <log_path>.
 ```
 
-Include any warnings that came up (branch not fully merged, dirty worktree preserved, Linear move skipped, etc.).
+Include any warnings that came up (branch not fully merged, dirty worktree preserved, Linear move skipped, or similar).
 
 ## Binding rules
 

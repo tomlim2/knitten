@@ -50,8 +50,8 @@ Search for research papers, studies, and formal analysis.
 Search for production experience and engineering best practices.
 
 **Task**: Search for and analyze:
-- Blog posts from AI labs (Anthropic, OpenAI, DeepMind, etc.)
-- Production agent frameworks (LangChain, CrewAI, AutoGen, etc.)
+- Blog posts from AI labs (Anthropic, OpenAI, DeepMind)
+- Production agent frameworks (LangChain, CrewAI, AutoGen)
 - Engineering post-mortems and lessons learned
 - Community discussions on agent reliability and patterns
 

@@ -242,7 +242,7 @@ Pipeline structure matters less than the standards it enforces. In order of impa
 2. **Pipeline structure** — Correct pass types in the right order, with proper data flow.
 3. **Pass count** — More passes only help when each one genuinely transforms the output.
 
-The agent is a delivery mechanism for standards. If output quality is poor, improve the standard first, then reconsider the pipeline.
+The agent is a delivery mechanism for standards. If output quality is poor, improve the standard first, then re-evaluate the pipeline.
 
 ---
 

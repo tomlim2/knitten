@@ -52,7 +52,7 @@ T_F_Verte_V01_Hair_001_BkA
 ### PartCode Numbering Rule
 
 - Independent parts with multiple variations: append number (`Hair_001`, `Hair_002`)
-- Sub-parts of head (Face, Eyes, Eyelash, etc.): no number suffix
+- Sub-parts of head (Face, Eyes, Eyelash): no number suffix
 
 ---
 

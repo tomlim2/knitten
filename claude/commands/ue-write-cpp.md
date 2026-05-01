@@ -65,7 +65,7 @@ Usage: /ue-write-cpp <description or file path>
 2. Write code following ALL rules from the standard:
    - Brace style (always braces, even single-line bodies)
    - Loop variable naming (meaningful names, not `i`/`j`)
-   - PascalCase naming (class prefixes, boolean `b` prefix, etc.)
+   - PascalCase naming (class prefixes, boolean `b` prefix)
 3. For new files: include proper copyright header, `#pragma once`, includes
 4. For modifications: match existing file style, minimize diff
 5. Write/Edit the files

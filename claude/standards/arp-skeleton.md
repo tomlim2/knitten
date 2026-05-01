@@ -20,7 +20,7 @@ The `.x` suffix is unique to ARP. Most other rigs (UE, Mixamo) have no center su
 
 | Prefix | Type | Exported to FBX? | Purpose |
 |--------|------|-------------------|---------|
-| `c_` | Controller bone | Only finger controllers | Animatable controls; `c_thumb1.l`, `c_index1.l` etc. are the **deformation** bones for fingers |
+| `c_` | Controller bone | Only finger controllers | Animatable controls; `c_thumb1.l`, `c_index1.l` are the **deformation** bones for fingers |
 | *(none)* | Deformation bone | Yes | Mesh skinning: `arm_stretch`, `thigh_stretch`, `spine_01` |
 | `_ref` suffix | Reference bone | No | Alignment guides only, removed after rig generation |
 
@@ -39,7 +39,7 @@ ARP uses `_stretch` suffixed bones as the **primary deformation bones** for limb
 | `thigh_stretch.l/r` | Upper leg / thigh | Same |
 | `leg_stretch.l/r` | Lower leg / calf | Same |
 
-When ARP exports to FBX without twist bones, vertices weighted to twist bones (`arm_twist`, `forearm_twist`, etc.) are transferred to the corresponding `_stretch` bone. The stretch bones are the consolidated deformers that contain both the main rotation and absorbed twist weights.
+When ARP exports to FBX without twist bones, vertices weighted to twist bones (`arm_twist`, `forearm_twist`) are transferred to the corresponding `_stretch` bone. The stretch bones are the consolidated deformers that contain both the main rotation and absorbed twist weights.
 
 In the Blender rig, ARP also has non-stretch counterparts (`arm.l`, `forearm.l`) which are internal mechanical bones. Only the `_stretch` variants appear in the exported FBX.
 
@@ -185,7 +185,7 @@ Note: VRM 0.x and 1.0 differ in thumb bone naming. VRM 0.x has no Metacarpal, so
 When retargeting ARP to VRM:
 - VRM uses a **T-pose** rest convention (arms straight out, palms facing down/inward)
 - If the ARP source was exported in A-pose, `rest_pose_offsets` are needed for shoulder/upper arm bones
-- ARP A-pose typically lowers arms ~30-45 degrees from T-pose
+- ARP A-pose lowers arms ~30-45 degrees from T-pose
 
 ---
 
@@ -206,8 +206,8 @@ When retargeting ARP to VRM:
 | **Neck** | `neck.x` | `neck_01` |
 | **Toes** | `toes_01.l` | `ball_l` |
 | **Finger naming** | `c_index1.l` | `index_01_l` |
-| **Twist bones** | Optional, often stripped for export | Included (`upperarm_twist_01_l`, etc.) |
-| **Metacarpals** | Not exported by default | Present (`index_metacarpal_l`, etc.) |
+| **Twist bones** | Optional, often stripped for export | Included (`upperarm_twist_01_l`, `lowerarm_twist_01_l`) |
+| **Metacarpals** | Not exported by default | Present (`index_metacarpal_l`, `middle_metacarpal_l`) |
 | **Rest pose** | T-pose default, A-pose optional | A-pose (MetaHuman standard) |
 
 ### Side-by-Side Mapping (Full Skeleton)
@@ -319,7 +319,7 @@ Notes:
 - `source_prefix` is empty (ARP exports have no prefix, unlike MetaHuman's `DHIbody:`)
 - `rest_pose_offsets` need to be tuned per-character if ARP was exported in A-pose
 - If the ARP export has extra spine bones (4+), use `accumulate` to fold them into `upperChest`
-- ARP exports typically have no twist bones, so `twist_fold` is empty
+- ARP exports have no twist bones by default, so `twist_fold` is empty
 
 ---
 

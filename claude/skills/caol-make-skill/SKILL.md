@@ -62,7 +62,7 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ## UE skills — use the dedicated template
 
-**For `ue-*` (Unreal Engine) skills**, use `/ue-make-skill <verb> <noun>`. Template at `~/.claude/skills/ue-show-template/SKILL.md`. UE skills require specific Python patterns (run_in_editor.py, JSON export to `~/.claude/private/unreal/{noun}-{verb}/`, `[LogTag]` prefixes, etc.) — see reference.md for the full rationale.
+**For `ue-*` (Unreal Engine) skills**, use `/ue-make-skill <verb> <noun>`. Template at `~/.claude/skills/ue-show-template/SKILL.md`. UE skills require specific Python patterns (run_in_editor.py, JSON export to `~/.claude/private/unreal/{noun}-{verb}/`, `[LogTag]` prefixes, and other patterns) — see reference.md for the full rationale.
 
 ---
 
@@ -89,7 +89,7 @@ All fields are optional; only `description` is recommended. Canonical: <https://
 
 ### Bash Tool Specificity
 
-**NEVER use bare `Bash`** in `allowed-tools`. Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, etc.
+**NEVER use bare `Bash`** in `allowed-tools`. Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, and similar.
 
 ### Canonical minimal example
 

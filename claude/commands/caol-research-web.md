@@ -29,7 +29,7 @@ Research official sources, specifications, and authoritative content.
 
 **Task**: Search for and analyze:
 - Official documentation (docs sites, API references)
-- Authoritative blogs (Mozilla, Google Developers, AWS, etc.)
+- Authoritative blogs (Mozilla, Google Developers, AWS)
 - Specifications and standards
 - Recent version updates and changelogs
 

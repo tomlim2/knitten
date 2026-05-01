@@ -104,6 +104,51 @@ const BANNED_TERMS = [
   "might want ",
 ];
 
+function maskCodeSpans(line) {
+  // Replace inline backtick spans (`...`) and inline-quoted "..." with spaces of equal length.
+  // Banned terms inside code spans or string literals are documentation, not prose violations.
+  let out = "";
+  let i = 0;
+  while (i < line.length) {
+    const c = line[i];
+    if (c === "`") {
+      out += " ";
+      i++;
+      while (i < line.length && line[i] !== "`") {
+        out += " ";
+        i++;
+      }
+      if (i < line.length) {
+        out += " ";
+        i++;
+      }
+    } else {
+      out += c;
+      i++;
+    }
+  }
+  return out;
+}
+
+function isInsideFencedCode(lines, idx, fenceState) {
+  return fenceState[idx];
+}
+
+function computeFenceState(lines) {
+  // Returns boolean[] — true if line is inside a ``` ... ``` fenced block.
+  const state = new Array(lines.length).fill(false);
+  let inside = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (/^\s*```/.test(lines[i])) {
+      inside = !inside;
+      state[i] = true; // fence delimiter line itself: skip
+      continue;
+    }
+    state[i] = inside;
+  }
+  return state;
+}
+
 async function checkBannedTerms() {
   const violations = [];
   const files = await llmFirstFiles();
@@ -116,15 +161,18 @@ async function checkBannedTerms() {
     }
     const { body } = stripFrontmatter(text);
     const lines = body.split("\n");
+    const fenceState = computeFenceState(lines);
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const lower = line.toLowerCase();
+      if (fenceState[i]) continue;
+      const original = lines[i];
+      const masked = maskCodeSpans(original);
+      const lower = masked.toLowerCase();
       for (const term of BANNED_TERMS) {
         const idx = lower.indexOf(term.toLowerCase());
         if (idx !== -1) {
           const start = Math.max(0, idx - 20);
-          const end = Math.min(line.length, idx + term.length + 20);
-          const snippet = line.slice(start, end).trim();
+          const end = Math.min(original.length, idx + term.length + 20);
+          const snippet = original.slice(start, end).trim();
           violations.push({
             file: rel(f),
             line: i + 1,

@@ -118,7 +118,7 @@ Silent if nothing changed — no spam.
 Stop watching (CronDelete) when:
 - PR is merged
 - PR is closed
-- User explicitly says to stop (`/stop`, "stop watching", etc.)
+- User explicitly says to stop (`/stop`, "stop watching", or similar)
 - 7-day CronCreate auto-expiry
 
 Report final status on stop.

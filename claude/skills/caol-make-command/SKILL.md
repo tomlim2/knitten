@@ -72,7 +72,7 @@ Each name consists of three parts separated by hyphens:
 
 **Core field order for simple commands:** `description` → `argument-hint` → `allowed-tools`
 
-**NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, etc.
+**NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, and similar.
 
 **Advanced fields** (see `~/.claude/standards/slash-commands.md` "Frontmatter Reference (Full)" for the full table):
 

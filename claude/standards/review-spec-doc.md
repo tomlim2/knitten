@@ -64,7 +64,7 @@ Sections marked **(if applicable)** only apply when the spec covers that domain.
 - 🔒 👁 **No technically infeasible requirements** — All requirements are achievable within the stated tech stack and constraints. No contradictory or physically impossible demands
   - *ENGR-07*
 
-- ⚠️ 👁 **No scope-creep-inducing ambiguity** — Requirements use precise language. Phrases like "and more", "etc.", "as needed", "all necessary" are flagged as potential scope creep
+- ⚠️ 👁 **No scope-creep-inducing ambiguity** — Requirements use precise language. Phrases like `"and more"`, `"etc."`, `"as needed"`, `"all necessary"` are flagged as potential scope creep
   - *ENGR-08*
 
 ---

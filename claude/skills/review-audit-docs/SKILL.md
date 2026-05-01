@@ -122,7 +122,7 @@ Subagent findings: <K> | After verification: <K'>
 A: clean · B: clean · C: 1 finding · D: 1 finding · E: clean
 ```
 
-End with one sentence on next action — usually "drive-by fix in this PR vs spawn follow-up vs leave as-is".
+End with one sentence on next action — default "drive-by fix in this PR vs spawn follow-up vs leave as-is".
 
 ### Step 5: Do not auto-fix
 

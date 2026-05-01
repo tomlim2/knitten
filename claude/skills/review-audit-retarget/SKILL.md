@@ -29,8 +29,8 @@ When looking at a bevy-vrm viewer screenshot, systematically check every visual 
 ### Bone Colors
 - **Green**: hips, spine, chest, upperChest
 - **Yellow**: neck, head
-- **Blue**: left side bones (leftUpperArm, leftLowerArm, etc.)
-- **Red**: right side bones (rightUpperArm, rightLowerArm, etc.)
+- **Blue**: left side bones (leftUpperArm, leftLowerArm, and similar VRM names)
+- **Red**: right side bones (rightUpperArm, rightLowerArm, and similar VRM names)
 - **Gray**: other bones
 
 ---

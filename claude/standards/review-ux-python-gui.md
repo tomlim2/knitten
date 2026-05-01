@@ -168,7 +168,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that patte
 - ⚠️ 👁 **Selected item is visually highlighted** — Selection state is clear and maintained after interacting with other parts of the UI
   - *LIST-01*
 
-- ⚠️ 👁 **Selection drives related UI** — Selecting an item in a list updates a detail panel, enables edit/delete buttons, etc. No orphaned selections
+- ⚠️ 👁 **Selection drives related UI** — Selecting an item in a list updates a detail panel, enables edit/delete buttons. No orphaned selections
   - *LIST-02*
 
 - ⚠️ 👁 **Columns have descriptive headers** — Treeview columns use human-readable headers ("Display Name" not "displayName"). Headers match the data below

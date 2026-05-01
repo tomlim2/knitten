@@ -34,7 +34,7 @@ Modes cannot be combined. If no argument is provided, the command shows usage an
 ### Step 1: Gather Context
 
 **For directory/files:**
-- List all source files (.h, .cpp, .py, etc.)
+- List all source files (.h, .cpp, .py, and similar)
 - Read headers first to understand public API
 - Read implementation for algorithms and data flow
 

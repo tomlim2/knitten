@@ -55,7 +55,7 @@ Skip if the current branch already matches the Linear issue. Otherwise:
 
 1. **Type prefix** from Linear title — must be one of repo-allowed `feat`/`fix`/`chore`/`hotfix`/`release` per `CONTRIBUTING.md`. `test`/`docs`/`refactor`/`style`/`perf`/`build`/`ops` Linear titles all map to `chore/` (line 119: "default branch type for docs-only, style-only, test-only, build-only, ops-only, and repository maintenance work"). `bug` label → `fix`. Default → `feat`.
 2. **Branch name** (repo rule: no STL-NN in branch): `<type>/<scope>-<verb>-<subject>`, max 50 chars, lowercase + hyphens only, no trailing hyphen.
-   - `<scope>` = conventional commit scope from Linear title (`retarget`, `engine`, `editor`, `bridge`, `gltf`, `fbx`, `import`, `core`, `web`, `desktop`, `assets`, `docs`, `ci`, `timeline`, `normalizer`, etc.). Same scope used in commit messages — so branch name and `type(scope):` commit headers stay aligned.
+   - `<scope>` = conventional commit scope from Linear title (`retarget`, `engine`, `editor`, `bridge`, `gltf`, `fbx`, `import`, `core`, `web`, `desktop`, `assets`, `docs`, `ci`, `timeline`, `normalizer`, and similar). Same scope used in commit messages — so branch name and `type(scope):` commit headers stay aligned.
    - `<verb>` = imperative action (`add`, `verify`, `fix`, `align`, `wire`, `extract`, `pin`, `rename`, `split`, `move`, `scope`, `update`, `remove`).
    - `<subject>` = concise object of the work.
    - Example: Linear `test(retarget): 4-finger alignment baseline — xiao + yoya` → `feat/retarget-verify-finger-baseline-xiao-yoya`.

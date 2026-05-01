@@ -11,9 +11,9 @@ Validate and fix Unreal Engine asset names against naming conventions.
 **Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
 
 This skill enforces all 9 naming rules defined in the asset naming standard. See the standard for complete details on:
-- Validation rules (ASCII_ONLY, PREFIX, PASCAL_CASE, etc.)
-- Prefix table for all asset types (SM_, T_, M_, BP_, etc.)
-- Texture suffix conventions (_D, _N, _ORM, etc.)
+- Validation rules (ASCII_ONLY, PREFIX, PASCAL_CASE, and similar conventions)
+- Prefix table for all asset types (SM_, T_, M_, BP_, and similar)
+- Texture suffix conventions (_D, _N, _ORM, and similar)
 - CJK asset handling and translation rules
 
 ## Purpose

@@ -148,7 +148,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that patte
 - ⚠️ 👁 **Color is not the only indicator** — Status, errors, and states use icons, text, or patterns in addition to color changes
   - *A11Y-06 · WCAG 1.4.1 Use of Color (A)*
 
-- ⚠️ 👁 **ARIA roles match behavior** — Custom widgets use correct ARIA roles (`role="dialog"`, `role="tablist"`, `role="slider"`, etc.) with required ARIA attributes
+- ⚠️ 👁 **ARIA roles match behavior** — Custom widgets use correct ARIA roles (e.g. `role="dialog"`, `role="tablist"`, `role="slider"`) with required ARIA attributes
   - *A11Y-07 · WCAG 4.1.2 Name, Role, Value (A)*
 
 - 💡 👁 **Skip navigation link** — Long pages with repeated navigation have a "Skip to content" link as the first focusable element
@@ -190,7 +190,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that patte
 - ⚠️ 👁 **Colors use design tokens** — No hardcoded hex/rgb values for colors that exist as CSS custom properties or design tokens
   - *CONSIST-01*
 
-- ⚠️ 👁 **Spacing uses system values** — Margins and paddings use consistent spacing scale (4px, 8px, 12px, 16px, 24px, etc.) or CSS custom properties, not arbitrary values
+- ⚠️ 👁 **Spacing uses system values** — Margins and paddings use consistent spacing scale (e.g. 4px, 8px, 12px, 16px, 24px) or CSS custom properties, not arbitrary values
   - *CONSIST-02*
 
 - ⚠️ 👁 **Similar components styled consistently** — Buttons, cards, inputs, and other repeated patterns use the same styling. No visual drift between instances
@@ -298,7 +298,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that patte
 - ⚠️ 👁 **Required fields marked** — Required fields have visual indicator (asterisk, label text) AND `required` attribute or `aria-required="true"`
   - *FORM-04*
 
-- 💡 👁 **Autocomplete attributes set** — Common fields have `autocomplete` attribute (`name`, `email`, `tel`, `street-address`, etc.) for browser autofill
+- 💡 👁 **Autocomplete attributes set** — Common fields have `autocomplete` attribute (e.g. `name`, `email`, `tel`, `street-address`) for browser autofill
   - *FORM-05 · WCAG 1.3.5 Identify Input Purpose (AA)*
 
 - 💡 👁 **Multi-step forms show progress** — Forms with 3+ steps show a progress indicator (step counter, progress bar) so users know how much remains

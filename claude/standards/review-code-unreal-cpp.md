@@ -47,13 +47,13 @@
 - Reserve container capacity when size is known
 - Eliminate unnecessary object copies
 - Be aware of virtual function call overhead in hot paths
-- Consider inline for small, frequently called functions
+- Use inline for small, frequently called functions
 
 ### Unreal Engine Specific
 
 #### UObject System & Reflection
-- UPROPERTY() with correct specifiers (EditAnywhere, BlueprintReadWrite, Replicated, etc.)
-- UFUNCTION() with appropriate specifiers (BlueprintCallable, Server, Client, etc.)
+- UPROPERTY() with correct specifiers (e.g. EditAnywhere, BlueprintReadWrite, Replicated)
+- UFUNCTION() with appropriate specifiers (e.g. BlueprintCallable, Server, Client)
 - UCLASS/USTRUCT/UENUM properly used
 - GENERATED_BODY() included in all reflected types
 - UObject* marked with UPROPERTY() to prevent GC issues
@@ -69,7 +69,7 @@
 #### Unreal Containers & Algorithms
 - TArray preferred over std::vector (UPROPERTY support)
 - TMap/TSet used properly
-- Algo namespace utilities (Algo::Sort, Algo::Transform, etc.)
+- Algo namespace utilities (e.g. Algo::Sort, Algo::Transform)
 - MoveTemp() instead of std::move in Unreal code
 - Reserve/Empty/Reset for container performance
 

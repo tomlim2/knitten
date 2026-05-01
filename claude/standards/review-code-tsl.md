@@ -85,13 +85,13 @@ Sections marked **(if applicable)** only apply when the codebase uses that featu
 
 > TSL nodes are immutable by default. Direct JS assignment on node properties is a silent no-op.
 
-- 🔒 👁 **No JS assignment on nodes** — No `pos.y = value` patterns. Node properties require `.toVar()` then `.assign()` or `.addAssign()` etc.
+- 🔒 👁 **No JS assignment on nodes** — No `pos.y = value` patterns. Node properties require `.toVar()` then `.assign()` or `.addAssign()`.
   - *MUT-01 · three-shader-language.md: Assignment*
 
 - ⚠️ 👁 **toVar() before mutation** — Any node that needs `.assign()`, `.addAssign()`, `.subAssign()` is first wrapped with `.toVar()`
   - *MUT-02 · three-shader-language.md: Assignment*
 
-- ⚠️ 🔧 **No JS arithmetic on nodes** — No `a + b`, `a * b`, `Math.sin(x)` on TSL nodes. Must use `.add()`, `.mul()`, TSL `sin()` etc.
+- ⚠️ 🔧 **No JS arithmetic on nodes** — No `a + b`, `a * b`, `Math.sin(x)` on TSL nodes. Must use `.add()`, `.mul()`, TSL `sin()`.
   - *MUT-03 · three-shader-language.md: Method Chaining*
 
 ---
@@ -106,7 +106,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that featu
 - ⚠️ 👁 **TSL Loop, not JS loop** — Per-pixel/vertex iteration uses `Loop()`. JavaScript `for`/`while` runs at graph build time only
   - *FLOW-02 · three-shader-language.md: Control Flow*
 
-- ⚠️ 👁 **TSL comparison methods** — Conditionals use `.equal()`, `.greaterThan()`, `.lessThan()` etc. JavaScript `===`, `>`, `<` return JS booleans, not shader nodes
+- ⚠️ 👁 **TSL comparison methods** — Conditionals use `.equal()`, `.greaterThan()`, `.lessThan()`. JavaScript `===`, `>`, `<` return JS booleans, not shader nodes
   - *FLOW-03 · three-shader-language.md: Comparison Operators*
 
 ---

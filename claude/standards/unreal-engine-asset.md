@@ -37,14 +37,14 @@ All Unreal Engine assets **MUST** follow these 9 rules:
 
 | # | Rule | Severity | Description |
 |---|------|----------|-------------|
-| 1 | `ASCII_ONLY` | **ERROR** | No non-ASCII characters (Korean, CJK, emoji, etc.) |
+| 1 | `ASCII_ONLY` | **ERROR** | No non-ASCII characters (e.g. Korean, CJK, emoji) |
 | 2 | `ALLOWED_CHARS` | **ERROR** | Only `[A-Za-z0-9_]` allowed (no spaces, hyphens, dots) |
 | 3 | `NO_DOUBLE_UNDERSCORE` | WARN | No consecutive `__` |
 | 4 | `NO_TRAILING_UNDERSCORE` | WARN | Name must not end with `_` |
-| 5 | `PREFIX` | **ERROR** | Correct type prefix (`SM_`, `T_`, `M_`, etc.) |
+| 5 | `PREFIX` | **ERROR** | Correct type prefix (e.g. `SM_`, `T_`, `M_`) |
 | 6 | `PASCAL_CASE` | WARN | Each segment starts uppercase |
 | 7 | `ZERO_PADDED_NUMBER` | WARN | Variant numbers use 2-digit padding (`_01`, `_02`) |
-| 8 | `TEXTURE_SUFFIX` | WARN | Textures should have channel suffix (`_D`, `_N`, etc.) |
+| 8 | `TEXTURE_SUFFIX` | WARN | Textures should have channel suffix (e.g. `_D`, `_N`) |
 | 9 | `SOUND_CUE_SUFFIX` | WARN | SoundCue should end with `_Cue` |
 
 ### Rule Details
@@ -295,7 +295,7 @@ Based on Epic's official conventions and Allar's community standard.
 
 | Type | Prefix | Example |
 |------|--------|---------|
-| Blueprint (Actor, Component, etc.) | `BP_` | `BP_Player`, `BP_Door` |
+| Blueprint (e.g. Actor, Component) | `BP_` | `BP_Player`, `BP_Door` |
 | WidgetBlueprint (UMG) | `WBP_` | `WBP_MainMenu`, `WBP_HUD` |
 
 ### Particles / VFX

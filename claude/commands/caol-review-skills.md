@@ -46,7 +46,7 @@ Apply these checks to each command file (`~/.claude/commands/*.md`).
 ### Format (F1–F4)
 
 - **F1. Frontmatter field order:** `description` → `argument-hint` → `allowed-tools`
-- **F2. `allowed-tools` specificity:** `Bash` alone is forbidden. Must use patterns like `Bash(git:*)`, `Bash(python:*)`, etc. Non-Bash tools (Glob, Read, Edit, etc.) are fine as-is.
+- **F2. `allowed-tools` specificity:** `Bash` alone is forbidden. Must use patterns like `Bash(git:*)` or `Bash(python:*)`. Non-Bash tools (Glob, Read, Edit) are fine as-is.
 - **F3. `argument-hint` present:** Required if the command accepts arguments (check for `$ARGUMENTS` or `{{input}}` usage).
 - **F4. Heading structure:** H1 = command title, H2+ = sections.
 

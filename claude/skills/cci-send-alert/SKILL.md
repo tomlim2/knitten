@@ -63,7 +63,7 @@ The script prints a JSON result to stdout. Exit code 0 on success, 1 on failure.
 ### Step 4: Report result
 
 On success: print `ok: ts=<timestamp>`.
-On failure: print the Slack API error verbatim (`not_in_channel`, `invalid_auth`, etc.).
+On failure: print the Slack API error verbatim (`not_in_channel`, `invalid_auth`, and similar).
 
 ## Related
 

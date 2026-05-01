@@ -87,7 +87,7 @@ Experiment freeze: {deadline - 60min}
 - **Time management** — if stuck >1h on one approach, pivot
 - **AI tools encouraged** — officially allowed, use maximally
 - **Ops before experiments** — solve infrastructure first, then focus on the problem
-- **The problem is usually lightweight** — if it's taking too long, it's an ops issue, not a compute issue
+- **The problem is lightweight** — if it's taking too long, it's an ops issue, not a compute issue
 - **Only 1 GPU process at a time** — MPS (Apple Silicon) cannot share. Period.
 - **Absolute paths always** — never rely on session cwd
 - **Smoke test before real run** — catches import/shape/cwd/data bugs cheaply

@@ -58,7 +58,7 @@ Before writing, read the existing `~/.claude/private/caol-config/hardware.json` 
 **Non-hardware keys** (preserve from existing file, do NOT drop):
 Any key not in the hardware-owned list above. Currently known: `kind`, `aliases`. Future-extensible.
 
-- `kind` is a manual classification (`work` / `home` / etc.) and is preserved across refreshes — it's never re-extracted from `system_profiler`. Set it via manual edit on first machine setup, or add a one-off prompt if missing.
+- `kind` is a manual classification (`work` / `home` / others) and is preserved across refreshes — it's never re-extracted from `system_profiler`. Set it via manual edit on first machine setup, or add a one-off prompt if missing.
 
 Merge rule: start from the existing JSON object, overwrite the hardware-owned keys with the freshly extracted values, keep all other keys untouched. Then write back.
 

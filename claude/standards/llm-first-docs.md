@@ -47,21 +47,21 @@ Every sentence must let the LLM decide what to do *now*.
 - Banned: `consider`, `usually`, `typically`, `may`, `should probably`, `might want to`.
 - Required: `if X then Y, else Z` or imperative `do X`.
 
-Bad: "Consider running tests before committing."
-Good: "Before `git commit`, run `cargo test`. If it fails, do not commit."
+Bad: `"Consider running tests before committing."`
+Good: `"Before git commit, run cargo test. If it fails, do not commit."`
 
 ### 2. Explicit enumeration
 
 Never end a list with `…`, `etc.`, `and more`. The LLM cannot expand it.
 
-Bad: "Categories: cci, ue, dev, …"
+Bad: `"Categories: cci, ue, dev, …"`
 Good: a table that lists every valid value.
 
 ### 3. Decision-tree structure
 
 Branching logic uses explicit `if` / `else`, not prose.
 
-Bad: "When the user asks about a PR, you usually want to check its status, though if they're investigating you can skip that."
+Bad: `"When the user asks about a PR, you usually want to check its status, though if they're investigating you can skip that."`
 Good:
 - If user requests action on a PR → run `gh pr checks` first.
 - If user is investigating only → reading is allowed without checks.
@@ -91,7 +91,7 @@ If the same rule lives in two files, the LLM may follow whichever it sees and mi
 Banned: motivation, marketing, decoration, philosophical asides.
 
 - Banned: "Every command is a guardrail. Every skill is accumulated experience."
-- Banned: "Carefully consider the implications…"
+- Banned: `"Carefully consider the implications…"`
 - Banned: emoji, decorative dividers, ascii art.
 
 These add tokens and zero decision power.

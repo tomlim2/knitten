@@ -8,7 +8,7 @@ Audit spec documents across 4 perspectives: engineering, design, brand voice, an
 
 ## Purpose
 
-Most freelancers and small teams review specs from a single engineering perspective. This skill applies a 4-perspective audit (engineering, design, brand voice, target audience) plus document quality — the level of review typically only performed by 5+ person agencies.
+Most freelancers and small teams review specs from a single engineering perspective. This skill applies a 4-perspective audit (engineering, design, brand voice, target audience) plus document quality — the level of review only performed by 5+ person agencies.
 
 ---
 

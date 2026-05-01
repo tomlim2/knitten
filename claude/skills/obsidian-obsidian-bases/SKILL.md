@@ -120,7 +120,7 @@ filters:
 ### Three Types of Properties
 
 1. **Note properties** - From frontmatter: `note.author` or just `author`
-2. **File properties** - File metadata: `file.name`, `file.mtime`, etc.
+2. **File properties** - File metadata: `file.name`, `file.mtime`, and other file properties.
 3. **Formula properties** - Computed values: `formula.my_formula`
 
 ### File Properties Reference
@@ -456,7 +456,7 @@ formulas:
 
 ### Common Formula Errors
 
-**Duration math without field access**: Subtracting dates returns a Duration, not a number. Always access `.days`, `.hours`, etc.
+**Duration math without field access**: Subtracting dates returns a Duration, not a number. Always access `.days`, `.hours`, `.minutes`.
 
 ```yaml
 # WRONG - Duration is not a number

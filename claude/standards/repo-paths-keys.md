@@ -105,7 +105,7 @@ Logical names are a small, intentional set — do not invent per-skill names. Cu
 |--------------|---------|------------------|
 | `obsidian` | Active Obsidian vault for markdown docs (learnings, devlogs, consultations) | `learn-log-day`, `learn-log-vocab`, `learn-add-log`, `tutoring-log-consultation`, `consulting-log-session`, `dev-setup-project` |
 
-Physical keys (the right-hand side of an alias, and also independently registered in `repo-paths.json`) are open — add as many as you like per machine (`obsidian-staging`, `obsidian-home`, `obsidian-archive`, etc.). The alias picks which one is "the" vault for this machine.
+Physical keys (the right-hand side of an alias, and also independently registered in `repo-paths.json`) are open — add as many as you like per machine (`obsidian-staging`, `obsidian-home`, `obsidian-archive`). The alias picks which one is "the" vault for this machine.
 
 ### When you add a new logical alias
 

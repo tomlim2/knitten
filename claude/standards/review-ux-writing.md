@@ -80,7 +80,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that patte
 - 🔒 👁 **No generic "Yes/No" or "OK"** — Confirmation dialogs use specific action labels. "Delete project" / "Keep project" instead of "Yes" / "No" or "OK" / "Cancel"
   - *BTN-02*
 
-- ⚠️ 👁 **1–3 words preferred** — Button labels are concise. If more than 4 words are needed, consider restructuring the UI or using supporting text outside the button
+- ⚠️ 👁 **1–3 words preferred** — Button labels are concise. If more than 4 words are needed, restructure the UI or use supporting text outside the button
   - *BTN-03*
 
 - ⚠️ 👁 **No trailing punctuation** — Button labels have no period, exclamation mark, or ellipsis. Exception: ellipsis is acceptable when the button opens a dialog that requires further input (e.g., "Save as...")

@@ -8,7 +8,7 @@ argument-hint: "[topic] or [path-to-existing-diagram-md]"
 
 # dev-draw-flow
 
-ASCII pipeline diagram generator. Produces a **single connected top-to-bottom flow** showing modules (boxes with IN / OUT / fn / notes) and the typed data flowing between them. Designed for software architecture docs (Obsidian topic files, ADRs, README crate diagrams, etc.).
+ASCII pipeline diagram generator. Produces a **single connected top-to-bottom flow** showing modules (boxes with IN / OUT / fn / notes) and the typed data flowing between them. Designed for software architecture docs (Obsidian topic files, ADRs, README crate diagrams, and similar).
 
 ## Output style — what makes this distinct
 

@@ -280,7 +280,7 @@ From sampling the 15 most-recent issues in STL team:
 - **Private repo 금지**: 어떤 이슈에도 bevy-vrm, anju, mmd-anju 등 개인 private 레포 이름/
   URL/경로 언급 없음. Shotloom 이슈는 shotloom 레포 + CINEV org만 참조.
 - **Labels**: `design-decision` is the main label in use. Implementation
-  issues typically have no label.
+  issues have no label.
 - **Parent umbrella**: issues decomposing a larger umbrella (STL-30 for
   Alpha decisions, STL-17 for persistence pipeline) set `parentId`.
 - **Milestones**: project milestones attached when relevant

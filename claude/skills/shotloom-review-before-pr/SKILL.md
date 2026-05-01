@@ -131,7 +131,7 @@ See reference.md for the full sweep catalog. The catalog is keyed against `docs/
 
 Mindset: **doc must describe what IS, not what MIGHT BE.** Comments that promise future work without a concrete issue ID are wishes, not specification. Comments that claim "scaffold" after 200 lines of logic land are lies. ADRs that carry execution-plan prose are progress trackers, not durable rationale. Default verdict on any H finding: rewrite to current-state-only, or cite a specific `STL-NN` that exists.
 
-Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--doc--comment-discipline-post-in-repo-review-pass). H findings are typically nits, but accumulated nits become onboarding tax for the next reader — do not let them slide just because the in-repo spec doesn't list them.
+Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--doc--comment-discipline-post-in-repo-review-pass). H findings are nits, but accumulated nits become onboarding tax for the next reader — do not let them slide just because the in-repo spec doesn't list them.
 
 ### Step 3.6: Pattern I — Reverse-side audit (PR-induced staleness)
 
@@ -189,7 +189,7 @@ Full sweep commands live in [reference.md § Pattern T](reference.md#pattern-t--
    All rules in docs/guidelines/review-rust.md + Pattern H/I/T clean. Ready to run /shotloom-make-pr.
    ```
 2. **Findings, fixable locally** → list them, ask whether to fix now or later. Do **NOT** auto-fix.
-3. **Findings requiring design judgment** → list, explain tradeoff, ask user. Usually B1/B2 or C1.
+3. **Findings requiring design judgment** → list, explain tradeoff, ask user. Default B1/B2 or C1.
 
 ### Step 6: Loop
 

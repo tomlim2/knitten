@@ -37,7 +37,7 @@ Render results as a markdown table. **Token-saving rule**: only `error` / `skipp
 | codex-base     | skipped  | path not found                              |
 ```
 
-After the table, only if there are `error` rows, add a short **Next steps** block suggesting fixes (set upstream, delete stale branch, resolve conflict, stash local changes, etc.). Do not narrate successes.
+After the table, only if there are `error` rows, add a short **Next steps** block suggesting fixes (set upstream, delete stale branch, resolve conflict, stash local changes, retry). Do not narrate successes.
 
 ## Why a script
 

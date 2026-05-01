@@ -36,7 +36,7 @@
 
 #### Type Hints
 - Type hints for function parameters and return values
-- Use typing module (List, Dict, Optional, Union, etc.)
+- Use typing module (e.g. List, Dict, Optional, Union)
 - Be aware: Unreal's type stubs return `→None` for almost everything (limitation)
 - Document expected types in docstrings when type hints are insufficient
 

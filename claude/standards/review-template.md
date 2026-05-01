@@ -16,7 +16,7 @@ Output format template for all code reviews.
 
 This template defines the **output format** for code reviews. When conducting a code review:
 
-1. First, review code according to applicable standards (javascript.md, unreal-engine-cpp.md, etc.)
+1. First, review code according to applicable standards (e.g. javascript.md, unreal-engine-cpp.md)
 2. Then, structure your review output according to this template
 3. Use facts-based feedback style throughout
 
@@ -413,6 +413,6 @@ db.execute(query, [email, hashedPassword]);
 ## Notes
 
 - This template is for **review output format**, not review checklist
-- For detailed review checklists, see domain-specific standards (review-code-unreal-cpp.md, etc.)
+- For detailed review checklists, see domain-specific standards (e.g. review-code-unreal-cpp.md)
 - All reviews should reference applicable standards from `~/.claude/standards/`
 - Severity levels: CRITICAL (security/bugs), ERROR (standard violations), WARNING (suggestions)
