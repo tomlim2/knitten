@@ -75,6 +75,14 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **garden review** — Periodic structural audit against `agent-first-policy.md`. Codified in `garden-review.md`. Triggers: pre-tag, after 30+ days clean, or on explicit request.
 
+### Naming
+
+**verb-form trio** — Content-creation rules ending in `-write`: `code-write`, `doc-write`, `test-write`. Mirrors the action being constrained.
+
+**family prefix** — Sibling rules share a prefix that names their domain or lifecycle: `pr-*`, `author-*`. Cold-start LLM groups them at filename glance.
+
+**scope match** — Filename narrowness matches body scope. Narrow the name when the body shrinks. Anti-pattern: a single rule named after its broadest possible scope while the body covers a fraction.
+
 ### Layers (from `agent-first-policy.md`)
 
 **layer 1** — Charter (`CLAUDE.md` → "Repository charter").
@@ -190,7 +198,28 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 ---
 
-### 8. Single source of truth, references by path
+### 8. Naming patterns — verb-form, family prefix, scope match
+
+**Statement:** Filenames carry meaning that compounds across the repo. Five micro-patterns:
+
+1. **Verb-form trio** — content-creation rules end in `-write` (`code-write`, `doc-write`, `test-write`).
+2. **Family prefix** — sibling rules share a prefix (`pr-mutate` / `pr-comment` / `pr-create`; `author-naming` / `author-frontmatter` / `author-permissions`).
+3. **Scope match** — if the body is narrower than the filename promises, narrow the name (`git.md` → `git-defaults.md` once PR rules moved out; `writing.md` → `writing-external.md` once internal-prose was excluded).
+4. **Lifecycle phase = filename family** — when a rule's bullets cluster around lifecycle moments, split per phase and use a shared family prefix.
+5. **No metaphor when a literal works** — `MAP.md` → `LOOKUP.md`. The cold-start LLM should parse role from filename without prior context.
+
+**Why discovered:** 2026-05-01 session. After the lifecycle split (P2 → `pr-*` family), the surviving `git.md` no longer matched its body — the auto-loaded content was just default-counters. Same pattern showed up in `writing.md`, `coding.md`, `testing.md`. Renaming felt cosmetic until we noticed each rename actually narrowed the trigger semantics — making "when does this rule apply?" answerable from the filename alone.
+
+**Example:**
+- ✅ `pr-create.md` (family + lifecycle phase + clear trigger from name)
+- ✅ `git-defaults.md` (scope match — name says "defaults", body holds default-counters only)
+- ❌ `git.md` covering commit identity + PR mutate + PR comment + PR create (one name, four triggers)
+
+**Enforced by:** `validate-llm-first.mjs` length-caps check (catches over-broad files indirectly — they grow past cap and split is forced). Documented in `naming.md` standard.
+
+---
+
+### 9. Single source of truth, references by path
 
 **Statement:** A fact lives in exactly one file. Other files reference it by path, never by duplication. Indexes are generated or validated against the source.
 
