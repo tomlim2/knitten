@@ -89,7 +89,7 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Standards (41)
+## Standards (42)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
@@ -104,20 +104,21 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 | CINEV | `cinev-git-workflow.md`, `cinev-character-asset-naming.md`, `cinev-vrm-shading.md`, `cci-slack.md` |
 | Obsidian | `vault-audience.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md` |
 | Research / specs | `research-methodology.md`, `tech-spec-template.md` |
-| System | `repo-paths-keys.md` |
+| System | `repo-paths-keys.md`, `codex-keys.md` |
 | Index | `index.md` |
 
 ---
 
-## Rules (15)
+## Rules (18)
 
 Always-applied constraints in `claude/rules/`. Loaded every session via CLAUDE.md `@import`.
 
 | Group | Files |
 |-------|-------|
-| Core | `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md`, `reread-repo-conventions.md`, `testing.md` |
-| Authoring | `naming.md`, `command-frontmatter.md`, `tool-permissions.md` |
-| Domain | `obsidian.md`, `cinev-git.md`, `multi-agent.md`, `shotloom.md` |
+| Core (auto) | `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md` |
+| Workflow (triggered) | `reread-repo-conventions.md`, `testing.md`, `slack.md`, `writing.md`, `doc-write.md` |
+| Authoring (triggered) | `naming.md`, `command-frontmatter.md`, `tool-permissions.md` |
+| Domain (triggered) | `obsidian.md`, `cinev-git.md`, `multi-agent.md`, `shotloom.md` |
 | Index | `index.md` |
 
 ---

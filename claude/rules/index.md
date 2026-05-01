@@ -17,8 +17,8 @@ Imported by `CLAUDE.md` every session.
 | Rule | Load | Scope |
 |------|------|-------|
 | [`git.md`](git.md) | auto | Git commit / push / author |
-| [`session-start.md`](session-start.md) | auto | Session-start checks, Slack, Obsidian, delegation |
-| [`coding.md`](coding.md) | auto | Writing code principles |
+| [`session-start.md`](session-start.md) | auto | Config reads + safety guards at session start |
+| [`coding.md`](coding.md) | auto | Code-writing principles + always-on behavior (output, ambiguity, delegation) |
 | [`verify-before-report.md`](verify-before-report.md) | auto | Before presenting results |
 | [`security.md`](security.md) | auto | Secrets, documentation language |
 
@@ -37,3 +37,6 @@ Loaded only when the trigger condition fires. Each row's trigger lives in the fi
 | [`cinev-git.md`](cinev-git.md) | triggered | git op in a CINEV repo | CINEV project git ops (UE lock check) |
 | [`multi-agent.md`](multi-agent.md) | triggered | assigned as 지통실 #1 (1호기) | Multi-agent dispatch protocol |
 | [`shotloom.md`](shotloom.md) | triggered | working in the shotloom repo | Shotloom Claude-side meta — gh account, commit identity, build flag, approval-gate exceptions, `/shotloom-auto-pr` exemption, `/claude-review` trigger |
+| [`slack.md`](slack.md) | triggered | sending any Slack message | Confirm-first per message |
+| [`writing.md`](writing.md) | triggered | writing external-facing prose | `/writing-draft-human` → `/writing-fix-ai` pipeline |
+| [`doc-write.md`](doc-write.md) | triggered | writing any doc to vault, staging, private/, or ops/ | Resolver-first; purpose-first; never hand-build paths |

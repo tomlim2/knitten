@@ -91,3 +91,4 @@ Standards contain the rationale, examples, and templates that rules link back to
 | [`obsidian-format.md`](obsidian/obsidian-format.md) | Before creating or migrating Obsidian documents (see also [`rules/obsidian.md`](../rules/obsidian.md)) |
 | [`obsidian-tag-taxonomy.md`](obsidian/obsidian-tag-taxonomy.md) | Before tagging any Obsidian document — 3-axis system (`type/`, `project/`, `area/`, `lang/`, `tool/`) |
 | [`repo-paths-keys.md`](system/repo-paths-keys.md) | Before registering repos or setting up a new machine |
+| [`codex-keys.md`](system/codex-keys.md) | Before authoring a `cci-*` Codex skill — disambiguates `codex-base` vs `codex-home` |

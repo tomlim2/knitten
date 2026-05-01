@@ -337,6 +337,70 @@ async function checkLookupPresence() {
   return { name: "lookup-presence", violations };
 }
 
+function bodyLineCount(text) {
+  // Total lines minus frontmatter lines (if present).
+  const total = text.split("\n").length;
+  if (!text.startsWith("---\n")) return total;
+  const rest = text.slice(4);
+  const end = rest.indexOf("\n---\n");
+  if (end === -1) return total;
+  const fmText = text.slice(0, 4 + end + 5);
+  const fmLines = fmText.split("\n").length - 1;
+  return total - fmLines;
+}
+
+// Tight cap for auto-loaded rules (always in context — bloat is permanent).
+// Looser cap for triggered rules (load only when their trigger fires).
+const RULE_AUTO_BODY_CAP = 40;
+const RULE_TRIGGERED_BODY_CAP = 120;
+const STANDARD_BODY_CAP = 500;
+
+// Grandfathered: reference catalogs that pre-date the cap. This list MUST shrink
+// over time, never grow. Adding to it requires an explicit ADR / decision record.
+const STANDARD_LENGTH_GRANDFATHERED = new Set([
+  "claude/standards/language/javascript-reference.md", // 611 lines — JS reference catalog
+  "claude/standards/language/three-shader-language.md", // 586 lines — TSL pattern catalog
+  "claude/standards/unreal/unreal-engine-asset.md", // 767 lines — UE asset naming catalog
+]);
+
+async function checkLengthCaps() {
+  const violations = [];
+  const ruleDir = path.join(REPO_ROOT, "claude", "rules");
+  const ruleFiles = await walk(ruleDir, (f) => f.endsWith(".md"));
+  for (const f of ruleFiles) {
+    if (path.basename(f) === "index.md") continue;
+    const text = await readFile(f, "utf8");
+    const lines = bodyLineCount(text);
+    const fm = parseFrontmatter(text) || {};
+    const isAuto = fm.load === "auto";
+    const cap = isAuto ? RULE_AUTO_BODY_CAP : RULE_TRIGGERED_BODY_CAP;
+    if (lines > cap) {
+      violations.push({
+        file: rel(f),
+        line: 1,
+        message: `${isAuto ? "auto" : "triggered"} rule body ${lines} lines exceeds cap ${cap} — split into a more specific triggered rule`,
+      });
+    }
+  }
+  const stdDir = path.join(REPO_ROOT, "claude", "standards");
+  const stdFiles = await walk(stdDir, (f) => f.endsWith(".md"));
+  for (const f of stdFiles) {
+    if (path.basename(f) === "index.md") continue;
+    const relPath = rel(f);
+    if (STANDARD_LENGTH_GRANDFATHERED.has(relPath)) continue;
+    const text = await readFile(f, "utf8");
+    const lines = bodyLineCount(text);
+    if (lines > STANDARD_BODY_CAP) {
+      violations.push({
+        file: relPath,
+        line: 1,
+        message: `standard body ${lines} lines exceeds cap ${STANDARD_BODY_CAP} — split into multiple standards`,
+      });
+    }
+  }
+  return { name: "length-caps", violations };
+}
+
 const STATUS_VALUES = new Set(["accepted", "proposed", "draft", "deprecated", "superseded"]);
 
 async function checkStandardsStatus() {
@@ -381,6 +445,7 @@ const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
   { name: "standards-status", fn: checkStandardsStatus },
+  { name: "length-caps", fn: checkLengthCaps },
   { name: "import-targets", fn: checkImportTargets },
   { name: "inventory-counts", fn: checkInventoryCounts },
   { name: "lookup-presence", fn: checkLookupPresence },

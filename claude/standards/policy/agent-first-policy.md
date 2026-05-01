@@ -80,6 +80,8 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 | "Multiple files would each have the same paragraph" | 4 (standard) + delete duplicates; rules cite by path |
 | "I keep re-doing this procedure manually" | 6 (skill or command) |
 | "I keep failing the self-audit on the same defect" | 7 (validator) — the audit becomes a script |
+| "A bullet in an existing rule has a more specific trigger than the rule it lives in" | Split — extract the bullet into its own triggered rule; cite by path from the original rule if needed |
+| "An auto-rule body is approaching the auto-rule cap (40 body lines)" | Split — push triggered content out of auto into new triggered rules |
 | "The whole stance just shifted" | 1 (charter) — then re-derive layers 2–7 |
 
 ---
