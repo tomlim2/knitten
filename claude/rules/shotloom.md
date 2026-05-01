@@ -28,7 +28,8 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path
 - **days/ naming: `YYYY-MM-DD[-slug].md` only.** No prefixes (`devlog-`, `shotloom-`, `shotloom-daily-`, `shotloom-devlog-`). The folder name already provides context.
 - **Learnings go in `shotloom/learnings/`, never in `claude/learnings/`.** `claude/learnings/` is for cross-project learnings only.
 - **No files at `claude/` root.** Every shotloom note lives inside `claude/projects/shotloom/` or its subfolders. Never drop files at `claude/shotloom-*.md`.
-- **Subfolders:** `days/` devlogs · `learnings/` lessons · `topics/` concept analysis · `asks/` handoffs · `plans/` per-ticket plans · `specs/` specs & ADRs · `ops/` operational records.
+- **No loose files at the project root either.** `claude/projects/shotloom/*.md` is forbidden except for index/hub files explicitly serving as a vault entry point (e.g. a single `README.md`). All other notes belong in a named subfolder.
+- **Subfolders:** `days/` devlogs · `learnings/` vocabulary + project lessons · `topics/` analysis & reference · `asks/` handoffs · `plans/` per-ticket plans · `specs/` specs & ADRs · `ops/` mission records & operational logs.
 
 ## File naming convention
 

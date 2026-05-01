@@ -73,11 +73,11 @@ Quick reference:
 
 | Document type | Required tags |
 |---------------|---------------|
-| devlog hub / day | `type/devlog`, `project/{name}` |
-| learnings-index | `type/learning`, `project/{name}` |
-| topic file | `type/topic`, `project/{name}`, `area/...` |
-| AI prompt reference | `type/reference`, `tool/{model}` (all models used) |
-| Code / library reference | `type/reference`, `lang/{stack}` |
+| devlog day (`days/YYYY-MM-DD.md`) | `type/devlog`, `project/{name}` |
+| learning (`learnings/{slug}.md`) | `type/learning`, `project/{name}` |
+| analysis or decision | `type/analysis` or `type/decision`, `project/{name}`, `area/...` |
+| AI prompt / workflow | `type/reference`, `llm/{model}` (all models used) |
+| Code / library reference | `type/reference`, `lang/{lang}`, `lib/{lib}` |
 | CINEV work (non-shotloom) | `type/devlog`, `project/cinev`, `area/...` |
 
 Full axis definitions, per-file examples, and flat→nested migration table → taxonomy standard above.

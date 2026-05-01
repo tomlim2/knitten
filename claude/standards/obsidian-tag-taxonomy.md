@@ -159,7 +159,8 @@ Use only when the note is an active work item (experiment, decision, investigati
 
 | Tag | Meaning |
 |-----|---------|
-| `status/active` | In-progress |
+| `status/draft` | Work-in-progress document not yet ready for use |
+| `status/active` | In-progress work item |
 | `status/blocked` | Waiting on something external |
 | `status/done` | Resolved / concluded |
 
@@ -167,15 +168,7 @@ Use only when the note is an active work item (experiment, decision, investigati
 
 ## Per-file-type tag sets
 
-### devlog hub (`devlog.md`)
-
-```yaml
-tags:
-  - type/devlog
-  - project/shotloom
-```
-
-### devlog day (`days/day-NN.md`)
+### devlog day (`days/YYYY-MM-DD.md`)
 
 ```yaml
 tags:
@@ -184,21 +177,22 @@ tags:
   - area/retarget        # only if day is scoped to one area
 ```
 
-### learnings-index (`learnings-index.md`)
+### learning (`learnings/{slug}.md`)
 
 ```yaml
 tags:
   - type/learning
   - project/shotloom
+  - lang/rust            # if code-heavy
 ```
 
-### topic file (`{name}.md`)
+### analysis / decision (`topics/{slug}.md` or `specs/{slug}.md`)
 
 ```yaml
 tags:
-  - type/topic
+  - type/analysis        # or type/decision for ADR-style
   - project/shotloom
-  - area/shader          # the concept's domain
+  - area/shader          # the note's domain
   - lang/rust            # if code-heavy
 ```
 
@@ -208,8 +202,8 @@ tags:
 tags:
   - type/reference
   - area/ui              # subject domain
-  - tool/gpt-image-2
-  - tool/seedance-2-0    # all tools used, not just one
+  - llm/gpt-image-2
+  - llm/seedance-2-0     # all models used, not just one
 ```
 
 ### reference — code snippet / library
@@ -219,7 +213,7 @@ tags:
   - type/reference
   - area/animation
   - lang/rust
-  - lang/bevy-0-15
+  - lib/bevy
 ```
 
 ---
@@ -233,6 +227,7 @@ Old flat tags map to the new axes as follows:
 | `devlog` | `type/devlog` |
 | `learnings` | `type/learning` |
 | `reference` | `type/reference` |
+| `topic` / `type/topic` | **eliminated** — reclassify as `type/analysis`, `type/spec`, `type/brief`, `type/note`, or `type/decision` based on content |
 | `image-prompt` | `type/reference` + `area/image-gen` (or domain) |
 | `cinev` | `project/cinev` |
 | `bevy-vrm` | `project/bevy-vrm` |

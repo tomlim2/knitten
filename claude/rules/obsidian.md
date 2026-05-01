@@ -5,7 +5,7 @@
 - **Wikilinks for internal references** — `[[Note Name]]`
 - **Markdown links for external** — `[text](URL)` — **NEVER in `type/devlog` documents**; use `[[wikilink]]` to a reference note instead
 - **Lists use `-`** — Ordered lists use `1.`
-- **Tags in frontmatter** — use 3-axis structured tags (`type/`, `project/`, `area/`/`lang/`/`tool/`); inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`)
+- **Tags in frontmatter** — use structured tags (`type/`, `project/`, + optional `area/`, `lang/`, `lib/`, `fmt/`, `sys/`, `llm/`, `tech/`, `hobby/`, `status/`); inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`)
 - **Location:** `{obsidian-vault}/claude/` for all Claude-authored docs
 - **Auto-commit + auto-push for Obsidian-only changes (exception to `rules/git.md`).** When the diff contains ONLY Obsidian-related files — anything inside `machine-paths.json → obsidian` / `obsidian-vault-claude`, anything inside `obsidian-staging` (currently `caol-ila/claude/temp-learnings/`), or `.md` files with Obsidian frontmatter (`title`, `tags`, `date`, `source`) — Claude may draft the commit message, briefly show it for transparency, then `git commit && git push` without per-step approval. Applies to ANY repo (not vault-only) and ANY day (not weekend-only); the only gate is "diff is purely Obsidian docs".
   - **If the diff mixes Obsidian docs with code/config**, fall back to generic `rules/git.md` — split the commit (Obsidian docs in one auto-flow commit, the rest under normal approval) or get explicit approval for the bundled commit.
