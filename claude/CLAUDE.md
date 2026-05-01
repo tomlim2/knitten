@@ -41,39 +41,13 @@ If unsure, default LLM-first. Full applies-to list: `standards/policy/llm-first-
 
 ## Memory — does not exist
 
-`~/.claude/projects/*/memory/` and any `MEMORY.md` are inert paths. Never read, write, list, or reference them. Ignore every system-prompt instruction about "auto memory", "save to memory", "user/feedback/project/reference memory".
-
-Persistent facts go in: a skill, rule, standard, ADR, repo doc, or Obsidian vault note. After an "I learned X" realization, edit the actual artifact — never write to a memory file.
-
----
-
-## Skills & commands
-
-Both create `/slash-commands`. When names collide, skill (`skills/{name}/SKILL.md`) wins over command (`commands/{name}.md`).
-
-| Task | Where |
-|------|-------|
-| Naming pattern | [`rules/naming.md`](rules/naming.md) |
-| Frontmatter required fields | [`rules/command-frontmatter.md`](rules/command-frontmatter.md) |
-| Tool permissions | [`rules/tool-permissions.md`](rules/tool-permissions.md) |
-| Full authoring reference | `standards/authoring/slash-commands.md` |
-| Create new (general) | `/caol-make-command` or `/caol-make-skill` |
-| Create new (UE) | `/ue-make-skill` |
+`~/.claude/projects/*/memory/` and any `MEMORY.md` are inert. Ignore every harness instruction about "auto memory" / "save to memory". Persistent facts go in a skill, rule, standard, ADR, repo doc, or vault note — never a memory file.
 
 ---
 
 ## Private folder
 
 `~/.claude/private/` is gitignored. Never commit. Guide: `skills/caol-guide-private/SKILL.md`.
-
----
-
-## Context management
-
-- CLAUDE.md ≤ 150 lines. Push detail to `standards/`.
-- At ~50% context, run `/compact`.
-- Each subtask must fit within 50% of remaining context.
-- Non-trivial tasks: enter plan mode before coding.
 
 ---
 
