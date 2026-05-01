@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # CSS Standards — Reference
 
 Detailed examples and patterns. See [css.md](css.md) for core rules.

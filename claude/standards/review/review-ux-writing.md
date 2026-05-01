@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # UX Writing Review Checklist
 
 Static code audit checklist for detecting UX writing issues by reading HTML, JS, and text content in source files.

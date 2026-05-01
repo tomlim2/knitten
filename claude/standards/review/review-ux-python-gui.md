@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # Python GUI UX Review Checklist
 
 Static code audit checklist for detecting UX/UI issues in Python desktop GUI applications (tkinter, PyQt, wxPython).

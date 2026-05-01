@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # UI/UX Design Principles
 
 Apple Human Interface Guidelines baseline for all UI design and review work.

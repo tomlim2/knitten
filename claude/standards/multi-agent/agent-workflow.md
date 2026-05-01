@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Agent Workflow Standard
 
 **Version:** 1.1.0

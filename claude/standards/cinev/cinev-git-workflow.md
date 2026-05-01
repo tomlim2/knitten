@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # CINEV Git Workflow Standard
 
 Git workflow rules for all CINEV project operations.

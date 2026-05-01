@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Unreal Engine Coding Standards
 
 **Version:** 0.1.0

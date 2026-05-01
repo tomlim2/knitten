@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # CSS Code Review Checklist
 
 **Version:** 0.1.0

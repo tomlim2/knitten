@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # LLM-First Document Standard
 
 Operational standard implementing the `caol-ila` LLM-first charter (see `CLAUDE.md` → "Repository charter"). Default for every artifact Claude writes. Token-efficient, structured, no rhetoric.

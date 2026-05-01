@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # JavaScript Standards — Reference
 
 Detailed examples and patterns. See [javascript.md](javascript.md) for core rules.

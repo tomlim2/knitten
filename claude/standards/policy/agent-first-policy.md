@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # Agent-First Policy
 
 The meta-policy that governs every other document, rule, skill, and command in `caol-ila`. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.

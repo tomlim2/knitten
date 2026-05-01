@@ -337,11 +337,50 @@ async function checkLookupPresence() {
   return { name: "lookup-presence", violations };
 }
 
+const STATUS_VALUES = new Set(["accepted", "proposed", "draft", "deprecated", "superseded"]);
+
+async function checkStandardsStatus() {
+  const violations = [];
+  const dir = path.join(REPO_ROOT, "claude", "standards");
+  const files = await walk(dir, (f) => f.endsWith(".md"));
+  for (const f of files) {
+    if (path.basename(f) === "index.md") continue;
+    const text = await readFile(f, "utf8");
+    const fm = parseFrontmatter(text);
+    if (!fm) {
+      violations.push({ file: rel(f), line: 1, message: "missing YAML frontmatter" });
+      continue;
+    }
+    const status = fm.status;
+    if (!status) {
+      violations.push({ file: rel(f), line: 1, message: "frontmatter missing 'status' field" });
+      continue;
+    }
+    if (!STATUS_VALUES.has(status)) {
+      violations.push({
+        file: rel(f),
+        line: 1,
+        message: `frontmatter 'status' must be one of ${[...STATUS_VALUES].join("|")} (got ${JSON.stringify(status)})`,
+      });
+      continue;
+    }
+    if (status === "superseded" && (!fm["superseded-by"] || !fm["superseded-by"].trim())) {
+      violations.push({
+        file: rel(f),
+        line: 1,
+        message: "status=superseded requires non-empty 'superseded-by' field",
+      });
+    }
+  }
+  return { name: "standards-status", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
+  { name: "standards-status", fn: checkStandardsStatus },
   { name: "import-targets", fn: checkImportTargets },
   { name: "inventory-counts", fn: checkInventoryCounts },
   { name: "lookup-presence", fn: checkLookupPresence },

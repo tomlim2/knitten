@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Design System - Typo-base
 
 **Version**: 1.9.0

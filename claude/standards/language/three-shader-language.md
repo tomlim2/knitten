@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Three.js Shading Language (TSL) Coding Standards
 
 **Based on:** Three.js TSL Wiki + sbcode.net TSL Lessons + Maxime Heckel's Field Guide + Three.js Source

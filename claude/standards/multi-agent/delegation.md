@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Delegation Template
 
 **Version:** 0.1.0

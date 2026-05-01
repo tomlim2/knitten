@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Spec Document Review Checklist
 
 Static review checklist for auditing technical specifications, PRDs, and website specs across four perspectives.

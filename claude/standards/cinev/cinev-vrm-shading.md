@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # CINEV VRM Shading
 
 VRM 세이딩 종류 및 캐릭터 분류.

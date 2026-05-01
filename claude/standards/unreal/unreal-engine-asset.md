@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Unreal Engine Asset Naming Conventions
 
 **Version:** 0.1.0

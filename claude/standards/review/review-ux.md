@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # UX/UI Code Review Checklist
 
 Static code audit checklist for detecting UX/UI issues by reading HTML, CSS, and JS source files.

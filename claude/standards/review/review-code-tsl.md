@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # Three.js TSL Code Review Checklist
 
 ---

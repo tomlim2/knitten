@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Code Review Output Template
 
 **Version:** 1.0.0

@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # cci-slack
 
 CINEV (cci) Slack integration standard. All cci skills that send Slack messages must follow this document.

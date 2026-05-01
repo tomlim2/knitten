@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Slash Commands Standard
 
 Common patterns, rules, and templates for all Claude Code slash commands.

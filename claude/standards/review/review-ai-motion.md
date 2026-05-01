@@ -1,4 +1,5 @@
 ---
+status: accepted
 title: "AI-Generated Motion Review Standard"
 tags:
   - standard

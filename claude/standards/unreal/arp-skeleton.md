@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # Auto Rig Pro (ARP) Skeleton Reference
 
 Reference for retargeting ARP-rigged FBX animations to VRM humanoid skeleton.

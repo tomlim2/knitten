@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # CINEV Character Asset Naming Convention
 
 Character asset naming rules for textures, materials, meshes, and blueprints.

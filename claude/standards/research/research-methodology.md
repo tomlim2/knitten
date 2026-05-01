@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Research Methodology
 
 **Version:** 0.2.0

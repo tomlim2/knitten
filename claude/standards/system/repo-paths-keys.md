@@ -1,3 +1,6 @@
+---
+status: proposed
+---
 # Repo Paths Keys
 
 Canonical key registry for `~/.claude/private/caol-config/repo-paths.json`. Each machine registers its own paths, but keys MUST match this list.

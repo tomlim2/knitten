@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Technical Specification Template
 
 **Version:** 0.1.0

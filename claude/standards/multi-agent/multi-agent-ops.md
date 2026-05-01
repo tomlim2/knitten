@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Multi-Agent Ops Standard
 
 Manual Orchestrator-Worker pattern for parallel Claude Code instances.

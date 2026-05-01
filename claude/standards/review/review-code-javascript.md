@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # JavaScript & Node.js Code Review Checklist
 
 **Version:** 0.1.0

@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Obsidian Document Format Standard
 
 Format rules applied to all documents in the Obsidian vault.

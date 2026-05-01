@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # JavaScript Coding Standards
 
 **Based on:** Airbnb JavaScript Style Guide + Node.js Best Practices

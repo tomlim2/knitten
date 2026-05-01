@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Obsidian Tag Taxonomy
 
 3-axis structured tagging system for all Obsidian vault documents. Replaces ad-hoc flat tags with a predictable, filterable hierarchy.

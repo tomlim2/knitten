@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # CSS Coding Standards
 
 **Based on:** Google/Airbnb CSS Guides + WCAG 2.2 + web.dev Performance

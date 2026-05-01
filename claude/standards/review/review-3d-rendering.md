@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # 3D Rendering Performance Review Checklist
 
 Static code audit checklist for detecting 3D rendering performance issues in Chromium-based browsers (WebGPU / WebGL / Three.js).

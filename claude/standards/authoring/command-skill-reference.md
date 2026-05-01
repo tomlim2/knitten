@@ -1,3 +1,6 @@
+---
+status: accepted
+---
 # Command & Skill Reference
 
 Detailed examples and patterns for writing Claude Code commands and skills.
