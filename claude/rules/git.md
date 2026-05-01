@@ -1,12 +1,15 @@
 - **Commit only** — Do NOT auto-push unless explicitly requested
 - **Author:** `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
 - **No Co-Authored-By** — Do NOT add `Co-Authored-By: Claude` lines
-- **NEVER open a pull request without explicit per-PR user approval.** Draft or ready-for-review status does not matter; creation itself requires approval.
-- **NEVER close a pull request without explicit per-PR user approval.** "Close and reopen later" workflows still require per-close approval.
-- **NEVER reopen a pull request without explicit per-PR user approval.** Prior intent to reopen is not the same as current approval to reopen.
-- **NEVER force-push to a branch with an open PR without explicit user approval.** Force-push after PR creation can invalidate review threads and has reopen side effects.
-- Prior approval for one PR action does not carry over. Each open/close/reopen/force-push is its own decision.
-- Investigating PR state (`gh pr view`, `gh pr list`, web URL) is allowed without approval — reading is not acting.
+- **PR mutating actions require explicit per-PR user approval.** Each action is its own decision; prior approval does not carry over.
+
+| Action | Requires approval | Notes |
+|--------|-------------------|-------|
+| Open PR (draft or ready) | Yes | Draft status does not exempt creation |
+| Close PR | Yes | "Close and reopen later" still needs per-close approval |
+| Reopen PR | Yes | Prior intent to reopen ≠ current approval to reopen |
+| Force-push to branch with open PR | Yes | Invalidates review threads; may trigger reopen |
+| `gh pr view` / `gh pr list` / web URL | No | Reading is not acting |
 - **NEVER post any PR comment, review reply, or issue comment without showing the full draft text to the user first and getting explicit per-comment approval.** This covers `gh api .../comments`, `gh api .../reviews/*/comments`, `gh api .../pulls/*/comments/*/replies`, `gh pr comment`, `gh pr review --body`, and any equivalent API call. Draft the exact body, show it inline in the chat, wait for the user to read and say OK, then post. One approval covers exactly one comment — batches of replies need batch approval with each draft visible.
 - **When responding to PR review feedback, reply inline on each individual review comment, not as a single top-level PR comment.** Use `gh api -X POST /repos/{owner}/{repo}/pulls/{pr}/comments/{comment_id}/replies` so each reply threads under the reviewer's original comment. A top-level summary issue comment scatters context and makes it hard for the reviewer to confirm each item is addressed. Even when a reviewer posts a top-level review summary plus inline comments, reply on the inline comments — not on the summary.
 - **Pre-PR-open checklist — verify all before requesting user approval to call `gh pr create`:**

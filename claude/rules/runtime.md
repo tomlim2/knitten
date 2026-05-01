@@ -1,8 +1,15 @@
 - **Hardware specs** — read `~/.claude/private/caol-config/hardware.json` first. Run `/system-save-hardware` if missing.
 - **Repo paths first** — ALWAYS read `~/.claude/private/caol-config/repo-paths.json` before asking user for project paths. Keys = named git repos (e.g. `caol-ila`, `shotloom`, `codex-base`). Values = absolute paths to repo roots on this machine.
 - **Machine paths too** — ALSO read `~/.claude/private/caol-config/machine-paths.json` whenever you need non-repo resources: `obsidian-vault-claude` (may be absent on work Mac — that's normal, handle gracefully), `obsidian-staging` (fallback log target when vault absent), `codex-home`. Missing key ≠ error; it means "this machine doesn't have that resource". NEVER hardcode these paths or put logs in `~/.claude/ops/` when a log destination already exists here.
-- **Config discovery fallback** — when a path/key seems missing, `ls ~/.claude/private/` and read EVERY `*.json` file there before asking the user. Rule-file injections MAY be stale (file updated mid-session); disk is the source of truth. This bullet exists because a past session missed `machine-paths.json → obsidian-staging` and asked the user instead.
-- **codex-base vs codex-home (don't confuse)** — `repo-paths.json → codex-base` = a specific **project subdir** (`~/.codex/codex-base`) used like a git workspace by `cci-add-codex-order` etc. `machine-paths.json → codex-home` = the **Codex tooling root** (`~/.codex`). They overlap by path prefix but serve different roles. When adding a new Codex skill, decide: do you want the project workspace (→ repo-paths) or the tooling home (→ machine-paths)?
+- **Config discovery fallback** — when a path/key seems missing, `ls ~/.claude/private/` and read EVERY `*.json` file there before asking the user. Rule-file injections may be stale (file updated mid-session); disk is the source of truth. Why: a past session missed `machine-paths.json → obsidian-staging` and asked the user when the answer was on disk.
+- **codex-base vs codex-home (don't confuse)** — Two distinct keys with overlapping path prefix.
+
+  | Key | Source | Path | Role |
+  |-----|--------|------|------|
+  | `codex-base` | `repo-paths.json` | `~/.codex/codex-base` | Project subdir used like a git workspace by `cci-add-codex-order` and other `cci-*` Codex skills |
+  | `codex-home` | `machine-paths.json` | `~/.codex` | Codex tooling root |
+
+  When adding a new Codex skill: pick `repo-paths` for project-workspace operations, `machine-paths` for tooling-root operations.
 - **Slack confirm first** — ALWAYS show full message and get explicit approval before sending ANY Slack message.
 - **Writing pipeline** — External content: `/writing-draft-human` → `/writing-fix-ai` → final. Internal content exempt.
 - **Docs path: ALWAYS resolve via `caol-resolve-doc-path` first** — never hand-build a doc path by reading `machine-paths.json` directly. The resolver is the single source of truth; it reads `doc-paths.json` and falls back to `obsidian-staging` automatically when the vault is absent.

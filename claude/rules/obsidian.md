@@ -1,14 +1,29 @@
-- **Frontmatter required** — Every `.md` file needs YAML frontmatter with `title`, `tags`, `date`, `source`
-- **H1 is singular** — Exactly 1 H1 per document, placed immediately after frontmatter
-- **Section separators** — `---` horizontal rule between major sections
-- **Wikilinks for images** — `![[folder/file.png]]`, NEVER markdown image links for vault content
-- **Wikilinks for internal references** — `[[Note Name]]`
-- **Markdown links for external** — `[text](URL)` — **NEVER in `type/devlog` documents**; use `[[wikilink]]` to a reference note instead
-- **Lists use `-`** — Ordered lists use `1.`
-- **Tags in frontmatter** — use structured tags (`type/`, `project/`, + optional `area/`, `lang/`, `lib/`, `fmt/`, `sys/`, `llm/`, `tech/`, `hobby/`, `status/`); inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`)
-- **Location:** `{obsidian-vault}/claude/` for all Claude-authored docs
-- **Auto-commit + auto-push for Obsidian-only changes (exception to `rules/git.md`).** When the diff contains ONLY Obsidian-related files — anything inside `machine-paths.json → obsidian` / `obsidian-vault-claude`, anything inside `obsidian-staging` (currently `caol-ila/claude/temp-learnings/`), or `.md` files with Obsidian frontmatter (`title`, `tags`, `date`, `source`) — Claude may draft the commit message, briefly show it for transparency, then `git commit && git push` without per-step approval. Applies to ANY repo (not vault-only) and ANY day (not weekend-only); the only gate is "diff is purely Obsidian docs".
-  - **If the diff mixes Obsidian docs with code/config**, fall back to generic `rules/git.md` — split the commit (Obsidian docs in one auto-flow commit, the rest under normal approval) or get explicit approval for the bundled commit.
-  - **PR operations still require per-PR approval** per `rules/git.md` — `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit`, and any review/issue comment are NEVER auto-exempt, even for Obsidian-only PRs.
-  - **Repo-specific stricter rules win.** If a repo has its own pre-PR/pre-push gates (e.g. `~/.claude/rules/shotloom.md`'s fmt/clippy/check/doc-paths chain) and the Obsidian commit happens inside that repo, run those gates first; the Obsidian exception only removes the verbal-approval step, not validation.
-- Full format spec + tag conventions (Read before creating/editing Obsidian docs): `~/.claude/standards/obsidian-format.md`
+- **Frontmatter required** — Every `.md` file needs YAML frontmatter with `title`, `tags`, `date`, `source`.
+- **H1 is singular** — Exactly 1 H1 per document, placed immediately after frontmatter.
+- **Section separators** — `---` horizontal rule between major sections.
+- **Wikilinks for images** — `![[folder/file.png]]`. Never use markdown image links for vault content.
+- **Wikilinks for internal references** — `[[Note Name]]`.
+- **Markdown links for external** — `[text](URL)`. **NEVER in `type/devlog` documents** — devlogs rot quickly and dead links accumulate. Reference resources via `[[wikilink]]` to a dedicated reference note instead.
+- **Lists use `-`** — Ordered lists use `1.`.
+- **Tags in frontmatter** — Use structured tags: `type/`, `project/`, plus optional `area/`, `lang/`, `lib/`, `fmt/`, `sys/`, `llm/`, `tech/`, `hobby/`, `status/`. Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
+- **Location** — `{obsidian-vault}/claude/` for all Claude-authored docs.
+
+## Auto-commit + auto-push for Obsidian-only changes
+
+Exception to `~/.claude/rules/git.md`. The diff must contain ONLY Obsidian-related files.
+
+| Diff content | Auto-commit allowed? |
+|--------------|----------------------|
+| Files inside `machine-paths.json → obsidian` / `obsidian-vault-claude` | **Yes** |
+| Files inside `obsidian-staging` (currently `caol-ila/claude/temp-learnings/`) | **Yes** |
+| `.md` files with Obsidian frontmatter (`title`, `tags`, `date`, `source`) | **Yes** |
+| Mixed: any of the above + code/config | **No** — split the commit, or get explicit approval for the bundle |
+
+Applies to ANY repo and ANY day. The only gate is "diff is purely Obsidian docs".
+
+**Always required, regardless of auto-commit:**
+
+- **PR operations still need per-PR approval.** `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit`, and any review/issue comment are NEVER auto-exempt.
+- **Repo-specific stricter rules win.** If the repo has its own pre-PR/pre-push gates (e.g. shotloom's fmt/clippy/check/doc-paths chain via `~/.claude/rules/shotloom.md`), run those gates first. The Obsidian exception removes the verbal-approval step, not validation.
+
+Full format spec + tag conventions (read before creating/editing Obsidian docs): `~/.claude/standards/obsidian-format.md`.

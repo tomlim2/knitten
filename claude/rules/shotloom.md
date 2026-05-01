@@ -1,6 +1,6 @@
 # Shotloom — Claude-side meta
 
-Operational rules with **no in-repo equivalent**. The full project ruleset (commit / PR / review / branch / error-handling conventions, ECS patterns, ADRs, etc.) lives in shotloom's own `docs/guidelines/`, `AGENTS.md`, `CONTRIBUTING.md`, and `docs/adr/` — read those at session start. This file only carries what those don't cover.
+Operational rules with **no in-repo equivalent**. The full project ruleset (commit, PR, review, branch, error-handling conventions, ECS patterns, ADRs) lives in shotloom's own `docs/guidelines/`, `AGENTS.md`, `CONTRIBUTING.md`, and `docs/adr/`. Read those at session start. This file only carries what those don't cover.
 
 Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom` (returns `RESOLVED_PATH=…`).
 
@@ -11,25 +11,61 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path
 
 ## Build gate quirk
 
-- **`cargo check` / `cargo clippy` / `cargo test` MUST pass `--exclude shotloom-desktop`.** The `shotloom-desktop` Tauri binary has a pre-existing icon.png issue unrelated to feature work; including it produces a false-red. Same exclusion as Shotloom CI.
+- **`cargo check` / `cargo clippy` / `cargo test` MUST pass `--exclude shotloom-desktop`.** Why: the `shotloom-desktop` Tauri binary has a pre-existing icon.png issue unrelated to feature work; including it produces a false-red. Same exclusion as Shotloom CI.
 
 ## Approval-gate exceptions
 
-- **Auto-commit + auto-push inside shotloom worktrees** (including `.worktrees/*` and `.claude/worktrees/*`). Once gates pass — `cargo fmt --check`, `cargo clippy`, `cargo check`, `cargo test`, `node scripts/validate-doc-paths.mjs`, `node scripts/validate-ci-rust-coverage.mjs` — Claude drafts the commit message, briefly shows it, then commits and pushes without waiting for per-step "OK". Gates are NEVER skipped. PR operations (`gh pr create / merge / close / edit`, posting any PR or review comment) still require explicit per-PR approval per `~/.claude/rules/git.md`. Other repos (CINEV, caol-ila, personal) remain under the strict approval flow.
-- **`/shotloom-auto-pr` blanket exemption.** When the user invokes `/shotloom-auto-pr <N>` directly OR accepts the offer at the end of `/shotloom-make-pr`, the skill's react cycle is exempt from per-PR-comment approval for: inline review replies (`POST /pulls/<N>/comments/<id>/replies`), suppressed-item review-level summary (`POST /pulls/<N>/reviews` with `event=COMMENT`), reviewer re-request, PR body refresh (`gh pr edit <N> --body …`) — on top of the auto-commit/push above. **NOT covered** even inside auto-pr: `gh pr create / merge / close / reopen / ready`, `gh pr edit --base / --title / --draft / --label`, `gh pr update-branch`, top-level PR comments, `gh pr review --approve / --request-changes`, thread resolution. Manual `/shotloom-respond-pr` is unaffected and keeps the per-comment batch approval gate.
+Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). Other repos (CINEV, caol-ila, personal) follow the strict approval flow in `~/.claude/rules/git.md`.
+
+**Pre-commit gates (NEVER skip):** `cargo fmt --check`, `cargo clippy`, `cargo check`, `cargo test`, `node scripts/validate-doc-paths.mjs`, `node scripts/validate-ci-rust-coverage.mjs`.
+
+| Operation | Approval needed? | Context |
+|-----------|------------------|---------|
+| `git commit` after gates pass | **No** | Draft message, briefly show, then commit |
+| `git push` after gates pass | **No** | Same as commit |
+| `gh pr create` / `merge` / `close` / `reopen` / `ready` | **Yes** | Per-PR approval — never auto |
+| `gh pr edit --base` / `--title` / `--draft` / `--label` | **Yes** | |
+| `gh pr update-branch` | **Yes** | |
+| Top-level PR comment | **Yes** | |
+| `gh pr review --approve` / `--request-changes` | **Yes** | |
+| Thread resolution | **Yes** | |
+| Inline review reply (`POST /pulls/<N>/comments/<id>/replies`) | **No, only inside `/shotloom-auto-pr`** | Manual `/shotloom-respond-pr` still needs batch approval |
+| Suppressed-item review summary (`event=COMMENT`) | **No, only inside `/shotloom-auto-pr`** | |
+| Reviewer re-request | **No, only inside `/shotloom-auto-pr`** | |
+| PR body refresh (`gh pr edit --body`) | **No, only inside `/shotloom-auto-pr`** | Body content only — title/base/draft still need approval |
+
+`/shotloom-auto-pr` is invoked by the user typing `/shotloom-auto-pr <N>` directly, or by accepting the offer at the end of `/shotloom-make-pr`.
 
 ## `/claude-review` is a CI trigger, not a Claude Code skill
 
-- Posting the literal text `/claude-review` as a **top-level PR comment** fires the Claude review GitHub App on the CI side. Post **only after** every CI check is green (`gh pr checks <N> --watch`) AND with explicit per-PR user approval. Never on a red PR (wasted review cycle). Never on a draft unless promoted to ready. Never inside `/shotloom-auto-pr` (auto-pr owns its review cadence). Author-side flow lives in `/shotloom-make-pr` Step 10c.
+Posting the literal text `/claude-review` as a **top-level PR comment** fires the Claude review GitHub App on the CI side.
+
+| Condition | Allowed to post `/claude-review`? |
+|-----------|-----------------------------------|
+| All CI checks green (`gh pr checks <N> --watch`) AND user gave per-PR approval | **Yes** |
+| Any CI check red | **No** (wastes review cycle) |
+| PR is in draft | **No** (unless promoted to ready) |
+| Inside `/shotloom-auto-pr` cycle | **No** (auto-pr owns its review cadence) |
+
+Author-side flow: `/shotloom-make-pr` Step 10c.
 
 ## Obsidian note structure
 
-- **Single project folder: `claude/projects/shotloom/`.** Never create sibling folders (`shotloom-rd/`, `shotloom-v2/`, etc.). If a folder like that exists, it's a migration artifact — consolidate into `shotloom/`.
-- **days/ naming: `YYYY-MM-DD[-slug].md` only.** No prefixes (`devlog-`, `shotloom-`, `shotloom-daily-`, `shotloom-devlog-`). The folder name already provides context.
+- **Single project folder: `claude/projects/shotloom/`.** Never create sibling folders (`shotloom-rd/`, `shotloom-v2/`). If a folder like that exists, consolidate into `shotloom/`.
+- **`days/` naming: `YYYY-MM-DD[-slug].md` only.** No prefixes — `devlog-`, `shotloom-`, `shotloom-daily-`, `shotloom-devlog-` are all forbidden. The folder name already provides context.
 - **Learnings go in `shotloom/learnings/`, never in `claude/learnings/`.** `claude/learnings/` is for cross-project learnings only.
 - **No files at `claude/` root.** Every shotloom note lives inside `claude/projects/shotloom/` or its subfolders. Never drop files at `claude/shotloom-*.md`.
-- **No loose files at the project root either.** `claude/projects/shotloom/*.md` is forbidden except for index/hub files explicitly serving as a vault entry point (e.g. a single `README.md`). All other notes belong in a named subfolder.
-- **Subfolders:** `days/` devlogs · `learnings/` vocabulary + project lessons · `topics/` analysis & reference · `asks/` handoffs · `plans/` per-ticket plans · `specs/` specs & ADRs · `ops/` mission records & operational logs.
+- **No loose files at the project root either.** `claude/projects/shotloom/*.md` is forbidden except for one index/hub file (e.g. `README.md`). All other notes belong in a named subfolder.
+
+| Subfolder | Contents |
+|-----------|----------|
+| `days/` | Devlogs (one file per work day) |
+| `learnings/` | Vocabulary + project lessons |
+| `topics/` | Analysis and reference notes |
+| `asks/` | Handoffs |
+| `plans/` | Per-ticket plans |
+| `specs/` | Specs and ADRs |
+| `ops/` | Mission records and operational logs |
 
 ## File naming convention
 
@@ -38,9 +74,18 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path
   - Good: `learnings/bootstrap.md`, `specs/preflight-spec.md`
 - **`days/` is the only folder that uses dates.** Format: `YYYY-MM-DD[-slug].md`. No dates in filenames outside `days/`.
 - **Draft status belongs in frontmatter, not the filename.** Use `status/draft` tag; never a `-draft` suffix.
-- **Kebab-case, 2–5 word slug.** No camelCase, no underscores; abbreviations only if universal (adr, vrm, pmx).
-- **Multi-agent mission files live in `ops/` with a shared mission prefix.** Example: a VRM import mission → `ops/vrm-import.md`, `ops/vrm-import-briefing.md`, `ops/vrm-import-log.md`. Never scatter these at the project root.
+- **Kebab-case, 2–5 word slug.** No camelCase, no underscores. Abbreviations allowed only if universal: `adr`, `vrm`, `pmx`.
+- **Multi-agent mission files live in `ops/` with a shared mission prefix.** Example: VRM import mission → `ops/vrm-import.md`, `ops/vrm-import-briefing.md`, `ops/vrm-import-log.md`. Never scatter these at the project root.
 
 ## Linear AC ↔ primitive cross-check
 
-- **Verify the primitive an AC cites before applying the AC.** When a Linear acceptance criterion cites a repo primitive (template, standard, rule, ADR section, in-repo guideline), open the primitive's actual file and confirm the cited pattern is codified there. ACs that cite uncodified patterns are **wrong-shape** — reject the AC and propose splitting into a primitive-codification PR + a follow-up apply-the-codified-pattern PR. Do NOT apply Option-A/B/C workarounds (single-file standard invention) to smuggle the pattern in; that recreates the defect class the AC was trying to enforce against and round 1 review will P2-Block it. Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style" not actually in `adr-template.md`; Option-A workaround forced a P2 revert. Full enforcement in `/shotloom-start-code` Step 5b.
+**Rule:** Before applying a Linear AC that cites a repo primitive (template, standard, rule, ADR section, in-repo guideline), open the primitive's actual file and confirm the cited pattern is codified there.
+
+**If the primitive does NOT codify the cited pattern:**
+1. Reject the AC as wrong-shape.
+2. Propose splitting into two PRs: a primitive-codification PR, then a follow-up apply-the-codified-pattern PR.
+3. Do NOT apply an Option-A/B/C workaround (single-file standard invention) to smuggle the pattern in. That recreates the defect class the AC was trying to enforce against and round-1 review will P2-Block it.
+
+**Why:** PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style" not actually in `adr-template.md`; Option-A workaround forced a P2 revert.
+
+**Full enforcement:** `/shotloom-start-code` Step 5b.

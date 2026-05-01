@@ -31,4 +31,4 @@ Unlike `standards/` (long reference docs read on-demand), rules here are **must-
 | [`obsidian.md`](obsidian.md) | Obsidian vault document format |
 | [`cinev-git.md`](cinev-git.md) | CINEV project git ops (UE lock check) |
 | [`multi-agent.md`](multi-agent.md) | When assigned 지통실 #1 (1호기) |
-| [`shotloom.md`](shotloom.md) | Shotloom Claude-side meta — gh account, commit identity, build flag, auto-commit/push exemption, `/shotloom-auto-pr` exemption, `/claude-review` trigger. Project rules themselves live in shotloom's own `docs/guidelines/` etc. |
+| [`shotloom.md`](shotloom.md) | Shotloom Claude-side meta — gh account, commit identity, build flag, auto-commit/push exemption, `/shotloom-auto-pr` exemption, `/claude-review` trigger. Project rules themselves live in shotloom's own `docs/guidelines/`, `AGENTS.md`, `CONTRIBUTING.md`, `docs/adr/`. |
