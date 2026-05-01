@@ -9,7 +9,7 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 ## Repository charter
 
-`caol-ila` is an **LLM-first repository.** Every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:
+`caol-ila` is an **agent-first repository** — the primary operator is an autonomous agent, not a human reader. Because that agent is currently an LLM, the operational mechanics are **LLM-first**: every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:
 
 1. **Efficiency** — minimum tokens for maximum signal.
 2. **Accuracy** — explicit, unambiguous, no hidden assumptions.

@@ -1,6 +1,17 @@
 # Agent-First Policy
 
-The meta-policy that governs every other document, rule, skill, and command in `caol-ila`. The repository's primary operator is an LLM agent, not a human reader. This file explains the layered enforcement that makes that real.
+The meta-policy that governs every other document, rule, skill, and command in `caol-ila`. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
+
+## Two terms, two layers
+
+`caol-ila` uses two terms deliberately. They name different layers of the same stance:
+
+| Term | Layer | Meaning |
+|------|-------|---------|
+| **agent-first** | Stance (this file) | Who the repository serves: an autonomous agent that reads, executes, and edits artifacts. Format-agnostic, model-agnostic, future-proof against non-LLM agents. |
+| **llm-first** | Mechanics (`standards/llm-first-docs.md`) | How artifacts must be written *because* the agent is currently an LLM: token-efficient, cold-start parsable, structured for limited context windows. |
+
+agent-first is the WHY/WHO; llm-first is the HOW that follows from "the agent is an LLM today." If a non-LLM agent ever becomes the primary reader, the llm-first mechanics get re-derived; the agent-first stance does not change.
 
 Read this when:
 - Designing a new layer (rule, standard, skill category, validator).
