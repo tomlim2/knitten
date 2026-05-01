@@ -5,6 +5,8 @@ status: proposed
 
 The meta-policy that governs every other document, rule, skill, and command in `caol-ila`. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
 
+For the vocabulary used here (`charter`, `default-counter`, `lifecycle phase`, `audience`, `mutability`, layer numbers) and the rationale behind each principle below — see `principles.md`.
+
 ## Two terms, two layers
 
 `caol-ila` uses two terms deliberately. They name different layers of the same stance:
