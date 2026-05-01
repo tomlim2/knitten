@@ -8,6 +8,22 @@ Filename patterns for every artifact type in `caol-ila`. Read before creating an
 
 For the underlying rationale (verb-form trio, family prefix, scope match, lifecycle phase, default-counter hint) see `principles.md` → "Naming patterns".
 
+## Scope
+
+This standard governs **`caol-ila` repository artifacts only** — files inside `claude/`, `docs/plans/`, and the Obsidian vault under `claude/projects/`.
+
+**Out of scope:**
+
+| Out of scope | Owned by |
+|--------------|----------|
+| Code identifiers (Rust struct/fn/var, Python class, JS variable, C++ symbol) | each language's own convention (rustfmt, PEP 8, etc.) |
+| Filenames in other repos (shotloom, cinev-engine, bevy-vrm, personal projects) | that repo's own `CONTRIBUTING.md` / `AGENTS.md` |
+| Unreal Engine asset names (`SM_`, `T_`, `M_`, `BP_`, ...) | `~/.claude/standards/cinev/cinev-character-asset-naming.md` |
+| HTML/CSS class names, IDs, custom properties | language standard (`~/.claude/standards/language/css.md`) |
+| Variable names inside example snippets in this repo's docs | code conventions of the snippet's language |
+
+When working in another repo, follow that repo's naming rules. This standard does not transfer.
+
 ---
 
 ## Universal rules
