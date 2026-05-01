@@ -17,7 +17,7 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 The user is the architect; the LLM is the primary reader and operator. Human-readable output is delivered only on explicit user request.
 
-When choosing between two ways to write or organize anything in this repo, ask: **"would a cold-start LLM session parse this correctly in the fewest tokens?"** If not, restructure. Operational rules below (`standards/llm-first-docs.md`) translate this charter into per-document checks.
+When choosing between two ways to write or organize anything in this repo, ask: **"would a cold-start LLM session parse this correctly in the fewest tokens?"** If not, restructure. Operational rules below (`standards/llm-first-docs.md`) translate this charter into per-document checks. The full layered enforcement model — which layer owns which constraint, how conflicts resolve — is in `standards/agent-first-policy.md`; read before designing a new layer.
 
 ---
 
@@ -81,11 +81,11 @@ Both create `/slash-commands`. When names collide, skill (`skills/{name}/SKILL.m
 
 @~/.claude/rules/git.md
 
-@~/.claude/rules/runtime.md
+@~/.claude/rules/session-start.md
 
 @~/.claude/rules/coding.md
 
-@~/.claude/rules/verification.md
+@~/.claude/rules/verify-before-report.md
 
 @~/.claude/rules/security.md
 

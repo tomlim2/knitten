@@ -51,8 +51,8 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 
 | File | `load` | `trigger` |
 |------|--------|-----------|
-| `git.md`, `runtime.md`, `coding.md`, `verification.md`, `security.md`, `index.md` | `auto` | (CLAUDE.md @import) |
-| `conventions.md` | `triggered` | start of non-trivial work in any repo |
+| `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md`, `index.md` | `auto` | (CLAUDE.md @import) |
+| `reread-repo-conventions.md` | `triggered` | start of non-trivial work in any repo |
 | `testing.md` | `triggered` | writing or reviewing code with tests |
 | `naming.md` | `triggered` | creating a command or skill |
 | `command-frontmatter.md` | `triggered` | creating a command |
@@ -74,14 +74,16 @@ After prepending, update `rules/index.md` to add a `Load` column matching the ta
 
 **Acceptance:** Every `rules/*.md` opens with the YAML block. `rules/index.md` shows the load column. No semantic change to rule bodies.
 
-#### P0.2 — Create `MAP.md` at repo root
+#### P0.2 — Create `LOOKUP.md` at repo root
+
+**Naming:** `LOOKUP.md` chosen over `MAP.md` — name describes the operation ("look up where X lives"), no metaphor, cold-start LLM parses role from filename alone.
 
 **Why:** `README.md` carries inventory (what exists). It does not carry navigation (what to read for goal X). AFDS v2 mandates one canonical "where is X?" file. Without it, the LLM either reads CLAUDE.md and follows @imports, or scans by guessing.
 
-**Action:** Create `caol-ila/MAP.md` with a single goal-to-doc lookup table. Format:
+**Action:** Create `caol-ila/LOOKUP.md` with a single goal-to-doc lookup table. Format:
 
 ```markdown
-# MAP — caol-ila navigation
+# LOOKUP — caol-ila goal-to-doc
 
 Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not by scanning.
 
@@ -116,11 +118,13 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 - All rules: `claude/rules/index.md`
 ```
 
-**Acceptance:** `MAP.md` at repo root. `CLAUDE.md` and `README.md` link to it. Goal-to-doc lookup covers at least the 10 most common LLM tasks.
+**Acceptance:** `LOOKUP.md` at repo root. `CLAUDE.md` and `README.md` link to it. Goal-to-doc lookup covers at least the 10 most common LLM tasks.
 
-#### P0.3 — Tier-3 standards audit (16 files)
+#### P0.3 — Tier-3 standards + commands audit
 
-**Why:** During the v3.0.0 audit, 16 standards files still carried banned terms — any of `etc.`, `…`, `consider`, `usually`, `typically`, `should probably`, `might want`. Listed below.
+**Why:** During the v3.0.0 audit, 16 standards files still carried banned terms. `commands/*.md` was never audited and the P2.1 validator covers it — turning the validator on without this audit guarantees a fail.
+
+**Banned-term list (canonical, must match `llm-first-docs.md`):** `etc.`, `…`, `consider `, `usually `, `typically `, `should probably`, `might want`. Any future addition lands in `llm-first-docs.md` first; this plan and the validator both pull from there.
 
 **Files:**
 ```
@@ -142,15 +146,19 @@ standards/review-ux.md
 standards/unreal-engine-asset.md
 ```
 
+Plus all `claude/commands/*.md` (count via `ls claude/commands/*.md | wc -l` first; budget per file = same as standards).
+
 **Action:** For each file:
 1. Read full content.
-2. Run grep for banned terms (`etc.`, `…`, `consider `, `usually `, `typically `, `should probably`, `might want`).
+2. Run grep for the full banned-term list above (not a subset).
 3. Replace each occurrence with explicit enumeration or restructured rule.
 4. Apply tables/decision-trees where prose paragraphs encode branching logic.
 5. Drop rhetoric and motivation lines.
 6. Keep length within 400-line budget per file.
 
-**Acceptance:** `grep -nE "\betc\.|consider |usually |typically " standards/*.md` returns nothing. Each fixed file has a `Why:` line for any rule whose rationale was cut.
+**Acceptance:** `grep -nE "\betc\.|…|consider |usually |typically |should probably|might want" claude/{standards,commands}/**.md` returns nothing. Each fixed file has a `Why:` line for any rule whose rationale was cut.
+
+**Time estimate:** 10–12 min per file (banned-term sweep + decision-tree restructure + Why lines). 16 standards + commands count → budget 1.5 sessions, not 90 min.
 
 ### P1 — Structural
 
@@ -227,19 +235,9 @@ standards/
 
 **Action:** After P0.1 lands, propagate the `load:` field from each rule file's frontmatter into the `rules/index.md` table. For `standards/index.md`, every file is `on-demand` by default; the only special case is `llm-first-docs.md` which is `triggered: editing an LLM-read doc`.
 
-#### P1.3 — Vault: split `specs/` and `ops/` mixed-policy folders
+#### P1.3 — Vault `specs/` / `ops/` split → moved to separate plan
 
-**Why:** Mutation policy mismatch.
-- `specs/` mixes forward design (mutable) with frozen ADRs.
-- `ops/` mixes durable mission records with ephemeral runtime logs.
-
-**Action (Obsidian vault, claude/projects/<project>/):**
-1. New folder `decisions/` (or `adr/`) for frozen ADRs. Status / Date / Context / Decision / Consequences template.
-2. Move existing ADR-shaped files from `specs/` into `decisions/`.
-3. Inside `ops/`, split into `ops/missions/` (durable) and `ops/runs/` (ephemeral, gitignore-able).
-4. Update `rules/shotloom.md` "Subfolders" table.
-
-**Acceptance:** Each folder has one mutation policy. `rules/shotloom.md` reflects the split.
+Out of scope for LLM-first cleanup (Obsidian vault is human-read per charter exception). Tracked in `docs/plans/vault-policy-split.md`.
 
 ### P2 — Mechanical / automation
 
@@ -248,7 +246,7 @@ standards/
 **Why:** Self-audit checklist in `llm-first-docs.md` is manual. Drift is inevitable. AFDS v2 mandates mechanical anti-rot.
 
 **Action:** Author a CI-runnable script (`scripts/validate-llm-first.{sh,mjs}`) that checks:
-1. Banned terms (`etc.`, `…`, `consider `, `usually `, `typically `, `should probably`, `might want `) absent in `claude/{rules,standards,commands}/**.md`, `claude/skills/**/SKILL.md`, repo `README.md`, `MAP.md`, `AGENTS.md`.
+1. Banned terms (`etc.`, `…`, `consider `, `usually `, `typically `, `should probably`, `might want `) absent in `claude/{rules,standards,commands}/**.md`, `claude/skills/**/SKILL.md`, repo `README.md`, `LOOKUP.md`, `AGENTS.md`.
 2. Every `claude/rules/*.md` opens with `---` frontmatter and has a `load:` field.
 3. Every `~/.claude/...` reference resolves to a real file.
 4. README inventory counts match `ls` output (no drift).
@@ -262,7 +260,18 @@ Wire as a pre-commit hook or pre-push CI gate.
 
 **Why:** Currently every standard looks equally authoritative. In reality some are battle-tested (e.g. `slash-commands.md`) and some are this-session experimental (e.g. `llm-first-docs.md`). LLM should know which to trust as canonical vs which to treat as proposal.
 
-**Action:** Add `status:` field to every `standards/*.md` frontmatter. Allowed values: `accepted`, `proposed`, `superseded`. Default for existing files is `accepted` unless flagged otherwise. `llm-first-docs.md` starts as `proposed`.
+**Action:** Add `status:` field to every `standards/*.md` frontmatter.
+
+**Allowed values:**
+| Value | Meaning |
+|-------|---------|
+| `accepted` | Battle-tested, cited by ≥1 rule or skill, no open revision |
+| `proposed` | New or experimental, not yet validated in real use |
+| `draft` | Incomplete, do not follow as canonical |
+| `deprecated` | Kept for reference; do not apply to new work |
+| `superseded` | Replaced by another doc; frontmatter MUST include `superseded-by:` |
+
+**Classification rule:** Each file is classified individually by reading its content + cross-ref count. **NO blanket `accepted` default** — an unread file is `proposed` until reviewed. `llm-first-docs.md` starts as `proposed`.
 
 ### P3 — Concept adoption (defer; evaluate after P0–P2)
 
@@ -280,17 +289,20 @@ Wire as a pre-commit hook or pre-push CI gate.
 
 ## Recommended order for next session
 
-1. **P0.1** — `load:` frontmatter on rules/ (1 commit, ~30 min). Quickest LLM-first win.
-2. **P0.2** — `MAP.md` (1 commit, ~30 min). Hand-curate top-10 goals.
-3. **P1.2** — Add `Load` column to `rules/index.md` (small commit, ~5 min after P0.1).
-4. **P0.3** — Tier-3 standards audit (1 PR or several commits, ~60–90 min for 16 files). Use a sub-agent in parallel for the mechanical sweep.
-5. **P2.1** — `validate-llm-first` script (1 PR, ~60 min). Lock in the gains so they don't drift.
-6. **P1.1** — Sub-group `standards/` (1 PR, ~45 min including reference updates).
-7. **P2.2** — `status:` frontmatter on standards (small commit, ~15 min).
-8. **P1.3** — Vault `specs/` ↔ `decisions/`, `ops/missions/` ↔ `ops/runs/` split (1 commit + rule update, ~30 min).
-9. **P3** — Re-evaluate adoption candidates only after the above lands.
+Validator-first: build the gate before the bulk edits, so each subsequent step is verified mechanically rather than by eye.
 
-Total: roughly one focused session for P0+P1.2 (the highest leverage block), one more session for P0.3+P2.1+P1.1+P2.2, and a third for P1.3+P3.
+1. **P0.1** — `load:` frontmatter on rules/ (~30 min). Quickest LLM-first win.
+2. **P0.2** — `LOOKUP.md` (~30 min). Hand-curate top-10 goals.
+3. **P1.2** — Add `Load` column to `rules/index.md` (~5 min after P0.1).
+4. **P2.1** — `validate-llm-first` script (~60 min). **Hard dependency for P0.3 and P1.1.** Pulls banned-term list from `llm-first-docs.md`; covers `LOOKUP.md`, `README.md`, `claude/{rules,standards,commands}/**`, `claude/skills/**/SKILL.md`. MAP/README/index count-sync check included.
+5. **P0.3** — Tier-3 standards + commands audit (~1.5 sessions). Validator must already be green-on-clean before starting.
+6. **P1.1** — Sub-group `standards/` (~45 min + reference updates). Run `grep -rn "standards/<file>" claude/` first to enumerate blast radius. Validator gates the merge.
+7. **P2.2** — `status:` frontmatter on standards (~30 min — per-file classification, no blanket default).
+8. **P3** — Re-evaluate adoption candidates only after the above lands.
+
+P1.3 (vault split) tracked separately in `vault-policy-split.md`.
+
+Total: one session for P0+P1.2+P2.1, one+ session for P0.3+P1.1+P2.2.
 
 ---
 
@@ -308,11 +320,14 @@ Total: roughly one focused session for P0+P1.2 (the highest leverage block), one
 The migration is complete when ALL of:
 
 1. Every `claude/rules/*.md` has `load:` frontmatter.
-2. `MAP.md` exists at repo root and covers the 10 most common LLM goals.
-3. `grep` for banned terms returns nothing across `claude/{rules,standards,commands}/**`, `claude/skills/**/SKILL.md`, repo `README.md`, `MAP.md`.
-4. `standards/` is sub-grouped by topic on disk; all references resolve.
-5. `validate-llm-first` script exists and runs in CI.
-6. Every `standards/*.md` has `status:` frontmatter.
-7. Vault `specs/` ↔ `decisions/` and `ops/missions/` ↔ `ops/runs/` split is reflected in the file tree and in `rules/shotloom.md`.
+2. `LOOKUP.md` exists at repo root and covers the 10 most common LLM goals.
+3. `validate-llm-first` script exists, runs in CI, and is the gate for items 4–6.
+4. `grep` for banned terms returns nothing across `claude/{rules,standards,commands}/**`, `claude/skills/**/SKILL.md`, repo `README.md`, `LOOKUP.md` — verified by validator (item 3), not by hand.
+5. `standards/` is sub-grouped by topic on disk; all references resolve — verified by validator.
+6. Every `standards/*.md` has `status:` frontmatter, classified individually (no blanket default).
+
+**Dependency:** Item 3 lands before items 4–6 begin. Item 5 PR is gated on validator-green.
+
+P1.3 (vault split) is NOT a DoD item; tracked in `vault-policy-split.md`.
 
 Tag the result `v3.1.0`.

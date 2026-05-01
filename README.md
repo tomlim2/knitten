@@ -87,12 +87,13 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Standards (38)
+## Standards (39)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 | Group | Files |
 |-------|-------|
+| Policy | `agent-first-policy.md` |
 | Authoring | `llm-first-docs.md`, `slash-commands.md`, `command-skill-reference.md` |
 | Multi-agent ops | `multi-agent-ops.md`, `agent-workflow.md`, `delegation.md` |
 | Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
@@ -112,7 +113,7 @@ Always-applied constraints in `claude/rules/`. Loaded every session via CLAUDE.m
 
 | Group | Files |
 |-------|-------|
-| Core | `git.md`, `runtime.md`, `coding.md`, `verification.md`, `security.md`, `conventions.md`, `testing.md` |
+| Core | `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md`, `reread-repo-conventions.md`, `testing.md` |
 | Authoring | `naming.md`, `command-frontmatter.md`, `tool-permissions.md` |
 | Domain | `obsidian.md`, `cinev-git.md`, `multi-agent.md`, `shotloom.md` |
 | Index | `index.md` |

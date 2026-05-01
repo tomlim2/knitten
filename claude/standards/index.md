@@ -7,6 +7,12 @@ Standards contain the rationale, examples, and templates that rules link back to
 
 ---
 
+## Policy
+
+| Standard | When to read |
+|----------|-------------|
+| [`agent-first-policy.md`](agent-first-policy.md) | **Always** before designing a new layer (rule, standard, skill category, validator) or resolving a conflict between artifacts |
+
 ## Command & Skill Authoring
 
 | Standard | When to read |
