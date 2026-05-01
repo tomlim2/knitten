@@ -312,7 +312,7 @@ for sha in $(git log origin/main..HEAD --format='%H' --grep='^fix'); do
     fi
   fi
 done
-# A fix: commit without a paired regression test violates rules/testing.md.
+# A fix: commit without a paired regression test violates rules/test-write.md.
 ```
 
 ---
@@ -566,7 +566,7 @@ Same triage as I1.
 
 ## Pattern T — Test coverage on changed behavior
 
-`~/.claude/rules/testing.md` mandates that every modified public function, every new struct/enum with behavior, and every bug fix ships with a corresponding unit test in the **same** PR. The in-repo `docs/guidelines/review-rust.md` does not enforce this directly. Pattern T closes the gap by mapping changed signatures against new test functions in the same diff.
+`~/.claude/rules/test-write.md` mandates that every modified public function, every new struct/enum with behavior, and every bug fix ships with a corresponding unit test in the **same** PR. The in-repo `docs/guidelines/review-rust.md` does not enforce this directly. Pattern T closes the gap by mapping changed signatures against new test functions in the same diff.
 
 Mindset: **a changed `impl From<X>` whose source type moved across crates is a behavior change**, even when the body is byte-identical. Field-mapping invariants need a regression-grade pin in the same PR, not a smoke test through a caller.
 
@@ -633,6 +633,6 @@ Reviewers should run in this order, stopping at the first failed group only when
 1. **A–G** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
 2. **H** — doc & comment discipline (added lines).
 3. **I** — reverse-side audit (unchanged lines newly stale).
-4. **T** — test coverage on changed behavior (`rules/testing.md` enforcement).
+4. **T** — test coverage on changed behavior (`rules/test-write.md` enforcement).
 
 Groups H/I/T are post-spec sweeps that the in-repo rust-review document does not cover. Findings in those groups are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.

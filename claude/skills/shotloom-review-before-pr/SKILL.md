@@ -149,7 +149,7 @@ Full sweep commands live in [reference.md § Pattern I](reference.md#pattern-i--
 
 ### Step 3.7: Pattern T — Test coverage on changed behavior
 
-**Run after groups A–I clear.** `~/.claude/rules/testing.md` mandates that every modified public function, every new struct/enum with behavior, and every bug fix ships with a corresponding unit test in the **same** PR. The in-repo `docs/guidelines/review-rust.md` does not directly enforce this — `rules/testing.md` is a Claude-side rule, not a shotloom guideline. Pattern T closes the gap by mapping changed signatures against new test functions in the diff.
+**Run after groups A–I clear.** `~/.claude/rules/test-write.md` mandates that every modified public function, every new struct/enum with behavior, and every bug fix ships with a corresponding unit test in the **same** PR. The in-repo `docs/guidelines/review-rust.md` does not directly enforce this — `rules/test-write.md` is a Claude-side rule, not a shotloom guideline. Pattern T closes the gap by mapping changed signatures against new test functions in the diff.
 
 - **T1** — public surface added or modified (`+pub fn`, `+pub struct`, `+pub enum`, `+impl From<…>` / `TryFrom` / `Default for` / `Display for`).
 - **T2** — new `#[test]` functions in the same diff (under `crates/*/src/*.rs` and `crates/*/tests/*.rs`).
@@ -221,7 +221,7 @@ The literal rule enumeration (Step 4 output) stays in English/code-quote form so
 - `docs/guidelines/code-review-guideline.md` (in shotloom repo) — review process / priorities
 - `skills/shotloom-make-pr/SKILL.md` — next step after clean report
 - `~/.claude/rules/shotloom.md` — pre-PR identity / build / commit conventions
-- `rules/testing.md` — unit test requirement (orthogonal to this checklist)
+- `rules/test-write.md` — unit test requirement (orthogonal to this checklist)
 
 ## Additional Resources
 

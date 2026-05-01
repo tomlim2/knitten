@@ -18,7 +18,7 @@ Supports supersedes workflow — if invoked with a prior PR number, generates re
 
 ## Binding rules (CRITICAL)
 
-- **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git.md`.)
+- **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git-defaults.md`.)
 - **Use `tomlim2` account only.** If `gh auth status` shows deemotl active, abort and ask user.
 - **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
@@ -103,7 +103,7 @@ cargo test --workspace --exclude shotloom-desktop
 node scripts/validate-doc-paths.mjs
 ```
 
-If no tests in a changed crate, do NOT skip — that violates `rules/testing.md`. Add tests first.
+If no tests in a changed crate, do NOT skip — that violates `rules/test-write.md`. Add tests first.
 
 ### Step 3b: Confirm `/shotloom-review-before-pr` was run
 
@@ -163,7 +163,7 @@ Default to `--draft` unless user explicitly said "ready-for-review". Draft → r
 
 ### Step 8: Supersedes handling (if argument given)
 
-The redirect comment posted to the prior PR is a **PR-level comment** and goes through the standard `rules/git.md` per-comment approval gate — it is NOT covered by the shotloom auto-commit/auto-push exemption (which scopes only to commits and pushes).
+The redirect comment posted to the prior PR is a **PR-level comment** and goes through the standard `rules/git-defaults.md` per-comment approval gate — it is NOT covered by the shotloom auto-commit/auto-push exemption (which scopes only to commits and pushes).
 
 1. Draft the redirect comment text:
    ```
@@ -260,8 +260,8 @@ Skip entirely when:
 
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT for Step 3b pre-PR checklist
 - `~/.claude/rules/shotloom.md` — per-PR approval, pre-PR checklist, account/identity
-- `rules/git.md` — global PR lifecycle approval
-- `rules/testing.md` — unit test requirement
+- `rules/git-defaults.md` — global PR lifecycle approval
+- `rules/test-write.md` — unit test requirement
 - `README.md` + `AGENTS.md` (in shotloom repo) — project overview
 - `docs/guidelines/pr-guideline.md` (in shotloom repo) — authoritative PR spec
 

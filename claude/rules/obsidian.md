@@ -16,7 +16,7 @@ trigger: working in the Obsidian vault
 
 ## Auto-commit + auto-push for Obsidian-only changes
 
-Exception to `~/.claude/rules/git.md`. The diff must contain ONLY Obsidian-related files.
+Exception to `~/.claude/rules/git-defaults.md`. The diff must contain ONLY Obsidian-related files.
 
 | Diff content | Auto-commit allowed? |
 |--------------|----------------------|

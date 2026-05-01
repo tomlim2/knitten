@@ -15,7 +15,7 @@ Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing noth
 
 ## Approval exemption
 
-This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git.md` and `~/.claude/rules/shotloom.md` impose. Authorized 2026-04-21 (user). See:
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git-defaults.md` and `~/.claude/rules/shotloom.md` impose. Authorized 2026-04-21 (user). See:
 
 - `~/.claude/rules/shotloom.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
 - `(deleted memory file)`
@@ -208,7 +208,7 @@ End of react cycle, after any push lands + CI green:
   - all gates green, reviewDecision=APPROVED, threads clean.
   - merge command (run when ready): gh pr merge <N> --squash --delete-branch
   ```
-- **Do NOT auto-invoke `gh pr merge`.** Merge is a state-changing PR action. The skill's blanket approval-exempt scope (`feedback_auto_pr_approval_exempt`) covers comments / pushes / inline replies — NOT merge. Per `rules/git.md`, every PR-state-changing action requires explicit per-PR user approval.
+- **Do NOT auto-invoke `gh pr merge`.** Merge is a state-changing PR action. The skill's blanket approval-exempt scope (`feedback_auto_pr_approval_exempt`) covers comments / pushes / inline replies — NOT merge. Per `rules/git-defaults.md`, every PR-state-changing action requires explicit per-PR user approval.
 - The user reads `log.md` (or the watcher's terminal handler when `state==MERGED` later observes the merge from a manual `gh pr merge`) and decides when to merge.
 
 This is the architectural decision recorded as P0 from the 2026-04-25 skill audit: the prior auto-merge step exceeded the documented exemption.

@@ -90,7 +90,7 @@ If `$ARGUMENTS[0] == "stop"`, list active crons, find the one tagged with this P
 - This skill is the **author-side mirror** of `/shotloom-respond-pr` (reviewee-side). Same comment-driven loop, opposite role.
 - Verification uses GitHub's `position` (legacy diff position) when `line` is null — this is normal for comments anchored to a specific commit hash that has not yet been force-pushed past.
 - Watcher does NOT auto-reply. It only notifies. Replying is a separate, approval-gated action.
-- Per `~/.claude/rules/git.md`: any reply Claude posts on this PR still requires per-comment user approval. The watcher just surfaces; the user picks what to reply to.
+- Per `~/.claude/rules/git-defaults.md`: any reply Claude posts on this PR still requires per-comment user approval. The watcher just surfaces; the user picks what to reply to.
 
 ## Related
 

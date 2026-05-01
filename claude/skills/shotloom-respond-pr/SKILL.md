@@ -191,7 +191,7 @@ Draft a reply per resolved item:
 
 For suppressed items, draft one review-level summary reply.
 
-Also draft the **reviewer re-request roster** for Step 8 right now, so the user approves replies and the re-request as one batch (Step 8 is itself a PR action and falls under the same per-PR-action approval gate per `~/.claude/rules/shotloom.md` and `rules/git.md`):
+Also draft the **reviewer re-request roster** for Step 8 right now, so the user approves replies and the re-request as one batch (Step 8 is itself a PR action and falls under the same per-PR-action approval gate per `~/.claude/rules/shotloom.md` and `rules/git-defaults.md`):
 
 ```
 Re-request from: @reviewer1, @reviewer2  (rationale: CHANGES_REQUESTED resolved | review round complete)
@@ -346,7 +346,7 @@ Invoking this skill is blanket authorization for the workflow. **Do NOT pause fo
 
 **EXCEPTION (still requires explicit per-action approval, even inside this skill):**
 
-- Step 6 (posting inline replies + the suppressed-item review-level summary + reviewer re-request roster) — show all drafts in one batch and wait for explicit user OK per `~/.claude/rules/shotloom.md` and `~/.claude/rules/git.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
+- Step 6 (posting inline replies + the suppressed-item review-level summary + reviewer re-request roster) — show all drafts in one batch and wait for explicit user OK per `~/.claude/rules/shotloom.md` and `~/.claude/rules/git-defaults.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
 - `gh pr edit --base`, `--title`, `--draft`, label changes — never done by this skill; if they were, they would still need approval.
 - `gh pr merge`, `gh pr close`, `gh pr reopen`, `gh pr ready`, `gh pr update-branch`, `gh pr review --approve`/`--request-changes`, top-level PR comments via `/issues/<N>/comments` — never done by this skill.
 
@@ -362,8 +362,8 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 
 ## Binding Rules
 
-- **Repo-specific rule wins.** `~/.claude/rules/shotloom.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git.md` is supplementary — it applies only where shotloom-git.md does not override.
-- **Reply inline on each individual review comment**, NOT top-level PR comment (per `rules/git.md`).
+- **Repo-specific rule wins.** `~/.claude/rules/shotloom.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git-defaults.md` is supplementary — it applies only where shotloom-git.md does not override.
+- **Reply inline on each individual review comment**, NOT top-level PR comment (per `rules/git-defaults.md`).
 - **Suppressed items** — evaluate honestly; OK to defer scope-exceeding work.
 - **Commit message** — conventional, imperative, ≤80 char subject (per `docs/guidelines/commit-guideline.md` in the shotloom repo).
 - **No Co-Authored-By line.**
@@ -383,7 +383,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 - `~/.claude/skills/shotloom-make-pr/SKILL.md`
 - `~/.claude/skills/shotloom-review-before-pr/SKILL.md`
 - `~/.claude/skills/shotloom-linear-create-issue/SKILL.md`
-- `~/.claude/rules/git.md`, `~/.claude/rules/shotloom.md`
+- `~/.claude/rules/git-defaults.md`, `~/.claude/rules/shotloom.md`
 - `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
 
 ## Additional Resources

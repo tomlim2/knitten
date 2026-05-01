@@ -42,7 +42,7 @@ File name: `{topic}.md` in `~/.claude/rules/`.
 
 - Lowercase, hyphen-separated, short (1-3 words).
 - Scope prefix if domain-specific: `cinev-*`.
-- Examples: `git.md`, `naming.md`, `tool-permissions.md`, `cinev-git.md`, `multi-agent.md`.
+- Examples: `git-defaults.md`, `author-naming.md`, `author-permissions.md`, `cinev-git.md`, `shotloom.md`.
 
 ---
 

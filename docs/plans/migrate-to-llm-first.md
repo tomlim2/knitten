@@ -53,13 +53,12 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 |------|--------|-----------|
 | `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md`, `index.md` | `auto` | (CLAUDE.md @import) |
 | `reread-repo-conventions.md` | `triggered` | start of non-trivial work in any repo |
-| `testing.md` | `triggered` | writing or reviewing code with tests |
-| `naming.md` | `triggered` | creating a command or skill |
-| `command-frontmatter.md` | `triggered` | creating a command |
-| `tool-permissions.md` | `triggered` | creating a command or skill |
+| `test-write.md` | `triggered` | writing or reviewing code with tests |
+| `author-naming.md` | `triggered` | creating a command or skill |
+| `author-frontmatter.md` | `triggered` | creating a command |
+| `author-permissions.md` | `triggered` | creating a command or skill |
 | `obsidian.md` | `triggered` | working in the Obsidian vault |
 | `cinev-git.md` | `triggered` | git op in a CINEV repo |
-| `multi-agent.md` | `triggered` | assigned as 지통실 #1 (1호기) |
 | `shotloom.md` | `triggered` | working in the shotloom repo |
 
 Frontmatter shape:
@@ -92,8 +91,8 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 | Goal | Read in this order |
 |------|---------------------|
 | Edit any LLM-read doc | standards/policy/llm-first-docs.md |
-| Create a new slash command | rules/naming.md → rules/command-frontmatter.md → standards/authoring/slash-commands.md |
-| Create a new skill | rules/naming.md → standards/authoring/slash-commands.md |
+| Create a new slash command | rules/author-naming.md → rules/author-frontmatter.md → standards/authoring/slash-commands.md |
+| Create a new skill | rules/author-naming.md → standards/authoring/slash-commands.md |
 | Tag an Obsidian note | standards/obsidian/obsidian-tag-taxonomy.md |
 | Write an Obsidian note | rules/obsidian.md → standards/obsidian/obsidian-format.md |
 
@@ -103,7 +102,6 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 |------|------|
 | Work in shotloom repo | rules/shotloom.md |
 | Git op in a CINEV repo | rules/cinev-git.md |
-| Multi-agent dispatch (1호기) | rules/multi-agent.md → standards/multi-agent/multi-agent-ops.md |
 | Set up a new machine | README.md "Setup" section |
 
 ## Reviewing
@@ -187,7 +185,6 @@ standards/
 │   ├── review-ux-python-gui.md
 │   └── review-ux-writing.md
 ├── multi-agent/
-│   ├── multi-agent-ops.md
 │   ├── agent-workflow.md
 │   └── delegation.md
 ├── language/

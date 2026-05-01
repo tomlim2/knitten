@@ -14,8 +14,8 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 | Design a new layer (rule / standard / skill category / validator) | [`claude/standards/policy/agent-first-policy.md`](claude/standards/policy/agent-first-policy.md) |
 | Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
 | Look up a term or recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
-| Create a new slash command | [`claude/rules/naming.md`](claude/rules/naming.md) → [`claude/rules/command-frontmatter.md`](claude/rules/command-frontmatter.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
-| Create a new skill | [`claude/rules/naming.md`](claude/rules/naming.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
+| Create a new slash command | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/rules/author-frontmatter.md`](claude/rules/author-frontmatter.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
+| Create a new skill | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
 | Create a new rule | [`claude/rules/index.md`](claude/rules/index.md) (frontmatter pattern) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
 | Create a new standard | [`claude/standards/index.md`](claude/standards/index.md) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
 | Tag an Obsidian note | [`claude/standards/obsidian/obsidian-tag-taxonomy.md`](claude/standards/obsidian/obsidian-tag-taxonomy.md) |
@@ -30,7 +30,6 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 |------|------|
 | Work in shotloom repo | [`claude/rules/shotloom.md`](claude/rules/shotloom.md) |
 | Git op in a CINEV repo | [`claude/rules/cinev-git.md`](claude/rules/cinev-git.md) → [`claude/standards/cinev/cinev-git-workflow.md`](claude/standards/cinev/cinev-git-workflow.md) |
-| Multi-agent dispatch (1호기) | [`claude/rules/multi-agent.md`](claude/rules/multi-agent.md) → [`claude/standards/multi-agent/multi-agent-ops.md`](claude/standards/multi-agent/multi-agent-ops.md) |
 | Set up a new machine | [`README.md`](README.md) "Setup" section |
 | Resolve a doc storage path | `claude/skills/caol-resolve-doc-path/SKILL.md` |
 

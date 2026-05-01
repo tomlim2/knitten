@@ -14,10 +14,10 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 caol-ila/
 ├── claude/                   # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Session hub (loaded every session)
-│   ├── rules/      (15)      # Always-applied constraints (terse, ≤50 lines each)
-│   ├── standards/  (38)      # Reference docs, on-demand
+│   ├── rules/      (21)      # Always-applied constraints (terse, ≤50 lines each)
+│   ├── standards/  (42)      # Reference docs, on-demand
 │   ├── commands/   (45)      # Slash command .md files
-│   ├── skills/     (131)     # Skill directories with SKILL.md
+│   ├── skills/     (130)     # Skill directories with SKILL.md
 │   └── private/              # Gitignored — machine config, secrets
 │       └── caol-config/      # Per-machine paths and specs (JSON)
 └── README.md
@@ -63,11 +63,11 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Skills (131)
+## Skills (130)
 
 | Category | Count |
 |----------|------:|
-| `dev-*` | 26 |
+| `dev-*` | 25 |
 | `shotloom-*` | 19 |
 | `cci-*` | 17 |
 | `caol-*` | 15 |
@@ -89,7 +89,7 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Standards (43)
+## Standards (42)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
@@ -97,7 +97,7 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 |-------|-------|
 | Policy | `agent-first-policy.md`, `garden-review.md`, `principles.md` |
 | Authoring | `llm-first-docs.md`, `slash-commands.md`, `command-skill-reference.md` |
-| Multi-agent ops | `multi-agent-ops.md`, `agent-workflow.md`, `delegation.md` |
+| Multi-agent ops | `agent-workflow.md`, `delegation.md` |
 | Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
 | Unreal Engine | `unreal-engine-cpp.md`, `unreal-engine-asset.md`, `arp-skeleton.md` |
 | Code review | `review-template.md`, `review-spec-doc.md`, `review-ai-motion.md`, `review-3d-rendering.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-ux.md`, `review-ux-python-gui.md`, `review-ux-writing.md` |
@@ -109,17 +109,17 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 ---
 
-## Rules (22)
+## Rules (21)
 
 Always-applied constraints in `claude/rules/`. Loaded every session via CLAUDE.md `@import`.
 
 | Group | Files |
 |-------|-------|
-| Core (auto, default-counters) | `git.md`, `behavior.md`, `verify-before-report.md`, `security.md`, `session-start.md` |
-| Workflow (triggered) | `coding.md`, `reread-repo-conventions.md`, `testing.md`, `slack.md`, `writing.md`, `doc-write.md` |
+| Core (auto, default-counters) | `git-defaults.md`, `behavior.md`, `verify-before-report.md`, `security.md`, `session-start.md` |
+| Workflow (triggered) | `code-write.md`, `reread-repo-conventions.md`, `test-write.md`, `slack.md`, `writing-external.md`, `doc-write.md` |
 | PR lifecycle (triggered) | `pr-mutate.md`, `pr-comment.md`, `pr-create.md` |
-| Authoring (triggered) | `naming.md`, `command-frontmatter.md`, `tool-permissions.md` |
-| Domain (triggered) | `obsidian.md`, `cinev-git.md`, `multi-agent.md`, `shotloom.md` |
+| Authoring (triggered) | `author-naming.md`, `author-frontmatter.md`, `author-permissions.md` |
+| Domain (triggered) | `obsidian.md`, `cinev-git.md`, `shotloom.md` |
 | Index | `index.md` |
 
 ---

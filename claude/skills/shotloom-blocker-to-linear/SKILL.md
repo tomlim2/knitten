@@ -43,7 +43,7 @@ If the user's message starts with "blocker" / "blocked" / "stuck" / "막혔" (ko
 
 ### Step 3: Show draft + confirm
 
-Draft goes to user first. Wait for explicit approval before posting. This is per-comment approval per `rules/git.md` — this skill is NOT in the auto-pr exemption.
+Draft goes to user first. Wait for explicit approval before posting. This is per-comment approval per `rules/git-defaults.md` — this skill is NOT in the auto-pr exemption.
 
 ### Step 4: Post via Linear MCP
 

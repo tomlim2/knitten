@@ -13,7 +13,6 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | [`slash-commands.md`](authoring/slash-commands.md) | creating a command — frontmatter, patterns, templates |
 | [`command-skill-reference.md`](authoring/command-skill-reference.md) | looking up an existing command or skill |
 | **Multi-agent** | |
-| [`multi-agent-ops.md`](multi-agent/multi-agent-ops.md) | assigned as 지통실 #1 (1호기) |
 | [`agent-workflow.md`](multi-agent/agent-workflow.md) | designing a multi-pass agent pipeline |
 | [`delegation.md`](multi-agent/delegation.md) | delegating a task to a subagent |
 | **Research / specs** | |
