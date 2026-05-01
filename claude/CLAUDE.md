@@ -7,13 +7,16 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 ---
 
-## LLM-first docs — always apply
+## LLM-first docs — default for everything written
 
-When creating or editing any file the LLM reads — `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md` — apply `standards/llm-first-docs.md`. Read it before the first such edit in a session. Run its self-audit checklist before committing.
+Every artifact you produce is LLM-first by default. Read `standards/llm-first-docs.md` before the first such write in a session. Run its self-audit checklist before committing.
 
-This rule applies regardless of who initiated the edit (user request, session-start cleanup, or follow-up after another change).
+Two exceptions only:
 
-Human-first docs (`README.md`, `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md`) are exempt.
+1. **Obsidian vault notes you write for the user** — `claude/projects/*/days/*.md` and `claude/projects/*/learnings/*.md`. These are the user's personal recall storage; narrative and analogies are welcome.
+2. **Chat responses summarizing to the user** — natural prose is fine in the conversation itself.
+
+Everything else follows LLM-first rules. Explicitly includes: CLAUDE.md, rules, skills, commands, standards, repo READMEs, ADRs, PR bodies, commit messages, AGENTS.md, code comments, **and every agent-to-agent handoff** (`asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts).
 
 ---
 

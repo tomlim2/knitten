@@ -1,8 +1,18 @@
 # LLM-First Document Standard
 
-Applies to every doc the LLM reads at session start or per invocation: `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`.
+Default for every artifact Claude writes.
 
-Does NOT apply to human-first docs: `README.md`, `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md`.
+Applies to (non-exhaustive):
+- `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
+- Every agent-to-agent handoff: `asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts
+- Repo `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
+- PR bodies, commit messages, code comments, issue descriptions
+
+Does NOT apply to (exceptions):
+- Obsidian vault notes written for the user: `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md`
+- Chat responses summarizing to the user in conversation
+
+If unsure, treat the doc as LLM-first.
 
 ---
 
