@@ -89,13 +89,13 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Standards (39)
+## Standards (40)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 | Group | Files |
 |-------|-------|
-| Policy | `agent-first-policy.md` |
+| Policy | `agent-first-policy.md`, `garden-review.md` |
 | Authoring | `llm-first-docs.md`, `slash-commands.md`, `command-skill-reference.md` |
 | Multi-agent ops | `multi-agent-ops.md`, `agent-workflow.md`, `delegation.md` |
 | Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |

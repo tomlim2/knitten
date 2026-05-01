@@ -273,17 +273,17 @@ Wire as a pre-commit hook or pre-push CI gate.
 
 **Classification rule:** Each file is classified individually by reading its content + cross-ref count. **NO blanket `accepted` default** — an unread file is `proposed` until reviewed. `llm-first-docs.md` starts as `proposed`.
 
-### P3 — Concept adoption (defer; evaluate after P0–P2)
+### P3 — Concept adoption (resolved at v3.1.0 tag)
 
-| Concept | Source | Decision |
-|---------|--------|----------|
-| Tech-debt register (`docs/tech-debt/`) | AFDS v2 | Adopt if 3+ items accumulate that don't fit elsewhere |
-| Gardening Review Checklist | AFDS v2 | Codify after P0/P1 done — the steps just executed are the checklist |
-| Diátaxis quadrant tag | Diátaxis | Adopt for Obsidian vault `topics/`, `learnings/`, `specs/` only |
-| Module-doc-template (per-skill) | AFDS v2 | Defer — 131 skills migration cost too high |
-| Roadmap-item-template | AFDS v2 | Adopt only if needed |
-| `commands/` ↔ `skills/` merge | Industry trend | Defer indefinitely |
-| `rules/auto/` `rules/triggered/` subfolders | — | Skip — `load:` frontmatter (P0.1) covers this |
+| Concept | Decision (resolved) |
+|---------|--------------------|
+| Tech-debt register (`docs/tech-debt/`) | **Defer** — 0 items currently. Revisit when 3+ accumulate. |
+| Gardening Review Checklist | **Adopted** — codified as `standards/policy/garden-review.md` (status: proposed; promote after second pass) |
+| Diátaxis quadrant tag | **Out of scope** — vault-only concern. Track in `split-vault-folders.md` if needed. |
+| Module-doc-template (per-skill) | **Skip** — 131-skill migration cost not justified. |
+| Roadmap-item-template | **Defer** — no current need. |
+| `commands/` ↔ `skills/` merge | **Skip** — defer indefinitely. |
+| `rules/auto/` `rules/triggered/` subfolders | **Skip** — `load:` frontmatter (P0.1) covers this. |
 
 ---
 

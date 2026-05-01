@@ -12,6 +12,7 @@ Standards contain the rationale, examples, and templates that rules link back to
 | Standard | When to read |
 |----------|-------------|
 | [`agent-first-policy.md`](policy/agent-first-policy.md) | **Always** before designing a new layer (rule, standard, skill category, validator) or resolving a conflict between artifacts |
+| [`garden-review.md`](policy/garden-review.md) | Before tagging a minor version, after 30+ days clean, or when a structural review is requested |
 
 ## Command & Skill Authoring
 
