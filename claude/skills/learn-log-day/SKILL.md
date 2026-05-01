@@ -127,7 +127,7 @@ Template: see `~/.claude/templates/devlog/topic.md`
 ### Frontmatter (Properties)
 
 All files require YAML frontmatter. Follow the tag taxonomy:
-**Full taxonomy: `~/.claude/standards/obsidian-tag-taxonomy.md`**
+**Full taxonomy: `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`**
 
 | File | frontmatter tags |
 |------|-----------------|

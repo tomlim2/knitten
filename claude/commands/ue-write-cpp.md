@@ -57,11 +57,11 @@ Usage: /ue-write-cpp <description or file path>
 
 **Purpose:** Write UE C++ code following the coding standard.
 **Input:** Scope from Pass 1
-**Reference:** Read `~/.claude/standards/unreal-engine-cpp.md` before writing any code
+**Reference:** Read `~/.claude/standards/unreal/unreal-engine-cpp.md` before writing any code
 **Output:** New or modified .h and .cpp files
 **Execution:** Inline
 
-1. Read `~/.claude/standards/unreal-engine-cpp.md`
+1. Read `~/.claude/standards/unreal/unreal-engine-cpp.md`
 2. Write code following ALL rules from the standard:
    - Brace style (always braces, even single-line bodies)
    - Loop variable naming (meaningful names, not `i`/`j`)
@@ -76,11 +76,11 @@ Usage: /ue-write-cpp <description or file path>
 
 **Purpose:** Verify generated code against the full review checklist.
 **Input:** Files from Pass 2
-**Reference:** Read `~/.claude/standards/review-code-unreal-cpp.md` and use as checklist
+**Reference:** Read `~/.claude/standards/review/review-code-unreal-cpp.md` and use as checklist
 **Output:** Issue table
 **Execution:** Inline
 
-1. Read `~/.claude/standards/review-code-unreal-cpp.md`
+1. Read `~/.claude/standards/review/review-code-unreal-cpp.md`
 2. Read every file written or modified in Pass 2
 3. Check against ALL categories in the review standard:
    - General code quality (readability, naming, DRY, error handling)

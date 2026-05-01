@@ -8,7 +8,7 @@ allowed-tools: Task, WebSearch, WebFetch, Read, Write, Glob
 
 Multi-angle web research with source verification and structured compilation.
 
-**Standards**: Follow `~/.claude/standards/research-methodology.md` for search strategies and source evaluation.
+**Standards**: Follow `~/.claude/standards/research/research-methodology.md` for search strategies and source evaluation.
 ## Target
 
 $ARGUMENTS

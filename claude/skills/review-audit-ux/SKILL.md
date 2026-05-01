@@ -58,7 +58,7 @@ Parse the argument:
 
 ### Step 2: Read the Checklist
 
-Read `~/.claude/standards/review-ux.md` for the full checklist.
+Read `~/.claude/standards/review/review-ux.md` for the full checklist.
 
 ### Step 3: Read Source Files
 
@@ -80,7 +80,7 @@ For each finding, record:
 
 ### Step 5: Output
 
-Follow the output format defined in `~/.claude/standards/review-template.md`.
+Follow the output format defined in `~/.claude/standards/review/review-template.md`.
 
 - Use **Standards Applied**: `review-ux.md` (UX/UI Audit)
 - **Standards Compliance** section shows pass/fail per category (§1–§10)
@@ -90,6 +90,6 @@ Follow the output format defined in `~/.claude/standards/review-template.md`.
 
 ## Related
 
-- `standards/review-ux.md` — UX/UI audit checklist (70+ items)
-- `standards/review-template.md` — Review output format
+- `standards/review/review-ux.md` — UX/UI audit checklist (70+ items)
+- `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS standards)

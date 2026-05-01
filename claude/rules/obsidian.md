@@ -31,4 +31,4 @@ Applies to ANY repo and ANY day. The only gate is "diff is purely Obsidian docs"
 - **PR operations still need per-PR approval.** `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit`, and any review/issue comment are NEVER auto-exempt.
 - **Repo-specific stricter rules win.** If the repo has its own pre-PR/pre-push gates (e.g. shotloom's fmt/clippy/check/doc-paths chain via `~/.claude/rules/shotloom.md`), run those gates first. The Obsidian exception removes the verbal-approval step, not validation.
 
-Full format spec + tag conventions (read before creating/editing Obsidian docs): `~/.claude/standards/obsidian-format.md`.
+Full format spec + tag conventions (read before creating/editing Obsidian docs): `~/.claude/standards/obsidian/obsidian-format.md`.

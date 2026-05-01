@@ -317,7 +317,7 @@ git -C <repo_path> diff origin/develop...<merge_branch> --name-only \
 
 #### Check 5: Asset naming convention
 
-Check changed `.uasset` and `.umap` filenames against UE naming rules (see `standards/unreal-engine-asset.md`). This is a path-based check — no UE Editor needed.
+Check changed `.uasset` and `.umap` filenames against UE naming rules (see `standards/unreal/unreal-engine-asset.md`). This is a path-based check — no UE Editor needed.
 
 Rules checked from filename:
 - **ASCII_ONLY** (ERROR): No Korean, CJK, emoji, or non-ASCII characters

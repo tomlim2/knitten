@@ -54,7 +54,7 @@ Read the full spec document. Note:
 
 ### Step 3: Read the Checklist
 
-Read `~/.claude/standards/review-spec-doc.md` for the full 32-item checklist.
+Read `~/.claude/standards/review/review-spec-doc.md` for the full 32-item checklist.
 
 ### Step 4: Audit (4 Perspectives + Document Quality)
 
@@ -83,7 +83,7 @@ For each finding, record:
 
 ### Step 5: Output
 
-Follow the output format defined in `~/.claude/standards/review-template.md`.
+Follow the output format defined in `~/.claude/standards/review/review-template.md`.
 
 - Use **Standards Applied**: `review-spec-doc.md` (Spec Document Audit)
 - **Standards Compliance** section shows pass/fail per category (§1–§5)
@@ -93,7 +93,7 @@ Follow the output format defined in `~/.claude/standards/review-template.md`.
 
 ## Related
 
-- `standards/review-spec-doc.md` — Spec document audit checklist (32 items)
-- `standards/review-template.md` — Review output format
+- `standards/review/review-spec-doc.md` — Spec document audit checklist (32 items)
+- `standards/review/review-template.md` — Review output format
 - `skills/review-audit-ux/SKILL.md` — UX/UI code audit
 - `skills/review-audit-web/SKILL.md` — JS/CSS code quality review

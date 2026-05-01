@@ -8,7 +8,7 @@ Validate and fix Unreal Engine asset names against naming conventions.
 
 ## Standards Reference
 
-**Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
+**Asset Naming Conventions:** `~/.claude/standards/unreal/unreal-engine-asset.md`
 
 This skill enforces all 9 naming rules defined in the asset naming standard. See the standard for complete details on:
 - Validation rules (ASCII_ONLY, PREFIX, PASCAL_CASE, and similar conventions)

@@ -3,7 +3,7 @@ status: active
 load: triggered
 trigger: continuing the LLM-first documentation cleanup
 charter-anchor: claude/CLAUDE.md → "Repository charter"
-standard: claude/standards/llm-first-docs.md
+standard: claude/standards/policy/llm-first-docs.md
 created: 2026-05-01
 ---
 
@@ -16,7 +16,7 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 ## Context (read first)
 
 - **Charter:** `caol-ila` is an LLM-first repository. Every artifact optimizes for LLM efficiency, accuracy, clarity. Human-readable output only on explicit user request. See `claude/CLAUDE.md` → "Repository charter".
-- **Operational standard:** `claude/standards/llm-first-docs.md` — 7 rules (actionability, explicit enumeration, decision-tree, self-contained, paired examples, no duplication, no rhetoric) + length budgets + self-audit checklist.
+- **Operational standard:** `claude/standards/policy/llm-first-docs.md` — 7 rules (actionability, explicit enumeration, decision-tree, self-contained, paired examples, no duplication, no rhetoric) + length budgets + self-audit checklist.
 - **Audience:** This file is read by the next LLM session continuing the work. Treat as agent-to-agent handoff per llm-first-docs.md.
 - **Tag baseline:** `v3.0.0` (charter declared, CLAUDE.md refactored, rules/ + top-3 standards audited).
 
@@ -26,7 +26,7 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 
 | Commit | Subject |
 |--------|---------|
-| `12ef8c5` | Add `standards/llm-first-docs.md`, refactor `CLAUDE.md` (163 → 71 lines) |
+| `12ef8c5` | Add `standards/policy/llm-first-docs.md`, refactor `CLAUDE.md` (163 → 71 lines) |
 | `ac7765e` | Add hard rule to always apply llm-first-docs |
 | `aaf4a2b` | Tighten exception scope (vault notes + chat only) |
 | `2d31166` | Explicit-ask switch replaces blanket README exemption |
@@ -91,11 +91,11 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 
 | Goal | Read in this order |
 |------|---------------------|
-| Edit any LLM-read doc | standards/llm-first-docs.md |
-| Create a new slash command | rules/naming.md → rules/command-frontmatter.md → standards/slash-commands.md |
-| Create a new skill | rules/naming.md → standards/slash-commands.md |
-| Tag an Obsidian note | standards/obsidian-tag-taxonomy.md |
-| Write an Obsidian note | rules/obsidian.md → standards/obsidian-format.md |
+| Edit any LLM-read doc | standards/policy/llm-first-docs.md |
+| Create a new slash command | rules/naming.md → rules/command-frontmatter.md → standards/authoring/slash-commands.md |
+| Create a new skill | rules/naming.md → standards/authoring/slash-commands.md |
+| Tag an Obsidian note | standards/obsidian/obsidian-tag-taxonomy.md |
+| Write an Obsidian note | rules/obsidian.md → standards/obsidian/obsidian-format.md |
 
 ## Operating
 
@@ -103,7 +103,7 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 |------|------|
 | Work in shotloom repo | rules/shotloom.md |
 | Git op in a CINEV repo | rules/cinev-git.md |
-| Multi-agent dispatch (1호기) | rules/multi-agent.md → standards/multi-agent-ops.md |
+| Multi-agent dispatch (1호기) | rules/multi-agent.md → standards/multi-agent/multi-agent-ops.md |
 | Set up a new machine | README.md "Setup" section |
 
 ## Reviewing
@@ -128,22 +128,22 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 
 **Files:**
 ```
-standards/arp-skeleton.md
-standards/cinev-character-asset-naming.md
-standards/delegation.md
-standards/design-system.md
-standards/research-methodology.md
-standards/repo-paths-keys.md
-standards/review-code-tsl.md
-standards/review-code-css.md
-standards/review-code-unreal-cpp.md
-standards/review-template.md
-standards/review-spec-doc.md
-standards/review-code-unreal-python.md
-standards/review-ux-python-gui.md
-standards/review-ux-writing.md
-standards/review-ux.md
-standards/unreal-engine-asset.md
+standards/unreal/arp-skeleton.md
+standards/cinev/cinev-character-asset-naming.md
+standards/multi-agent/delegation.md
+standards/language/design-system.md
+standards/research/research-methodology.md
+standards/system/repo-paths-keys.md
+standards/review/review-code-tsl.md
+standards/review/review-code-css.md
+standards/review/review-code-unreal-cpp.md
+standards/review/review-template.md
+standards/review/review-spec-doc.md
+standards/review/review-code-unreal-python.md
+standards/review/review-ux-python-gui.md
+standards/review/review-ux-writing.md
+standards/review/review-ux.md
+standards/unreal/unreal-engine-asset.md
 ```
 
 Plus all `claude/commands/*.md` (count via `ls claude/commands/*.md | wc -l` first; budget per file = same as standards).

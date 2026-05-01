@@ -133,7 +133,7 @@ Every pass in an agent MUST declare these 6 fields:
 | **Name** | `Pass N: {PassType}` | `Pass 1: Understand` |
 | **Purpose** | One sentence | "Identify root cause and affected files" |
 | **Input** | Previous pass output or user argument | `$ARGUMENTS`, "Issue table from Pass 3" |
-| **Reference** | Standard path to read at pass start, or "none" | `~/.claude/standards/unreal-engine-cpp.md` |
+| **Reference** | Standard path to read at pass start, or "none" | `~/.claude/standards/unreal/unreal-engine-cpp.md` |
 | **Output** | What this pass produces | "Modified .cpp and .h files" |
 | **Execution** | `Inline` or `Subagent` | `Inline` |
 

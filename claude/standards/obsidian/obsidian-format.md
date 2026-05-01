@@ -65,7 +65,7 @@ content
 
 ## Tag Convention
 
-**Full taxonomy (read before tagging): `~/.claude/standards/obsidian-tag-taxonomy.md`**
+**Full taxonomy (read before tagging): `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`**
 
 3-axis system: `type/` (always) + `project/` (always) + optional `area/`, `lang/`, `tool/`, `status/`.
 

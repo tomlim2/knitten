@@ -9,7 +9,7 @@ The meta-policy that governs every other document, rule, skill, and command in `
 | Term | Layer | Meaning |
 |------|-------|---------|
 | **agent-first** | Stance (this file) | Who the repository serves: an autonomous agent that reads, executes, and edits artifacts. Format-agnostic, model-agnostic, future-proof against non-LLM agents. |
-| **llm-first** | Mechanics (`standards/llm-first-docs.md`) | How artifacts must be written *because* the agent is currently an LLM: token-efficient, cold-start parsable, structured for limited context windows. |
+| **llm-first** | Mechanics (`standards/policy/llm-first-docs.md`) | How artifacts must be written *because* the agent is currently an LLM: token-efficient, cold-start parsable, structured for limited context windows. |
 
 agent-first is the WHY/WHO; llm-first is the HOW that follows from "the agent is an LLM today." If a non-LLM agent ever becomes the primary reader, the llm-first mechanics get re-derived; the agent-first stance does not change.
 
@@ -35,7 +35,7 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 | Layer | File(s) | Role | Mutability |
 |-------|---------|------|-----------|
 | 1. Charter | `CLAUDE.md` → "Repository charter" | One-paragraph stance, the "why" | Rarely changed; change requires re-deriving lower layers |
-| 2. Operational standard | `standards/llm-first-docs.md` | Per-document writing rules: banned terms, length budgets, structure | Changed when a new defect class is detected; bump validator with it |
+| 2. Operational standard | `standards/policy/llm-first-docs.md` | Per-document writing rules: banned terms, length budgets, structure | Changed when a new defect class is detected; bump validator with it |
 | 3. Always-applied rules | `rules/*.md` (auto-loaded subset) | Short enforceable directives loaded every session | Add when a behavior must fire without a trigger |
 | 4. On-demand standards | `standards/*.md` | Long reference docs, loaded when a triggering condition fires | Add when reference exceeds a rule's length budget |
 | 5. Triggered rules | `rules/*.md` (triggered subset) | Directives loaded only on declared triggers | Add when a constraint applies only to a narrow context |

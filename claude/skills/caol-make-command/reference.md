@@ -159,7 +159,7 @@ How to use this skill, with examples.
 8. **Include guard**: If using `$ARGUMENTS`
 9. **Test**: Verify command works as expected
 
-**Complete pattern documentation:** `~/.claude/standards/slash-commands.md`
+**Complete pattern documentation:** `~/.claude/standards/authoring/slash-commands.md`
 
 ### For Skills
 

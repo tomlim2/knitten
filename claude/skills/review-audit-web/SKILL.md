@@ -41,6 +41,6 @@ Output follows `review-template.md` format.
 ## Related
 
 - `commands/review-audit-web.md` — Slash command definition
-- `standards/review-code-javascript.md` — JS review checklist
-- `standards/review-code-css.md` — CSS review checklist
-- `standards/review-template.md` — Review output format
+- `standards/review/review-code-javascript.md` — JS review checklist
+- `standards/review/review-code-css.md` — CSS review checklist
+- `standards/review/review-template.md` — Review output format

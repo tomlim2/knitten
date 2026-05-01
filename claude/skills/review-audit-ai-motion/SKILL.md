@@ -24,7 +24,7 @@ Usage: `/review-audit-ai-motion <source.fbx> [retargeted]`
 
 ### Step 1: Load the rubric
 
-Read `~/.claude/standards/review-ai-motion.md` in full. That document defines:
+Read `~/.claude/standards/review/review-ai-motion.md` in full. That document defines:
 - 7 core metrics (foot skate, penetration, jitter, contact accuracy, pose plausibility, root correlation, temporal coherence)
 - Grade thresholds (A/B/C/F)
 - **Fault attribution matrix** — the key deliverable
@@ -174,6 +174,6 @@ RECOMMEND:
 
 ## Related
 
-- `~/.claude/standards/review-ai-motion.md` — rubric + fault matrix (single source of truth)
+- `~/.claude/standards/review/review-ai-motion.md` — rubric + fault matrix (single source of truth)
 - `~/.claude/skills/review-audit-retarget/SKILL.md` — for **V** stage (viewer/skinning) diagnosis
 - `~/.claude/skills/cci-codex-analyze-motion/SKILL.md` — deeper Codex analysis, bone hierarchy diffs

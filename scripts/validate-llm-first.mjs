@@ -277,8 +277,12 @@ async function checkInventoryCounts() {
     const ents = await listDirOnce(path.join(claude, sub));
     return ents.filter((e) => e.isDirectory()).length;
   };
+  const countMdRecursive = async (sub) => {
+    const files = await walk(path.join(claude, sub), (f) => f.endsWith(".md"));
+    return files.length;
+  };
   const actual = {
-    standards: await countFiles("standards"),
+    standards: await countMdRecursive("standards"),
     rules: await countFiles("rules"),
     commands: await countFiles("commands"),
     skills: await countDirs("skills"),

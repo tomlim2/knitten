@@ -24,8 +24,8 @@ Example: /research-rules prompt chaining error propagation
 
 Read these files first to understand what the current standards say (or don't say) about the target topic:
 
-- `~/.claude/standards/agent-workflow.md` — Agent patterns and pipeline rules
-- `~/.claude/standards/slash-commands.md` — Command authoring standard
+- `~/.claude/standards/multi-agent/agent-workflow.md` — Agent patterns and pipeline rules
+- `~/.claude/standards/authoring/slash-commands.md` — Command authoring standard
 
 Note any gaps — the goal is to find rules that fill them.
 

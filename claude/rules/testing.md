@@ -17,4 +17,4 @@ trigger: writing or reviewing code that includes tests
   - Verbatim file ports when the upstream project already has equivalent tests AND those tests will land in a follow-up test-port commit within the same PR.
 - **Do not delegate away the test:** "reviewer asked for tests" is a rule-miss, not a code review finding. If you are about to request PR approval and tests are missing, stop and write them first.
 - **Never weaken assertions to make a test pass.** If a test fails, fix the code, not the test.
-- Full authoring guidance (Read on demand): `~/.claude/standards/slash-commands.md` (for test scaffolding patterns in commands/skills)
+- Full authoring guidance (Read on demand): `~/.claude/standards/authoring/slash-commands.md` (for test scaffolding patterns in commands/skills)

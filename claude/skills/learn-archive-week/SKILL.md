@@ -134,7 +134,7 @@ source: claude
 ## Related
 
 - `learn-log-day` — 주중 일지 기록 (이 스킬이 주말에 sweep)
-- `~/.claude/standards/obsidian-format.md` — frontmatter/wikilink 규격
+- `~/.claude/standards/obsidian/obsidian-format.md` — frontmatter/wikilink 규격
 - `~/.claude/rules/obsidian.md` — 적용 규칙
 
 ## Additional Resources

@@ -56,7 +56,7 @@ Parse the argument:
 
 ### Step 2: Read the Checklist
 
-Read `~/.claude/standards/review-3d-rendering.md` for the full checklist.
+Read `~/.claude/standards/review/review-3d-rendering.md` for the full checklist.
 
 ### Step 3: Identify 3D Stack
 
@@ -92,7 +92,7 @@ For each finding, record:
 
 ### Step 6: Output
 
-Follow the output format defined in `~/.claude/standards/review-template.md`.
+Follow the output format defined in `~/.claude/standards/review/review-template.md`.
 
 - Use **Standards Applied**: `review-3d-rendering.md` (3D Rendering Performance)
 - **Standards Compliance** section shows pass/fail per category (§1–§10)
@@ -102,8 +102,8 @@ Follow the output format defined in `~/.claude/standards/review-template.md`.
 
 ## Related
 
-- `standards/review-3d-rendering.md` — 3D rendering performance checklist (55+ items)
-- `standards/three-shader-language.md` — TSL coding standards
-- `standards/review-template.md` — Review output format
+- `standards/review/review-3d-rendering.md` — 3D rendering performance checklist (55+ items)
+- `standards/language/three-shader-language.md` — TSL coding standards
+- `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS)
 - `skills/review-audit-ux/SKILL.md` — UX/UI review

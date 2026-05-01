@@ -20,25 +20,25 @@ If **any** match is found, set `has3D = true`. This determines whether subagent 
 Launch 3 Task subagents in parallel (+ 1 more if `has3D`). Each reads the relevant standard and audits all files in the target directory.
 
 **A. Code Quality** — `subagent_type: Explore`
-> Read `~/.claude/standards/review-code-javascript.md` and `~/.claude/standards/review-code-css.md`.
+> Read `~/.claude/standards/review/review-code-javascript.md` and `~/.claude/standards/review/review-code-css.md`.
 > Audit all JS/CSS files in the target directory.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
 
 **B. UX/UI Audit** — `subagent_type: Explore`
-> Read `~/.claude/standards/review-ux.md`.
+> Read `~/.claude/standards/review/review-ux.md`.
 > Audit all HTML/JS/CSS files in the target directory.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
 
 **C. UX Writing** — `subagent_type: Explore`
-> Read `~/.claude/standards/review-ux-writing.md`.
+> Read `~/.claude/standards/review/review-ux-writing.md`.
 > Audit all HTML/JS files in the target directory for UX writing issues.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
 
 **D. 3D Rendering** *(only if `has3D`)* — `subagent_type: Explore`
-> Read `~/.claude/standards/review-3d-rendering.md`.
+> Read `~/.claude/standards/review/review-3d-rendering.md`.
 > Identify the 3D stack (renderer, material system, dependencies).
 > Audit all JS/TS/GLSL/WGSL files in the target directory against the 55-item 3D rendering checklist.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
@@ -134,10 +134,10 @@ Output the final report in the format below.
 
 ## Related
 
-- `standards/review-code-javascript.md` — JS code quality checklist
-- `standards/review-code-css.md` — CSS code quality checklist
-- `standards/review-ux.md` — UX/UI audit checklist
-- `standards/review-ux-writing.md` — UX writing checklist
+- `standards/review/review-code-javascript.md` — JS code quality checklist
+- `standards/review/review-code-css.md` — CSS code quality checklist
+- `standards/review/review-ux.md` — UX/UI audit checklist
+- `standards/review/review-ux-writing.md` — UX writing checklist
 - `skills/dev-check-publish/SKILL.md` — Deploy readiness checklist
-- `standards/review-3d-rendering.md` — 3D rendering performance checklist (conditional)
-- `standards/review-template.md` — Review output format
+- `standards/review/review-3d-rendering.md` — 3D rendering performance checklist (conditional)
+- `standards/review/review-template.md` — Review output format

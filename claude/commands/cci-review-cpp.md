@@ -9,7 +9,7 @@ allowed-tools: "Bash(git:*), Read, Grep, Glob"
 Review C++ code changes against Unreal Engine coding standards and project conventions.
 ## Instructions
 
-You are tasked with reviewing C++ code. Follow the review standards in `~/.claude/standards/review-code-unreal-cpp.md`. All review standards and checklists are defined there.
+You are tasked with reviewing C++ code. Follow the review standards in `~/.claude/standards/review/review-code-unreal-cpp.md`. All review standards and checklists are defined there.
 
 ### Step 1: Determine Review Scope
 
@@ -51,7 +51,7 @@ For each file in scope:
 
 ### Step 4: Output
 
-Follow the output format defined in `~/.claude/standards/review-template.md`.
+Follow the output format defined in `~/.claude/standards/review/review-template.md`.
 Present findings grouped by file, with severity counts and a final verdict.
 
 ## Example Usage

@@ -2,7 +2,7 @@
 
 **LLM-first repository.** Global Claude Code configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. Symlinked to `~/.claude`.
 
-Charter, operational rules, and editing standard: [`claude/CLAUDE.md`](claude/CLAUDE.md) → [`claude/standards/llm-first-docs.md`](claude/standards/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Charter, operational rules, and editing standard: [`claude/CLAUDE.md`](claude/CLAUDE.md) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 

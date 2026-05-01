@@ -74,7 +74,7 @@ Each name consists of three parts separated by hyphens:
 
 **NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, and similar.
 
-**Advanced fields** (see `~/.claude/standards/slash-commands.md` "Frontmatter Reference (Full)" for the full table):
+**Advanced fields** (see `~/.claude/standards/authoring/slash-commands.md` "Frontmatter Reference (Full)" for the full table):
 
 - `name` — overrides directory/file-derived slash-name
 - `when_to_use` — extra trigger phrases, appended to description in the listing

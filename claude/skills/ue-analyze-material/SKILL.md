@@ -8,7 +8,7 @@ Export and analyze Unreal Engine material node graphs.
 
 ## Standards Reference
 
-**Asset Naming Conventions:** `~/.claude/standards/unreal-engine-asset.md`
+**Asset Naming Conventions:** `~/.claude/standards/unreal/unreal-engine-asset.md`
 
 Materials should follow naming conventions:
 - Base materials: `M_` prefix
