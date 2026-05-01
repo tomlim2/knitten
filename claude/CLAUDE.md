@@ -31,8 +31,9 @@ Switch to human-friendly style only when one of these triggers fires:
 | Trigger | Where |
 |---------|-------|
 | User explicitly requests it | "make this README friendlier", "expand for humans" |
-| Writing vault recall notes | `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md` |
 | Speaking in chat to the user | The conversation itself |
+
+**Vault notes are NOT a blanket exception.** Even `days/` and `learnings/` follow the structured-narrative variant of LLM-first (frontmatter, headers, tables, bold takeaway). Narrative is allowed *inside* sections, never as a replacement for structure. See `standards/obsidian/vault-audience.md` for the per-folder audience matrix.
 
 If unsure, default LLM-first. Full applies-to list: `standards/policy/llm-first-docs.md`.
 

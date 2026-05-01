@@ -12,6 +12,7 @@ trigger: working in the Obsidian vault
 - **Lists use `-`** — Ordered lists use `1.`.
 - **Tags in frontmatter** — Use structured tags: `type/`, `project/`, plus optional `area/`, `lang/`, `lib/`, `fmt/`, `sys/`, `llm/`, `tech/`, `hobby/`, `status/`. Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
 - **Location** — `{obsidian-vault}/claude/` for all Claude-authored docs.
+- **Audience declared by folder** — Every vault subfolder has a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Default for unmarked folders: strict LLM-first. See `~/.claude/standards/obsidian/vault-audience.md`.
 
 ## Auto-commit + auto-push for Obsidian-only changes
 
@@ -31,4 +32,4 @@ Applies to ANY repo and ANY day. The only gate is "diff is purely Obsidian docs"
 - **PR operations still need per-PR approval.** `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit`, and any review/issue comment are NEVER auto-exempt.
 - **Repo-specific stricter rules win.** If the repo has its own pre-PR/pre-push gates (e.g. shotloom's fmt/clippy/check/doc-paths chain via `~/.claude/rules/shotloom.md`), run those gates first. The Obsidian exception removes the verbal-approval step, not validation.
 
-Full format spec + tag conventions (read before creating/editing Obsidian docs): `~/.claude/standards/obsidian/obsidian-format.md`.
+Full audience matrix + style policy: `~/.claude/standards/obsidian/vault-audience.md`. Format spec + tag conventions: `~/.claude/standards/obsidian/obsidian-format.md`.

@@ -62,15 +62,19 @@ Author-side flow: `/shotloom-make-pr` Step 10c.
 - **No files at `claude/` root.** Every shotloom note lives inside `claude/projects/shotloom/` or its subfolders. Never drop files at `claude/shotloom-*.md`.
 - **No loose files at the project root either.** `claude/projects/shotloom/*.md` is forbidden except for one index/hub file (e.g. `README.md`). All other notes belong in a named subfolder.
 
-| Subfolder | Contents |
-|-----------|----------|
-| `days/` | Devlogs (one file per work day) |
-| `learnings/` | Vocabulary + project lessons |
-| `topics/` | Analysis and reference notes |
-| `asks/` | Handoffs |
-| `plans/` | Per-ticket plans |
-| `specs/` | Specs and ADRs |
-| `ops/` | Mission records and operational logs |
+| Subfolder | Audience | Contents |
+|-----------|----------|----------|
+| `days/` | human | Devlogs (one file per work day) |
+| `learnings/` | human | Vocabulary + project lessons |
+| `topics/` | LLM + human | Analysis and reference notes |
+| `asks/` | LLM | Handoffs and sub-agent briefs |
+| `plans/` | LLM | Per-ticket plans |
+| `specs/` | LLM + human | Forward design specs (NOT decisions) |
+| `decisions/` | LLM | ADR-style decision records (durable) |
+| `ops/missions/` | LLM | Cross-session mission records (durable) |
+| `ops/runs/` | LLM | One-shot snapshots and tool outputs (ephemeral) |
+
+Each subfolder has a `README.md` declaring its audience, style, and mutability. Per-folder README wins over this table when they disagree. Style policy: `~/.claude/standards/obsidian/vault-audience.md`.
 
 ## File naming convention
 

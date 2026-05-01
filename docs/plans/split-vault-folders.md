@@ -1,14 +1,21 @@
 ---
-status: active
+status: done
+completed: 2026-05-01
 load: triggered
 trigger: splitting Obsidian vault folders by mutation policy
 created: 2026-05-01
-parent: docs/plans/llm-first-cleanup.md
+parent: docs/plans/migrate-to-llm-first.md
 ---
 
-# Vault policy split — execution plan
+# Vault policy split — execution plan (done)
 
-Split mixed-mutation-policy folders in the Obsidian vault. Separated from `llm-first-cleanup.md` because vault content is human-read per charter exception, not LLM-first scope.
+**Done for shotloom on 2026-05-01.** Same template applies to other projects (`bevy-vrm/`, `cinev-studio/`, etc.) when their `ops/` and `specs/` accumulate enough mixed-mutability content to warrant it.
+
+Companion standard: `claude/standards/obsidian/vault-audience.md` — declares per-folder audience, style, and mutability. Each shotloom subfolder now carries a `README.md` matching that standard.
+
+---
+
+## Problem (resolved for shotloom)
 
 ---
 

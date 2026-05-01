@@ -89,7 +89,7 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Standards (40)
+## Standards (41)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
@@ -102,7 +102,7 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 | Unreal Engine | `unreal-engine-cpp.md`, `unreal-engine-asset.md`, `arp-skeleton.md` |
 | Code review | `review-template.md`, `review-spec-doc.md`, `review-ai-motion.md`, `review-3d-rendering.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-ux.md`, `review-ux-python-gui.md`, `review-ux-writing.md` |
 | CINEV | `cinev-git-workflow.md`, `cinev-character-asset-naming.md`, `cinev-vrm-shading.md`, `cci-slack.md` |
-| Obsidian | `obsidian-format.md`, `obsidian-tag-taxonomy.md` |
+| Obsidian | `vault-audience.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md` |
 | Research / specs | `research-methodology.md`, `tech-spec-template.md` |
 | System | `repo-paths-keys.md` |
 | Index | `index.md` |

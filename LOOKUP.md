@@ -18,7 +18,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 | Create a new rule | [`claude/rules/index.md`](claude/rules/index.md) (frontmatter pattern) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
 | Create a new standard | [`claude/standards/index.md`](claude/standards/index.md) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
 | Tag an Obsidian note | [`claude/standards/obsidian/obsidian-tag-taxonomy.md`](claude/standards/obsidian/obsidian-tag-taxonomy.md) |
-| Write an Obsidian note | [`claude/rules/obsidian.md`](claude/rules/obsidian.md) → [`claude/standards/obsidian/obsidian-format.md`](claude/standards/obsidian/obsidian-format.md) |
+| Write an Obsidian note (any folder) | [`claude/standards/obsidian/vault-audience.md`](claude/standards/obsidian/vault-audience.md) → [`claude/rules/obsidian.md`](claude/rules/obsidian.md) → [`claude/standards/obsidian/obsidian-format.md`](claude/standards/obsidian/obsidian-format.md) |
 | Write a code review | [`claude/standards/review/review-template.md`](claude/standards/review/review-template.md) → language-specific `review-code-*.md` |
 
 ---
