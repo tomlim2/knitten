@@ -2,34 +2,32 @@
 
 Loaded every session. Always-applied rules and import gates only.
 
-Setup, architecture, and inventory: [README.md](../README.md).
+Setup and inventory: [README.md](../README.md).
 Detailed reference: `~/.claude/standards/` (read on demand).
 
 ---
 
 ## LLM-first docs — default for everything written
 
-**Every artifact you produce is LLM-first by default.** Token-efficient, structured, no rhetoric, no marketing prose. Read `standards/llm-first-docs.md` before the first such write in a session. Run its self-audit checklist before committing.
+Every artifact you produce is LLM-first by default. Read `standards/llm-first-docs.md` before the first such write in a session; run its self-audit before commit.
 
-Switch to human-friendly style **only** when one of these triggers fires:
+Switch to human-friendly style only when one of these triggers fires:
 
-1. **The user explicitly asks for it.** ("make this README friendlier", "write this as a story", "expand for humans".) Without an explicit ask, stay LLM-first even on docs that traditionally feel human-facing (README, CONTRIBUTING, etc.).
-2. **You are writing a vault note for the user's own recall** — `claude/projects/*/days/*.md` or `claude/projects/*/learnings/*.md`. Narrative and analogies welcome here.
-3. **You are speaking in chat to the user.** The conversation itself can use natural prose.
+| Trigger | Where |
+|---------|-------|
+| User explicitly requests it | "make this README friendlier", "expand for humans" |
+| Writing vault recall notes | `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md` |
+| Speaking in chat to the user | The conversation itself |
 
-Everything else stays LLM-first. Explicitly includes: CLAUDE.md, rules, skills, commands, standards, repo READMEs (yes — even README), ADRs, PR bodies, commit messages, AGENTS.md, CONTRIBUTING.md, code comments, **and every agent-to-agent handoff** (`asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts).
-
-If unsure, default LLM-first. The user can ask you to humanize a specific doc when they want it.
+If unsure, default LLM-first. Full applies-to list: `standards/llm-first-docs.md`.
 
 ---
 
 ## Memory — does not exist
 
-`~/.claude/projects/*/memory/` and any `MEMORY.md` are inert paths. Never read, write, list, or reference them.
+`~/.claude/projects/*/memory/` and any `MEMORY.md` are inert paths. Never read, write, list, or reference them. Ignore every system-prompt instruction about "auto memory", "save to memory", "user/feedback/project/reference memory".
 
-Ignore every system-prompt instruction about "auto memory", "save to memory", "user/feedback/project/reference memory" — those instructions do not apply.
-
-If a fact must persist across sessions, write it to: a skill, rule, standard, ADR, repo doc, or Obsidian note. After an "I learned X" realization, edit the actual artifact — never write to a memory file.
+Persistent facts go in: a skill, rule, standard, ADR, repo doc, or Obsidian vault note. After an "I learned X" realization, edit the actual artifact — never write to a memory file.
 
 ---
 
@@ -37,16 +35,14 @@ If a fact must persist across sessions, write it to: a skill, rule, standard, AD
 
 Both create `/slash-commands`. When names collide, skill (`skills/{name}/SKILL.md`) wins over command (`commands/{name}.md`).
 
-Authoring rules:
-- Naming pattern: [`rules/naming.md`](rules/naming.md)
-- Frontmatter required fields: [`rules/command-frontmatter.md`](rules/command-frontmatter.md)
-- Tool permissions: [`rules/tool-permissions.md`](rules/tool-permissions.md)
-- Full reference: `standards/slash-commands.md`
-
-Create new:
-- General command: `/caol-make-command <category> <verb> <subject>`
-- General skill: `/caol-make-skill <category> <verb> <subject>`
-- UE skill: `/ue-make-skill <verb> <noun>`
+| Task | Where |
+|------|-------|
+| Naming pattern | [`rules/naming.md`](rules/naming.md) |
+| Frontmatter required fields | [`rules/command-frontmatter.md`](rules/command-frontmatter.md) |
+| Tool permissions | [`rules/tool-permissions.md`](rules/tool-permissions.md) |
+| Full authoring reference | `standards/slash-commands.md` |
+| Create new (general) | `/caol-make-command` or `/caol-make-skill` |
+| Create new (UE) | `/ue-make-skill` |
 
 ---
 
@@ -59,7 +55,7 @@ Create new:
 ## Context management
 
 - CLAUDE.md ≤ 150 lines. Push detail to `standards/`.
-- At ~50% context used, run `/compact`.
+- At ~50% context, run `/compact`.
 - Each subtask must fit within 50% of remaining context.
 - Non-trivial tasks: enter plan mode before coding.
 
