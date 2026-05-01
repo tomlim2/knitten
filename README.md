@@ -4,83 +4,122 @@
 
 Charter, operational rules, and editing standard: [`claude/CLAUDE.md`](claude/CLAUDE.md) → [`claude/standards/llm-first-docs.md`](claude/standards/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
-## Architecture
+---
+
+## Layout
 
 ```
 caol-ila/
-├── claude/                          # Symlinked to ~/.claude
-│   ├── CLAUDE.md                    # System hub (loaded every session)
-│   ├── commands/                    # 75 slash commands
-│   ├── skills/                      # 153 skill directories
-│   ├── standards/                   # 41 reference documents
-│   ├── rules/                       # Always-applied constraint files
-│   └── private/                     # Personal data vault (gitignored)
-│       └── caol-config/             # Machine-specific config JSONs
+├── claude/                   # Symlinked to ~/.claude
+│   ├── CLAUDE.md             # Session hub (loaded every session)
+│   ├── rules/      (15)      # Always-applied constraints (terse, ≤50 lines each)
+│   ├── standards/  (38)      # Reference docs, on-demand
+│   ├── commands/   (45)      # Slash command .md files
+│   ├── skills/     (131)     # Skill directories with SKILL.md
+│   └── private/              # Gitignored — machine config, secrets
+│       └── caol-config/      # Per-machine paths and specs (JSON)
 └── README.md
 ```
+
+Counts are live as of v3.0.0; see directory listings for current truth.
+
+---
 
 ## Setup
 
 ```bash
-# macOS/Linux
+# macOS / Linux
 ln -s /path/to/caol-ila/claude ~/.claude
 
 # Windows (admin PowerShell)
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\caol-ila\claude"
 ```
 
-Then initialize machine config:
+After symlinking, initialize machine config:
 
 ```
 /caol-manage-config setup
 ```
 
-This walks through filling in `~/.claude/private/caol-config/` — repo paths, machine tool paths (Obsidian, Blender, UnrealEditor), and hardware specs. Templates live in `skills/caol-manage-config/*.template.json`.
+This populates `~/.claude/private/caol-config/` from templates in `claude/skills/caol-manage-config/*.template.json`.
 
-## Commands (75)
+---
+
+## Commands (45)
 
 | Category | Count | Examples |
-|----------|-------|---------|
-| `cci-*` | 24 | `art-create-branch`, `manage-art-branch`, `validate-vrm`, `open-project` |
-| `caol-*` | 19 | `manage-config`, `make-command`, `make-skill`, `brief-today` |
-| `ue-*` | 9 | `analyze-material`, `validate-asset-name`, `check-redirectors` |
-| `tutoring-*` | 5 | `log-lesson`, `make-invoice`, `log-consultation` |
-| `dev-*` | 4 | `fix-bug`, `generate-spec`, `sync-design` |
-| `review-*` | 3 | `audit-ux`, `audit-web`, `audit-web-spec` |
-| `git-*` | 3 | `collect-commits`, `make-message`, `pull-repos` |
-| others | 8 | `pmx`, `learn`, `drink`, `vrm`, `writing`, `shotloom` |
+|----------|------:|---------|
+| `cci-*` | 18 | `cci-art-create-branch`, `cci-validate-vrm`, `cci-open-project` |
+| `caol-*` | 15 | `caol-manage-config`, `caol-make-command`, `caol-make-skill` |
+| `ue-*` | 3 | `ue-analyze-material`, `ue-validate-asset-name`, `ue-check-redirectors` |
+| `dev-*` | 3 | `dev-fix-bug`, `dev-generate-spec`, `dev-sync-design` |
+| `tutoring-*` | 2 | `tutoring-log-lesson`, `tutoring-make-invoice` |
+| `git-*` | 1 | `git-make-message` |
+| `learn-*` | 1 | `learn-log-day` |
+| `shotloom-*` | 1 | `shotloom-start-code` |
+| `writing-*` | 1 | `writing-fix-ai` |
 
-## Skills (153)
+---
 
-| Category | Count | Focus |
-|----------|-------|-------|
-| `marketing-*` | 33 | CRO, SEO, copy, ads, content strategy |
-| `dev-*` | 26 | Debugging, experiments, tools, design sync |
-| `shotloom-*` | 18 | PR workflow, Linear, WASM dev server |
-| `cci-*` | 17 | CINEV pipeline, VRM, PMX, Codex |
-| `caol-*` | 13 | Config management, skill/command authoring |
-| `ue-*` | 7 | Material analysis, asset validation, UE Python |
-| `review-*` | 6 | Rust, JS, CSS, UX, 3D, AI motion |
-| `obsidian-*` | 5 | Vault management, markdown, JSON canvas |
-| `learn-*` | 4 | Devlog, vocab, learning archive |
-| `writing-*` | 3 | Human voice, AI fix, Korean |
-| others | 21 | `vrm`, `tutoring`, `pmx`, `image`, `design`, `system`, etc. |
+## Skills (131)
 
-## Standards (41)
+| Category | Count |
+|----------|------:|
+| `dev-*` | 26 |
+| `shotloom-*` | 19 |
+| `cci-*` | 17 |
+| `caol-*` | 15 |
+| `ue-*` | 7 |
+| `review-*` | 7 |
+| `video-*` | 5 |
+| `obsidian-*` | 5 |
+| `learn-*` | 4 |
+| `writing-*` | 3 |
+| `vrm-*` | 3 |
+| `tutoring-*` | 3 |
+| `design-*` | 3 |
+| `pmx-*` | 2 |
+| `image-*` | 2 |
+| `git-*` | 2 |
+| Single-file categories | 8 |
 
-Reference docs in `standards/` — loaded on-demand, not every session.
+`Single-file categories` (one skill each): `system`, `frontend`, `drink`, `consulting`, `claude`, `canvas`, `brand`, `algorithmic-art`. Authoritative list — see `claude/skills/` directory.
 
-| Domain | Files |
-|--------|-------|
-| Command/skill authoring | `slash-commands.md`, `command-skill-reference.md` |
+---
+
+## Standards (38)
+
+Reference docs in `claude/standards/`. Loaded on-demand, never auto.
+
+| Group | Files |
+|-------|-------|
+| Authoring | `llm-first-docs.md`, `slash-commands.md`, `command-skill-reference.md` |
 | Multi-agent ops | `multi-agent-ops.md`, `agent-workflow.md`, `delegation.md` |
-| Web / JS / CSS | `javascript.md`, `css.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
-| Unreal Engine | `unreal-engine-cpp.md`, `unreal-engine-asset.md` |
-| Code review | `review-code-rust.md`, `review-code-javascript.md`, `review-code-css.md`, `review-ux.md`, + 6 more |
-| CINEV / Shotloom | `shotloom.md`, `shotloom-programming.md`, `cinev-git-workflow.md`, `cinev-vrm-shading.md` |
-| Docs & system | `obsidian-format.md`, `repo-paths-keys.md` |
+| Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
+| Unreal Engine | `unreal-engine-cpp.md`, `unreal-engine-asset.md`, `arp-skeleton.md` |
+| Code review | `review-template.md`, `review-spec-doc.md`, `review-ai-motion.md`, `review-3d-rendering.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-ux.md`, `review-ux-python-gui.md`, `review-ux-writing.md` |
+| CINEV | `cinev-git-workflow.md`, `cinev-character-asset-naming.md`, `cinev-vrm-shading.md`, `cci-slack.md` |
+| Obsidian | `obsidian-format.md`, `obsidian-tag-taxonomy.md` |
+| Research / specs | `research-methodology.md`, `tech-spec-template.md` |
+| System | `repo-paths-keys.md` |
+| Index | `index.md` |
 
-## Machine Config (`private/caol-config/`)
+---
+
+## Rules (15)
+
+Always-applied constraints in `claude/rules/`. Loaded every session via CLAUDE.md `@import`.
+
+| Group | Files |
+|-------|-------|
+| Core | `git.md`, `runtime.md`, `coding.md`, `verification.md`, `security.md`, `conventions.md`, `testing.md` |
+| Authoring | `naming.md`, `command-frontmatter.md`, `tool-permissions.md` |
+| Domain | `obsidian.md`, `cinev-git.md`, `multi-agent.md`, `shotloom.md` |
+| Index | `index.md` |
+
+---
+
+## Machine config (`private/caol-config/`)
 
 Gitignored. Per-machine paths and specs.
 
@@ -88,11 +127,11 @@ Gitignored. Per-machine paths and specs.
 |------|---------|
 | `repo-paths.json` | Git repo locations keyed by project name |
 | `machine-paths.json` | Tool/app paths (`obsidian`, `blender`, `unreal-editor`, fonts) |
-| `doc-paths.json` | Document routing rules (Obsidian vault → purpose mapping) |
+| `doc-paths.json` | Document routing (Obsidian vault → purpose mapping) |
 | `hardware.json` | Hardware specs — populated by `/system-save-hardware` |
 
-Manage with `/caol-manage-config` (show / validate / add / remove / setup).
+Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remove`, `setup`).
 
 ---
 
-For authoring new commands and skills, see **[CLAUDE.md](claude/CLAUDE.md)**.
+For authoring new commands and skills, see [`claude/CLAUDE.md`](claude/CLAUDE.md) — the session hub.
