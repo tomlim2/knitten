@@ -11,6 +11,7 @@ Standards contain the rationale, examples, and templates that rules link back to
 
 | Standard | When to read |
 |----------|-------------|
+| [`llm-first-docs.md`](llm-first-docs.md) | **Always** before editing CLAUDE.md, rules, skills, commands, or standards |
 | [`slash-commands.md`](slash-commands.md) | **Always** before creating commands — frontmatter, patterns, templates |
 | [`command-skill-reference.md`](command-skill-reference.md) | Reference for existing commands and skills |
 
