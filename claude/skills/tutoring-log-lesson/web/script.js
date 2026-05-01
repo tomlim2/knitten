@@ -250,7 +250,8 @@ document.getElementById('invoiceForm').addEventListener('submit', (e) => {
     window.invoiceData = {
         studentName,
         year,
-        month
+        month,
+        classes
     };
 
     // Generate KakaoTalk message
@@ -281,6 +282,19 @@ document.getElementById('copyKakao').addEventListener('click', () => {
 document.getElementById('editInvoice').addEventListener('click', () => {
     document.querySelector('.form-section').style.display = 'block';
     document.getElementById('invoicePreview').style.display = 'none';
+});
+
+// Open invoices folder
+document.getElementById('openInvoicesFolder').addEventListener('click', async () => {
+    try {
+        const res = await fetch('/api/invoice/open-folder', { method: 'POST' });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            alert('폴더 열기 실패: ' + (err.error || res.statusText));
+        }
+    } catch (e) {
+        alert('폴더 열기 실패: ' + e.message);
+    }
 });
 
 // Download PDF
@@ -347,7 +361,8 @@ document.getElementById('downloadPDF').addEventListener('click', async () => {
         const pdfBlob = pdf.output('blob');
 
         // Save to server
-        const response = await fetch(`/api/invoice/save?studentName=${encodeURIComponent(data.studentName)}&year=${data.year}&month=${data.month}`, {
+        const lessonDates = (data.classes || []).map(c => c.date).filter(Boolean).join(',');
+        const response = await fetch(`/api/invoice/save?studentName=${encodeURIComponent(data.studentName)}&year=${data.year}&month=${data.month}&lessonDates=${encodeURIComponent(lessonDates)}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/pdf'

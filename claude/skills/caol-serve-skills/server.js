@@ -35,6 +35,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Static files
 app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/invoice', express.static(path.join(process.env.HOME, '.claude/skills/tutoring-log-lesson/web')));
 app.use(express.json());
 
 // Repo path helpers (backward compatible with old string format)
@@ -1175,6 +1176,17 @@ app.get('/api/invoice/presets', (req, res) => {
     }
 });
 
+// Open invoices folder in Finder
+app.post('/api/invoice/open-folder', (req, res) => {
+    const invoicesDir = path.join(OBSIDIAN_CLAUDE_DIR, 'tutoring', 'invoices');
+    if (!fs.existsSync(invoicesDir)) {
+        fs.mkdirSync(invoicesDir, { recursive: true });
+    }
+    const { spawn } = require('child_process');
+    spawn('open', [invoicesDir], { detached: true, stdio: 'ignore' }).unref();
+    res.json({ success: true, path: invoicesDir });
+});
+
 // Save invoice PDF
 app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10mb' }), (req, res) => {
     const { studentName, year, month } = req.query;
@@ -1195,11 +1207,28 @@ app.post('/api/invoice/save', express.raw({ type: 'application/pdf', limit: '10m
 
     try {
         fs.writeFileSync(filePath, req.body);
-        res.json({
-            success: true,
-            path: filePath,
-            filename
-        });
+
+        // Mark associated lesson files as _invoiced
+        const lessonDates = (req.query.lessonDates || '').split(',').filter(Boolean);
+        const renamed = [];
+        if (lessonDates.length > 0) {
+            const studentDir = path.join(OBSIDIAN_CLAUDE_DIR, 'tutoring', 'lessons', studentName);
+            if (fs.existsSync(studentDir)) {
+                for (const date of lessonDates) {
+                    const matches = fs.readdirSync(studentDir).filter(f =>
+                        f.startsWith(date) && f.endsWith('.md') &&
+                        !f.includes('_invoiced') && !f.includes('_done')
+                    );
+                    for (const f of matches) {
+                        const newName = f.replace(/\.md$/, '_invoiced.md');
+                        fs.renameSync(path.join(studentDir, f), path.join(studentDir, newName));
+                        renamed.push({ from: f, to: newName });
+                    }
+                }
+            }
+        }
+
+        res.json({ success: true, path: filePath, filename, renamed });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

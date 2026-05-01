@@ -71,13 +71,16 @@ def open_invoice_generator(summary: dict) -> None:
     """Open invoice generator web app with pre-filled data."""
     import json
 
+    import re
     lessons_data = []
     for l in summary["lessons"]:
         hours = int(l["duration_hours"])
         minutes = int((l["duration_hours"] - hours) * 60)
         entry = {"date": l["date"], "hours": hours, "minutes": minutes}
         if l.get("topic"):
-            entry["note"] = l["topic"]
+            note = re.sub(r"\s*\(참고:\s*\[\[[^\]]+\]\]\)\s*$", "", l["topic"]).strip()
+            if note:
+                entry["note"] = note
         lessons_data.append(entry)
 
     params = {
@@ -88,7 +91,7 @@ def open_invoice_generator(summary: dict) -> None:
     }
     query = urllib.parse.urlencode(params)
 
-    url = f"http://localhost:972/skills/tutoring-make-invoice?{query}"
+    url = f"http://localhost:972/invoice?{query}"
     print(f"Opening: {url}")
     webbrowser.open(url)
 

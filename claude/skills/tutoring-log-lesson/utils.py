@@ -49,17 +49,27 @@ def ensure_dirs(student_name: str) -> None:
 
 
 def get_pending_lessons(student_name: str) -> list[Path]:
-    """Get all pending (non-done) lesson files for a student."""
+    """Get lessons not yet on an invoice (no _invoiced or _done suffix)."""
     student_dir = get_student_dir(student_name)
     if not student_dir.exists():
         return []
 
     lessons = []
     for f in student_dir.glob("*.md"):
-        if not f.stem.endswith("_done"):
+        stem = f.stem
+        if not (stem.endswith("_done") or stem.endswith("_invoiced")):
             lessons.append(f)
 
     return sorted(lessons)
+
+
+def get_invoiced_lessons(student_name: str) -> list[Path]:
+    """Get lessons billed but not yet paid (_invoiced suffix)."""
+    student_dir = get_student_dir(student_name)
+    if not student_dir.exists():
+        return []
+
+    return sorted(student_dir.glob("*_invoiced.md"))
 
 
 def get_done_lessons(student_name: str) -> list[Path]:

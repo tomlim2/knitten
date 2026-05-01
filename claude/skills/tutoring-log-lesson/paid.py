@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-"""Mark pending lessons as paid by renaming files with _done suffix."""
+"""Mark invoiced lessons as paid by renaming _invoiced files to _done."""
 
 import sys
 import argparse
 from pathlib import Path
 
-from utils import get_pending_lessons, parse_lesson_file, format_duration
+from utils import get_invoiced_lessons, parse_lesson_file, format_duration
 
 
 def mark_lessons_paid(student: str, dry_run: bool = False) -> list[tuple[Path, Path]]:
-    """Mark all pending lessons as paid by renaming with _done suffix."""
-    files = get_pending_lessons(student)
+    """Mark all invoiced lessons as paid (_invoiced -> _done)."""
+    files = get_invoiced_lessons(student)
 
     if not files:
         return []
 
     renamed = []
     for f in files:
-        # Add _done before .md extension
-        new_name = f.stem + "_done" + f.suffix
+        # Replace _invoiced suffix with _done
+        new_name = f.stem.removesuffix("_invoiced") + "_done" + f.suffix
         new_path = f.parent / new_name
 
         if dry_run:
@@ -33,14 +33,14 @@ def mark_lessons_paid(student: str, dry_run: bool = False) -> list[tuple[Path, P
 
 
 def list_pending(student: str) -> None:
-    """List all pending lessons for a student."""
-    files = get_pending_lessons(student)
+    """List all invoiced (awaiting payment) lessons for a student."""
+    files = get_invoiced_lessons(student)
 
     if not files:
-        print(f"No pending lessons for {student}")
+        print(f"No invoiced lessons awaiting payment for {student}")
         return
 
-    print(f"\nPending lessons for {student}:")
+    print(f"\nInvoiced lessons awaiting payment for {student}:")
     total_hours = 0
     for f in files:
         parsed = parse_lesson_file(f)
@@ -63,9 +63,9 @@ def main():
         list_pending(args.student)
         return
 
-    files = get_pending_lessons(args.student)
+    files = get_invoiced_lessons(args.student)
     if not files:
-        print(f"[WARN] No pending lessons for {args.student}")
+        print(f"[WARN] No invoiced lessons awaiting payment for {args.student}")
         sys.exit(1)
 
     print(f"\n{'='*60}")

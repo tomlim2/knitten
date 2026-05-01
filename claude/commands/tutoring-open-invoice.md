@@ -16,22 +16,16 @@ Open the monthly tuition invoice generator through the skill server.
 ## Execution
 
 ```bash
-cd ~/.claude/skills/skill-server
+SERVER_DIR="$HOME/Desktop/www/caol-ila/claude/skills/caol-serve-skills"
 
-# Install if needed
-if [ ! -d "node_modules" ]; then
-    npm install
-fi
-
-# Check if server already running
 if ! curl -s http://localhost:972 > /dev/null 2>&1; then
-    # Start in background
-    npm start &
+    cd "$SERVER_DIR"
+    [ ! -d node_modules ] && npm install
+    nohup node server.js > /tmp/skill-server.log 2>&1 &
     sleep 2
 fi
 
-# Open invoice generator
-open http://localhost:972/skills/invoice-generator
+open http://localhost:972/invoice
 ```
 
 ## Output
