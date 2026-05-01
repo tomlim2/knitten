@@ -4,7 +4,16 @@ Loaded every session. Always-applied rules and import gates only.
 
 Setup, architecture, and inventory: [README.md](../README.md).
 Detailed reference: `~/.claude/standards/` (read on demand).
-LLM-first writing rules for any doc the LLM reads: `standards/llm-first-docs.md`.
+
+---
+
+## LLM-first docs — always apply
+
+When creating or editing any file the LLM reads — `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md` — apply `standards/llm-first-docs.md`. Read it before the first such edit in a session. Run its self-audit checklist before committing.
+
+This rule applies regardless of who initiated the edit (user request, session-start cleanup, or follow-up after another change).
+
+Human-first docs (`README.md`, `claude/projects/*/days/*.md`, `claude/projects/*/learnings/*.md`) are exempt.
 
 ---
 
