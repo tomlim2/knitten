@@ -62,7 +62,7 @@ Add new rows here as new projects appear. Do not invent a new tag mid-session wi
 
 Optional. Use when the note is scoped to a sub-domain that you'll want to filter across projects or across time. File formats, named software, and libraries have dedicated axes — do not put them in `area/`.
 
-Examples: `area/retarget`, `area/shader`, `area/animation`, `area/skeleton`, `area/toon-rendering`, `area/optimization`, `area/unreal-engine`.
+Full list: see the `area/` section in **Live Tag Inventory** below. Before adding a new `area/` tag, search the inventory; reuse if present.
 
 ---
 
@@ -101,7 +101,7 @@ Use for the core language a note is written in or about. Does not include librar
 
 Use for named libraries and frameworks (not languages, not standalone software).
 
-Examples: `lib/threejs`, `lib/p5js`, `lib/react`, `lib/wgpu`, `lib/bevy`, `lib/mermaid`.
+Full list: see the `lib/` section in **Live Tag Inventory** below. Before adding a new `lib/` tag, search the inventory; reuse if present.
 
 ---
 
@@ -124,9 +124,7 @@ Use for standalone DCC tools and named engine subsystems that are proper nouns, 
 
 Use on `type/reference` notes that document a prompt, workflow, or output from an AI model. Format: `llm/{provider-or-model}-{version}` in kebab-case.
 
-Examples: `llm/gpt-image-2`, `llm/gemini`, `llm/seedance-2-0`, `llm/flux-dev`, `llm/runway-gen-4`.
-
-Before tagging, search existing `llm/` tags to avoid naming drift.
+Full list: see the `llm/` section in **Live Tag Inventory** below. Before adding a new `llm/` tag, search the inventory to avoid naming drift; prefer specific model+version over broad provider name.
 
 ---
 
@@ -141,7 +139,7 @@ A note can carry both: a toon-shader file that digs into SDF face shadow gets `a
 
 Do **not** use `tech/` as a substitute for `area/` on domain notes. If in doubt, use `area/`.
 
-Examples: `tech/sdf`, `tech/pbr`, `tech/ray-marching`, `tech/gaussian-splatting`, `tech/tonemapping`, `tech/procedural`, `tech/gpgpu`.
+Full list: see the `tech/` section in **Live Tag Inventory** below.
 
 ---
 
@@ -149,7 +147,7 @@ Examples: `tech/sdf`, `tech/pbr`, `tech/ray-marching`, `tech/gaussian-splatting`
 
 Use for notes about personal hobbies and interests outside work. Replaces drink/leisure tags that were incorrectly placed in `area/`.
 
-Examples: `hobby/wine`, `hobby/whisky`, `hobby/champagne`, `hobby/cocktail`, `hobby/tasting`, `hobby/travel`, `hobby/gaming`, `hobby/streaming`.
+Full list: see the `hobby/` section in **Live Tag Inventory** below (when present), or search the vault for existing `hobby/` tags before adding a new one.
 
 ---
 

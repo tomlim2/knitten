@@ -58,7 +58,7 @@ content
 6. **Images** — `![[folder/file.png]]` wikilink only (no markdown image links)
 7. **Internal links** — `[[Note Name]]` wikilink
 8. **External links** — `[text](URL)` markdown link. **Never add external links in `type/devlog` documents** — devlogs rot quickly and dead links accumulate. Reference resources via `[[wikilink]]` to a dedicated reference note instead.
-9. **Callouts** — `> [!tip]`, `> [!warning]`, `> [!info]`, etc.
+9. **Callouts** — `> [!tip]`, `> [!warning]`, `> [!info]`, `> [!note]`, `> [!abstract]`, `> [!quote]`. Use Obsidian's standard callout vocabulary only.
 10. **Tags** — use frontmatter `tags` field; inline `#tag` only at document footer
 
 ---
@@ -90,7 +90,7 @@ When migrating notion-export documents to Obsidian:
 
 1. Add frontmatter (`source: notion-export`, original date)
 2. Remove duplicate H1 (keep exactly one)
-3. Strip HTML remnants (`<div>`, `<span>`, etc.)
+3. Strip HTML remnants — `<div>`, `<span>`, `<p>`, `<br>`, `<a>`, and any other tags Notion exports.
 4. Convert image paths to wikilinks (`![[folder/file.png]]`)
 5. Decode URL-encoded paths
 6. Clean up empty tables and blank lines
