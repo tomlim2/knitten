@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: working in the shotloom repo
+---
+
 # Shotloom — Claude-side meta
 
 Operational rules with **no in-repo equivalent**. The full project ruleset (commit, PR, review, branch, error-handling conventions, ECS patterns, ADRs) lives in shotloom's own `docs/guidelines/`, `AGENTS.md`, `CONTRIBUTING.md`, and `docs/adr/`. Read those at session start. This file only carries what those don't cover.

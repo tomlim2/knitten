@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: start of non-trivial work in any repo
+---
+
 - **Read repo conventions IN FULL at every session start before non-trivial work.** Do not rely on memory; conventions drift between sessions.
 - **Read priority order:**
   1. `CONTRIBUTING.md` at repo root — co-location checklists, MAP.md update rules, required follow-up artifacts.

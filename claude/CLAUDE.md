@@ -3,6 +3,7 @@
 Loaded every session. Always-applied rules and import gates only.
 
 Setup and inventory: [README.md](../README.md).
+Goal-to-doc lookup ("where is X?"): [LOOKUP.md](../LOOKUP.md).
 Detailed reference: `~/.claude/standards/` (read on demand).
 
 ---

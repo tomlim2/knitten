@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: creating a command or skill
+---
+
 - **Pattern (internal skills)** — `{category}-{verb}-{subject}` for commands and skills that implement their own logic (MANDATORY)
 - **Pattern (external wrappers)** — `{category}-{repo}-{verb}-{subject}` for wrappers that `@import` a third-party skill hosted in `knitten/vendor/`. The `{repo}` token marks the upstream source so picker disambiguation is instant.
 - **Lowercase only** — No capitals, no camelCase, no underscores, no spaces

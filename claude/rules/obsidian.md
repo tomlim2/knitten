@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: working in the Obsidian vault
+---
+
 - **Frontmatter required** — Every `.md` file needs YAML frontmatter with `title`, `tags`, `date`, `source`.
 - **H1 is singular** — Exactly 1 H1 per document, placed immediately after frontmatter.
 - **Section separators** — `---` horizontal rule between major sections.

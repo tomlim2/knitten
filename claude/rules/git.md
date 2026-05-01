@@ -1,3 +1,7 @@
+---
+load: auto
+---
+
 - **Commit only** — Do NOT auto-push unless explicitly requested
 - **Author:** `user.name=tomlim2`, `user.email=tomandlim@gmail.com`
 - **No Co-Authored-By** — Do NOT add `Co-Authored-By: Claude` lines

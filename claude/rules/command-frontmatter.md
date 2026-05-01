@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: creating a command
+---
+
 - **Required fields:** `description`, `allowed-tools`
 - **Optional fields:** `argument-hint` (if command accepts arguments)
 - **Field order:** `description` → `argument-hint` → `allowed-tools`

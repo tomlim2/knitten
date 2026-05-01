@@ -1,3 +1,7 @@
+---
+load: auto
+---
+
 - **Hardware specs** — read `~/.claude/private/caol-config/hardware.json` first. Run `/system-save-hardware` if missing.
 - **Repo paths first** — ALWAYS read `~/.claude/private/caol-config/repo-paths.json` before asking user for project paths. Keys = named git repos (e.g. `caol-ila`, `shotloom`, `codex-base`). Values = absolute paths to repo roots on this machine.
 - **Machine paths too** — ALSO read `~/.claude/private/caol-config/machine-paths.json` whenever you need non-repo resources: `obsidian-vault-claude` (may be absent on work Mac — that's normal, handle gracefully), `obsidian-staging` (fallback log target when vault absent), `codex-home`. Missing key ≠ error; it means "this machine doesn't have that resource". NEVER hardcode these paths or put logs in `~/.claude/ops/` when a log destination already exists here.

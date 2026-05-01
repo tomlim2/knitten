@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: creating a command or skill
+---
+
 - **NEVER use bare `Bash`** in `allowed-tools` — Always specify patterns
 - **Pattern examples:** `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, `Bash(mv:*), Bash(ls:*)`
 - **Principle:** Grant the minimum permission that lets the command work

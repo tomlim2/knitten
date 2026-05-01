@@ -4,6 +4,8 @@
 
 Charter, operational rules, and editing standard: [`claude/CLAUDE.md`](claude/CLAUDE.md) → [`claude/standards/llm-first-docs.md`](claude/standards/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
+Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
+
 ---
 
 ## Layout

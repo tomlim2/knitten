@@ -1,3 +1,8 @@
+---
+load: triggered
+trigger: writing or reviewing code that includes tests
+---
+
 - **Unit tests are mandatory** — Every new module, function, or public API change MUST ship with unit tests in the same commit/PR. "Code only, tests later" is NOT allowed.
 - **Define "unit test":** co-located Rust `#[cfg(test)] mod tests`, Python `pytest`, JS/TS `vitest`/`jest`, or the equivalent idiomatic per-language harness. Integration tests count only when there is no meaningful unit seam.
 - **Minimum coverage surface:**
