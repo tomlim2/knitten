@@ -217,6 +217,8 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 **Enforced by:** `validate-llm-first.mjs` length-caps check (catches over-broad files indirectly — they grow past cap and split is forced). Documented in `naming.md` standard.
 
+**Cross-project use:** These five micro-patterns are domain-agnostic. Other repos (shotloom, cinev-engine, personal projects) MAY cite this principle when establishing their own filename conventions. The repo-specific application lives in that repo's `AGENTS.md` / `CONTRIBUTING.md`; this principle just supplies the reusable patterns.
+
 ---
 
 ### 9. Single source of truth, references by path
