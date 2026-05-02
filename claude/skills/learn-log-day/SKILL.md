@@ -131,10 +131,16 @@ All files require YAML frontmatter. Follow the tag taxonomy:
 
 | File | frontmatter tags |
 |------|-----------------|
-| devlog.md (hub) | `type/devlog`, `project/{name}` |
-| days/day-{NN}.md | `type/devlog`, `project/{name}`, `area/...` (if scoped) |
+| devlog.md (hub) | `type/devlog`, `project/{name}`, `area/...` (one) |
+| days/day-{NN}.md | `type/devlog`, `project/{name}`, **+ `lang/<language>` + `lib/<framework>` if the day touched code**, + `area/...` |
 | learnings-index.md | `type/learning`, `project/{name}` |
-| topic file | `type/topic`, `project/{name}`, `area/...`, `lang/...` (if applicable) |
+| topic file | `type/topic`, `project/{name}`, `area/...`, `lang/...`, `lib/...` (if applicable) |
+
+**Tag rules (verify before save):**
+- Exactly **1** `type/` tag. Exactly **1** `project/` tag. Both required.
+- Code-bearing devlog → `lang/` + `lib/` are mandatory (e.g. `lang/rust` + `lib/bevy`, `lang/javascript` + `lib/threejs`). A devlog with only `type/devlog` + `project/...` is too sparse to filter later.
+- Max 5 tags total.
+- Verify each tag exists in `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md` Live Tag Inventory before using; if new, add the row in the same commit.
 
 Inline tags (`#rule`, `#failed`, `#gotcha`) — learnings body only, not frontmatter axes.
 

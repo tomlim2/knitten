@@ -10,7 +10,12 @@ trigger: working in the Obsidian vault
 - **Wikilinks for internal references** — `[[Note Name]]`.
 - **Markdown links for external** — `[text](URL)`. **NEVER in `type/devlog` documents** — devlogs rot quickly and dead links accumulate. Reference resources via `[[wikilink]]` to a dedicated reference note instead.
 - **Lists use `-`** — Ordered lists use `1.`.
-- **Tags in frontmatter** — Use structured tags: `type/`, `project/`, plus optional `area/`, `lang/`, `lib/`, `fmt/`, `sys/`, `llm/`, `tech/`, `hobby/`, `status/`. Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
+- **Tags in frontmatter — MANDATORY checklist before save.**
+  - Exactly 1 `type/` tag. Exactly 1 `project/` tag. Both required, not optional.
+  - For any code-bearing devlog, also add `lang/<language>` and `lib/<framework>` (e.g. `lang/rust` + `lib/bevy`, `lang/javascript` + `lib/threejs`). For non-code devlogs, add at least one `area/` tag.
+  - Max 5 tags total. Don't pad — but a tech devlog with only `type/` + `project/` is too sparse to filter on later.
+  - **Verify each tag exists** in `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md` Live Tag Inventory before using. If new, add the row to the inventory in the same commit (do not let the standard drift).
+  - Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
 - **Location** — `{obsidian-vault}/claude/` for all Claude-authored docs.
 - **Audience declared by folder** — Every vault subfolder has a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Default for unmarked folders: strict LLM-first. See `~/.claude/standards/obsidian/vault-audience.md`.
 

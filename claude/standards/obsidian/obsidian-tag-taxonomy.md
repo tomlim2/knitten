@@ -426,6 +426,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 |-----|------:|-------|
 | `lib/threejs` | 13 | |
 | `lib/p5js` | 5 | |
+| `lib/bevy` | 2 | Bevy ECS game engine (Rust) |
 | `lib/mermaid` | 1 | |
 | `lib/react` | 1 | |
 | `lib/wgpu` | 1 | |
