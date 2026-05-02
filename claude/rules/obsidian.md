@@ -16,6 +16,12 @@ trigger: working in the Obsidian vault
   - Max 5 tags total. Don't pad — but a tech devlog with only `type/` + `project/` is too sparse to filter on later.
   - **Verify each tag exists** in `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md` Live Tag Inventory before using. If new, add the row to the inventory in the same commit (do not let the standard drift).
   - Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
+- **Accidental inline tags — NEVER write bare `#NNN` or `#word` in body prose.** Obsidian treats any whitespace-prefixed `#text` as a tag and pollutes the tag pane. Cases that bite: PR/issue numbers (`#154`), hex colors (`#1a1c2c`), checklist items (`#1`, `#TODO`). Fixes in priority order:
+  - **Markdown link** for PRs/issues: `[#154](https://github.com/owner/repo/pull/154)` — semantic + safe.
+  - **Inline code** for literal references: `` `#154` ``, `` `#1a1c2c` `` — never tagged.
+  - **Backslash escape** for plain prose: `\#154`.
+  - **Drop the space**: `PR#154` (no space before `#`) is not interpreted as a tag.
+  Verify before save: search the body for `(^|\s)#[A-Za-z0-9]` — any hit that isn't an intentional learnings marker (`#rule`/`#failed`/`#gotcha` at document footer) needs one of the fixes above.
 - **Location** — `{obsidian-vault}/claude/` for all Claude-authored docs.
 - **Audience declared by folder** — Every vault subfolder has a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Default for unmarked folders: strict LLM-first. See `~/.claude/standards/obsidian/vault-audience.md`.
 
