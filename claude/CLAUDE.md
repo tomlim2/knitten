@@ -55,6 +55,8 @@ If unsure, default LLM-first. Full applies-to list: `standards/policy/llm-first-
 
 @~/.claude/rules/index.md
 
+@~/.claude/rules/ambiguity-scoring.md
+
 @~/.claude/rules/git-defaults.md
 
 @~/.claude/rules/session-start.md

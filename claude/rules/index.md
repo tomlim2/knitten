@@ -8,8 +8,9 @@ Each rule declares `load:` in its frontmatter. **Auto** = always in cold-start c
 
 | Rule | Load | Trigger / Scope |
 |------|------|-----------------|
+| [`ambiguity-scoring.md`](ambiguity-scoring.md) | auto | Meta-decision gate — 1-10 score before any ambiguous action; 9+ auto, else surface |
 | [`git-defaults.md`](git-defaults.md) | auto | No auto-push / no Co-Authored-By / author identity |
-| [`behavior.md`](behavior.md) | auto | Output style, ambiguity scoring, delegation, context budget |
+| [`behavior.md`](behavior.md) | auto | Output style, delegation, context budget (ambiguity moved out) |
 | [`verify-before-report.md`](verify-before-report.md) | auto | Verify before presenting any result |
 | [`security.md`](security.md) | auto | Secrets handling, documentation language |
 | [`session-start.md`](session-start.md) | auto | Config reads + safety guards |
