@@ -51,6 +51,7 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | [`cci-slack.md`](cinev/cci-slack.md) | Slack ops |
 | **Obsidian / system** | |
 | [`vault-audience.md`](obsidian/vault-audience.md) | creating any vault file (per-folder audience + style) |
+| [`note-inspection-checklist.md`](obsidian/note-inspection-checklist.md) | inspecting one note (8-step + tagging workflow) |
 | [`obsidian-format.md`](obsidian/obsidian-format.md) | creating or migrating Obsidian docs |
 | [`obsidian-tag-taxonomy.md`](obsidian/obsidian-tag-taxonomy.md) | tagging any Obsidian doc |
 | [`repo-paths-keys.md`](system/repo-paths-keys.md) | registering repos / new machine setup |

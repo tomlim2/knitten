@@ -12,10 +12,13 @@ trigger: working in the Obsidian vault
 - **Lists use `-`** — Ordered lists use `1.`.
 - **Tags in frontmatter — MANDATORY checklist before save.**
   - Exactly 1 `type/` tag. Exactly 1 `project/` tag. Both required, not optional.
-  - For any code-bearing devlog, also add `lang/<language>` and `lib/<framework>` (e.g. `lang/rust` + `lib/bevy`, `lang/javascript` + `lib/threejs`). For non-code devlogs, add at least one `area/` tag.
+  - For any code-bearing devlog, also add `lang/<language>` + `lib/<framework>` AND `area/<topic>`. `lang+lib` covers the *tool*, `area` covers the *subject* — they do not substitute each other. (e.g. mmd-anju shader devlog: `lang/javascript + lib/threejs + area/shader`.)
+  - Slot allocation order before save: required (`type/`, `project/`) → conditional (`lang/`, `lib/`) → semantic (`area/`) → state (`status/`).
   - Max 5 tags total. Don't pad — but a tech devlog with only `type/` + `project/` is too sparse to filter on later.
   - **Verify each tag exists** in `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md` Live Tag Inventory before using. If new, add the row to the inventory in the same commit (do not let the standard drift).
   - Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
+  - **Bulk re-tagging (5+ notes) → delegate to subagent.** Dispatch `general-purpose` (sonnet, `run_in_background: true` for 20+) with the `note-inspection-checklist.md` brief. Subagent returns `path | current | proposed | rationale`; main thread approves before any write. Do not consume main context reading dozens of bodies.
+  - Per-note inspection: see `~/.claude/standards/obsidian/note-inspection-checklist.md` (8-step + tagging workflow).
 - **Accidental inline tags — NEVER write bare `#NNN` or `#word` in body prose.** Obsidian treats any whitespace-prefixed `#text` as a tag and pollutes the tag pane. Cases that bite: PR/issue numbers (`#154`), hex colors (`#1a1c2c`), checklist items (`#1`, `#TODO`). Fixes in priority order:
   - **Markdown link** for PRs/issues: `[#154](https://github.com/owner/repo/pull/154)` — semantic + safe.
   - **Inline code** for literal references: `` `#154` ``, `` `#1a1c2c` `` — never tagged.
