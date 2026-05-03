@@ -106,16 +106,27 @@ def update_auto_block(path: Path, new_inner: str) -> bool:
     return False
 
 
-def index_areas(catalog: dict, top: str) -> str:
+def index_areas(catalog: dict, prefix: str, depth: int = 1) -> str:
+    """Count notes per sub-area under the given path prefix.
+
+    `depth` is how many path segments below `prefix` to group by.
+    """
     areas = defaultdict(int)
     for n in catalog['notes']:
-        if not n['path'].startswith(top + '/'):
+        if not n['path'].startswith(prefix + '/'):
             continue
-        parts = n['path'].split('/')
-        if len(parts) >= 3:
-            areas[parts[1]] += 1
+        rest = n['path'][len(prefix) + 1:].split('/')
+        if len(rest) > depth:
+            areas[rest[depth - 1]] += 1
     lines = [f'- **{k}** ({v})' for k, v in sorted(areas.items(), key=lambda x: -x[1])]
     return '\n'.join(lines)
+
+
+# (prefix, INDEX.md path relative to VAULT)
+INDEX_TARGETS = [
+    ('notes', 'notes/INDEX.md'),
+    ('notes/work', 'notes/work/INDEX.md'),
+]
 
 
 def main():
@@ -124,13 +135,13 @@ def main():
     out.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f"catalog: {out}  (notes={catalog['stats']['total']})")
 
-    for top in ('notes', 'work'):
-        idx = VAULT / top / 'INDEX.md'
-        inner = index_areas(catalog, top)
+    for prefix, rel in INDEX_TARGETS:
+        idx = VAULT / rel
+        inner = index_areas(catalog, prefix)
         if update_auto_block(idx, inner):
-            print(f"refreshed AUTO: {top}/INDEX.md")
+            print(f"refreshed AUTO: {rel}")
         else:
-            print(f"skip {top}/INDEX.md (missing AUTO markers or no change)")
+            print(f"skip {rel} (missing AUTO markers or no change)")
 
 
 if __name__ == '__main__':
