@@ -10,6 +10,7 @@ Each rule declares `load:` in its frontmatter. **Auto** = always in cold-start c
 |------|------|-----------------|
 | [`ambiguity-scoring.md`](ambiguity-scoring.md) | auto | Meta-decision gate — 1-10 score before any ambiguous action; 9+ auto, else surface |
 | [`external-recommendation-cross-check.md`](external-recommendation-cross-check.md) | auto | Cross-check Codex/Gemini/subagent suggestions against user's CLAUDE.md/standards before adopting |
+| [`source-of-truth-first.md`](source-of-truth-first.md) | auto | Meta — when you see a pattern (suffix/prefix/term), grep the skill/standard that defines it before mimicking |
 | [`git-defaults.md`](git-defaults.md) | auto | No auto-push / no Co-Authored-By / author identity |
 | [`behavior.md`](behavior.md) | auto | Output style, delegation, context budget (ambiguity moved out) |
 | [`verify-before-report.md`](verify-before-report.md) | auto | Verify before presenting any result |
