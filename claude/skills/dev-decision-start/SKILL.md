@@ -48,7 +48,7 @@ Run this Python script. Pass the Gemini system prompt as arg1, Codex system prom
 
 ```bash
 python3 -c "
-import sys, subprocess, concurrent.futures
+import sys, os, subprocess, concurrent.futures
 
 GEMINI_SYSTEM = sys.argv[1]
 CODEX_SYSTEM = sys.argv[2]
@@ -57,8 +57,9 @@ QUESTION = sys.argv[3]
 def ask_gemini(system, q):
     prompt = system + chr(10) + chr(10) + 'Question:' + chr(10) + q
     result = subprocess.run(
-        ['npx', '-y', '@google/gemini-cli', '-p', prompt, '-m', 'gemini-2.5-flash', '-o', 'text'],
-        capture_output=True, text=True, timeout=120
+        ['npx', '-y', '@google/gemini-cli', '--yolo', '-p', prompt, '-m', 'gemini-2.5-flash', '-o', 'text'],
+        capture_output=True, text=True, timeout=120,
+        env={**os.environ, 'GEMINI_CLI_TRUST_WORKSPACE': 'true'}
     )
     return result.stdout.strip(), 'gemini-2.5-flash'
 

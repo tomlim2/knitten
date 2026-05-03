@@ -15,24 +15,26 @@ Resolve with:
 jq -r '."obsidian"' ~/.claude/private/caol-config/machine-paths.json
 ```
 
-## Patterns fixed
+## Checks
 
-| ID | Bad | Good |
-|----|-----|------|
-| `frontmatter-h1-glued` | `---# Heading` (frontmatter close + H1 on same line) | `---`<newline>`# Heading` |
-| `frontmatter-h2-glued` | `---## Heading` | `---`<newline>`## Heading` |
-| `frontmatter-hN-glued` | `---###...# Heading` | `---`<newline>`### Heading` |
+| ID | Type | What it does |
+|----|------|--------------|
+| `frontmatter-heading-glued` | auto-fix | Splits `---#+ Heading` into two lines |
+| `missing-h1` | report | Flags notes with no `# Title` in first 30 lines |
+| `missing-readme` | report | Flags `claude/projects/*` folders without `README.md` |
+| `empty-dirs` | auto-fix | Removes empty directories (skips `.trash`, `.obsidian`, `attachments`) |
 
-Add new patterns to `fix.sh` and to this table when discovered.
+Add new checks by appending a `want <name>` block to `fix.sh` and a row here.
 
 ## Run
 
 ```bash
-bash ~/.claude/skills/obsidian-fix-format/fix.sh           # dry run, lists offenders
-bash ~/.claude/skills/obsidian-fix-format/fix.sh --apply   # rewrite files in place
+bash ~/.claude/skills/obsidian-fix-format/fix.sh                        # full audit, dry run
+bash ~/.claude/skills/obsidian-fix-format/fix.sh --apply                # apply auto-fix checks
+bash ~/.claude/skills/obsidian-fix-format/fix.sh --check missing-h1     # single check
 ```
 
-The script greps for each pattern, prints affected files, and (with `--apply`) rewrites them with `perl -i`.
+Report-only checks (`missing-h1`, `missing-readme`) never auto-rewrite — they need human review.
 
 ## When to invoke
 
