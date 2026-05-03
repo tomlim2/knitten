@@ -3,40 +3,45 @@ status: proposed
 ---
 # CINEV VRM Shading
 
-VRM 세이딩 종류 및 캐릭터 분류.
+VRM shading types and character source classification.
 
 ---
 
-## 세이딩 분류표
+## Shading classification table
 
 | Origin | Status | Name | Shading | Material | Outline |
 |--------|--------|------|---------|----------|---------|
-| CINEV 인하우스 | 🟢 | m cell | Toon | 🟢 | 🟢 |
-| 제페토 실사 | 🟢 | cinev vrm zo std | PBR | 🟢 | - |
-| 제페토 툰 | 🟠 추가개발 필요 (현재 인하우스 마테리얼로 대체중) | cinev vrm zo toon | Toon | 🔴 | 🔴 |
+| CINEV in-house | 🟢 | m cell | Toon | 🟢 | 🟢 |
+| Zepeto realistic | 🟢 | cinev vrm zo std | PBR | 🟢 | - |
+| Zepeto toon | 🟠 needs more dev (currently substituted by in-house material) | cinev vrm zo toon | Toon | 🔴 | 🔴 |
 | VRoid Studio | 🟢 | cinev vrm vroid | Toon | 🟢 | 🟢 |
-| Booth / 커뮤니티 실사 | 🔴 | cinev vrm booth std | PBR | 🔴 | - |
-| Booth / 커뮤니티 툰 | 🟠 추가개발 필요 | cinev vrm booth toon | Toon | 🟢 | 🟠 |
-| 엔드필드 스타일 | 🔴 | cinev endfield | - | 🔴 | 🔴 |
+| Booth / community realistic | 🔴 | cinev vrm booth std | PBR | 🔴 | - |
+| Booth / community toon | 🟠 needs more dev | cinev vrm booth toon | Toon | 🟢 | 🟠 |
+| Endfield style | 🔴 | cinev endfield | - | 🔴 | 🔴 |
 
 ---
 
-## 캐릭터 출처 분류
+## Character source classification
 
-### ZO (제페토)
-네이버 제페토 전용 캐릭터. STD는 PBR 기반이므로 아웃라인 불필요.
+### ZO (Zepeto)
+
+Naver Zepeto-only characters. STD is PBR-based, so outline is unnecessary.
 
 ### VRoid
-VRoid Studio에서 제작된 캐릭터. 아웃라인 사용가능.
+
+Characters created in VRoid Studio. Outline available.
 
 ### Booth
-부스 출신 또는 커뮤니티에서 가져온 VRM을 통칭. 기존 VRM Toon을 VRM Booth Toon으로 전환 예정.
+
+VRMs sourced from Booth or the community. Existing VRM Toon is being switched to VRM Booth Toon.
 
 ### M Cell
-CINEV 인하우스 캐릭터. 아웃라인 사용가능.
+
+CINEV in-house characters. Outline available.
 
 ### Endfield
-개발 예정. 아웃라인 개발 예정.
+
+Outline development pending.
 
 ---
 

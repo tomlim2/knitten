@@ -47,9 +47,9 @@ Always required. Exactly one per note.
 
 | Tag | Project |
 |-----|---------|
-| `project/shotloom` | Shotloom — 시나몬(Cinamon) 회사 프로젝트 |
-| `project/cinev` | cinev — 시나몬 회사 프로젝트 (shotloom 외 전반) |
-| `project/hsa` | HSA — 외부 회사 클라이언트 작업 |
+| `project/shotloom` | Shotloom — Cinamon company project |
+| `project/cinev` | cinev — Cinamon company project (everything except shotloom) |
+| `project/hsa` | HSA — external client work |
 | `project/bevy-vrm` | bevy-vrm renderer |
 | `project/mmd-anju` | MMD Anju player |
 | `project/codex-base` | Codex base workspace |
@@ -282,13 +282,13 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 
 | Tag | Count | Notes |
 |-----|------:|-------|
-| `project/cinev` | 146 | 시나몬 회사 프로젝트 |
+| `project/cinev` | 146 | Cinamon company project |
 | `project/bevy-vrm` | 139 | |
-| `project/shotloom` | 74 | 시나몬 회사 프로젝트 |
+| `project/shotloom` | 74 | Cinamon company project |
 | `project/job-search` | 36 | |
 | `project/ue-live-scene-bridge` | 31 | |
 | `project/graphics-study` | 25 | Blender·GLSL·Three.js·rendering theory |
-| `project/personal` | 24 | 개인 노트·일기·취미 목록 |
+| `project/personal` | 24 | personal notes, journal, hobby lists |
 | `project/caol-ila` | 21 | |
 | `project/mmd-anju` | 15 | |
 | `project/studio-weekend` | 14 | |
@@ -300,12 +300,12 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/consulting` | 7 | |
 | `project/drinks` | 4 | |
 | `project/tycoon` | 4 | |
-| `project/hsa` | 3 | 외부 회사 클라이언트 |
+| `project/hsa` | 3 | external client |
 | `project/oss` | 3 | |
 | `project/just-wander` | 2 | |
 | `project/megamelange` | 2 | |
 | `project/second-raid` | 2 | |
-| `project/chzzk` | 1 | 치지직 — 취미 스트리밍 (Twitch 류) |
+| `project/chzzk` | 1 | Chzzk — Naver streaming platform (Twitch-like), hobby |
 | `project/hyper3d` | 1 | consolidate if no new docs |
 | `project/hyperframes` | 1 | consolidate if no new docs |
 | `project/matcap-painter` | 1 | consolidate if no new docs |
@@ -403,7 +403,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `fmt/pmx` | 9 | |
 | `fmt/mtoon` | 5 | |
 | `fmt/gltf` | 3 | |
-| `fmt/vrm4u` | 3 | VRM4U → sys/vrm4u 정리 필요 |
+| `fmt/vrm4u` | 3 | VRM4U → consolidate to sys/vrm4u |
 | `fmt/vrma` | 1 | |
 
 ### lang/ (9 tags, 123 usages)

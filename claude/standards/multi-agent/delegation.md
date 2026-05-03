@@ -186,7 +186,9 @@ After delegation, verify:
 
 ---
 
-## 한국어 섹션명 (Korean)
+## Korean section aliases
+
+When a delegation prompt arrives in Korean, map sections by this table:
 
 | English | Korean |
 |---------|--------|

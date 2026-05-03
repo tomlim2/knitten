@@ -101,7 +101,7 @@ These add tokens and zero decision power.
 
 ### 8. Extreme-S writing — implemented only, present tense
 
-MBTI shorthand: write as **극 S (Sensing)**. No N (iNtuition) statements. Only what currently exists, observable, present.
+MBTI shorthand: write as **extreme S (Sensing)**. No N (iNtuition) statements. Only what currently exists, observable, present.
 
 Banned without explicit user agreement (or user-LLM written agreement in the same doc):
 

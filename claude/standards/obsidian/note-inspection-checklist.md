@@ -111,7 +111,7 @@ The 8 steps below are an inspection order, not a tree. Each step has: check cond
 
 **Why:** Purpose-clarity is upstream of tagging. Vague purpose → wrong `type/` or missing `area/`. Re-reading later costs more.
 
-**Violation action:** Add a 1-sentence lead paragraph after H1. For long notes add a `**결론:**` bold takeaway.
+**Violation action:** Add a 1-sentence lead paragraph after H1. For long notes add a `**Conclusion:**` (or `**Lesson:**`) bold takeaway.
 
 ---
 

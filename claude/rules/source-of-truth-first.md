@@ -31,7 +31,7 @@ This session's three instances:
 Even when the trigger fires mid-flow, the cost is one `grep` or one file read. If nothing is found:
 
 ```
-"확인 시도: <command>. 결과 없음. 추정으로 진행."
+"Checked: <command>. No result. Proceeding with assumption."
 ```
 
 This is the explicit-uncertainty form. It surfaces what would otherwise be hidden assumption. The user can correct the recommendation before it persists.

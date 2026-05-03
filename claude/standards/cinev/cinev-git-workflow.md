@@ -15,7 +15,7 @@ Read from `~/.claude/private/caol-config/repo-paths.json` (use `entry.path` for 
 |-----|------|
 | `cinev-studio` | Main project |
 | `cinev-engine` | Second project |
-| `cinev-ta-tools` | TA tool 모음 (MegaMelange) |
+| `cinev-ta-tools` | TA tools collection (MegaMelange) |
 
 ---
 

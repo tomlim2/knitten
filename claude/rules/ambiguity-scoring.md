@@ -33,7 +33,7 @@ When facing an ambiguous action, score across **7 dimensions** (1 point = concer
 When the score is < 9, lead with **what's missing** (why it's not 10), not the positives. The negative space is the decision-relevant information.
 
 Example:
-> 점수 6 — 빠진 것: 사용자 톤(이름·줄임말 선호). README 1줄 description은 자동 생성 가능하지만 voice는 사용자 영역.
+> Score 6 — missing: user tone (preferred name, abbreviation). The README 1-line description is auto-generable but voice belongs to the user.
 
 ## Exceptions
 
