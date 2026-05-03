@@ -71,14 +71,23 @@ if want missing-h1; then
 fi
 
 # --- missing-readme under claude/projects/* ---
+# Policy: README required only for project roots (depth=3) OR folders with 10+ notes.
+# Thin folders skip per note-inspection-checklist.md (maintenance cost > value).
 if want missing-readme; then
   count=0
   declare -a missing=()
   while IFS= read -r d; do
-    [[ -f "$d/README.md" ]] || { missing+=("$d"); count=$((count+1)); }
+    [[ -f "$d/README.md" ]] && continue
+    depth=$(awk -F/ '{print NF}' <<< "$d")
+    notes=$(find "$d" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+    # Project root = depth 3 (claude/projects/<proj>)
+    if (( depth == 3 || notes >= 10 )); then
+      missing+=("$d ($notes notes)")
+      count=$((count+1))
+    fi
   done < <(find claude/projects -mindepth 1 -maxdepth 2 -type d 2>/dev/null)
   if (( count == 0 )); then
-    echo "[missing-readme] clean"
+    echo "[missing-readme] clean (per policy: project roots + 10+note folders only)"
   else
     echo "[missing-readme] offenders ($count):"
     printf '  %s\n' "${missing[@]}" | head -20
