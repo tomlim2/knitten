@@ -5,7 +5,7 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | Standard | Read when |
 |----------|-----------|
 | **Policy** | |
-| [`agent-first-policy.md`](policy/agent-first-policy.md) | designing a new layer or resolving an artifact conflict |
+| [`llm-first-policy.md`](policy/llm-first-policy.md) | designing a new layer or resolving an artifact conflict |
 | [`garden-review.md`](policy/garden-review.md) | pre-tag, after 30+ days clean, or structural review requested |
 | [`principles.md`](policy/principles.md) | a term feels ambiguous, or deciding whether a new pattern fits the layer model — glossary + discovered principles |
 | [`naming.md`](policy/naming.md) | naming any new rule, standard, command, skill, plan, or vault file |

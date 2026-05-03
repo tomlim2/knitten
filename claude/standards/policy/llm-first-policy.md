@@ -7,21 +7,18 @@ The meta-policy that governs every other document, rule, skill, and command in `
 
 For the vocabulary used here (`charter`, `default-counter`, `lifecycle phase`, `audience`, `mutability`, layer numbers) and the rationale behind each principle below — see `principles.md`.
 
-## Two terms, two layers
+## Two files, two concerns
 
-`caol-ila` uses two terms deliberately. They name different layers of the same stance:
+`caol-ila` is **LLM-first** (single term, see `CLAUDE.md` charter). The policy is split across two files because they answer different questions:
 
-| Term | Layer | Meaning |
-|------|-------|---------|
-| **agent-first** | Stance (this file) | Who the repository serves: an autonomous agent that reads, executes, and edits artifacts. Format-agnostic, model-agnostic, future-proof against non-LLM agents. |
-| **llm-first** | Mechanics (`standards/policy/llm-first-docs.md`) | How artifacts must be written *because* the agent is currently an LLM: token-efficient, cold-start parsable, structured for limited context windows. |
+| File | Question | Read when |
+|------|----------|-----------|
+| `llm-first-policy.md` (this file) | **Why & how** — layer architecture, conflict resolution, what each layer enforces | Designing a new layer (rule/standard/skill/validator) or resolving a cross-artifact conflict |
+| `llm-first-docs.md` | **How to write** — token budgets, audience model, 7 rules, format primitives | Writing or editing any artifact |
 
-agent-first is the WHY/WHO; llm-first is the HOW that follows from "the agent is an LLM today." If a non-LLM agent ever becomes the primary reader, the llm-first mechanics get re-derived; the agent-first stance does not change.
+The split exists for read-cost: writing artifacts happens many times per session, designing layers happens rarely. Combining the two would force layer architecture into context every time you touch a doc.
 
-Read this when:
-- Designing a new layer (rule, standard, skill category, validator).
-- Resolving a conflict between two existing artifacts.
-- Onboarding a sub-agent that needs to understand the repo's stance, not just its rules.
+(Earlier versions used `agent-first` for the stance and `llm-first` for the mechanics. The distinction was abstract — the agent is an LLM, period. Term unified to `llm-first` to drop the unused future-proofing layer.)
 
 ---
 

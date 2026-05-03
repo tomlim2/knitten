@@ -6,7 +6,7 @@ status: proposed
 
 The vocabulary `caol-ila` uses to talk about itself, plus the operating principles discovered through real incidents. Read this when a term in another doc feels ambiguous, or when deciding whether a new pattern fits the existing layer model.
 
-`agent-first-policy.md` is the **stable** layer model (constitution). This file is the **evolving** body of discovered lessons (case law). Both grow, but at different rates and for different reasons.
+`llm-first-policy.md` is the **stable** layer model (constitution). This file is the **evolving** body of discovered lessons (case law). Both grow, but at different rates and for different reasons.
 
 ---
 
@@ -16,9 +16,7 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **charter** — The repository's foundational stance. Lives in `CLAUDE.md` → "Repository charter". One paragraph. Says *who* the repo serves and *why*. Rarely changes; when it does, every lower layer is re-derived. Distinct from a rule (rule is `must`) or a standard (standard is `how`).
 
-**agent-first** — The stance term. The repository serves an autonomous agent, not a human reader. Format-agnostic, model-agnostic. Future-proof against non-LLM agents. Lives in `agent-first-policy.md`.
-
-**llm-first** — The mechanics term. The writing rules that follow *because* the agent is currently an LLM (token cost, cold-start, narrow context, recency bias). Lives in `llm-first-docs.md`. If a non-LLM agent ever becomes primary, `llm-first` mechanics are re-derived; `agent-first` stance does not change.
+**llm-first** — The single term for the repo's stance and mechanics. The repository is engineered for the LLM that reads it cold-start every session: token-efficient, cold-start parsable, structured for limited context windows. Split across two files for read-cost: `llm-first-policy.md` (layer architecture, why & how) and `llm-first-docs.md` (writing rules, how to write). The earlier `agent-first` term was unified into `llm-first` since the abstract "future-proof against non-LLM agents" distinction wasn't earning its weight.
 
 **rule** — Short enforceable directive. Body cap: 40 lines (auto) or 120 lines (triggered). Lives in `claude/rules/`.
 
@@ -73,7 +71,7 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **run** — A single-shot snapshot, debug stash, or tool output. Ephemeral. Lives in `ops/runs/`.
 
-**garden review** — Periodic structural audit against `agent-first-policy.md`. Codified in `garden-review.md`. Triggers: pre-tag, after 30+ days clean, or on explicit request.
+**garden review** — Periodic structural audit against `llm-first-policy.md`. Codified in `garden-review.md`. Triggers: pre-tag, after 30+ days clean, or on explicit request.
 
 ### Naming
 
@@ -83,7 +81,7 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **scope match** — Filename narrowness matches body scope. Narrow the name when the body shrinks. Anti-pattern: a single rule named after its broadest possible scope while the body covers a fraction.
 
-### Layers (from `agent-first-policy.md`)
+### Layers (from `llm-first-policy.md`)
 
 **layer 1** — Charter (`CLAUDE.md` → "Repository charter").
 **layer 2** — Operational standard (`llm-first-docs.md`).
@@ -109,7 +107,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 - ✅ auto: "No Co-Authored-By" (harness's system prompt instructs adding it; LLM bias is strong; intent forms cold-start).
 - ❌ auto: "Pre-PR checklist" (only fires on `gh pr create`; the LLM has time to load the triggered rule before the action).
 
-**Enforced by:** `validate-llm-first.mjs` length-caps check (auto cap = 40 lines; bloat forces split). Documented in `agent-first-policy.md` "When to add to which layer" table.
+**Enforced by:** `validate-llm-first.mjs` length-caps check (auto cap = 40 lines; bloat forces split). Documented in `llm-first-policy.md` "When to add to which layer" table.
 
 ---
 
@@ -125,7 +123,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 - ✅ `pr-create.md` (trigger: about to call gh pr create)
 - ❌ One mega `git.md` with everything
 
-**Enforced by:** `agent-first-policy.md` "When to add to which layer" — last row.
+**Enforced by:** `llm-first-policy.md` "When to add to which layer" — last row.
 
 ---
 
@@ -137,7 +135,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 **Example:** "Slack confirm first" → `rules/slack.md` (trigger: sending any Slack message). The bullet is no longer evaluated when the LLM is, say, just reading code.
 
-**Enforced by:** `agent-first-policy.md` "When to add to which layer" — penultimate row.
+**Enforced by:** `llm-first-policy.md` "When to add to which layer" — penultimate row.
 
 ---
 
@@ -240,6 +238,6 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 When a session discovers a new operating principle (a pattern that worked, a defect class spotted, a recurring confusion resolved):
 
 1. Add a new section under "Discovered Principles" with the same 4-field shape.
-2. Cross-link to `agent-first-policy.md` if the principle changes the layer model.
+2. Cross-link to `llm-first-policy.md` if the principle changes the layer model.
 3. If the principle can be mechanically enforced, add a validator check (`scripts/validate-llm-first.mjs`) in the same PR.
 4. Update affected glossary entries.

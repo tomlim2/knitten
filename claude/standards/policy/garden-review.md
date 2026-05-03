@@ -4,7 +4,7 @@ status: proposed
 
 # Garden Review Checklist
 
-Periodic structural audit of the repository against `agent-first-policy.md`. Run every minor version (v3.x → v3.x+1) or whenever the validator stays clean for 30 days but the layer model has drifted in ways the validator cannot see.
+Periodic structural audit of the repository against `llm-first-policy.md`. Run every minor version (v3.x → v3.x+1) or whenever the validator stays clean for 30 days but the layer model has drifted in ways the validator cannot see.
 
 **Output:** a follow-up plan in `docs/plans/garden-<date>.md` if any P0/P1 finding is filed. No finding → record the date in this file's "Last clean run" line and skip.
 
@@ -25,7 +25,7 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 
 ## Checklist
 
-### 1. Layer integrity (`agent-first-policy.md` §"Layered enforcement")
+### 1. Layer integrity (`llm-first-policy.md` §"Layered enforcement")
 
 - [ ] Every `claude/rules/*.md` (except `index.md`) has `load:` frontmatter and is registered in `rules/index.md` under the correct section (auto vs triggered).
 - [ ] Every `claude/standards/**/*.md` (except `index.md`) has `status:` frontmatter and is registered in `standards/index.md`.
@@ -60,7 +60,7 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 
 ### 6. Drift signals
 
-- [ ] No `MEMORY.md` file exists anywhere. (`agent-first-policy.md` forbids.)
+- [ ] No `MEMORY.md` file exists anywhere. (`llm-first-policy.md` forbids.)
 - [ ] No second top-level entry point appeared (`PHILOSOPHY.md`, `MANIFESTO.md`, `OVERVIEW.md`). `CLAUDE.md` is singular.
 - [ ] No human-aesthetic prose snuck into `README.md` or `LOOKUP.md` (motivational opener, marketing tone, repeated mission statement).
 - [ ] No new untracked `.bak` / `.tmp` / `.draft.md` files at repo root or under `claude/`.

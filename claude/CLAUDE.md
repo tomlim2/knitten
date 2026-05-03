@@ -10,7 +10,7 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 ## Repository charter
 
-`caol-ila` is an **agent-first repository** — the primary operator is an autonomous agent, not a human reader. Because that agent is currently an LLM, the operational mechanics are **LLM-first**: every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:
+`caol-ila` is an **LLM-first repository** — the primary operator is an autonomous agent, not a human reader. Because that agent is currently an LLM, the operational mechanics are LLM-first: every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:
 
 1. **Efficiency** — minimum tokens for maximum signal.
 2. **Accuracy** — explicit, unambiguous, no hidden assumptions.
@@ -18,7 +18,7 @@ Detailed reference: `~/.claude/standards/` (read on demand).
 
 The user is the architect; the LLM is the primary reader and operator. Human-readable output is delivered only on explicit user request.
 
-When choosing between two ways to write or organize anything in this repo, ask: **"would a cold-start LLM session parse this correctly in the fewest tokens?"** If not, restructure. Operational rules below (`standards/policy/llm-first-docs.md`) translate this charter into per-document checks. The full layered enforcement model — which layer owns which constraint, how conflicts resolve — is in `standards/policy/agent-first-policy.md`; read before designing a new layer.
+When choosing between two ways to write or organize anything in this repo, ask: **"would a cold-start LLM session parse this correctly in the fewest tokens?"** If not, restructure. Operational rules below (`standards/policy/llm-first-docs.md`) translate this charter into per-document checks. The full layered enforcement model — which layer owns which constraint, how conflicts resolve — is in `standards/policy/llm-first-policy.md`; read before designing a new layer.
 
 ---
 
