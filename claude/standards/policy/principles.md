@@ -16,7 +16,7 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **charter** — The repository's foundational stance. Lives in `CLAUDE.md` → "Repository charter". One paragraph. Says *who* the repo serves and *why*. Rarely changes; when it does, every lower layer is re-derived. Distinct from a rule (rule is `must`) or a standard (standard is `how`).
 
-**llm-first** — The single term for the repo's stance and mechanics. The repository is engineered for the LLM that reads it cold-start every session: token-efficient, cold-start parsable, structured for limited context windows. Split across two files for read-cost: `llm-first-policy.md` (layer architecture, why & how) and `llm-first-docs.md` (writing rules, how to write). The earlier `agent-first` term was unified into `llm-first` since the abstract "future-proof against non-LLM agents" distinction wasn't earning its weight.
+**llm-first** — The repository is engineered for the LLM that reads it cold-start every session: token-efficient, cold-start parsable, structured for limited context windows. Split across two files for read-cost: `llm-first-policy.md` (layer architecture, why & how) and `llm-first-docs.md` (writing rules, how to write).
 
 **rule** — Short enforceable directive. Body cap: 40 lines (auto) or 120 lines (triggered). Lives in `claude/rules/`.
 

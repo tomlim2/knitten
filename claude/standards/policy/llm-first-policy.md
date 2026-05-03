@@ -18,8 +18,6 @@ For the vocabulary used here (`charter`, `default-counter`, `lifecycle phase`, `
 
 The split exists for read-cost: writing artifacts happens many times per session, designing layers happens rarely. Combining the two would force layer architecture into context every time you touch a doc.
 
-(Earlier versions used `agent-first` for the stance and `llm-first` for the mechanics. The distinction was abstract — the agent is an LLM, period. Term unified to `llm-first` to drop the unused future-proofing layer.)
-
 ---
 
 ## Stance

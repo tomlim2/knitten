@@ -99,6 +99,28 @@ Banned: motivation, marketing, decoration, philosophical asides.
 
 These add tokens and zero decision power.
 
+### 8. Extreme-S writing — implemented only, present tense
+
+MBTI shorthand: write as **극 S (Sensing)**. No N (iNtuition) statements. Only what currently exists, observable, present.
+
+Banned without explicit user agreement (or user-LLM written agreement in the same doc):
+
+| Class | Bad | Good |
+|-------|-----|------|
+| Future tense (N) | "will support", "is planned to", "going to add" | "supports" (when it does) — or omit |
+| Aspirational (N) | "aims to", "vision is", "goal is to eventually" | omit |
+| Speculation (N) | "might", "could", "probably", "in theory" | concrete fact or `if X then Y` |
+| Abstract pattern (N) | "this represents the broader principle of…" | the concrete behavior |
+| Marketing (decoration) | "powerful", "elegant", "comprehensive", "world-class" | the concrete capability the adjective hides |
+| Sycophantic | "great question", "you're right to consider…" | direct answer |
+
+If a feature is unimplemented, do not describe it as if it works. Either:
+1. Omit it from current docs.
+2. Mark with `status: proposed` frontmatter + `**status:** not implemented` body marker.
+3. Move to a sanctioned `*-roadmap.md` (only if user explicitly agreed to that file existing).
+
+The LLM reads docs as factual ground truth. N-language pollutes ground truth and propagates into actions.
+
 ---
 
 ## Format primitives
@@ -136,10 +158,18 @@ If a file exceeds budget, split — do not let it grow.
 
 Before committing changes to an LLM-first doc, scan for:
 
-- `consider`, `usually`, `typically`, `may`, `should probably`, `might`, `etc.`, `…`
+- N-language (intuitive, non-Sensing): future tense, aspirational, speculation, abstract patterns
+  - `will`, `going to`, `plans to`, `is planned`, `aims to`, `goal is to`
+  - `could`, `probably`, `in theory`, `would likely`, `might`
+  - `consider`, `usually`, `typically`, `may`, `should probably`
+  - `etc.`, `…` (incomplete enumeration)
+  - "this represents", "broadly speaking", "in essence"
+- Marketing adjectives (`powerful`, `elegant`, `comprehensive`, `world-class`, `seamless`)
+- Sycophantic openers (`great question`, `you're right`, `excellent point`)
 - Paragraphs longer than 3 sentences in a rule context.
 - Section headers with no rules underneath.
 - Duplicated rules already covered in another file.
 - Decorative emoji or motivational lines.
 
-Each hit is a defect.
+Each hit is a defect. For unimplemented features: either omit, mark `status: proposed`, or move to a sanctioned roadmap doc.
+
