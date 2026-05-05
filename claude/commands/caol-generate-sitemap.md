@@ -21,19 +21,20 @@ SKILL SERVER SITEMAP
 ====================
 
 ## Core Pages
-http://localhost:972/                    - Dashboard (Skills)
-http://localhost:972/files               - File Browser
+http://localhost:9720/                    - Dashboard (Skills)
+http://localhost:9720/browse               - File Browser
 
 ## Skills
-http://localhost:972/skills/{skill-id}   - Skill detail pages
+http://localhost:9720/skills/{skill-id}   - Skill detail pages
   - [List all discovered skills with their IDs]
 
-## API Endpoints
-http://localhost:972/api/skills          - Skills JSON
-http://localhost:972/api/commands        - Commands JSON
-http://localhost:972/api/standards       - Standards JSON
-http://localhost:972/api/standards/{name} - Standard content
-http://localhost:972/api/files?path={path} - File browser API
+## Other Pages
+http://localhost:9720/standards          - Standards index
+http://localhost:9720/standards/{slug}   - Standard content
+http://localhost:9720/learnings          - Learnings index
+http://localhost:9720/personal           - Personal projects
+http://localhost:9720/sitemap            - Sitemap
+http://localhost:9720/api/plugin/{name}/{action} - Plugin runtime control
 
 Generated: [TIMESTAMP]
 ```

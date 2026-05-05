@@ -132,7 +132,7 @@ Each agent's tasks:
 Fix {file_path} to match Design System v{version} showcase.
 
 **Reference (Single Source of Truth):**
-1. Open http://localhost:972/skills/design-show-components
+1. Open http://localhost:9720/skills/design-show-components
 2. Read design-show-components/index.html <style> section
 3. Extract actual values from .page-main styles
 

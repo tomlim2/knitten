@@ -77,7 +77,7 @@ if img_part:
     # Report usage to skill server
     try:
         usage_body = json.dumps({'inputTokens': in_tok, 'outputTokens': out_tok, 'model': MODEL, 'type': 't2i'}).encode()
-        usage_req = urllib.request.Request('http://localhost:972/api/gemini-usage', data=usage_body, headers={'Content-Type': 'application/json'})
+        usage_req = urllib.request.Request('http://localhost:9720/api/gemini-usage', data=usage_body, headers={'Content-Type': 'application/json'})
         urllib.request.urlopen(usage_req)
     except: pass
 else:
@@ -96,4 +96,4 @@ Replace PROMPT_HERE, ASPECT_HERE, OUTPUT_PATH_HERE with the parsed values.
 - Open the image: `open <output_path>`
 
 ### Web UI
-For interactive use with preview: `open http://localhost:972/skills/dev-run-t2i`
+For interactive use with preview: `open http://localhost:9720/skills/dev-run-t2i`

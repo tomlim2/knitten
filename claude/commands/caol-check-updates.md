@@ -61,8 +61,8 @@ If the file appears in `--diff-filter=A` output, it's **(new)**. Otherwise it's 
 Try to reach the skill server:
 
 ```bash
-curl -s --max-time 1 http://localhost:972/api/skills 2>/dev/null
-curl -s --max-time 1 http://localhost:972/api/commands 2>/dev/null
+curl -s --max-time 1 http://localhost:9720/skills 2>/dev/null
+curl -s --max-time 1 http://localhost:9720/skills 2>/dev/null
 ```
 
 - If server responds, check whether newly added commands/skills appear in the response

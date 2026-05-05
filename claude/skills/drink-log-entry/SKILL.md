@@ -34,7 +34,7 @@ Web interface to view your logged drinks from the `/drink-log-entry` command.
 
 Then click on **drink-log-entry** to view your collection.
 
-Or visit: http://localhost:972/skills/drink-log-entry
+Or visit: http://localhost:9720/skills/drink-log-entry
 
 ## Features
 

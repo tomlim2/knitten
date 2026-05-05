@@ -1,11 +1,13 @@
 ---
-description: Open invoice generator via skill server
-allowed-tools: Bash(open:*)
+description: Generate monthly tuition invoice via CLI (web UI deprecated)
+allowed-tools: Bash(python3:*)
 ---
 
 # tutoring-open-invoice
 
-Open the monthly tuition invoice generator through the skill server.
+Generate the monthly tuition invoice using the CLI generator.
+
+> **Note:** The previous web UI (`localhost:972/invoice`) was hosted by `caol-serve-skills`, which has been removed. Web invoice rendering needs to be reimplemented in `caol-hq` (Astro, port 9720) before this command can launch a browser again. Until then, use the CLI mode below — it prints the invoice to stdout and supports the same student/rate/lessons arguments.
 
 ## Usage
 
@@ -13,21 +15,10 @@ Open the monthly tuition invoice generator through the skill server.
 /tutoring-open-invoice
 ```
 
+Calls `~/.claude/skills/tutoring-log-lesson/invoice.py` with no `--open` flag (web mode disabled).
+
 ## Execution
 
 ```bash
-SERVER_DIR="$HOME/Desktop/www/caol-ila/claude/skills/caol-serve-skills"
-
-if ! curl -s http://localhost:972 > /dev/null 2>&1; then
-    cd "$SERVER_DIR"
-    [ ! -d node_modules ] && npm install
-    nohup node server.js > /tmp/skill-server.log 2>&1 &
-    sleep 2
-fi
-
-open http://localhost:972/invoice
+python3 "$HOME/.claude/skills/tutoring-log-lesson/invoice.py"
 ```
-
-## Output
-
-Confirms the skill server is running and the invoice generator page is opened in the browser.

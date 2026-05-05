@@ -17,7 +17,7 @@ Check skill server, refs, and model version status. Auto-starts server if down. 
 
 ### Step 1: Check Skill Server
 
-1. Run `curl -s --max-time 2 http://localhost:972/api/skills`
+1. Run `curl -s --max-time 2 http://localhost:9720/skills`
 2. If response received → server is `connected`
 3. If no response → start server:
    ```bash

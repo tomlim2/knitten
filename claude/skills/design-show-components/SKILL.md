@@ -38,7 +38,7 @@ Displays all available UI patterns and components from the Typo-base design syst
 
 ## Usage
 
-**Web UI**: `http://localhost:972/skills/design-show-components`
+**Web UI**: `http://localhost:9720/skills/design-show-components`
 
 ## Files
 

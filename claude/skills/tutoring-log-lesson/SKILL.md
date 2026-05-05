@@ -51,7 +51,7 @@ python invoice.py "StudentName" --rate 150000 --open
 
 **Options:**
 - `--rate, -r` - Hourly rate (default: 150000)
-- `--open, -o` - Open invoice generator web app at http://localhost:972/invoice (auto-fills student/rate/lessons + auto-submits)
+- `--open, -o` - **Disabled** (legacy `localhost:972/invoice` removed with `caol-serve-skills`; caol-hq replacement route TBD). Currently prints the query string the future endpoint would consume.
 
 ### `/tutoring-open-invoice`
 
