@@ -250,8 +250,8 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
   - Control types (sliders, inputs, dropdowns)
 - Colors section (optional):
   - Some art needs color pickers
-  - Some art might use fixed colors
-  - Some art might be monochrome (no color controls needed)
+  - Some art uses fixed colors
+  - Some art is monochrome (no color controls needed)
   - Decide based on the art's needs
 
 **Every artwork should have unique parameters and algorithm!** The fixed parts provide consistent UX - everything else expresses the unique vision.

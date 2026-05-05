@@ -27,7 +27,7 @@ Read these files first to understand what the current standards say (or don't sa
 - `~/.claude/standards/multi-agent/agent-workflow.md` — Agent patterns and pipeline rules
 - `~/.claude/standards/authoring/slash-commands.md` — Command authoring standard
 
-Note any gaps — the goal is to find rules that fill them.
+Note any gaps — the research fills them with actionable rules.
 
 ## Execution Strategy
 

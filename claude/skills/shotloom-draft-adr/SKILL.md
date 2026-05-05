@@ -43,7 +43,7 @@ When the ADR PR merges to `main`, the number locks. From that moment on, downstr
 
 ### Step 2: Scan existing ADRs for relevance
 
-Grep for keywords from the title across `docs/adr/` — flag any ADR that might be:
+Grep for keywords from the title across `docs/adr/` — flag any ADR that is:
 - **Superseded by this one** → candidate for "Supersedes: ADR-NNNN" line
 - **Related** → candidate for "Related: ADR-NNNN"
 - **Conflicting** → flag for user discussion before drafting

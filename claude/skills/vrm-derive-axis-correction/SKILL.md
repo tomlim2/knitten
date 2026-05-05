@@ -142,7 +142,7 @@ rotates the axis to match ARP without touching magnitude.
 tf.rotation = basis * tf.rotation * basis.inverse();
 ```
 
-At standing rest frame, `tf.rotation ≈ dst_rest_local` (the baseline). Conjugating this rotates the REST axis, which warps the T-pose / standing pose that was previously correct.
+At standing rest frame, `tf.rotation ≈ dst_rest_local` (the baseline). Conjugating this rotates the REST axis, warping the T-pose / standing pose.
 
 **Fix**: apply conjugation to the DELTA from rest only:
 
@@ -158,7 +158,7 @@ At rest frame, `delta ≈ identity`, so `corrected_delta ≈ identity`, so `tf.r
 
 ### Mistake 2: deriving from a single animation and applying globally
 
-A basis derived from animation X might be specific to that animation's motion range. Always verify the basis is stable across:
+A basis derived from a single animation can be motion-range-specific. Always verify the basis is stable across:
 - Multiple frames of the SAME animation (Step 5 in the workflow)
 - At least ONE other animation (e.g. if derived from graceful arms, test with standing + running)
 
@@ -191,7 +191,7 @@ Corrections should **supplement** each other case by case, NOT replace prior val
 
 Never silently lose prior calibration data — each value represents user effort.
 
-**Current design gap**: `AXIS_CORRECTION` is a flat per-bone table with no case dimension. If multiple cases need different corrections for the same bone, extend the data model to `(vrm_bone, case_key) → quat`. This is a TODO.
+**Current design constraint**: `AXIS_CORRECTION` is a flat per-bone table with no case dimension. When multiple cases need different corrections for the same bone, extend the data model to `(vrm_bone, case_key) → quat`.
 
 ### Verification checklist after ANY correction change
 

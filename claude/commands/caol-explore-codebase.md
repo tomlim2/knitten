@@ -25,7 +25,7 @@ Execute these searches **in parallel** where possible:
 ### 1. File Discovery
 - Glob for files matching the topic
 - Check common locations (src/, lib/, tests/, docs/)
-- Look for config files that might be relevant
+- Look for config files relevant to the topic
 
 ### 2. Content Search
 - Grep for exact term matches
@@ -33,7 +33,7 @@ Execute these searches **in parallel** where possible:
 - Search for imports/references
 
 ### 3. Structure Analysis
-- List directories that might be relevant
+- List directories relevant to the topic
 - Check for test files (indicates important code)
 - Look for documentation (README, docstrings)
 

@@ -7,7 +7,7 @@ allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*), Bash(
 
 Self-review pass for a Shotloom branch **before** opening a PR. Loads the in-repo formal Rust review spec (`docs/guidelines/review-rust.md`) and the review process (`docs/guidelines/code-review-guideline.md`), walks them against the current diff, reports findings. Does **not** push, **not** call `gh pr create`, **not** modify files — reports only.
 
-> **Note:** The legacy 22-pattern catalog (`~/.claude/standards/review-code-rust.md`) has been retired. The in-repo `docs/guidelines/review-rust.md` is now the single source of truth for what counts as a Rust defect on this repo.
+> **Note:** The in-repo `docs/guidelines/review-rust.md` is the single source of truth for what counts as a Rust defect on this repo. Do not load `~/.claude/standards/review-code-rust.md`.
 
 Run repeatedly during development. When the report comes back clean, then `/shotloom-make-pr` to open the PR.
 
@@ -77,7 +77,7 @@ Run `pwd` every time before first grep — cwd may silently reset between tool c
 1. **`docs/guidelines/review-rust.md`** (in-repo) — formal Rust review spec. Single source of truth for what counts as a defect on this repo. Read in full.
 2. **`docs/guidelines/code-review-guideline.md`** (in-repo) — review process, P0/P1/P2/P3 priorities, reviewer expectations.
 
-The legacy 22-pattern catalog (`~/.claude/standards/review-code-rust.md`) has been retired. Use the in-repo formal spec as the checklist; do not load any external supplementary catalog.
+Use the in-repo formal spec as the checklist; do not load `~/.claude/standards/review-code-rust.md` or any external supplementary catalog.
 
 Re-read both files every invocation — they get amended as new defect classes are found.
 
