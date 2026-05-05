@@ -1,0 +1,79 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { loadRecentCommits, timeAgo } from '../../lib/git-feed';
+
+const LIMIT = 30;
+const all = await loadRecentCommits(10);
+const rows = all.slice(0, LIMIT);
+
+function trimRefs(refs: string): string {
+    if (!refs) return '';
+    // git decorate prefixes: "HEAD -> main, origin/main, tag: v1"
+    // Show only the first symbolic ref to keep the row tight.
+    const parts = refs.split(',').map(s => s.trim());
+    const head = parts.find(p => p.startsWith('HEAD ->'))?.replace('HEAD -> ', '');
+    return head ?? parts[0] ?? '';
+}
+---
+
+<WidgetFrame title="Recent Commits" id="recent-commits">
+    <Fragment slot="meta">{all.length} commits across repos</Fragment>
+    {rows.length === 0 ? (
+        <EmptyState>커밋 없음 (또는 등록된 repo 없음)</EmptyState>
+    ) : (
+        <ul class="hq-doc-list hq-commit-list">
+            {rows.map(c => {
+                const ref = trimRefs(c.refs);
+                return (
+                    <li class="hq-doc-row hq-commit-row">
+                        <span class="hq-commit-meta">
+                            <code class="hq-commit-repo">{c.repo}</code>
+                            <code class="hq-commit-hash">{c.hash}</code>
+                            {ref && <code class="hq-commit-ref">{ref}</code>}
+                        </span>
+                        <span class="hq-doc-name hq-commit-subject">{c.subject}</span>
+                        <span class="hq-doc-date">{timeAgo(c.at)}</span>
+                    </li>
+                );
+            })}
+        </ul>
+    )}
+</WidgetFrame>
+
+<style is:global>
+    .hq-commit-row {
+        display: grid;
+        grid-template-columns: minmax(180px, auto) 1fr auto;
+        column-gap: 12px;
+        align-items: baseline;
+    }
+    .hq-commit-meta {
+        display: inline-flex;
+        gap: 6px;
+        align-items: baseline;
+        flex-wrap: nowrap;
+    }
+    .hq-commit-repo {
+        font-size: 11px;
+        color: var(--hq-fg-mute, #888);
+    }
+    .hq-commit-hash {
+        font-size: 11px;
+        color: var(--hq-fg-mute, #888);
+        opacity: 0.75;
+    }
+    .hq-commit-ref {
+        font-size: 10px;
+        color: var(--hq-accent, #2a8a4a);
+        padding: 0 4px;
+        border: 1px solid currentColor;
+        border-radius: 3px;
+        opacity: 0.7;
+    }
+    .hq-commit-subject {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
