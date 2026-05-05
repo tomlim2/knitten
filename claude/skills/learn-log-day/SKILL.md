@@ -1,40 +1,50 @@
 ---
-description: "Log daily work, learnings, and topic files to Obsidian project docs — devlog, learning, or topic references."
-argument-hint: "<project> [devlog|learning|topic] [category|name]"
-allowed-tools: Read, Edit, Write, Glob, Grep, Bash(date:*), Bash(git:*)
+description: "Log daily work, learnings, and topic files to Obsidian project docs — devlog, learning, topic, or cross-project learning."
+argument-hint: "<project|_cross-project> [devlog|learning|topic] [category|slug|name]"
+allowed-tools: Read, Edit, Write, Glob, Grep, Bash(date:*), Bash(git:*), Bash(bash:*)
 user-invocable: true
 ---
 
 # learn-log-day
 
-Log project devlogs, learnings, and topic references to Obsidian using frontmatter, wikilinks, callouts, and structured tags.
+Log project devlogs, learnings, and topic references to Obsidian using frontmatter, wikilinks, callouts, and structured tags. Also covers cross-project learnings (Claude Code, language-level, tool-level) that don't belong to a single project.
 
 ## Arguments
 
-- `<project>` — project folder name (e.g. `bevy-vrm`, `mmd-player-anju`)
-- `[sub-command]` — defaults to `devlog`
-  - `devlog` — add today's work log (default)
-  - `learning <worked|failed|gotcha>` — add extracted lesson
+- `<project>` — project folder name (e.g. `bevy-vrm`, `mmd-player-anju`), **or** `_cross-project` for tool/language/Claude-Code-level lessons that span every project
+- `[sub-command]` — defaults to `devlog` for real projects (cross-project rejects `devlog`)
+  - `devlog` — add today's work log (project only)
+  - `learning <worked|failed|gotcha>` — add extracted lesson to the project's learnings index
+  - `learning <slug>` — **cross-project only.** Slug becomes the filename `learning-<slug>.md` under `claude/learnings/`
   - `topic <name>` — create or edit a topic reference file
 
 **If no project argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 ```
 Usage:
-  /learn-log-day <project>                        — add today's devlog
-  /learn-log-day <project> learning worked         — log a successful approach
-  /learn-log-day <project> learning failed         — log a failed approach
-  /learn-log-day <project> learning gotcha         — log a non-obvious trap
-  /learn-log-day <project> topic <name>            — create or edit topic file
+  /learn-log-day <project>                          — add today's devlog
+  /learn-log-day <project> learning worked          — log a successful approach
+  /learn-log-day <project> learning failed          — log a failed approach
+  /learn-log-day <project> learning gotcha          — log a non-obvious trap
+  /learn-log-day <project> topic <name>             — create or edit topic file
+  /learn-log-day _cross-project learning <slug>     — cross-project learning (flat file)
+  /learn-log-day _cross-project topic <name>        — cross-project topic (shared)
 ```
 
 ---
 
 ## Step 1: Resolve path
 
-Doc path: !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh devlog $0`
+For real projects:
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh devlog $0`
 
-Use `RESOLVED_PATH` as the project base path. If missing → run [Project Initial Setup](#project-initial-setup).
+For `_cross-project + learning`:
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh cross-learning`
+
+For `_cross-project + topic`:
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh topic _cross-project`
+
+Use `RESOLVED_PATH` as the base path. If a project folder is missing → run [Project Initial Setup](#project-initial-setup). `_cross-project` requires no setup — `claude/learnings/` and `claude/projects/_cross-project/` already exist.
 
 ---
 
@@ -103,6 +113,18 @@ Template: see `~/.claude/templates/devlog/learnings.md`
 - Reference related day files with `[[{project}/days/day-{NN}]]`
 - Reference related topic files with `See [[{project}/{topic-name}]]`
 - Update `updated` date
+
+---
+
+### Cross-project learning (`_cross-project + learning <slug>`)
+
+Single flat file per concept under `claude/learnings/learning-<slug>.md`. No shared index — each file is self-contained, matches existing convention (`learning-rust-traits.md`, `learning-claude-code-hooks.md`, …).
+
+If file exists → open for append/edit (don't overwrite). If new → write from the standard learning template (see Frontmatter table below; tag with `project/_cross-project`).
+
+Body shape: `## 증상 / ## 원인 / ## 해결` (or English equivalents) + footer `#rule` / `#gotcha` inline tags. Same callout rules as project learnings.
+
+Reject `devlog` for `_cross-project` — cross-project devlogs aren't a thing; use a real project's devlog and link out via `[[_cross-project/...]]` wikilink.
 
 ---
 
