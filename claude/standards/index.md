@@ -35,6 +35,7 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | **Code review** | |
 | [`review-template.md`](review/review-template.md) | base review template |
 | [`review-ai-motion.md`](review/review-ai-motion.md) | grading AI-generated motion (FBX) — 7 metrics + fault attribution |
+| [`review-code-astro.md`](review/review-code-astro.md) | Astro framework review — `.astro`, SSR/SSG, islands, content collections |
 | [`review-code-javascript.md`](review/review-code-javascript.md) | JS review |
 | [`review-code-css.md`](review/review-code-css.md) | CSS review |
 | [`review-code-tsl.md`](review/review-code-tsl.md) | TSL shader review |
