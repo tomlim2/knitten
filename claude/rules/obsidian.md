@@ -9,6 +9,7 @@ trigger: working in the Obsidian vault
 - **Wikilinks for images** — `![[folder/file.png]]`. Never use markdown image links for vault content.
 - **Wikilinks for internal references** — `[[Note Name]]`.
 - **Markdown links for external** — `[text](URL)`. **NEVER in `type/devlog` documents** — devlogs rot quickly and dead links accumulate. Reference resources via `[[wikilink]]` to a dedicated reference note instead.
+- **No issue-tracker IDs in body prose of `type/devlog` and `type/learning` documents.** Linear (`STL-NN`), Jira, Asana, etc. IDs rot — issues get renumbered, archived, deleted, projects migrate trackers — and the note loses its anchor. Vault notes are durable retrieval *without* depending on an external system. Replace with a descriptive title in the prose ("the thumb-chain naming canonicalization work" instead of `STL-263`). GitHub PR / commit references are OK because the artifact is the diff itself, not a metadata pointer.
 - **Lists use `-`** — Ordered lists use `1.`.
 - **Tags in frontmatter — MANDATORY checklist before save.**
   - Exactly 1 `type/` tag. Exactly 1 `project/` tag. Both required, not optional.
