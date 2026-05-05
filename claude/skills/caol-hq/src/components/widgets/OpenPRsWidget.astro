@@ -1,9 +1,12 @@
 ---
 import WidgetFrame from '../WidgetFrame.astro';
 import EmptyState from '../EmptyState.astro';
-import { execSync } from 'node:child_process';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 import { existsSync } from 'node:fs';
 import { loadRepoPaths, getRepoPath } from '../../lib/paths';
+
+const execAsync = promisify(exec);
 
 interface PR {
     repo: string;
@@ -14,27 +17,53 @@ interface PR {
     url: string;
 }
 
-const prs: PR[] = [];
+interface CacheEntry {
+    at: number;
+    prs: PR[];
+    scanned: number;
+    skipped: number;
+}
+
+const TTL_MS = 60_000;
+const cacheKey = '__openPRsCache';
+const g = globalThis as unknown as { [k: string]: CacheEntry | undefined };
+const cached = g[cacheKey];
+
+let prs: PR[] = [];
 let scanned = 0;
 let skipped = 0;
-const repos = loadRepoPaths();
-for (const [name, entry] of Object.entries(repos)) {
-    const repoPath = getRepoPath(entry);
-    if (!repoPath || !existsSync(repoPath)) { skipped++; continue; }
-    try {
-        const out = execSync(
-            'gh pr list --author @me --state open --json number,title,isDraft,state,url --limit 5',
-            { cwd: repoPath, encoding: 'utf8', timeout: 4000 }
-        ).trim();
-        if (!out) { scanned++; continue; }
-        const list = JSON.parse(out) as Array<Omit<PR, 'repo'>>;
-        for (const p of list) prs.push({ repo: name, ...p });
-        scanned++;
-    } catch {
-        skipped++;
+
+if (cached && Date.now() - cached.at < TTL_MS) {
+    prs = cached.prs;
+    scanned = cached.scanned;
+    skipped = cached.skipped;
+} else {
+    const repos = loadRepoPaths();
+    const tasks = Object.entries(repos).map(async ([name, entry]): Promise<{ ok: boolean; prs: PR[] }> => {
+        const repoPath = getRepoPath(entry);
+        if (!repoPath || !existsSync(repoPath)) return { ok: false, prs: [] };
+        try {
+            const { stdout } = await execAsync(
+                'gh pr list --author @me --state open --json number,title,isDraft,state,url --limit 5',
+                { cwd: repoPath, encoding: 'utf8', timeout: 4000 },
+            );
+            const out = stdout.trim();
+            if (!out) return { ok: true, prs: [] };
+            const list = JSON.parse(out) as Array<Omit<PR, 'repo'>>;
+            return { ok: true, prs: list.map(p => ({ repo: name, ...p })) };
+        } catch {
+            return { ok: false, prs: [] };
+        }
+    });
+    const results = await Promise.all(tasks);
+    for (const r of results) {
+        if (r.ok) scanned++;
+        else skipped++;
+        prs.push(...r.prs);
     }
+    prs.sort((a, b) => a.repo.localeCompare(b.repo) || a.number - b.number);
+    g[cacheKey] = { at: Date.now(), prs, scanned, skipped };
 }
-prs.sort((a, b) => a.repo.localeCompare(b.repo) || a.number - b.number);
 ---
 
 <WidgetFrame title="Open PRs" id="open-prs">
