@@ -203,4 +203,20 @@ Interactive first-time setup for a new machine. Guides the user through filling 
 
 6. **hardware.json** — Prompt user to run `/system-save-hardware` to populate hardware specs.
 
-7. **Summary** — Show all four files in the same format as the `show` action.
+7. **skill-usage tracking** — Run the installer that registers the PreToolUse Skill hook + launchd sync agent on this machine:
+
+   ```bash
+   caol_root=$(jq -r '.["caol-ila"].path' ~/.claude/private/caol-config/repo-paths.json)
+   caol_root="${caol_root/#\~/$HOME}"
+   bash "$caol_root/claude/private/skill-usage/install.sh"
+   ```
+
+   The installer is idempotent — safe on re-setup. It:
+   - generates a `machine_id` UUID into `hardware.json` (skips if present)
+   - links `~/.claude/hooks/{log,sync}-skill-usage.sh` (no-op if `~/.claude` already symlinks into the repo)
+   - merges the PreToolUse Skill hook into `~/.claude/settings.json`
+   - installs + loads `com.caol.skill-usage-sync.plist` (30 min push interval)
+
+   Skip if `caol-ila` was not registered in step 3. After install, tell the user to open `/hooks` once or restart Claude Code so the hook activates.
+
+8. **Summary** — Show all four files in the same format as the `show` action.
