@@ -36,8 +36,17 @@ const CATEGORY_MAP: Record<string, string> = {
     algorithmic: 'Design',
 };
 
+const DISCOVER_TTL_MS = 60_000;
+let discoverCache: { at: number; skills: Skill[] } | null = null;
+
 export function discoverSkills(): Skill[] {
-    if (!existsSync(SKILLS_DIR)) return [];
+    if (discoverCache && Date.now() - discoverCache.at < DISCOVER_TTL_MS) {
+        return discoverCache.skills;
+    }
+    if (!existsSync(SKILLS_DIR)) {
+        discoverCache = { at: Date.now(), skills: [] };
+        return [];
+    }
     const dirs = readdirSync(SKILLS_DIR);
     const skills: Skill[] = [];
     for (const dir of dirs) {
@@ -71,6 +80,7 @@ export function discoverSkills(): Skill[] {
         }
     }
     skills.sort((a, b) => a.id.localeCompare(b.id));
+    discoverCache = { at: Date.now(), skills };
     return skills;
 }
 

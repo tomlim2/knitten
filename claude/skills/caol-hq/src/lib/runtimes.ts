@@ -1,7 +1,10 @@
-import { execSync, spawn } from 'node:child_process';
+import { exec, execSync, spawn } from 'node:child_process';
+import { promisify } from 'node:util';
 import { openSync, existsSync } from 'node:fs';
 import runtimesConfig from '../config/runtimes.json' with { type: 'json' };
 import { getRepoPath, loadRepoPaths } from './paths';
+
+const execAsync = promisify(exec);
 
 export interface RuntimeConfig {
     label: string;
@@ -36,6 +39,24 @@ export function statusOf(name: string): RuntimeStatus {
             encoding: 'utf8',
             timeout: 1500,
         }).trim();
+        if (!out) return { running: false, pid: null };
+        const pids = out.split(/\s+/).map(Number).filter(n => !Number.isNaN(n));
+        return pids.length ? { running: true, pid: Math.min(...pids) } : { running: false, pid: null };
+    } catch {
+        return { running: false, pid: null };
+    }
+}
+
+/** Async variant. Use Promise.all over many runtimes to avoid sequential pgrep blocking. */
+export async function statusOfAsync(name: string): Promise<RuntimeStatus> {
+    const cfg = RUNTIMES[name];
+    if (!cfg) return { running: false, pid: null };
+    try {
+        const { stdout } = await execAsync(
+            `pgrep -f ${JSON.stringify(cfg.psPattern)} || true`,
+            { encoding: 'utf8', timeout: 1500 },
+        );
+        const out = stdout.trim();
         if (!out) return { running: false, pid: null };
         const pids = out.split(/\s+/).map(Number).filter(n => !Number.isNaN(n));
         return pids.length ? { running: true, pid: Math.min(...pids) } : { running: false, pid: null };

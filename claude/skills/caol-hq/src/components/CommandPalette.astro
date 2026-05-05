@@ -1,25 +1,9 @@
 ---
 // Command palette — global keyboard launcher (⌘K / Ctrl+K).
-// Indexes skills, standards, learnings on the server, ships them as JSON,
-// and the client filters in-memory. No fancy fuzzy match — substring + prefix
-// is enough for a few hundred items and stays predictable.
-import { discoverSkills } from '../lib/skill-discovery';
-
-const skills = discoverSkills().map(s => ({
-    kind: 'skill' as const,
-    label: s.id,
-    sub: s.description || s.name,
-    href: `/skills/${s.id}`,
-}));
-
-const links = [
-    { kind: 'page' as const, label: 'Home', sub: 'Today widgets', href: '/' },
-    { kind: 'page' as const, label: 'Browse', sub: 'Skills · Standards · Learnings', href: '/browse' },
-    { kind: 'page' as const, label: 'Personal', sub: 'Drinks · Gallery · Invoice', href: '/personal' },
-    { kind: 'page' as const, label: 'Skills', sub: `${skills.length} entries`, href: '/skills' },
-];
-
-const index = [...links, ...skills];
+// Index is fetched lazily from /api/palette-index.json on first open
+// (review-code-astro.md PERF-A07) so the page HTML stays small even
+// as the skill set grows. List items are built with DOM APIs, never
+// innerHTML interpolation, to keep SEC-A03 spirit.
 ---
 
 <div id="hq-palette" class="hq-palette" hidden>
@@ -41,7 +25,7 @@ const index = [...links, ...skills];
     </div>
 </div>
 
-<script is:inline define:vars={{ index }}>
+<script is:inline>
     (() => {
         const palette = document.getElementById('hq-palette');
         const input = document.getElementById('hq-palette-input');
@@ -50,32 +34,59 @@ const index = [...links, ...skills];
 
         const MAX = 30;
         let cursor = 0;
+        /** @type {Array<{kind:string,label:string,sub:string,href:string}>|null} */
+        let index = null;
+        let indexLoading = null;
 
-        function render(filter) {
-            const q = filter.trim().toLowerCase();
-            const matches = q
-                ? index.filter(i => `${i.label} ${i.sub}`.toLowerCase().includes(q))
-                : index.slice(0, MAX);
-            const shown = matches.slice(0, MAX);
-            list.innerHTML = shown.map((m, i) => `
-                <li data-href="${m.href}" data-i="${i}" class="${i === cursor ? 'hq-palette-active' : ''}">
-                    <span class="hq-palette-kind">${m.kind}</span>
-                    <span class="hq-palette-label">${m.label}</span>
-                    <span class="hq-palette-sub">${m.sub ?? ''}</span>
-                </li>
-            `).join('');
+        function loadIndex() {
+            if (index) return Promise.resolve(index);
+            if (!indexLoading) {
+                indexLoading = fetch('/api/palette-index.json')
+                    .then(r => r.json())
+                    .then(rows => { index = rows; return rows; })
+                    .catch(() => { indexLoading = null; index = []; return index; });
+            }
+            return indexLoading;
         }
 
-        function open() {
+        function render(filter) {
+            const data = index ?? [];
+            const q = filter.trim().toLowerCase();
+            const matches = q
+                ? data.filter(i => `${i.label} ${i.sub}`.toLowerCase().includes(q))
+                : data.slice(0, MAX);
+            const shown = matches.slice(0, MAX);
+            // DOM API instead of innerHTML — SEC-A03 spirit.
+            list.replaceChildren();
+            shown.forEach((m, i) => {
+                const li = document.createElement('li');
+                li.dataset.href = m.href;
+                li.dataset.i = String(i);
+                if (i === cursor) li.classList.add('hq-palette-active');
+                const k = document.createElement('span');
+                k.className = 'hq-palette-kind';
+                k.textContent = m.kind;
+                const lbl = document.createElement('span');
+                lbl.className = 'hq-palette-label';
+                lbl.textContent = m.label;
+                const sub = document.createElement('span');
+                sub.className = 'hq-palette-sub';
+                sub.textContent = m.sub ?? '';
+                li.append(k, lbl, sub);
+                list.append(li);
+            });
+        }
+
+        async function open() {
             palette.hidden = false;
             cursor = 0;
             input.value = '';
+            list.replaceChildren();
+            await loadIndex();
             render('');
             requestAnimationFrame(() => input.focus());
         }
-        function close() {
-            palette.hidden = true;
-        }
+        function close() { palette.hidden = true; }
         function move(delta) {
             const items = list.querySelectorAll('li');
             if (!items.length) return;

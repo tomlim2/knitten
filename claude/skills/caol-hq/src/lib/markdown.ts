@@ -1,18 +1,24 @@
 import { marked } from 'marked';
+import DOMPurify from 'isomorphic-dompurify';
 
 marked.setOptions({
     gfm: true,
     breaks: false,
 });
 
-/** Strip leading YAML frontmatter (---...---) before rendering. */
+/**
+ * Render Markdown to HTML and DOMPurify-sanitise the output.
+ * Caller must still treat the result as untrusted-but-purified — keep
+ * `set:html` usage limited to pages that wrap this function.
+ */
 export function renderMarkdown(src: string): string {
     let body = src;
     if (src.startsWith('---\n')) {
         const end = src.indexOf('\n---\n', 4);
         if (end !== -1) body = src.slice(end + 5);
     }
-    return marked.parse(body) as string;
+    const raw = marked.parse(body) as string;
+    return DOMPurify.sanitize(raw, { USE_PROFILES: { html: true } });
 }
 
 export function extractFrontmatter(src: string): Record<string, string> {

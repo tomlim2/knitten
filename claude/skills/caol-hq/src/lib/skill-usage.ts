@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { promises as fsp, readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { loadRepoPaths, getRepoPath } from './paths';
@@ -38,9 +38,16 @@ function listJsonlFiles(dir: string): string[] {
         .map(f => join(dir, f));
 }
 
+const ROWS_TTL_MS = 60_000;
+const rowsCache = new Map<string, { at: number; rows: SkillUsageRow[] }>();
+
 export function loadAllRows(opts: { sinceDays?: number } = {}): SkillUsageRow[] {
     const root = skillUsageRoot();
     if (!root) return [];
+    const cacheKey = `since=${opts.sinceDays ?? 0}`;
+    const cached = rowsCache.get(cacheKey);
+    if (cached && Date.now() - cached.at < ROWS_TTL_MS) return cached.rows;
+
     const cutoff = opts.sinceDays
         ? Date.now() - opts.sinceDays * 86400 * 1000
         : 0;
@@ -63,6 +70,46 @@ export function loadAllRows(opts: { sinceDays?: number } = {}): SkillUsageRow[] 
             }
         }
     }
+    rowsCache.set(cacheKey, { at: Date.now(), rows });
+    return rows;
+}
+
+/**
+ * Async variant — uses fs.promises so the renderer thread isn't blocked
+ * across N machines × M JSONL files (review-code-astro.md PERF-A03).
+ * Same TTL cache as the sync path (shared key).
+ */
+export async function loadAllRowsAsync(opts: { sinceDays?: number } = {}): Promise<SkillUsageRow[]> {
+    const root = skillUsageRoot();
+    if (!root) return [];
+    const cacheKey = `since=${opts.sinceDays ?? 0}`;
+    const cached = rowsCache.get(cacheKey);
+    if (cached && Date.now() - cached.at < ROWS_TTL_MS) return cached.rows;
+
+    const cutoff = opts.sinceDays ? Date.now() - opts.sinceDays * 86400 * 1000 : 0;
+    const machineDirs = listMachineDirs(root);
+    const fileLists = await Promise.all(machineDirs.map(async machine => {
+        const dir = join(root, machine);
+        const files = listJsonlFiles(dir).filter(file =>
+            !cutoff || statSync(file).mtimeMs >= cutoff - 86400 * 1000,
+        );
+        const machineRows = await Promise.all(files.map(async file => {
+            const text = await fsp.readFile(file, 'utf-8');
+            const out: SkillUsageRow[] = [];
+            for (const line of text.split('\n')) {
+                if (!line.trim()) continue;
+                try {
+                    const r = JSON.parse(line) as Omit<SkillUsageRow, 'machine'>;
+                    if (cutoff && new Date(r.ts).getTime() < cutoff) continue;
+                    out.push({ ...r, machine });
+                } catch { /* skip malformed line */ }
+            }
+            return out;
+        }));
+        return machineRows.flat();
+    }));
+    const rows = fileLists.flat();
+    rowsCache.set(cacheKey, { at: Date.now(), rows });
     return rows;
 }
 

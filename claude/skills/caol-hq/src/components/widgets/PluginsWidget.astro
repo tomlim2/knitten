@@ -1,13 +1,17 @@
 ---
 import WidgetFrame from '../WidgetFrame.astro';
 import EmptyState from '../EmptyState.astro';
-import { listRuntimes, statusOf } from '../../lib/runtimes';
+import { listRuntimes, statusOfAsync } from '../../lib/runtimes';
 
-const items = listRuntimes().map(({ name, cfg, repoPath }) => ({
-    name,
-    label: cfg.label,
-    repoPath,
-    status: statusOf(name),
+// Parallel pgrep across all runtimes; previously sequential
+// (review-code-astro.md PERF-A01).
+const runtimes = listRuntimes();
+const statuses = await Promise.all(runtimes.map(r => statusOfAsync(r.name)));
+const items = runtimes.map((r, i) => ({
+    name: r.name,
+    label: r.cfg.label,
+    repoPath: r.repoPath,
+    status: statuses[i],
 }));
 const running = items.filter(i => i.status.running).length;
 ---

@@ -14,7 +14,17 @@ export default defineConfig({
     server: {
       // Watch the Obsidian vault and Claude config so HMR fires when
       // learnings / standards / skills / hardware / repos change on disk.
-      watch: { ignored: ['**/node_modules/**'] },
+      // review-code-astro.md CONF-A04 — keep fs watcher off noisy/large dirs
+      watch: {
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/target/**',
+          '**/.astro/**',
+          '**/dist/**',
+          '**/private/**',
+        ],
+      },
     },
   },
 });

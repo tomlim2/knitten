@@ -6,13 +6,13 @@ import { obsidianClaudeDir } from '../../lib/paths';
 import { renderMarkdown } from '../../lib/markdown';
 import { join } from 'node:path';
 
-const slug = Astro.params.slug as string;
+const slug = Astro.params.slug;
+if (!slug) return Astro.redirect('/learnings');
 const claudeDir = obsidianClaudeDir();
 const root = claudeDir ? join(claudeDir, 'learnings') : null;
+// readDoc applies safeResolveUnder internally — null on traversal attempts.
 const doc = root ? readDoc(root, slug) : null;
-if (!doc) {
-    return Astro.redirect('/learnings');
-}
+if (!doc) return Astro.redirect('/learnings');
 const html = renderMarkdown(doc.content);
 const fmtDate = doc.mtime.toLocaleString('ko-KR', { dateStyle: 'short', timeStyle: 'short' });
 ---

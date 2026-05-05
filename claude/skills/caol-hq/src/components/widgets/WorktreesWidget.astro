@@ -1,9 +1,12 @@
 ---
 import WidgetFrame from '../WidgetFrame.astro';
 import EmptyState from '../EmptyState.astro';
-import { execSync } from 'node:child_process';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 import { existsSync } from 'node:fs';
 import { loadRepoPaths, getRepoPath } from '../../lib/paths';
+
+const execAsync = promisify(exec);
 
 interface Worktree {
     repo: string;
@@ -11,27 +14,50 @@ interface Worktree {
     branch: string;
 }
 
-const trees: Worktree[] = [];
-const repos = loadRepoPaths();
-for (const [name, entry] of Object.entries(repos)) {
-    const repoPath = getRepoPath(entry);
-    if (!repoPath || !existsSync(repoPath)) continue;
-    try {
-        const out = execSync('git worktree list --porcelain', {
-            cwd: repoPath, encoding: 'utf8', timeout: 2000,
-        });
-        let cur: Partial<Worktree> = {};
-        for (const line of out.split('\n')) {
-            if (line.startsWith('worktree ')) cur.path = line.slice(9).trim();
-            else if (line.startsWith('branch ')) cur.branch = line.slice(7).replace('refs/heads/', '');
-            else if (line === '' && cur.path) {
-                if (cur.path !== repoPath) trees.push({ repo: name, path: cur.path, branch: cur.branch ?? '(detached)' });
-                cur = {};
+interface CacheEntry { at: number; trees: Worktree[]; }
+const TTL_MS = 60_000;
+const cacheKey = '__worktreesCache';
+const g = globalThis as unknown as { [k: string]: CacheEntry | undefined };
+const cached = g[cacheKey];
+
+let trees: Worktree[] = [];
+
+if (cached && Date.now() - cached.at < TTL_MS) {
+    trees = cached.trees;
+} else {
+    const repos = loadRepoPaths();
+    // Parallel `git worktree list` (review-code-astro.md PERF-A01; same fix
+    // shape as OpenPRsWidget commit `83c4ed5`).
+    const results = await Promise.all(
+        Object.entries(repos).map(async ([name, entry]): Promise<Worktree[]> => {
+            const repoPath = getRepoPath(entry);
+            if (!repoPath || !existsSync(repoPath)) return [];
+            try {
+                const { stdout } = await execAsync('git worktree list --porcelain', {
+                    cwd: repoPath, encoding: 'utf8', timeout: 2000,
+                });
+                const out: Worktree[] = [];
+                let cur: Partial<Worktree> = {};
+                for (const line of stdout.split('\n')) {
+                    if (line.startsWith('worktree ')) cur.path = line.slice(9).trim();
+                    else if (line.startsWith('branch ')) cur.branch = line.slice(7).replace('refs/heads/', '');
+                    else if (line === '' && cur.path) {
+                        if (cur.path !== repoPath) {
+                            out.push({ repo: name, path: cur.path, branch: cur.branch ?? '(detached)' });
+                        }
+                        cur = {};
+                    }
+                }
+                return out;
+            } catch {
+                return [];
             }
-        }
-    } catch { /* repo has no git */ }
+        }),
+    );
+    for (const r of results) trees.push(...r);
+    trees.sort((a, b) => a.repo.localeCompare(b.repo));
+    g[cacheKey] = { at: Date.now(), trees };
 }
-trees.sort((a, b) => a.repo.localeCompare(b.repo));
 ---
 
 <WidgetFrame title="Worktrees" id="worktrees">

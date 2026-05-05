@@ -5,11 +5,11 @@ import { readDoc } from '../../lib/doc-discovery';
 import { STANDARDS_DIR } from '../../lib/paths';
 import { renderMarkdown } from '../../lib/markdown';
 
-const slug = Astro.params.slug as string;
+const slug = Astro.params.slug;
+if (!slug) return Astro.redirect('/standards');
+// readDoc applies safeResolveUnder internally — null on traversal attempts.
 const doc = readDoc(STANDARDS_DIR, slug);
-if (!doc) {
-    return Astro.redirect('/standards');
-}
+if (!doc) return Astro.redirect('/standards');
 const html = renderMarkdown(doc.content);
 const fmtDate = doc.mtime.toLocaleString('ko-KR', { dateStyle: 'short', timeStyle: 'short' });
 ---
