@@ -1,46 +1,66 @@
 ---
-title: "{프로젝트} Learnings"
-tags: [learnings, {project}]
-updated: YYYY-MM-DD
+title: "{{PROJECT}} Learnings"
+tags:
+  - type/learning
+  - project/{{PROJECT}}
+  - area/{{AREA}}
+date: {{YYYY-MM-DD}}
+updated: {{YYYY-MM-DD}}
+source: claude
 ---
 
-# {프로젝트} Learnings
+# {{PROJECT}} Learnings
 
 ---
 
 ## What Worked
 
-### {개념명}
-- **Date**: YYYY-MM-DD
-- **Context**: {상황 설명}
-- **Problem**: {무엇이 문제였는지}
-- **Solution**: {어떻게 해결했는지}
-- **Why it worked**: {왜 이 방법이 효과적인지}
+### {{CONCEPT_NAME}}
+
+- **Date** — {{YYYY-MM-DD}}
+- **Context** — {{SITUATION}}
+- **Problem** — {{WHAT_WAS_THE_PROBLEM}}
+- **Solution** — {{HOW_RESOLVED}}
+- **Why it worked** — {{WHY_EFFECTIVE}}
 
 > [!abstract] Rule
-> {일반화된 교훈/패턴} #rule
+> {{GENERALIZED_LESSON}} #rule
 
 ---
 
 ## What Failed
 
-### {시도명}
-- **Date**: YYYY-MM-DD
-- **Context**: {상황}
-- **Problem**: {왜 실패했는지}
+### {{ATTEMPT_NAME}}
+
+- **Date** — {{YYYY-MM-DD}}
+- **Context** — {{SITUATION}}
+- **Problem** — {{WHY_FAILED}}
 
 > [!abstract] Rule
-> {다음에 피해야 할 것} #rule
+> {{WHAT_TO_AVOID_NEXT_TIME}} #rule
 
 ---
 
 ## Gotcha
 
-### {함정명}
-- **Date**: YYYY-MM-DD
-- **Context**: {상황}
-- **Problem**: {비직관적인 동작}
-- **Solution**: {우회 방법} (있으면)
+### {{TRAP_NAME}}
+
+- **Date** — {{YYYY-MM-DD}}
+- **Context** — {{SITUATION}}
+- **Problem** — {{NON_OBVIOUS_BEHAVIOR}}
+- **Solution** — {{WORKAROUND_IF_ANY}}
 
 > [!abstract] Rule
-> {기억해야 할 것} #rule
+> {{WHAT_TO_REMEMBER}} #rule
+
+<!--
+Project-bound learnings index. One file per project, three sections,
+append-only. Each entry = one ### subsection.
+- The three ## headings stay even when empty (drop the example ### entry
+  but keep the section header).
+- Every entry MUST end with `> [!abstract] Rule` + inline #rule tag.
+  That's the takeaway anyone (incl. future-you) skim-reads first.
+- Update top-level `updated:` field on every append.
+- Cross-project learnings use the flat shape instead — see
+  ~/.claude/templates/devlog/cross-learning.md.
+-->

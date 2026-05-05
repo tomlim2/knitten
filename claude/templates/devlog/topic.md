@@ -1,20 +1,60 @@
 ---
-title: "{주제 제목}"
-tags: [{project}, {관련 태그들}]
-created: YYYY-MM-DD
+title: "{{TOPIC_TITLE}}"
+tags:
+  - type/topic
+  - project/{{PROJECT}}
+  - area/{{AREA}}
+  # Add lang/{{LANG}} + lib/{{LIB}} when the topic is code-bearing.
+  # Drop these two lines (and this comment) otherwise.
+  - lang/{{LANG}}
+  - lib/{{LIB}}
+date: {{YYYY-MM-DD}}
+source: claude
 ---
 
-# {주제 제목}
+# {{TOPIC_TITLE}}
 
-## Problem
-{설명}
+<!--
+"리소스 / topic / resource" — a self-contained reference on ONE concept.
+Pick the body shape that fits and DELETE the others. Do not keep multiple
+shapes in one file.
 
-## Solution
-{코드 블록 + 구현 상세}
+Shape A — Reference (API/option list, command summary, term glossary)
+  - Use a short intro + tables. No timeline.
+  - Default sections: Summary · Reference · Examples · See also
 
-## Why
-- 불릿 포인트
+Shape B — Decision (why X over Y)
+  - Default sections: Context · Options · Decision · Consequences
 
-## 환경
-- {프레임워크/엔진 버전}
-- {관련 파일 경로}
+Shape C — How-to (step-by-step procedure)
+  - Default sections: Goal · Prerequisites · Steps · Verification · Troubleshooting
+
+Shape D — Concept explainer (one idea, prose-leaning)
+  - Default sections: Problem · Mechanism · Why it works · Caveats
+-->
+
+## {{SECTION_1}}
+
+{{BODY}}
+
+## {{SECTION_2}}
+
+{{BODY}}
+
+## See also
+
+- [[{{PROJECT}}/learnings-index#{{CONCEPT}}]]
+- [[{{PROJECT}}/days/day-{{NN}}]]
+
+<!--
+Tag rules:
+- type/topic + project/{{PROJECT}} required.
+- area/ recommended (game-dev / shader / web / hardware / writing / …).
+- lang/ + lib/ ONLY when code-bearing. Both or neither.
+- Max 5 tags total.
+
+Filename: kebab-case, English. Example: vrm-spring-bone.md, audio-pipeline.md.
+Cross-project topics: lives under projects/_cross-project/{{NAME}}.md
+(graphics / web3d / unreal / slack / general / …) — use project tag
+`project/_cross-project`.
+-->

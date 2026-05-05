@@ -1,5 +1,5 @@
 ---
-description: "Log daily work, learnings, and topic files to Obsidian project docs — devlog, learning, topic, or cross-project learning."
+description: "Log Obsidian devlogs / learnings / topics (resources) — project-bound or cross-project, single skill, single decision matrix."
 argument-hint: "<project|_cross-project> [devlog|learning|topic] [category|slug|name]"
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash(date:*), Bash(git:*), Bash(bash:*)
 user-invocable: true
@@ -7,214 +7,171 @@ user-invocable: true
 
 # learn-log-day
 
-Log project devlogs, learnings, and topic references to Obsidian using frontmatter, wikilinks, callouts, and structured tags. Also covers cross-project learnings (Claude Code, language-level, tool-level) that don't belong to a single project.
+Three things go in the Obsidian vault every day: **devlog** (오늘 한 일), **learning** (러닝 / 교훈), **topic** (리소스 / self-contained reference). This skill is the one router for all three. No second skill, no raw `resolve.sh` for these — both miss the slash-tracking surface and split the convention.
 
-## Arguments
+## Decision matrix
 
-- `<project>` — project folder name (e.g. `bevy-vrm`, `mmd-player-anju`), **or** `_cross-project` for tool/language/Claude-Code-level lessons that span every project
-- `[sub-command]` — defaults to `devlog` for real projects (cross-project rejects `devlog`)
-  - `devlog` — add today's work log (project only)
-  - `learning <worked|failed|gotcha>` — add extracted lesson to the project's learnings index
-  - `learning <slug>` — **cross-project only.** Slug becomes the filename `learning-<slug>.md` under `claude/learnings/`
-  - `topic <name>` — create or edit a topic reference file
+| 쓰는 것 | sub-command | project arg | path |
+|---|---|---|---|
+| 오늘 프로젝트 작업 일지 | `devlog` (default) | real project | `projects/<P>/days/day-NN.md` + `devlog.md` hub |
+| 프로젝트 교훈 | `learning <worked\|failed\|gotcha>` | real project | `projects/<P>/learnings-index.md` (append) |
+| 횡단 교훈 (Claude Code, 언어, 도구) | `learning <slug>` | `_cross-project` | `claude/learnings/learning-<slug>.md` (flat) |
+| 리소스 / 토픽 (개념·API·결정·how-to) | `topic <name>` | real project or `_cross-project` | `projects/<P>/<name>.md` |
+| 횡단 일지 | ❌ 없음 | — | 진짜 프로젝트 devlog 안에서 `[[_cross-project/...]]` 로 링크 |
 
-**If no project argument is provided, show usage and ask the user. NEVER auto-execute.**
+## Args
+
+- `<project>` — vault folder name (`bevy-vrm`, `mmd-player-anju`, …) or `_cross-project`. **REQUIRED** — no auto-execute on missing arg; show usage and ask.
+- `[sub-command]` — `devlog` (default for real projects), `learning`, `topic`. `topic` = "리소스" / "resource".
+- `[category|slug|name]`:
+  - `learning` + real project → category `worked|failed|gotcha`
+  - `learning` + `_cross-project` → kebab-case slug (becomes `learning-<slug>.md`)
+  - `topic` → kebab-case `<name>` (English)
 
 ```
-Usage:
-  /learn-log-day <project>                          — add today's devlog
-  /learn-log-day <project> learning worked          — log a successful approach
-  /learn-log-day <project> learning failed          — log a failed approach
-  /learn-log-day <project> learning gotcha          — log a non-obvious trap
-  /learn-log-day <project> topic <name>             — create or edit topic file
-  /learn-log-day _cross-project learning <slug>     — cross-project learning (flat file)
-  /learn-log-day _cross-project topic <name>        — cross-project topic (shared)
+/learn-log-day shotloom                              # devlog
+/learn-log-day bevy-vrm learning gotcha              # project gotcha
+/learn-log-day _cross-project learning bevy-event-rename  # cross-project learning
+/learn-log-day shotloom topic ecs-ordering           # project resource
+/learn-log-day _cross-project topic graphics         # shared reference (existing)
 ```
 
 ---
 
-## Step 1: Resolve path
+## Step 1 — Resolve path
 
-For real projects:
-!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh devlog $0`
+| Sub-command | Project | Resolver call |
+|---|---|---|
+| `devlog` | real | `resolve.sh devlog <project>` |
+| `learning <category>` | real | `resolve.sh devlog <project>` (same base) |
+| `learning <slug>` | `_cross-project` | `resolve.sh cross-learning` |
+| `topic <name>` | real | `resolve.sh topic <project>` |
+| `topic <name>` | `_cross-project` | `resolve.sh topic _cross-project` |
 
-For `_cross-project + learning`:
-!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh cross-learning`
-
-For `_cross-project + topic`:
-!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh topic _cross-project`
-
-Use `RESOLVED_PATH` as the base path. If a project folder is missing → run [Project Initial Setup](#project-initial-setup). `_cross-project` requires no setup — `claude/learnings/` and `claude/projects/_cross-project/` already exist.
-
----
-
-## Step 2: Execute sub-command
-
-### devlog (default)
-
-hub(`devlog.md`) + individual day files (`days/day-{NN}.md`) structure.
-
-#### Collect content via conversation
-
-1. **"What did you work on today?"** — list of tasks
-2. **"Any learnings / struggles / discoveries?"** — lessons (skip if none)
-3. **"Add commit log?"** — if yes, extract from project repo via `git log --oneline --since="today"`
-
-#### Determine day number
-
-1. Scan `days/` folder for existing files (`day-*.md`)
-2. Last day number + 1 = new day number
-3. Today's date: `date +%m-%d` format
-
-#### Day file format (`days/day-{NN}.md`)
-
-Template: see `~/.claude/templates/devlog/day.md`
-
-**Rules:**
-- Always include "why this work was done" (preserve context)
-- Learnings follow **bold one-line summary** + detail pattern
-- Key discoveries → `> [!tip]` callout + learnings-index wikilink
-- Failures → `> [!warning]` callout
-- Reference related topic files with `[[{project}/{topic-name}]]` wikilink
-- Commit log and current status are optional (include if user wants)
-
-#### Hub file format (`devlog.md`)
-
-Hub template: see `~/.claude/templates/devlog/hub.md`
-
-**Rules:**
-- Hub summary: 3-4 lines per day max
-- `[[{project}/days/day-{NN}|detail]]` wikilink required
-- Chronological order (oldest at top, newest at bottom)
-- Project overview, current status, and TODOs live in hub only (optional in day files)
+Read `RESOLVED_PATH` from output. If real project's folder doesn't exist → run [Project initial setup](#project-initial-setup). `_cross-project` never needs setup — `claude/learnings/` and `claude/projects/_cross-project/` already exist.
 
 ---
 
-### learning \<category\>
+## Step 2 — Sub-command bodies
 
-Add lesson to the appropriate category in `learnings-index.md`.
+Pick the section. Each one points at one template under `~/.claude/templates/devlog/`. Templates carry the canonical frontmatter and inline LLM fill-in instructions — read the template once before each write so frontmatter stays current.
 
-Categories:
-- `worked` → `## What Worked`
-- `failed` → `## What Failed`
-- `gotcha` → `## Gotcha`
+### `devlog` — project day log
 
-#### Collect via conversation
+Hub (`devlog.md`) + per-day file (`days/day-NN.md`).
 
-Ask in order: Context, Problem, Solution (worked/gotcha), Why (worked), Rule.
+1. **Collect** (one question at a time):
+   1. "What did you work on today?" → bullet list
+   2. "Any learnings / struggles / discoveries?" → optional
+   3. "Add commit log?" → if yes: `git log --oneline --since="today 00:00" --author="$(git config user.email)"`
+2. **Day number**: scan `days/day-*.md`, pick `max + 1`. Today's date: `date +%m-%d`.
+3. **Write** `days/day-NN.md` from `templates/devlog/day.md`. Replace every `{{ALL_CAPS}}` placeholder, drop sections that don't apply (don't leave placeholders behind).
+4. **Append hub** `devlog.md` from `templates/devlog/hub.md`'s day-section shape — 3-4 lines max + `[[<P>/days/day-NN|상세]]` wikilink. Hub is summary-only; detail lives in the day file.
 
-#### learnings-index.md format
+Frontmatter (must match template exactly):
 
-Template: see `~/.claude/templates/devlog/learnings.md`
+| Tag | When |
+|---|---|
+| `type/devlog` | always |
+| `project/<P>` | always |
+| `lang/<L>` | day touched code (mandatory then) |
+| `lib/<F>` | day touched code (mandatory then) |
+| `area/<A>` | always (game-dev / shader / web / hardware / writing / …) |
 
-**Rules:**
-- YAML frontmatter required (`title`, `tags`, `updated`)
-- Rule → `> [!abstract] Rule` callout + inline `#rule` tag
-- Reference related day files with `[[{project}/days/day-{NN}]]`
-- Reference related topic files with `See [[{project}/{topic-name}]]`
-- Update `updated` date
+### `learning <worked\|failed\|gotcha>` — project learnings index
+
+Append a `### {{CONCEPT}}` block to the matching `## What Worked / What Failed / Gotcha` section in `learnings-index.md`. Template: `templates/devlog/learnings.md`.
+
+Ask in order: **Context · Problem · Solution** (worked / gotcha) **· Why it worked** (worked) **· Rule**. Every entry MUST end with `> [!abstract] Rule` callout + `#rule` inline tag — that's the takeaway anyone scanning the file reads first. Update top-level `updated:` field on every append.
+
+Frontmatter: `type/learning` + `project/<P>` + `area/<A>`.
+
+### `learning <slug>` — cross-project learning (only for `_cross-project`)
+
+One flat file per concept: `claude/learnings/learning-<slug>.md`. Existing convention (`learning-rust-traits.md`, `learning-claude-code-hooks.md`, …). Template: `templates/devlog/cross-learning.md`.
+
+If file exists → open for append/edit, don't overwrite. New file → write from template. Body shape: 증상 → 원인 → 검증 → 해결 (skip sections that don't apply for the kind of lesson). End with at least one `#rule` or `#gotcha` inline tag in the body.
+
+Frontmatter: `type/learning` + `project/_cross-project` + (`tool/<T>` for Claude Code / cmux / gh lessons, `lang/+lib/` when language-anchored, `area/<A>`).
+
+### `topic <name>` — resource / reference (리소스)
+
+Self-contained one-concept file: `<base>/<name>.md` (kebab-case English). Template: `templates/devlog/topic.md` carries four shape options — pick one and delete the rest:
+
+| Shape | Default sections | Use for |
+|---|---|---|
+| Reference | Summary · Reference · Examples · See also | API/option list, command summary, glossary |
+| Decision | Context · Options · Decision · Consequences | "Why X over Y" record |
+| How-to | Goal · Prerequisites · Steps · Verification · Troubleshooting | Step-by-step procedure |
+| Concept | Problem · Mechanism · Why it works · Caveats | Single-idea explainer |
+
+Rule: only ONE shape per file. Mixing shapes is a smell — split into two topics instead.
+
+Frontmatter: `type/topic` + `project/<P>` + `area/<A>` + (optional `lang/+lib/` when code-bearing).
 
 ---
 
-### Cross-project learning (`_cross-project + learning <slug>`)
+## Obsidian conventions (cross-cutting)
 
-Single flat file per concept under `claude/learnings/learning-<slug>.md`. No shared index — each file is self-contained, matches existing convention (`learning-rust-traits.md`, `learning-claude-code-hooks.md`, …).
+### Frontmatter tag rules
 
-If file exists → open for append/edit (don't overwrite). If new → write from the standard learning template (see Frontmatter table below; tag with `project/_cross-project`).
+Single source of truth: `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`. Skill enforces:
 
-Body shape: `## 증상 / ## 원인 / ## 해결` (or English equivalents) + footer `#rule` / `#gotcha` inline tags. Same callout rules as project learnings.
-
-Reject `devlog` for `_cross-project` — cross-project devlogs aren't a thing; use a real project's devlog and link out via `[[_cross-project/...]]` wikilink.
-
----
-
-### topic \<name\>
-
-Create or edit `{project}/{name}.md`. A self-contained reference on one concept.
-
-#### Topic file format
-
-Template: see `~/.claude/templates/devlog/topic.md`
-
-**Rules:**
-- Filename: kebab-case (English)
-- YAML frontmatter required
-- Self-contained — understandable without reading other files
-- Referenced from devlog/learnings via `[[{project}/{name}]]`
-
----
-
-## Obsidian feature rules
-
-### Frontmatter (Properties)
-
-All files require YAML frontmatter. Follow the tag taxonomy:
-**Full taxonomy: `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`**
-
-| File | frontmatter tags |
-|------|-----------------|
-| devlog.md (hub) | `type/devlog`, `project/{name}`, `area/...` (one) |
-| days/day-{NN}.md | `type/devlog`, `project/{name}`, **+ `lang/<language>` + `lib/<framework>` if the day touched code**, + `area/...` |
-| learnings-index.md | `type/learning`, `project/{name}` |
-| topic file | `type/topic`, `project/{name}`, `area/...`, `lang/...`, `lib/...` (if applicable) |
-
-**Tag rules (verify before save):**
 - Exactly **1** `type/` tag. Exactly **1** `project/` tag. Both required.
-- Code-bearing devlog → `lang/` + `lib/` are mandatory (e.g. `lang/rust` + `lib/bevy`, `lang/javascript` + `lib/threejs`). A devlog with only `type/devlog` + `project/...` is too sparse to filter later.
-- Max 5 tags total.
-- Verify each tag exists in `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md` Live Tag Inventory before using; if new, add the row in the same commit.
+- Code-bearing devlog/topic → `lang/` + `lib/` mandatory (both or neither).
+- Max **5** tags total. Drop the least informative axis if you exceed.
+- Verify each tag exists in the Live Tag Inventory before saving. New tag → add the row in the same commit.
 
-Inline tags (`#rule`, `#failed`, `#gotcha`) — learnings body only, not frontmatter axes.
+Inline tags (`#rule`, `#failed`, `#gotcha`) live in body callouts/footers ONLY — never in frontmatter `tags:` list. Frontmatter is for axes, body inline is for searchable anchors.
 
 ### Wikilinks
 
-- **hub → day:** `[[{project}/days/day-{NN}|detail]]`
-- **day → learnings:** `[[{project}/learnings-index#{concept}]]`
-- **day → topic:** `[[{project}/{topic-name}]]`
-- **cross-project:** `[[bevy-vrm/days/day-03]]`
-- **shared reference:** `[[_cross-project/graphics#term]]`
+| From → To | Form |
+|---|---|
+| hub → day | `[[<P>/days/day-NN\|상세]]` |
+| day → learning entry | `[[<P>/learnings-index#<concept>]]` |
+| day → topic | `[[<P>/<topic>]]` |
+| anywhere → cross-project topic | `[[_cross-project/graphics#term]]` |
+| cross-repo | `[[bevy-vrm/days/day-03]]` |
 
 ### Callouts
 
-| Use case | Callout type | Location |
-|----------|-------------|----------|
-| Key discovery / tip | `> [!tip]` | day file — successful approach |
-| Failure / caution | `> [!warning]` | day file — failed attempt |
-| Extracted rule | `> [!abstract] Rule` | learnings-index |
-| Environment / version | `> [!info]` | topic file |
+| Use | Type | Where |
+|---|---|---|
+| Key discovery | `> [!tip]` | day file |
+| Failure / caution | `> [!warning]` | day file |
+| Extracted rule | `> [!abstract] Rule` | learnings-index, cross-learning |
+| Environment / version | `> [!info]` | topic |
 
 ---
 
 ## Project initial setup
 
-If the project folder does not exist:
+For a real project whose folder doesn't exist yet:
 
-1. Create `{obsidian}/claude/projects/{project}/`
-2. Create `days/` directory
-3. Create `devlog.md` hub file (frontmatter + project name + ask for description)
-4. Create `learnings-index.md` (frontmatter + 3 empty category sections)
-5. Start from Day 1
+1. `mkdir -p {obsidian}/claude/projects/<P>/days`
+2. Write `devlog.md` hub from `templates/devlog/hub.md` (ask user for one-line description, tech stack, goal).
+3. Write `learnings-index.md` from `templates/devlog/learnings.md` — keep the three `##` headings, drop the example `###` entries.
+4. Start from `day-01`.
 
----
-
-## Migrating existing projects
-
-When applying this format to an existing project for the first time:
-
-1. Add frontmatter to existing files (non-destructive — preserve existing content)
-2. Add callouts to key discoveries in day files
-3. Add callouts + `#rule` tags to rules in learnings-index
-4. Connect files with wikilinks
-5. **Don't migrate all at once** — update surrounding entries progressively when adding new ones
-
-To split a single `devlog.md` → hub + day files:
-1. Extract each dated entry into `days/day-{NN}.md`
-2. Convert `devlog.md` to hub (summaries + wikilinks only)
+For `_cross-project`: nothing to set up.
 
 ---
 
-## Related
+## Migrating an existing project
 
-- `obsidian-obsidian-markdown` — Obsidian markdown syntax reference
-- `dev-log-experiment` — experiment log (hypothesis → measure → conclude cycle)
-- `learn-add-log` — quickly add a single lesson
+Don't bulk-migrate. Apply progressively when adding new entries:
+
+1. Add proper frontmatter to existing files (non-destructive — preserve content).
+2. Convert key discoveries to `> [!tip]` callouts as you re-touch them.
+3. Move rules into `> [!abstract] Rule` blocks with `#rule` tag as the section is updated.
+4. Wire wikilinks between files when you next reference them.
+5. Splitting monolithic `devlog.md` → hub + day files: extract each dated entry into `days/day-NN.md`, then strip `devlog.md` down to summaries + wikilinks.
+
+---
+
+## Related skills
+
+- `obsidian-obsidian-markdown` — Obsidian markdown syntax reference (frontmatter / wikilinks / callouts spec)
+- `dev-log-experiment` — experiment log (hypothesis → measure → conclude cycle, distinct from daily devlog)
+- `caol-resolve-doc-path` — the path resolver this skill wraps. Drop to it directly only for purposes this skill doesn't cover (`notes`, `research`, ad-hoc).
