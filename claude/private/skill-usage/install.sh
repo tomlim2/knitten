@@ -9,8 +9,15 @@
 #
 # What it does:
 #   1. Generate a machine_id UUID into hardware.json (skips if already set).
-#   2. Symlink claude/hooks/{log,sync}-skill-usage.sh into ~/.claude/hooks/.
-#   3. Merge PreToolUse Skill hook into ~/.claude/settings.json.
+#   2. Symlink claude/hooks/{log-skill,log-slash,sync-skill}-usage.sh into
+#      ~/.claude/hooks/.
+#   3. Merge two hooks into ~/.claude/settings.json:
+#        - PreToolUse matcher=Skill -> log-skill-usage.sh
+#          (model-initiated Skill tool calls)
+#        - UserPromptSubmit          -> log-slash-usage.sh
+#          (user-typed `/skill-name` slash commands; Claude Code expands
+#           these inline, so PreToolUse never fires for them — see
+#           claude/learnings/learning-claude-code-hooks.md).
 #   4. Install + load launchd plist for periodic git push (every 30 min).
 
 set -euo pipefail
@@ -44,7 +51,7 @@ fi
 # If ~/.claude is itself a symlink into caol-ila/claude (author's setup),
 # the hooks are already at $HOOKS_DIR via that parent symlink — no-op.
 mkdir -p "$HOOKS_DIR"
-for s in log-skill-usage.sh sync-skill-usage.sh; do
+for s in log-skill-usage.sh log-slash-usage.sh sync-skill-usage.sh; do
   src="$REPO_ROOT/claude/hooks/$s"
   dst="$HOOKS_DIR/$s"
   [ -f "$src" ] || { echo "ERROR: missing $src — pull caol-ila first"; exit 1; }
@@ -59,23 +66,48 @@ for s in log-skill-usage.sh sync-skill-usage.sh; do
   fi
 done
 
-# Step 3 — settings.json hook merge
+# Step 3 — settings.json hook merge (two hooks)
 if [ ! -f "$SETTINGS" ]; then
   echo '{}' > "$SETTINGS"
 fi
-already=$(jq '.hooks.PreToolUse // [] | map(select(.matcher == "Skill")) | length' "$SETTINGS")
-if [ "$already" = "0" ]; then
-  cp "$SETTINGS" "$SETTINGS.bak.$(date +%s)"
-  tmp=$(mktemp)
-  jq '.hooks //= {} | .hooks.PreToolUse //= [] | .hooks.PreToolUse += [{
-    "matcher": "Skill",
-    "hooks": [{"type": "command", "command": "$HOME/.claude/hooks/log-skill-usage.sh"}]
-  }]' "$SETTINGS" > "$tmp"
-  mv "$tmp" "$SETTINGS"
-  echo "✓ PreToolUse Skill hook added (open /hooks or restart Claude Code to activate)"
-else
-  echo "✓ PreToolUse Skill hook already present"
+SKILL_CMD="$HOOKS_DIR/log-skill-usage.sh"
+SLASH_CMD="$HOOKS_DIR/log-slash-usage.sh"
+
+# Backup once if either hook is missing.
+needs_backup=0
+[ "$(jq '[.hooks.PreToolUse[]? | select(.matcher == "Skill")] | length' "$SETTINGS")" = "0" ] && needs_backup=1
+if [ "$(jq --arg cmd "$SLASH_CMD" '[.hooks.UserPromptSubmit[]? | (.hooks // [])[]? | select(.command == $cmd)] | length' "$SETTINGS")" = "0" ]; then
+  needs_backup=1
 fi
+[ "$needs_backup" = "1" ] && cp "$SETTINGS" "$SETTINGS.bak.$(date +%s)"
+
+# 3a — PreToolUse Skill (replace any existing Skill matcher; preserve others)
+tmp=$(mktemp)
+jq --arg cmd "$SKILL_CMD" '
+  .hooks //= {}
+  | .hooks.PreToolUse = (
+      ((.hooks.PreToolUse // []) | map(select(.matcher != "Skill")))
+      + [{matcher: "Skill", hooks: [{type: "command", command: $cmd}]}]
+    )
+' "$SETTINGS" > "$tmp"
+mv "$tmp" "$SETTINGS"
+echo "✓ PreToolUse Skill -> $SKILL_CMD"
+
+# 3b — UserPromptSubmit (idempotent: skip if our command already registered)
+tmp=$(mktemp)
+jq --arg cmd "$SLASH_CMD" '
+  .hooks //= {}
+  | .hooks.UserPromptSubmit = (
+      (.hooks.UserPromptSubmit // []) as $existing
+      | if [$existing[] | (.hooks // [])[]? | select(.command == $cmd)] | length > 0
+        then $existing
+        else $existing + [{hooks: [{type: "command", command: $cmd}]}]
+        end
+    )
+' "$SETTINGS" > "$tmp"
+mv "$tmp" "$SETTINGS"
+echo "✓ UserPromptSubmit -> $SLASH_CMD (slash commands)"
+echo "  Open /hooks or restart Claude Code so both hooks activate."
 
 # Step 4 — launchd
 mkdir -p "$(dirname "$PLIST")"
@@ -111,4 +143,11 @@ launchctl load "$PLIST"
 echo "✓ launchd agent loaded (com.caol.skill-usage-sync, 30 min interval)"
 
 echo ""
-echo "Done. Open /hooks once or restart Claude Code so the Skill hook activates."
+echo "Done. Open /hooks once or restart Claude Code so both hooks activate."
+echo ""
+echo "Verify:"
+echo "  # model-initiated (rare):"
+echo "  echo '{\"tool_input\":{\"skill\":\"x\"}}' | $SKILL_CMD"
+echo "  # user-typed slash (most usage):"
+echo "  type any /skill-name in Claude Code, then:"
+echo "    cat \$HOME/.claude/private/skill-usage/*/\$(date +%Y-%m).jsonl | tail"

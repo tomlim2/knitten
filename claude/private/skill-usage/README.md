@@ -25,8 +25,10 @@ only in `hardware.json`.
 {
   "ts": "2026-05-05T05:30:00Z",   // ISO UTC
   "utc_offset_min": 540,           // local offset at capture time (KST = +540)
-  "sid": "session-xxxxx",          // Claude Code session id, if exposed
-  "skill": "shotloom-make-pr"      // matches the SKILL.md directory name
+  "sid": "session-xxxxx",          // Claude Code session_id from the hook payload
+  "skill": "shotloom-make-pr",     // matches the SKILL.md directory name
+  "source": "slash"                // present only for user-typed slash commands;
+                                   // omitted when the model called the Skill tool
 }
 ```
 
@@ -34,11 +36,19 @@ only in `hardware.json`.
 free of incidental sensitive data. If a future analysis needs them they
 should be added behind an explicit allowlist.
 
-## Capture
+## Capture (two hooks, one schema)
 
-`PreToolUse` hook in `~/.claude/settings.json` filters the `Skill`
-tool and appends a single JSONL row. No buffering — one row per
-invocation, OS-atomic for typed payloads (≤4KB).
+| Hook                          | Script                | Catches                                           |
+|-------------------------------|-----------------------|---------------------------------------------------|
+| `PreToolUse` matcher=`Skill`  | `log-skill-usage.sh`  | Model-initiated `Skill` tool calls                |
+| `UserPromptSubmit`            | `log-slash-usage.sh`  | User-typed `/skill-name` slash commands           |
+
+Both are needed: Claude Code expands user slashes inline (`<command-name>`
+block injected into the model context) without firing a tool-use event,
+so `PreToolUse` alone misses the overwhelming majority of real usage.
+Background and verification: `claude/learnings/learning-claude-code-hooks.md`.
+
+No buffering — one row per invocation, OS-atomic for typed payloads (≤4KB).
 
 ## Sync
 
