@@ -1,0 +1,8 @@
+{
+  "alwaysThinkingEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "skipDangerousModePermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto"
+  }
+}

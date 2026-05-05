@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "defaultMode": "auto",
+	"allow": [
+    	"Bash(git push origin main)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/log-skill-usage.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "medium",
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true
+}
