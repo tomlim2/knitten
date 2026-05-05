@@ -1,0 +1,46 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { loadAllRows, topSkills, machineBreakdown, machineDisplayName, skillUsageRoot } from '../../lib/skill-usage';
+
+const root = skillUsageRoot();
+let error: string | null = null;
+let top: Array<{ skill: string; count: number }> = [];
+let machines: Array<{ machine: string; count: number }> = [];
+let total = 0;
+
+if (!root) {
+    error = 'caol-ila 미등록';
+} else {
+    try {
+        const rows = loadAllRows({ sinceDays: 30 });
+        total = rows.length;
+        top = topSkills(rows, 7);
+        machines = machineBreakdown(rows);
+    } catch (e) {
+        error = `read failed: ${(e as Error).message}`;
+    }
+}
+---
+
+<WidgetFrame title="Skill Usage (30d)" id="skill-usage">
+    {error ? (
+        <EmptyState tone="error">{error}</EmptyState>
+    ) : total === 0 ? (
+        <EmptyState>아직 기록 없음</EmptyState>
+    ) : (
+        <>
+            <ul class="hq-doc-list">
+                {top.map(t => (
+                    <li class="hq-doc-row">
+                        <span class="hq-doc-name">{t.skill}</span>
+                        <span class="hq-doc-date">{t.count}</span>
+                    </li>
+                ))}
+            </ul>
+        </>
+    )}
+    <Fragment slot="foot">
+        <span>총 {total} · {machines.map(m => `${machineDisplayName(m.machine)} ${m.count}`).join(' · ')}</span>
+    </Fragment>
+</WidgetFrame>
