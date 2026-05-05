@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { readdirSync, statSync } from 'node:fs';
+import { join, relative, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PAGES_DIR = join(__dirname, '..');     // src/pages
+
+interface Route {
+    path: string;       // url path
+    file: string;       // relative file
+    dynamic: boolean;   // contains [param]
+    api: boolean;
+}
+
+function walk(dir: string): Route[] {
+    const out: Route[] = [];
+    for (const entry of readdirSync(dir)) {
+        const abs = join(dir, entry);
+        const st = statSync(abs);
+        if (st.isDirectory()) { out.push(...walk(abs)); continue; }
+        if (!/\.(astro|ts|js)$/.test(entry)) continue;
+
+        const rel = relative(PAGES_DIR, abs).replace(/\\/g, '/');
+        let url = '/' + rel.replace(/\.(astro|ts|js)$/, '');
+        url = url.replace(/\/index$/, '/');
+        if (url !== '/' && url.endsWith('/')) url = url.slice(0, -1);
+
+        out.push({
+            path: url,
+            file: rel,
+            dynamic: /\[/.test(url),
+            api: rel.startsWith('api/'),
+        });
+    }
+    return out;
+}
+
+const routes = walk(PAGES_DIR).sort((a, b) => a.path.localeCompare(b.path));
+const pages = routes.filter(r => !r.api);
+const apis = routes.filter(r => r.api);
+---
+
+<BaseLayout title="Sitemap" activeNav="">
+    <PageHero title="Sitemap" sub={`${pages.length} pages · ${apis.length} api routes`} />
+
+    <section class="hq-skill-group">
+        <h2 class="hq-skill-cat">Pages <span class="hq-skill-cat-count">{pages.length}</span></h2>
+        <ul class="hq-skill-list">
+            {pages.map(r => (
+                <li class="hq-skill-row">
+                    {r.dynamic ? (
+                        <span class="hq-skill-name" style="color:var(--color-gray-mid);">{r.path}</span>
+                    ) : (
+                        <a href={r.path} class="hq-skill-name">{r.path}</a>
+                    )}
+                    <span class="hq-skill-desc">{r.file}{r.dynamic && ' (dynamic)'}</span>
+                </li>
+            ))}
+        </ul>
+    </section>
+
+    {apis.length > 0 && (
+        <section class="hq-skill-group">
+            <h2 class="hq-skill-cat">API <span class="hq-skill-cat-count">{apis.length}</span></h2>
+            <ul class="hq-skill-list">
+                {apis.map(r => (
+                    <li class="hq-skill-row">
+                        <span class="hq-skill-name" style="color:var(--color-gray-mid);">{r.path}</span>
+                        <span class="hq-skill-desc">{r.file}{r.dynamic && ' (dynamic)'}</span>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    )}
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { loadRepoPaths, getRepoPath } from '../../lib/paths';
+
+interface Worktree {
+    repo: string;
+    path: string;
+    branch: string;
+}
+
+const trees: Worktree[] = [];
+const repos = loadRepoPaths();
+for (const [name, entry] of Object.entries(repos)) {
+    const repoPath = getRepoPath(entry);
+    if (!repoPath || !existsSync(repoPath)) continue;
+    try {
+        const out = execSync('git worktree list --porcelain', {
+            cwd: repoPath, encoding: 'utf8', timeout: 2000,
+        });
+        let cur: Partial<Worktree> = {};
+        for (const line of out.split('\n')) {
+            if (line.startsWith('worktree ')) cur.path = line.slice(9).trim();
+            else if (line.startsWith('branch ')) cur.branch = line.slice(7).replace('refs/heads/', '');
+            else if (line === '' && cur.path) {
+                if (cur.path !== repoPath) trees.push({ repo: name, path: cur.path, branch: cur.branch ?? '(detached)' });
+                cur = {};
+            }
+        }
+    } catch { /* repo has no git */ }
+}
+trees.sort((a, b) => a.repo.localeCompare(b.repo));
+---
+
+<WidgetFrame title="Worktrees" id="worktrees">
+    <Fragment slot="meta">{trees.length} 개</Fragment>
+    {trees.length === 0 ? (
+        <EmptyState>활성 worktree 없음</EmptyState>
+    ) : (
+        <ul class="hq-doc-list">
+            {trees.map(t => (
+                <li class="hq-doc-row">
+                    <span class="hq-doc-name">
+                        <code style="font-size:11px;color:var(--color-gray-mid);">{t.repo}</code>
+                        {t.branch}
+                    </span>
+                    <span class="hq-doc-date" style="font-size:11px;">{t.path.split('/').slice(-1)[0]}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+</WidgetFrame>

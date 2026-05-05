@@ -1,6 +1,7 @@
 ---
 import nav from '../config/nav.json' with { type: 'json' };
 import PluginPill from './PluginPill.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
     activeNav?: string;
@@ -22,6 +23,7 @@ const { activeNav } = Astro.props;
         <span>Search</span>
         <kbd>⌘K</kbd>
     </button>
+    <ThemeToggle />
     <PluginPill />
 </header>
 

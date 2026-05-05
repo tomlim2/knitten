@@ -2,8 +2,7 @@ import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 
 // Caol HQ — personal cockpit dashboard.
-// Migration target replacing the legacy `caol-serve-skills` Express monolith.
-// Runs on a non-colliding port while the legacy server keeps :972.
+// Port 9720 (4-digit homage to the legacy 972 — privileged port on macOS).
 export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),

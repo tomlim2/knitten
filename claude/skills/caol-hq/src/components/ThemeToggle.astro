@@ -1,0 +1,32 @@
+---
+/**
+ * Light/dark theme toggle. Persists choice in localStorage and applies
+ * `data-theme="dark"` on <html> so the CSS theme override kicks in.
+ */
+---
+
+<button type="button" class="hq-theme-toggle" id="hq-theme-toggle" title="Toggle theme">
+    <span class="hq-theme-icon" id="hq-theme-icon">◐</span>
+</button>
+
+<script is:inline>
+    (() => {
+        const KEY = 'caol-hq-theme';
+        const root = document.documentElement;
+        const stored = localStorage.getItem(KEY);
+        const initial = stored ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        root.dataset.theme = initial;
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('hq-theme-toggle');
+            const icon = document.getElementById('hq-theme-icon');
+            if (!btn || !icon) return;
+            const update = () => { icon.textContent = root.dataset.theme === 'dark' ? '☾' : '☀'; };
+            update();
+            btn.addEventListener('click', () => {
+                root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem(KEY, root.dataset.theme);
+                update();
+            });
+        });
+    })();
+</script>

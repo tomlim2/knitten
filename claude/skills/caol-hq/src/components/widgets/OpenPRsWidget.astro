@@ -1,0 +1,57 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { loadRepoPaths, getRepoPath } from '../../lib/paths';
+
+interface PR {
+    repo: string;
+    number: number;
+    title: string;
+    isDraft: boolean;
+    state: string;
+    url: string;
+}
+
+const prs: PR[] = [];
+let scanned = 0;
+let skipped = 0;
+const repos = loadRepoPaths();
+for (const [name, entry] of Object.entries(repos)) {
+    const repoPath = getRepoPath(entry);
+    if (!repoPath || !existsSync(repoPath)) { skipped++; continue; }
+    try {
+        const out = execSync(
+            'gh pr list --author @me --state open --json number,title,isDraft,state,url --limit 5',
+            { cwd: repoPath, encoding: 'utf8', timeout: 4000 }
+        ).trim();
+        if (!out) { scanned++; continue; }
+        const list = JSON.parse(out) as Array<Omit<PR, 'repo'>>;
+        for (const p of list) prs.push({ repo: name, ...p });
+        scanned++;
+    } catch {
+        skipped++;
+    }
+}
+prs.sort((a, b) => a.repo.localeCompare(b.repo) || a.number - b.number);
+---
+
+<WidgetFrame title="Open PRs" id="open-prs">
+    <Fragment slot="meta">{prs.length} open · {scanned}/{scanned + skipped} scanned</Fragment>
+    {prs.length === 0 ? (
+        <EmptyState>현재 author=@me 인 열린 PR 없음</EmptyState>
+    ) : (
+        <ul class="hq-doc-list">
+            {prs.map(p => (
+                <li class="hq-doc-row">
+                    <a href={p.url} class="hq-doc-name" target="_blank" rel="noreferrer">
+                        <code style="font-size:11px;color:var(--color-gray-mid);">{p.repo}</code>
+                        #{p.number} {p.title}
+                        {p.isDraft && <span style="font-size:10px;color:var(--color-gray-mid);"> · draft</span>}
+                    </a>
+                </li>
+            ))}
+        </ul>
+    )}
+</WidgetFrame>

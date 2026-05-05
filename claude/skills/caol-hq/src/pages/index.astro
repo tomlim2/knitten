@@ -6,12 +6,16 @@ import PluginsWidget from '../components/widgets/PluginsWidget.astro';
 import HardwareWidget from '../components/widgets/HardwareWidget.astro';
 import ReposWidget from '../components/widgets/ReposWidget.astro';
 import RecentLearningsWidget from '../components/widgets/RecentLearningsWidget.astro';
+import OpenPRsWidget from '../components/widgets/OpenPRsWidget.astro';
+import WorktreesWidget from '../components/widgets/WorktreesWidget.astro';
 ---
 
 <BaseLayout title="Caol HQ" activeNav="/">
     <PageHero title="Today" sub="오늘 어디까지 왔고 무엇이 살아있나" />
     <WidgetGrid>
         <PluginsWidget />
+        <OpenPRsWidget />
+        <WorktreesWidget />
         <HardwareWidget />
         <ReposWidget />
         <RecentLearningsWidget />

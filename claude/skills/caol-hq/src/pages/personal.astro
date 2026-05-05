@@ -4,14 +4,13 @@ import PageHero from '../components/PageHero.astro';
 import WidgetGrid from '../components/WidgetGrid.astro';
 import WidgetFrame from '../components/WidgetFrame.astro';
 import EmptyState from '../components/EmptyState.astro';
+import DrinksWidget from '../components/widgets/DrinksWidget.astro';
 ---
 
 <BaseLayout title="Personal" activeNav="/personal">
     <PageHero title="Personal" sub="취미 / 비업무" />
     <WidgetGrid>
-        <WidgetFrame title="Drinks">
-            <EmptyState>와인 / 위스키 로그 — 마이그레이션 예정</EmptyState>
-        </WidgetFrame>
+        <DrinksWidget />
         <WidgetFrame title="Gallery">
             <EmptyState>prompt presets — 마이그레이션 예정</EmptyState>
         </WidgetFrame>
