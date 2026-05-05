@@ -24,6 +24,32 @@
             <% } %>
         </section>
 
+        <% if (typeof plugins !== 'undefined' && plugins.length > 0) { %>
+        <section class="home-section">
+            <h2 class="section-title">Plugins</h2>
+            <ul class="home-file-list">
+                <% plugins.forEach(plugin => { %>
+                <li>
+                    <span class="home-repo-status <% if (plugin.connected) { %>home-repo-connected<% } %>"></span>
+                    <% if (plugin.runtime) { %>
+                    <button
+                        type="button"
+                        class="home-repo-runtime <% if (plugin.runtime.running) { %>home-repo-runtime-on<% } else { %>home-repo-runtime-off<% } %>"
+                        data-repo="<%= plugin.name %>"
+                        data-action="<% if (plugin.runtime.running) { %>stop<% } else { %>start<% } %>"
+                        title="<% if (plugin.runtime.running) { %>Running (PID <%= plugin.runtime.pid %>) — click to stop<% } else { %>Stopped — click to start<% } %>"
+                        onclick="toggleRepoRuntime(this)">
+                        <% if (plugin.runtime.running) { %>🔗<% } else { %>🔌<% } %>
+                    </button>
+                    <% } %>
+                    <span class="home-file-name"><%= plugin.name %></span>
+                    <span class="home-repo-path"><%= plugin.path %></span>
+                </li>
+                <% }); %>
+            </ul>
+        </section>
+        <% } %>
+
         <section class="home-section">
             <h2 class="section-title">Refs</h2>
             <% if (refs.length > 0) { %>
@@ -31,10 +57,42 @@
                 <% refs.forEach(ref => { %>
                 <li>
                     <span class="home-repo-status <% if (ref.connected) { %>home-repo-connected<% } %>"></span>
+                    <% if (ref.runtime) { %>
+                    <button
+                        type="button"
+                        class="home-repo-runtime <% if (ref.runtime.running) { %>home-repo-runtime-on<% } else { %>home-repo-runtime-off<% } %>"
+                        data-repo="<%= ref.name %>"
+                        data-action="<% if (ref.runtime.running) { %>stop<% } else { %>start<% } %>"
+                        title="<% if (ref.runtime.running) { %>Running (PID <%= ref.runtime.pid %>) — click to stop<% } else { %>Stopped — click to start<% } %>"
+                        onclick="toggleRepoRuntime(this)">
+                        <% if (ref.runtime.running) { %>🔗<% } else { %>🔌<% } %>
+                    </button>
+                    <% } %>
                     <span class="home-file-name"><%= ref.name %></span>
                     <span class="home-repo-path"><%= ref.path %></span>
                 </li>
                 <% }); %>
+                <script>
+                async function toggleRepoRuntime(btn) {
+                    const repo = btn.dataset.repo;
+                    const action = btn.dataset.action;
+                    btn.disabled = true;
+                    try {
+                        const res = await fetch(`/api/repos/${repo}/${action}`, { method: 'POST' });
+                        if (!res.ok) {
+                            const err = await res.json().catch(() => ({}));
+                            alert(`${action} failed: ${err.error || res.status}`);
+                            btn.disabled = false;
+                            return;
+                        }
+                        // Wait briefly so pgrep sees the new state, then reload.
+                        setTimeout(() => location.reload(), 600);
+                    } catch (e) {
+                        alert(`${action} failed: ${e}`);
+                        btn.disabled = false;
+                    }
+                }
+                </script>
             </ul>
             <% } else { %>
             <p class="home-empty">참조된 경로가 없습니다</p>

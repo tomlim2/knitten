@@ -1279,6 +1279,36 @@ code {
     background: #22c55e;
 }
 
+.home-repo-runtime {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0 4px;
+    font-size: 11px;
+    line-height: 1;
+    margin-right: 6px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.home-repo-runtime:hover {
+    background: var(--color-bg-hover, rgba(0, 0, 0, 0.04));
+}
+
+.home-repo-runtime:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.home-repo-runtime-on {
+    border-color: #22c55e;
+}
+
+.home-repo-runtime-off {
+    border-color: var(--color-border);
+    opacity: 0.7;
+}
+
 .home-repo-path {
     font-size: 12px;
     color: var(--color-gray-mid);

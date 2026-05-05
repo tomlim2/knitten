@@ -3,6 +3,41 @@ const path = require('path');
 const fs = require('fs');
 const { WebSocketServer } = require('ws');
 const http = require('http');
+const { execSync, spawn } = require('child_process');
+
+// Repos with a foreground daemon the dashboard can start/stop.
+// Each entry maps a repo name (matching repo-paths.json key) to a
+// process-detection pattern + a relative launch command.
+const REPO_RUNTIMES = {
+    ccdb: {
+        psPattern: 'claude_discord.main',
+        launch: ['uv', 'run', 'python', '-m', 'claude_discord.main'],
+        logFile: '/tmp/ccdb.log',
+    },
+};
+
+function getRepoRuntime(name, repoPath) {
+    const cfg = REPO_RUNTIMES[name];
+    if (!cfg || !repoPath || !fs.existsSync(repoPath)) {
+        return null;
+    }
+    let pid = null;
+    try {
+        const out = execSync(`pgrep -f ${JSON.stringify(cfg.psPattern)} || true`, {
+            encoding: 'utf8',
+            timeout: 1500,
+        }).trim();
+        if (out) {
+            // Multiple PIDs possible (uv shim + child python); pick the
+            // longest-lived (smallest PID) so toggles target the same one.
+            const pids = out.split(/\s+/).map(Number).filter(n => !Number.isNaN(n));
+            if (pids.length) {
+                pid = Math.min(...pids);
+            }
+        }
+    } catch { /* ignore */ }
+    return { running: pid !== null, pid };
+}
 
 // Load config
 const config = require('./config.json');
@@ -293,7 +328,7 @@ app.get('/', (req, res) => {
     } catch (e) { /* ignore */ }
 
     // Refs: unified list of all referenced paths
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
     let registeredPaths = {};
     try {
         if (fs.existsSync(repoPathsFile)) {
@@ -375,17 +410,25 @@ app.get('/', (req, res) => {
         } catch (e) { /* ignore */ }
     }
 
-    const refs = Object.entries(refsMap).map(([name, data]) => ({
-        name,
-        connected: data.connected,
-        path: data.path
-    }));
+    // Split entries: anything with a registered runtime is a plugin
+    // (a daemon the dashboard supervises), everything else is a plain
+    // source-tree reference.
+    const refs = [];
+    const plugins = [];
+    for (const [name, data] of Object.entries(refsMap)) {
+        const runtime = getRepoRuntime(name, data.path);
+        const entry = { name, connected: data.connected, path: data.path, runtime };
+        if (REPO_RUNTIMES[name]) {
+            plugins.push(entry);
+        } else {
+            refs.push(entry);
+        }
+    }
 
-    res.render('home', { recentLearnings, recentStandards, recentWines, refs, hardware, totalCount, config, activePage: '/' });
+    res.render('home', { recentLearnings, recentStandards, recentWines, refs, plugins, hardware, totalCount, config, activePage: '/' });
 });
 
 // Context view helpers
-const { execSync } = require('child_process');
 
 function getRecentCommits(repoPath, count = 5, subPath = null) {
     try {
@@ -476,7 +519,7 @@ function daysAgo(dateStr) {
 }
 
 app.get('/contexts', (req, res) => {
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
     let repos = {};
     try { repos = JSON.parse(fs.readFileSync(repoPathsFile, 'utf-8')); } catch {}
 
@@ -1062,7 +1105,7 @@ app.get('/api/learnings/:filePath(*)', (req, res) => {
 
 // Repos API
 app.get('/api/repos', (req, res) => {
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
     try {
         if (fs.existsSync(repoPathsFile)) {
             const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
@@ -1078,13 +1121,76 @@ app.get('/api/repos', (req, res) => {
     res.json({ repos: [] });
 });
 
+// Start a foreground daemon for a repo with a registered runtime.
+// Spawns detached so the dashboard process owns no parent relationship —
+// killing the dashboard will NOT take the daemon down with it.
+app.post('/api/repos/:name/start', (req, res) => {
+    const name = req.params.name;
+    const cfg = REPO_RUNTIMES[name];
+    if (!cfg) {
+        return res.status(404).json({ error: `no runtime registered for ${name}` });
+    }
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
+    let repoPaths = {};
+    try {
+        repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+    } catch { /* ignore */ }
+    const repoPath = getRepoPath(repoPaths[name]);
+    if (!repoPath || !fs.existsSync(repoPath)) {
+        return res.status(404).json({ error: `repo path missing for ${name}` });
+    }
+
+    const existing = getRepoRuntime(name, repoPath);
+    if (existing && existing.running) {
+        return res.json({ success: true, already_running: true, pid: existing.pid });
+    }
+
+    const [cmd, ...args] = cfg.launch;
+    const out = fs.openSync(cfg.logFile, 'a');
+    const err = fs.openSync(cfg.logFile, 'a');
+    const child = spawn(cmd, args, {
+        cwd: repoPath,
+        detached: true,
+        stdio: ['ignore', out, err],
+        env: { ...process.env, PATH: `${require('os').homedir()}/.cargo/bin:${process.env.PATH}` },
+    });
+    child.unref();
+    res.json({ success: true, pid: child.pid, log: cfg.logFile });
+});
+
+// Stop the running daemon by PID. Sends SIGTERM first; the dashboard
+// does not chase a stuck process — caller can hit start to relaunch.
+app.post('/api/repos/:name/stop', (req, res) => {
+    const name = req.params.name;
+    const cfg = REPO_RUNTIMES[name];
+    if (!cfg) {
+        return res.status(404).json({ error: `no runtime registered for ${name}` });
+    }
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
+    let repoPaths = {};
+    try {
+        repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
+    } catch { /* ignore */ }
+    const repoPath = getRepoPath(repoPaths[name]);
+    const runtime = getRepoRuntime(name, repoPath);
+    if (!runtime || !runtime.running) {
+        return res.json({ success: true, already_stopped: true });
+    }
+    try {
+        execSync(`pkill -TERM -f ${JSON.stringify(cfg.psPattern)}`, { timeout: 1500 });
+        res.json({ success: true, killed_pid: runtime.pid });
+    } catch (e) {
+        res.status(500).json({ error: String(e) });
+    }
+});
+
 app.post('/api/repos', (req, res) => {
     const { name, path: repoPath, description } = req.body;
     if (!name || !repoPath) {
         return res.status(400).json({ error: 'Missing name or path' });
     }
 
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
     let repoPaths = {};
     try {
         if (fs.existsSync(repoPathsFile)) {
@@ -1103,7 +1209,7 @@ app.delete('/api/repos', (req, res) => {
         return res.status(400).json({ error: 'Missing name' });
     }
 
-    const repoPathsFile = path.join(PRIVATE_DIR, 'repo-paths.json');
+    const repoPathsFile = path.join(PRIVATE_DIR, 'caol-config', 'repo-paths.json');
     try {
         if (fs.existsSync(repoPathsFile)) {
             const repoPaths = JSON.parse(fs.readFileSync(repoPathsFile, 'utf8'));
