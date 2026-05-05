@@ -26,13 +26,10 @@ offset=$(date +%z | awk '{
   sign=(s=="+")?1:-1;
   print sign*(h*60+m);
 }')
-sid="${CLAUDE_SESSION_ID:-}"
-
 row=$(printf '%s' "$payload" | jq -c \
   --arg ts "$ts" \
   --argjson offset "$offset" \
-  --arg sid "$sid" \
-  '{ts:$ts, utc_offset_min:$offset, sid:$sid, skill:(.tool_input.skill // "unknown")}' 2>/dev/null) || exit 0
+  '{ts:$ts, utc_offset_min:$offset, sid:(.session_id // ""), skill:(.tool_input.skill // "unknown")}' 2>/dev/null) || exit 0
 
 printf '%s\n' "$row" >> "$file"
 exit 0
