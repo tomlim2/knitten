@@ -21,11 +21,11 @@ UniVRM (Unity) 가 VRM 을 import 할 때 humanoid bone 들을 Mecanim slot (dep
 
 ## 가설 검증 과정
 
-1. Sub-agent #1: runtime ScalarCurl path 의 rig-dependent 항 추적 → BoneData 의 `dst_rest_local`, `parent_rest_yup`, `bone_rest_t` 등 후보. 다만 canonicalization 후엔 모두 같아야 함
-2. Sub-agent #2: Stage 4 의 `apply_user_calibrated_one` 가 `canonicalize_thumb_world_rotations` 결과를 덮어쓸 가능성 의심. 그러나 hand global 이 모든 rig 에서 identity 라 결과는 동일
-3. Sub-agent #3: `dump_thumb_rest` 로 6 rig 의 thumb world rotation 측정 → 모두 canonical 값으로 통일됨. delta 0.00°
-4. Sub-agent #4: `dump_thumb_anim` 으로 retarget 출력 frame 0/60 dump → 6 rig × 6 본 × 2 frame = 72 quat 모두 bit-perfect identical. **즉 retarget 출력 자체는 완벽**
-5. Sub-agent #5: `dump_hand_thumb_chain` 으로 normalized GLB 의 hand → thumb hierarchy dump → **smoking gun 발견**
+1. Sub-agent 1: runtime ScalarCurl path 의 rig-dependent 항 추적 → BoneData 의 `dst_rest_local`, `parent_rest_yup`, `bone_rest_t` 등 후보. 다만 canonicalization 후엔 모두 같아야 함
+2. Sub-agent 2: Stage 4 의 `apply_user_calibrated_one` 가 `canonicalize_thumb_world_rotations` 결과를 덮어쓸 가능성 의심. 그러나 hand global 이 모든 rig 에서 identity 라 결과는 동일
+3. Sub-agent 3: `dump_thumb_rest` 로 6 rig 의 thumb world rotation 측정 → 모두 canonical 값으로 통일됨. delta 0.00°
+4. Sub-agent 4: `dump_thumb_anim` 으로 retarget 출력 frame 0/60 dump → 6 rig × 6 본 × 2 frame = 72 quat 모두 bit-perfect identical. **즉 retarget 출력 자체는 완벽**
+5. Sub-agent 5: `dump_hand_thumb_chain` 으로 normalized GLB 의 hand → thumb hierarchy dump → **smoking gun 발견**
 
 ## Smoking gun
 

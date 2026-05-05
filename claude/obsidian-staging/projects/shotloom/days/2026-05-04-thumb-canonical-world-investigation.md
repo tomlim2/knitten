@@ -14,7 +14,7 @@ shotloom 의 retarget 서브시스템에서 thumb 본이 rig 별로 일관되게
 
 ## Big picture
 
-ARP→VRM retarget 의 thumb 처리 통일이 목표. 직전 PR (#228 — thumb chain naming canonicalization 작업) 에서 4-finger ScalarCurl 와 thumb `canonicalize_thumb_chain_naming` 이 land 한 상태. 이번 작업은 thumb 도 같은 ScalarCurl runtime path 로 라우팅하면서 rig-별 bind 차이를 흡수하는 메커니즘 설계.
+ARP→VRM retarget 의 thumb 처리 통일이 목표. 직전 thumb chain naming canonicalization 작업에서 4-finger ScalarCurl 와 thumb `canonicalize_thumb_chain_naming` 이 land 한 상태. 이번 작업은 thumb 도 같은 ScalarCurl runtime path 로 라우팅하면서 rig-별 bind 차이를 흡수하는 메커니즘 설계.
 
 ## Why
 
@@ -56,7 +56,7 @@ ARP→VRM retarget 의 thumb 처리 통일이 목표. 직전 PR (#228 — thumb 
 2. 결과에 따라:
    - hand 까지 canonical 시리즈 확장 vs
    - hand-relative thumb local 로만 canonical 화 (parent_global 차이 흡수)
-3. 시각 일관성 확인 후 Task #5 (vrm0x thumb regression snapshot) 추가
+3. 시각 일관성 확인 후 vrm0x thumb regression snapshot 추가
 4. `/shotloom-review-before-pr` → PR
 
 ## 추가 진척 (오후 후속, smoking gun 도출)
