@@ -1,32 +1,32 @@
 ---
-description: Open the skill server dashboard
-allowed-tools: Bash(open:*)
+description: Open the Caol HQ dashboard
+allowed-tools: Bash(open:*), Bash(curl:*), Bash(npm:*), Bash(cd:*), Bash(pnpm:*)
 ---
 
 # caol-open-dashboard
 
-Start the local skill server and open the dashboard in browser.
+Start the Caol HQ Astro dashboard (port 9720) and open it in browser.
+
 ## Execution
 
-1. Check if dependencies are installed
-2. Start server if not running
-3. Open browser to dashboard
-
 ```bash
-cd ~/.claude/skills/skill-server
+cd ~/.claude/skills/caol-hq
 
 # Install if needed
 if [ ! -d "node_modules" ]; then
-    npm install
+    pnpm install
 fi
 
-# Check if already running
-if ! curl -s http://localhost:972 > /dev/null 2>&1; then
-    # Start in background
-    npm start &
+# Build if dist missing
+if [ ! -d "dist" ]; then
+    pnpm build
+fi
+
+# Start if not running
+if ! curl -s http://localhost:9720 > /dev/null 2>&1; then
+    pnpm start &
     sleep 2
 fi
 
-# Open browser
-open http://localhost:972
+open http://localhost:9720
 ```

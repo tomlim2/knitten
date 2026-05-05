@@ -1,0 +1,96 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { loadRepoPaths, getRepoPath } from '../../lib/paths';
+
+const repos = loadRepoPaths();
+const pwPath = getRepoPath(repos['project-weekend']);
+const conceptFile = pwPath ? join(pwPath, 'prototypes', 'weekend-subang', 'CONCEPT.md') : null;
+
+type Stage = { stage: string; goal: string; status: string; done: boolean; hash: string | null };
+
+let stages: Stage[] = [];
+let error: string | null = null;
+const projectName = 'Weekend Subang (Bevy 0.18 탄막)';
+const subpath = 'prototypes/weekend-subang';
+
+if (!conceptFile) {
+    error = 'project-weekend 미등록 (caol-config/repo-paths.json)';
+} else if (!existsSync(conceptFile)) {
+    error = `CONCEPT.md 없음: ${subpath}/CONCEPT.md`;
+} else {
+    try {
+        const text = readFileSync(conceptFile, 'utf-8');
+        const m = text.match(/## Build Stages\s*\n([\s\S]*?)(?=\n## )/);
+        if (!m) {
+            error = 'Build Stages 섹션 파싱 실패';
+        } else {
+            stages = m[1]
+                .split('\n')
+                .filter(l => l.startsWith('|') && !/^\|\s*-+/.test(l) && !/단계/.test(l))
+                .map((l): Stage | null => {
+                    const cells = l.split('|').slice(1, -1).map(c => c.trim());
+                    if (cells.length < 4) return null;
+                    const stage = cells[0].replace(/\*\*/g, '');
+                    const status = cells[3];
+                    const hashMatch = status.match(/^`([0-9a-f]+)`$/);
+                    return {
+                        stage,
+                        goal: cells[1],
+                        status,
+                        done: !!hashMatch,
+                        hash: hashMatch ? hashMatch[1] : null,
+                    };
+                })
+                .filter((s): s is Stage => s !== null);
+        }
+    } catch (e) {
+        error = `read failed: ${(e as Error).message}`;
+    }
+}
+
+const completed = stages.filter(s => s.done).length;
+---
+
+<WidgetFrame title={`Active Project — ${projectName}`} id="weekend-progress">
+    <Fragment slot="meta">{stages.length > 0 ? `${completed} / ${stages.length} stages` : ''}</Fragment>
+    {error ? (
+        <EmptyState tone="error">{error}</EmptyState>
+    ) : stages.length === 0 ? (
+        <EmptyState>스테이지 없음</EmptyState>
+    ) : (
+        <ul class="hq-doc-list hq-progress-list">
+            {stages.map(s => (
+                <li class="hq-doc-row hq-progress-row">
+                    <span class:list={['hq-progress-mark', { done: s.done }]}>{s.done ? '●' : '○'}</span>
+                    <span class="hq-doc-name"><strong>{s.stage}</strong> {s.goal}</span>
+                    <span class="hq-doc-date">{s.hash ? <code>{s.hash}</code> : s.status}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+    <Fragment slot="foot">
+        <span>{subpath}</span>
+    </Fragment>
+</WidgetFrame>
+
+<style is:global>
+    .hq-progress-row {
+        align-items: baseline;
+    }
+    .hq-progress-mark {
+        display: inline-block;
+        width: 16px;
+        text-align: center;
+        color: var(--hq-fg-mute, #888);
+        font-size: 12px;
+    }
+    .hq-progress-mark.done {
+        color: var(--hq-accent, #2a8a4a);
+    }
+    .hq-progress-row .hq-doc-name strong {
+        margin-right: 4px;
+    }
+</style>

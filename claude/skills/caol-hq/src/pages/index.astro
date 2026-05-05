@@ -9,11 +9,13 @@ import RecentLearningsWidget from '../components/widgets/RecentLearningsWidget.a
 import OpenPRsWidget from '../components/widgets/OpenPRsWidget.astro';
 import WorktreesWidget from '../components/widgets/WorktreesWidget.astro';
 import SkillUsageWidget from '../components/widgets/SkillUsageWidget.astro';
+import WeekendProgressWidget from '../components/widgets/WeekendProgressWidget.astro';
 ---
 
 <BaseLayout title="Caol HQ" activeNav="/">
     <PageHero title="Today" sub="오늘 어디까지 왔고 무엇이 살아있나" />
     <WidgetGrid>
+        <WeekendProgressWidget />
         <PluginsWidget />
         <OpenPRsWidget />
         <WorktreesWidget />
