@@ -185,7 +185,7 @@ Interactive first-time setup for a new machine. Guides the user through filling 
 
 1. **Check target directory** — Confirm `~/.claude/private/caol-config/` exists. Create if missing.
 
-2. **Read templates** — Load both template files from `${CLAUDE_SKILL_DIR}`:
+2. **Read templates** — Load both template files from `~/.claude/skills/caol-manage-config/`:
    - `repo-paths.template.json`
    - `machine-paths.template.json`
 
@@ -199,15 +199,31 @@ Interactive first-time setup for a new machine. Guides the user through filling 
    - User may skip any key not applicable to this machine.
    - Write completed `machine-paths.json`.
 
-5. **doc-paths** — `doc-paths.json` is managed in the repo. If missing from `caol-config/`, note its canonical location in `caol-ila` and show path.
-
-6. **hardware.json** — Prompt user to run `/system-save-hardware` to populate hardware specs.
-
-7. **skill-usage tracking** — Run the installer that registers the PreToolUse Skill hook + launchd sync agent on this machine:
+5. **doc-paths** — `doc-paths.json` is the only file under `caol-config/` that is tracked in the repo (gitignore exception). If `~/.claude` symlinks into `caol-ila/claude` (author's setup), the file is automatically present after clone. Otherwise copy once:
 
    ```bash
-   caol_root=$(jq -r '.["caol-ila"].path' ~/.claude/private/caol-config/repo-paths.json)
+   caol_root=$(jq -r '.["caol-ila"].path' ~/.claude/private/caol-config/repo-paths.json 2>/dev/null)
    caol_root="${caol_root/#\~/$HOME}"
+   src="$caol_root/claude/private/caol-config/doc-paths.json"
+   dst=~/.claude/private/caol-config/doc-paths.json
+   [ -f "$dst" ] || cp "$src" "$dst"
+   ```
+
+   Skip if `caol-ila` was not registered in step 3.
+
+6. **hardware.json** — Run `/system-save-hardware` (do NOT just prompt — actually invoke the skill) to populate hardware specs. Step 7 requires this file to exist.
+
+7. **skill-usage tracking** — Gate-check first, then run installer:
+
+   ```bash
+   # Gate: caol-ila registered?
+   caol_root=$(jq -re '.["caol-ila"].path // empty' ~/.claude/private/caol-config/repo-paths.json) || { echo "skip: caol-ila not registered"; }
+   caol_root="${caol_root/#\~/$HOME}"
+
+   # Gate: hardware.json exists?
+   [ -f ~/.claude/private/caol-config/hardware.json ] || { echo "skip: run /system-save-hardware first"; }
+
+   # Run installer
    bash "$caol_root/claude/private/skill-usage/install.sh"
    ```
 
@@ -217,6 +233,8 @@ Interactive first-time setup for a new machine. Guides the user through filling 
    - merges the PreToolUse Skill hook into `~/.claude/settings.json`
    - installs + loads `com.caol.skill-usage-sync.plist` (30 min push interval)
 
-   Skip if `caol-ila` was not registered in step 3. After install, tell the user to open `/hooks` once or restart Claude Code so the hook activates.
+   After install, tell the user:
+   - Open `/hooks` once or restart Claude Code so the hook activates.
+   - **Verify git push works for caol-ila as `tomlim2`** — sync agent silent-fails on auth errors. Test with `cd $caol_root && git push --dry-run origin main`. If this fails on company PC, fix ssh key / gh auth before relying on auto-sync.
 
 8. **Summary** — Show all four files in the same format as the `show` action.

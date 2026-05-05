@@ -3,6 +3,10 @@ claude/private/*
 !claude/private/learnings/
 !claude/private/specs/
 !claude/private/skill-usage/
+# Shared cross-machine doc routing registry (per-purpose subpaths)
+!claude/private/caol-config/
+claude/private/caol-config/*
+!claude/private/caol-config/doc-paths.json
 
 # Secrets
 *.env
