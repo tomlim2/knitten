@@ -23,6 +23,8 @@ claude/shell-snapshots/
 claude/agents/
 claude/cache/
 claude/debug/
+claude/hooks/*.log
+claude/hooks/*.err
 claude/ide/
 claude/stats-cache.json
 claude/plans/

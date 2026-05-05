@@ -142,15 +142,20 @@ Avoid:
 
 ## Length budget
 
-| Doc type | Budget |
-|----------|--------|
-| `CLAUDE.md` | ≤ 150 lines |
-| `rules/*.md` | ≤ 50 lines each |
-| `skills/*/SKILL.md` | ≤ 200 lines |
-| `commands/*.md` | ≤ 100 lines |
-| `standards/*.md` | ≤ 400 lines |
+| Doc type | Budget | Why this limit |
+|----------|--------|----------------|
+| `CLAUDE.md` | ≤ 150 lines | Auto-loaded every cold-start; the single most expensive read |
+| `rules/*.md` (auto, body) | ≤ 40 lines | Always in cold-start context — every line costs every turn |
+| `rules/*.md` (triggered, body) | ≤ 120 lines | Loads only on declared trigger — more room for detail |
+| `skills/*/SKILL.md` | ≤ 200 lines | Loaded when invoked; push reference detail to `reference.md` |
+| `commands/*.md` | ≤ 100 lines | Loaded when invoked; thin orchestration only |
+| `standards/*.md` | ≤ 500 lines | On-demand layer 4 reference; split when reading the whole file is the bottleneck |
+
+`rules/*.md` body excludes frontmatter. The auto-vs-triggered split is declared by the rule's `load:` frontmatter field; see `rules/index.md`.
 
 If a file exceeds budget, split — do not let it grow.
+
+This table is the single source of truth. Other files (e.g. `rules/behavior.md`) reference it by path; do not duplicate the numbers.
 
 ---
 
