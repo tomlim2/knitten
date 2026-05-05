@@ -1,0 +1,40 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { readFileSync, existsSync } from 'node:fs';
+import { HARDWARE_FILE } from '../../lib/paths';
+
+interface Hardware {
+    chip?: string;
+    cores?: { total: number; performance: number; efficiency: number };
+    memory_gb?: number;
+    gpu?: string;
+    os?: string;
+}
+
+let hw: Hardware | null = null;
+let error: string | null = null;
+try {
+    if (existsSync(HARDWARE_FILE)) {
+        hw = JSON.parse(readFileSync(HARDWARE_FILE, 'utf-8')) as Hardware;
+    } else {
+        error = 'hardware.json missing — run /system-save-hardware';
+    }
+} catch (e) {
+    error = `parse failed: ${(e as Error).message}`;
+}
+---
+
+<WidgetFrame title="Hardware" id="hardware">
+    {error ? (
+        <EmptyState tone="error">{error}</EmptyState>
+    ) : hw ? (
+        <dl class="hq-kv">
+            {hw.chip && <><dt>Chip</dt><dd>{hw.chip}</dd></>}
+            {hw.cores && <><dt>Cores</dt><dd>{hw.cores.total} ({hw.cores.performance}P + {hw.cores.efficiency}E)</dd></>}
+            {hw.memory_gb && <><dt>Memory</dt><dd>{hw.memory_gb} GB</dd></>}
+            {hw.gpu && <><dt>GPU</dt><dd>{hw.gpu}</dd></>}
+            {hw.os && <><dt>OS</dt><dd>{hw.os}</dd></>}
+        </dl>
+    ) : null}
+</WidgetFrame>

@@ -1,0 +1,115 @@
+---
+// Command palette — global keyboard launcher (⌘K / Ctrl+K).
+// Indexes skills, standards, learnings on the server, ships them as JSON,
+// and the client filters in-memory. No fancy fuzzy match — substring + prefix
+// is enough for a few hundred items and stays predictable.
+import { discoverSkills } from '../lib/skill-discovery';
+
+const skills = discoverSkills().map(s => ({
+    kind: 'skill' as const,
+    label: s.id,
+    sub: s.description || s.name,
+    href: `/skills/${s.id}`,
+}));
+
+const links = [
+    { kind: 'page' as const, label: 'Home', sub: 'Today widgets', href: '/' },
+    { kind: 'page' as const, label: 'Browse', sub: 'Skills · Standards · Learnings', href: '/browse' },
+    { kind: 'page' as const, label: 'Personal', sub: 'Drinks · Gallery · Invoice', href: '/personal' },
+    { kind: 'page' as const, label: 'Skills', sub: `${skills.length} entries`, href: '/skills' },
+];
+
+const index = [...links, ...skills];
+---
+
+<div id="hq-palette" class="hq-palette" hidden>
+    <div class="hq-palette-backdrop" data-close></div>
+    <div class="hq-palette-modal" role="dialog" aria-label="Command palette">
+        <input
+            type="search"
+            id="hq-palette-input"
+            placeholder="Type to filter — skill / page / shortcut"
+            autocomplete="off"
+            spellcheck="false"
+        />
+        <ul id="hq-palette-list" class="hq-palette-list"></ul>
+        <footer class="hq-palette-foot">
+            <span><kbd>↑</kbd><kbd>↓</kbd> 이동</span>
+            <span><kbd>↵</kbd> 열기</span>
+            <span><kbd>Esc</kbd> 닫기</span>
+        </footer>
+    </div>
+</div>
+
+<script is:inline define:vars={{ index }}>
+    (() => {
+        const palette = document.getElementById('hq-palette');
+        const input = document.getElementById('hq-palette-input');
+        const list = document.getElementById('hq-palette-list');
+        if (!palette || !input || !list) return;
+
+        const MAX = 30;
+        let cursor = 0;
+
+        function render(filter) {
+            const q = filter.trim().toLowerCase();
+            const matches = q
+                ? index.filter(i => `${i.label} ${i.sub}`.toLowerCase().includes(q))
+                : index.slice(0, MAX);
+            const shown = matches.slice(0, MAX);
+            list.innerHTML = shown.map((m, i) => `
+                <li data-href="${m.href}" data-i="${i}" class="${i === cursor ? 'hq-palette-active' : ''}">
+                    <span class="hq-palette-kind">${m.kind}</span>
+                    <span class="hq-palette-label">${m.label}</span>
+                    <span class="hq-palette-sub">${m.sub ?? ''}</span>
+                </li>
+            `).join('');
+        }
+
+        function open() {
+            palette.hidden = false;
+            cursor = 0;
+            input.value = '';
+            render('');
+            requestAnimationFrame(() => input.focus());
+        }
+        function close() {
+            palette.hidden = true;
+        }
+        function move(delta) {
+            const items = list.querySelectorAll('li');
+            if (!items.length) return;
+            cursor = (cursor + delta + items.length) % items.length;
+            items.forEach((el, i) => el.classList.toggle('hq-palette-active', i === cursor));
+            items[cursor].scrollIntoView({ block: 'nearest' });
+        }
+        function activate() {
+            const el = list.querySelector('li.hq-palette-active');
+            if (!el) return;
+            const href = el.getAttribute('data-href');
+            if (href) location.href = href;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const isMeta = e.metaKey || e.ctrlKey;
+            if (isMeta && e.key === 'k') {
+                e.preventDefault();
+                palette.hidden ? open() : close();
+                return;
+            }
+            if (palette.hidden) return;
+            if (e.key === 'Escape') { close(); return; }
+            if (e.key === 'ArrowDown') { e.preventDefault(); move(1); return; }
+            if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); return; }
+            if (e.key === 'Enter') { e.preventDefault(); activate(); return; }
+        });
+        input.addEventListener('input', () => { cursor = 0; render(input.value); });
+        list.addEventListener('click', (e) => {
+            const li = e.target.closest('li');
+            if (!li) return;
+            const href = li.getAttribute('data-href');
+            if (href) location.href = href;
+        });
+        palette.querySelector('[data-close]').addEventListener('click', close);
+    })();
+</script>

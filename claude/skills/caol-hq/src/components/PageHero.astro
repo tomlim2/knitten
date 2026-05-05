@@ -1,0 +1,12 @@
+---
+interface Props {
+    title: string;
+    sub?: string;
+}
+const { title, sub } = Astro.props;
+---
+
+<header class="hq-hero">
+    <h1 class="hq-page-title">{title}</h1>
+    {sub && <p class="hq-page-sub">{sub}</p>}
+</header>

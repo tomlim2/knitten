@@ -1,0 +1,15 @@
+---
+/**
+ * Consistent empty / error placeholder. Use inside any widget body
+ * when there is no data, the data source is missing, or the read
+ * failed — keeps the dashboard visually whole instead of a blank gap.
+ */
+interface Props {
+    tone?: 'empty' | 'error';
+}
+const { tone = 'empty' } = Astro.props;
+---
+
+<p class:list={['hq-widget-empty', `hq-widget-empty-${tone}`]}>
+    <slot />
+</p>

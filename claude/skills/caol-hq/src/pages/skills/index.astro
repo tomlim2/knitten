@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { discoverSkills, groupByCategory } from '../../lib/skill-discovery';
+
+const skills = discoverSkills();
+const groups = groupByCategory(skills);
+---
+
+<BaseLayout title="Skills" activeNav="/browse">
+    <PageHero title="Skills" sub={`${skills.length} 개 등록 · 카테고리 ${groups.length}`} />
+
+    <div class="hq-skill-search">
+        <input
+            type="search"
+            id="skill-filter"
+            placeholder="이름 / 설명 / 카테고리로 필터링"
+            autocomplete="off"
+        />
+    </div>
+
+    {groups.map(group => (
+        <section class="hq-skill-group" data-category={group.category}>
+            <h2 class="hq-skill-cat">{group.category} <span class="hq-skill-cat-count">{group.skills.length}</span></h2>
+            <ul class="hq-skill-list">
+                {group.skills.map(s => (
+                    <li class="hq-skill-row" data-skill={s.id} data-search={`${s.id} ${s.name} ${s.description} ${s.category}`.toLowerCase()}>
+                        <a href={`/skills/${s.id}`} class="hq-skill-name">{s.id}</a>
+                        <span class="hq-skill-desc">{s.description || s.name}</span>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    ))}
+</BaseLayout>
+
+<script>
+    const input = document.getElementById('skill-filter') as HTMLInputElement | null;
+    const rows = document.querySelectorAll<HTMLLIElement>('li.hq-skill-row');
+    const groups = document.querySelectorAll<HTMLElement>('section.hq-skill-group');
+    input?.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        rows.forEach(row => {
+            const hit = !q || (row.dataset.search ?? '').includes(q);
+            row.style.display = hit ? '' : 'none';
+        });
+        groups.forEach(group => {
+            const visible = group.querySelectorAll<HTMLLIElement>('li.hq-skill-row:not([style*="display: none"])').length;
+            group.style.display = visible ? '' : 'none';
+        });
+    });
+</script>

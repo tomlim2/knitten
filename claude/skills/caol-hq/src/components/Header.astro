@@ -1,0 +1,32 @@
+---
+import nav from '../config/nav.json' with { type: 'json' };
+import PluginPill from './PluginPill.astro';
+
+interface Props {
+    activeNav?: string;
+}
+const { activeNav } = Astro.props;
+---
+
+<header class="hq-header">
+    <a href="/" class="hq-logo">Caol HQ</a>
+    <nav class="hq-nav">
+        {nav.map((item: { label: string; href: string }) => (
+            <a href={item.href} class:list={[{ active: activeNav === item.href }]}>
+                {item.label}
+            </a>
+        ))}
+    </nav>
+    <div class="hq-header-spacer"></div>
+    <button type="button" class="hq-header-cmd" id="hq-open-palette" title="Command palette (⌘K / Ctrl+K)">
+        <span>Search</span>
+        <kbd>⌘K</kbd>
+    </button>
+    <PluginPill />
+</header>
+
+<script is:inline>
+    document.getElementById('hq-open-palette')?.addEventListener('click', () => {
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true }));
+    });
+</script>

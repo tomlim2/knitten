@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { walkMarkdown } from '../../lib/doc-discovery';
+import { STANDARDS_DIR } from '../../lib/paths';
+
+const docs = walkMarkdown(STANDARDS_DIR).sort((a, b) => a.slug.localeCompare(b.slug));
+
+const groups = new Map<string, typeof docs>();
+for (const d of docs) {
+    const top = d.slug.includes('/') ? d.slug.split('/')[0] : 'root';
+    if (!groups.has(top)) groups.set(top, []);
+    groups.get(top)!.push(d);
+}
+const ordered = [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+---
+
+<BaseLayout title="Standards" activeNav="/browse">
+    <PageHero title="Standards" sub={`${docs.length} 개 · ~/.claude/standards`} />
+    {ordered.map(([group, items]) => (
+        <section class="hq-skill-group">
+            <h2 class="hq-skill-cat">{group} <span class="hq-skill-cat-count">{items.length}</span></h2>
+            <ul class="hq-skill-list">
+                {items.map(d => (
+                    <li class="hq-skill-row">
+                        <a href={`/standards/${d.slug}`} class="hq-skill-name">{d.name}</a>
+                        <span class="hq-skill-desc">{d.slug}</span>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    ))}
+</BaseLayout>

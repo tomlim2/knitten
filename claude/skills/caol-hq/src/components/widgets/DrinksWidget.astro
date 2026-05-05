@@ -1,0 +1,56 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { obsidianClaudeDir } from '../../lib/paths';
+
+interface Drink {
+    name?: string;
+    type?: string;
+    date?: string;
+    rating?: number | string;
+    region?: string;
+}
+
+const claudeDir = obsidianClaudeDir();
+const file = claudeDir ? join(claudeDir, 'drinks', 'drinks.json') : null;
+
+let recent: Drink[] = [];
+let total = 0;
+let error: string | null = null;
+if (!file) {
+    error = 'obsidian-vault-claude 미등록';
+} else if (!existsSync(file)) {
+    error = 'drinks.json 없음';
+} else {
+    try {
+        const data = JSON.parse(readFileSync(file, 'utf-8')) as { drinks?: Drink[] };
+        const drinks = data.drinks ?? [];
+        total = drinks.length;
+        recent = [...drinks]
+            .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+            .slice(0, 5);
+    } catch (e) {
+        error = `parse failed: ${(e as Error).message}`;
+    }
+}
+---
+
+<WidgetFrame title="Drinks" id="drinks">
+    {total > 0 && <Fragment slot="meta">{total} entries</Fragment>}
+    {error ? (
+        <EmptyState tone="error">{error}</EmptyState>
+    ) : recent.length === 0 ? (
+        <EmptyState>아직 기록 없음</EmptyState>
+    ) : (
+        <ul class="hq-doc-list">
+            {recent.map(d => (
+                <li class="hq-doc-row">
+                    <span class="hq-doc-name">{d.name ?? '(no name)'} <span style="color:var(--color-gray-mid);font-size:11px;">{d.type ?? ''}</span></span>
+                    <span class="hq-doc-date">{d.date ?? ''}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+</WidgetFrame>

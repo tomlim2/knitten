@@ -1,0 +1,19 @@
+---
+import { listRuntimes, statusOf } from '../lib/runtimes';
+
+const items = listRuntimes().map(({ name, cfg }) => ({
+    name,
+    label: cfg.label,
+    status: statusOf(name),
+}));
+const running = items.filter(i => i.status.running).length;
+const total = items.length;
+---
+
+{total > 0 && (
+    <a href="/" class:list={['hq-pill', { 'hq-pill-on': running > 0 }]}
+       title={items.map(i => `${i.label}: ${i.status.running ? 'running' : 'stopped'}`).join(' · ')}>
+        <span class="hq-pill-icon">{running > 0 ? '🔗' : '🔌'}</span>
+        <span class="hq-pill-label">{running}/{total}</span>
+    </a>
+)}

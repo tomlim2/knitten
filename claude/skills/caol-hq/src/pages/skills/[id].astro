@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { join } from 'node:path';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { SKILLS_DIR } from '../../lib/paths';
+import { renderMarkdown } from '../../lib/markdown';
+
+const id = Astro.params.id as string;
+const manifest = join(SKILLS_DIR, id, 'SKILL.md');
+if (!existsSync(manifest)) {
+    return Astro.redirect('/skills');
+}
+const content = readFileSync(manifest, 'utf-8');
+const html = renderMarkdown(content);
+const mtime = statSync(manifest).mtime;
+const fmtDate = mtime.toLocaleString('ko-KR', { dateStyle: 'short', timeStyle: 'short' });
+---
+
+<BaseLayout title={id} activeNav="/browse">
+    <nav class="hq-crumb"><a href="/skills">← Skills</a></nav>
+    <PageHero title={id} sub={`last modified ${fmtDate}`} />
+    <article class="hq-md" set:html={html}></article>
+</BaseLayout>

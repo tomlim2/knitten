@@ -1,0 +1,34 @@
+---
+/**
+ * Standard widget container. Every dashboard widget should wrap its
+ * body in <WidgetFrame> so title, count, and the optional `meta` slot
+ * (right side of the header) all stay consistent across the grid.
+ *
+ * Slots:
+ *   - default: widget body
+ *   - meta:    right-aligned header content (count, status, etc.)
+ *   - foot:    optional footer (link to detail page, last updated, ...)
+ */
+interface Props {
+    title: string;
+    id?: string;
+}
+const { title, id } = Astro.props;
+---
+
+<section class="hq-widget" data-widget={id}>
+    <header class="hq-widget-head">
+        <h2>{title}</h2>
+        <div class="hq-widget-meta">
+            <slot name="meta" />
+        </div>
+    </header>
+    <div class="hq-widget-body">
+        <slot />
+    </div>
+    {Astro.slots.has('foot') && (
+        <footer class="hq-widget-foot">
+            <slot name="foot" />
+        </footer>
+    )}
+</section>

@@ -1,0 +1,63 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { listRuntimes, statusOf } from '../../lib/runtimes';
+
+const items = listRuntimes().map(({ name, cfg, repoPath }) => ({
+    name,
+    label: cfg.label,
+    repoPath,
+    status: statusOf(name),
+}));
+const running = items.filter(i => i.status.running).length;
+---
+
+<WidgetFrame title="Plugins" id="plugins">
+    <Fragment slot="meta">{running} / {items.length} running</Fragment>
+    {items.length === 0 ? (
+        <EmptyState>등록된 플러그인 없음 — config/runtimes.json 추가</EmptyState>
+    ) : (
+        <ul class="hq-plugin-list">
+            {items.map(item => (
+                <li class="hq-plugin-row">
+                    <button
+                        type="button"
+                        class:list={['hq-plugin-toggle', item.status.running ? 'on' : 'off']}
+                        data-plugin={item.name}
+                        data-action={item.status.running ? 'stop' : 'start'}
+                        title={item.status.running ? `Running (PID ${item.status.pid}) — click to stop` : 'Stopped — click to start'}
+                    >
+                        {item.status.running ? '🔗' : '🔌'}
+                    </button>
+                    <span class="hq-plugin-label">{item.label}</span>
+                    <code class="hq-plugin-name">{item.name}</code>
+                    <span class="hq-plugin-path">{item.repoPath || '— missing'}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+</WidgetFrame>
+
+<script>
+    document.querySelectorAll<HTMLButtonElement>('button.hq-plugin-toggle').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const name = btn.dataset.plugin;
+            const action = btn.dataset.action;
+            if (!name || !action) return;
+            btn.disabled = true;
+            try {
+                const res = await fetch(`/api/plugin/${name}/${action}`, { method: 'POST' });
+                if (!res.ok) {
+                    const body = await res.json().catch(() => ({}));
+                    alert(`${action} failed: ${body.reason ?? res.status}`);
+                    btn.disabled = false;
+                    return;
+                }
+                setTimeout(() => location.reload(), 600);
+            } catch (e) {
+                alert(`${action} failed: ${e}`);
+                btn.disabled = false;
+            }
+        });
+    });
+</script>

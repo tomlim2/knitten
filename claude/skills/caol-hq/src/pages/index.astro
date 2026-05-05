@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import WidgetGrid from '../components/WidgetGrid.astro';
+import PluginsWidget from '../components/widgets/PluginsWidget.astro';
+import HardwareWidget from '../components/widgets/HardwareWidget.astro';
+import ReposWidget from '../components/widgets/ReposWidget.astro';
+import RecentLearningsWidget from '../components/widgets/RecentLearningsWidget.astro';
+---
+
+<BaseLayout title="Caol HQ" activeNav="/">
+    <PageHero title="Today" sub="오늘 어디까지 왔고 무엇이 살아있나" />
+    <WidgetGrid>
+        <PluginsWidget />
+        <HardwareWidget />
+        <ReposWidget />
+        <RecentLearningsWidget />
+    </WidgetGrid>
+</BaseLayout>

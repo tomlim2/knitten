@@ -1,0 +1,42 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { existsSync } from 'node:fs';
+import { loadRepoPaths, getRepoPath, getRepoDescription } from '../../lib/paths';
+import runtimes from '../../config/runtimes.json' with { type: 'json' };
+
+const repos = loadRepoPaths();
+const runtimeNames = new Set(Object.keys(runtimes));
+
+const items = Object.entries(repos)
+    .filter(([name]) => !runtimeNames.has(name))
+    .map(([name, entry]) => {
+        const path = getRepoPath(entry);
+        return {
+            name,
+            description: getRepoDescription(entry),
+            path,
+            connected: path ? existsSync(path) : false,
+        };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+const connected = items.filter(i => i.connected).length;
+---
+
+<WidgetFrame title="Repos" id="repos">
+    <Fragment slot="meta">{connected} / {items.length} connected</Fragment>
+    {items.length === 0 ? (
+        <EmptyState>등록된 repo 없음 — caol-config/repo-paths.json 추가</EmptyState>
+    ) : (
+        <ul class="hq-ref-list">
+            {items.map(item => (
+                <li class="hq-ref-row">
+                    <span class:list={['hq-ref-dot', { connected: item.connected }]}></span>
+                    <span class="hq-ref-name">{item.name}</span>
+                    <span class="hq-ref-desc">{item.description}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+</WidgetFrame>

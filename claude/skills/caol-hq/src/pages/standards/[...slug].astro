@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { readDoc } from '../../lib/doc-discovery';
+import { STANDARDS_DIR } from '../../lib/paths';
+import { renderMarkdown } from '../../lib/markdown';
+
+const slug = Astro.params.slug as string;
+const doc = readDoc(STANDARDS_DIR, slug);
+if (!doc) {
+    return Astro.redirect('/standards');
+}
+const html = renderMarkdown(doc.content);
+const fmtDate = doc.mtime.toLocaleString('ko-KR', { dateStyle: 'short', timeStyle: 'short' });
+---
+
+<BaseLayout title={slug} activeNav="/browse">
+    <nav class="hq-crumb"><a href="/standards">← Standards</a></nav>
+    <PageHero title={slug} sub={`last modified ${fmtDate}`} />
+    <article class="hq-md" set:html={html}></article>
+</BaseLayout>

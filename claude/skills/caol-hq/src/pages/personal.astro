@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import WidgetGrid from '../components/WidgetGrid.astro';
+import WidgetFrame from '../components/WidgetFrame.astro';
+import EmptyState from '../components/EmptyState.astro';
+---
+
+<BaseLayout title="Personal" activeNav="/personal">
+    <PageHero title="Personal" sub="취미 / 비업무" />
+    <WidgetGrid>
+        <WidgetFrame title="Drinks">
+            <EmptyState>와인 / 위스키 로그 — 마이그레이션 예정</EmptyState>
+        </WidgetFrame>
+        <WidgetFrame title="Gallery">
+            <EmptyState>prompt presets — 마이그레이션 예정</EmptyState>
+        </WidgetFrame>
+        <WidgetFrame title="Invoice">
+            <EmptyState>tutoring invoice — 마이그레이션 예정</EmptyState>
+        </WidgetFrame>
+    </WidgetGrid>
+</BaseLayout>
