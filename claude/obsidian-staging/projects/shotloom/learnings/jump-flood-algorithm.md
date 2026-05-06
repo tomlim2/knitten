@@ -209,37 +209,66 @@ main 3D pass
   - alpha-mask
   - transparent
   ↓
-tonemapping
+tonemapping (HDR → LDR)
   ↓
-post-processing (custom 노드 삽입 위치)
+post-processing
+  - bloom (보통 tonemap 전 또는 후, Bevy 는 보통 후)
+  - DoF
+  - color grading
+  - vignette
+  - FXAA / SMAA
+  - motion blur
   ↓
-upscaling (만약 dynamic resolution)
+upscaling / TAA / DLSS / FSR
   ↓
 output (swap chain 또는 render target)
 ```
 
-JFA outline system 은 **세 단계의 노드**로 분해되어 graph 에 삽입됨:
+### Selection outline 은 *모든 PP 다음*, output 직전이어야 함
+
+shotloom 의 selection outline 은 **scene 의 일부가 아니라 UI/feedback 요소**. 따라서 PP 효과 (bloom, DoF, color grading, vignette, motion blur) 의 영향을 받으면 안 됨:
+
+- **bloom 영향 받으면**: outline 색이 번지듯 발광 — 의도와 다름
+- **DoF 영향 받으면**: 카메라 포커스 밖 캐릭터의 outline 이 흐려짐 — selection 시인성 잃음
+- **color grading 영향 받으면**: 디자인 컬러가 tone-shifted — 빨간 target outline 이 다른 색으로 변할 수 있음
+- **vignette 영향 받으면**: 화면 가장자리의 outline 이 어두워짐
+- **motion blur 받으면**: 빠른 카메라 움직임 시 outline 이 streak — 매우 보기 안 좋음
+- **TAA / 업스케일 받으면**: outline pixel 이 frame 간 누적되어 ghosting / blur — 1px 정밀도 잃음
+
+**모두 다 의도와 정반대**. 따라서:
+
+```
+... → tonemapping → bloom → DoF → color grading → vignette → motion blur → TAA / 업스케일 → [outline composite] → output
+                                                                            ↑
+                                                                  여기 — 모든 PP 후, output 직전
+```
+
+### 렌더 그래프 시각화
 
 ```
 [메인 카메라 서브그래프]
-    ┌────────────────────────┐
-    │  prepass               │
-    │  main 3D pass          │
-    │  tonemapping           │
-    │                        │   ┌─────────────────────────────┐
-    │  outline composite ◄───┼───┤  jfa pass (n 회)            │◄──┐
-    │                        │   │  (별도 render-graph 노드)   │   │
-    │  upscaling             │   └─────────────────────────────┘   │
-    │  output                │                                      │
-    └────────────────────────┘                                      │
-                                                                    │
-[부캐 카메라 서브그래프]                                            │
-    ┌────────────────────────┐                                      │
-    │  mask pass             │                                      │
-    │  (RenderLayers 필터,   ├──────────────────────────────────────┘
-    │   selected 만 단색 또는│  mask texture 전달
-    │   ID color 로 그림)    │
-    └────────────────────────┘
+    ┌──────────────────────────┐
+    │  prepass                 │
+    │  main 3D pass            │
+    │  tonemapping             │
+    │  bloom / DoF / grading / │   ← scene 효과 PP
+    │   vignette / motion blur │
+    │  upscaling / TAA         │   ← 해상도 보정
+    │  ─────────────────────   │
+    │                          │   ┌─────────────────────────────┐
+    │  outline composite ◄─────┼───┤  jfa pass (n 회)            │◄──┐
+    │  (모든 PP 후, output 전) │   │  (별도 render-graph 노드)   │   │
+    │                          │   └─────────────────────────────┘   │
+    │  output                  │                                      │
+    └──────────────────────────┘                                      │
+                                                                      │
+[부캐 카메라 서브그래프]                                              │
+    ┌──────────────────────────┐                                      │
+    │  mask pass               │                                      │
+    │  (RenderLayers 필터,     ├──────────────────────────────────────┘
+    │   selected 만 단색 또는  │  mask texture 전달
+    │   ID color 로 그림)      │
+    └──────────────────────────┘
 ```
 
 ### 단계별 위치
@@ -248,13 +277,24 @@ JFA outline system 은 **세 단계의 노드**로 분해되어 graph 에 삽입
 |---|---|---|
 | **(1) Mask pass** | 부캐 카메라 서브그래프. 메인 카메라보다 앞 또는 병렬 | RenderLayers 로 selected entity 만 필터, offscreen render target 에 단색/ID 로 그림 |
 | **(2) JFA passes** | 메인 카메라 서브그래프 *바깥*, mask pass 후 / outline composite 전. 별도 노드 묶음 | mask 입력 → distance field 출력. log₂(width) 회 ping-pong |
-| **(3) Outline composite** | 메인 카메라 서브그래프, **tonemapping 직후 / upscaling 직전** 권장 | scene color + mask + distance field 읽고 outline 합성 후 main color 텍스처에 다시 씀 |
+| **(3) Outline composite** | 메인 카메라 서브그래프, **모든 PP / 업스케일 후, output 직전** | scene color (이미 모든 PP 거친) + mask + distance field 읽고 outline 합성 후 swap chain 으로 |
 
-### 왜 tonemapping 직후인가
+### Mask pass 의 PP 영향도 차단
 
-- **tonemapping 전에 합성**: outline 색이 tonemap 영향 받음. HDR 색 그라데이션 의도 시 자연스러운 통합. 단 outline 색이 의도한 LDR 색과 약간 달라질 수 있음.
-- **tonemapping 후에 합성** (권장): outline 이 LDR 공간에서 정확한 색. UI / 디버그 visual 처럼 *시각 강조* 가 의도면 이쪽이 깔끔.
-- shotloom 같은 *editor / 시네마 viewer* 는 후자 권장 — selected outline 은 디자인 컬러 그대로 보여야 함.
+Mask pass 자체도 **PP 영향 받지 않아야 함**. 부캐 카메라가 mask 그릴 때:
+
+- HDR 출력 X, 단순 R8 또는 R16 unorm — tonemap 무관
+- 부캐 카메라에 bloom / DoF 등 PP 컴포넌트 안 붙임
+- 부캐 카메라의 서브그래프는 *최소* — main 3D pass 만, PP 단계 모두 skip
+
+이 보장이 있어야 mask 가 *순수 silhouette ID* 로 남음 → JFA 정확.
+
+### 두 곳에서 PP 차단 정리
+
+1. **Mask pass 카메라**: PP 컴포넌트 없음. R8/R16 텍스처에 단순 mesh 색.
+2. **Outline composite 노드**: 메인 그래프의 *모든 PP 노드 다음* edge 로 위치.
+
+이렇게 해야 outline 이 *디자이너가 의도한 정확한 색 / 두께 / pixel-sharp* 로 화면에 출력됨.
 
 ### Bevy API 측면
 
@@ -272,10 +312,11 @@ commands.spawn(Camera3d {
 render_graph.add_node(node::JFA_PASSES, JfaNode::new(11)); // 11 회
 render_graph.add_node_edge(node::MASK_PASS, node::JFA_PASSES);
 
-// 3) Composite 노드 — 메인 카메라의 PP 단계로 삽입
+// 3) Composite 노드 — 모든 PP 후, output 직전에 삽입
 core_3d_subgraph.add_node(node::OUTLINE_COMPOSITE, OutlineCompositeNode);
-core_3d_subgraph.add_node_edge(core_3d::TONEMAPPING, node::OUTLINE_COMPOSITE);
-core_3d_subgraph.add_node_edge(node::OUTLINE_COMPOSITE, core_3d::UPSCALING);
+// 모든 PP 노드 (TONEMAPPING, BLOOM, MOTION_BLUR, FXAA, UPSCALING …) 의 *마지막* 다음에 위치
+core_3d_subgraph.add_node_edge(core_3d::UPSCALING, node::OUTLINE_COMPOSITE);
+// (만약 더 후에 추가될 PP 노드 있으면 그 노드 다음으로 edge 옮김)
 core_3d_subgraph.add_node_edge(node::JFA_PASSES, node::OUTLINE_COMPOSITE);
 ```
 
