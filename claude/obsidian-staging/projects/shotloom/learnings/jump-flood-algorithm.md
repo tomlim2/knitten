@@ -108,6 +108,79 @@ else:                      outline 밖
 - **gradient / glow / fade 가능** — 거리 정보 그대로 사용
 - **둥근 모서리 자연스러움** — distance field 라 stair-step 없음
 
+## 두께 mode — 카메라 거리에 어떻게 반응할까
+
+JFA 결과 `d` 는 *screen 픽셀 단위 거리*. composite shader 에서 mode 분기 한 줄.
+
+### Mode 0 — 카메라 거리 무관 (고정 픽셀 두께, 기본)
+
+```glsl
+uniform float thickness_px;
+if (d < thickness_px) → outline
+```
+
+가까이든 멀리든 화면상 항상 같은 px. UE / Unity 의 selection outline 표준. 시인성 일정.
+
+### Mode 1 — 카메라 거리 비례 (월드 단위 두께)
+
+```glsl
+uniform float thickness_world;
+float view_depth = linearize(texture(depth_tex, uv).r);
+float pixels_per_world_unit = projection_scale_y / view_depth;
+float thickness_px = thickness_world * pixels_per_world_unit;
+if (d < thickness_px) → outline
+```
+
+physical 한 두께. NPR / 셀 셰이딩 outline 이 보통 이 방식. 가까울수록 굵어짐, 멀어질수록 얇아짐.
+
+### Mode 2 — Hybrid (clamp)
+
+```glsl
+float thickness_px = clamp(thickness_world * pixels_per_world_unit, min_px, max_px);
+```
+
+가까워서 화면 덮는 것 방지 (max), 멀어서 안 보이는 것 방지 (min). 가장 실용적.
+
+### Mode 3 — 비선형 (sqrt / power)
+
+```glsl
+// 멀어져도 너무 빨리 안 줄어듦 — 가독성
+float thickness_px = thickness_base * sqrt(reference_depth / view_depth);
+
+// 또는 가까울 때만 굵어지고 중간 거리부터 평탄
+float t = clamp(reference_depth / view_depth, 0.0, 1.0);
+float thickness_px = mix(min_px, max_px, pow(t, 2.0));
+```
+
+### Mode 변경 비용
+
+JFA 패스 자체는 *모드 무관* — 동일하게 distance field 만 만든다. 두께 mode 결정은 *마지막 composite shader* 안 분기:
+
+```glsl
+uniform int thickness_mode;  // 0 fixed, 1 world, 2 hybrid, 3 nonlinear
+uniform float param_a, param_b;
+
+float thickness_px;
+if (thickness_mode == 0)      thickness_px = param_a;
+else if (thickness_mode == 1) thickness_px = param_a * pixels_per_world_unit;
+else if (thickness_mode == 2) thickness_px = clamp(param_a * pixels_per_world_unit, param_b, param_b * 4.0);
+else                          thickness_px = param_a * sqrt(param_b / view_depth);
+```
+
+→ runtime 에 mode toggle 무료. JFA 다시 안 돌려도 됨. mask ID 별 mode 다른 정책도 가능 (selected = fixed, hovered = world unit 등).
+
+### 원근감 강조 응용
+
+거리 fade + 두께 변화 결합:
+
+```glsl
+float depth_factor = clamp(reference_depth / view_depth, 0.0, 1.0);
+float thickness_px = mix(1.0, 5.0, depth_factor);
+float alpha       = mix(0.3, 1.0, depth_factor);
+```
+
+가까우면 진하고 굵음, 멀면 얇고 흐림. 시네마 카메라 깊이감 표현 가능.
+
 ## 비용 분석
 
 - Ping-pong texture 2개 (서로 읽기 / 쓰기 번갈아)
