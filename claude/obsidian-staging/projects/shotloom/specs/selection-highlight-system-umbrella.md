@@ -33,7 +33,7 @@ Linear umbrella issue 등록 전 draft. 본문은 Linear 에 그대로 붙여넣
 
 뷰포트 캐릭터 picking / 선택 동기화 인프라 (selection state, viewport picking 작업) 가 selection state 를 제공하지만, 시각적 피드백이 없어 사용자가 어느 캐릭터가 selected 인지 즉시 파악 어려움.
 
-본 umbrella 는 *selection state 의 시각 표현* 전반을 다룸 — outline 만이 아니라 fill / glow / pulse 까지 같은 시스템 위에서 확장 가능하도록 처음부터 *future-proof 한 아키텍처* 로 설계.
+본 umbrella 는 *selection state 의 시각 표현* 전반을 다룸 — outline 만이 아니라 inside fill 까지 같은 시스템 위에서 확장 가능하도록 처음부터 *future-proof 한 아키텍처* 로 설계.
 
 `selection highlight` 는 art outline (MToon material 자체의 NPR outline) 과 직교 — engine 이 동적으로 그리는 system-level visual feedback.
 
@@ -57,7 +57,7 @@ selected / hovered / target 등 selection state 별 시각 피드백 시스템 l
 [Outline composite]    →  *모든 PP / 업스케일 후, output 직전* 에 main color 위에 합성
 ```
 
-핵심: mask producing 단계 / distance 단계 / composite 단계 분리. *composite backend 만 교체* 가능한 아키텍처 — binary edge → JFA → fill / glow 확장 모두 mask + RenderLayers 인프라 재사용.
+핵심: mask producing 단계 / distance 단계 / composite 단계 분리. *composite backend 만 교체* 가능한 아키텍처 — binary edge → JFA → fill 확장 모두 mask + RenderLayers 인프라 재사용.
 
 ## Bevy 생태계 reuse 검토
 
@@ -96,86 +96,66 @@ App::new()
 
 // entity 에 SelectionHighlight component 만 붙이면 자동 동작
 commands.entity(character).insert(SelectionHighlight {
-    fill: Some(FillSpec { ... }),
     outline: Some(OutlineSpec { ... }),
-    glow: None,
+    fill: None,
 });
 ```
 
-## Phase plan (각 단계가 별도 child issue)
+## Phase plan
 
-### Phase 1 — Selection outline (first variant)
+각 Phase / PR 이름은 *user / design 관점의 capability* 우선. 기술 어휘는 괄호 보조.
 
-**총 작업량**: ~5일 (4 PR 로 분할 권장).
+### Phase 1 — selected 캐릭터를 화면에서 즉시 식별 가능하게
 
-#### PR 분할 (각 PR 이 독립 시각 검증)
+**목적**: 선택된 캐릭터가 어느 것인지 *시각만으로* 즉시 안다. multi-state (selected / hovered / target) 까지 처음부터 구조 갖춤.
 
-| PR | Scope | LOC | 작업일 |
-|---|---|---|---|
-| **1-1: Mask 인프라 (binary)** | `SelectionHighlight` component, RenderLayers propagation, 부캐 카메라, mask texture 자원 관리, 단순 mask material (R=1.0), composite shader (binary 4-tap edge), render graph 노드 등록, `SelectionHighlightPlugin` 골격 | ~500-700 | 2-3일 |
-| **1-2: ID encoding 업그레이드** | `SelectionMaskId(u32)` component, mask material 이 ID/255 출력, composite shader 가 ID 디코드 (현재는 selected 만 분기) | ~150-200 | 1일 |
-| **1-3: STYLES uniform + spec API** | `OutlineSpec` + `ThicknessMode` enum, `FillSpec` / `GlowSpec` stub, STYLES storage buffer, composite shader spec lookup, runtime 색 / 두께 변경 | ~200-300 | 1-2일 |
-| **1-4: Hovered / Target state binding** | `update_mask_id` 우선순위 로직, STYLES 에 hovered / target 슬롯, composite ID 별 분기 | ~100-150 | 1일 |
+**총 작업량**: ~5일 (4 PR 로 분할).
 
-각 PR 의 *독립 시각 검증*:
-- 1-1: selected character 단색 binary outline
-- 1-2: 동일 시각 (내부 ID 인프라 준비)
-- 1-3: outline 색 / 두께 runtime 변경 작동
-- 1-4: 세 상태 동시 / 전환 정상
+#### PR 분할
 
-#### 분할 장점
-
-- 각 PR 독립 시각 검증 — 회귀 / 스크린샷 baseline 박기 쉬움
-- 모바일 budget 측정 *각 단계 누적* — 비용 폭발 추적
-- Reviewer 부담 분산 (~300-500 LOC 가 1500 LOC 보다 훨씬 덜 부담)
-- 디자인 의도 *재평가 기회* — 1-2 이후 멀티 상태 불필요 결정 시 1-3, 1-4 안 해도 됨
+| PR | 이름 | 목적 (이 PR 후 가능해지는 것) | 기술 scope | LOC | 작업일 |
+|---|---|---|---|---|---|
+| **1-1** | 단색 외곽선 표시 인프라 | 한 가지 selection 색으로 캐릭터 silhouette 그림. 멀티 상태 미지원 | `SelectionHighlight` component, RenderLayers propagation, 부캐 카메라, mask texture 자원 관리, 단순 mask material (R=1.0), composite (binary 4-tap edge), render graph 노드 등록, `SelectionHighlightPlugin` 골격 | ~500-700 | 2-3일 |
+| **1-2** | 멀티 상태 식별 인프라 | 시각은 1-1 과 동일하지만 *내부적으로 멀티 상태 인지 준비 완료*. 향후 hovered / target 별 분기 가능 토대 | `SelectionMaskId(u32)` component, mask material ID/255 출력, composite shader ID 디코드 | ~150-200 | 1일 |
+| **1-3** | 색 / 두께 runtime 조정 | 디자이너 / 기획이 코드 빌드 없이 outline 색·두께 변경 가능. spec 기반 설정 | `OutlineSpec` + `ThicknessMode` enum, `FillSpec` stub, STYLES storage buffer, composite spec lookup | ~200-300 | 1-2일 |
+| **1-4** | hovered / target 시각 분기 활성화 | 세 상태 (selected / hovered / target) 가 각자 다른 색·두께로 화면에 즉시 구분됨 | `update_mask_id` 우선순위 로직, STYLES 슬롯, composite ID 별 분기 | ~100-150 | 1일 |
 
 #### Phase 1 전체 Scope (모든 PR 합산)
 
 - `SelectionHighlight` + 관련 component / spec API
-- `FillSpec` / `GlowSpec` enum stub (구현 안 함, 이름 reserve)
+- `SelectionHighlightPlugin` 패키징
+- `FillSpec` enum stub (구현 안 함, 이름 reserve)
 - RenderLayers 자동 propagate 시스템 (자식 mesh 까지)
 - 부캐 카메라 + offscreen mask + binary edge composite 파이프라인
 - `ThicknessMode` 3종 (FixedPixels / WorldUnit / Clamped)
-- 멀티 상태 (selected / hovered / target) 분기 인프라
+- 멀티 상태 (selected / hovered / target) 분기
 - 모바일 / WebGPU / desktop 환경 측정 baseline
 - 자체 구현 (외부 outline crate 의존 0)
 
 **Out of scope of Phase 1**:
-- JFA distance field (Phase 2)
-- Inside fill / glow (Phase 3, 4)
-- Through-wall 옵션 (Phase 5)
+- 두께 5px+ 또는 부드러운 fade (Phase 2)
+- 캐릭터 내부 표시 (Phase 3)
+- 가려진 캐릭터 표시 (Phase 4)
 
-### Phase 2 — JFA distance field (필요 시)
+### Phase 2 — 외곽선 두께 · 품질 향상
+
+**목적**: 두꺼운 outline 또는 둥근 모서리 / fade 가 자연스럽게 표현됨.
 
 **언제**: 디자인이 두께 5px+ / 가변 두께 / 둥근 모서리 / fade 요구 시.
 
-**Scope**:
-- JFA pass 구현 (log₂(width) 회 ping-pong)
-- half-res JFA + bilinear upscale (모바일 default)
-- composite shader 가 binary edge → distance field 기반으로 교체
-- 측정 — 모바일 budget 통과 확인
+**기술 scope**: JFA distance field 도입 (log₂(width) 회 ping-pong), half-res + bilinear upscale (모바일 default), composite shader 가 binary edge → distance field 기반으로 교체, 모바일 budget 측정.
 
-### Phase 3 — Inside fill
+### Phase 3 — 캐릭터 내부 표시
 
-**Scope**:
-- `FillSpec` 구현 (color / alpha / inward_falloff)
-- composite shader 에 inside 분기 추가
-- inward gradient (edge 진하고 안쪽 fade) — JFA distance 활용
+**목적**: selected 캐릭터의 *내부 영역* 도 색 / tint 로 강조. 외곽선 외 추가 시인성 옵션.
 
-### Phase 4 — Glow band
+**기술 scope**: `FillSpec` 구현 (color / alpha / inward_falloff), composite shader 에 inside 분기, inward gradient (edge 진하고 안쪽 fade — JFA distance 활용).
 
-**Scope**:
-- `GlowSpec` 구현 (color / radius / intensity)
-- composite shader 에 glow 분기 추가
-- outline_thickness < d < glow_radius 영역 fade out
+### Phase 4 — 가려진 캐릭터 표시
 
-### Phase 5 — Through-wall option
+**목적**: 다른 mesh 에 가려진 selected 캐릭터도 silhouette 로 보임. 카메라 컴포지션 / 디버깅 보조.
 
-**Scope**:
-- main depth vs selected depth 비교
-- 가려진 영역에도 outline / fill 그릴지 toggle
-- desktop opt-in, 모바일 default off (cost 회피)
+**기술 scope**: main depth vs selected depth 비교, 가려진 영역에도 outline / fill 그릴지 toggle. desktop opt-in, 모바일 default off (cost 회피).
 
 ## Cost / Performance Plan
 
@@ -233,7 +213,7 @@ Phase 1 land 만으로 umbrella close 가능 (확장은 별도 후속). Phase 1 
 ## 등록 전 체크
 
 - [ ] Title / scope 본인 의도와 일치 확인
-- [ ] Phase plan 5단계 합리적인지 검토 (Phase 1 = PR 4개 분할) — Phase 합치기 / 쪼개기 의견 있는지
+- [ ] Phase plan 4단계 합리적인지 검토 (Phase 1 = PR 4개 분할) — Phase 합치기 / 쪼개기 의견 있는지
 - [ ] Priority Medium 적정한지 (alpha 우선순위에 따라 High / Low 조정 가능)
 - [ ] Parent 결정 — top-level umbrella vs selection state sync child
 - [ ] AC Phase 1 종료 기준 동의
@@ -247,4 +227,4 @@ Phase 1 land 만으로 umbrella close 가능 (확장은 별도 후속). Phase 1 
 ### 사이드 노트
 
 - spec 파일 자체는 Linear 등록 후 *삭제* 해도 됨 — Linear umbrella 가 SSOT 가 되니 vault 측 spec 은 중복. 단 *linkable 한 url* 이 필요한 디자인 / 기획 협업 단계에선 vault 에도 두는 게 편할 수 있음
-- Phase 가 5단계 (Phase 1 = PR 4개 분할) — Phase 1 만 land 해도 umbrella close 가능. 후속 Phase 는 디자인 의도 / 모바일 측정 결과 따라 *조건부 진행*
+- Phase 가 4단계 (Phase 1 = PR 4개 분할) — Phase 1 만 land 해도 umbrella close 가능. 후속 Phase 는 디자인 의도 / 모바일 측정 결과 따라 *조건부 진행*
