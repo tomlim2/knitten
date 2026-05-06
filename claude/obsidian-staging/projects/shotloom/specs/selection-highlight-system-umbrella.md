@@ -59,24 +59,92 @@ selected / hovered / target 등 selection state 별 시각 피드백 시스템 l
 
 핵심: mask producing 단계 / distance 단계 / composite 단계 분리. *composite backend 만 교체* 가능한 아키텍처 — binary edge → JFA → fill / glow 확장 모두 mask + RenderLayers 인프라 재사용.
 
+## Bevy 생태계 reuse 검토
+
+| Plugin | 상태 | 우리 의도 매치? |
+|---|---|---|
+| `bevy_mod_outline` 0.12.0 | maintained, Bevy 0.18 | ✗ inverted hull (안쪽 노이즈). JFA mode experimental. selection state 관리 없음 |
+| `bevy_outliner` | abandoned | ✗ |
+| `bevy_mod_picking` | Bevy 0.18 core | △ picking 만, outline 안 그림 |
+| 자체 JFA outline crate | 없음 | ✗ |
+
+→ **production-ready selection highlight crate 없음**. Bevy 철학상 *low-level plumbing* (RenderLayers, RenderGraph, Material, FullscreenMaterial) 만 native 제공, *high-level feature* 는 user 책임. Unity URP / UE 의 "Selection Outline 체크박스" 같은 건 부재.
+
+작업량 vs Unity / UE 비교:
+
+| 엔진 | "Selection outline" 작업 시간 |
+|---|---|
+| Unity URP | Renderer Feature + Outline shader graph → 1-2일 |
+| UE 5 | PostProcess Material + Custom Stencil → 1일 |
+| **Bevy 0.18** | 자체 구현 → 3-5일 |
+
+Bevy 선택의 trade-off — high-level feature 부재의 비용 약 3-5배. 보상은 *모든 코드 우리 소유 + 디자인 자유 + 모바일 최적화 자체 결정*.
+
+## Plugin 패키징
+
+위치: `crates/shotloom-engine/src/render/selection_highlight/` 모듈로 시작. `SelectionHighlightPlugin` Bevy plugin trait 으로 노출. workspace 안에서 `add_plugins(SelectionHighlightPlugin)` 한 줄로 활성화.
+
+향후 재사용 가치 명확해지면 별도 crate 분리 (`shotloom-selection-highlight`). 외부 공개는 그 다음 단계 — *현재 PR 범위 외*.
+
+API 외형:
+
+```rust
+App::new()
+    .add_plugins(DefaultPlugins)
+    .add_plugins(SelectionHighlightPlugin)
+    .run();
+
+// entity 에 SelectionHighlight component 만 붙이면 자동 동작
+commands.entity(character).insert(SelectionHighlight {
+    fill: Some(FillSpec { ... }),
+    outline: Some(OutlineSpec { ... }),
+    glow: None,
+});
+```
+
 ## Phase plan (각 단계가 별도 child issue)
 
 ### Phase 1 — Selection outline (first variant)
 
-**Scope**:
-- `SelectionHighlight` component + `OutlineSpec` + `ThicknessMode` API 도입
-- `FillSpec` / `GlowSpec` enum stub (구현 안 함, 이름만 reserve)
+**총 작업량**: ~5일 (4 PR 로 분할 권장).
+
+#### PR 분할 (각 PR 이 독립 시각 검증)
+
+| PR | Scope | LOC | 작업일 |
+|---|---|---|---|
+| **1-1: Mask 인프라 (binary)** | `SelectionHighlight` component, RenderLayers propagation, 부캐 카메라, mask texture 자원 관리, 단순 mask material (R=1.0), composite shader (binary 4-tap edge), render graph 노드 등록, `SelectionHighlightPlugin` 골격 | ~500-700 | 2-3일 |
+| **1-2: ID encoding 업그레이드** | `SelectionMaskId(u32)` component, mask material 이 ID/255 출력, composite shader 가 ID 디코드 (현재는 selected 만 분기) | ~150-200 | 1일 |
+| **1-3: STYLES uniform + spec API** | `OutlineSpec` + `ThicknessMode` enum, `FillSpec` / `GlowSpec` stub, STYLES storage buffer, composite shader spec lookup, runtime 색 / 두께 변경 | ~200-300 | 1-2일 |
+| **1-4: Hovered / Target state binding** | `update_mask_id` 우선순위 로직, STYLES 에 hovered / target 슬롯, composite ID 별 분기 | ~100-150 | 1일 |
+
+각 PR 의 *독립 시각 검증*:
+- 1-1: selected character 단색 binary outline
+- 1-2: 동일 시각 (내부 ID 인프라 준비)
+- 1-3: outline 색 / 두께 runtime 변경 작동
+- 1-4: 세 상태 동시 / 전환 정상
+
+#### 분할 장점
+
+- 각 PR 독립 시각 검증 — 회귀 / 스크린샷 baseline 박기 쉬움
+- 모바일 budget 측정 *각 단계 누적* — 비용 폭발 추적
+- Reviewer 부담 분산 (~300-500 LOC 가 1500 LOC 보다 훨씬 덜 부담)
+- 디자인 의도 *재평가 기회* — 1-2 이후 멀티 상태 불필요 결정 시 1-3, 1-4 안 해도 됨
+
+#### Phase 1 전체 Scope (모든 PR 합산)
+
+- `SelectionHighlight` + 관련 component / spec API
+- `FillSpec` / `GlowSpec` enum stub (구현 안 함, 이름 reserve)
 - RenderLayers 자동 propagate 시스템 (자식 mesh 까지)
 - 부캐 카메라 + offscreen mask + binary edge composite 파이프라인
 - `ThicknessMode` 3종 (FixedPixels / WorldUnit / Clamped)
+- 멀티 상태 (selected / hovered / target) 분기 인프라
 - 모바일 / WebGPU / desktop 환경 측정 baseline
 - 자체 구현 (외부 outline crate 의존 0)
 
 **Out of scope of Phase 1**:
 - JFA distance field (Phase 2)
 - Inside fill / glow (Phase 3, 4)
-- Hovered / Target 상태 (Phase 5)
-- Through-wall 옵션 (Phase 6)
+- Through-wall 옵션 (Phase 5)
 
 ### Phase 2 — JFA distance field (필요 시)
 
@@ -102,14 +170,7 @@ selected / hovered / target 등 selection state 별 시각 피드백 시스템 l
 - composite shader 에 glow 분기 추가
 - outline_thickness < d < glow_radius 영역 fade out
 
-### Phase 5 — Hovered / Target 상태
-
-**Scope**:
-- mask 가 binary → ID color (selected=1, hovered=2, target=3)
-- composite shader 에 state ID 분기 — 상태별 spec lookup
-- prefab 예시: selected = outline + 약한 fill, hovered = outline only, target = outline + fill + glow
-
-### Phase 6 — Through-wall option
+### Phase 5 — Through-wall option
 
 **Scope**:
 - main depth vs selected depth 비교
@@ -172,7 +233,7 @@ Phase 1 land 만으로 umbrella close 가능 (확장은 별도 후속). Phase 1 
 ## 등록 전 체크
 
 - [ ] Title / scope 본인 의도와 일치 확인
-- [ ] Phase plan 6단계 합리적인지 검토 — Phase 합치기 / 쪼개기 의견 있는지
+- [ ] Phase plan 5단계 합리적인지 검토 (Phase 1 = PR 4개 분할) — Phase 합치기 / 쪼개기 의견 있는지
 - [ ] Priority Medium 적정한지 (alpha 우선순위에 따라 High / Low 조정 가능)
 - [ ] Parent 결정 — top-level umbrella vs selection state sync child
 - [ ] AC Phase 1 종료 기준 동의
@@ -186,4 +247,4 @@ Phase 1 land 만으로 umbrella close 가능 (확장은 별도 후속). Phase 1 
 ### 사이드 노트
 
 - spec 파일 자체는 Linear 등록 후 *삭제* 해도 됨 — Linear umbrella 가 SSOT 가 되니 vault 측 spec 은 중복. 단 *linkable 한 url* 이 필요한 디자인 / 기획 협업 단계에선 vault 에도 두는 게 편할 수 있음
-- Phase 가 6개로 많아 보이지만 — Phase 1 만 first PR 으로 ship 하면 umbrella close 가능. 후속 Phase 는 디자인 의도 / 모바일 측정 결과 따라 *조건부 진행*
+- Phase 가 5단계 (Phase 1 = PR 4개 분할) — Phase 1 만 land 해도 umbrella close 가능. 후속 Phase 는 디자인 의도 / 모바일 측정 결과 따라 *조건부 진행*
