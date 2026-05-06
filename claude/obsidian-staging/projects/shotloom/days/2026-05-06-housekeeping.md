@@ -209,3 +209,65 @@ STL-180 의 핵심 결정 — *"demo/debug action 제거 vs 별도 dev surface �
 
 > [!tip] router 도입은 *STL-180 의 enabler*
 > demo/debug action 을 *어디 격리할지* 의 가장 깔끔한 답이 `/debug` route. router 자체가 architecture 결정 (ADR 가치) 라 별도 issue 가치 — STL-180 의 dependency 로 묶임.
+
+### 추가 통찰 — router 를 *UI layer 에만* 걸면 Bevy persistent + 다중 view mode
+
+router 가 React 트리만 흔들고 *Bevy canvas 는 지속* 시키면, 같은 scene 을 여러 모드로 조작 가능:
+
+```
+URL change → React route change → React UI 재배열
+                                      ↓
+                              bridge command 발행
+                                      ↓
+                     Bevy 는 지속 — scene 재로드 0, state 보존
+```
+
+#### 효과
+
+- **Scene state 보존** — URL 바뀌어도 캐릭터 / animation / camera state 그대로
+- **VRM 재로드 0** — Bevy asset cache 효율
+- **Deep link** — `/character/abc123` 공유 시 selected + framed 상태로 진입
+- **Browser back/forward** — undo/redo 와 별개의 navigation history
+- **URL → bridge command 매핑** — route param 이 SelectEntities / SetTransform 등으로
+- **모드 자연 분리** — Editor / Preview / Capture / Debug 가 같은 scene 다른 UI affordance
+
+#### 구현 패턴
+
+```tsx
+function App() {
+  return (
+    <>
+      <BevyCanvas />            {/* persistent — router 영향 0 */}
+      <Routes>
+        <Route path="/" element={<EditorUI />} />
+        <Route path="/preview" element={<PreviewUI />} />
+        <Route path="/character/:id" element={<CharacterUI />} />
+        <Route path="/screenshot" element={<ScreenshotUI />} />
+        <Route path="/debug/*" element={<DebugUI />} />
+      </Routes>
+    </>
+  );
+}
+
+function CharacterUI() {
+  const { id } = useParams();
+  useEffect(() => {
+    bridge.send({ type: "SelectEntities", ids: [id] });
+    bridge.send({ type: "FrameCharacter", id });
+  }, [id]);
+  return <CharacterInspector id={id} />;
+}
+```
+
+#### 추가 use case
+
+| 시나리오 | URL | 효과 |
+|---|---|---|
+| 캐릭터 공유 | `/character/abc123` | 받는 사람 그 캐릭터 selected + framed 즉시 |
+| Shot jump | `/shot/scene1-shot3` | timeline + camera 그 shot 으로 |
+| 클린 스크린샷 | `/screenshot` | 모든 UI off, 깔끔 capture |
+| 디버그 overlay | `/debug/wireframe` | 와이어프레임 + diagnostic |
+| Performance 모드 | `/preview?perf=1` | UI 최소 + perf 표시 |
+
+> [!abstract] Rule
+> Editor + 3D canvas 앱에서 router 는 *UI layer 에만* 두고 canvas 는 root 에 persistent mount. URL 은 *UI 트리 + bridge command* 만 흔들어 scene state 를 보존. 모드 전환 cost 0, deep link / 공유 자연. #rule
