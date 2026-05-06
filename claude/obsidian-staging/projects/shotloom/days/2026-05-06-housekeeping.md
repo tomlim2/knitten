@@ -127,3 +127,28 @@ Non-Goals:
 
 > [!abstract] Rule
 > alpha / 마일스톤 scope 결정 시 *그 마일스톤의 PRD / 스펙 문서를 SSOT* 로. issue 작성자의 직관 / 추측이 아니라 명시 문서가 결정 기준. PRD 에 있어야 in scope, 명시 없으면 defer 안전. shotloom 의 `docs/specs/product-requirements-alpha.md` 가 그 SSOT. #rule
+
+## 마감 — 알파 시점 retarget 작업 사실상 종료
+
+Linear 점검 결과:
+
+| 입장 | 상태 |
+|---|---|
+| In Progress | STL-260 (parent), STL-276 (PR #228 작업) |
+| Open PR | #228 (STL-276), #236 (wrist basis correction) — 둘 다 mergeable |
+| Backlog 의 알파 이슈 | 없음. 전부 alpha 후 / Low priority refactor / doc |
+
+→ **남은 알파 retarget 작업 = PR #228 + PR #236 land 만**. 그 두 PR 머지되면 alpha retarget scope 완료. 다른 deemo 알파 차단 요소 없음.
+
+오늘 한 일 압축:
+
+1. 워크트리 / 브랜치 29개 정리 (오전)
+2. Selection highlight 심층 설계 + 알파 PRD 정합 확인 → 알파 후 defer 확정 (오후)
+3. Post-PP overlay foundation 발견 + priority inversion 학습 정리
+4. Learnings 6개 + spec draft 1개 + skill (`dev-ask-codex`) 패턴 정립
+5. Linear 두 umbrella 등록 (둘 다 alpha 후 Low priority Backlog)
+
+> [!tip] *알파 차단 요소 없는 시점* 이 발견되면 우선 휴식 / 컨텍스트 리셋이 정답
+> 무리한 추가 작업으로 backlog 늘리기보단 *진행 중인 PR 응대 + 휴식* 이 다음 work session 의 처리량을 더 크게 만든다. 오늘 작업도 architecture 결정 / learning 정리 위주라 머리 많이 쓴 날 — 이런 날은 휴식의 가치 큼.
+
+다음 session 진입 시: PR #228 / #236 review 응대로 시작 → alpha retarget 완료.
