@@ -81,3 +81,49 @@ Bevy 0.18 selection highlight (선택 캐릭터 시각 피드백) 시스템 umbr
 
 - glow 효과 dropping 도 *디자인 의도 한 번 확인* 으로 작업량 ~1일 줄임. *추측 design 으로 Phase 짜는 위험* 의 명확한 사례
 - Codex 질문 패턴 정립 — 짧고 *project-agnostic* 한 질문 + `--sandbox read-only --skip-git-repo-check` flag + `cd /tmp` 로 1분 내 응답. dev-ask-codex skill 에 정식화
+
+## 최종 결정 — alpha 시점 두 작업 모두 defer
+
+코드 audit + 디자인 의도 / alpha scope 재검토 결과:
+
+| Issue | 상태 | 결정 근거 |
+|---|---|---|
+| selection highlight (silhouette outline) | Backlog Low priority, alpha 후 재검토 | 현재 ring 형 `SelectionOutline` 으로 alpha selection UX 충족. silhouette outline 은 alpha 의도 외 |
+| post-PP overlay infrastructure | Backlog Low priority, alpha 후 재검토 | alpha 시점 PP 효과 활성화 제한적. transform gizmo + ring 이 *시각적으로 동작은 함* — alpha scope 에서 PP-immune 미보장 미감내 가능. silhouette / 3D 텍스트 같은 진짜 PP-immune consumer 가 들어올 때 도입 |
+
+→ 둘 다 *alpha 차단 요소 아님*. alpha 후 *진짜 필요해질 때* 진행. 그동안:
+- 디자인팀이 ring 만으로 selection 시각 충분한지 사용 후 재평가
+- alpha 진행하며 PP 효과 활성화 후 transform gizmo / ring 시각 깨지는지 모니터
+- 진짜 필요 신호 보이면 priority 재상향
+
+**오늘 작업 산출물**:
+- 코드 audit 으로 *기존 SelectionOutline (ring) 발견* — framing 정정
+- *Priority inversion* 학습 (post-pp-overlay-as-foundation.md)
+- 두 umbrella issue 등록 (보류 / Low priority 상태)
+- 5+ learnings + spec draft 보존 — alpha 후 재개 시 즉시 사용 가능
+
+> [!tip] alpha scope 결정의 핵심 질문 — *"이거 없으면 alpha 가 동작 안 하는가?"*
+> 동작하는데 *덜 좋은 정도* 면 보통 defer 가능. 실제 동작 차단 요소만 alpha 우선순위. 본 작업처럼 silhouette outline + post-PP overlay 둘 다 *현재 ring + transform gizmo 로 동작은 하니* defer 가능. alpha 후 *진짜 필요* 가 명확해지면 빠르게 재개.
+
+### Alpha scope 정식 확인 — `docs/specs/product-requirements-alpha.md`
+
+repo 의 alpha PRD 가 이 결정을 뒷받침:
+
+In scope (selection / 시각 관련):
+- React + TypeScript editor shell
+- Up to 3 VRM 1.0 characters on void stage
+- Multicam 카메라 클립 편집
+- Real-time preview / scrubbing
+- Chrome stable + WebGPU
+- "void stage with stable spatial reference and mood-lighting baseline"
+
+Non-Goals:
+- Particle / VFX systems
+- Unreal-quality render parity
+- (PP 효과 / bloom / DoF / motion blur 명시 없음 — alpha scope 외)
+- (Selection highlight silhouette / outline 명시 없음 — alpha scope 외)
+
+→ silhouette outline + post-PP overlay 둘 다 *알파 PRD 와 일치하지 않음*. 현재 ring + transform gizmo 가 alpha selection UX 충족. **PP 효과 자체가 alpha in-scope 가 아니라 PP-immune 보장도 alpha 에 무관**. 두 issue defer 결정 정합.
+
+> [!abstract] Rule
+> alpha / 마일스톤 scope 결정 시 *그 마일스톤의 PRD / 스펙 문서를 SSOT* 로. issue 작성자의 직관 / 추측이 아니라 명시 문서가 결정 기준. PRD 에 있어야 in scope, 명시 없으면 defer 안전. shotloom 의 `docs/specs/product-requirements-alpha.md` 가 그 SSOT. #rule
