@@ -1,5 +1,5 @@
 ---
-title: "Selection highlight system — outline + inside fill + glow 통합 설계"
+title: "Selection highlight system — outline + inside fill 통합 설계"
 tags:
   - type/learning
   - project/shotloom
@@ -9,7 +9,10 @@ date: 2026-05-06
 source: claude-code
 ---
 
-# Selection highlight system — outline + inside fill + glow 통합 설계
+# Selection highlight system — outline + inside fill 통합 설계
+
+> [!info] 2026-05-06 업데이트
+> 디자인 의도 확정 결과 *glow 효과* 는 제외. 이 노트는 *outline + fill 의 distance-field 기반 통합 설계* 를 다룸. glow 관련 절은 *향후 필요 시 추가 가능한 reference* 로 보존 (현재 scope 외).
 
 JFA 기반 outline 파이프라인 (RenderLayers + offscreen mask + JFA distance field + composite) 위에서 **outline / inside fill / glow** 를 한 system 으로 묶는 설계. 첫 PR 은 outline 만 land 하더라도 *처음부터 확장성 염두* 에 두면 추후 디자인 변경 시 plumbing 재작업 0.
 
