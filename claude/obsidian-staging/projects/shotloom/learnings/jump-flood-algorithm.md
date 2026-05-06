@@ -195,6 +195,102 @@ float alpha       = mix(0.3, 1.0, depth_factor);
 - Selected entity bounds 기반 partial mask → screen 일부만 처리
 - Mip-mapping 활용 — 일부 변형이 mip pyramid 로 동등 효과
 
+## 렌더 파이프라인 어디에 들어가나 (Bevy 0.18)
+
+Bevy 의 render graph 는 카메라마다 서브그래프를 가짐. 메인 카메라의 표준 3D 서브그래프 순서:
+
+```
+camera 시작
+  ↓
+prepass  (depth-only / normal-only — optional)
+  ↓
+main 3D pass
+  - opaque
+  - alpha-mask
+  - transparent
+  ↓
+tonemapping
+  ↓
+post-processing (custom 노드 삽입 위치)
+  ↓
+upscaling (만약 dynamic resolution)
+  ↓
+output (swap chain 또는 render target)
+```
+
+JFA outline system 은 **세 단계의 노드**로 분해되어 graph 에 삽입됨:
+
+```
+[메인 카메라 서브그래프]
+    ┌────────────────────────┐
+    │  prepass               │
+    │  main 3D pass          │
+    │  tonemapping           │
+    │                        │   ┌─────────────────────────────┐
+    │  outline composite ◄───┼───┤  jfa pass (n 회)            │◄──┐
+    │                        │   │  (별도 render-graph 노드)   │   │
+    │  upscaling             │   └─────────────────────────────┘   │
+    │  output                │                                      │
+    └────────────────────────┘                                      │
+                                                                    │
+[부캐 카메라 서브그래프]                                            │
+    ┌────────────────────────┐                                      │
+    │  mask pass             │                                      │
+    │  (RenderLayers 필터,   ├──────────────────────────────────────┘
+    │   selected 만 단색 또는│  mask texture 전달
+    │   ID color 로 그림)    │
+    └────────────────────────┘
+```
+
+### 단계별 위치
+
+| 단계 | 그래프 위치 | 역할 |
+|---|---|---|
+| **(1) Mask pass** | 부캐 카메라 서브그래프. 메인 카메라보다 앞 또는 병렬 | RenderLayers 로 selected entity 만 필터, offscreen render target 에 단색/ID 로 그림 |
+| **(2) JFA passes** | 메인 카메라 서브그래프 *바깥*, mask pass 후 / outline composite 전. 별도 노드 묶음 | mask 입력 → distance field 출력. log₂(width) 회 ping-pong |
+| **(3) Outline composite** | 메인 카메라 서브그래프, **tonemapping 직후 / upscaling 직전** 권장 | scene color + mask + distance field 읽고 outline 합성 후 main color 텍스처에 다시 씀 |
+
+### 왜 tonemapping 직후인가
+
+- **tonemapping 전에 합성**: outline 색이 tonemap 영향 받음. HDR 색 그라데이션 의도 시 자연스러운 통합. 단 outline 색이 의도한 LDR 색과 약간 달라질 수 있음.
+- **tonemapping 후에 합성** (권장): outline 이 LDR 공간에서 정확한 색. UI / 디버그 visual 처럼 *시각 강조* 가 의도면 이쪽이 깔끔.
+- shotloom 같은 *editor / 시네마 viewer* 는 후자 권장 — selected outline 은 디자인 컬러 그대로 보여야 함.
+
+### Bevy API 측면
+
+```rust
+// 1) Mask 카메라 spawn — 메인 카메라와 동일 transform/projection 추적, 별도 layer
+commands.spawn(Camera3d {
+    target: RenderTarget::Image(mask_texture.clone()),
+    render_layers: RenderLayers::layer(SELECTION_MASK_LAYER),
+    // order: -1 → 메인 카메라보다 먼저 실행
+    order: -1,
+    ...
+});
+
+// 2) JFA 노드 — 별도 sub-graph 또는 메인 그래프의 노드들로 추가
+render_graph.add_node(node::JFA_PASSES, JfaNode::new(11)); // 11 회
+render_graph.add_node_edge(node::MASK_PASS, node::JFA_PASSES);
+
+// 3) Composite 노드 — 메인 카메라의 PP 단계로 삽입
+core_3d_subgraph.add_node(node::OUTLINE_COMPOSITE, OutlineCompositeNode);
+core_3d_subgraph.add_node_edge(core_3d::TONEMAPPING, node::OUTLINE_COMPOSITE);
+core_3d_subgraph.add_node_edge(node::OUTLINE_COMPOSITE, core_3d::UPSCALING);
+core_3d_subgraph.add_node_edge(node::JFA_PASSES, node::OUTLINE_COMPOSITE);
+```
+
+(Bevy 0.18 의 새 `FullscreenMaterial` API 가 이 fullscreen PP 노드 작성을 더 짧게 만들어줌.)
+
+### Forward / Deferred 의존성
+
+- JFA 노드와 outline composite 는 **메인 파이프라인 종류 무관**. forward / deferred 어느 쪽이든 *최종 color 텍스처와 mask texture 만 있으면* 작동
+- mask pass 도 forward / deferred 무관 — 단순 mesh 그리기, 단색 출력
+- 메인 파이프라인이 deferred 로 바뀌어도 outline 코드 0줄 변경
+
+### 멀티 카메라 / split-screen
+
+각 카메라가 자기 mask + JFA + composite 의 사본을 가짐. 카메라마다 selected entity 가 다를 수 있음 (예: viewport 와 inspector preview). 단 비용은 카메라 수 × JFA 비용 → split-screen 에서 부담 크면 mask + JFA 공유 후 composite 만 카메라별 분리하는 최적화 가능.
+
 ## 어디서 쓰이나
 
 - **Outline** — Unity Quick Outline, Unreal Niagara outline material, Bevy `bevy_mod_outline` `OutlineMode::FloodFlat`
