@@ -152,3 +152,60 @@ Linear 점검 결과:
 > 무리한 추가 작업으로 backlog 늘리기보단 *진행 중인 PR 응대 + 휴식* 이 다음 work session 의 처리량을 더 크게 만든다. 오늘 작업도 architecture 결정 / learning 정리 위주라 머리 많이 쓴 날 — 이런 날은 휴식의 가치 큼.
 
 다음 session 진입 시: PR #228 / #236 review 응대로 시작 → alpha retarget 완료.
+
+## 뇌내 망상 — frontend router 도입
+
+휴식 모드 진입 직전 brainstorm. STL-180 (editor shell demo/debug action 정리) 의 자연스러운 enabler 로 *frontend router 도입* 검토.
+
+### 가치
+
+- **Deep linking** — bookmark / 공유 시 특정 shot / frame / 상태
+- **Browser back/forward** — 자연스러운 navigation
+- **Code splitting** — route 별 lazy-load 로 초기 bundle 줄임 (alpha PRD §14.1 "WASM bundle <30MB gzipped" target 도움)
+- **State separation** — 각 route 가 자기 component tree 소유
+- **Dev / debug surface 분리** — `/debug` route 에 demo action 격리 → 일반 user 미접근
+
+### Route 구조 후보
+
+```
+/                  ← editor (alpha 본진)
+/preview           ← playback / scrubbing
+/projects          ← 번들 picker
+/export            ← export flow
+
+/debug             ← dev-only surface (STL-180 demo/debug 흡수)
+  /debug/bridge    ← Ping, Random Color
+  /debug/spawn     ← debug spawn affordance
+  /debug/inspector ← bridge-oriented inspector
+```
+
+### STL-180 과의 연결
+
+STL-180 의 핵심 결정 — *"demo/debug action 제거 vs 별도 dev surface 분리"*. router 가 *별도 dev surface* 의 자연스러운 vehicle. 즉 router 도입 = STL-180 의 깔끔한 해결책.
+
+### Router 후보 비교
+
+| 후보 | 적합성 |
+|---|---|
+| React Router v6 | 표준, friction 낮음, ~10KB |
+| TanStack Router | TS 타입 안전 + 모던, 학습 곡선 있음, file-based routing |
+| Wouter | minimal ~1KB, features 부족 |
+| 자체 minimal | deps 0, 작업량 vs 가치 의문 |
+
+프론트엔드 출신 deemo 가 진행 시 **TanStack Router** (TS 친화) 또는 **React Router v6** (안전책).
+
+### Alpha PRD 정합
+
+- §4 "React + TypeScript editor shell" 의 *implementation choice* 로 자연스럽게 in-scope 가능
+- non-goals 에 router / SPA 명시 없음
+- 단 *반드시* 들어가야 하는 건 아니라 우선순위 Low / Medium 으로 시작
+
+### 다음 액션 (다음 session)
+
+1. 짧은 *spec draft* 옵시디언 에 작성
+2. PRD 정합 재검토, in-scope 강도 판단
+3. 별도 Linear issue 작성 + STL-180 의 dependency 로 연결
+4. STL-180 의 solution 도 같이 정리
+
+> [!tip] router 도입은 *STL-180 의 enabler*
+> demo/debug action 을 *어디 격리할지* 의 가장 깔끔한 답이 `/debug` route. router 자체가 architecture 결정 (ADR 가치) 라 별도 issue 가치 — STL-180 의 dependency 로 묶임.
