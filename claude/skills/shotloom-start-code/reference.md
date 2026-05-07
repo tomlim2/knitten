@@ -43,7 +43,7 @@ Linear title `test(retarget): 4-finger alignment baseline — xiao + yoya`:
 - subject → `finger-baseline-xiao-yoya`
 
 Branch: `feat/retarget-verify-finger-baseline-xiao-yoya` (45 chars).
-Worktree dir: `.worktrees/stl-246-retarget-verify-finger-baseline-xiao-yoya/` (same body, `stl-NN-` prefix).
+Worktree dir: `.worktrees/retarget-verify-finger-baseline-xiao-yoya/` (same body as branch, **no `stl-NN-` prefix** — Linear IDs appear in neither branch nor local worktree paths).
 
 ## Create worktree — single-branch fallback
 

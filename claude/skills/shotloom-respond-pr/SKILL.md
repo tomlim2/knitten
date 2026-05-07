@@ -177,6 +177,20 @@ Order matters: gates first, then commit, then push, then PR body. Updating the P
 
 ### Step 6: Post inline replies + queue reviewer re-request (MUST get approval)
 
+**Re-fetch before posting (mandatory, no exceptions).** Step 2 ran when the skill was first invoked. Step 6 posting can land 30+ minutes later (smoke testing, drafting, codex consultation, user back-and-forth). In that window the reviewer can land **new inline threads** that the original Step 2 cache does not see. Posting against a stale cache means leaving fresh inline threads unanswered → reviewer flips state to `CHANGES_REQUESTED` immediately after your reply because their threads still look ignored.
+
+Right before drafting / posting, run:
+
+```bash
+gh api "repos/CINEV/shotloom/pulls/${ARGUMENTS}/comments" > "/tmp/pr${ARGUMENTS}-comments.json"
+gh api "repos/CINEV/shotloom/pulls/${ARGUMENTS}/reviews" > "/tmp/pr${ARGUMENTS}-reviews.json"
+gh pr view "$ARGUMENTS" --json reviewRequests,reviewDecision > "/tmp/pr${ARGUMENTS}-view.json"
+```
+
+Compare the new comment id set to whatever you classified in Step 2.5. Any id present now but missing then is a fresh thread that has to enter the Step 4 → Step 4.5 → Step 6 flow before any reply goes out. If the diff is non-empty, restart Step 2.5 / Step 3 listing for the new ids; do **not** post the prepared replies until every current inline id has a queued reply.
+
+PR #253 round 1 (2026-05-07) trigger — main review at 02:01 had 0 inline; second review at 02:09 added 11 inline comments; reply was drafted off the 02:01 cache and posted at 02:44 without those 11 threads addressed; reviewer flipped to `CHANGES_REQUESTED` at 02:46. Re-fetch before posting would have caught it.
+
 **Reply discipline (same negative checklist as `shotloom-make-pr` Step 5):**
 
 - Inputs for the reply text: only the diff of your fix commit + the reviewer's specific comment. Do NOT echo the reviewer's tone or wording back; do NOT pull context from past PRs, the Linear issue body, sibling PRs, `.agent/`, or `reference.md`.

@@ -61,7 +61,7 @@ Skip if the current branch already matches the Linear issue. Otherwise:
    - Example: Linear `test(retarget): 4-finger alignment baseline — xiao + yoya` → `feat/retarget-verify-finger-baseline-xiao-yoya`.
    - Linear's `gitBranchName` field (`deemo/stl-NN-…`) is a UI hint — ignore it.
 3. **Worktree base:** prefer `.worktrees/` if gitignored, else `<parent>/shotloom-worktrees/`. For Shotloom today this is `<shotloom>/.worktrees/`.
-4. **Worktree dir name:** `<worktree_base>/stl-<NN>-<scope>-<verb>-<subject>` — same kebab body as the branch with `stl-<NN>-` prefix prepended for local-path identification (worktree dir is local-only, never pushed; not a repo rule).
+4. **Worktree dir name:** `<worktree_base>/<scope>-<verb>-<subject>` — same kebab body as the branch, **no `stl-NN-` prefix**. Consistent with the branch-naming rule: Linear IDs appear in neither branch names nor local worktree paths. Linear's `gitBranchName` field is a UI hint, ignored here too.
 5. **Create from latest `origin/main`:**
    ```bash
    cd "$shotloom_root"

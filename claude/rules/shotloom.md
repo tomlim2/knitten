@@ -76,6 +76,13 @@ Author-side flow: `/shotloom-make-pr` Step 10c.
 
 Each subfolder has a `README.md` declaring its audience, style, and mutability. Per-folder README wins over this table when they disagree. Style policy: `~/.claude/standards/obsidian/vault-audience.md`.
 
+## Worktree dir naming
+
+- **No `stl-NN-` prefix in the worktree dir path.** Use `<worktree_base>/<scope>-<verb>-<subject>` — same kebab body as the branch (which also has no STL-NN per `CONTRIBUTING.md` Branch Naming Policy).
+- Linear IDs do not appear in branch names, worktree dir paths, or PR titles. They appear only in PR description footers (`Resolves STL-NN` / `Part of STL-NN`) and in commit footers when relevant.
+- Linear's auto-suggested `gitBranchName` (`deemo/stl-NN-…`) is a UI hint only — never used as the actual branch or directory name.
+- Example: branch `feat/retarget-canonicalize-thumb-chain` → worktree dir `.worktrees/retarget-canonicalize-thumb-chain/`.
+
 ## File naming convention
 
 - **Filename = slug only — never repeat the folder, project, or type in the name.**
