@@ -13,6 +13,7 @@ Each rule declares `load:` in its frontmatter. **Auto** = always in cold-start c
 | [`source-of-truth-first.md`](source-of-truth-first.md) | auto | Meta — when you see a pattern (suffix/prefix/term), grep the skill/standard that defines it before mimicking |
 | [`git-defaults.md`](git-defaults.md) | auto | No auto-push / no Co-Authored-By / author identity |
 | [`behavior.md`](behavior.md) | auto | Output style, delegation, context budget (ambiguity moved out) |
+| [`metaphor-style.md`](metaphor-style.md) | auto | Default to kitchen/cooking or music/orchestra metaphors when explaining concepts to this user |
 | [`verify-before-report.md`](verify-before-report.md) | auto | Verify before presenting any result |
 | [`security.md`](security.md) | auto | Secrets handling, documentation language |
 | [`session-start.md`](session-start.md) | auto | Config reads + safety guards |
