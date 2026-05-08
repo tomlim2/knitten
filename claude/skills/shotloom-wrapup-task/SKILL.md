@@ -4,7 +4,7 @@ argument-hint: "[STL-NN]"
 allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*)
 ---
 
-# shotloom-close-task
+# shotloom-wrapup-task
 
 Wraps up one Shotloom task cleanly: transition Linear to Done, remove the worktree + branch, append a line to the day log.
 
@@ -17,7 +17,7 @@ Use when:
 
 - `[STL-NN]` — Linear issue ID. Optional. If omitted, auto-detect from current branch or the PR associated with the current worktree.
 
-Usage: `/shotloom-close-task STL-114` or `/shotloom-close-task` from inside the worktree.
+Usage: `/shotloom-wrapup-task STL-114` or `/shotloom-wrapup-task` from inside the worktree.
 
 ## Workflow
 

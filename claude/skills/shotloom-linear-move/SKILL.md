@@ -77,7 +77,7 @@ These skills call `shotloom-linear-move` programmatically and do NOT require per
 - **`shotloom-start-code`** — after worktree creation, transitions `Todo` or `Backlog` → `In Progress`. Skip silently if issue is already In Progress or later.
 - **`shotloom-make-pr`** — at Step 9 (after PR creation), transitions `In Progress` → `In Review`. Skip if PR is `--draft` without a "ready" hint, or if issue is already In Review or later.
 - **`shotloom-auto-pr`** — when PR reaches MERGED (terminal handler in the React workflow), transitions → `Done`. Skip if already Done or Canceled.
-- **`shotloom-close-task`** — when closing a task with `merged` / `done-no-pr` mode, transitions → `Done`; with `abandoned` mode, → `Canceled`. Skip if already in target state.
+- **`shotloom-wrapup-task`** — when wrapping up a task with `merged` / `done-no-pr` mode, transitions → `Done`; with `abandoned` mode, → `Canceled`. Skip if already in target state.
 
 ## Notes
 
