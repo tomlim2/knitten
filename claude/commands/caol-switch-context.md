@@ -178,14 +178,14 @@ Find the matching project in `contexts.json` → `company.projects[]`. Resolve r
 
 ### 2. Read working rules
 
-Read the repo's `CLAUDE.md` and find sections relevant to the project. Display the rules so the user (and Claude) knows the workflow constraints.
+Read the repo's entry documents (`SYSTEM.md`, `AGENTS.md`, `CLAUDE.md` when present) and find sections relevant to the project. Display the rules so the user and agent know the workflow constraints.
 
 ### 3. Show project briefing
 
 ```
 ══ 회사 / {project.name} ════════════════════════
 
-Working Rules ({repo}/CLAUDE.md)
+Working Rules ({repo} entry documents)
   {extracted rules section}
 
 Status
@@ -204,7 +204,7 @@ Known Issues
 ```
 
 **Steps:**
-1. Show working rules from `{repoPath}/CLAUDE.md` — find section matching the project name (case-insensitive search)
+1. Show working rules from `{repoPath}/SYSTEM.md`, `{repoPath}/AGENTS.md`, or `{repoPath}/CLAUDE.md` when present — find section matching the project name (case-insensitive search)
 2. Show project `note` and `todo[]` from contexts.json
 3. Recent 5 commits: `git -C "{repoPath}" log --oneline --format="%h %s (%ad)" --date=format:"%m/%d" -5 -- "{project.path}"`
 4. If `{repoPath}/{project.path}/known-issues.json` exists, read and show pending issues

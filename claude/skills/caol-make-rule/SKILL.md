@@ -8,7 +8,7 @@ Generator for `rules/*.md` — short must-follow constraints, one-liners.
 
 ## Purpose
 
-Rules are terse, always-applied directives. Each file is a handful of bullet points that Claude must honor. Rules are loaded via `@import` from CLAUDE.md or invoked by cross-reference from standards.
+Rules are terse directives that agents must honor. Rules are loaded through entry documents or invoked by cross-reference from standards.
 
 Use this when:
 - You have a clear "always X" or "never X" constraint.
@@ -56,7 +56,7 @@ File name: `{topic}.md` in `~/.claude/rules/`.
 ```
 
 Structural rules:
-1. **No H1, no H2, no frontmatter** — the file is pure bullets. CLAUDE.md provides the section heading via `@import`.
+1. **Frontmatter required** — include `load: auto` or `load: triggered`; include `trigger:` when triggered.
 2. **1-10 bullets** — if you need more, it's a standard, not a rule.
 3. **Imperative voice** — "Always", "Never", "MUST", "NEVER". Declarative descriptions belong in standards.
 4. **Link back** — final bullet should point to the standard that explains rationale (when one exists).
@@ -75,7 +75,7 @@ Structural rules:
    - Which standard (if any) backs this rule
 4. Write the file from the template.
 5. Update `~/.claude/rules/index.md` — add a row to the chosen group.
-6. If the rule belongs inline in CLAUDE.md (core session-level), suggest adding an `@import` section to CLAUDE.md manually.
+6. If the rule has `load: auto`, add it to root `CLAUDE.md` imports and `claude/rules/index.md`.
 7. Print the new path.
 
 ---
@@ -84,13 +84,9 @@ Structural rules:
 
 - Fill the bullets if not already.
 - If this rule was extracted from an existing standard, add a cross-reference note to the standard's "Related" section (pointing to `rules/{name}.md`).
-- If this rule belongs in every session, add a new section to `CLAUDE.md`:
+- If this rule belongs in every session, add an import to root `CLAUDE.md`:
   ```markdown
-  ## {Section Name}
-
   @~/.claude/rules/{name}.md
-
-  ---
   ```
 - Commit: `feat: add rules/{name}.md — {topic}`.
 

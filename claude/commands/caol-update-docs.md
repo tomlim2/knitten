@@ -1,15 +1,16 @@
 ---
-description: Update CLAUDE.md project overview and language conventions
+description: Update repository entry documents and conventions
 allowed-tools: Glob, Grep, Read, Edit, Bash(git log:*), Bash(git diff:*)
 ---
 
 # caol-update-docs
 
-Scan the codebase and update the `CLAUDE.md` project overview and conventions to reflect the current state.
+Scan the codebase and update the repository entry documents to reflect the current state.
 ## Rules
 
-- **NEVER touch content above the `---` divider** (the philosophy/ultrathink section is sacred)
-- Only modify `## Project` and `## Conventions` sections below the divider
+- Preserve the shared-policy split: shared policy belongs in `SYSTEM.md`; harness mechanics belong in `AGENTS.md` or `CLAUDE.md`.
+- If the repo has no `SYSTEM.md`, update the existing entry document (`AGENTS.md` or `CLAUDE.md`) without introducing a new shared-policy file.
+- Only modify `## Project` and `## Conventions` sections when they already exist.
 - Keep everything minimal — no module-by-module breakdowns, no verbose descriptions
 - Show the proposed changes before writing
 
@@ -49,7 +50,7 @@ Write two concise sections:
 
 ## Step 4: Apply Changes
 
-1. Read the current `CLAUDE.md`
+1. Read existing entry documents (`SYSTEM.md`, `AGENTS.md`, `CLAUDE.md`)
 2. Show the user a before/after comparison of the sections being changed
-3. Use the Edit tool to replace only the content below the `---` divider
+3. Use the Edit tool to replace only the targeted sections
 4. Confirm the update is complete

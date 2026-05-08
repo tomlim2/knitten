@@ -40,7 +40,7 @@ You are a senior architect providing consultation. Your job is to:
 
 For **architecture decisions**:
 - Read existing patterns in similar areas
-- Check CLAUDE.md and standards/ for conventions
+- Check entry documents (`SYSTEM.md`, `AGENTS.md`, `CLAUDE.md`) and standards/ for conventions
 - Review git history for past decisions: `git log --oneline --all -- <path>`
 
 For **debugging**:
@@ -74,4 +74,4 @@ For **code review**:
 
 Current project: !`basename $(pwd)`
 Recent commits: !`git log --oneline -5 2>/dev/null || echo "Not a git repo"`
-CLAUDE.md exists: !`test -f CLAUDE.md && echo "Yes" || echo "No"`
+Entry docs: !`for f in SYSTEM.md AGENTS.md CLAUDE.md; do test -f "$f" && printf "%s " "$f"; done`

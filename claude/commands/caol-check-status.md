@@ -88,11 +88,11 @@ To register missing refs: /caol-register-refs <name> <path>
    - Options: "Run update flow", "Skip for now"
 2. If user confirms, execute sequentially:
 
-#### [1/4] Review Global CLAUDE.md
+#### [1/4] Review Entry Documents
 
 Launch a Task subagent:
 - Read `~/.claude/commands/caol-review-claude-md.md`
-- Execute that command's logic: fetch official docs, run 12 checks, auto-fix FAIL/WARN items
+- Execute that command's logic: fetch official docs, run checks, auto-fix FAIL/WARN items
 - Return summary: number of issues found and fixed
 
 #### [2/4] Check External Skill Updates
@@ -115,7 +115,7 @@ Launch a Task subagent:
 
 1. Read `~/.claude/private/caol-config/repo-paths.json`
 2. Filter to repos with `connected` status from Step 2
-3. **Exclude `caol-ila`** — its CLAUDE.md is the global config, already handled by [1/4]
+3. **Exclude `caol-ila`** — its entry documents are handled by [1/4]
 4. For each remaining connected repo, launch a Task subagent:
    - Read `~/.claude/commands/caol-update-docs.md`
    - Execute that command's logic at the repo's path
@@ -128,7 +128,7 @@ Launch a Task subagent:
 
 | Step | Scope                       | Issues | Fixed | Status |
 |------|-----------------------------|--------|-------|--------|
-| 1/4  | Global CLAUDE.md            | 3      | 3     | done   |
+| 1/4  | Entry Documents             | 3      | 3     | done   |
 | 2/4  | External Skills             | 1      | 1     | done   |
 | 3/4  | Skills, Commands & Standards| 7      | 5     | done   |
 | 4/4  | Repo Docs (2 repos)         | 0      | 0     | done   |

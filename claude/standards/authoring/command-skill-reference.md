@@ -4,7 +4,7 @@ status: accepted
 # Command & Skill Reference
 
 Detailed examples and patterns for writing Claude Code commands and skills.
-Referenced from `~/.claude/CLAUDE.md`.
+Referenced from `SYSTEM.md` and authoring skills.
 
 ---
 
@@ -100,7 +100,7 @@ Run the git commit collector:
 ```markdown
 ---
 allowed-tools: Glob, Grep, Read, Edit
-description: Update CLAUDE.md based on codebase analysis
+description: Update entry documents based on codebase analysis
 ---
 
 ## Step 1: Scan
@@ -112,7 +112,7 @@ description: Update CLAUDE.md based on codebase analysis
 - Identify conventions
 
 ## Step 3: Update
-- Edit CLAUDE.md sections
+- Edit entry document sections
 - Show diff before writing
 ```
 

@@ -93,7 +93,7 @@ If inside a worktree: path is `<worktree>/.agent/handoff.md` — each worktree h
 
 - **Never delete log entries.** Append-only.
 - **Keep entries concise** — one line. Details go in the commit message or ADR.
-- **Write English** (per `CLAUDE.md` repo language rule). Korean OK in the log field only when quoting the user.
+- **Write English** (per `claude/rules/security.md` documentation-language rule). Korean OK in the log field only when quoting the user.
 - **Handoff.md is tracked** — changes ship in the branch's commits. The commit that updates it should mention "update handoff" in the body.
 - This skill does NOT push. User pushes when they commit.
 

@@ -9,7 +9,7 @@ For the vocabulary used here (`charter`, `default-counter`, `lifecycle phase`, `
 
 ## Two files, two concerns
 
-`caol-ila` is **LLM-first** (single term, see `CLAUDE.md` charter). The policy is split across two files because they answer different questions:
+`caol-ila` is **LLM-first** (single term, see `SYSTEM.md` charter). The policy is split across two files because they answer different questions:
 
 | File | Question | Read when |
 |------|----------|-----------|
@@ -34,7 +34,7 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 
 | Layer | File(s) | Role | Mutability |
 |-------|---------|------|-----------|
-| 1. Charter | `CLAUDE.md` → "Repository charter" | One-paragraph stance, the "why" | Rarely changed; change requires re-deriving lower layers |
+| 1. Charter | `SYSTEM.md` → "Repository charter" | One-paragraph stance, the "why" | Rarely changed; change requires re-deriving lower layers |
 | 2. Operational standard | `standards/policy/llm-first-docs.md` | Per-document writing rules: banned terms, length budgets, structure | Changed when a new defect class is detected; bump validator with it |
 | 3. Always-applied rules | `rules/*.md` (auto-loaded subset) | Short enforceable directives loaded every session | Add when a behavior must fire without a trigger |
 | 4. On-demand standards | `standards/*.md` | Long reference docs, loaded when a triggering condition fires | Add when reference exceeds a rule's length budget |
@@ -49,17 +49,17 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 ## What this policy enforces
 
 1. **Cold-start parsability.** Every file must be interpretable without prior session context. No "as we discussed", no implicit references.
-2. **Single entry point.** `CLAUDE.md` is the only auto-loaded narrative. All other narrative is reachable via `@import` or explicit trigger.
+2. **Entry documents are adapters.** `CLAUDE.md` and `AGENTS.md` load `SYSTEM.md` first, then add harness-specific mechanics.
 3. **Explicit load semantics.** Every rule declares whether it is `auto` or `triggered`. The agent never has to guess.
 4. **Mechanical anti-rot.** Drift is caught by validators, not by human review. If a rule cannot be validated mechanically, it must be rewritten until it can.
-5. **Layered context budget.** Always-loaded surface stays under a token cap (`CLAUDE.md` ≤ 150 lines). Detail is pushed to lower-frequency layers.
+5. **Layered context budget.** Always-loaded surface stays under a token cap (`SYSTEM.md` and entry documents stay ≤ 150 lines each). Detail is pushed to lower-frequency layers.
 6. **Goal-to-doc routability.** A cold-start agent can locate any artifact from a single navigation file (`LOOKUP.md`) without scanning the tree.
 
 ---
 
 ## What this policy forbids
 
-- **Memory files.** No `MEMORY.md`, no `~/.claude/projects/*/memory/`. Persistent facts go in a layer of the stack, never in a side channel. See `CLAUDE.md` → "Memory — does not exist".
+- **Memory files.** No `MEMORY.md`, no `~/.claude/projects/*/memory/`. Persistent facts go in a layer of the stack, never in a side channel. See `SYSTEM.md` → "Memory".
 - **Hidden conventions.** Any convention not encoded in a layer above does not exist. "Everyone knows" is not a valid enforcement mechanism.
 - **Human-aesthetic optimizations** that cost the agent tokens or precision. No marketing prose, no rhetorical hedges, no repeated motivation paragraphs.
 - **Single-source duplication.** A fact lives in exactly one file. Other files reference it by path. Indexes are generated or validated against the source.
@@ -100,7 +100,7 @@ When a layer's constraint blocks a legitimate need:
 
 ## Anti-goals
 
-- Do not introduce a new top-level entry point. `CLAUDE.md` is singular.
+- Do not add an unregistered entry document. Register every entry document in `SYSTEM.md` and keep shared policy out of the entry document.
 - Do not split this policy across multiple files for "organization." This is a single stance; it lives in one file.
 - Do not weaken a layer to silence a violator. The violator is the bug.
 - Do not add a layer that the validator cannot enforce. Unenforceable layers rot in one session.
@@ -117,4 +117,4 @@ Before committing a change to any layer:
 - [ ] If it adds a layer 4 standard, the standard is registered in `standards/index.md` with a "When to read" entry.
 - [ ] If it changes layer 1 (charter), the cascade through layers 2–7 has been planned, not deferred.
 - [ ] Validator (layer 7) still passes. If the change disables a validator check, an issue is filed for the replacement.
-- [ ] No new memory file, no new top-level entry point, no human-aesthetic prose has been added.
+- [ ] No new memory file, no unregistered entry document, no human-aesthetic prose has been added.

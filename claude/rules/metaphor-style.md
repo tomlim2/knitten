@@ -1,5 +1,6 @@
 ---
-load: auto
+load: triggered
+trigger: explaining technical concepts to the user
 ---
 
 # Metaphor style — kitchen or orchestra
@@ -52,7 +53,7 @@ Either domain can express coordination, timing, resource constraints, failure mo
 |---|---|---|---|
 | Top | Executive chef | Conductor | Architect / tech lead |
 | Senior | Sous chef | Concertmaster, section principal | Senior engineer / module owner |
-| Specialist | Line cook (saucier, grill, etc.) | Section player | Engineer working their area |
+| Specialist | Line cook (saucier, grill, pastry) | Section player | Engineer working their area |
 | Coordinator | Expediter | Conductor's assistant / stage manager | Release manager / on-call |
 | Last mile | Runner / server | Stagehand | Deploy bot / CI runner |
 

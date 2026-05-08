@@ -1,8 +1,8 @@
 # caol-ila
 
-**LLM-first repository.** Global Claude Code configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. Symlinked to `~/.claude`.
+**LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `claude/` is symlinked to `~/.claude`.
 
-Charter, operational rules, and editing standard: [`claude/CLAUDE.md`](claude/CLAUDE.md) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Shared policy source: [`SYSTEM.md`](SYSTEM.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 
@@ -12,18 +12,21 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 
 ```
 caol-ila/
+├── SYSTEM.md                 # Shared agent-agnostic policy
+├── CLAUDE.md                 # Claude Code entry document
+├── AGENTS.md                 # Codex entry document
 ├── claude/                   # Symlinked to ~/.claude
-│   ├── CLAUDE.md             # Session hub (loaded every session)
-│   ├── rules/      (21)      # Always-applied constraints (terse, ≤50 lines each)
-│   ├── standards/  (42)      # Reference docs, on-demand
+│   ├── CLAUDE.md             # Claude Code deploy shim
+│   ├── rules/      (25)      # Always-applied constraints (terse, ≤50 lines each)
+│   ├── standards/  (45)      # Reference docs, on-demand
 │   ├── commands/   (45)      # Slash command .md files
-│   ├── skills/     (130)     # Skill directories with SKILL.md
+│   ├── skills/     (135)     # Skill directories with SKILL.md
 │   └── private/              # Gitignored — machine config, secrets
 │       └── caol-config/      # Per-machine paths and specs (JSON)
 └── README.md
 ```
 
-Counts are live as of v3.0.0; see directory listings for current truth.
+Counts are validated by `scripts/validate-llm-first.mjs`.
 
 ---
 
@@ -63,60 +66,60 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Skills (130)
+## Skills (135)
 
 | Category | Count |
 |----------|------:|
 | `dev-*` | 25 |
-| `shotloom-*` | 19 |
+| `shotloom-*` | 22 |
 | `cci-*` | 17 |
-| `caol-*` | 15 |
+| `caol-*` | 17 |
 | `ue-*` | 7 |
 | `review-*` | 7 |
+| `obsidian-*` | 6 |
 | `video-*` | 5 |
-| `obsidian-*` | 5 |
 | `learn-*` | 4 |
 | `writing-*` | 3 |
 | `vrm-*` | 3 |
-| `tutoring-*` | 3 |
 | `design-*` | 3 |
 | `pmx-*` | 2 |
 | `image-*` | 2 |
 | `git-*` | 2 |
+| `tutoring-*` | 2 |
 | Single-file categories | 8 |
 
 `Single-file categories` (one skill each): `system`, `frontend`, `drink`, `consulting`, `claude`, `canvas`, `brand`, `algorithmic-art`. Authoritative list — see `claude/skills/` directory.
 
 ---
 
-## Standards (43)
+## Standards (45)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 | Group | Files |
 |-------|-------|
-| Policy | `agent-first-policy.md`, `garden-review.md`, `principles.md`, `naming.md` |
-| Authoring | `llm-first-docs.md`, `slash-commands.md`, `command-skill-reference.md` |
+| Policy | `llm-first-policy.md`, `llm-first-docs.md`, `garden-review.md`, `principles.md`, `naming.md` |
+| Authoring | `slash-commands.md`, `command-skill-reference.md` |
 | Multi-agent ops | `agent-workflow.md`, `delegation.md` |
 | Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
 | Unreal Engine | `unreal-engine-cpp.md`, `unreal-engine-asset.md`, `arp-skeleton.md` |
-| Code review | `review-template.md`, `review-spec-doc.md`, `review-ai-motion.md`, `review-3d-rendering.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-ux.md`, `review-ux-python-gui.md`, `review-ux-writing.md` |
+| Code review | `review-template.md`, `review-spec-doc.md`, `review-ai-motion.md`, `review-3d-rendering.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-ux.md`, `review-ux-python-gui.md`, `review-ux-writing.md` |
 | CINEV | `cinev-git-workflow.md`, `cinev-character-asset-naming.md`, `cinev-vrm-shading.md`, `cci-slack.md` |
-| Obsidian | `vault-audience.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md` |
+| Obsidian | `vault-audience.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `note-inspection-checklist.md` |
 | Research / specs | `research-methodology.md`, `tech-spec-template.md` |
 | System | `repo-paths-keys.md`, `codex-keys.md` |
 | Index | `index.md` |
 
 ---
 
-## Rules (21)
+## Rules (25)
 
-Always-applied constraints in `claude/rules/`. Loaded every session via CLAUDE.md `@import`.
+Rules in `claude/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
 | Group | Files |
 |-------|-------|
-| Core (auto, default-counters) | `git-defaults.md`, `behavior.md`, `verify-before-report.md`, `security.md`, `session-start.md` |
-| Workflow (triggered) | `code-write.md`, `reread-repo-conventions.md`, `test-write.md`, `slack.md`, `writing-external.md`, `doc-write.md` |
+| Core (auto, default-counters) | `ambiguity-scoring.md`, `external-recommendation-cross-check.md`, `source-of-truth-first.md`, `git-defaults.md`, `behavior.md`, `verify-before-report.md`, `security.md`, `session-start.md` |
+| Workflow (triggered) | `code-write.md`, `reread-repo-conventions.md`, `test-write.md`, `slack.md`, `writing-external.md`, `doc-write.md`, `metaphor-style.md` |
 | PR lifecycle (triggered) | `pr-mutate.md`, `pr-comment.md`, `pr-create.md` |
 | Authoring (triggered) | `author-naming.md`, `author-frontmatter.md`, `author-permissions.md` |
 | Domain (triggered) | `obsidian.md`, `cinev-git.md`, `shotloom.md` |
@@ -139,4 +142,4 @@ Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remo
 
 ---
 
-For authoring new commands and skills, see [`claude/CLAUDE.md`](claude/CLAUDE.md) — the session hub.
+For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `claude/skills/caol-make-command/SKILL.md` or `claude/skills/caol-make-skill/SKILL.md`.

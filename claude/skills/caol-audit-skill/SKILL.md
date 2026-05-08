@@ -61,7 +61,7 @@ cmd="$HOME/.claude/commands/$name.md"
 
 | ID | Check (per-target) |
 |----|---------------------|
-| B1 | Apply the budget that matches the target type: skills/SKILL.md ≤ 200, commands ≤ 100, auto rule body ≤ 40, triggered rule body ≤ 120, standards ≤ 500, CLAUDE.md ≤ 150. Over budget → split to `reference.md` or push detail down a layer. |
+| B1 | Apply the budget that matches the target type: skills/SKILL.md ≤ 200, commands ≤ 100, auto rule body ≤ 40, triggered rule body ≤ 120, standards ≤ 500, SYSTEM.md ≤ 150, entry documents ≤ 150. Over budget → split to `reference.md` or push detail down a layer. |
 
 ### F. Frontmatter (rules/author-frontmatter.md, author-permissions.md)
 

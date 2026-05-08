@@ -3,13 +3,13 @@ status: proposed
 ---
 # LLM-First Document Standard
 
-Operational standard implementing the `caol-ila` LLM-first charter (see `CLAUDE.md` → "Repository charter"). Default for every artifact Claude writes. Token-efficient, structured, no rhetoric.
+Operational standard implementing the `caol-ila` LLM-first charter (see `SYSTEM.md` → "Repository charter"). Default for every artifact an agent writes. Token-efficient, structured, no rhetoric.
 
 ## When this standard applies
 
 Applies unless one of three switches fires (see below). Non-exhaustive list of LLM-first artifacts:
 
-- `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
+- `SYSTEM.md`, `AGENTS.md`, `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
 - Every agent-to-agent handoff: `asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts
 - Repo `README.md` (yes — even README), `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
 - PR bodies, commit messages, code comments, issue descriptions
@@ -110,9 +110,9 @@ Banned without explicit user agreement (or user-LLM written agreement in the sam
 | Future tense (N) | "will support", "is planned to", "going to add" | "supports" (when it does) — or omit |
 | Aspirational (N) | "aims to", "vision is", "goal is to eventually" | omit |
 | Speculation (N) | "might", "could", "probably", "in theory" | concrete fact or `if X then Y` |
-| Abstract pattern (N) | "this represents the broader principle of…" | the concrete behavior |
+| Abstract pattern (N) | "this represents the broader principle of abstraction" | the concrete behavior |
 | Marketing (decoration) | "powerful", "elegant", "comprehensive", "world-class" | the concrete capability the adjective hides |
-| Sycophantic | "great question", "you're right to consider…" | direct answer |
+| Sycophantic | "great question", "this needs attention" | direct answer |
 
 If a feature is unimplemented, do not describe it as if it works. Either:
 1. Omit it from current docs.
@@ -144,7 +144,8 @@ Avoid:
 
 | Doc type | Budget | Why this limit |
 |----------|--------|----------------|
-| `CLAUDE.md` | ≤ 150 lines | Auto-loaded every cold-start; the single most expensive read |
+| `SYSTEM.md` | ≤ 150 lines | Shared policy loaded by every entry document |
+| entry documents (`AGENTS.md`, `CLAUDE.md`) | ≤ 150 lines | Harness adapters loaded every cold-start |
 | `rules/*.md` (auto, body) | ≤ 40 lines | Always in cold-start context — every line costs every turn |
 | `rules/*.md` (triggered, body) | ≤ 120 lines | Loads only on declared trigger — more room for detail |
 | `skills/*/SKILL.md` | ≤ 200 lines | Loaded when invoked; push reference detail to `reference.md` |
@@ -177,4 +178,3 @@ Before committing changes to an LLM-first doc, scan for:
 - Decorative emoji or motivational lines.
 
 Each hit is a defect. For unimplemented features: either omit, mark `status: proposed`, or move to a sanctioned roadmap doc.
-

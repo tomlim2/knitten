@@ -80,7 +80,7 @@ See [reference.md](reference.md) for the branch-name derivation example and the 
 Read in parallel:
 - `AGENTS.md` (repo root) — workflow, ask-first matrix
 - `CONTRIBUTING.md` — pre-commit, PR policy, branch naming
-- `CLAUDE.md` (repo root) — hard rules
+- Repo entry documents (`AGENTS.md`, `CLAUDE.md` when present) — hard rules
 - `docs/adr/README.md` — ADR index (note any "Proposed" entries)
 - `.agent/working-rules.md` and `.agent/checklists.md` if present
 

@@ -21,7 +21,7 @@ Three things go in the Obsidian vault every day: **devlog** (오늘 한 일), **
 
 ## Args
 
-- `<project>` — vault folder name (`bevy-vrm`, `mmd-player-anju`, …) or `_cross-project`. **REQUIRED** — no auto-execute on missing arg; show usage and ask.
+- `<project>` — vault folder name (`bevy-vrm`, `mmd-player-anju`) or `_cross-project`. **REQUIRED** — no auto-execute on missing arg; show usage and ask.
 - `[sub-command]` — `devlog` (default for real projects), `learning`, `topic`. `topic` = "리소스" / "resource".
 - `[category|slug|name]`:
   - `learning` + real project → category `worked|failed|gotcha`
@@ -76,7 +76,7 @@ Frontmatter (must match template exactly):
 | `project/<P>` | always |
 | `lang/<L>` | day touched code (mandatory then) |
 | `lib/<F>` | day touched code (mandatory then) |
-| `area/<A>` | always (game-dev / shader / web / hardware / writing / …) |
+| `area/<A>` | always (`game-dev`, `shader`, `web`, `hardware`, `writing`) |
 
 ### `learning <worked\|failed\|gotcha>` — project learnings index
 
@@ -88,7 +88,7 @@ Frontmatter: `type/learning` + `project/<P>` + `area/<A>`.
 
 ### `learning <slug>` — cross-project learning (only for `_cross-project`)
 
-One flat file per concept: `claude/learnings/learning-<slug>.md`. Existing convention (`learning-rust-traits.md`, `learning-claude-code-hooks.md`, …). Template: `templates/devlog/cross-learning.md`.
+One flat file per concept: `claude/learnings/learning-<slug>.md`. Existing convention: `learning-rust-traits.md`, `learning-claude-code-hooks.md`. Template: `templates/devlog/cross-learning.md`.
 
 If file exists → open for append/edit, don't overwrite. New file → write from template. Body shape: 증상 → 원인 → 검증 → 해결 (skip sections that don't apply for the kind of lesson). End with at least one `#rule` or `#gotcha` inline tag in the body.
 

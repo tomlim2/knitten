@@ -78,7 +78,7 @@ Sections marked **(if applicable)** apply only when the codebase uses that featu
 - ⚠️ 👁 **Output mode matches usage** — `astro.config.mjs` `output` is one of `'static'` (default), `'server'`, or `'hybrid'`. If any page uses `Astro.request`, `Astro.cookies`, or `export const prerender = false`, output must be `'server'` or `'hybrid'`. If 100% of pages are `prerender: true`, prefer `'static'` for cheaper hosting
   - *ASTRO-01 · Astro: "Output modes" docs*
 
-- ⚠️ 🔧 **Adapter present when SSR** — `output: 'server'` or `'hybrid'` requires an `adapter` (`@astrojs/node`, `@astrojs/vercel`, `@astrojs/cloudflare`, etc.). Build fails without one
+- ⚠️ 🔧 **Adapter present when SSR** — `output: 'server'` or `'hybrid'` requires an `adapter` such as `@astrojs/node`, `@astrojs/vercel`, or `@astrojs/cloudflare`. Build fails without one
   - *ASTRO-02 · Astro: "Adapters" docs*
 
 - ⚠️ 👁 **`prerender` per-page is intentional** — In `'hybrid'` mode, every page declares `export const prerender = true|false` consciously. A page that calls `Astro.cookies` or `Astro.request.headers.get(...)` but is `prerender: true` will throw at build (or worse, return stale snapshot)

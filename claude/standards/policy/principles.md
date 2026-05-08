@@ -14,7 +14,9 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 ### Roles & files
 
-**charter** — The repository's foundational stance. Lives in `CLAUDE.md` → "Repository charter". One paragraph. Says *who* the repo serves and *why*. Rarely changes; when it does, every lower layer is re-derived. Distinct from a rule (rule is `must`) or a standard (standard is `how`).
+**charter** — The repository's foundational stance. Lives in `SYSTEM.md` → "Repository charter". One paragraph. Says *who* the repo serves and *why*. Rarely changes; when it does, every lower layer is re-derived. Distinct from a rule (rule is `must`) or a standard (standard is `how`).
+
+**entry document** — Harness-specific session file. It loads `SYSTEM.md` first, then adds harness-specific mechanics. Current entry documents: `CLAUDE.md` for Claude Code and `AGENTS.md` for Codex.
 
 **llm-first** — The repository is engineered for the LLM that reads it cold-start every session: token-efficient, cold-start parsable, structured for limited context windows. Split across two files for read-cost: `llm-first-policy.md` (layer architecture, why & how) and `llm-first-docs.md` (writing rules, how to write).
 
@@ -83,7 +85,7 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 ### Layers (from `llm-first-policy.md`)
 
-**layer 1** — Charter (`CLAUDE.md` → "Repository charter").
+**layer 1** — Charter (`SYSTEM.md` → "Repository charter").
 **layer 2** — Operational standard (`llm-first-docs.md`).
 **layer 3** — Auto-applied rules (`rules/*.md` with `load: auto`).
 **layer 4** — On-demand standards (`standards/**/*.md`).

@@ -15,7 +15,7 @@ Scripts live under `~/.claude/skills/shotloom-analyze-rig/scripts/`. Each is a s
 | Script | Purpose |
 |--------|---------|
 | `thumb_rest_analysis.rs` | Dump VRM `leftThumb*` / `rightThumb*` local + global rest for xiao + yoya, alongside Index/Middle as 4-finger reference. Also dumps ARP `c_thumb*` source rest from a chosen FBX, walks the source FK chain to compute global rests, and runs the `derive_vrm_axis_option_b` math (mirrors `finger_axis_map.rs`) for thumb bones, comparing derived VRM-local axis against the hardcoded ±Z. Used during STL-263 to characterize thumb rest decomposition (swing-twist, carpometacarpal opposition). |
-| `finger_activity_scan.rs` | Walks `assets/anims/body/*.fbx`, parses each FBX, and reports max angular delta from rest across all frames for every finger bone (`c_thumb1.l`/`.r` … `c_pinky3.l`/`.r`). Output is sorted by total finger activity Σ — pick the top entry to use as the visual-verification fixture. Used during STL-263 to confirm `21566_AiFigureEightRun` had the strongest finger animation in the committed fixture set. |
+| `finger_activity_scan.rs` | Walks `assets/anims/body/*.fbx`, parses each FBX, and reports max angular delta from rest across all frames for every finger bone (`c_thumb1.l`/`.r` through `c_pinky3.l`/`.r`). Output is sorted by total finger activity Σ — pick the top entry to use as the visual-verification fixture. Used during STL-263 to confirm `21566_AiFigureEightRun` had the strongest finger animation in the committed fixture set. |
 
 ## Workflow
 

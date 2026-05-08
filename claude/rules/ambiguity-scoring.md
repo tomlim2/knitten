@@ -30,16 +30,9 @@ When facing an ambiguous action, score across **7 dimensions** (1 point = concer
 
 ## Reporting form
 
-When the score is < 9, lead with **what's missing** (why it's not 10), not the positives. The negative space is the decision-relevant information.
-
-Example:
-> Score 6 — missing: user tone (preferred name, abbreviation). The README 1-line description is auto-generable but voice belongs to the user.
+When the score is < 9, lead with **what's missing**. Example: `Score 6 — missing: user tone (preferred name, abbreviation).`
 
 ## Exceptions
 
 - **Destructive or shared-effect actions** require explicit approval regardless of score (rm -rf, force-push, sending messages, dropping data).
 - **Auto-mode active** does not raise the score — it lowers the threshold from "ask" to "make a reasonable assumption", but 1-4 score still means defer.
-
-## Why this is auto-loaded first
-
-This rule changes how every other rule fires. If you don't apply ambiguity scoring, you either ask too often (slow, breaks flow) or execute too aggressively (mistakes). It is the decision gate, not a behavior nuance.

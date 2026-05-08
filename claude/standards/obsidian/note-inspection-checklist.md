@@ -124,7 +124,7 @@ The 8 steps below are an inspection order, not a tree. Each step has: check cond
 **Why:** With 571+ notes, scattered duplicates degrade retrieval more than any tag issue. `[[devlog]]` is ambiguous when 6 notes share the basename.
 
 **Violation action:**
-- New note → consider sub-note, merge, or link instead
+- New note → route to sub-note, merge, or link instead
 - Existing duplicate → keep canonical, link the others, archive obsolete
 - Basename collision → prefer path-qualified link `[[project/foo|foo]]` or rename
 

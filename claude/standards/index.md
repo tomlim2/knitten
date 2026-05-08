@@ -9,7 +9,7 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | [`garden-review.md`](policy/garden-review.md) | pre-tag, after 30+ days clean, or structural review requested |
 | [`principles.md`](policy/principles.md) | a term feels ambiguous, or deciding whether a new pattern fits the layer model — glossary + discovered principles |
 | [`naming.md`](policy/naming.md) | naming any new rule, standard, command, skill, plan, or vault file |
-| [`llm-first-docs.md`](policy/llm-first-docs.md) | editing CLAUDE.md, rules, skills, commands, or standards |
+| [`llm-first-docs.md`](policy/llm-first-docs.md) | editing SYSTEM.md, entry documents, rules, skills, commands, or standards |
 | **Authoring** | |
 | [`slash-commands.md`](authoring/slash-commands.md) | creating a command — frontmatter, patterns, templates |
 | [`command-skill-reference.md`](authoring/command-skill-reference.md) | looking up an existing command or skill |

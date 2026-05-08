@@ -48,7 +48,7 @@ Grasp the problem, define scope, gather context.
 - **Input:** User argument, codebase state
 - **Output:** Problem statement, scope definition, relevant file list
 - **Tools:** Read, Glob, Grep, Bash(git:*)
-- **Reference:** none (or project CLAUDE.md)
+- **Reference:** none (or project entry document)
 - **Example:** `bug-fix` Step 1 reads code to identify root cause; `ultrawork` Step 1 reads all relevant context
 
 ### 2. Explore

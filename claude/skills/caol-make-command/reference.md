@@ -249,4 +249,4 @@ User: "Create ue-analyze-texture command"
 - `skills/caol-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
 - `commands/ue-make-skill.md` - UE-specific skill/command generator
 - `skills/ue-show-template/SKILL.md` - UE skill template
-- `CLAUDE.md` - Main workflow guidance (points to this skill)
+- `SYSTEM.md` - Shared policy source

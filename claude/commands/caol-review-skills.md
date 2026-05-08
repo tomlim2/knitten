@@ -104,7 +104,7 @@ Apply these checks to each standards file (`~/.claude/standards/*.md`).
 
 ### References (SR1–SR3)
 
-- **SR1. Listed in CLAUDE.md index:** The file must appear in the Domain Standards table in `~/.claude/CLAUDE.md`. WARN if missing — either add to index or question if the file is still needed.
+- **SR1. Listed in standards index:** The file must appear in `~/.claude/standards/index.md`. WARN if missing — either add to index or question if the file is still needed.
 - **SR2. Cross-references valid:** Any paths to other files (`~/.claude/...`, `@path/...`) must point to files that actually exist. Verify with Glob.
 - **SR3. Internal consistency:** If the standard references specific commands or skills by name, those must exist. Verify with Glob against `~/.claude/commands/{name}.md` or `~/.claude/skills/{name}/SKILL.md`.
 

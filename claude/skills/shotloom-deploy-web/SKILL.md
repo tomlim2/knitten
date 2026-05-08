@@ -340,7 +340,7 @@ Summarize in one paragraph + bullets:
 Honesty rules:
 - "GitOps manifest updated" — only after the remote `gh api ... contents` returns the new image.
 - "Live URL returned 200" — only after `curl -i` confirmed.
-- "Cluster rollout healthy" — only with cluster tooling output (`kubectl`, ArgoCD CLI, etc.). Never claim it from manifest+HTTP alone.
+- "Cluster rollout healthy" — only with cluster tooling output (`kubectl` or ArgoCD CLI). Never claim it from manifest+HTTP alone.
 - If Step 8a/8b warned and Step 8d timed out, report partial state plainly.
 
 ## Rollback Path
@@ -382,7 +382,7 @@ If the deploy blocker requires a source change in `CINEV/shotloom`:
 3. Merge to `main`.
 4. Then re-enter this skill from Step 1 for the new HEAD.
 
-For deploy-recovery work that includes "merge PR + rebuild image + update manifest + verify URL", a code-only PR is usually `Part of`, not `Resolves`.
+For deploy-recovery work that includes "merge PR + rebuild image + update manifest + verify URL", a code-only PR is `Part of`, not `Resolves`.
 
 ## Known issues
 

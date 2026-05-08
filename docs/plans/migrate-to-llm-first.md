@@ -2,7 +2,7 @@
 status: active
 load: triggered
 trigger: continuing the LLM-first documentation cleanup
-charter-anchor: claude/CLAUDE.md → "Repository charter"
+charter-anchor: SYSTEM.md → "Repository charter"
 standard: claude/standards/policy/llm-first-docs.md
 created: 2026-05-01
 ---
@@ -15,10 +15,10 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 
 ## Context (read first)
 
-- **Charter:** `caol-ila` is an LLM-first repository. Every artifact optimizes for LLM efficiency, accuracy, clarity. Human-readable output only on explicit user request. See `claude/CLAUDE.md` → "Repository charter".
+- **Charter:** `caol-ila` is an LLM-first repository. Every artifact optimizes for LLM efficiency, accuracy, clarity. Human-readable output only on explicit user request. See `SYSTEM.md` → "Repository charter".
 - **Operational standard:** `claude/standards/policy/llm-first-docs.md` — 7 rules (actionability, explicit enumeration, decision-tree, self-contained, paired examples, no duplication, no rhetoric) + length budgets + self-audit checklist.
 - **Audience:** This file is read by the next LLM session continuing the work. Treat as agent-to-agent handoff per llm-first-docs.md.
-- **Tag baseline:** `v3.0.0` (charter declared, CLAUDE.md refactored, rules/ + top-3 standards audited).
+- **Tag baseline:** `v3.0.0` (charter declared, original Claude entry document refactored, rules/ + top-3 standards audited).
 
 ---
 
@@ -33,7 +33,7 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 | `4b2ad95` | CLAUDE.md self-audit refactor (tables, drop rhetoric) |
 | `1a3a13c` | All 15 `rules/*.md` audited (zero banned terms) |
 | `6944405` | Top-3 standards (`obsidian-format`, `obsidian-tag-taxonomy`, `slash-commands`) audited |
-| `7a5a3b1` | Repository charter declared in CLAUDE.md and README |
+| `7a5a3b1` | Repository charter originally declared in CLAUDE.md and README |
 | `f10d77f` | README inventory refreshed (counts + groupings) |
 | `v3.0.0`  | Tag marking the charter milestone |
 
@@ -45,13 +45,13 @@ Multi-session execution plan for migrating `caol-ila` to its declared LLM-first 
 
 #### P0.1 — Add `load:` frontmatter to all `rules/*.md`
 
-**Why:** Currently 5 of 15 rules are auto-loaded via `CLAUDE.md @import`; the other 10 are on-demand. The folder name `rules/` does not signal which is which. LLM has to back-trace from `CLAUDE.md` to know.
+**Why:** At plan creation, 5 of 15 rules were auto-loaded via `CLAUDE.md @import`; the other 10 were on-demand. The folder name `rules/` did not signal which was which. LLM had to back-trace from the entry document to know.
 
 **Action:** Prepend YAML frontmatter to each rule file.
 
 | File | `load` | `trigger` |
 |------|--------|-----------|
-| `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md`, `index.md` | `auto` | (CLAUDE.md @import) |
+| `git.md`, `session-start.md`, `coding.md`, `verify-before-report.md`, `security.md`, `index.md` | `auto` | entry document import |
 | `reread-repo-conventions.md` | `triggered` | start of non-trivial work in any repo |
 | `test-write.md` | `triggered` | writing or reviewing code with tests |
 | `author-naming.md` | `triggered` | creating a command or skill |
@@ -77,7 +77,7 @@ After prepending, update `rules/index.md` to add a `Load` column matching the ta
 
 **Naming:** `LOOKUP.md` chosen over `MAP.md` — name describes the operation ("look up where X lives"), no metaphor, cold-start LLM parses role from filename alone.
 
-**Why:** `README.md` carries inventory (what exists). It does not carry navigation (what to read for goal X). AFDS v2 mandates one canonical "where is X?" file. Without it, the LLM either reads CLAUDE.md and follows @imports, or scans by guessing.
+**Why:** `README.md` carries inventory (what exists). It does not carry navigation (what to read for goal X). AFDS v2 mandates one canonical "where is X?" file. Without it, the LLM either reads entry documents and follows imports, or scans by guessing.
 
 **Action:** Create `caol-ila/LOOKUP.md` with a single goal-to-doc lookup table. Format:
 
@@ -116,7 +116,7 @@ Goal-to-doc lookup. For LLMs: read this when "where is X?" — start here, not b
 - All rules: `claude/rules/index.md`
 ```
 
-**Acceptance:** `LOOKUP.md` at repo root. `CLAUDE.md` and `README.md` link to it. Goal-to-doc lookup covers at least the 10 most common LLM tasks.
+**Acceptance:** `LOOKUP.md` at repo root. Entry documents and `README.md` link to it. Goal-to-doc lookup covers at least the 10 most common LLM tasks.
 
 #### P0.3 — Tier-3 standards + commands audit
 
@@ -218,7 +218,7 @@ standards/
 **Action:**
 1. `mkdir` the new subdirs.
 2. `git mv` each file into its bucket.
-3. Update every reference to old paths. Use `grep -rn "standards/<filename>" claude/` to find them all. Common reference sites: `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `CLAUDE.md`, `README.md`.
+3. Update every reference to old paths. Use `grep -rn "standards/<filename>" claude/` to find them all. Common reference sites: `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, entry documents, `README.md`.
 4. Update `standards/index.md` link targets to the new paths.
 5. Run a broken-link sweep before commit (manual or via P2.1 validator if built first).
 
@@ -305,9 +305,9 @@ Total: one session for P0+P1.2+P2.1, one+ session for P0.3+P1.1+P2.2.
 
 ## Anti-goals — do not do
 
-- Do not create a `caol-ila/AGENTS.md`. The agent entry point is `claude/CLAUDE.md`. Adding a second entry violates AFDS v2 single-entry-point principle.
+- Do not put shared policy in an entry document. `SYSTEM.md` is the shared source; `CLAUDE.md` and `AGENTS.md` are harness entry documents.
 - Do not migrate `commands/` into `skills/` or vice versa. Defer.
-- Do not write a memory file. See `CLAUDE.md` "Memory — does not exist".
+- Do not write a memory file. See `SYSTEM.md` "Memory".
 - Do not weaken the LLM-first standard to accommodate a stubborn doc. Restructure the doc instead.
 
 ---

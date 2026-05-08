@@ -77,12 +77,12 @@ Step 3: Output results
 ```markdown
 ---
 allowed-tools: Glob, Grep, Read, Edit
-description: Update CLAUDE.md based on codebase analysis
+description: Update entry documents based on codebase analysis
 ---
 
-# Clean Up CLAUDE.md
+# Clean Up Entry Documents
 
-Update CLAUDE.md project overview and language conventions based on codebase analysis.
+Update entry document project overview and language conventions based on codebase analysis.
 
 ## Step 1: Scan
 
@@ -101,8 +101,8 @@ Analyze discovered patterns:
 
 ## Step 3: Update
 
-Update CLAUDE.md:
-- Edit CLAUDE.md sections based on analysis
+Update entry documents:
+- Edit entry document sections based on analysis
 - Show diff before writing
 - Confirm changes with user
 - Update version if needed
@@ -394,6 +394,6 @@ Read: !`ls ~/.claude/private/data.json`
 
 ## Related Files
 
-- `CLAUDE.md` - Main workflow guidance
+- `SYSTEM.md` - Shared policy source
 - `skills/caol-make-command/SKILL.md` - Command creation rules
 - `skills/caol-make-skill/SKILL.md` - Skill creation rules

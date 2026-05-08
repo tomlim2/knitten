@@ -21,6 +21,7 @@ async function walk(dir, filter) {
   }
   for (const e of entries) {
     const full = path.join(dir, e.name);
+    if (e.isDirectory() && e.name === "node_modules") continue;
     if (e.isDirectory()) out.push(...(await walk(full, filter)));
     else if (e.isFile() && filter(full)) out.push(full);
   }
@@ -85,7 +86,7 @@ async function llmFirstFiles() {
   files.push(
     ...(await walk(path.join(claude, "skills"), (f) => path.basename(f) === "SKILL.md"))
   );
-  for (const name of ["README.md", "LOOKUP.md", "AGENTS.md"]) {
+  for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md", "AGENTS.md", "CLAUDE.md"]) {
     const p = path.join(REPO_ROOT, name);
     if (existsSync(p)) files.push(p);
   }
@@ -228,28 +229,36 @@ async function checkRulesFrontmatter() {
 
 async function checkImportTargets() {
   const violations = [];
-  const f = path.join(REPO_ROOT, "claude", "CLAUDE.md");
-  let text;
-  try {
-    text = await readFile(f, "utf8");
-  } catch {
-    return { name: "import-targets", violations: [{ file: rel(f), line: 0, message: "CLAUDE.md not found" }] };
-  }
-  const lines = text.split("\n");
-  const re = /@~\/\.claude\/(\S+)/g;
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    let m;
-    re.lastIndex = 0;
-    while ((m = re.exec(line)) !== null) {
-      const sub = m[1];
-      const target = path.join(REPO_ROOT, "claude", sub);
+  const files = [path.join(REPO_ROOT, "CLAUDE.md"), path.join(REPO_ROOT, "claude", "CLAUDE.md")];
+  const re = /@(\S+)/g;
+  for (const f of files) {
+    let text;
+    try {
+      text = await readFile(f, "utf8");
+    } catch {
+      violations.push({ file: rel(f), line: 0, message: "entry document not found" });
+      continue;
+    }
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      let m;
+      re.lastIndex = 0;
+      while ((m = re.exec(line)) !== null) {
+        const spec = m[1];
+        let target;
+        if (spec.startsWith("~/.claude/")) {
+          target = path.join(REPO_ROOT, "claude", spec.slice("~/.claude/".length));
+        } else {
+          target = path.resolve(path.dirname(f), spec);
+        }
       if (!existsSync(target)) {
         violations.push({
           file: rel(f),
           line: i + 1,
-          message: `broken @import: @~/.claude/${sub} -> ${rel(target)}`,
+          message: `broken @import: @${spec} -> ${rel(target)}`,
         });
+      }
       }
     }
   }

@@ -68,7 +68,7 @@ Flags:
 - `--skip-git-repo-check` — required when running from /tmp or any non-git dir; without this codex refuses to start
 - `--sandbox read-only` — prevents codex from writing files. Pure knowledge / web-search mode.
 - `cd /tmp` — moves cwd away from project. codex can still web search but won't grep nearby files.
-- `tail -150` — caps output. The reasoning prelude + thinking summaries are useful but the *answer* is usually the last 30-80 lines. Adjust based on expected answer length.
+- `tail -150` — caps output. The reasoning prelude + thinking summaries are useful; the *answer* is commonly the last 30-80 lines. Adjust based on expected answer length.
 
 For longer answers, raise the tail limit (`tail -300`) instead of removing it — keeps the reasoning trace bounded.
 
