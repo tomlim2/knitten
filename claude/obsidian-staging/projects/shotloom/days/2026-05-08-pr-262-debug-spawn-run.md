@@ -1,19 +1,18 @@
 ---
-title: PR #262 — debug spawn run preview (paused, re-review 대기)
+title: PR #262 closed — debug spawn run preview
 tags:
   - type/devlog
   - project/shotloom
   - area/game-dev
-  - status/draft
 date: 2026-05-08
 source: claude
 ---
 
 # PR #262 — debug spawn run preview (paused, re-review 대기)
 
-## 11:35 — paused ([#262](https://github.com/CINEV/shotloom/pull/262))
+## 11:35 — closed ([#262](https://github.com/CINEV/shotloom/pull/262))
 
-`ryumiel` round 1 리뷰 → 블로커 2개 + nit 8개 대응 완료 (`fda9def`). re-approve 대기 중.
+`ryumiel` round 1 리뷰 → 블로커 2개 + nit 8개 대응 완료 (`fda9def`) → 머지.
 
 **지적 1 — VRM seed가 FBX parse 성공에 종속됨 (Blocking).** `app.rs:585` 에서 VRM seed가 FBX early-return 안에 있어서 FBX 실패 시 debug character 자체가 렌더 안 됨 — doc comment는 "FBX 실패 시 Idle fallback"이라 했는데 실제로는 VRM도 같이 죽음. VRM과 FBX는 독립 자산이라 early-return을 분리해야 함. → VRM byte-overlay를 FBX 파싱 전으로 이동.
 
