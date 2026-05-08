@@ -1,7 +1,7 @@
 ---
 description: Deploy Shotloom web image to docker.cinamon.me — dry-run by default, --for-real ships a SemVer git tag and lets GitOps roll the cluster.
 argument-hint: "[--for-real] [--smoke] [--version vX.Y.Z]"
-allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*)
 ---
 
 # shotloom-deploy-web
@@ -53,6 +53,15 @@ git fetch origin main --tags
 ```
 
 Resolve the worktree from cwd, not from `repo-paths.json`. The deploy must run against the main checkout's `main` branch — never from a feature worktree.
+
+Snapshot the production page's `ETag` so Step 8b can detect a rolling update by diff:
+
+```bash
+PROD_URL="https://shotloom.cinamon.io"
+PRE_ETAG=$(curl -sI -m 10 "$PROD_URL/" | awk -F'"' '/^[Ee][Tt][Aa][Gg]:/ {print $2; exit}')
+```
+
+If `PRE_ETAG` is empty (URL unreachable, network down, prod cluster ingress failing), surface a warning and ask the user whether to continue without post-deploy verification — do NOT abort, since the deploy itself can still succeed and the user can verify manually later.
 
 ### Step 2: HEAD CI must be green
 
@@ -192,7 +201,7 @@ When **`--for-real`** is set:
 
    `--generate-notes` pulls the merged-PR list between `prev_tag..$version` into a structured release body — costs nothing, archives forever, team can find it on GitHub Releases.
 
-### Step 8: Manifest commit verification
+### Step 8a: Manifest commit verification
 
 After the workflow run completes (for-real path only), verify the GitOps manifest was actually updated:
 
@@ -202,7 +211,47 @@ gh api repos/CINEV/prototype-manifest/commits --jq '.[0].sha + " " + .[0].commit
 
 The latest commit on `prototype-manifest@main` should reference the new image tag (the workflow's update-manifest job uses a commit message that includes the tag). Surface it. If the latest commit there does not name the new tag, surface a warning — the workflow may have failed silently in its second job, or the manifest job was skipped.
 
-This is **not** cluster-level verification (per Q7 decision). The user verifies the live cluster manually via the sa-internal endpoint or whatever ops surface they use. The skill confirms only that the GitOps source-of-truth was updated.
+The cluster Application that watches this manifest is `shotloom-web` in the `argocd` namespace (per `CINEV/prototype-manifest/applications/shotloom-web.yaml`, `syncPolicy.automated.selfHeal: true`). Surface the Application reference so the user can check the ArgoCD UI directly when needed:
+
+```
+ArgoCD Application: shotloom-web (namespace: argocd)
+  spec.source: CINEV/prototype-manifest @ main, path: shotloom
+  spec.destination: namespace internal-service
+```
+
+The ArgoCD UI hostname is internal — if the user has it set, it goes in `~/.claude/private/caol-config/machine-paths.json` under `argocd-ui` and the skill includes the link in the report.
+
+### Step 8b: Cluster rolling-update verification (proxy)
+
+Production serves no hard version stamp (no `/version`, no `/healthz`, no `<meta name="app-version">` in `index.html`). The closest available signal is the `ETag` of `/` — Vite emits a content-hashed bundle, nginx serves the index with an `ETag` derived from the file, and ArgoCD's roll restarts the pod with the new bundle. So a fresh ETag on `https://shotloom.cinamon.io/` within a few minutes of our manifest commit is a strong proxy for "our new image is now serving traffic."
+
+Caveat: ETag changes on every rebuild, not specifically on a tag. If another deploy lands in the same window the ETag still flips but it could be theirs. Acceptable for the alpha period given the single-deployer cadence; revisit when the team adds a real version meta tag (and the skill upgrades to a hard version match).
+
+Poll for up to 5 minutes at 15-second intervals:
+
+```bash
+PROD_URL="https://shotloom.cinamon.io"
+DEADLINE=$(( $(date +%s) + 300 ))
+NEW_ETAG=""
+while [[ $(date +%s) -lt $DEADLINE ]]; do
+  cur=$(curl -sI -m 10 "$PROD_URL/" | awk -F'"' '/^[Ee][Tt][Aa][Gg]:/ {print $2; exit}')
+  if [[ -n "$cur" && "$cur" != "$PRE_ETAG" ]]; then
+    NEW_ETAG="$cur"
+    break
+  fi
+  sleep 15
+done
+```
+
+Three terminal states to report:
+
+| State | Meaning | Output |
+|---|---|---|
+| `NEW_ETAG` non-empty, differs from `PRE_ETAG` | Rolling update detected — strong proxy that our image is live | "Cluster rolled (ETag `$PRE_ETAG` → `$NEW_ETAG`); proxy verification passed." |
+| Loop exited at deadline with `NEW_ETAG` empty | ArgoCD hasn't rolled yet, or roll failed | "Cluster ETag unchanged after 5 min; check ArgoCD Application `shotloom-web` in the `argocd` namespace, or inspect `kubectl rollout status deploy/shotloom-web -n internal-service`." |
+| `PRE_ETAG` was empty in Step 1 (URL unreachable) | Skill cannot verify | "Pre-deploy ETag was unreachable; skipping post-deploy proxy verification. Manual check: `curl -I $PROD_URL/`." |
+
+This is verification, not approval — the skill does not retry, does not roll back, does not page anyone. It surfaces state and lets the user decide.
 
 ### Step 9: Devlog append (Obsidian)
 
@@ -236,7 +285,9 @@ For for-real:
 - prototype-manifest commit: <sha + message>
 - GitHub Release: <url>
 - Diff: N 커밋 (prev_tag..$version)
-- Cluster verification (manual): <pending — ops endpoint TBD>
+- Cluster verification (proxy): ETag `$PRE_ETAG` → `$NEW_ETAG` (rolled at HH:MM)
+  | timed out after 5 min — manual check via ArgoCD `shotloom-web`
+  | skipped — pre-deploy URL unreachable
 ```
 
 Korean narrative one paragraph above the bullets is fine; bullets are the audit trail the user can grep later.
@@ -247,9 +298,10 @@ One paragraph framing back to the user:
 
 - What was deployed (or built, in dry-run)
 - Where it landed (registry URL, manifest commit)
-- What's still on the user (cluster verification, rollback if needed)
+- Proxy verification outcome (Step 8b): rolled / timed out / skipped
+- What's still on the user (rollback if needed, or hard verification via ArgoCD UI when the proxy times out)
 
-Do NOT tell the user "deploy succeeded" if Step 8's manifest verification surfaced a warning. State the partial state plainly.
+Do NOT tell the user "deploy succeeded" if Step 8a's manifest verification surfaced a warning OR Step 8b's ETag poll timed out. State the partial state plainly — the user decides whether to escalate to ArgoCD UI / kubectl.
 
 ## Common failures + fixes
 
