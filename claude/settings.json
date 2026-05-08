@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(/Users/deemooooooooo/.claude/ops/**)",
+      "Edit(/Users/deemooooooooo/.claude/ops/**)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/shotloom-session-start.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/shotloom-linear-detect.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/shotloom-stop-reminder.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "agentPushNotifEnabled": true,
+  "effortLevel": "medium"
+}

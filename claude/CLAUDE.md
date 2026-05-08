@@ -51,6 +51,29 @@ If unsure, default LLM-first. Full applies-to list: `standards/policy/llm-first-
 
 ---
 
+## Source-of-truth lives in caol-ila — `~/.claude/` is the deploy target
+
+All durable Claude harness state — skills, rules, standards, commands, hooks, settings, top-level `CLAUDE.md`, `repo-registry.json`, the non-personal half of `private/` (`caol-config/doc-paths.json` and similar config) — has its **canonical home in `caol-ila/claude/`** and is git-tracked there. `~/.claude/` is the deploy target the Claude Code harness reads from at runtime; the two trees are kept in sync (some sub-trees share inodes via APFS clone / hard-link; some require explicit copy).
+
+When editing any of those artifacts, prefer landing the change in `caol-ila/claude/<area>/` (then verify the sync reflects it in `~/.claude/<area>/`). Editing directly in `~/.claude/<area>/` is acceptable only when the inode is shared and the change is therefore visible to both sides — verify with `stat -f "ino=%i" ~/.claude/<area>/<file> caol-ila/claude/<area>/<file>`. Never leave a change in `~/.claude/` that has not also reached `caol-ila/claude/` — `caol-ila` is what survives a machine wipe.
+
+The intentional asymmetry:
+
+| Path | Canonical | Notes |
+|------|-----------|-------|
+| `skills/`, `rules/`, `standards/`, `commands/`, `lib/`, `config/` | caol-ila | shared via APFS clone / hard-link; edits propagate |
+| `CLAUDE.md` (top-level), `repo-registry.json` | caol-ila | symlinked from `~/.claude/`; edit the caol-ila side |
+| `hooks/` | **caol-ila must hold these** (currently a known gap) | durable harness scripts; today only `~/.claude/hooks/` exists |
+| `settings.json` | **caol-ila must hold this** (currently a known gap) | per-machine secrets stay in `settings.local.json` (not synced) |
+| `private/caol-config/doc-paths.json` (and similar non-machine config) | caol-ila | machine-specific entries below stay `~/.claude`-only |
+| `private/caol-config/{hardware,machine-paths,ccdb-bots}.json` | `~/.claude/` only | per-machine secrets, gitignored on purpose |
+| `templates/`, `scheduled-tasks/`, `obsidian-staging/` | caol-ila only | not loaded by the harness at runtime |
+| `cache/`, `backups/`, `sessions/`, `tasks/`, `telemetry/`, `projects/`, `shell-snapshots/`, `paste-cache/`, `file-history/`, `ops/`, `plans/`, `downloads/`, `history.jsonl` | `~/.claude/` only | runtime/cache, not durable |
+
+Before declaring any rename / move / new artifact "done," verify both sides match (`diff -rq ~/.claude/<area>/ caol-ila/claude/<area>/` for the affected sub-tree). Renames executed only against `~/.claude/` rely on inode-sharing to propagate; that propagation does not extend to *adding* a brand-new top-level entry — for those, create the entry under `caol-ila/claude/` and re-run whichever sync sets up the deploy target.
+
+---
+
 ## Rules (always applied)
 
 @~/.claude/rules/index.md
