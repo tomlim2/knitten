@@ -181,26 +181,17 @@ workflow_url="https://github.com/CINEV/shotloom/actions/runs/$run_id"
 
 ### Step 7: Slack 시작 알림 (for-real only)
 
-Draft a team-channel message (channel default = `team_channel` from `~/.claude/config/slack.json`, currently `C09DF8A1ZK4`). Wait for explicit per-message approval per `~/.claude/rules/slack.md`. Template — fill `<short_sha>`, `<commits_count>`; add `(첫 SemVer 태그)` only when `prev_tag` is empty:
+Delegate to `/shotloom-send-deploy-status start` — that skill owns the canonical Korean template + per-message approval gate. The skill returns `start_ts=<ts>`; capture it for Step 9's thread reply.
 
 ```
-Shotloom $version 배포 시작[ (첫 SemVer 태그)].
-
-- HEAD: <short_sha>
-- 워크플로: $workflow_url
-- 변경: <commits_count> commits
-- 예상 소요: 15-20분 (image build ~13분 + ArgoCD sync ~3분 + pod roll ~1분)
-- URL: https://shotloom.cinamon.io
+/shotloom-send-deploy-status start \
+  --version $version \
+  --workflow-url $workflow_url \
+  --commits <commits_count> \
+  [--first-tag]                # only when prev_tag is empty
 ```
 
-On approval:
-
-```bash
-start_resp=$(python3 ~/.claude/skills/cci-send-alert/send.py "$message")
-start_ts=$(jq -r '.ts // empty' <<<"$start_resp")
-```
-
-Capture `start_ts` so Step 9 can post the result as a thread reply. On send failure, surface and continue — missing notification does not block the release.
+Do NOT inline the message string here — the template lives in one place (`shotloom-send-deploy-status/SKILL.md`) so a future tone change updates one file, not two. On send failure, surface and continue — missing notification does not block the release.
 
 ### Step 8: Watch + verify
 
@@ -306,22 +297,18 @@ gh release create "$version" --generate-notes --title "$version" \
   ${prev_tag:+--notes-start-tag "$prev_tag"}
 ```
 
-Then draft the result Slack message as a **thread reply** to `start_ts`. Per-message approval, same gate as Step 7. Pick exactly one terminal state line from Step 8d:
+Then delegate the thread-reply to `/shotloom-send-deploy-status result` — same canonical template, same per-message approval gate, same `cci-send-alert` underneath. Map the Step 8d terminal state to the `--state` flag and pass the matching field set.
 
 ```
-Shotloom $version 배포 결과: <rolled | timed out | skipped | rolled-back>
-
-- ETag: $PRE_ETAG → $NEW_ETAG (rolled)
-   | 변하지 않음 — ArgoCD 또는 kubectl 확인 필요
-   | 사전 ETag 없어 verification 스킵
-   | 503 발생, $prev_tag 로 롤백됨 (manifest commit <sha>)
-- 소요: <start HH:MM> → <now HH:MM> (≈X분)
-- prototype-manifest commit: <sha + short subject>
-- GitHub Release: <url>
-```
-
-```bash
-python3 ~/.claude/skills/cci-send-alert/send.py "$message" --thread-ts "$start_ts"
+/shotloom-send-deploy-status result \
+  --version $version \
+  --thread-ts $start_ts \
+  --state <rolled | timed-out | skipped | rolled-back> \
+  [--etag-from $PRE_ETAG --etag-to $NEW_ETAG]   # state=rolled
+  [--prev-tag $prev_tag]                        # state=rolled-back
+  --manifest-commit "<sha + short subject>" \
+  [--release-url <url>] \
+  [--start-iso <HH:MM>]
 ```
 
 If `start_ts` is empty (Step 7 skipped/failed), do NOT send a top-level result — surface the asymmetry in the Step 11 report instead.
