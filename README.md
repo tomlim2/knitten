@@ -24,6 +24,7 @@ caol-ila/
 │   ├── standards/  (46)      # Reference docs, on-demand
 │   ├── commands/   (45)      # Slash command .md files
 │   ├── skills/     (135)     # Skill directories with SKILL.md
+│   ├── config/               # Shared registries and service config
 │   └── private/              # Gitignored — machine config, secrets
 │       └── caol-config/      # Per-machine paths and specs (JSON)
 └── README.md
@@ -142,6 +143,16 @@ Gitignored. Per-machine paths and specs.
 | `hardware.json` | Hardware specs — populated by `/system-save-hardware` |
 
 Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remove`, `setup`).
+
+## Shared registries (`claude/config/`)
+
+| File | Content |
+|------|---------|
+| `doc-budgets.json` | Document length budgets used by validator checks |
+| `frontmatter-schema.json` | Frontmatter enum values and pilot metadata files |
+| `taxonomy.json` | Skill/command categories, standard groups, naming patterns |
+| `audit-policy.json` | Garden review thresholds and severity tiers |
+| `exceptions.json` | Grandfathered exceptions with reason, decision, review date |
 
 ---
 

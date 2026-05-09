@@ -16,6 +16,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 | Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
 | Look up a term or recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`claude/standards/policy/naming.md`](claude/standards/policy/naming.md) |
+| Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`claude/config/README.md`](claude/config/README.md) |
 | Create a new slash command | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/rules/author-frontmatter.md`](claude/rules/author-frontmatter.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
 | Create a new skill | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
 | Create a new rule | [`claude/rules/index.md`](claude/rules/index.md) (frontmatter pattern) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |

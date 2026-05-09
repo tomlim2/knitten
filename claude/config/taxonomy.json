@@ -1,0 +1,43 @@
+{
+  "skillCommandCategories": [
+    "algorithmic",
+    "brand",
+    "canvas",
+    "caol",
+    "cci",
+    "claude",
+    "consulting",
+    "design",
+    "dev",
+    "drink",
+    "frontend",
+    "git",
+    "image",
+    "learn",
+    "obsidian",
+    "pmx",
+    "project",
+    "review",
+    "shotloom",
+    "system",
+    "tutoring",
+    "ue",
+    "video",
+    "vrm",
+    "writing"
+  ],
+  "standardGroups": [
+    "authoring",
+    "cinev",
+    "language",
+    "multi-agent",
+    "obsidian",
+    "policy",
+    "research",
+    "review",
+    "system",
+    "unreal"
+  ],
+  "planFilenamePattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$",
+  "decisionFilenamePattern": "^\\d{4}-[a-z0-9]+(?:-[a-z0-9]+)*\\.md$"
+}

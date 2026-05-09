@@ -8,6 +8,22 @@ Filename patterns for every artifact type in `caol-ila`. Read before creating an
 
 For the underlying rationale (verb-form trio, family prefix, scope match, lifecycle phase, default-counter hint) see `principles.md` → "Naming patterns".
 
+## LLM-friendly strategy
+
+File names are routing metadata. A cold-start LLM must infer artifact type, scope, and read timing from the path before opening the file.
+
+| Strategy | Good | Bad |
+|----------|------|-----|
+| Name the operation, not the metaphor | `LOOKUP.md` | `MAP.md` |
+| Name the domain before the mechanism | `platform-adapters.md` | `adapters.md` |
+| Use purpose-first config names | `doc-budgets.json` | `managed-values.json` |
+| Keep status in frontmatter | `harden-system-drift.md` + `status: active` | `harden-system-drift-active.md` |
+| Keep folder context out of filename | `docs/plans/harden-system-drift.md` | `docs/plans/plan-harden-system-drift.md` |
+| Use family prefixes for lifecycle siblings | `pr-create.md`, `pr-comment.md`, `pr-mutate.md` | `create.md`, `comment.md`, `mutate.md` |
+| Use decision ids for accepted rationale | `0001-platform-neutral-agent-system.md` | `agent-system-notes.md` |
+
+If the folder already supplies type or scope, do not repeat it in the filename.
+
 ## Scope
 
 This standard governs **`caol-ila` repository artifacts only** — files inside `claude/`, `docs/plans/`, and the Obsidian vault under `claude/projects/`.
@@ -47,7 +63,7 @@ Pattern: `{category}-{verb}-{subject}`
 
 - **Internal:** `{category}-{verb}-{subject}` (e.g. `cci-validate-vrm`, `caol-make-rule`)
 - **External wrapper:** `{category}-{repo}-{verb}-{subject}` (e.g. `design-huashu-make-prototype`)
-- **Categories:** `cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `video`, `project`, `system`, `caol`
+- **Categories:** `algorithmic`, `brand`, `canvas`, `caol`, `cci`, `claude`, `consulting`, `design`, `dev`, `drink`, `frontend`, `git`, `image`, `learn`, `obsidian`, `pmx`, `project`, `review`, `shotloom`, `system`, `tutoring`, `ue`, `video`, `vrm`, `writing`
 - **Verbs:** keep simple — `make` not `generate`, `add` not `append`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`

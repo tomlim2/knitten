@@ -26,7 +26,7 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **skill / command** — Executable unit invoked by name. Lives in `claude/skills/<name>/SKILL.md` or `claude/commands/<name>.md`.
 
-**validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. 7 checks. Runs in seconds.
+**validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
 ### Loading & timing
 
@@ -194,7 +194,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 - ✅ "No `etc.` in standards/rules/commands/skills" — grep-able.
 - ❌ "Be specific" — judgment-dependent. Reword to a checkable form ("Include at least one example, one counter-example, one expected output").
 
-**Enforced by:** `validate-llm-first.mjs` 7 checks. Garden review checklist asks "is there a check the validator missed?".
+**Enforced by:** `validate-llm-first.mjs` checks. Use `node scripts/validate-llm-first.mjs --list` for the current list. Garden review checklist asks "is there a check the validator missed?".
 
 ---
 

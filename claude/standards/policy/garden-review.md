@@ -42,7 +42,7 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 
 ### 3. Index health
 
-- [ ] `LOOKUP.md` rows still resolve — every link target exists. (Validator does not check LOOKUP link targets; do it by eye or a quick grep.)
+- [ ] `LOOKUP.md` rows still resolve — core Markdown links are validator-checked; inspect non-Markdown references by eye or grep.
 - [ ] No row in `LOOKUP.md` points to a retired or moved file.
 - [ ] No row in `standards/index.md` is missing its subdirectory prefix (one of: `policy/`, `authoring/`, `multi-agent/`, `research/`, `review/`, `language/`, `unreal/`, `cinev/`, `obsidian/`, `system/`).
 

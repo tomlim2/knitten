@@ -1,0 +1,32 @@
+{
+  "ruleLoadValues": [
+    "auto",
+    "triggered"
+  ],
+  "standardStatusValues": [
+    "accepted",
+    "proposed",
+    "draft",
+    "deprecated",
+    "superseded"
+  ],
+  "platformValues": [
+    "all",
+    "claude",
+    "codex"
+  ],
+  "portabilityValues": [
+    "shared",
+    "adapter",
+    "harness-specific"
+  ],
+  "platformMetadataPilotFiles": [
+    "claude/rules/source-of-truth-first.md",
+    "claude/standards/policy/llm-first-policy.md",
+    "claude/standards/policy/platform-adapters.md",
+    "claude/standards/authoring/command-skill-reference.md",
+    "claude/skills/caol-make-skill/SKILL.md",
+    "claude/skills/review-audit-retarget/SKILL.md",
+    "claude/skills/dev-ask-codex/SKILL.md"
+  ]
+}

@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
+const CONFIG_DIR = path.join(REPO_ROOT, "claude", "config");
+const CONFIG_CACHE = new Map();
 
 // ---------- helpers ----------
 
@@ -73,6 +75,36 @@ function parseFrontmatter(text) {
 
 function rel(p) {
   return path.relative(REPO_ROOT, p);
+}
+
+async function readJsonConfig(name) {
+  if (CONFIG_CACHE.has(name)) return CONFIG_CACHE.get(name);
+  const p = path.join(CONFIG_DIR, name);
+  const text = await readFile(p, "utf8");
+  const parsed = JSON.parse(text);
+  CONFIG_CACHE.set(name, parsed);
+  return parsed;
+}
+
+function hasDuplicates(values) {
+  return new Set(values).size !== values.length;
+}
+
+function isSorted(values) {
+  return values.join("\n") === [...values].sort().join("\n");
+}
+
+function pushArrayViolations(violations, file, key, values, options = {}) {
+  if (!Array.isArray(values) || values.length === 0) {
+    violations.push({ file, line: 1, message: `${key} must be a non-empty array` });
+    return;
+  }
+  if (hasDuplicates(values)) {
+    violations.push({ file, line: 1, message: `${key} must not contain duplicates` });
+  }
+  if (options.sorted && !isSorted(values)) {
+    violations.push({ file, line: 1, message: `${key} must be sorted alphabetically` });
+  }
 }
 
 // ---------- file scope helpers ----------
@@ -188,6 +220,8 @@ async function checkBannedTerms() {
 
 async function checkRulesFrontmatter() {
   const violations = [];
+  const schema = await readJsonConfig("frontmatter-schema.json");
+  const loadValues = new Set(schema.ruleLoadValues);
   const dir = path.join(REPO_ROOT, "claude", "rules");
   const entries = await listDirOnce(dir);
   for (const e of entries) {
@@ -205,11 +239,11 @@ async function checkRulesFrontmatter() {
       violations.push({ file: rel(f), line: 1, message: "frontmatter missing 'load' field" });
       continue;
     }
-    if (load !== "auto" && load !== "triggered") {
+    if (!loadValues.has(load)) {
       violations.push({
         file: rel(f),
         line: 1,
-        message: `frontmatter 'load' must be 'auto' or 'triggered' (got ${JSON.stringify(load)})`,
+        message: `frontmatter 'load' must be one of ${schema.ruleLoadValues.join("|")} (got ${JSON.stringify(load)})`,
       });
       continue;
     }
@@ -358,22 +392,14 @@ function bodyLineCount(text) {
   return total - fmLines;
 }
 
-// Tight cap for auto-loaded rules (always in context — bloat is permanent).
-// Looser cap for triggered rules (load only when their trigger fires).
-const RULE_AUTO_BODY_CAP = 40;
-const RULE_TRIGGERED_BODY_CAP = 120;
-const STANDARD_BODY_CAP = 500;
-
-// Grandfathered: reference catalogs that pre-date the cap. This list MUST shrink
-// over time, never grow. Adding to it requires an explicit ADR / decision record.
-const STANDARD_LENGTH_GRANDFATHERED = new Set([
-  "claude/standards/language/javascript-reference.md", // 611 lines — JS reference catalog
-  "claude/standards/language/three-shader-language.md", // 586 lines — TSL pattern catalog
-  "claude/standards/unreal/unreal-engine-asset.md", // 767 lines — UE asset naming catalog
-]);
-
 async function checkLengthCaps() {
   const violations = [];
+  const docBudgets = await readJsonConfig("doc-budgets.json");
+  const exceptions = await readJsonConfig("exceptions.json");
+  const budgets = docBudgets.lineBudgets;
+  const standardLengthGrandfathered = new Set(
+    exceptions.standardLengthGrandfathered.map((entry) => entry.path)
+  );
   const ruleDir = path.join(REPO_ROOT, "claude", "rules");
   const ruleFiles = await walk(ruleDir, (f) => f.endsWith(".md"));
   for (const f of ruleFiles) {
@@ -382,7 +408,7 @@ async function checkLengthCaps() {
     const lines = bodyLineCount(text);
     const fm = parseFrontmatter(text) || {};
     const isAuto = fm.load === "auto";
-    const cap = isAuto ? RULE_AUTO_BODY_CAP : RULE_TRIGGERED_BODY_CAP;
+    const cap = isAuto ? budgets.ruleAutoBody : budgets.ruleTriggeredBody;
     if (lines > cap) {
       violations.push({
         file: rel(f),
@@ -396,35 +422,24 @@ async function checkLengthCaps() {
   for (const f of stdFiles) {
     if (path.basename(f) === "index.md") continue;
     const relPath = rel(f);
-    if (STANDARD_LENGTH_GRANDFATHERED.has(relPath)) continue;
+    if (standardLengthGrandfathered.has(relPath)) continue;
     const text = await readFile(f, "utf8");
     const lines = bodyLineCount(text);
-    if (lines > STANDARD_BODY_CAP) {
+    if (lines > budgets.standardBody) {
       violations.push({
         file: relPath,
         line: 1,
-        message: `standard body ${lines} lines exceeds cap ${STANDARD_BODY_CAP} — split into multiple standards`,
+        message: `standard body ${lines} lines exceeds cap ${budgets.standardBody} — split into multiple standards`,
       });
     }
   }
   return { name: "length-caps", violations };
 }
 
-const STATUS_VALUES = new Set(["accepted", "proposed", "draft", "deprecated", "superseded"]);
-const PLATFORM_VALUES = new Set(["all", "claude", "codex"]);
-const PORTABILITY_VALUES = new Set(["shared", "adapter", "harness-specific"]);
-const PLATFORM_METADATA_PILOT_FILES = [
-  "claude/rules/source-of-truth-first.md",
-  "claude/standards/policy/llm-first-policy.md",
-  "claude/standards/policy/platform-adapters.md",
-  "claude/standards/authoring/command-skill-reference.md",
-  "claude/skills/caol-make-skill/SKILL.md",
-  "claude/skills/review-audit-retarget/SKILL.md",
-  "claude/skills/dev-ask-codex/SKILL.md",
-];
-
 async function checkStandardsStatus() {
   const violations = [];
+  const schema = await readJsonConfig("frontmatter-schema.json");
+  const statusValues = new Set(schema.standardStatusValues);
   const dir = path.join(REPO_ROOT, "claude", "standards");
   const files = await walk(dir, (f) => f.endsWith(".md"));
   for (const f of files) {
@@ -440,11 +455,11 @@ async function checkStandardsStatus() {
       violations.push({ file: rel(f), line: 1, message: "frontmatter missing 'status' field" });
       continue;
     }
-    if (!STATUS_VALUES.has(status)) {
+    if (!statusValues.has(status)) {
       violations.push({
         file: rel(f),
         line: 1,
-        message: `frontmatter 'status' must be one of ${[...STATUS_VALUES].join("|")} (got ${JSON.stringify(status)})`,
+        message: `frontmatter 'status' must be one of ${schema.standardStatusValues.join("|")} (got ${JSON.stringify(status)})`,
       });
       continue;
     }
@@ -468,8 +483,11 @@ function parsePlatformList(value) {
 
 async function checkPlatformMetadata() {
   const violations = [];
+  const schema = await readJsonConfig("frontmatter-schema.json");
+  const platformValues = new Set(schema.platformValues);
+  const portabilityValues = new Set(schema.portabilityValues);
   const files = await llmFirstFiles();
-  const required = new Set(PLATFORM_METADATA_PILOT_FILES);
+  const required = new Set(schema.platformMetadataPilotFiles);
   for (const f of files) {
     const relPath = rel(f);
     const text = await readFile(f, "utf8");
@@ -493,7 +511,7 @@ async function checkPlatformMetadata() {
         violations.push({ file: relPath, line: 1, message: "frontmatter 'platforms' is empty" });
       }
       for (const value of values) {
-        if (!PLATFORM_VALUES.has(value)) {
+        if (!platformValues.has(value)) {
           violations.push({
             file: relPath,
             line: 1,
@@ -509,11 +527,11 @@ async function checkPlatformMetadata() {
         });
       }
     }
-    if (hasPortability && !PORTABILITY_VALUES.has(fm.portability)) {
+    if (hasPortability && !portabilityValues.has(fm.portability)) {
       violations.push({
         file: relPath,
         line: 1,
-        message: `frontmatter 'portability' must be one of ${[...PORTABILITY_VALUES].join("|")} (got ${JSON.stringify(fm.portability)})`,
+        message: `frontmatter 'portability' must be one of ${schema.portabilityValues.join("|")} (got ${JSON.stringify(fm.portability)})`,
       });
     }
     if (hasPlatforms !== hasPortability) {
@@ -525,6 +543,162 @@ async function checkPlatformMetadata() {
     }
   }
   return { name: "platform-metadata", violations };
+}
+
+async function checkRegistryIntegrity() {
+  const violations = [];
+  const budgets = await readJsonConfig("doc-budgets.json");
+  const schema = await readJsonConfig("frontmatter-schema.json");
+  const taxonomy = await readJsonConfig("taxonomy.json");
+  const auditPolicy = await readJsonConfig("audit-policy.json");
+  const exceptions = await readJsonConfig("exceptions.json");
+
+  for (const [key, value] of Object.entries(budgets.lineBudgets || {})) {
+    if (!Number.isInteger(value) || value <= 0) {
+      violations.push({
+        file: "claude/config/doc-budgets.json",
+        line: 1,
+        message: `lineBudgets.${key} must be a positive integer`,
+      });
+    }
+  }
+
+  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "ruleLoadValues", schema.ruleLoadValues);
+  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "standardStatusValues", schema.standardStatusValues);
+  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "platformValues", schema.platformValues);
+  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "portabilityValues", schema.portabilityValues);
+  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "platformMetadataPilotFiles", schema.platformMetadataPilotFiles);
+  pushArrayViolations(violations, "claude/config/taxonomy.json", "skillCommandCategories", taxonomy.skillCommandCategories, { sorted: true });
+  pushArrayViolations(violations, "claude/config/taxonomy.json", "standardGroups", taxonomy.standardGroups, { sorted: true });
+  pushArrayViolations(violations, "claude/config/audit-policy.json", "severityTiers", auditPolicy.severityTiers);
+
+  for (const [key, value] of Object.entries(auditPolicy.garden || {})) {
+    if (!Number.isInteger(value) || value <= 0) {
+      violations.push({
+        file: "claude/config/audit-policy.json",
+        line: 1,
+        message: `garden.${key} must be a positive integer`,
+      });
+    }
+  }
+  for (const key of ["contextBudgetPercent", "obsidianBulkRetagNotes", "obsidianBulkRetagBackgroundNotes"]) {
+    const value = auditPolicy[key];
+    if (!Number.isInteger(value) || value <= 0) {
+      violations.push({
+        file: "claude/config/audit-policy.json",
+        line: 1,
+        message: `${key} must be a positive integer`,
+      });
+    }
+  }
+
+  for (const entry of exceptions.standardLengthGrandfathered || []) {
+    const fields = ["path", "reason", "decision"];
+    for (const field of fields) {
+      if (!entry[field] || !String(entry[field]).trim()) {
+        violations.push({
+          file: "claude/config/exceptions.json",
+          line: 1,
+          message: `standardLengthGrandfathered entry missing ${field}`,
+        });
+      }
+    }
+    if (!entry.expires && !entry.reviewAfter) {
+      violations.push({
+        file: "claude/config/exceptions.json",
+        line: 1,
+        message: `standardLengthGrandfathered ${entry.path || "<unknown>"} requires expires or reviewAfter`,
+      });
+    }
+    if (entry.path && !existsSync(path.join(REPO_ROOT, entry.path))) {
+      violations.push({
+        file: "claude/config/exceptions.json",
+        line: 1,
+        message: `exception target does not exist: ${entry.path}`,
+      });
+    }
+    if (entry.decision) {
+      const decisionPath = String(entry.decision).split("#")[0];
+      if (!existsSync(path.join(REPO_ROOT, decisionPath))) {
+        violations.push({
+          file: "claude/config/exceptions.json",
+          line: 1,
+          message: `exception decision target does not exist: ${entry.decision}`,
+        });
+      }
+    }
+  }
+
+  return { name: "registry-integrity", violations };
+}
+
+async function checkTaxonomy() {
+  const violations = [];
+  const taxonomy = await readJsonConfig("taxonomy.json");
+  const categories = new Set(taxonomy.skillCommandCategories);
+  const skillEntries = await listDirOnce(path.join(REPO_ROOT, "claude", "skills"));
+  for (const entry of skillEntries) {
+    if (!entry.isDirectory()) continue;
+    const prefix = entry.name.split("-")[0];
+    if (!categories.has(prefix)) {
+      violations.push({
+        file: `claude/skills/${entry.name}/`,
+        line: 0,
+        message: `skill category ${JSON.stringify(prefix)} missing from claude/config/taxonomy.json`,
+      });
+    }
+  }
+  const commandEntries = await listDirOnce(path.join(REPO_ROOT, "claude", "commands"));
+  for (const entry of commandEntries) {
+    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+    const stem = entry.name.slice(0, -".md".length);
+    const prefix = stem.split("-")[0];
+    if (!categories.has(prefix)) {
+      violations.push({
+        file: `claude/commands/${entry.name}`,
+        line: 0,
+        message: `command category ${JSON.stringify(prefix)} missing from claude/config/taxonomy.json`,
+      });
+    }
+  }
+
+  const standardGroups = new Set(taxonomy.standardGroups);
+  const standardEntries = await listDirOnce(path.join(REPO_ROOT, "claude", "standards"));
+  for (const entry of standardEntries) {
+    if (!entry.isDirectory()) continue;
+    if (!standardGroups.has(entry.name)) {
+      violations.push({
+        file: `claude/standards/${entry.name}/`,
+        line: 0,
+        message: `standard group ${JSON.stringify(entry.name)} missing from claude/config/taxonomy.json`,
+      });
+    }
+  }
+
+  const planRe = new RegExp(taxonomy.planFilenamePattern);
+  const planEntries = await listDirOnce(path.join(REPO_ROOT, "docs", "plans"));
+  for (const entry of planEntries) {
+    if (entry.isFile() && entry.name.endsWith(".md") && !planRe.test(entry.name)) {
+      violations.push({
+        file: `docs/plans/${entry.name}`,
+        line: 0,
+        message: "plan filename violates taxonomy planFilenamePattern",
+      });
+    }
+  }
+  const decisionRe = new RegExp(taxonomy.decisionFilenamePattern);
+  const decisionEntries = await listDirOnce(path.join(REPO_ROOT, "docs", "decisions"));
+  for (const entry of decisionEntries) {
+    if (entry.isFile() && entry.name.endsWith(".md") && !decisionRe.test(entry.name)) {
+      violations.push({
+        file: `docs/decisions/${entry.name}`,
+        line: 0,
+        message: "decision filename violates taxonomy decisionFilenamePattern",
+      });
+    }
+  }
+
+  return { name: "taxonomy", violations };
 }
 
 async function checkEntryDocuments() {
@@ -613,9 +787,11 @@ async function checkMarkdownLinks() {
 
 const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
+  { name: "registry-integrity", fn: checkRegistryIntegrity },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
   { name: "standards-status", fn: checkStandardsStatus },
   { name: "platform-metadata", fn: checkPlatformMetadata },
+  { name: "taxonomy", fn: checkTaxonomy },
   { name: "entry-documents", fn: checkEntryDocuments },
   { name: "markdown-links", fn: checkMarkdownLinks },
   { name: "length-caps", fn: checkLengthCaps },
