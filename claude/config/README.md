@@ -6,6 +6,7 @@ Shared JSON registries, service credentials, and public service configuration.
 
 | File | Purpose | Git status |
 |------|---------|------------|
+| `agent-hub.json` | Harness, shared layer, registry, generated document, runtime path, and validator manifest | committed |
 | `doc-budgets.json` | Document length budgets consumed by `validate-llm-first.mjs` | committed |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata file list | committed |
 | `taxonomy.json` | Skill/command categories, standard groups, naming regexes | committed |

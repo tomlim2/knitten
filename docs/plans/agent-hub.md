@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** P0.75 schema complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** P1.5 manifest validator complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -65,8 +65,8 @@ An agent hub is a repo that answers these questions without chat history:
 | P0 | done | Create this plan and LOOKUP entry | Plan is discoverable from LOOKUP |
 | P0.5 | done | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path policies | Migration gap table uses the required columns below |
 | P0.75 | done | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
-| P1 | pending | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
-| P1.5 | pending | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
+| P1 | done | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
+| P1.5 | done | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
 | P2 | pending | Decide whether `AGENT-HUB.md` exists | Decision record accepts or rejects a root hub document |
 | P2.5 | pending | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
 | P3 | pending | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
@@ -190,11 +190,11 @@ Validated view rules:
 
 ## First Implementation Slice
 
-1. Run the P0.5 sweep.
-2. Write the gap table under this plan.
-3. Finalize P0.75 schema and validated view rules.
-4. Draft `agent-hub.json` without runtime behavior.
-5. Add validator checks only after the manifest shape is stable.
+1. Done: Run the P0.5 sweep.
+2. Done: Write the gap table under this plan.
+3. Done: Finalize P0.75 schema and validated view rules.
+4. Done: Draft `agent-hub.json` without runtime behavior.
+5. Done: Add validator checks after the manifest shape is stable.
 
 ## Naming
 

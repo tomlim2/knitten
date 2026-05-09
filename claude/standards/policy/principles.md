@@ -29,10 +29,11 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`. This
 **validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
 <!-- generated:validator-checks -->
-Validator checks: **13**.
+Validator checks: **14**.
 
 - `banned-terms`
 - `registry-integrity`
+- `agent-hub`
 - `rules-frontmatter`
 - `standards-status`
 - `platform-metadata`

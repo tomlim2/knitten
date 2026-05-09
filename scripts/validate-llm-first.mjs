@@ -922,6 +922,241 @@ async function checkRegistryIntegrity() {
   return { name: "registry-integrity", violations };
 }
 
+const AGENT_HUB_ALLOWED = {
+  sharedLayerKinds: new Set(["rules", "standards", "skills", "commands", "lib", "config"]),
+  loadModes: new Set(["entry", "auto", "triggered", "on-demand", "invoked", "library", "config"]),
+  registryFormats: new Set(["json"]),
+  registrySecretPolicies: new Set(["no-secrets", "template-only", "private-values"]),
+  generatedDocumentModes: new Set(["generated-block", "validated-manual", "thin-wrapper"]),
+  runtimeOwners: new Set(["caol-ila", "runtime", "machine-local", "project-local"]),
+  gitPolicies: new Set(["tracked", "ignored", "template-tracked", "mixed"]),
+  runtimeSecretPolicies: new Set(["no-secrets", "may-contain-secrets", "must-not-commit"]),
+  durability: new Set(["durable", "runtime", "cache", "session", "backup", "private"]),
+};
+
+function pushUniqueIdViolations(violations, file, key, entries) {
+  if (!Array.isArray(entries) || entries.length === 0) {
+    violations.push({ file, line: 1, message: `${key} must be a non-empty array` });
+    return;
+  }
+  const ids = [];
+  for (const entry of entries) {
+    if (!entry || typeof entry !== "object") {
+      violations.push({ file, line: 1, message: `${key} entries must be objects` });
+      continue;
+    }
+    if (!entry.id || typeof entry.id !== "string") {
+      violations.push({ file, line: 1, message: `${key} entry missing id` });
+    } else {
+      ids.push(entry.id);
+    }
+  }
+  if (hasDuplicates(ids)) {
+    violations.push({ file, line: 1, message: `${key} ids must not contain duplicates` });
+  }
+}
+
+function manifestPathExists(value) {
+  if (!value || typeof value !== "string") return false;
+  if (value.startsWith("~/")) return true;
+  if (/[*{}]/.test(value)) return true;
+  return existsSync(path.join(REPO_ROOT, value));
+}
+
+function pushManifestPathViolation(violations, field, value) {
+  if (!manifestPathExists(value)) {
+    violations.push({
+      file: "claude/config/agent-hub.json",
+      line: 1,
+      message: `${field} target does not exist: ${value}`,
+    });
+  }
+}
+
+function collectManifestStrings(value, out = []) {
+  if (typeof value === "string") {
+    out.push(value);
+    return out;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectManifestStrings(item, out);
+    return out;
+  }
+  if (value && typeof value === "object") {
+    for (const item of Object.values(value)) collectManifestStrings(item, out);
+  }
+  return out;
+}
+
+async function checkAgentHubManifest() {
+  const violations = [];
+  const file = "claude/config/agent-hub.json";
+  let manifest;
+  try {
+    manifest = await readJsonConfig("agent-hub.json");
+  } catch (err) {
+    return {
+      name: "agent-hub",
+      violations: [{ file, line: 1, message: `cannot read agent hub manifest: ${err.message}` }],
+    };
+  }
+
+  if (manifest.version !== 1) {
+    violations.push({ file, line: 1, message: "version must be 1" });
+  }
+
+  for (const key of [
+    "harnesses",
+    "sharedLayers",
+    "registries",
+    "generatedDocuments",
+    "runtimePathPolicies",
+    "validators",
+  ]) {
+    pushUniqueIdViolations(violations, file, key, manifest[key]);
+  }
+
+  for (const harness of manifest.harnesses || []) {
+    for (const field of ["displayName", "entryDocument", "deployTarget", "firstRead", "adapter"]) {
+      if (!harness[field] || typeof harness[field] !== "string") {
+        violations.push({ file, line: 1, message: `harness ${harness.id || "<unknown>"} missing ${field}` });
+      }
+    }
+    if (harness.entryDocument) {
+      pushManifestPathViolation(violations, `harness ${harness.id}.entryDocument`, harness.entryDocument);
+      const entryPath = path.join(REPO_ROOT, harness.entryDocument);
+      if (existsSync(entryPath) && harness.firstRead) {
+        const text = await readFile(entryPath, "utf8");
+        if (!text.includes(harness.firstRead)) {
+          violations.push({
+            file,
+            line: 1,
+            message: `harness ${harness.id}.firstRead not found in ${harness.entryDocument}`,
+          });
+        }
+      }
+    }
+    if (harness.deployTarget) {
+      pushManifestPathViolation(violations, `harness ${harness.id}.deployTarget`, harness.deployTarget);
+    }
+  }
+
+  for (const layer of manifest.sharedLayers || []) {
+    for (const field of ["path", "kind", "loadMode", "inventorySource", "deployTarget"]) {
+      if (!layer[field] || typeof layer[field] !== "string") {
+        violations.push({ file, line: 1, message: `sharedLayers ${layer.id || "<unknown>"} missing ${field}` });
+      }
+    }
+    if (layer.kind && !AGENT_HUB_ALLOWED.sharedLayerKinds.has(layer.kind)) {
+      violations.push({ file, line: 1, message: `sharedLayers ${layer.id}.kind has unknown value ${layer.kind}` });
+    }
+    if (layer.loadMode && !AGENT_HUB_ALLOWED.loadModes.has(layer.loadMode)) {
+      violations.push({ file, line: 1, message: `sharedLayers ${layer.id}.loadMode has unknown value ${layer.loadMode}` });
+    }
+    if (layer.path) pushManifestPathViolation(violations, `sharedLayers ${layer.id}.path`, layer.path);
+    if (layer.inventorySource) {
+      pushManifestPathViolation(violations, `sharedLayers ${layer.id}.inventorySource`, layer.inventorySource);
+    }
+  }
+
+  for (const registry of manifest.registries || []) {
+    for (const field of ["path", "domain", "format", "deployTarget", "secretPolicy"]) {
+      if (!registry[field] || typeof registry[field] !== "string") {
+        violations.push({ file, line: 1, message: `registries ${registry.id || "<unknown>"} missing ${field}` });
+      }
+    }
+    if (registry.format && !AGENT_HUB_ALLOWED.registryFormats.has(registry.format)) {
+      violations.push({ file, line: 1, message: `registries ${registry.id}.format has unknown value ${registry.format}` });
+    }
+    if (registry.secretPolicy && !AGENT_HUB_ALLOWED.registrySecretPolicies.has(registry.secretPolicy)) {
+      violations.push({
+        file,
+        line: 1,
+        message: `registries ${registry.id}.secretPolicy has unknown value ${registry.secretPolicy}`,
+      });
+    }
+    if (registry.path) {
+      pushManifestPathViolation(violations, `registries ${registry.id}.path`, registry.path);
+      if (registry.path.endsWith(".json") && existsSync(path.join(REPO_ROOT, registry.path))) {
+        try {
+          JSON.parse(await readFile(path.join(REPO_ROOT, registry.path), "utf8"));
+        } catch (err) {
+          violations.push({ file, line: 1, message: `registries ${registry.id}.path is invalid JSON: ${err.message}` });
+        }
+      }
+    }
+  }
+
+  for (const generated of manifest.generatedDocuments || []) {
+    for (const field of ["path", "marker", "source", "mode", "validator"]) {
+      if (!generated[field] || typeof generated[field] !== "string") {
+        violations.push({ file, line: 1, message: `generatedDocuments ${generated.id || "<unknown>"} missing ${field}` });
+      }
+    }
+    if (generated.mode && !AGENT_HUB_ALLOWED.generatedDocumentModes.has(generated.mode)) {
+      violations.push({ file, line: 1, message: `generatedDocuments ${generated.id}.mode has unknown value ${generated.mode}` });
+    }
+    if (generated.path) pushManifestPathViolation(violations, `generatedDocuments ${generated.id}.path`, generated.path);
+    if (generated.mode === "generated-block" && generated.path && generated.marker) {
+      const generatedPath = path.join(REPO_ROOT, generated.path);
+      if (existsSync(generatedPath)) {
+        const text = await readFile(generatedPath, "utf8");
+        if (!text.includes(`generated:${generated.marker}`)) {
+          violations.push({ file, line: 1, message: `generatedDocuments ${generated.id} marker missing` });
+        }
+      }
+    }
+  }
+
+  for (const policy of manifest.runtimePathPolicies || []) {
+    for (const field of ["pathPattern", "owner", "gitPolicy", "secretPolicy", "durability"]) {
+      if (!policy[field] || typeof policy[field] !== "string") {
+        violations.push({ file, line: 1, message: `runtimePathPolicies ${policy.id || "<unknown>"} missing ${field}` });
+      }
+    }
+    if (policy.owner && !AGENT_HUB_ALLOWED.runtimeOwners.has(policy.owner)) {
+      violations.push({ file, line: 1, message: `runtimePathPolicies ${policy.id}.owner has unknown value ${policy.owner}` });
+    }
+    if (policy.gitPolicy && !AGENT_HUB_ALLOWED.gitPolicies.has(policy.gitPolicy)) {
+      violations.push({ file, line: 1, message: `runtimePathPolicies ${policy.id}.gitPolicy has unknown value ${policy.gitPolicy}` });
+    }
+    if (policy.secretPolicy && !AGENT_HUB_ALLOWED.runtimeSecretPolicies.has(policy.secretPolicy)) {
+      violations.push({
+        file,
+        line: 1,
+        message: `runtimePathPolicies ${policy.id}.secretPolicy has unknown value ${policy.secretPolicy}`,
+      });
+    }
+    if (policy.durability && !AGENT_HUB_ALLOWED.durability.has(policy.durability)) {
+      violations.push({ file, line: 1, message: `runtimePathPolicies ${policy.id}.durability has unknown value ${policy.durability}` });
+    }
+  }
+
+  const listedChecks = new Set(CHECKS.map((check) => check.name));
+  for (const validator of manifest.validators || []) {
+    for (const field of ["script", "listedCheck", "covers"]) {
+      if (!validator[field]) {
+        violations.push({ file, line: 1, message: `validators ${validator.id || "<unknown>"} missing ${field}` });
+      }
+    }
+    if (validator.script) pushManifestPathViolation(violations, `validators ${validator.id}.script`, validator.script);
+    if (validator.listedCheck && !listedChecks.has(validator.listedCheck)) {
+      violations.push({ file, line: 1, message: `validators ${validator.id}.listedCheck is not registered` });
+    }
+    if (!Array.isArray(validator.covers) || validator.covers.length === 0) {
+      violations.push({ file, line: 1, message: `validators ${validator.id || "<unknown>"}.covers must be non-empty` });
+    }
+  }
+
+  for (const value of collectManifestStrings(manifest)) {
+    if (/^\/Users\//.test(value) || /^[A-Za-z]:\\/.test(value)) {
+      violations.push({ file, line: 1, message: `manifest must not store machine-specific absolute path: ${value}` });
+    }
+  }
+
+  return { name: "agent-hub", violations };
+}
+
 async function checkTaxonomy() {
   const violations = [];
   const taxonomy = await readJsonConfig("taxonomy.json");
@@ -1124,6 +1359,7 @@ async function checkGeneratedBlocks() {
 const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
   { name: "registry-integrity", fn: checkRegistryIntegrity },
+  { name: "agent-hub", fn: checkAgentHubManifest },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
   { name: "standards-status", fn: checkStandardsStatus },
   { name: "platform-metadata", fn: checkPlatformMetadata },

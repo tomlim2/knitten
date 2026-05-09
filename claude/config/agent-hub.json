@@ -1,0 +1,336 @@
+{
+  "version": 1,
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "displayName": "Claude Code",
+      "entryDocument": "CLAUDE.md",
+      "deployTarget": "~/.claude/CLAUDE.md",
+      "firstRead": "@SYSTEM.md",
+      "adapter": "claude"
+    },
+    {
+      "id": "codex",
+      "displayName": "Codex",
+      "entryDocument": "AGENTS.md",
+      "deployTarget": "AGENTS.md",
+      "firstRead": "[`SYSTEM.md`](SYSTEM.md)",
+      "adapter": "codex"
+    }
+  ],
+  "sharedLayers": [
+    {
+      "id": "rules",
+      "path": "claude/rules",
+      "kind": "rules",
+      "loadMode": "entry",
+      "inventorySource": "claude/rules/index.md",
+      "deployTarget": "~/.claude/rules"
+    },
+    {
+      "id": "standards",
+      "path": "claude/standards",
+      "kind": "standards",
+      "loadMode": "on-demand",
+      "inventorySource": "claude/standards/index.md",
+      "deployTarget": "~/.claude/standards"
+    },
+    {
+      "id": "skills",
+      "path": "claude/skills",
+      "kind": "skills",
+      "loadMode": "triggered",
+      "inventorySource": "README.md",
+      "deployTarget": "~/.claude/skills"
+    },
+    {
+      "id": "commands",
+      "path": "claude/commands",
+      "kind": "commands",
+      "loadMode": "invoked",
+      "inventorySource": "README.md",
+      "deployTarget": "~/.claude/commands"
+    },
+    {
+      "id": "lib",
+      "path": "claude/lib",
+      "kind": "lib",
+      "loadMode": "library",
+      "inventorySource": "SYSTEM.md",
+      "deployTarget": "~/.claude/lib"
+    },
+    {
+      "id": "config",
+      "path": "claude/config",
+      "kind": "config",
+      "loadMode": "config",
+      "inventorySource": "claude/config/README.md",
+      "deployTarget": "~/.claude/config"
+    }
+  ],
+  "registries": [
+    {
+      "id": "agent-hub",
+      "path": "claude/config/agent-hub.json",
+      "domain": "agent hub routing and validation metadata",
+      "format": "json",
+      "deployTarget": "~/.claude/config/agent-hub.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "doc-budgets",
+      "path": "claude/config/doc-budgets.json",
+      "domain": "document length budgets",
+      "format": "json",
+      "deployTarget": "~/.claude/config/doc-budgets.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "frontmatter-schema",
+      "path": "claude/config/frontmatter-schema.json",
+      "domain": "frontmatter enums and platform metadata pilot files",
+      "format": "json",
+      "deployTarget": "~/.claude/config/frontmatter-schema.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "taxonomy",
+      "path": "claude/config/taxonomy.json",
+      "domain": "categories, standard groups, and naming patterns",
+      "format": "json",
+      "deployTarget": "~/.claude/config/taxonomy.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "audit-policy",
+      "path": "claude/config/audit-policy.json",
+      "domain": "audit thresholds and severity tiers",
+      "format": "json",
+      "deployTarget": "~/.claude/config/audit-policy.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "exceptions",
+      "path": "claude/config/exceptions.json",
+      "domain": "grandfathered exceptions",
+      "format": "json",
+      "deployTarget": "~/.claude/config/exceptions.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "slack",
+      "path": "claude/config/slack.json",
+      "domain": "non-secret Slack channel IDs and message templates",
+      "format": "json",
+      "deployTarget": "~/.claude/config/slack.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "doc-paths",
+      "path": "claude/private/caol-config/doc-paths.json",
+      "domain": "shared document routing",
+      "format": "json",
+      "deployTarget": "~/.claude/private/caol-config/doc-paths.json",
+      "secretPolicy": "no-secrets"
+    }
+  ],
+  "generatedDocuments": [
+    {
+      "id": "readme-inventory",
+      "path": "README.md",
+      "marker": "readme-inventory",
+      "source": "claude commands, skills, standards, and rules",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
+    },
+    {
+      "id": "validator-checks",
+      "path": "claude/standards/policy/principles.md",
+      "marker": "validator-checks",
+      "source": "scripts/validate-llm-first.mjs --list",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
+    },
+    {
+      "id": "system-entry-documents",
+      "path": "SYSTEM.md",
+      "marker": "entry-documents-table",
+      "source": "claude/config/agent-hub.json harnesses",
+      "mode": "validated-manual",
+      "validator": "agent-hub"
+    }
+  ],
+  "runtimePathPolicies": [
+    {
+      "id": "claude-settings",
+      "pathPattern": "claude/settings.json",
+      "owner": "caol-ila",
+      "gitPolicy": "tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "project-settings-templates",
+      "pathPattern": "claude/config/permissions/*.json",
+      "owner": "caol-ila",
+      "gitPolicy": "template-tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "hooks",
+      "pathPattern": "claude/hooks/*.sh",
+      "owner": "caol-ila",
+      "gitPolicy": "tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "shared-deploy-tree",
+      "pathPattern": "~/.claude/{rules,standards,skills,commands,lib,config}",
+      "owner": "caol-ila",
+      "gitPolicy": "tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "machine-private-config",
+      "pathPattern": "claude/private/caol-config/{hardware,machine-paths,repo-paths}.json",
+      "owner": "machine-local",
+      "gitPolicy": "ignored",
+      "secretPolicy": "may-contain-secrets",
+      "durability": "private"
+    },
+    {
+      "id": "runtime-history",
+      "pathPattern": "claude/history.jsonl",
+      "owner": "runtime",
+      "gitPolicy": "ignored",
+      "secretPolicy": "must-not-commit",
+      "durability": "session"
+    },
+    {
+      "id": "runtime-cache-folders",
+      "pathPattern": "claude/{cache,backups,sessions,tasks,telemetry,projects,shell-snapshots,paste-cache,file-history,plans,session-env}",
+      "owner": "runtime",
+      "gitPolicy": "ignored",
+      "secretPolicy": "must-not-commit",
+      "durability": "cache"
+    }
+  ],
+  "validators": [
+    {
+      "id": "banned-terms",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "banned-terms",
+      "covers": [
+        "banned wording in active LLM docs"
+      ]
+    },
+    {
+      "id": "registry-integrity",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "registry-integrity",
+      "covers": [
+        "registry JSON structure"
+      ]
+    },
+    {
+      "id": "agent-hub",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "agent-hub",
+      "covers": [
+        "agent hub manifest schema"
+      ]
+    },
+    {
+      "id": "rules-frontmatter",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "rules-frontmatter",
+      "covers": [
+        "rule load metadata"
+      ]
+    },
+    {
+      "id": "standards-status",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "standards-status",
+      "covers": [
+        "standard status metadata"
+      ]
+    },
+    {
+      "id": "platform-metadata",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "platform-metadata",
+      "covers": [
+        "platform and portability metadata"
+      ]
+    },
+    {
+      "id": "taxonomy",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "taxonomy",
+      "covers": [
+        "skill and command categories",
+        "managed document naming"
+      ]
+    },
+    {
+      "id": "entry-documents",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "entry-documents",
+      "covers": [
+        "entry document first-read markers"
+      ]
+    },
+    {
+      "id": "generated-blocks",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "generated-blocks",
+      "covers": [
+        "generated markdown blocks"
+      ]
+    },
+    {
+      "id": "markdown-links",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "markdown-links",
+      "covers": [
+        "markdown link targets"
+      ]
+    },
+    {
+      "id": "length-caps",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "length-caps",
+      "covers": [
+        "document line budgets"
+      ]
+    },
+    {
+      "id": "import-targets",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "import-targets",
+      "covers": [
+        "Claude import targets"
+      ]
+    },
+    {
+      "id": "inventory-counts",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "inventory-counts",
+      "covers": [
+        "README inventory counts"
+      ]
+    },
+    {
+      "id": "lookup-presence",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "lookup-presence",
+      "covers": [
+        "LOOKUP presence"
+      ]
+    }
+  ]
+}
