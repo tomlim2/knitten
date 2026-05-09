@@ -294,6 +294,17 @@ function normalizeGeneratedBlock(value) {
   return value.replace(/\r\n/g, "\n").trim();
 }
 
+async function managedMarkdownFiles(folder) {
+  const root = path.join(REPO_ROOT, folder.path);
+  if (folder.recursive) {
+    return await walk(root, (f) => f.endsWith(".md"));
+  }
+  const entries = await listDirOnce(root);
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => path.join(root, entry.name));
+}
+
 // ---------- file scope helpers ----------
 
 async function llmFirstFiles() {
@@ -757,7 +768,99 @@ async function checkRegistryIntegrity() {
   pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "platformMetadataPilotFiles", schema.platformMetadataPilotFiles);
   pushArrayViolations(violations, "claude/config/taxonomy.json", "skillCommandCategories", taxonomy.skillCommandCategories, { sorted: true });
   pushArrayViolations(violations, "claude/config/taxonomy.json", "standardGroups", taxonomy.standardGroups, { sorted: true });
+  pushArrayViolations(violations, "claude/config/taxonomy.json", "universalAbbreviations", taxonomy.universalAbbreviations, { sorted: true });
   pushArrayViolations(violations, "claude/config/audit-policy.json", "severityTiers", auditPolicy.severityTiers);
+
+  if (!Number.isInteger(taxonomy.maxArtifactNameChars) || taxonomy.maxArtifactNameChars <= 0) {
+    violations.push({
+      file: "claude/config/taxonomy.json",
+      line: 1,
+      message: "maxArtifactNameChars must be a positive integer",
+    });
+  }
+  for (const key of [
+    "ruleFilenamePattern",
+    "standardFilenamePattern",
+    "planFilenamePattern",
+    "decisionFilenamePattern",
+  ]) {
+    if (!taxonomy[key] || typeof taxonomy[key] !== "string") {
+      violations.push({
+        file: "claude/config/taxonomy.json",
+        line: 1,
+        message: `${key} must be a regex string`,
+      });
+      continue;
+    }
+    try {
+      new RegExp(taxonomy[key]);
+    } catch {
+      violations.push({
+        file: "claude/config/taxonomy.json",
+        line: 1,
+        message: `${key} must compile as a regex`,
+      });
+    }
+  }
+  pushArrayViolations(violations, "claude/config/taxonomy.json", "managedDocumentFolders", taxonomy.managedDocumentFolders);
+  const managedPaths = [];
+  for (const entry of taxonomy.managedDocumentFolders || []) {
+    if (!entry || typeof entry !== "object") {
+      violations.push({
+        file: "claude/config/taxonomy.json",
+        line: 1,
+        message: "managedDocumentFolders entries must be objects",
+      });
+      continue;
+    }
+    for (const field of ["path", "patternKey"]) {
+      if (!entry[field] || typeof entry[field] !== "string") {
+        violations.push({
+          file: "claude/config/taxonomy.json",
+          line: 1,
+          message: `managedDocumentFolders entry missing ${field}`,
+        });
+      }
+    }
+    if (typeof entry.recursive !== "boolean") {
+      violations.push({
+        file: "claude/config/taxonomy.json",
+        line: 1,
+        message: `managedDocumentFolders ${entry.path || "<unknown>"} recursive must be boolean`,
+      });
+    }
+    if (entry.path) {
+      managedPaths.push(entry.path);
+      if (!existsSync(path.join(REPO_ROOT, entry.path))) {
+        violations.push({
+          file: "claude/config/taxonomy.json",
+          line: 1,
+          message: `managedDocumentFolders path does not exist: ${entry.path}`,
+        });
+      }
+    }
+    if (entry.patternKey && typeof taxonomy[entry.patternKey] !== "string") {
+      violations.push({
+        file: "claude/config/taxonomy.json",
+        line: 1,
+        message: `managedDocumentFolders ${entry.path || "<unknown>"} references unknown patternKey ${entry.patternKey}`,
+      });
+    }
+  }
+  if (hasDuplicates(managedPaths)) {
+    violations.push({
+      file: "claude/config/taxonomy.json",
+      line: 1,
+      message: "managedDocumentFolders paths must not contain duplicates",
+    });
+  }
+  if (!isSorted(managedPaths)) {
+    violations.push({
+      file: "claude/config/taxonomy.json",
+      line: 1,
+      message: "managedDocumentFolders paths must be sorted alphabetically",
+    });
+  }
 
   for (const [key, value] of Object.entries(auditPolicy.garden || {})) {
     if (!Number.isInteger(value) || value <= 0) {
@@ -862,26 +965,29 @@ async function checkTaxonomy() {
     }
   }
 
-  const planRe = new RegExp(taxonomy.planFilenamePattern);
-  const planEntries = await listDirOnce(path.join(REPO_ROOT, "docs", "plans"));
-  for (const entry of planEntries) {
-    if (entry.isFile() && entry.name.endsWith(".md") && !planRe.test(entry.name)) {
-      violations.push({
-        file: `docs/plans/${entry.name}`,
-        line: 0,
-        message: "plan filename violates taxonomy planFilenamePattern",
-      });
+  const maxNameChars = taxonomy.maxArtifactNameChars;
+  for (const folder of taxonomy.managedDocumentFolders || []) {
+    if (!folder || !folder.path || !folder.patternKey || typeof taxonomy[folder.patternKey] !== "string") {
+      continue;
     }
-  }
-  const decisionRe = new RegExp(taxonomy.decisionFilenamePattern);
-  const decisionEntries = await listDirOnce(path.join(REPO_ROOT, "docs", "decisions"));
-  for (const entry of decisionEntries) {
-    if (entry.isFile() && entry.name.endsWith(".md") && !decisionRe.test(entry.name)) {
-      violations.push({
-        file: `docs/decisions/${entry.name}`,
-        line: 0,
-        message: "decision filename violates taxonomy decisionFilenamePattern",
-      });
+    const re = new RegExp(taxonomy[folder.patternKey]);
+    const files = await managedMarkdownFiles(folder);
+    for (const f of files) {
+      const name = path.basename(f);
+      if (Number.isInteger(maxNameChars) && name.length > maxNameChars) {
+        violations.push({
+          file: rel(f),
+          line: 0,
+          message: `filename length ${name.length} exceeds taxonomy maxArtifactNameChars ${maxNameChars}`,
+        });
+      }
+      if (!re.test(name)) {
+        violations.push({
+          file: rel(f),
+          line: 0,
+          message: `filename violates taxonomy ${folder.patternKey}`,
+        });
+      }
     }
   }
 

@@ -48,10 +48,10 @@ When working in another repo, follow that repo's naming rules. This standard doe
 |------|----------|
 | Lowercase only | every artifact |
 | Hyphen-separated, no underscores, no camelCase, no spaces | every artifact |
-| Max 64 characters | every artifact |
+| Max length from `claude/config/taxonomy.json` key `maxArtifactNameChars` | every artifact |
 | Filename = slug only — never repeat the folder, project, or type in the name | every artifact |
 | Kebab-case 2–5 words | every artifact |
-| Abbreviations only if universal | every artifact (`adr`, `vrm`, `pmx`, `ue`, `ci` — not `auth`, `mgr`, `cfg`) |
+| Abbreviations only if listed in `claude/config/taxonomy.json` key `universalAbbreviations` | every artifact |
 
 ---
 
@@ -63,7 +63,7 @@ Pattern: `{category}-{verb}-{subject}`
 
 - **Internal:** `{category}-{verb}-{subject}` (e.g. `cci-validate-vrm`, `caol-make-rule`)
 - **External wrapper:** `{category}-{repo}-{verb}-{subject}` (e.g. `design-huashu-make-prototype`)
-- **Categories:** `algorithmic`, `brand`, `canvas`, `caol`, `cci`, `claude`, `consulting`, `design`, `dev`, `drink`, `frontend`, `git`, `image`, `learn`, `obsidian`, `pmx`, `project`, `review`, `shotloom`, `system`, `tutoring`, `ue`, `video`, `vrm`, `writing`
+- **Categories:** canonical list lives in `claude/config/taxonomy.json` key `skillCommandCategories`
 - **Verbs:** keep simple — `make` not `generate`, `add` not `append`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
@@ -97,16 +97,17 @@ Pattern: `{noun-phrase}.md` describing the subject — no verbs.
 | Code review | `review-{target}.md` | `review-template.md`, `review-code-rust.md`, `review-ux.md` |
 | Workflow | `{topic}-workflow.md` | `cinev-git-workflow.md`, `agent-workflow.md` |
 
-Subgroup folder declares the topical area (one of `policy/`, `authoring/`, `multi-agent/`, `research/`, `review/`, `language/`, `unreal/`, `cinev/`, `obsidian/`, `system/`); never repeat the subgroup in the filename.
+Subgroup folder declares the topical area. Canonical subgroup names live in `claude/config/taxonomy.json` key `standardGroups`; never repeat the subgroup in the filename.
 
 ### Plans (`docs/plans/*.md`)
 
 Pattern: verb-first when the plan is an execution doc; noun otherwise.
 
+Mechanical pattern lives in `claude/config/taxonomy.json` key `planFilenamePattern`.
+
 | Plan kind | Naming pattern | Examples |
 |-----------|----------------|----------|
 | Migration / refactor | `migrate-to-{target}.md`, `split-{thing}.md` | `migrate-to-llm-first.md`, `split-vault-folders.md` |
-| Per-ticket plan | `{TICKET-ID}-{slug}.md` | `STL-247-prefilter-removal.md` |
 | Garden / review | `garden-{YYYY-MM-DD}.md` | `garden-2026-05-01.md` |
 
 ### Vault notes (`{vault}/claude/projects/<project>/<folder>/*.md`)
@@ -151,4 +152,4 @@ A rename is correct (not cosmetic) when:
 - A new family appeared and the old name no longer fits the family pattern (e.g. PR rules emerged → rename `git.md` → `git-defaults.md`).
 - The name uses a metaphor where a literal works (`MAP.md` → `LOOKUP.md`).
 
-Renames touch every reference; use the validator `inventory-counts` check to catch broken links.
+Renames touch every reference; use validator checks `markdown-links`, `taxonomy`, and `generated-blocks` before commit.

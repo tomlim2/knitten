@@ -1,5 +1,6 @@
 ---
-status: active
+status: done
+completed: 2026-05-09
 load: triggered
 trigger: hardening system docs against magic-value drift
 created: 2026-05-09
@@ -23,7 +24,7 @@ System docs contain repeated counts, thresholds, enums, category lists, and exce
 | P1.5 | done | Make validator read registries and fail on drift | Registry values become executable checks |
 | P2 | done | Add generated blocks for README inventory and validator check count | Marker blocks delimit generated text |
 | P2.5 | done | Update authoring skills to patch registries when adding new values | `caol-make-skill` owns category registration |
-| P3 | partial | Harden LLM-friendly document naming | Naming standard and taxonomy prevent vague file names |
+| P3 | done | Harden LLM-friendly document naming | Naming standard and taxonomy prevent vague file names |
 
 ## P0 Fixes
 
@@ -58,7 +59,7 @@ Scope: `SYSTEM.md`, `README.md`, `LOOKUP.md`, `docs/`, `claude/rules/`, `claude/
 |------|------|---------------------|
 | `claude/config/doc-budgets.json` | Length budgets for doc classes | `length-caps` |
 | `claude/config/frontmatter-schema.json` | Frontmatter fields and allowed values | `rules-frontmatter`, `standards-status`, `platform-metadata` |
-| `claude/config/taxonomy.json` | Skill/command categories and standard groups | new `taxonomy` check |
+| `claude/config/taxonomy.json` | Skill/command categories, standard groups, filename patterns, managed naming folders | new `taxonomy` check |
 | `claude/config/audit-policy.json` | Garden/audit thresholds and severity tiers | new `audit-policy` check |
 | `claude/config/exceptions.json` | Grandfathered exceptions with rationale | `length-caps` |
 
@@ -113,11 +114,17 @@ Naming validation belongs in three places:
 | `README.md` | `generated:readme-inventory` | computed command, skill, standard, and rule inventory |
 | `claude/standards/policy/principles.md` | `generated:validator-checks` | validator `CHECKS` list |
 
-## Next Step
+## Implemented Naming Validation
 
-Implement P3 in this order:
+| Item | Implementation |
+|------|----------------|
+| Managed folders | `claude/config/taxonomy.json` key `managedDocumentFolders` |
+| Filename patterns | `ruleFilenamePattern`, `standardFilenamePattern`, `planFilenamePattern`, `decisionFilenamePattern` |
+| Max filename length | `maxArtifactNameChars` |
+| Universal abbreviation list | `universalAbbreviations` |
+| Mechanical check | validator `taxonomy` check reads the registry and validates managed Markdown filenames |
+| Authoring references | `author-naming.md` and `naming.md` point to taxonomy instead of duplicating category/group lists |
 
-1. Define managed doc folders that get filename validation.
-2. Convert naming rules into registry-backed patterns where possible.
-3. Add validator checks for pattern-constrained plan and decision filenames.
-4. Decide whether command/skill verb families need a separate registry.
+## Closeout
+
+This plan is complete. Continue broader platform work in [`agent-hub.md`](agent-hub.md).

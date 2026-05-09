@@ -7,8 +7,8 @@ trigger: creating a command or skill
 - **Pattern (external wrappers)** — `{category}-{repo}-{verb}-{subject}` for wrappers that `@import` a third-party skill hosted in `knitten/vendor/`. The `{repo}` token marks the upstream source so picker disambiguation is instant.
 - **Lowercase only** — No capitals, no camelCase, no underscores, no spaces
 - **Hyphens as separators** — Multi-word subjects use hyphens (`creator-launcher`)
-- **Max 64 characters**
-- **Categories** — `algorithmic`, `brand`, `canvas`, `caol`, `cci`, `claude`, `consulting`, `design`, `dev`, `drink`, `frontend`, `git`, `image`, `learn`, `obsidian`, `pmx`, `project`, `review`, `shotloom`, `system`, `tutoring`, `ue`, `video`, `vrm`, `writing`
+- **Max length** — use `~/.claude/config/taxonomy.json` key `maxArtifactNameChars`
+- **Categories** — use `~/.claude/config/taxonomy.json` key `skillCommandCategories`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Keep verbs simple** — `make` not `generate`, `add` not `append`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
