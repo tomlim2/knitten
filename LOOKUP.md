@@ -13,6 +13,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 | Edit any LLM-read doc (rule, standard, skill, command, README) | [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
 | Design a new layer (rule / standard / skill category / validator) | [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md) |
 | Explain why platform-neutral entry documents use shared source | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
+| Design caol-ila as an agent hub | [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md) |
 | Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
 | Look up a term or recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`claude/standards/policy/naming.md`](claude/standards/policy/naming.md) |
@@ -59,4 +60,5 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 - All standards: [`claude/standards/index.md`](claude/standards/index.md)
 - All rules: [`claude/rules/index.md`](claude/rules/index.md)
 - Active migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
+- Agent hub plan: [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md)
 - Vault folder split plan: [`docs/plans/split-vault-folders.md`](docs/plans/split-vault-folders.md)
