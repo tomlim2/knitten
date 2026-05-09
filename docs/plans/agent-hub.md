@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** P0.5 inventory complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** P0.75 schema complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -64,7 +64,7 @@ An agent hub is a repo that answers these questions without chat history:
 |------|--------|------|------------|
 | P0 | done | Create this plan and LOOKUP entry | Plan is discoverable from LOOKUP |
 | P0.5 | done | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path policies | Migration gap table uses the required columns below |
-| P0.75 | pending | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
+| P0.75 | done | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
 | P1 | pending | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
 | P1.5 | pending | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
 | P2 | pending | Decide whether `AGENT-HUB.md` exists | Decision record accepts or rejects a root hub document |
@@ -117,23 +117,49 @@ Required gap table columns:
 | Runtime path policy table | `SYSTEM.md` prose table and `.gitignore` | `agent-hub.json` `runtimePathPolicies` | `~/.claude/*` | none | Runtime path ownership is readable, but not machine-readable or checked against git policy | no |
 | `claude/settings.json` | tracked global settings file | `agent-hub.json` `runtimePathPolicies` plus settings policy | `~/.claude/settings.json` | none | Tracked settings can contain machine-specific absolute paths; no validator forbids them | yes: decide portable global settings contract |
 | `claude/hooks/` | tracked hook scripts referenced by settings | `agent-hub.json` `runtimePathPolicies` | `~/.claude/hooks/` | none | Hook script existence is not checked against settings hook references | no |
-| `claude/private/caol-config/doc-paths.json` | `.gitignore` exception and `SYSTEM.md` table | `agent-hub.json` `runtimePathPolicies` or `registries` | `~/.claude/private/caol-config/doc-paths.json` | none | Shared non-machine config lives under `private/`, which needs explicit classification | yes: classify as registry or runtime path policy |
+| `claude/private/caol-config/doc-paths.json` | `.gitignore` exception and `SYSTEM.md` table | `agent-hub.json` `registries` | `~/.claude/private/caol-config/doc-paths.json` | none | Shared non-machine config lives under `private/`, so manifest must classify it as a committed registry | no |
 | Machine-local caol config | `.gitignore` and `SYSTEM.md` table | `agent-hub.json` `runtimePathPolicies` | `~/.claude/private/caol-config/{hardware,machine-paths,repo-paths}.json` | none | Ignored files exist in the deploy tree; manifest must classify paths without storing values | no |
-| `claude/config/slack.json` | tracked file; config README says gitignored | service config policy in `agent-hub.json` or config README | `~/.claude/config/slack.json` | none | Git policy drift: README says gitignored, but the file is tracked | yes: decide committed non-secret service config vs private config |
+| `claude/config/slack.json` | tracked non-secret service config | `agent-hub.json` `registries` | `~/.claude/config/slack.json` | none | Service config is tracked, but not listed in a hub manifest yet | no |
 | Permission templates | `claude/config/permissions/README.md` | `agent-hub.json` `runtimePathPolicies` or `registries` | project `.claude/settings*.json` files | none | Template target paths and `{USERNAME}` replacement are not validator-checked | no |
 
 ## P0.75 Manifest Schema Draft
 
 `agent-hub.json` must be a registry, not a prose inventory. It owns machine-readable routing and validated-view data; generated docs display that data.
 
+Ownership decisions:
+
+| Decision | Rule |
+|----------|------|
+| Manifest owner | `claude/config/agent-hub.json` owns routing, path, classification, and validation metadata |
+| Policy owner | `SYSTEM.md` remains the canonical policy owner; manifest must not duplicate policy prose |
+| Shared layer owner | `agent-hub.json` lists shared layer paths and load modes; each layer still owns its content |
+| Registry owner | Purpose-specific JSON files own their domains; `agent-hub.json` only points to them |
+| Private-path registry owner | `claude/private/caol-config/doc-paths.json` is a committed registry because it contains shared non-machine routing |
+| Service config owner | Committed non-secret service configs such as `claude/config/slack.json` are registries; tokens stay in `.env` |
+| Runtime owner | Runtime-only paths are classified by `runtimePathPolicies`, not stored as managed artifacts |
+
 | Key | Required | Content | Validator behavior |
 |-----|----------|---------|--------------------|
-| `harnesses` | yes | harness id, display name, entry document path, deploy target path, first-read marker | entry docs exist; first-read marker points to `SYSTEM.md`; no duplicate id |
-| `sharedLayers` | yes | layer id, path, load mode, inventory source | paths exist; load modes match known values |
-| `registries` | yes | config file path and owned domain | paths exist; every listed registry is JSON |
-| `generatedDocuments` | yes | file path, marker id, generator/check owner | marker exists; validator can compare generated body or explicitly mark manual |
-| `runtimePathPolicies` | yes | path policy, owner, git policy, secret policy | runtime-only paths are classified without storing machine-local values |
-| `validators` | yes | validator id and covered contracts | listed checks exist in `scripts/validate-llm-first.mjs --list` |
+| `harnesses` | yes | `id`, `displayName`, `entryDocument`, `deployTarget`, `firstRead`, `adapter` | entry docs exist; first-read marker points to `SYSTEM.md`; no duplicate id |
+| `sharedLayers` | yes | `id`, `path`, `kind`, `loadMode`, `inventorySource`, `deployTarget` | paths exist; kind and load mode match allowed values |
+| `registries` | yes | `id`, `path`, `domain`, `format`, `deployTarget`, `secretPolicy` | paths exist; JSON parses; secret policy allows commit |
+| `generatedDocuments` | yes | `id`, `path`, `marker`, `source`, `mode`, `validator` | marker exists; validator can compare generated body or explicitly mark manual |
+| `runtimePathPolicies` | yes | `id`, `pathPattern`, `owner`, `gitPolicy`, `secretPolicy`, `durability` | path class is classified without storing machine-local values |
+| `validators` | yes | `id`, `script`, `listedCheck`, `covers` | listed checks exist in `scripts/validate-llm-first.mjs --list` |
+
+Allowed values:
+
+| Field | Values |
+|-------|--------|
+| `sharedLayers[].kind` | `rules`, `standards`, `skills`, `commands`, `lib`, `config` |
+| `sharedLayers[].loadMode` | `entry`, `auto`, `triggered`, `on-demand`, `invoked`, `library`, `config` |
+| `registries[].format` | `json` |
+| `registries[].secretPolicy` | `no-secrets`, `template-only`, `private-values` |
+| `generatedDocuments[].mode` | `generated-block`, `validated-manual`, `thin-wrapper` |
+| `runtimePathPolicies[].owner` | `caol-ila`, `runtime`, `machine-local`, `project-local` |
+| `runtimePathPolicies[].gitPolicy` | `tracked`, `ignored`, `template-tracked`, `mixed` |
+| `runtimePathPolicies[].secretPolicy` | `no-secrets`, `may-contain-secrets`, `must-not-commit` |
+| `runtimePathPolicies[].durability` | `durable`, `runtime`, `cache`, `session`, `backup`, `private` |
 
 Forbidden in `agent-hub.json`:
 
@@ -143,6 +169,16 @@ Forbidden in `agent-hub.json`:
 | Machine-specific absolute paths | machine paths stay in `~/.claude/private/caol-config/` |
 | Cache/session/history paths as managed artifacts | runtime data is not durable policy |
 | Freeform prose fields that duplicate `SYSTEM.md` policy | prose policy remains in `SYSTEM.md` |
+
+Forbidden field classes:
+
+| Class | Examples |
+|-------|----------|
+| Local absolute paths | `/Users/<name>/...`, drive-specific project paths |
+| Secret-like values | tokens, keys, cookies, credentials |
+| Runtime snapshots | history, sessions, telemetry, paste cache, backups |
+| Long prose policy | paragraphs that restate `SYSTEM.md`, standards, or rules |
+| Generated body copies | full README inventories or validator output bodies |
 
 Validated view rules:
 

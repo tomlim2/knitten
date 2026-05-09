@@ -13,7 +13,7 @@ Shared JSON registries, service credentials, and public service configuration.
 | `exceptions.json` | Grandfathered exceptions with reason, decision, review date | committed |
 | `.env` | All secret tokens (bot tokens, API keys) | gitignored |
 | `.env.example` | Template — which keys exist, no values | committed |
-| `slack.json` | Slack channels, bot name, message templates | gitignored |
+| `slack.json` | Slack channels, bot name, message templates with no tokens | committed |
 | `slack.json.example` | Template | committed |
 
 ## Rules
