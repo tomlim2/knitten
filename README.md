@@ -20,10 +20,10 @@ caol-ila/
 │   └── plans/                # Migration and follow-up plans
 ├── claude/                   # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Claude Code deploy shim
-│   ├── rules/      (25)      # Always-applied constraints (terse, ≤50 lines each)
-│   ├── standards/  (46)      # Reference docs, on-demand
-│   ├── commands/   (45)      # Slash command .md files
-│   ├── skills/     (135)     # Skill directories with SKILL.md
+│   ├── rules/                # Always-applied constraints
+│   ├── standards/            # Reference docs, on-demand
+│   ├── commands/             # Slash command .md files
+│   ├── skills/               # Skill directories with SKILL.md
 │   ├── config/               # Shared registries and service config
 │   └── private/              # Gitignored — machine config, secrets
 │       └── caol-config/      # Per-machine paths and specs (JSON)
@@ -54,19 +54,20 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
+<!-- generated:readme-inventory -->
 ## Commands (45)
 
 | Category | Count | Examples |
-|----------|------:|---------|
-| `cci-*` | 18 | `cci-art-create-branch`, `cci-validate-vrm`, `cci-open-project` |
-| `caol-*` | 15 | `caol-manage-config`, `caol-make-command`, `caol-make-skill` |
-| `ue-*` | 3 | `ue-analyze-material`, `ue-validate-asset-name`, `ue-check-redirectors` |
-| `dev-*` | 3 | `dev-fix-bug`, `dev-generate-spec`, `dev-sync-design` |
-| `tutoring-*` | 2 | `tutoring-log-lesson`, `tutoring-make-invoice` |
+|----------|------:|----------|
+| `cci-*` | 18 | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch` |
+| `caol-*` | 15 | `caol-check-status`, `caol-check-updates`, `caol-consult-codebase` |
+| `dev-*` | 3 | `dev-fix-bug`, `dev-open-pmx2vrm`, `dev-sync-design` |
+| `ue-*` | 3 | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` |
+| `tutoring-*` | 2 | `tutoring-mark-paid`, `tutoring-open-invoice` |
 | `git-*` | 1 | `git-make-message` |
-| `learn-*` | 1 | `learn-log-day` |
-| `shotloom-*` | 1 | `shotloom-start-code` |
-| `writing-*` | 1 | `writing-fix-ai` |
+| `learn-*` | 1 | `learn-add-log` |
+| `shotloom-*` | 1 | `shotloom-linear-create-issue` |
+| `writing-*` | 1 | `writing-apply-voice` |
 
 ---
 
@@ -76,23 +77,28 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 |----------|------:|
 | `dev-*` | 25 |
 | `shotloom-*` | 22 |
-| `cci-*` | 17 |
 | `caol-*` | 17 |
-| `ue-*` | 7 |
+| `cci-*` | 17 |
 | `review-*` | 7 |
+| `ue-*` | 7 |
 | `obsidian-*` | 6 |
 | `video-*` | 5 |
 | `learn-*` | 4 |
-| `writing-*` | 3 |
-| `vrm-*` | 3 |
 | `design-*` | 3 |
-| `pmx-*` | 2 |
-| `image-*` | 2 |
+| `vrm-*` | 3 |
+| `writing-*` | 3 |
 | `git-*` | 2 |
+| `image-*` | 2 |
+| `pmx-*` | 2 |
 | `tutoring-*` | 2 |
-| Single-file categories | 8 |
-
-`Single-file categories` (one skill each): `system`, `frontend`, `drink`, `consulting`, `claude`, `canvas`, `brand`, `algorithmic-art`. Authoritative list — see `claude/skills/` directory.
+| `algorithmic-*` | 1 |
+| `brand-*` | 1 |
+| `canvas-*` | 1 |
+| `claude-*` | 1 |
+| `consulting-*` | 1 |
+| `drink-*` | 1 |
+| `frontend-*` | 1 |
+| `system-*` | 1 |
 
 ---
 
@@ -100,19 +106,19 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
-| Group | Files |
-|-------|-------|
-| Policy | `llm-first-policy.md`, `llm-first-docs.md`, `platform-adapters.md`, `garden-review.md`, `principles.md`, `naming.md` |
-| Authoring | `slash-commands.md`, `command-skill-reference.md` |
-| Multi-agent ops | `agent-workflow.md`, `delegation.md` |
-| Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
-| Unreal Engine | `unreal-engine-cpp.md`, `unreal-engine-asset.md`, `arp-skeleton.md` |
-| Code review | `review-template.md`, `review-spec-doc.md`, `review-ai-motion.md`, `review-3d-rendering.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-ux.md`, `review-ux-python-gui.md`, `review-ux-writing.md` |
-| CINEV | `cinev-git-workflow.md`, `cinev-character-asset-naming.md`, `cinev-vrm-shading.md`, `cci-slack.md` |
-| Obsidian | `vault-audience.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `note-inspection-checklist.md` |
-| Research / specs | `research-methodology.md`, `tech-spec-template.md` |
-| System | `repo-paths-keys.md`, `codex-keys.md` |
-| Index | `index.md` |
+| Group | Count | Files |
+|-------|------:|-------|
+| `authoring/` | 2 | `command-skill-reference.md`, `slash-commands.md` |
+| `cinev/` | 4 | `cci-slack.md`, `cinev-character-asset-naming.md`, `cinev-git-workflow.md`, `cinev-vrm-shading.md` |
+| `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
+| `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |
+| `obsidian/` | 4 | `note-inspection-checklist.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `vault-audience.md` |
+| `policy/` | 6 | `garden-review.md`, `llm-first-docs.md`, `llm-first-policy.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
+| `research/` | 2 | `research-methodology.md`, `tech-spec-template.md` |
+| `review/` | 13 | `review-3d-rendering.md`, `review-ai-motion.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-spec-doc.md`, `review-template.md`, `review-ux-python-gui.md`, `review-ux-writing.md`, `review-ux.md` |
+| `system/` | 2 | `codex-keys.md`, `repo-paths-keys.md` |
+| `unreal/` | 3 | `arp-skeleton.md`, `unreal-engine-asset.md`, `unreal-engine-cpp.md` |
+| `root` | 1 | `index.md` |
 
 ---
 
@@ -120,14 +126,12 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 Rules in `claude/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
-| Group | Files |
-|-------|-------|
-| Core (auto, default-counters) | `ambiguity-scoring.md`, `external-recommendation-cross-check.md`, `source-of-truth-first.md`, `git-defaults.md`, `behavior.md`, `verify-before-report.md`, `security.md`, `session-start.md` |
-| Workflow (triggered) | `code-write.md`, `reread-repo-conventions.md`, `test-write.md`, `slack.md`, `writing-external.md`, `doc-write.md`, `metaphor-style.md` |
-| PR lifecycle (triggered) | `pr-mutate.md`, `pr-comment.md`, `pr-create.md` |
-| Authoring (triggered) | `author-naming.md`, `author-frontmatter.md`, `author-permissions.md` |
-| Domain (triggered) | `obsidian.md`, `cinev-git.md`, `shotloom.md` |
-| Index | `index.md` |
+| Load | Count | Files |
+|------|------:|-------|
+| `auto` | 8 | `ambiguity-scoring.md`, `behavior.md`, `external-recommendation-cross-check.md`, `git-defaults.md`, `security.md`, `session-start.md`, `source-of-truth-first.md`, `verify-before-report.md` |
+| `triggered` | 16 | `author-frontmatter.md`, `author-naming.md`, `author-permissions.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom.md`, `slack.md`, `test-write.md`, `writing-external.md` |
+| `index` | 1 | `index.md` |
+<!-- /generated:readme-inventory -->
 
 ---
 

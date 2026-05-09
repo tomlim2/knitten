@@ -28,6 +28,24 @@ The vocabulary `caol-ila` uses to talk about itself, plus the operating principl
 
 **validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
+<!-- generated:validator-checks -->
+Validator checks: **13**.
+
+- `banned-terms`
+- `registry-integrity`
+- `rules-frontmatter`
+- `standards-status`
+- `platform-metadata`
+- `taxonomy`
+- `entry-documents`
+- `generated-blocks`
+- `markdown-links`
+- `length-caps`
+- `import-targets`
+- `inventory-counts`
+- `lookup-presence`
+<!-- /generated:validator-checks -->
+
 ### Loading & timing
 
 **auto** — A rule with `load: auto` in frontmatter. Always in cold-start context. Reserved for default-counters only.

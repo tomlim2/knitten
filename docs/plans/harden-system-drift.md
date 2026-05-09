@@ -21,8 +21,8 @@ System docs contain repeated counts, thresholds, enums, category lists, and exce
 | P0.5 | done | Sweep system docs for magic numbers, enums, paths, exception lists | Candidate table below exists |
 | P1 | done | Add purpose-split registries under `claude/config/` | JSON files exist with schema comments avoided |
 | P1.5 | done | Make validator read registries and fail on drift | Registry values become executable checks |
-| P2 | pending | Add generated blocks for README inventory and validator check count | Marker blocks delimit generated text |
-| P2.5 | pending | Update authoring skills to patch registries when adding new values | `caol-make-skill` owns category registration |
+| P2 | done | Add generated blocks for README inventory and validator check count | Marker blocks delimit generated text |
+| P2.5 | done | Update authoring skills to patch registries when adding new values | `caol-make-skill` owns category registration |
 | P3 | partial | Harden LLM-friendly document naming | Naming standard and taxonomy prevent vague file names |
 
 ## P0 Fixes
@@ -106,11 +106,18 @@ Naming validation belongs in three places:
 | `claude/config/exceptions.json` | `registry-integrity`, `length-caps` |
 | `claude/config/audit-policy.json` | `registry-integrity` |
 
+## Implemented Generated Blocks
+
+| File | Marker | Validator source |
+|------|--------|------------------|
+| `README.md` | `generated:readme-inventory` | computed command, skill, standard, and rule inventory |
+| `claude/standards/policy/principles.md` | `generated:validator-checks` | validator `CHECKS` list |
+
 ## Next Step
 
-Implement P2 in this order:
+Implement P3 in this order:
 
-1. Add a generated block for README inventory.
-2. Add a generated block for validator check list/count.
-3. Make validator compare generated blocks to computed output.
-4. Update `caol-make-skill` so new category prefixes patch `taxonomy.json`.
+1. Define managed doc folders that get filename validation.
+2. Convert naming rules into registry-backed patterns where possible.
+3. Add validator checks for pattern-constrained plan and decision filenames.
+4. Decide whether command/skill verb families need a separate registry.

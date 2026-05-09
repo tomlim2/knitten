@@ -53,18 +53,16 @@ Each name consists of three parts separated by hyphens:
 
 ---
 
-## Standard Categories
+## Category Registry
 
-| Category | Domain | Examples |
-|----------|--------|---------|
-| `cci-*` | CINEV project tools | `cci-open-creator-launcher`, `cci-review-cpp` |
-| `ue-*` | Unreal Engine tools | `ue-analyze-material`, `ue-validate-asset-name` |
-| `git-*` | Git operations | `git-collect-commits`, `git-make-message` |
-| `tutoring-*` | Tutoring business | `tutoring-open-invoice`, `tutoring-log-lesson` |
-| `learn-*` | Learning/docs | `learn-add-log` |
-| `drink-*` | Drink tracking | `drink-log-entry` |
-| `caol-*` | caol-ila infra / meta tools | `caol-make-command`, `caol-make-skill` |
-| `review-*` | Code/skill reviews | `review-audit-web` |
+Canonical command and skill categories live in `~/.claude/config/taxonomy.json` under `skillCommandCategories`.
+
+When authoring a command or skill:
+
+1. Extract the category prefix before the first hyphen.
+2. Reuse an existing prefix from `skillCommandCategories`.
+3. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
+4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the caol-ila repo root.
 
 ---
 

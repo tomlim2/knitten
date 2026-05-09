@@ -107,6 +107,193 @@ function pushArrayViolations(violations, file, key, values, options = {}) {
   }
 }
 
+function compareCountThenName(a, b) {
+  if (b.count !== a.count) return b.count - a.count;
+  return a.name.localeCompare(b.name);
+}
+
+function inlineCodeList(values) {
+  return values.map((value) => `\`${value}\``).join(", ");
+}
+
+function countByPrefix(names) {
+  const counts = new Map();
+  for (const name of names) {
+    const prefix = name.split("-")[0];
+    counts.set(prefix, (counts.get(prefix) || 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort(compareCountThenName);
+}
+
+function sortInventoryFiles(a, b) {
+  return a.localeCompare(b);
+}
+
+async function commandNames() {
+  const entries = await listDirOnce(path.join(REPO_ROOT, "claude", "commands"));
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => entry.name.slice(0, -".md".length))
+    .sort(sortInventoryFiles);
+}
+
+async function skillNames() {
+  const entries = await listDirOnce(path.join(REPO_ROOT, "claude", "skills"));
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort(sortInventoryFiles);
+}
+
+async function standardRows() {
+  const dir = path.join(REPO_ROOT, "claude", "standards");
+  const files = await walk(dir, (f) => f.endsWith(".md"));
+  const groups = new Map();
+  for (const f of files) {
+    const relative = path.relative(dir, f);
+    const parts = relative.split(path.sep);
+    const group = parts.length === 1 ? "root" : `${parts[0]}/`;
+    const file = parts.length === 1 ? parts[0] : parts.slice(1).join("/");
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group).push(file);
+  }
+  return [...groups.entries()]
+    .map(([name, files]) => ({
+      name,
+      count: files.length,
+      files: files.sort(sortInventoryFiles),
+    }))
+    .sort((a, b) => {
+      if (a.name === "root") return 1;
+      if (b.name === "root") return -1;
+      return a.name.localeCompare(b.name);
+    });
+}
+
+async function ruleRows() {
+  const dir = path.join(REPO_ROOT, "claude", "rules");
+  const entries = await listDirOnce(dir);
+  const groups = new Map();
+  for (const entry of entries) {
+    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+    const f = path.join(dir, entry.name);
+    const text = await readFile(f, "utf8");
+    const fm = parseFrontmatter(text);
+    const load = entry.name === "index.md" ? "index" : fm?.load || "none";
+    if (!groups.has(load)) groups.set(load, []);
+    groups.get(load).push(entry.name);
+  }
+  const order = new Map([
+    ["auto", 0],
+    ["triggered", 1],
+    ["index", 2],
+    ["none", 3],
+  ]);
+  return [...groups.entries()]
+    .map(([name, files]) => ({
+      name,
+      count: files.length,
+      files: files.sort(sortInventoryFiles),
+    }))
+    .sort((a, b) => {
+      const ao = order.has(a.name) ? order.get(a.name) : 99;
+      const bo = order.has(b.name) ? order.get(b.name) : 99;
+      if (ao !== bo) return ao - bo;
+      return a.name.localeCompare(b.name);
+    });
+}
+
+async function generateReadmeInventory() {
+  const commands = await commandNames();
+  const skills = await skillNames();
+  const commandCounts = countByPrefix(commands);
+  const skillCounts = countByPrefix(skills);
+  const commandExamples = new Map();
+  for (const command of commands) {
+    const prefix = command.split("-")[0];
+    if (!commandExamples.has(prefix)) commandExamples.set(prefix, []);
+    const examples = commandExamples.get(prefix);
+    if (examples.length < 3) examples.push(command);
+  }
+  const standards = await standardRows();
+  const rules = await ruleRows();
+
+  const sections = [];
+  sections.push(`## Commands (${commands.length})`);
+  sections.push("");
+  sections.push("| Category | Count | Examples |");
+  sections.push("|----------|------:|----------|");
+  for (const row of commandCounts) {
+    sections.push(
+      `| \`${row.name}-*\` | ${row.count} | ${inlineCodeList(commandExamples.get(row.name) || [])} |`
+    );
+  }
+  sections.push("");
+  sections.push("---");
+  sections.push("");
+  sections.push(`## Skills (${skills.length})`);
+  sections.push("");
+  sections.push("| Category | Count |");
+  sections.push("|----------|------:|");
+  for (const row of skillCounts) {
+    sections.push(`| \`${row.name}-*\` | ${row.count} |`);
+  }
+  sections.push("");
+  sections.push("---");
+  sections.push("");
+  sections.push(`## Standards (${standards.reduce((sum, row) => sum + row.count, 0)})`);
+  sections.push("");
+  sections.push("Reference docs in `claude/standards/`. Loaded on-demand, never auto.");
+  sections.push("");
+  sections.push("| Group | Count | Files |");
+  sections.push("|-------|------:|-------|");
+  for (const row of standards) {
+    sections.push(`| \`${row.name}\` | ${row.count} | ${inlineCodeList(row.files)} |`);
+  }
+  sections.push("");
+  sections.push("---");
+  sections.push("");
+  sections.push(`## Rules (${rules.reduce((sum, row) => sum + row.count, 0)})`);
+  sections.push("");
+  sections.push(
+    "Rules in `claude/rules/`. Auto rules load every session via entry documents; triggered rules load on demand."
+  );
+  sections.push("");
+  sections.push("| Load | Count | Files |");
+  sections.push("|------|------:|-------|");
+  for (const row of rules) {
+    sections.push(`| \`${row.name}\` | ${row.count} | ${inlineCodeList(row.files)} |`);
+  }
+  return sections.join("\n");
+}
+
+function generateValidatorChecksBlock() {
+  const names = CHECKS.map((check) => check.name);
+  return [
+    `Validator checks: **${names.length}**.`,
+    "",
+    ...names.map((name) => `- \`${name}\``),
+  ].join("\n");
+}
+
+function findGeneratedBlock(text, id) {
+  const startMarker = `<!-- generated:${id} -->`;
+  const endMarker = `<!-- /generated:${id} -->`;
+  const start = text.indexOf(startMarker);
+  const end = text.indexOf(endMarker);
+  if (start === -1 || end === -1 || end < start) return null;
+  const bodyStart = start + startMarker.length;
+  const body = text.slice(bodyStart, end);
+  const line = text.slice(0, start).split("\n").length;
+  return { body, line };
+}
+
+function normalizeGeneratedBlock(value) {
+  return value.replace(/\r\n/g, "\n").trim();
+}
+
 // ---------- file scope helpers ----------
 
 async function llmFirstFiles() {
@@ -783,6 +970,49 @@ async function checkMarkdownLinks() {
   return { name: "markdown-links", violations };
 }
 
+async function checkGeneratedBlocks() {
+  const violations = [];
+  const blocks = [
+    {
+      file: "README.md",
+      id: "readme-inventory",
+      expected: await generateReadmeInventory(),
+    },
+    {
+      file: "claude/standards/policy/principles.md",
+      id: "validator-checks",
+      expected: generateValidatorChecksBlock(),
+    },
+  ];
+  for (const block of blocks) {
+    const f = path.join(REPO_ROOT, block.file);
+    let text;
+    try {
+      text = await readFile(f, "utf8");
+    } catch {
+      violations.push({ file: block.file, line: 0, message: "generated block file not found" });
+      continue;
+    }
+    const found = findGeneratedBlock(text, block.id);
+    if (!found) {
+      violations.push({
+        file: block.file,
+        line: 0,
+        message: `missing generated block generated:${block.id}`,
+      });
+      continue;
+    }
+    if (normalizeGeneratedBlock(found.body) !== normalizeGeneratedBlock(block.expected)) {
+      violations.push({
+        file: block.file,
+        line: found.line,
+        message: `generated:${block.id} is stale`,
+      });
+    }
+  }
+  return { name: "generated-blocks", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
@@ -793,6 +1023,7 @@ const CHECKS = [
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
   { name: "entry-documents", fn: checkEntryDocuments },
+  { name: "generated-blocks", fn: checkGeneratedBlocks },
   { name: "markdown-links", fn: checkMarkdownLinks },
   { name: "length-caps", fn: checkLengthCaps },
   { name: "import-targets", fn: checkImportTargets },

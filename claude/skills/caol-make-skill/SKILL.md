@@ -62,6 +62,19 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ---
 
+## Category Registry
+
+Canonical command and skill categories live in `~/.claude/config/taxonomy.json` under `skillCommandCategories`.
+
+When creating a skill:
+
+1. Extract the category prefix before the first hyphen.
+2. Reuse an existing prefix from `skillCommandCategories`.
+3. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
+4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the caol-ila repo root.
+
+---
+
 ## UE skills — use the dedicated template
 
 **For `ue-*` (Unreal Engine) skills**, use `/ue-make-skill <verb> <noun>`. Template at `~/.claude/skills/ue-show-template/SKILL.md`. UE skills require specific Python patterns (run_in_editor.py, JSON export to `~/.claude/private/unreal/{noun}-{verb}/`, `[LogTag]` prefixes, and other patterns) — see reference.md for the full rationale.
