@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** not implemented. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** P0.5 inventory complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -63,7 +63,7 @@ An agent hub is a repo that answers these questions without chat history:
 | Tier | Status | Work | Acceptance |
 |------|--------|------|------------|
 | P0 | done | Create this plan and LOOKUP entry | Plan is discoverable from LOOKUP |
-| P0.5 | pending | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path policies | Migration gap table uses the required columns below |
+| P0.5 | done | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path policies | Migration gap table uses the required columns below |
 | P0.75 | pending | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
 | P1 | pending | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
 | P1.5 | pending | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
@@ -94,6 +94,33 @@ Required gap table columns:
 | `validator check` | existing or required check name |
 | `gap` | missing metadata, duplicate owner, broken validated view, or untracked runtime policy |
 | `decision needed` | yes/no plus the decision file if needed |
+
+## P0.5 Entry Document Inventory
+
+| Entry document | Harness | First shared-policy read | Deploy target | Current validator |
+|----------------|---------|--------------------------|---------------|-------------------|
+| `CLAUDE.md` | Claude Code | `@SYSTEM.md` | Root file; imported by `~/.claude/CLAUDE.md` deploy shim | `entry-documents`, `import-targets` |
+| `AGENTS.md` | Codex | [`SYSTEM.md`](../../SYSTEM.md) | Root file read when Codex starts in this repo | `entry-documents`, `markdown-links` |
+| `claude/CLAUDE.md` | Claude Code deploy shim | `@../CLAUDE.md` | `~/.claude/CLAUDE.md` through symlink | `import-targets` |
+
+## P0.5 Migration Gap Table
+
+| Artifact | Current canonical owner | Proposed canonical owner | Deploy target | Validator check | Gap | Decision needed |
+|----------|-------------------------|--------------------------|---------------|-----------------|-----|-----------------|
+| Root entry documents | `SYSTEM.md` entry table and validator constants | `agent-hub.json` `harnesses` | `CLAUDE.md`, `AGENTS.md` | `entry-documents` | Harness list is duplicated in prose and validator code; adding a harness requires manual edits in multiple places | no |
+| `claude/CLAUDE.md` deploy shim | `claude/CLAUDE.md` | `agent-hub.json` `harnesses[].deployTarget` | `~/.claude/CLAUDE.md` | `import-targets` | Import target is checked, but shim role and sync relationship are not registry-owned | no |
+| Shared layers | `SYSTEM.md`, README inventory, `taxonomy.json` | `agent-hub.json` `sharedLayers` | `~/.claude/{rules,standards,skills,commands}` | `inventory-counts`, `generated-blocks`, `taxonomy` | Capability counts are validated, but load mode, inventory source, and deploy target are not one contract | no |
+| Existing registries | `claude/config/README.md`, individual JSON files | `agent-hub.json` `registries` | `~/.claude/config/*.json` | `registry-integrity` | Registry shape is validated file-by-file; hub readers are not connected to registry domains | no |
+| Platform metadata coverage | `frontmatter-schema.json` pilot file list | `agent-hub.json` plus `frontmatter-schema.json` | shared layers | `platform-metadata` | Coverage is pilot-only; only the listed files require `platforms:` and `portability:` today | no |
+| README inventory | `README.md` generated block | `agent-hub.json` `generatedDocuments` | root README | `generated-blocks`, `inventory-counts` | Inventory covers commands, skills, standards, and rules; it does not expose harnesses, deploy targets, registries, or metadata coverage | no |
+| Validator check list | `claude/standards/policy/principles.md` generated block | `agent-hub.json` `generatedDocuments` | none | `generated-blocks` | Generated documents are hardcoded in validator code instead of declared in a manifest | no |
+| Runtime path policy table | `SYSTEM.md` prose table and `.gitignore` | `agent-hub.json` `runtimePathPolicies` | `~/.claude/*` | none | Runtime path ownership is readable, but not machine-readable or checked against git policy | no |
+| `claude/settings.json` | tracked global settings file | `agent-hub.json` `runtimePathPolicies` plus settings policy | `~/.claude/settings.json` | none | Tracked settings can contain machine-specific absolute paths; no validator forbids them | yes: decide portable global settings contract |
+| `claude/hooks/` | tracked hook scripts referenced by settings | `agent-hub.json` `runtimePathPolicies` | `~/.claude/hooks/` | none | Hook script existence is not checked against settings hook references | no |
+| `claude/private/caol-config/doc-paths.json` | `.gitignore` exception and `SYSTEM.md` table | `agent-hub.json` `runtimePathPolicies` or `registries` | `~/.claude/private/caol-config/doc-paths.json` | none | Shared non-machine config lives under `private/`, which needs explicit classification | yes: classify as registry or runtime path policy |
+| Machine-local caol config | `.gitignore` and `SYSTEM.md` table | `agent-hub.json` `runtimePathPolicies` | `~/.claude/private/caol-config/{hardware,machine-paths,repo-paths}.json` | none | Ignored files exist in the deploy tree; manifest must classify paths without storing values | no |
+| `claude/config/slack.json` | tracked file; config README says gitignored | service config policy in `agent-hub.json` or config README | `~/.claude/config/slack.json` | none | Git policy drift: README says gitignored, but the file is tracked | yes: decide committed non-secret service config vs private config |
+| Permission templates | `claude/config/permissions/README.md` | `agent-hub.json` `runtimePathPolicies` or `registries` | project `.claude/settings*.json` files | none | Template target paths and `{USERNAME}` replacement are not validator-checked | no |
 
 ## P0.75 Manifest Schema Draft
 
