@@ -158,6 +158,14 @@
       "source": "claude/config/agent-hub.json harnesses",
       "mode": "validated-manual",
       "validator": "agent-hub"
+    },
+    {
+      "id": "agent-hub-inventory",
+      "path": "AGENT-HUB.md",
+      "marker": "agent-hub-inventory",
+      "source": "claude/config/agent-hub.json",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
     }
   ],
   "runtimePathPolicies": [

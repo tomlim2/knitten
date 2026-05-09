@@ -278,6 +278,46 @@ function generateValidatorChecksBlock() {
   ].join("\n");
 }
 
+async function generateAgentHubInventory() {
+  const hub = await readJsonConfig("agent-hub.json");
+  const sections = [];
+  sections.push("## Hub Inventory");
+  sections.push("");
+  sections.push("| Area | Count | Canonical owner |");
+  sections.push("|------|------:|-----------------|");
+  sections.push(`| Harnesses | ${hub.harnesses.length} | \`claude/config/agent-hub.json\` \`harnesses\` |`);
+  sections.push(`| Shared layers | ${hub.sharedLayers.length} | \`claude/config/agent-hub.json\` \`sharedLayers\` |`);
+  sections.push(`| Registries | ${hub.registries.length} | \`claude/config/agent-hub.json\` \`registries\` |`);
+  sections.push(`| Generated documents | ${hub.generatedDocuments.length} | \`claude/config/agent-hub.json\` \`generatedDocuments\` |`);
+  sections.push(`| Runtime path policies | ${hub.runtimePathPolicies.length} | \`claude/config/agent-hub.json\` \`runtimePathPolicies\` |`);
+  sections.push(`| Validators | ${hub.validators.length} | \`claude/config/agent-hub.json\` \`validators\` |`);
+  sections.push("");
+  sections.push("## Harnesses");
+  sections.push("");
+  sections.push("| ID | Entry document | Deploy target |");
+  sections.push("|----|----------------|---------------|");
+  for (const harness of hub.harnesses) {
+    sections.push(`| \`${harness.id}\` | \`${harness.entryDocument}\` | \`${harness.deployTarget}\` |`);
+  }
+  sections.push("");
+  sections.push("## Shared Layers");
+  sections.push("");
+  sections.push("| ID | Path | Load mode |");
+  sections.push("|----|------|-----------|");
+  for (const layer of hub.sharedLayers) {
+    sections.push(`| \`${layer.id}\` | \`${layer.path}\` | \`${layer.loadMode}\` |`);
+  }
+  sections.push("");
+  sections.push("## Registries");
+  sections.push("");
+  sections.push("| ID | Path | Domain |");
+  sections.push("|----|------|--------|");
+  for (const registry of hub.registries) {
+    sections.push(`| \`${registry.id}\` | \`${registry.path}\` | ${registry.domain} |`);
+  }
+  return sections.join("\n");
+}
+
 function findGeneratedBlock(text, id) {
   const startMarker = `<!-- generated:${id} -->`;
   const endMarker = `<!-- /generated:${id} -->`;
@@ -1323,6 +1363,11 @@ async function checkGeneratedBlocks() {
       file: "claude/standards/policy/principles.md",
       id: "validator-checks",
       expected: generateValidatorChecksBlock(),
+    },
+    {
+      file: "AGENT-HUB.md",
+      id: "agent-hub-inventory",
+      expected: await generateAgentHubInventory(),
     },
   ];
   for (const block of blocks) {

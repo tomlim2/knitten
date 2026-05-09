@@ -2,7 +2,7 @@
 
 **LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `claude/` is symlinked to `~/.claude`.
 
-Canonical policy: [`SYSTEM.md`](SYSTEM.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 
@@ -13,6 +13,7 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 ```
 caol-ila/
 ├── SYSTEM.md                 # Shared agent-agnostic policy
+├── AGENT-HUB.md              # Generated hub overview
 ├── CLAUDE.md                 # Claude Code entry document
 ├── AGENTS.md                 # Codex entry document
 ├── docs/

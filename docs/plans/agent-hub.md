@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** P1.5 manifest validator complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** P2.5 generated hub document complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -55,7 +55,7 @@ An agent hub is a repo that answers these questions without chat history:
 | Platform metadata | `claude/config/frontmatter-schema.json` |
 | Capability taxonomy | `claude/config/taxonomy.json` |
 | Hub manifest | new `claude/config/agent-hub.json` after P1 |
-| Generated documents | `README.md`, optional `AGENT-HUB.md` after P2 decision |
+| Generated documents | `README.md`, `AGENT-HUB.md` |
 | Enforcement | `scripts/validate-llm-first.mjs` |
 
 ## Execution Order
@@ -67,8 +67,8 @@ An agent hub is a repo that answers these questions without chat history:
 | P0.75 | done | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
 | P1 | done | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
 | P1.5 | done | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
-| P2 | pending | Decide whether `AGENT-HUB.md` exists | Decision record accepts or rejects a root hub document |
-| P2.5 | pending | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
+| P2 | done | Decide whether `AGENT-HUB.md` exists | Decision record accepts root hub document |
+| P2.5 | done | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
 | P3 | pending | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
 | P4 | pending | Revisit neutral directory migration | Rename only after runtime readers support the new deploy shape |
 
@@ -186,7 +186,7 @@ Validated view rules:
 |----------------|------|
 | `SYSTEM.md` entry document table | generated from or validator-checked against `agent-hub.json` |
 | README capability inventory | generated block remains validator-owned |
-| Optional `AGENT-HUB.md` | if accepted, generated or thin wrapper over `agent-hub.json` and README inventory |
+| `AGENT-HUB.md` | generated or thin wrapper over `agent-hub.json` and README inventory |
 
 ## First Implementation Slice
 
@@ -202,7 +202,7 @@ Validated view rules:
 |---------|------|
 | Plan | `docs/plans/agent-hub.md` |
 | Manifest | `claude/config/agent-hub.json` |
-| Optional root doc | `AGENT-HUB.md` |
+| Root hub doc | `AGENT-HUB.md` |
 | Validator check | `agent-hub` |
 
-`AGENT-HUB.md` stays optional until a decision record accepts it. If it exists, it must be generated or thin; `SYSTEM.md` remains canonical policy.
+`AGENT-HUB.md` is accepted by decision `0002`. It must stay generated or thin; `SYSTEM.md` remains canonical policy.
