@@ -1,5 +1,7 @@
 ---
 description: "Structure rules and templates for creating Claude Code skills. Use when creating new skills."
+platforms: claude
+portability: harness-specific
 ---
 
 # caol-make-skill

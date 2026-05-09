@@ -2,6 +2,8 @@
 description: Ask OpenAI Codex a question
 argument-hint: "<question>"
 allowed-tools: Bash(codex:*), Bash(cd:*)
+platforms: claude
+portability: harness-specific
 ---
 
 # dev-ask-codex

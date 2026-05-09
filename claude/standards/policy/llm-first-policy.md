@@ -1,5 +1,7 @@
 ---
 status: proposed
+platforms: all
+portability: shared
 ---
 # Agent-First Policy
 

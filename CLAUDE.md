@@ -35,3 +35,5 @@ Detailed reference: `claude/standards/` (read on demand).
 ## Standards (read on demand)
 
 @~/.claude/standards/index.md
+
+Claude Code adapter note: shared artifacts with `platforms: codex` are reference-only unless the task edits Codex configuration or the user asks about Codex.

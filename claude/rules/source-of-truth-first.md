@@ -1,5 +1,7 @@
 ---
 load: auto
+platforms: all
+portability: shared
 ---
 
 # Source-of-Truth First

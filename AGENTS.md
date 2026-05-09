@@ -18,4 +18,8 @@ Shared rules, standards, skills, and commands are binding repository conventions
 
 If a shared instruction uses Claude-only mechanics, translate the intent into Codex behavior and follow higher-priority Codex platform instructions.
 
+If frontmatter declares `platforms: claude`, treat the artifact as reference unless the user asks about Claude or the task edits that artifact.
+
+If frontmatter declares `portability: adapter`, preserve the shared intent and substitute Codex tools, approval flow, and file-read mechanics.
+
 Do not duplicate shared policy here. Put shared policy in `SYSTEM.md` or the owning shared layer.

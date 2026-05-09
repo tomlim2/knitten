@@ -15,6 +15,23 @@ Do not add shared policy to an entry document. Put shared policy here, `claude/r
 
 ---
 
+## Platform-neutral contract
+
+Shared artifacts define intent. Entry documents and harness-specific wrappers translate that intent into platform mechanics.
+
+| Artifact class | Shared content | Adapter content |
+|----------------|----------------|-----------------|
+| Rules | Behavioral constraints and load semantics | Harness-specific read/import mechanics |
+| Standards | Reference policy, templates, and decision tables | Platform notes only when a standard names one platform |
+| Skills | Repeatable procedure and required inputs/outputs | Tool names, approval mechanics, slash-command syntax |
+| Commands | User-facing invocation wrapper | Claude Code slash command details |
+
+Compatibility metadata uses `platforms:` and `portability:` frontmatter. The contract and values live in `claude/standards/policy/platform-adapters.md`.
+
+Do not rename `claude/` paths only for neutrality. The path is the current deploy shape. Neutrality comes from source ownership, metadata, and adapter boundaries.
+
+---
+
 ## Repository charter
 
 `caol-ila` is an LLM-first repository. The primary operator is an autonomous agent, not a human reader. Every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:

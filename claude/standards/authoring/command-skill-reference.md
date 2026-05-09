@@ -1,5 +1,7 @@
 ---
 status: accepted
+platforms: claude
+portability: harness-specific
 ---
 # Command & Skill Reference
 

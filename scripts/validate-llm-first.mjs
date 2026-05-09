@@ -411,6 +411,17 @@ async function checkLengthCaps() {
 }
 
 const STATUS_VALUES = new Set(["accepted", "proposed", "draft", "deprecated", "superseded"]);
+const PLATFORM_VALUES = new Set(["all", "claude", "codex"]);
+const PORTABILITY_VALUES = new Set(["shared", "adapter", "harness-specific"]);
+const PLATFORM_METADATA_PILOT_FILES = [
+  "claude/rules/source-of-truth-first.md",
+  "claude/standards/policy/llm-first-policy.md",
+  "claude/standards/policy/platform-adapters.md",
+  "claude/standards/authoring/command-skill-reference.md",
+  "claude/skills/caol-make-skill/SKILL.md",
+  "claude/skills/review-audit-retarget/SKILL.md",
+  "claude/skills/dev-ask-codex/SKILL.md",
+];
 
 async function checkStandardsStatus() {
   const violations = [];
@@ -448,12 +459,118 @@ async function checkStandardsStatus() {
   return { name: "standards-status", violations };
 }
 
+function parsePlatformList(value) {
+  return value
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean);
+}
+
+async function checkPlatformMetadata() {
+  const violations = [];
+  const files = await llmFirstFiles();
+  const required = new Set(PLATFORM_METADATA_PILOT_FILES);
+  for (const f of files) {
+    const relPath = rel(f);
+    const text = await readFile(f, "utf8");
+    const fm = parseFrontmatter(text);
+    const isPilot = required.has(relPath);
+    const hasPlatforms = fm && Object.prototype.hasOwnProperty.call(fm, "platforms");
+    const hasPortability = fm && Object.prototype.hasOwnProperty.call(fm, "portability");
+    if (isPilot && !fm) {
+      violations.push({ file: relPath, line: 1, message: "pilot file missing YAML frontmatter" });
+      continue;
+    }
+    if (isPilot && !hasPlatforms) {
+      violations.push({ file: relPath, line: 1, message: "pilot file missing 'platforms' field" });
+    }
+    if (isPilot && !hasPortability) {
+      violations.push({ file: relPath, line: 1, message: "pilot file missing 'portability' field" });
+    }
+    if (hasPlatforms) {
+      const values = parsePlatformList(fm.platforms);
+      if (values.length === 0) {
+        violations.push({ file: relPath, line: 1, message: "frontmatter 'platforms' is empty" });
+      }
+      for (const value of values) {
+        if (!PLATFORM_VALUES.has(value)) {
+          violations.push({
+            file: relPath,
+            line: 1,
+            message: `frontmatter 'platforms' has unknown value ${JSON.stringify(value)}`,
+          });
+        }
+      }
+      if (values.includes("all") && values.length > 1) {
+        violations.push({
+          file: relPath,
+          line: 1,
+          message: "frontmatter 'platforms: all' must not be combined with named platforms",
+        });
+      }
+    }
+    if (hasPortability && !PORTABILITY_VALUES.has(fm.portability)) {
+      violations.push({
+        file: relPath,
+        line: 1,
+        message: `frontmatter 'portability' must be one of ${[...PORTABILITY_VALUES].join("|")} (got ${JSON.stringify(fm.portability)})`,
+      });
+    }
+    if (hasPlatforms !== hasPortability) {
+      violations.push({
+        file: relPath,
+        line: 1,
+        message: "frontmatter 'platforms' and 'portability' must be added together",
+      });
+    }
+  }
+  return { name: "platform-metadata", violations };
+}
+
+async function checkEntryDocuments() {
+  const violations = [];
+  const entries = [
+    { file: "CLAUDE.md", marker: "@SYSTEM.md" },
+    { file: "AGENTS.md", marker: "[`SYSTEM.md`](SYSTEM.md)" },
+  ];
+  for (const entry of entries) {
+    const f = path.join(REPO_ROOT, entry.file);
+    let text;
+    try {
+      text = await readFile(f, "utf8");
+    } catch {
+      violations.push({ file: entry.file, line: 0, message: "entry document not found" });
+      continue;
+    }
+    const idx = text.indexOf(entry.marker);
+    if (idx === -1) {
+      violations.push({
+        file: entry.file,
+        line: 1,
+        message: `entry document must read SYSTEM.md first via ${entry.marker}`,
+      });
+      continue;
+    }
+    const before = text.slice(0, idx);
+    if (/@~?\/?\.?claude\//.test(before) || /claude\/(rules|standards|skills|commands)\//.test(before)) {
+      violations.push({
+        file: entry.file,
+        line: 1,
+        message: "entry document references shared layers before SYSTEM.md",
+      });
+    }
+  }
+  return { name: "entry-documents", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
   { name: "standards-status", fn: checkStandardsStatus },
+  { name: "platform-metadata", fn: checkPlatformMetadata },
+  { name: "entry-documents", fn: checkEntryDocuments },
   { name: "length-caps", fn: checkLengthCaps },
   { name: "import-targets", fn: checkImportTargets },
   { name: "inventory-counts", fn: checkInventoryCounts },

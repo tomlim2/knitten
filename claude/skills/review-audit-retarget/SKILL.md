@@ -2,6 +2,8 @@
 description: Analyze retarget viewer screenshots for bone/skinning/viz issues
 allowed-tools: Read
 user-invocable: true
+platforms: all
+portability: adapter
 ---
 
 # review-audit-retarget

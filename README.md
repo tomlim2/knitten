@@ -18,7 +18,7 @@ caol-ila/
 ├── claude/                   # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Claude Code deploy shim
 │   ├── rules/      (25)      # Always-applied constraints (terse, ≤50 lines each)
-│   ├── standards/  (45)      # Reference docs, on-demand
+│   ├── standards/  (46)      # Reference docs, on-demand
 │   ├── commands/   (45)      # Slash command .md files
 │   ├── skills/     (135)     # Skill directories with SKILL.md
 │   └── private/              # Gitignored — machine config, secrets
@@ -92,13 +92,13 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ---
 
-## Standards (45)
+## Standards (46)
 
 Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 | Group | Files |
 |-------|-------|
-| Policy | `llm-first-policy.md`, `llm-first-docs.md`, `garden-review.md`, `principles.md`, `naming.md` |
+| Policy | `llm-first-policy.md`, `llm-first-docs.md`, `platform-adapters.md`, `garden-review.md`, `principles.md`, `naming.md` |
 | Authoring | `slash-commands.md`, `command-skill-reference.md` |
 | Multi-agent ops | `agent-workflow.md`, `delegation.md` |
 | Web / JS / CSS | `javascript.md`, `javascript-reference.md`, `css.md`, `css-reference.md`, `design-system.md`, `ui-design.md`, `three-shader-language.md` |
