@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: done
 load: triggered
 trigger: designing caol-ila as an agent hub
 created: 2026-05-09
@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** P3 harness authoring flow complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** done. This plan turned `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -33,7 +33,7 @@ An agent hub is a repo that answers these questions without chat history:
 | Shared runtime layers | `claude/rules`, `claude/standards`, `claude/skills`, `claude/commands` |
 | Registries | `doc-budgets`, `frontmatter-schema`, `taxonomy`, `audit-policy`, `exceptions` |
 | Generated inventory | README inventory and validator check list |
-| Missing hub layer | no manifest that connects harnesses, entry docs, deploy targets, capability inventories, and validators |
+| Hub layer | `claude/config/agent-hub.json` connects harnesses, entry docs, deploy targets, capability inventories, and validators |
 
 ## Non-Goals
 
@@ -70,7 +70,7 @@ An agent hub is a repo that answers these questions without chat history:
 | P2 | done | Decide whether `AGENT-HUB.md` exists | Decision record accepts root hub document |
 | P2.5 | done | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
 | P3 | done | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
-| P4 | pending | Revisit neutral directory migration | Rename only after runtime readers support the new deploy shape |
+| P4 | done | Revisit neutral directory migration | Rename remains blocked until runtime readers support the new deploy shape |
 
 ## P0.5 Sweep Scope
 
@@ -206,3 +206,14 @@ Validated view rules:
 | Validator check | `agent-hub` |
 
 `AGENT-HUB.md` is accepted by decision `0002`. It must stay generated or thin; `SYSTEM.md` remains canonical policy.
+
+## P4 Neutral Directory Revisit
+
+| Question | Answer |
+|----------|--------|
+| Rename `claude/` now? | no |
+| Blocking reason | Claude Code reads `~/.claude/` as the runtime deploy target |
+| Current neutrality mechanism | `SYSTEM.md`, entry documents, `agent-hub.json`, platform metadata, and adapter boundaries |
+| Reopen trigger | A harness supports a neutral deploy path or a compatibility shim owns the full path migration |
+
+Decision `0001` remains in force: the `claude/` directory name is a deploy shape, not a policy boundary.
