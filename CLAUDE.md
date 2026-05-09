@@ -6,6 +6,7 @@ Claude Code entry document.
 
 Setup and inventory: [README.md](README.md).
 Goal-to-doc lookup ("where is X?"): [LOOKUP.md](LOOKUP.md).
+System terms: [docs/reference/system-glossary.md](docs/reference/system-glossary.md).
 Detailed reference: `claude/standards/` (read on demand).
 
 ---

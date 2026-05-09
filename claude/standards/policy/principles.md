@@ -4,7 +4,7 @@ status: proposed
 
 # Principles & Glossary
 
-The vocabulary `caol-ila` uses to talk about itself, plus the operating principles discovered through real incidents. Read this when a term in another doc feels ambiguous, or when deciding whether a new pattern fits the existing layer model.
+Reserved system terms live in `../../../docs/reference/system-glossary.md`. This file keeps expanded vocabulary plus operating principles discovered through real incidents. Read it when deciding whether a new pattern fits the existing layer model.
 
 `llm-first-policy.md` is the **stable** layer model (constitution). This file is the **evolving** body of discovered lessons (case law). Both grow, but at different rates and for different reasons.
 

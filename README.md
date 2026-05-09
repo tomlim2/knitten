@@ -2,7 +2,7 @@
 
 **LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `claude/` is symlinked to `~/.claude`.
 
-Canonical policy: [`SYSTEM.md`](SYSTEM.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Canonical policy: [`SYSTEM.md`](SYSTEM.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 
@@ -17,7 +17,8 @@ caol-ila/
 ├── AGENTS.md                 # Codex entry document
 ├── docs/
 │   ├── decisions/            # Accepted policy decisions and rationale
-│   └── plans/                # Migration and follow-up plans
+│   ├── plans/                # Migration and follow-up plans
+│   └── reference/            # Lookup docs such as system glossary
 ├── claude/                   # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Claude Code deploy shim
 │   ├── rules/                # Always-applied constraints

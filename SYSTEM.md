@@ -1,8 +1,10 @@
 # SYSTEM.md
 
-Agent-neutral source for shared policy. Entry documents load this file first, then add harness-specific mechanics.
+Canonical shared policy for agent-neutral behavior. Entry documents load this file first, then add harness-specific mechanics.
 
 Entry document rule: every harness entry document must make `SYSTEM.md` its first shared-policy read.
+
+System terms: `docs/reference/system-glossary.md`. Use those terms when editing policy, entry documents, plans, manifests, or validators.
 
 Entry documents:
 

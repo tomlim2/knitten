@@ -5,10 +5,11 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | Standard | Read when |
 |----------|-----------|
 | **Policy** | |
+| [`system-glossary.md`](../../docs/reference/system-glossary.md) | a system term needs an exact meaning before editing policy, entry docs, plans, manifests, or validators |
 | [`llm-first-policy.md`](policy/llm-first-policy.md) | designing a new layer or resolving an artifact conflict |
 | [`platform-adapters.md`](policy/platform-adapters.md) | classifying rules, standards, skills, or commands for multiple harnesses |
 | [`garden-review.md`](policy/garden-review.md) | pre-tag, after 30+ days clean, or structural review requested |
-| [`principles.md`](policy/principles.md) | a term feels ambiguous, or deciding whether a new pattern fits the layer model — glossary + discovered principles |
+| [`principles.md`](policy/principles.md) | deciding whether a new pattern fits the layer model or tracing principle rationale |
 | [`naming.md`](policy/naming.md) | naming any new rule, standard, command, skill, plan, or vault file |
 | [`llm-first-docs.md`](policy/llm-first-docs.md) | editing SYSTEM.md, entry documents, rules, skills, commands, or standards |
 | **Authoring** | |

@@ -49,13 +49,13 @@ An agent hub is a repo that answers these questions without chat history:
 
 | Contract | Owner |
 |----------|-------|
-| Hub vocabulary | `SYSTEM.md` after acceptance |
+| Hub glossary | `docs/reference/system-glossary.md` |
 | Harness entrypoint registry | `claude/config/agent-hub.json` after P1 |
-| Harness entrypoint projection | `SYSTEM.md` table, generated or validator-checked after P1.5 |
+| Entry document validated view | `SYSTEM.md` table, generated or validator-checked after P1.5 |
 | Platform metadata | `claude/config/frontmatter-schema.json` |
 | Capability taxonomy | `claude/config/taxonomy.json` |
 | Hub manifest | new `claude/config/agent-hub.json` after P1 |
-| Generated surfaces | `README.md`, optional `HUB.md` after P2 decision |
+| Generated documents | `README.md`, optional `AGENT-HUB.md` after P2 decision |
 | Enforcement | `scripts/validate-llm-first.mjs` |
 
 ## Execution Order
@@ -63,12 +63,12 @@ An agent hub is a repo that answers these questions without chat history:
 | Tier | Status | Work | Acceptance |
 |------|--------|------|------------|
 | P0 | done | Create this plan and LOOKUP entry | Plan is discoverable from LOOKUP |
-| P0.5 | pending | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path classes | Gap table uses the required columns below |
-| P0.75 | pending | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, projection rules, and forbidden value classes |
-| P1 | pending | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated projection |
+| P0.5 | pending | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path policies | Migration gap table uses the required columns below |
+| P0.75 | pending | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
+| P1 | pending | Add `claude/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
 | P1.5 | pending | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
-| P2 | pending | Decide whether `HUB.md` exists | Decision record accepts or rejects a root hub document |
-| P2.5 | pending | Add generated hub inventory if `HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
+| P2 | pending | Decide whether `AGENT-HUB.md` exists | Decision record accepts or rejects a root hub document |
+| P2.5 | pending | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
 | P3 | pending | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
 | P4 | pending | Revisit neutral directory migration | Rename only after runtime readers support the new deploy shape |
 
@@ -78,34 +78,34 @@ An agent hub is a repo that answers these questions without chat history:
 |--------------|--------|
 | Root entry docs | entry document table with harness, first-read rule, shared-policy marker |
 | `claude/CLAUDE.md` deploy shim | deploy-shim role and sync behavior |
-| `SYSTEM.md` durable source table | deploy target ownership gaps |
+| `SYSTEM.md` canonical deployment table | deploy target ownership gaps |
 | `claude/config/frontmatter-schema.json` | platform metadata coverage gaps |
 | `README.md` generated inventory | capability groups and missing hub fields |
-| `scripts/validate-llm-first.mjs` | check gaps for entry documents and generated surfaces |
+| `scripts/validate-llm-first.mjs` | check gaps for entry documents and generated documents |
 
 Required gap table columns:
 
 | Column | Meaning |
 |--------|---------|
-| `artifact` | file, folder, registry, generated surface, or runtime path class |
-| `current owner` | current canonical owner or deploy-only owner |
-| `proposed owner` | future owner after hub manifest lands |
+| `artifact` | file, folder, registry, generated document, or runtime path policy |
+| `current canonical owner` | current canonical owner or deploy-only owner |
+| `proposed canonical owner` | future owner after hub manifest lands |
 | `deploy target` | runtime location, if any |
 | `validator check` | existing or required check name |
-| `gap` | missing metadata, duplicate owner, broken projection, or untracked runtime class |
+| `gap` | missing metadata, duplicate owner, broken validated view, or untracked runtime policy |
 | `decision needed` | yes/no plus the decision file if needed |
 
 ## P0.75 Manifest Schema Draft
 
-`agent-hub.json` must be a registry, not a prose inventory. It owns machine-readable routing and projection data; generated docs display that data.
+`agent-hub.json` must be a registry, not a prose inventory. It owns machine-readable routing and validated-view data; generated docs display that data.
 
 | Key | Required | Content | Validator behavior |
 |-----|----------|---------|--------------------|
 | `harnesses` | yes | harness id, display name, entry document path, deploy target path, first-read marker | entry docs exist; first-read marker points to `SYSTEM.md`; no duplicate id |
 | `sharedLayers` | yes | layer id, path, load mode, inventory source | paths exist; load modes match known values |
 | `registries` | yes | config file path and owned domain | paths exist; every listed registry is JSON |
-| `generatedSurfaces` | yes | file path, marker id, generator/check owner | marker exists; validator can compare generated body or explicitly mark manual |
-| `runtimePathClasses` | yes | path class, owner, git policy, secret policy | runtime-only paths are classified without storing machine-local values |
+| `generatedDocuments` | yes | file path, marker id, generator/check owner | marker exists; validator can compare generated body or explicitly mark manual |
+| `runtimePathPolicies` | yes | path policy, owner, git policy, secret policy | runtime-only paths are classified without storing machine-local values |
 | `validators` | yes | validator id and covered contracts | listed checks exist in `scripts/validate-llm-first.mjs --list` |
 
 Forbidden in `agent-hub.json`:
@@ -117,19 +117,19 @@ Forbidden in `agent-hub.json`:
 | Cache/session/history paths as managed artifacts | runtime data is not durable policy |
 | Freeform prose fields that duplicate `SYSTEM.md` policy | prose policy remains in `SYSTEM.md` |
 
-Projection rule:
+Validated view rules:
 
-| Projection | Rule |
-|------------|------|
+| Validated view | Rule |
+|----------------|------|
 | `SYSTEM.md` entry document table | generated from or validator-checked against `agent-hub.json` |
 | README capability inventory | generated block remains validator-owned |
-| Optional `HUB.md` | if accepted, generated or thin wrapper over `agent-hub.json` and README inventory |
+| Optional `AGENT-HUB.md` | if accepted, generated or thin wrapper over `agent-hub.json` and README inventory |
 
 ## First Implementation Slice
 
 1. Run the P0.5 sweep.
 2. Write the gap table under this plan.
-3. Finalize P0.75 schema and projection rules.
+3. Finalize P0.75 schema and validated view rules.
 4. Draft `agent-hub.json` without runtime behavior.
 5. Add validator checks only after the manifest shape is stable.
 
@@ -139,7 +139,7 @@ Projection rule:
 |---------|------|
 | Plan | `docs/plans/agent-hub.md` |
 | Manifest | `claude/config/agent-hub.json` |
-| Optional root doc | `HUB.md` |
+| Optional root doc | `AGENT-HUB.md` |
 | Validator check | `agent-hub` |
 
-`HUB.md` stays optional until a decision record accepts it. If it exists, it must be generated or thin; `SYSTEM.md` remains canonical policy.
+`AGENT-HUB.md` stays optional until a decision record accepts it. If it exists, it must be generated or thin; `SYSTEM.md` remains canonical policy.

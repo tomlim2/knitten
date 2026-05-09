@@ -2,7 +2,7 @@
 
 Goal-to-doc lookup. Read this when the question is **"where is X?"** — start here, not by scanning the tree.
 
-For "what exists in this repo?" use [`README.md`](README.md). For the policy stance see [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md).
+For "what exists in this repo?" use [`README.md`](README.md). For system terms see [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). For the policy stance see [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md).
 
 ---
 
@@ -10,12 +10,13 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 
 | Goal | Read in this order |
 |------|---------------------|
+| Look up canonical system terminology | [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md) |
 | Edit any LLM-read doc (rule, standard, skill, command, README) | [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
 | Design a new layer (rule / standard / skill category / validator) | [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md) |
-| Explain why platform-neutral entry documents use shared source | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
+| Explain why platform-neutral entry documents use canonical policy | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
 | Design caol-ila as an agent hub | [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md) |
 | Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
-| Look up a term or recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
+| Recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`claude/standards/policy/naming.md`](claude/standards/policy/naming.md) |
 | Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`claude/config/README.md`](claude/config/README.md) |
 | Create a new slash command | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/rules/author-frontmatter.md`](claude/rules/author-frontmatter.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
@@ -59,6 +60,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 - All skills: [`claude/skills/`](claude/skills/)
 - All standards: [`claude/standards/index.md`](claude/standards/index.md)
 - All rules: [`claude/rules/index.md`](claude/rules/index.md)
+- System glossary: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md)
 - Completed LLM-first migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
 - Agent hub plan: [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md)
 - Vault folder split plan: [`docs/plans/split-vault-folders.md`](docs/plans/split-vault-folders.md)

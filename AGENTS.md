@@ -4,13 +4,15 @@ Codex entry document.
 
 First shared-policy read: [`SYSTEM.md`](SYSTEM.md).
 Sibling entry document: [`CLAUDE.md`](CLAUDE.md).
+System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md).
 
 ## Load Order
 
 1. Read `SYSTEM.md` before any other repository convention.
-2. Read `claude/rules/index.md`.
-3. Read every auto rule listed by `claude/rules/index.md`.
-4. Read triggered rules, standards, skills, and commands when the task matches them.
+2. Read `docs/reference/system-glossary.md` when editing system policy, entry documents, plans, manifests, or validators.
+3. Read `claude/rules/index.md`.
+4. Read every auto rule listed by `claude/rules/index.md`.
+5. Read triggered rules, standards, skills, and commands when the task matches them.
 
 ## Codex Adapter
 

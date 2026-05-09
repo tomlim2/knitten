@@ -7,16 +7,19 @@ portability: shared
 
 Defines how shared `caol-ila` rules, standards, skills, and commands are consumed by multiple agent harnesses.
 
+Reserved system terms live in `../../../docs/reference/system-glossary.md`.
+
 ## Core contract
 
 | Term | Rule |
 |------|------|
-| Shared source | Canonical instruction under `SYSTEM.md` or `claude/{rules,standards,skills,commands}` |
+| Canonical policy | Shared policy every harness must follow |
+| Shared layer | Canonical instruction under `claude/{rules,standards,skills,commands}` |
 | Entry document | Harness adapter that loads `SYSTEM.md` first |
 | Platform adapter | Harness-specific translation of shared intent into available tools and syntax |
 | Platform mechanic | Tool name, import syntax, slash command, approval model, subagent API, or path loaded by one harness |
 
-Shared source wins over adapters. If an adapter conflicts with shared source, fix the adapter.
+Canonical policy and shared layers win over adapters. If an adapter conflicts with them, fix the adapter.
 
 ## Frontmatter fields
 
