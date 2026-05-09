@@ -59,6 +59,6 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 - All skills: [`claude/skills/`](claude/skills/)
 - All standards: [`claude/standards/index.md`](claude/standards/index.md)
 - All rules: [`claude/rules/index.md`](claude/rules/index.md)
-- Active migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
+- Completed LLM-first migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
 - Agent hub plan: [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md)
 - Vault folder split plan: [`docs/plans/split-vault-folders.md`](docs/plans/split-vault-folders.md)
