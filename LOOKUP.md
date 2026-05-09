@@ -2,7 +2,7 @@
 
 Goal-to-doc lookup. Read this when the question is **"where is X?"** — start here, not by scanning the tree.
 
-For "what exists in this repo?" use [`README.md`](README.md). For the policy stance see [`claude/standards/policy/agent-first-policy.md`](claude/standards/policy/agent-first-policy.md).
+For "what exists in this repo?" use [`README.md`](README.md). For the policy stance see [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md).
 
 ---
 
@@ -11,7 +11,8 @@ For "what exists in this repo?" use [`README.md`](README.md). For the policy sta
 | Goal | Read in this order |
 |------|---------------------|
 | Edit any LLM-read doc (rule, standard, skill, command, README) | [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
-| Design a new layer (rule / standard / skill category / validator) | [`claude/standards/policy/agent-first-policy.md`](claude/standards/policy/agent-first-policy.md) |
+| Design a new layer (rule / standard / skill category / validator) | [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md) |
+| Explain why platform-neutral entry documents use shared source | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
 | Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
 | Look up a term or recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`claude/standards/policy/naming.md`](claude/standards/policy/naming.md) |

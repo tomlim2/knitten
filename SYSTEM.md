@@ -30,6 +30,8 @@ Compatibility metadata uses `platforms:` and `portability:` frontmatter. The con
 
 Do not rename `claude/` paths only for neutrality. The path is the current deploy shape. Neutrality comes from source ownership, metadata, and adapter boundaries.
 
+Decision rationale lives in `docs/decisions/`. A decision record explains why a policy exists; it does not override this file until the cascade edits land.
+
 ---
 
 ## Repository charter

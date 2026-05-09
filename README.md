@@ -15,6 +15,9 @@ caol-ila/
 ├── SYSTEM.md                 # Shared agent-agnostic policy
 ├── CLAUDE.md                 # Claude Code entry document
 ├── AGENTS.md                 # Codex entry document
+├── docs/
+│   ├── decisions/            # Accepted policy decisions and rationale
+│   └── plans/                # Migration and follow-up plans
 ├── claude/                   # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Claude Code deploy shim
 │   ├── rules/      (25)      # Always-applied constraints (terse, ≤50 lines each)

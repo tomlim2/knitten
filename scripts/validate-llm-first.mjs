@@ -563,6 +563,52 @@ async function checkEntryDocuments() {
   return { name: "entry-documents", violations };
 }
 
+async function checkMarkdownLinks() {
+  const violations = [];
+  const files = [
+    path.join(REPO_ROOT, "README.md"),
+    path.join(REPO_ROOT, "LOOKUP.md"),
+    path.join(REPO_ROOT, "SYSTEM.md"),
+    path.join(REPO_ROOT, "AGENTS.md"),
+    path.join(REPO_ROOT, "CLAUDE.md"),
+    path.join(REPO_ROOT, "claude", "rules", "index.md"),
+    path.join(REPO_ROOT, "claude", "standards", "index.md"),
+  ];
+  files.push(...(await walk(path.join(REPO_ROOT, "docs"), (f) => f.endsWith(".md"))));
+  const seen = new Set();
+  const linkRe = /\[[^\]]+\]\(([^)]+)\)/g;
+  for (const f of files) {
+    const relPath = rel(f);
+    if (seen.has(relPath)) continue;
+    seen.add(relPath);
+    const text = await readFile(f, "utf8");
+    const lines = text.split("\n");
+    const fenceState = computeFenceState(lines);
+    for (let i = 0; i < lines.length; i++) {
+      if (fenceState[i]) continue;
+      let match;
+      linkRe.lastIndex = 0;
+      while ((match = linkRe.exec(lines[i])) !== null) {
+        const raw = match[1].trim();
+        if (!raw || raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("#")) {
+          continue;
+        }
+        const withoutAnchor = raw.split("#")[0];
+        if (!withoutAnchor || withoutAnchor.startsWith("mailto:")) continue;
+        const target = path.resolve(path.dirname(f), withoutAnchor);
+        if (!existsSync(target)) {
+          violations.push({
+            file: relPath,
+            line: i + 1,
+            message: `broken markdown link: ${raw} -> ${rel(target)}`,
+          });
+        }
+      }
+    }
+  }
+  return { name: "markdown-links", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
@@ -571,6 +617,7 @@ const CHECKS = [
   { name: "standards-status", fn: checkStandardsStatus },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "entry-documents", fn: checkEntryDocuments },
+  { name: "markdown-links", fn: checkMarkdownLinks },
   { name: "length-caps", fn: checkLengthCaps },
   { name: "import-targets", fn: checkImportTargets },
   { name: "inventory-counts", fn: checkInventoryCounts },
