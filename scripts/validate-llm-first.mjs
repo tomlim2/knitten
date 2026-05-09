@@ -1056,6 +1056,13 @@ async function checkAgentHubManifest() {
     pushUniqueIdViolations(violations, file, key, manifest[key]);
   }
 
+  let systemText = "";
+  try {
+    systemText = await readFile(path.join(REPO_ROOT, "SYSTEM.md"), "utf8");
+  } catch {
+    violations.push({ file: "SYSTEM.md", line: 0, message: "SYSTEM.md not found" });
+  }
+
   for (const harness of manifest.harnesses || []) {
     for (const field of ["displayName", "entryDocument", "deployTarget", "firstRead", "adapter"]) {
       if (!harness[field] || typeof harness[field] !== "string") {
@@ -1078,6 +1085,20 @@ async function checkAgentHubManifest() {
     }
     if (harness.deployTarget) {
       pushManifestPathViolation(violations, `harness ${harness.id}.deployTarget`, harness.deployTarget);
+    }
+    if (systemText && harness.entryDocument && !systemText.includes(`\`${harness.entryDocument}\``)) {
+      violations.push({
+        file: "SYSTEM.md",
+        line: 1,
+        message: `entry document table missing ${harness.entryDocument}`,
+      });
+    }
+    if (systemText && harness.displayName && !systemText.includes(harness.displayName)) {
+      violations.push({
+        file: "SYSTEM.md",
+        line: 1,
+        message: `entry document table missing harness ${harness.displayName}`,
+      });
     }
   }
 

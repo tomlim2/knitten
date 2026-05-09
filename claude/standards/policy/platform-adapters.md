@@ -52,6 +52,19 @@ Add these fields during portability migration:
 | Codex | `AGENTS.md` | Read shared layers, translate Claude-only mechanics only when intent applies |
 | New harness | New root entry document | Register in `SYSTEM.md`, load `SYSTEM.md` first, keep shared policy out of the entry document |
 
+## New harness workflow
+
+When adding a harness adapter:
+
+1. Create one root entry document.
+2. Make its first shared-policy read point to `SYSTEM.md`.
+3. Add the harness to `claude/config/agent-hub.json` `harnesses`.
+4. Add the entry document row to `SYSTEM.md`.
+5. Add only harness mechanics to the entry document.
+6. Run `node scripts/validate-llm-first.mjs`.
+
+The `agent-hub` validator checks that manifest harnesses point to existing entry documents and that `SYSTEM.md` lists them.
+
 ## Migration rule
 
 Classify before moving. Do not move `claude/rules`, `claude/standards`, `claude/skills`, or `claude/commands` into a neutral folder until:

@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** P2.5 generated hub document complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** P3 harness authoring flow complete. This plan defines the next execution slices for turning `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -69,7 +69,7 @@ An agent hub is a repo that answers these questions without chat history:
 | P1.5 | done | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
 | P2 | done | Decide whether `AGENT-HUB.md` exists | Decision record accepts root hub document |
 | P2.5 | done | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
-| P3 | pending | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
+| P3 | done | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
 | P4 | pending | Revisit neutral directory migration | Rename only after runtime readers support the new deploy shape |
 
 ## P0.5 Sweep Scope
