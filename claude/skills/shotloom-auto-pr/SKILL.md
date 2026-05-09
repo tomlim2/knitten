@@ -275,5 +275,5 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 - `~/.claude/skills/shotloom-respond-pr/SKILL.md` — manual review response (with approval gate)
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation
 - the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — in-scope classification
-- `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
+- `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec
 - `~/.claude/rules/shotloom.md` — pre-PR gates

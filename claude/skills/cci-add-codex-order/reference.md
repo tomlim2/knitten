@@ -68,7 +68,7 @@ created: "<YYYY-MM-DD>"
 
 - `docs/adr/adr-XXXX-*.md`
 - `crates/<crate>/src/<file>.rs`
-- `docs/guidelines/review-rust.md` (for shotloom targets — in-repo Rust review SSOT)
+- `docs/guidelines/review-rust.md` (for shotloom targets — canonical in-repo Rust review spec)
 
 ## Scope
 

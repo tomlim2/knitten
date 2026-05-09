@@ -116,7 +116,7 @@ Per-category additions (still in-repo):
 | `test` | (covered by `review-rust.md`) |
 | `mixed` | everything |
 
-In-repo Rust review SSOT:
+Canonical in-repo Rust review spec:
 
 - `docs/guidelines/review-rust.md` — formal Rust review spec. Walk this against the diff before push. Loaded by `/shotloom-review-before-pr`.
 
@@ -176,7 +176,7 @@ Auto-commit/push cadence (per `~/.claude/rules/shotloom.md`) does NOT bypass the
 - Hook: `~/.claude/hooks/shotloom-linear-detect.sh` (auto-invoker)
 - `~/.claude/rules/shotloom.md` — hub
 - in-repo `docs/guidelines/*` — writing rules (authoritative)
-- in-repo `docs/guidelines/review-rust.md` — formal Rust review SSOT for pre-PR self-review
+- in-repo `docs/guidelines/review-rust.md` — formal Rust review spec for pre-PR self-review
 - `~/.claude/rules/shotloom.md` — Claude-side PR gates / auto-commit policy
 
 ## Additional Resources

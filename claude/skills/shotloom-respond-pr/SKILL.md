@@ -398,7 +398,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 - `~/.claude/skills/shotloom-review-before-pr/SKILL.md`
 - `~/.claude/skills/shotloom-linear-create-issue/SKILL.md`
 - `~/.claude/rules/git-defaults.md`, `~/.claude/rules/shotloom.md`
-- `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT
+- `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec
 
 ## Additional Resources
 

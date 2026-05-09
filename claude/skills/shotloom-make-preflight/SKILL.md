@@ -54,7 +54,7 @@ Then enumerate and read every file under:
 
 ### Step 3: Read global Shotloom standards (parallel)
 
-From `~/.claude/` (Claude-side only — in-repo `docs/guidelines/` is the SSOT for writing/review rules and is loaded in Step 2):
+From `~/.claude/` (Claude-side only — in-repo `docs/guidelines/` is canonical for writing/review rules and is loaded in Step 2):
 
 - the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — PR scope classification policy (no in-repo equivalent)
 - `~/.claude/rules/shotloom.md` — hub rule (routing + answering style)

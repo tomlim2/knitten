@@ -394,6 +394,6 @@ Read: !`ls ~/.claude/private/data.json`
 
 ## Related Files
 
-- `SYSTEM.md` - Shared policy source
+- `SYSTEM.md` - Canonical policy
 - `skills/caol-make-command/SKILL.md` - Command creation rules
 - `skills/caol-make-skill/SKILL.md` - Skill creation rules

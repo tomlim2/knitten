@@ -4,7 +4,7 @@ status: proposed
 
 # Note Inspection Checklist
 
-Single source of truth for inspecting one Obsidian note. Use when auditing a single note's quality, not the whole vault. For vault-wide audits use `~/.claude/skills/obsidian-fix-format/`.
+Canonical checklist for inspecting one Obsidian note. Use when auditing a single note's quality, not the whole vault. For vault-wide audits use `~/.claude/skills/obsidian-fix-format/`.
 
 The 8 steps below are an inspection order, not a tree. Each step has: check condition, why, and action on violation. Auto-fixable steps map to specific `obsidian-fix-format` checks.
 

@@ -115,7 +115,7 @@ Frontmatter: `type/topic` + `project/<P>` + `area/<A>` + (optional `lang/+lib/` 
 
 ### Frontmatter tag rules
 
-Single source of truth: `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`. Skill enforces:
+Canonical reference: `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`. Skill enforces:
 
 - Exactly **1** `type/` tag. Exactly **1** `project/` tag. Both required.
 - Code-bearing devlog/topic → `lang/` + `lib/` mandatory (both or neither).

@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx:*)
 
 caol-ila wrapper for the upstream HyperFrames authoring skill (heygen-com/hyperframes).
 
-Follow the upstream SKILL as the source of truth — it is imported below.
+Follow the upstream SKILL as the canonical reference — it is imported below.
 
 ## Upstream skill
 

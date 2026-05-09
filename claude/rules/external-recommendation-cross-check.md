@@ -18,7 +18,7 @@ When the external term has no user equivalent, surface it explicitly: "Codex rec
 
 **Why this is auto-loaded.** This system is **LLM-first** (`SYSTEM.md` charter): the user is the architect, the LLM is the operator. The architect's conventions are authoritative; the operator's external advisors (Codex, Gemini, subagents, web docs) are *candidate vocabulary at best*. Because LLMs are trained to defer to other expert-sounding LLMs, the default failure mode is to silently adopt external phrasing and overwrite the architect's choice. This rule reverses that default: external recommendation = check the architect's source first, then translate to the architect's term.
 
-The user is the source of truth. External LLMs are reference, not authority.
+The user is the canonical authority. External LLMs are reference, not authority.
 
 ## Common slip cases
 

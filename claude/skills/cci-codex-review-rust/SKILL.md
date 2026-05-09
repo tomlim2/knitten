@@ -63,7 +63,7 @@ $ARGUMENTS 파싱:
 - `--phase` / `--out-of-scope` / `--constraints` → Scope Context 플레이스홀더에 치환. 플래그 미지정 시 해당 라인 자체를 드롭 (literal `<PHASE>` 로 남기지 말 것).
 
 **Shotloom 레포 컨텍스트** (자동 포함 없음):
-- shotloom 레포의 Rust 리뷰 SSOT는 in-repo `docs/guidelines/review-rust.md`. 사용자가 `--context-docs docs/guidelines/review-rust.md`로 직접 지정해야 한다.
+- shotloom 레포의 canonical Rust 리뷰 spec은 in-repo `docs/guidelines/review-rust.md`. 사용자가 `--context-docs docs/guidelines/review-rust.md`로 직접 지정해야 한다.
 - 자동 임베드 동작은 제거되었다 (`~/.claude/standards/review-code-rust.md` 카탈로그는 폐기됨).
 
 수집한 diff를 다음 프롬프트 본문에 끼워넣는다:

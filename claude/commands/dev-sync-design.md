@@ -108,7 +108,7 @@ Synchronize GUI/UI work artifacts with the design system version.
 **IMPORTANT**: When processing multiple files, use **single message with multiple Task calls** for parallel execution
 
 Each agent's tasks:
-1. Read design-show-components actual CSS (single source of truth)
+1. Read design-show-components actual CSS (canonical reference)
 2. Read target file
 3. Compare EACH property against showcase:
    - **h1**: fontSize 20px, fontWeight 400, textTransform none
@@ -131,7 +131,7 @@ Each agent's tasks:
 ```
 Fix {file_path} to match Design System v{version} showcase.
 
-**Reference (Single Source of Truth):**
+**Canonical reference:**
 1. Open http://localhost:9720/skills/design-show-components
 2. Read design-show-components/index.html <style> section
 3. Extract actual values from .page-main styles
@@ -237,7 +237,7 @@ Version comment by file type:
 
 ## Rules
 
-1. **design-show-components is the single source of truth**
+1. **design-show-components is the canonical reference**
    - design-system.md = Specification document
    - design-show-components = Actual implementation reference
    - When in conflict, showcase wins

@@ -21,7 +21,7 @@ Examples:
   /caol-audit-skill shotloom-make-pr
 ```
 
-## Sources of truth (re-read every invocation)
+## Canonical references (re-read every invocation)
 
 | File | Used for |
 |------|----------|
@@ -57,7 +57,7 @@ cmd="$HOME/.claude/commands/$name.md"
 | W7 | No rhetoric | `rg -nw 'powerful\|elegant\|comprehensive\|world-class\|seamless\|robust'` |
 | W8 | Extreme-S — no N-language | `rg -n 'will support\|going to\|aims to\|goal is to\|could\|probably\|in theory\|might\|this represents\|in essence'` |
 
-### B. Length budget (llm-first-docs.md §Length budget — single source of truth)
+### B. Length budget (llm-first-docs.md §Length budget — canonical reference)
 
 | ID | Check (per-target) |
 |----|---------------------|
@@ -153,12 +153,12 @@ If a class is fully clean, list its IDs in the **Clean classes** line — do not
 ## Binding rules
 
 - **Read-only.** Never modify the audited skill. The user fixes.
-- **Re-read sources of truth every invocation.** Do not summarize from memory.
+- **Re-read canonical references every invocation.** Do not summarize from memory.
 - **One target per invocation.** Batch sweeps belong to `/caol-review-skills`.
 - **No silent skips.** If a class can't be evaluated, write `SKIPPED — <reason>` for the IDs.
 
 ## Related
 
 - `/caol-review-skills` — breadth-first batch audit (12+11+6 structural checks)
-- `~/.claude/standards/policy/llm-first-docs.md` — writing rules SSOT
-- `~/.claude/standards/policy/llm-first-policy.md` — layer model SSOT
+- `~/.claude/standards/policy/llm-first-docs.md` — canonical writing rules
+- `~/.claude/standards/policy/llm-first-policy.md` — canonical layer model

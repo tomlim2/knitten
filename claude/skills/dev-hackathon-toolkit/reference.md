@@ -36,7 +36,7 @@ When running multiple Claude Code sessions:
 
 ```
 Session naming: SS1, SS2, SS3, SS4
-Devlog: single source of truth (Obsidian vault)
+Devlog: canonical source (Obsidian vault)
 Communication: clipboard copy → paste to target session
 
 Devlog must contain:

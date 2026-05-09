@@ -18,7 +18,7 @@ Shared JSON registries, service credentials, and public service configuration.
 
 ## Rules
 
-- **Committed registry JSON files are source-of-truth inputs for validators.** If a rule, standard, or skill repeats a value from this folder, add a validator check or a generated block before relying on the duplication.
+- **Committed registry JSON files are canonical inputs for validators.** If a rule, standard, or skill repeats a value from this folder, add a validator check or a generated block before relying on the duplication.
 - **Tokens go ONLY in `.env`.** Never embed tokens in skill bodies, JSON files, or `private/`.
 - **Per-service env key convention:** `{SERVICE}_{KEY}` — e.g. `SLACK_BOT_TOKEN`, `SHOTLOOM_SLACK_BOT_TOKEN`, `GEMINI_API_KEY`.
 - **Service-specific config** (channels, bot names, endpoints) goes in its own JSON file such as `slack.json` or `gemini.json`. These may contain non-secret IDs.

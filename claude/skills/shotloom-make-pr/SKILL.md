@@ -258,7 +258,7 @@ Skip entirely when:
 
 ## Related
 
-- `docs/guidelines/review-rust.md` (in shotloom repo) — Rust review SSOT for Step 3b pre-PR checklist
+- `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec for Step 3b pre-PR checklist
 - `~/.claude/rules/shotloom.md` — per-PR approval, pre-PR checklist, account/identity
 - `rules/git-defaults.md` — global PR lifecycle approval
 - `rules/test-write.md` — unit test requirement

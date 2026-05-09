@@ -18,10 +18,10 @@ Usage: `/shotloom-draft-adr vrm-axis-correction-in-import`
 
 ## Drafting principles
 
-- **The in-repo template is the single source of truth.** It lives at `docs/guidelines/adr-template.md` (fallback: `docs/adr/_template.md`). READ IT every run. Copy its section list **verbatim** — same headings, same order, no additions, no removals, no renames. If it has `## Status / ## Context / ## Decision / ## Consequences / ## Alternatives considered`, the new ADR has exactly those, in that order.
+- **The in-repo template is canonical.** It lives at `docs/guidelines/adr-template.md` (fallback: `docs/adr/_template.md`). READ IT every run. Copy its section list **verbatim** — same headings, same order, no additions, no removals, no renames. If it has `## Status / ## Context / ## Decision / ## Consequences / ## Alternatives considered`, the new ADR has exactly those, in that order.
 - **Do NOT add sections the template doesn't have.** No `Phase X`, no `Stack note`, no `Next steps`, no `Scope`, no `Out of scope`, no `Open questions`, no `Acceptance criteria`, no `References` unless the template has it. Ad-hoc subsections (e.g. `### 1. Baseline`, `### 2. Value semantics`) inside template sections are allowed only when they carry decision content; if it's inventory or grammar that drift-tests can catch, it belongs in source code, not in the ADR (G10 — ADR scope discipline).
 - **Decision-only content.** Every line should be a decision, a rationale for a decision, or a rejected alternative. Strip restatements of prior ADRs, strip enumerations of externally-published facts (use a citation + link), strip half-specified schema/grammar that the ADR itself defers. Target: ≤ ~80 lines for most ADRs. If draft exceeds 150 lines, audit for inventory/grammar/restatement bloat before submitting.
-- **Inventory and grammar live in code, not in ADRs.** A list of N enum values, a parser grammar, or a channel-name table belongs in a `pub const` + length assertion + test in the owning crate — not in a Markdown table that can drift from the source of truth. Cite the external source (e.g. Apple docs, IETF RFC) in the ADR; let the code own the literal list.
+- **Inventory and grammar live in code, not in ADRs.** A list of N enum values, a parser grammar, or a channel-name table belongs in a `pub const` + length assertion + test in the owning crate — not in a Markdown table that can drift from canonical code. Cite the external source (e.g. Apple docs, IETF RFC) in the ADR; let the code own the literal list.
 - **Single-operator framing.** Write the ADR and any companion plan files (`.agent/*.md`, migration plans) as if the user (one operator) will execute them. Do NOT inject "Delegate: 돌쇠 can do this mechanically" lines, do NOT split steps between human and Codex agent. The user works solo by default and adds delegation language explicitly when needed (e.g. "이건 돌쇠한테 넘기자"). The agent's existence is defined in the in-repo `AGENTS.md` and `.agent/` folder; it does not require every plan to pre-allocate work to it.
 - **Blast radius / rollback / acceptance** notes — only if the in-repo template has a section for them. Otherwise drop.
 
@@ -69,7 +69,7 @@ Self-check before saving:
 2. Does the H2 order match the template order? (If not, reorder.)
 3. Is every paragraph either a decision, rationale, or rejected alternative? (If not, delete or move to source code.)
 4. Total line count ≤ ~80? (If > 150, audit for bloat.)
-5. Any literal lists of N items (channel names, enum values, grammar rules)? (If yes, move to a `pub const` + test in the owning crate; ADR cites the source of truth and links to the const.)
+5. Any literal lists of N items (channel names, enum values, grammar rules)? (If yes, move to a `pub const` + test in the owning crate; ADR cites the canonical reference and links to the const.)
 
 ### Step 5: Update ADR index
 

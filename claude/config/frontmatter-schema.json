@@ -21,7 +21,7 @@
     "harness-specific"
   ],
   "platformMetadataPilotFiles": [
-    "claude/rules/source-of-truth-first.md",
+    "claude/rules/canonical-first.md",
     "claude/standards/policy/llm-first-policy.md",
     "claude/standards/policy/platform-adapters.md",
     "claude/standards/authoring/command-skill-reference.md",

@@ -8,7 +8,7 @@ status: accepted
 
 **Canonical CSS Reference**: http://localhost:972/skills/design-show-components
 
-> **IMPORTANT**: The design-show-components page is the **single source of truth** for all CSS implementations. For exact values (font-size, line-height, margins, colors, border-radius, spacing, component specs), **always refer to design-show-components/index.html**. This document defines philosophy, principles, and design direction only.
+> **IMPORTANT**: The design-show-components page is the **canonical reference** for all CSS implementations. For exact values (font-size, line-height, margins, colors, border-radius, spacing, component specs), **always refer to design-show-components/index.html**. This document defines philosophy, principles, and design direction only.
 
 ---
 

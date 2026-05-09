@@ -52,7 +52,7 @@ Filter the output to only the `── bone / vrm_bone` sections (pipe through `g
 ### Step 4: Interpret
 
 For each bone, the output contains:
-- `ARP delta` — source rotation (ground truth)
+- `ARP delta` — canonical source rotation
 - `VRM local` — retargeter output
 - `axis diff` — angle between the two axes (ideal: 0°, real: often 100°+)
 - `mag ratio` — magnitude of VRM / ARP (ideal: 1.0)

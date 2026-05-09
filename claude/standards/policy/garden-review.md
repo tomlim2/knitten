@@ -62,7 +62,7 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 
 - [ ] No `MEMORY.md` file exists anywhere. (`llm-first-policy.md` forbids.)
 - [ ] Every entry document is registered in `SYSTEM.md` and contains no shared policy duplicate.
-- [ ] No second shared-policy source appeared (`PHILOSOPHY.md`, `MANIFESTO.md`, `OVERVIEW.md`). `SYSTEM.md` is singular.
+- [ ] No competing canonical policy appeared (`PHILOSOPHY.md`, `MANIFESTO.md`, `OVERVIEW.md`). `SYSTEM.md` is singular.
 - [ ] No human-aesthetic prose snuck into `README.md` or `LOOKUP.md` (motivational opener, marketing tone, repeated mission statement).
 - [ ] No new untracked `.bak` / `.tmp` / `.draft.md` files at repo root or under `claude/`.
 

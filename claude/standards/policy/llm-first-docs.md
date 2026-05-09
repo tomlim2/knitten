@@ -119,7 +119,7 @@ If a feature is unimplemented, do not describe it as if it works. Either:
 2. Mark with `status: proposed` frontmatter + `**status:** not implemented` body marker.
 3. Move to a sanctioned `*-roadmap.md` (only if user explicitly agreed to that file existing).
 
-The LLM reads docs as factual ground truth. N-language pollutes ground truth and propagates into actions.
+The LLM reads docs as canonical facts. N-language pollutes those facts and propagates into actions.
 
 ---
 
@@ -156,7 +156,7 @@ Avoid:
 
 If a file exceeds budget, split — do not let it grow.
 
-This table is the single source of truth. Other files (e.g. `rules/behavior.md`) reference it by path; do not duplicate the numbers.
+This table is the canonical reference. Other files (e.g. `rules/behavior.md`) reference it by path; do not duplicate the numbers.
 
 ---
 

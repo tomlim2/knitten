@@ -4,18 +4,18 @@ platforms: all
 portability: shared
 ---
 
-# Source-of-Truth First
+# Canonical First
 
 Meta-rule on top of `verify-before-report.md`, `external-recommendation-cross-check.md`, and `session-start.md`. Those rules each cover one failure surface; this one catches the gap between them: **silent pattern-mimicry without checking the rule that defines the pattern**.
 
 ## The failure mode
 
-You see an indicator (suffix, prefix, frontmatter field, folder name, naming pattern) in existing files. You mimic the visible shape. You do not check the source that defines what the shape *means*. The shape gets reproduced; its semantics get lost.
+You see an indicator (suffix, prefix, frontmatter field, folder name, naming pattern) in existing files. You mimic the visible shape. You do not check the canonical reference that defines what the shape *means*. The shape gets reproduced; its semantics get lost.
 
 ## Triggers (act before, not after)
 
-| Trigger | Source of truth to check |
-|---------|--------------------------|
+| Trigger | Canonical reference to check |
+|---------|------------------------------|
 | Unknown suffix/prefix on existing file (`_done`, `-draft`, `_archive`) | The skill that produces those files (`grep <suffix> ~/.claude/skills/`) |
 | New file in an established folder | The folder's `README.md` + the parent project's skill/standard |
 | External LLM/web recommendation (term, path, library) | `SYSTEM.md` → entry document → `~/.claude/standards/` → repo docs |

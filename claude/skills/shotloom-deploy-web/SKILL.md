@@ -73,7 +73,7 @@ gh run list --workflow build-web-image.yml --limit 10
 git tag --list 'v*' --sort=-version:refname | head -5
 git log -1 --oneline --decorate
 
-# Current manifest image (the cluster's source-of-truth)
+# Current manifest image (the cluster's canonical state)
 gh api repos/CINEV/prototype-manifest/contents/shotloom/deployment.yaml \
   --jq '.content | gsub("\n"; "") | @base64d' | grep "image:"
 
@@ -429,6 +429,6 @@ When debugging suspected runtime failures, reproduce locally with a minimal `doc
 
 - `.github/workflows/build-web-image.yml` (in shotloom repo)
 - `apps/editor/Containerfile`, `apps/editor/nginx.conf`
-- `CINEV/prototype-manifest` — GitOps source-of-truth (`shotloom/deployment.yaml`, `applications/shotloom-web.yaml`)
+- `CINEV/prototype-manifest` — GitOps canonical source (`shotloom/deployment.yaml`, `applications/shotloom-web.yaml`)
 - `~/.claude/rules/shotloom.md`, `~/.claude/rules/git-defaults.md`, `~/.claude/rules/slack.md`
 - `~/.claude/skills/cci-send-alert/` — Slack send tooling (`team_channel` from `~/.claude/config/slack.json`)

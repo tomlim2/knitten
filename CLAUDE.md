@@ -18,7 +18,7 @@ Detailed reference: `claude/standards/` (read on demand).
 
 @~/.claude/rules/external-recommendation-cross-check.md
 
-@~/.claude/rules/source-of-truth-first.md
+@~/.claude/rules/canonical-first.md
 
 @~/.claude/rules/git-defaults.md
 

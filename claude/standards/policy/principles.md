@@ -239,7 +239,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 ---
 
-### 9. Single source of truth, references by path
+### 9. Canonical source, references by path
 
 **Statement:** A fact lives in exactly one file. Other files reference it by path, never by duplication. Indexes are generated or validated against the source.
 

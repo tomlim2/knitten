@@ -2,7 +2,7 @@
 
 **LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `claude/` is symlinked to `~/.claude`.
 
-Shared policy source: [`SYSTEM.md`](SYSTEM.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Canonical policy: [`SYSTEM.md`](SYSTEM.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 
@@ -128,7 +128,7 @@ Rules in `claude/rules/`. Auto rules load every session via entry documents; tri
 
 | Load | Count | Files |
 |------|------:|-------|
-| `auto` | 8 | `ambiguity-scoring.md`, `behavior.md`, `external-recommendation-cross-check.md`, `git-defaults.md`, `security.md`, `session-start.md`, `source-of-truth-first.md`, `verify-before-report.md` |
+| `auto` | 8 | `ambiguity-scoring.md`, `behavior.md`, `canonical-first.md`, `external-recommendation-cross-check.md`, `git-defaults.md`, `security.md`, `session-start.md`, `verify-before-report.md` |
 | `triggered` | 16 | `author-frontmatter.md`, `author-naming.md`, `author-permissions.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom.md`, `slack.md`, `test-write.md`, `writing-external.md` |
 | `index` | 1 | `index.md` |
 <!-- /generated:readme-inventory -->

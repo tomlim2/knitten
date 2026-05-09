@@ -7,7 +7,7 @@ allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*), Bash(
 
 Self-review pass for a Shotloom branch **before** opening a PR. Loads the in-repo formal Rust review spec (`docs/guidelines/review-rust.md`) and the review process (`docs/guidelines/code-review-guideline.md`), walks them against the current diff, reports findings. Does **not** push, **not** call `gh pr create`, **not** modify files — reports only.
 
-> **Note:** The in-repo `docs/guidelines/review-rust.md` is the single source of truth for what counts as a Rust defect on this repo. Do not load `~/.claude/standards/review-code-rust.md`.
+> **Note:** The in-repo `docs/guidelines/review-rust.md` is canonical for what counts as a Rust defect on this repo. Do not load `~/.claude/standards/review-code-rust.md`.
 
 Run repeatedly during development. When the report comes back clean, then `/shotloom-make-pr` to open the PR.
 
@@ -76,7 +76,7 @@ Run `pwd` every time before first grep — cwd may silently reset between tool c
 
 **The shotloom in-repo guidelines are the only authority now.** Read in this order:
 
-1. **`docs/guidelines/review-rust.md`** (in-repo) — formal Rust review spec. Single source of truth for what counts as a defect on this repo. Read in full.
+1. **`docs/guidelines/review-rust.md`** (in-repo) — formal Rust review spec. Canonical for what counts as a defect on this repo. Read in full.
 2. **`docs/guidelines/code-review-guideline.md`** (in-repo) — review process, P0/P1/P2/P3 priorities, reviewer expectations.
 
 Use the in-repo formal spec as the checklist; do not load `~/.claude/standards/review-code-rust.md` or any external supplementary catalog.
@@ -139,7 +139,7 @@ The catalog is **grep-catchable rules only**. Semantic-judgment classes (cross-r
 
 Findings are P3 by default unless the violated rule's source standard escalates them (e.g. ADR Decision rewrite per H10 = P1). Accumulated H nits become onboarding tax; do not let them slide just because the in-repo spec does not list them.
 
-**Catalog discipline.** When a Pattern H rule's defect class lands in `docs/guidelines/review-rust.md` (or any other in-repo SSOT), delete the H entry here in the same PR — Pattern H is for what the in-repo spec misses, not a parallel catalog. Do not append trigger anecdotes ("the failure mode that motivated this sweep was ...") to rule bodies; those belong in commit history. Rules accrete one direction; without active pruning the catalog becomes a leftover dump.
+**Catalog discipline.** When a Pattern H rule's defect class lands in `docs/guidelines/review-rust.md` (or any other in-repo canonical spec), delete the H entry here in the same PR — Pattern H is for what the in-repo spec misses, not a parallel catalog. Do not append trigger anecdotes ("the failure mode that motivated this sweep was ...") to rule bodies; those belong in commit history. Rules accrete one direction; without active pruning the catalog becomes a leftover dump.
 
 Full sweep commands live in [reference.md § Pattern H](reference.md#pattern-h--doc--comment-discipline-post-in-repo-review-pass).
 
@@ -176,7 +176,7 @@ Skip the dispatch only when the diff contains zero S1/S2/S3 triggers. The trigge
 - **I1** — symbols this PR removes from a crate's public surface (`-pub use …` in a `lib.rs`); grep the whole repo for refs to the OLD fully-qualified path (`shotloom_x::Removed`).
 - **I2** — file deletions / renames (`git diff --name-status | rg '^[DR]'`); grep prose comments and docs for the old file path.
 - **I3** — module-internal imports removed from a non-test source file (`-use shotloom_x::Y`); grep ADRs / READMEs / module-doc comments for the fully-qualified old path.
-- **I4** — workspace-wide unresolved-link sweep on doc comments. Trigger: this PR touches any `///` / `//!` doc comment OR renames any file in `crates/`. The repo's `validate-doc-paths.mjs` only checks markdown link targets in `docs/`; Rust `///` and `//!` doc comments accumulate stale references silently across PR cycles (renames, cross-crate moves, removed symbols, bracket-misuse where a file path was written with intra-doc syntax). The canonical sweep is `cargo doc --workspace --exclude shotloom-desktop --no-deps 2>&1 | rg "warning: unresolved link"` — rustdoc itself is the source of truth. Earlier drafts of this rule used a rename-history grep, but module-promotion renames (`foo.rs → foo/mod.rs`) preserve all qualified paths, so the rename grep produces high false-positive rates. Use `cargo doc` instead. **Triage rule:** any new unresolved-link warning whose file is in this PR's diff is in-scope; pre-existing warnings on files this PR did not touch are out-of-scope (surface them as candidate STL-NN follow-ups, do not fix in the current PR).
+- **I4** — workspace-wide unresolved-link sweep on doc comments. Trigger: this PR touches any `///` / `//!` doc comment OR renames any file in `crates/`. The repo's `validate-doc-paths.mjs` only checks markdown link targets in `docs/`; Rust `///` and `//!` doc comments accumulate stale references silently across PR cycles (renames, cross-crate moves, removed symbols, bracket-misuse where a file path was written with intra-doc syntax). The canonical sweep is `cargo doc --workspace --exclude shotloom-desktop --no-deps 2>&1 | rg "warning: unresolved link"` — rustdoc itself is canonical. Earlier drafts of this rule used a rename-history grep, but module-promotion renames (`foo.rs → foo/mod.rs`) preserve all qualified paths, so the rename grep produces high false-positive rates. Use `cargo doc` instead. **Triage rule:** any new unresolved-link warning whose file is in this PR's diff is in-scope; pre-existing warnings on files this PR did not touch are out-of-scope (surface them as candidate STL-NN follow-ups, do not fix in the current PR).
 
 Mindset: **A1/H3 catch what the PR adds; I catches what the PR breaks elsewhere.** A pre-existing line that became wrong because of *this PR's move* is owned by *this PR* — fix it in the same PR or explicitly decide not to fix and note that decision in the PR body. "Pre-existing" is not an excuse: the diff caused the staleness.
 
@@ -250,7 +250,7 @@ The literal rule enumeration (Step 4 output) stays in English/code-quote form so
 
 ## Related
 
-- `docs/guidelines/review-rust.md` (in shotloom repo) — **authoritative Rust review SSOT** loaded at Step 2
+- `docs/guidelines/review-rust.md` (in shotloom repo) — **canonical Rust review spec** loaded at Step 2
 - `docs/guidelines/code-review-guideline.md` (in shotloom repo) — review process / priorities
 - `skills/shotloom-make-pr/SKILL.md` — next step after clean report
 - `~/.claude/rules/shotloom.md` — pre-PR identity / build / commit conventions

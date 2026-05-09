@@ -6,7 +6,7 @@ date: 2026-05-09
 
 ## Decision
 
-`caol-ila` uses one shared policy source with harness-specific entry documents.
+`caol-ila` uses one canonical policy document with harness-specific entry documents.
 
 | Layer | Role |
 |-------|------|
@@ -26,7 +26,7 @@ The `claude/` directory name is a deploy shape, not a policy boundary. Rename pr
 
 | Rule | Effect |
 |------|--------|
-| One current policy source | Shared policy lives in `SYSTEM.md` and the owning shared layer |
+| One canonical policy | Shared policy lives in `SYSTEM.md` and the owning shared layer |
 | Thin entry documents | Entry docs load `SYSTEM.md` first, then add only harness mechanics |
 | Metadata before movement | Artifacts get `platforms:` and `portability:` before any neutral path migration |
 | Decisions explain, policy executes | Decision records explain why; `SYSTEM.md` and shared layers define what agents do |

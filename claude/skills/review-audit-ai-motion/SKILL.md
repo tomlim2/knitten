@@ -174,6 +174,6 @@ RECOMMEND:
 
 ## Related
 
-- `~/.claude/standards/review/review-ai-motion.md` — rubric + fault matrix (single source of truth)
+- `~/.claude/standards/review/review-ai-motion.md` — rubric + fault matrix (canonical reference)
 - `~/.claude/skills/review-audit-retarget/SKILL.md` — for **V** stage (viewer/skinning) diagnosis
 - `~/.claude/skills/cci-codex-analyze-motion/SKILL.md` — deeper Codex analysis, bone hierarchy diffs

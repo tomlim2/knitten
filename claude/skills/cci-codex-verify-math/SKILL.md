@@ -68,7 +68,7 @@ Usage: `/cci-codex-verify-math crates/humanoid_retarget/src/retargeter.rs:296-34
   (counter-example). Continuing under an assumed convention creates
   false confidence.
 - If the caller supplied `Binding references`, read them first and
-  treat their conventions as ground truth. Do not second-guess them.
+  treat their conventions as canonical. Do not second-guess them.
 - Any ambiguity that is not a coordinate convention (e.g., unclear
   input domain, missing type constraints) is collected in a
   "Questions for author" section at the end, not mixed with the

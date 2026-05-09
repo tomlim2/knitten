@@ -13,7 +13,7 @@ Scaffold a new Codex order brief under `~/.codex/codex-base/order/` so the Codex
 - **Primary target:** a Linear STL-NN issue that is next-in-line for Codex to work on.
 - **Canonical location:** `~/.codex/codex-base/order/<issue-id>-<short-slug>.md`
 - **Optional mirror:** `<target-repo>/.agent/handoff-<issue-id>.md` (repo-scoped operational memory per the shotloom `.agent/` convention in `~/.claude/rules/shotloom.md`).
-- **Source of truth:** if the target repo has a `.agent/` dir, treat the repo-side copy as canonical and the order/ copy as a cache. Otherwise the order/ file itself is canonical.
+- **Canonical source:** if the target repo has a `.agent/` dir, treat the repo-side copy as canonical and the order/ copy as a cache. Otherwise the order/ file itself is canonical.
 - **Out of scope:** running the work, creating the Linear issue (use `shotloom-linear-create-issue` / `cci-linear-create-issue`), committing/pushing the codex-base repo (user decides when to `git push`).
 
 ## Arguments

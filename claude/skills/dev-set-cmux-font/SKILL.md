@@ -104,6 +104,6 @@ For cmux `settings.json` (JSONC — comments allowed), uncomment or add a `termi
 
 ## Notes
 
-- cmux is from `manaflow-ai/cmux`. The settings schema URL in `~/.config/cmux/settings.json` is the source of truth for supported keys — re-fetch it if the workflow above can't find a font key and the user insists cmux has its own setting.
+- cmux is from `manaflow-ai/cmux`. The settings schema URL in `~/.config/cmux/settings.json` is canonical for supported keys — re-fetch it if the workflow above can't find a font key and the user insists cmux has its own setting.
 - This skill is macOS-only. cmux does not ship on Windows.
 - If the user reports "I changed it in Settings UI but it looks wrong", the UI likely wrote to Application Support JSON, and the fix is to find that JSON and correct the font order/value there — not to touch Ghostty config.
