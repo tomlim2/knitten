@@ -33,7 +33,7 @@ An agent hub is a repo that answers these questions without chat history:
 | Shared runtime layers | `agent/rules`, `agent/standards`, `agent/skills`, `agent/commands` |
 | Registries | `doc-budgets`, `frontmatter-schema`, `taxonomy`, `audit-policy`, `exceptions` |
 | Generated inventory | README inventory and validator check list |
-| Hub layer | `agent/config/agent-hub.json` connects harnesses, entry docs, deploy targets, capability inventories, and validators |
+| Hub layer | `agent/config/agent-hub.json` connects harnesses, entry documents, deploy targets, capability inventories, and validators |
 
 ## Non-Goals
 
@@ -66,17 +66,17 @@ An agent hub is a repo that answers these questions without chat history:
 | P0.5 | done | Inventory harness entrypoints, deploy targets, platform metadata, and runtime path policies | Migration gap table uses the required columns below |
 | P0.75 | done | Define manifest ownership and schema before writing JSON | Schema table defines required keys, allowed values, validated view rules, and forbidden value classes |
 | P1 | done | Add `agent/config/agent-hub.json` | Manifest matches P0.75 schema and has no duplicated unvalidated view |
-| P1.5 | done | Add validator check for hub manifest | Missing entry docs, broken paths, and stale platform metadata fail validation |
+| P1.5 | done | Add validator check for hub manifest | Missing entry documents, broken paths, and stale platform metadata fail validation |
 | P2 | done | Decide whether `AGENT-HUB.md` exists | Decision record accepts root hub document |
 | P2.5 | done | Add generated hub document inventory if `AGENT-HUB.md` exists | Generated block prevents command/skill/rule/standard drift |
-| P3 | done | Add authoring flow for new harness adapters | New entry docs update manifest and validator fixtures in the same change |
+| P3 | done | Add authoring flow for new harness adapters | New entry documents update manifest and validator fixtures in the same change |
 | P4 | done | Revisit neutral directory migration | Rename remains blocked until runtime readers support the new deploy shape |
 
 ## P0.5 Sweep Scope
 
 | Sweep target | Output |
 |--------------|--------|
-| Root entry docs | entry document table with harness, first-read rule, shared-policy marker |
+| Root entry documents | entry document table with harness, first-read rule, shared-policy marker |
 | `agent/CLAUDE.md` deploy shim | deploy-shim role and sync behavior |
 | `SYSTEM.md` canonical deployment table | deploy target ownership gaps |
 | `agent/config/frontmatter-schema.json` | platform metadata coverage gaps |
@@ -140,7 +140,7 @@ Ownership decisions:
 
 | Key | Required | Content | Validator behavior |
 |-----|----------|---------|--------------------|
-| `harnesses` | yes | `id`, `displayName`, `entryDocument`, `deployTarget`, `firstRead`, `adapter` | entry docs exist; first-read marker points to `SYSTEM.md`; no duplicate id |
+| `harnesses` | yes | `id`, `displayName`, `entryDocument`, `deployTarget`, `firstRead`, `adapter` | entry documents exist; first-read marker points to `SYSTEM.md`; no duplicate id |
 | `sharedLayers` | yes | `id`, `path`, `kind`, `loadMode`, `inventorySource`, `deployTarget` | paths exist; kind and load mode match allowed values |
 | `registries` | yes | `id`, `path`, `domain`, `format`, `deployTarget`, `secretPolicy` | paths exist; JSON parses; secret policy allows commit |
 | `generatedDocuments` | yes | `id`, `path`, `marker`, `source`, `mode`, `validator` | marker exists; validator can compare generated body or explicitly mark manual |

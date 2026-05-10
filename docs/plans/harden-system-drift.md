@@ -49,7 +49,7 @@ Scope: `SYSTEM.md`, `README.md`, `LOOKUP.md`, `docs/`, `agent/rules/`, `agent/st
 | Validator check list | validator `CHECKS`, `principles.md` | Generated block or validator-owned output | Do not hardcode count in prose |
 | Length exceptions | validator `STANDARD_LENGTH_GRANDFATHERED` | `agent/config/exceptions.json` | Require `reason`, `decision`, `expires` or `review-after` |
 | Entry document registry | `SYSTEM.md`, validator `entries`, `platform-adapters.md` | `frontmatter-schema.json` or separate entry registry | Could be derived from `SYSTEM.md` table later |
-| Deploy path ownership | `SYSTEM.md`, README setup text | `agent/config/deploy-paths.json` if it grows | Keep as doc table for now unless runtime readers need it |
+| Deploy target ownership | `SYSTEM.md`, README setup text | `agent/config/deploy-targets.json` if it grows | Keep as doc table for now unless runtime readers need it |
 | Identity mapping | `git-defaults.md`, `pr-create.md`, `shotloom.md` | Separate identity registry if generalized | Not part of first five registry files |
 | Document naming strategy | `naming.md`, `author-naming.md`, plan filenames, decision filenames | `agent/config/taxonomy.json` + `naming.md` | Prevent names that hide purpose, status, or scope |
 

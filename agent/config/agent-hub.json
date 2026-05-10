@@ -254,6 +254,14 @@
       ]
     },
     {
+      "id": "terminology",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "terminology",
+      "covers": [
+        "reserved system terminology"
+      ]
+    },
+    {
       "id": "registry-integrity",
       "script": "scripts/validate-llm-first.mjs",
       "listedCheck": "registry-integrity",

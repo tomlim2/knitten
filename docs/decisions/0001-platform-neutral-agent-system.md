@@ -30,7 +30,7 @@ Decision `0003` supersedes only the directory-rename block after metadata, adapt
 | Rule | Effect |
 |------|--------|
 | One canonical policy | Shared policy lives in `SYSTEM.md` and the owning shared layer |
-| Thin entry documents | Entry docs load `SYSTEM.md` first, then add only harness mechanics |
+| Thin entry documents | Entry documents load `SYSTEM.md` first, then add only harness mechanics |
 | Metadata before movement | Artifacts get `platforms:` and `portability:` before any neutral path migration |
 | Decisions explain, policy executes | Decision records explain why; `SYSTEM.md` and shared layers define what agents do |
 

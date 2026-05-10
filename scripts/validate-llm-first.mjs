@@ -418,6 +418,21 @@ async function llmFirstFiles() {
   return files;
 }
 
+async function systemTerminologyFiles() {
+  const files = [];
+  for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md", "AGENTS.md", "CLAUDE.md", "AGENT-HUB.md"]) {
+    const p = path.join(REPO_ROOT, name);
+    if (existsSync(p)) files.push(p);
+  }
+  for (const dir of ["docs/decisions", "docs/plans", "docs/reference"]) {
+    files.push(...(await walk(path.join(REPO_ROOT, dir), (f) => f.endsWith(".md"))));
+  }
+  files.push(path.join(AGENT_ROOT, "config", "README.md"));
+  files.push(path.join(AGENT_ROOT, "config", "agent-hub.json"));
+  files.push(path.join(AGENT_ROOT, "config", "context-routing.json"));
+  return files.filter((f) => existsSync(f));
+}
+
 // ---------- checks ----------
 
 const BANNED_TERMS = [
@@ -509,6 +524,46 @@ async function checkBannedTerms() {
     }
   }
   return { name: "banned-terms", violations };
+}
+
+const TERMINOLOGY_RULES = [
+  { label: "source of truth", pattern: /\bsource of truth\b/i, canonical: "canonical owner or canonical policy" },
+  { label: "canonical root", pattern: /\bcanonical root\b/i, canonical: "agent root" },
+  { label: "canonical repo root", pattern: /\bcanonical repo root\b/i, canonical: "agent root" },
+  { label: "deploy path", pattern: /\bdeploy path\b/i, canonical: "deploy target" },
+  { label: "entry docs", pattern: /\bentry docs\b/i, canonical: "entry documents" },
+  { label: "agent directory", pattern: /\bagent directory\b/i, canonical: "agent root" },
+  { label: "claude folder", pattern: /\bclaude folder\b/i, canonical: "agent root or Claude deploy target" },
+];
+
+async function checkTerminology() {
+  const violations = [];
+  const files = await systemTerminologyFiles();
+  for (const f of files) {
+    let text;
+    try {
+      text = await readFile(f, "utf8");
+    } catch {
+      continue;
+    }
+    const { body } = stripFrontmatter(text);
+    const lines = body.split("\n");
+    const fenceState = computeFenceState(lines);
+    for (let i = 0; i < lines.length; i++) {
+      if (fenceState[i]) continue;
+      const original = lines[i];
+      const masked = maskCodeSpans(original);
+      for (const rule of TERMINOLOGY_RULES) {
+        if (!rule.pattern.test(masked)) continue;
+        violations.push({
+          file: rel(f),
+          line: i + 1,
+          message: `use ${rule.canonical} instead of ${JSON.stringify(rule.label)}`,
+        });
+      }
+    }
+  }
+  return { name: "terminology", violations };
 }
 
 async function checkRulesFrontmatter() {
@@ -1914,6 +1969,7 @@ async function checkGeneratedBlocks() {
 
 const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
+  { name: "terminology", fn: checkTerminology },
   { name: "registry-integrity", fn: checkRegistryIntegrity },
   { name: "agent-hub", fn: checkAgentHubManifest },
   { name: "context-routing", fn: checkContextRouting },

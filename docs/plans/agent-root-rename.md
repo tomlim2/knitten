@@ -58,7 +58,7 @@ Rename the canonical repo source folder from `claude/` to `agent/` while preserv
 
 | Item | Result |
 |------|--------|
-| Canonical root | `agent/` |
+| Agent root | `agent/` |
 | Claude deploy target | `~/.claude -> caol-ila/agent` |
 | Validator | `node scripts/validate-llm-first.mjs` passed |
 | Local machine config | `obsidian-staging` path updated to `agent/obsidian-staging` |

@@ -36,8 +36,8 @@ Keeping `claude/` as the canonical repo path now creates cold-start ambiguity: t
 | Rule | Effect |
 |------|--------|
 | Canonical source path is `agent/` | Docs, validators, and registries point to `agent/...` |
-| Claude deploy path remains `~/.claude/` | Claude Code imports and runtime files keep their harness path |
-| Entry docs stay thin | `CLAUDE.md` and `AGENTS.md` translate shared source into harness mechanics |
+| Claude deploy target remains `~/.claude/` | Claude Code imports and runtime files keep their harness path |
+| Entry documents stay thin | `CLAUDE.md` and `AGENTS.md` translate shared source into harness mechanics |
 | Vendor Claude examples keep `.claude/` | External plugin docs and runtime conventions are not rewritten as repo policy |
 
 ## Cascade

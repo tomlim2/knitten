@@ -21,7 +21,7 @@ Primary risk: metadata alone does not reduce context. A routing execution contra
 | Unreal skills are visible during Rust work | Unreal inventory is discoverable, but Unreal bodies are not loaded unless the task matches Unreal |
 | Route-domain-specific standards compete for context | Task classification picks the relevant route domain before loading references |
 | Skill selection relies on filename intuition only | Metadata and validator checks make routing explicit |
-| Agents over-read "just in case" | Entry docs load navigation, then route to the smallest matching context |
+| Agents over-read "just in case" | Entry documents load navigation, then route to the smallest matching context |
 
 ## Load Model
 
@@ -72,7 +72,7 @@ Routing is justified only when the avoided route-domain context is larger than t
 
 | Area | State |
 |------|-------|
-| Entry docs | already thin |
+| Entry documents | already thin |
 | Auto rules | already separate from triggered rules |
 | Standards | on-demand by `agent/standards/index.md` |
 | Skills | loaded by harness/task match, but no repo-owned routing metadata |
