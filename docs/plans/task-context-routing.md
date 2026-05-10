@@ -44,6 +44,17 @@ Primary risk: metadata alone does not reduce context. A routing execution contra
 
 The contract must become an accepted rule or standard before broad metadata rollout.
 
+Accepted direction:
+
+| Decision | Accepted value |
+|----------|----------------|
+| Compact routing index owner | `AGENT-HUB.md` generated routing block |
+| Routing marker | `<!-- routing:start -->` to `<!-- routing:end -->` |
+| Metadata rollout | High-cost pilot only before broad enforcement |
+| Pilot set | Unreal, Rust/Bevy, Shotloom review |
+| Repo key source | `repo-paths.json` keys |
+| Regression model | Synthetic route fixtures with max context budget |
+
 ## Tradeoffs
 
 | Cost | Expected impact | Control |
@@ -110,12 +121,15 @@ Add routing metadata to selected `SKILL.md`, command docs, standards, and trigge
 domains: unreal
 repo-keys: cinev-studio
 languages: cpp,python
+frameworks: bevy,wgpu
 task-types: implementation
 context-profile: unreal-assets
 exclude-when: rust,web
 ```
 
 Use comma-separated scalar values unless the validator is upgraded to parse YAML arrays. P0.5 must explicitly decide the syntax before metadata rollout.
+
+Omit optional axes when absent. Example: a general Rust skill may omit `frameworks`; absence means no framework-specific route requirement.
 
 ## Initial Routing Axes
 
@@ -124,6 +138,7 @@ Use comma-separated scalar values unless the validator is upgraded to parse YAML
 | `domains` | `unreal`, `rust`, `web`, `obsidian` | technology, file extension, toolchain, domain terms |
 | `repo-keys` | `shotloom`, `cinev-studio`, `caol-ila` | repo path, issue prefix, `repo-paths.json` key |
 | `languages` | `cpp`, `python`, `rust`, `typescript`, `css` | file extension, compiler, framework |
+| `frameworks` | `bevy`, `wgpu`, `astro`, `three` | framework imports, build files, repo terms |
 | `task-types` | `implementation`, `review`, `git`, `authoring`, `research` | user verb, command, PR context |
 
 Negative evidence belongs in `exclude-when` only for high-cost or high-risk artifacts. Default routing should be positive-match.
@@ -135,7 +150,8 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 | Routing axis values | new `claude/config/context-routing.json` |
 | Skill/standard routing metadata | owning artifact frontmatter |
 | Context profiles | new `claude/config/context-routing.json` |
-| Generated routing inventory | optional generated block in `AGENT-HUB.md` |
+| Generated routing inventory | `AGENT-HUB.md` block from `<!-- routing:start -->` to `<!-- routing:end -->` |
+| Synthetic route fixtures | new `tests/routing-fixtures.json` |
 | Enforcement | `scripts/validate-llm-first.mjs` |
 
 ## Execution Order
@@ -143,12 +159,12 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 | Tier | Status | Work | Acceptance |
 |------|--------|------|------------|
 | P0 | pending | Inventory high-cost route-domain artifacts | Table lists route domains, repo keys, task types, and high-cost artifacts |
-| P0.25 | pending | Define routing execution contract | Contract names who routes, metadata syntax, axes, fallback, and measurable pass/fail |
-| P0.5 | pending | Define `context-routing.json` schema | Schema names axes, profiles, evidence, pilot files, and exemptions |
+| P0.25 | pending | Define routing execution contract | Contract names who routes, routing markers, metadata syntax, axes, fallback, and measurable pass/fail |
+| P0.5 | pending | Define `context-routing.json` schema | Schema names axes, profiles, evidence, pilot files, fixtures, budgets, and exemptions |
 | P1 | pending | Add routing registry and validator skeleton | Registry parses; values are unique; profiles reference known axis values |
 | P1.5 | pending | Add pilot metadata to high-cost route domains | Unreal and Rust pilot artifacts have `domains` metadata |
 | P2 | pending | Validate metadata on pilot files | Missing or unknown axis values fail validation |
-| P2.5 | pending | Add generated routing inventory | `AGENT-HUB.md` shows profiles and pilot coverage from registry |
+| P2.5 | pending | Add generated routing inventory | `AGENT-HUB.md` routing block shows profiles and pilot coverage from registry |
 | P3 | pending | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
 | P4 | pending | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
 
@@ -158,20 +174,39 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 |--------|---------|
 | artifact | skill, standard, rule, command, or reference |
 | current load path | auto, triggered, on-demand, command, harness task match |
-| likely route | proposed domains, repo-keys, languages, and task-types |
+| likely route | proposed domains, repo-keys, languages, frameworks, and task-types |
 | context cost | low, medium, high |
 | false-positive risk | when this artifact gets loaded for the wrong task |
-| metadata needed | `domains`, `repo-keys`, `languages`, `task-types`, `exclude-when`, or exemption |
+| metadata needed | `domains`, `repo-keys`, `languages`, `frameworks`, `task-types`, `exclude-when`, or exemption |
 
 ## Validator Requirements
 
 | Check | Behavior |
 |-------|----------|
 | routing registry | all axis values and profiles unique |
-| metadata field pairing | `domains`, `repo-keys`, `languages`, and `task-types` cannot reference unknown values |
+| repo key validation | `repo-keys` values must exist in `repo-paths.json` keys |
+| metadata field pairing | `domains`, `repo-keys`, `languages`, `frameworks`, and `task-types` cannot reference unknown values |
 | pilot coverage | selected high-cost pilot files must include routing metadata |
 | exclusion sanity | `exclude-when` cannot include the same value as `domains` |
 | generated inventory | routing inventory block matches registry |
+| synthetic route dry-run | each fixture matches `must-load`, `must-not-load`, and max budget |
+
+## Synthetic Route Fixtures
+
+Store fixtures in `tests/routing-fixtures.json`:
+
+```json
+[
+  {
+    "task": "Rust Bevy ECS in shotloom",
+    "mustLoad": ["shotloom", "rust"],
+    "mustNotLoad": ["unreal-engine-cpp", "obsidian"],
+    "maxBytes": 25000
+  }
+]
+```
+
+`maxBytes` is required. It protects the context budget from creeping up as metadata expands.
 
 ## Success Criteria
 
