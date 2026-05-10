@@ -115,7 +115,7 @@ Orthogonal to audience. Some folders mix mutability across files; the README mus
 |-----------|---------|----------|
 | `durable` | Frozen-on-write, additive only | `decisions/` (ADR), `ops/missions/*-mr.md` (mission records) |
 | `mutable` | Edited freely, no version log | `specs/` (forward design), `topics/` |
-| `append-only` | New entries appended; old entries not edited | `days/`, `ops/missions/*-log.md`, `ops/runs/codex-runs/` |
+| `append-only` | New entries appended; old entries not edited | `days/`, `ops/missions/*-log.md` |
 | `ephemeral` | Safe to delete after the run | `ops/runs/` |
 
 When a folder mixes mutability, split it. (See `docs/plans/split-vault-folders.md` for the shotloom case.)

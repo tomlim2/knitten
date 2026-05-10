@@ -89,7 +89,7 @@ Retained for historical context — the scripts now automate this flow.
 
 ### Step 2: 대상 파일 스캔
 
-`find` 로 mtime 필터 → 분류 버킷으로 나눔: devlog / learning / ops / plan / codex-runs / codex-base / etc.
+`find` 로 mtime 필터 → 분류 버킷으로 나눔: devlog / learning / ops / plan / codex-base / etc.
 
 ### Step 3: 기존 Obsidian 태그 조사
 

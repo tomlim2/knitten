@@ -70,7 +70,6 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | File | Profile | Cost |
 |------|---------|------|
-| `agent/skills/cci-codex-port-bevy/SKILL.md` | `rust-bevy` | `medium` |
 | `agent/skills/dev-open-vrm-bevy/SKILL.md` | `rust-bevy` | `medium` |
 | `agent/skills/shotloom-deploy-web/SKILL.md` | `shotloom-deploy` | `high` |
 | `agent/skills/shotloom-respond-pr/SKILL.md` | `shotloom-review` | `high` |

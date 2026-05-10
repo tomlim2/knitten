@@ -204,11 +204,6 @@
   ],
   "pilotFiles": [
     {
-      "path": "agent/skills/cci-codex-port-bevy/SKILL.md",
-      "profile": "rust-bevy",
-      "contextCost": "medium"
-    },
-    {
       "path": "agent/skills/dev-open-vrm-bevy/SKILL.md",
       "profile": "rust-bevy",
       "contextCost": "medium"

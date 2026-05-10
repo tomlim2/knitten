@@ -73,14 +73,14 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Skills (135)
+## Skills (126)
 
 | Category | Count |
 |----------|------:|
-| `dev-*` | 25 |
-| `shotloom-*` | 22 |
+| `dev-*` | 24 |
+| `shotloom-*` | 21 |
 | `caol-*` | 17 |
-| `cci-*` | 17 |
+| `cci-*` | 10 |
 | `review-*` | 7 |
 | `ue-*` | 7 |
 | `obsidian-*` | 6 |
@@ -104,7 +104,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Standards (46)
+## Standards (45)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
@@ -118,7 +118,7 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 | `policy/` | 6 | `garden-review.md`, `llm-first-docs.md`, `llm-first-policy.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
 | `research/` | 2 | `research-methodology.md`, `tech-spec-template.md` |
 | `review/` | 13 | `review-3d-rendering.md`, `review-ai-motion.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-spec-doc.md`, `review-template.md`, `review-ux-python-gui.md`, `review-ux-writing.md`, `review-ux.md` |
-| `system/` | 2 | `codex-keys.md`, `repo-paths-keys.md` |
+| `system/` | 1 | `repo-paths-keys.md` |
 | `unreal/` | 3 | `arp-skeleton.md`, `unreal-engine-asset.md`, `unreal-engine-cpp.md` |
 | `root` | 1 | `index.md` |
 

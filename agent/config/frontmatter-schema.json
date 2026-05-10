@@ -26,7 +26,6 @@
     "agent/standards/policy/platform-adapters.md",
     "agent/standards/authoring/command-skill-reference.md",
     "agent/skills/caol-make-skill/SKILL.md",
-    "agent/skills/review-audit-retarget/SKILL.md",
-    "agent/skills/dev-ask-codex/SKILL.md"
+    "agent/skills/review-audit-retarget/SKILL.md"
   ]
 }

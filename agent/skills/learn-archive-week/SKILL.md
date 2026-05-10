@@ -46,7 +46,6 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 |------|--------------|
 | `{obsidian-staging}/*.md` (최상위) | 삭제 |
 | `{obsidian-staging}/bevy-vrm/**/*.md` | 삭제 |
-| `{obsidian-staging}/codex-runs/**/*.md` | 삭제 |
 | `{obsidian-staging}/private-learnings/**/*.md` | 삭제 |
 | `{obsidian-staging}/private-ops/**/*.md` | 삭제 |
 | `{codex-home}/memories/*.md`, `{codex-home}/order/*.md`, `{codex-home}/rules/**/*.md`, `{codex-home}/AGENTS.md` | **복사만** (런타임 설정이라 삭제 금지) |

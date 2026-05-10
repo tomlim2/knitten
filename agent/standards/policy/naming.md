@@ -121,7 +121,7 @@ Folder governs naming. See `~/.claude/standards/obsidian/vault-audience.md`.
 | `topics/` | kebab-case slug | `prefilter-tradeoffs.md` |
 | `decisions/` | kebab-case slug describing the decision | `pmx-import-placeholder.md`, `audience-split.md` |
 | `ops/missions/<mission>/` | shape: `README`, `briefing`, `conventions`, `timeline`, `log`, `mr` | always these names |
-| `ops/runs/` | `YYYY-MM-DD-<slug>.md` or tool-named subdir | `2026-05-01-debug.md`, `codex-runs/` |
+| `ops/runs/` | `YYYY-MM-DD-<slug>.md` or tool-named subdir | `2026-05-01-debug.md`, `browser-audit/` |
 
 ---
 

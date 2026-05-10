@@ -172,7 +172,6 @@ RECOMMEND: regenerate / pick different seed / stronger smoothing on generator si
 
 - `~/.claude/skills/review-audit-ai-motion/SKILL.md` — executes this rubric on an FBX
 - `~/.claude/skills/review-audit-retarget/SKILL.md` — viewer-side (V) issues
-- `~/.claude/skills/cci-codex-analyze-motion/SKILL.md` — Codex-based deeper analysis
 - `~/.claude/standards/unreal/arp-skeleton.md` — ARP rest pose reference
 
 ## External References

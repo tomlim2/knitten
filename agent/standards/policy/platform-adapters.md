@@ -42,7 +42,7 @@ Add these fields during portability migration:
 | Plain policy, review rubric, naming rule, or decision table | `platforms: all`, `portability: shared` |
 | Claude `@` imports, `allowed-tools`, `$ARGUMENTS`, `Task`, or slash-command invocation | `platforms: claude`, `portability: harness-specific` |
 | A procedure with useful intent but platform-specific tool names | `platforms: all`, `portability: adapter` |
-| Codex-only order queue, `AGENTS.md` behavior, or Codex CLI semantics | `platforms: codex`, `portability: harness-specific` |
+| `AGENTS.md` behavior, Codex approval flow, or Codex-specific tool semantics | `platforms: codex`, `portability: harness-specific` |
 
 ## Adapter duties
 

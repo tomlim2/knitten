@@ -58,4 +58,3 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | [`obsidian-format.md`](obsidian/obsidian-format.md) | creating or migrating Obsidian docs |
 | [`obsidian-tag-taxonomy.md`](obsidian/obsidian-tag-taxonomy.md) | tagging any Obsidian doc |
 | [`repo-paths-keys.md`](system/repo-paths-keys.md) | registering repos / new machine setup |
-| [`codex-keys.md`](system/codex-keys.md) | authoring a `cci-*` Codex skill |
