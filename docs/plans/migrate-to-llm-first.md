@@ -4,7 +4,7 @@ completed: 2026-05-09
 load: triggered
 trigger: reviewing the completed LLM-first migration
 charter-anchor: SYSTEM.md → "Repository charter"
-standard: claude/standards/policy/llm-first-docs.md
+standard: agent/standards/policy/llm-first-docs.md
 created: 2026-05-01
 tag: v3.1.0
 ---
@@ -20,8 +20,8 @@ This migration is complete. It moved `caol-ila` from a Claude-only instruction f
 | Charter | `SYSTEM.md` owns the LLM-first repository charter |
 | Entry documents | `CLAUDE.md` and `AGENTS.md` load shared policy first |
 | Navigation | `LOOKUP.md` provides goal-to-doc routing |
-| Rules | every `claude/rules/*.md` has `load:` frontmatter |
-| Standards | standards are grouped by topic under `claude/standards/` |
+| Rules | every `agent/rules/*.md` has `load:` frontmatter |
+| Standards | standards are grouped by topic under `agent/standards/` |
 | Standard status | every standard has `status:` frontmatter |
 | Validator | `scripts/validate-llm-first.mjs` enforces anti-rot checks |
 | Drift hardening | completed in `docs/plans/harden-system-drift.md` |
@@ -45,7 +45,7 @@ This migration is complete. It moved `caol-ila` from a Claude-only instruction f
 |--------------------|-------------------|
 | Validator runs in CI | No CI config exists in this repo. Current enforcement is the local validator plus authoring docs. Future CI belongs in an infrastructure plan if needed. |
 | P1.3 vault split tracked in `vault-policy-split.md` | Actual file is `docs/plans/split-vault-folders.md`; it is done. |
-| Old flat `standards/` inventory | Replaced by grouped `claude/standards/<group>/` folders and README generated inventory. |
+| Old flat `standards/` inventory | Replaced by grouped `agent/standards/<group>/` folders and README generated inventory. |
 
 ## Follow-Up
 

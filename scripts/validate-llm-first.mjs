@@ -8,7 +8,9 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
-const CONFIG_DIR = path.join(REPO_ROOT, "claude", "config");
+const AGENT_ROOT_NAME = "agent";
+const AGENT_ROOT = path.join(REPO_ROOT, AGENT_ROOT_NAME);
+const CONFIG_DIR = path.join(AGENT_ROOT, "config");
 const CONFIG_CACHE = new Map();
 
 // ---------- helpers ----------
@@ -138,7 +140,7 @@ function sortInventoryFiles(a, b) {
 }
 
 async function commandNames() {
-  const entries = await listDirOnce(path.join(REPO_ROOT, "claude", "commands"));
+  const entries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
     .map((entry) => entry.name.slice(0, -".md".length))
@@ -146,7 +148,7 @@ async function commandNames() {
 }
 
 async function skillNames() {
-  const entries = await listDirOnce(path.join(REPO_ROOT, "claude", "skills"));
+  const entries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   return entries
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
@@ -154,7 +156,7 @@ async function skillNames() {
 }
 
 async function standardRows() {
-  const dir = path.join(REPO_ROOT, "claude", "standards");
+  const dir = path.join(AGENT_ROOT, "standards");
   const files = await walk(dir, (f) => f.endsWith(".md"));
   const groups = new Map();
   for (const f of files) {
@@ -179,7 +181,7 @@ async function standardRows() {
 }
 
 async function ruleRows() {
-  const dir = path.join(REPO_ROOT, "claude", "rules");
+  const dir = path.join(AGENT_ROOT, "rules");
   const entries = await listDirOnce(dir);
   const groups = new Map();
   for (const entry of entries) {
@@ -251,7 +253,7 @@ async function generateReadmeInventory() {
   sections.push("");
   sections.push(`## Standards (${standards.reduce((sum, row) => sum + row.count, 0)})`);
   sections.push("");
-  sections.push("Reference docs in `claude/standards/`. Loaded on-demand, never auto.");
+  sections.push("Reference docs in `agent/standards/`. Loaded on-demand, never auto.");
   sections.push("");
   sections.push("| Group | Count | Files |");
   sections.push("|-------|------:|-------|");
@@ -264,7 +266,7 @@ async function generateReadmeInventory() {
   sections.push(`## Rules (${rules.reduce((sum, row) => sum + row.count, 0)})`);
   sections.push("");
   sections.push(
-    "Rules in `claude/rules/`. Auto rules load every session via entry documents; triggered rules load on demand."
+    "Rules in `agent/rules/`. Auto rules load every session via entry documents; triggered rules load on demand."
   );
   sections.push("");
   sections.push("| Load | Count | Files |");
@@ -291,12 +293,12 @@ async function generateAgentHubInventory() {
   sections.push("");
   sections.push("| Area | Count | Canonical owner |");
   sections.push("|------|------:|-----------------|");
-  sections.push(`| Harnesses | ${hub.harnesses.length} | \`claude/config/agent-hub.json\` \`harnesses\` |`);
-  sections.push(`| Shared layers | ${hub.sharedLayers.length} | \`claude/config/agent-hub.json\` \`sharedLayers\` |`);
-  sections.push(`| Registries | ${hub.registries.length} | \`claude/config/agent-hub.json\` \`registries\` |`);
-  sections.push(`| Generated documents | ${hub.generatedDocuments.length} | \`claude/config/agent-hub.json\` \`generatedDocuments\` |`);
-  sections.push(`| Runtime path policies | ${hub.runtimePathPolicies.length} | \`claude/config/agent-hub.json\` \`runtimePathPolicies\` |`);
-  sections.push(`| Validators | ${hub.validators.length} | \`claude/config/agent-hub.json\` \`validators\` |`);
+  sections.push(`| Harnesses | ${hub.harnesses.length} | \`agent/config/agent-hub.json\` \`harnesses\` |`);
+  sections.push(`| Shared layers | ${hub.sharedLayers.length} | \`agent/config/agent-hub.json\` \`sharedLayers\` |`);
+  sections.push(`| Registries | ${hub.registries.length} | \`agent/config/agent-hub.json\` \`registries\` |`);
+  sections.push(`| Generated documents | ${hub.generatedDocuments.length} | \`agent/config/agent-hub.json\` \`generatedDocuments\` |`);
+  sections.push(`| Runtime path policies | ${hub.runtimePathPolicies.length} | \`agent/config/agent-hub.json\` \`runtimePathPolicies\` |`);
+  sections.push(`| Validators | ${hub.validators.length} | \`agent/config/agent-hub.json\` \`validators\` |`);
   sections.push("");
   sections.push("## Harnesses");
   sections.push("");
@@ -403,12 +405,11 @@ async function managedMarkdownFiles(folder) {
 
 async function llmFirstFiles() {
   const files = [];
-  const claude = path.join(REPO_ROOT, "claude");
-  files.push(...(await walk(path.join(claude, "rules"), (f) => f.endsWith(".md"))));
-  files.push(...(await walk(path.join(claude, "standards"), (f) => f.endsWith(".md"))));
-  files.push(...(await walk(path.join(claude, "commands"), (f) => f.endsWith(".md"))));
+  files.push(...(await walk(path.join(AGENT_ROOT, "rules"), (f) => f.endsWith(".md"))));
+  files.push(...(await walk(path.join(AGENT_ROOT, "standards"), (f) => f.endsWith(".md"))));
+  files.push(...(await walk(path.join(AGENT_ROOT, "commands"), (f) => f.endsWith(".md"))));
   files.push(
-    ...(await walk(path.join(claude, "skills"), (f) => path.basename(f) === "SKILL.md"))
+    ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => path.basename(f) === "SKILL.md"))
   );
   for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md", "AGENTS.md", "CLAUDE.md"]) {
     const p = path.join(REPO_ROOT, name);
@@ -514,7 +515,7 @@ async function checkRulesFrontmatter() {
   const violations = [];
   const schema = await readJsonConfig("frontmatter-schema.json");
   const loadValues = new Set(schema.ruleLoadValues);
-  const dir = path.join(REPO_ROOT, "claude", "rules");
+  const dir = path.join(AGENT_ROOT, "rules");
   const entries = await listDirOnce(dir);
   for (const e of entries) {
     if (!e.isFile() || !e.name.endsWith(".md")) continue;
@@ -555,7 +556,7 @@ async function checkRulesFrontmatter() {
 
 async function checkImportTargets() {
   const violations = [];
-  const files = [path.join(REPO_ROOT, "CLAUDE.md"), path.join(REPO_ROOT, "claude", "CLAUDE.md")];
+  const files = [path.join(REPO_ROOT, "CLAUDE.md"), path.join(AGENT_ROOT, "CLAUDE.md")];
   const re = /@(\S+)/g;
   for (const f of files) {
     let text;
@@ -574,7 +575,7 @@ async function checkImportTargets() {
         const spec = m[1];
         let target;
         if (spec.startsWith("~/.claude/")) {
-          target = path.join(REPO_ROOT, "claude", spec.slice("~/.claude/".length));
+          target = path.join(AGENT_ROOT, spec.slice("~/.claude/".length));
         } else {
           target = path.resolve(path.dirname(f), spec);
         }
@@ -603,17 +604,16 @@ async function checkInventoryCounts() {
       violations: [{ file: "README.md", line: 0, message: "README.md not found" }],
     };
   }
-  const claude = path.join(REPO_ROOT, "claude");
   const countFiles = async (sub) => {
-    const ents = await listDirOnce(path.join(claude, sub));
+    const ents = await listDirOnce(path.join(AGENT_ROOT, sub));
     return ents.filter((e) => e.isFile()).length;
   };
   const countDirs = async (sub) => {
-    const ents = await listDirOnce(path.join(claude, sub));
+    const ents = await listDirOnce(path.join(AGENT_ROOT, sub));
     return ents.filter((e) => e.isDirectory()).length;
   };
   const countMdRecursive = async (sub) => {
-    const files = await walk(path.join(claude, sub), (f) => f.endsWith(".md"));
+    const files = await walk(path.join(AGENT_ROOT, sub), (f) => f.endsWith(".md"));
     return files.length;
   };
   const actual = {
@@ -692,7 +692,7 @@ async function checkLengthCaps() {
   const standardLengthGrandfathered = new Set(
     exceptions.standardLengthGrandfathered.map((entry) => entry.path)
   );
-  const ruleDir = path.join(REPO_ROOT, "claude", "rules");
+  const ruleDir = path.join(AGENT_ROOT, "rules");
   const ruleFiles = await walk(ruleDir, (f) => f.endsWith(".md"));
   for (const f of ruleFiles) {
     if (path.basename(f) === "index.md") continue;
@@ -709,7 +709,7 @@ async function checkLengthCaps() {
       });
     }
   }
-  const stdDir = path.join(REPO_ROOT, "claude", "standards");
+  const stdDir = path.join(AGENT_ROOT, "standards");
   const stdFiles = await walk(stdDir, (f) => f.endsWith(".md"));
   for (const f of stdFiles) {
     if (path.basename(f) === "index.md") continue;
@@ -732,7 +732,7 @@ async function checkStandardsStatus() {
   const violations = [];
   const schema = await readJsonConfig("frontmatter-schema.json");
   const statusValues = new Set(schema.standardStatusValues);
-  const dir = path.join(REPO_ROOT, "claude", "standards");
+  const dir = path.join(AGENT_ROOT, "standards");
   const files = await walk(dir, (f) => f.endsWith(".md"));
   for (const f of files) {
     if (path.basename(f) === "index.md") continue;
@@ -848,26 +848,26 @@ async function checkRegistryIntegrity() {
   for (const [key, value] of Object.entries(budgets.lineBudgets || {})) {
     if (!Number.isInteger(value) || value <= 0) {
       violations.push({
-        file: "claude/config/doc-budgets.json",
+        file: "agent/config/doc-budgets.json",
         line: 1,
         message: `lineBudgets.${key} must be a positive integer`,
       });
     }
   }
 
-  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "ruleLoadValues", schema.ruleLoadValues);
-  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "standardStatusValues", schema.standardStatusValues);
-  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "platformValues", schema.platformValues);
-  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "portabilityValues", schema.portabilityValues);
-  pushArrayViolations(violations, "claude/config/frontmatter-schema.json", "platformMetadataPilotFiles", schema.platformMetadataPilotFiles);
-  pushArrayViolations(violations, "claude/config/taxonomy.json", "skillCommandCategories", taxonomy.skillCommandCategories, { sorted: true });
-  pushArrayViolations(violations, "claude/config/taxonomy.json", "standardGroups", taxonomy.standardGroups, { sorted: true });
-  pushArrayViolations(violations, "claude/config/taxonomy.json", "universalAbbreviations", taxonomy.universalAbbreviations, { sorted: true });
-  pushArrayViolations(violations, "claude/config/audit-policy.json", "severityTiers", auditPolicy.severityTiers);
+  pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "ruleLoadValues", schema.ruleLoadValues);
+  pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "standardStatusValues", schema.standardStatusValues);
+  pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "platformValues", schema.platformValues);
+  pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "portabilityValues", schema.portabilityValues);
+  pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "platformMetadataPilotFiles", schema.platformMetadataPilotFiles);
+  pushArrayViolations(violations, "agent/config/taxonomy.json", "skillCommandCategories", taxonomy.skillCommandCategories, { sorted: true });
+  pushArrayViolations(violations, "agent/config/taxonomy.json", "standardGroups", taxonomy.standardGroups, { sorted: true });
+  pushArrayViolations(violations, "agent/config/taxonomy.json", "universalAbbreviations", taxonomy.universalAbbreviations, { sorted: true });
+  pushArrayViolations(violations, "agent/config/audit-policy.json", "severityTiers", auditPolicy.severityTiers);
 
   if (!Number.isInteger(taxonomy.maxArtifactNameChars) || taxonomy.maxArtifactNameChars <= 0) {
     violations.push({
-      file: "claude/config/taxonomy.json",
+      file: "agent/config/taxonomy.json",
       line: 1,
       message: "maxArtifactNameChars must be a positive integer",
     });
@@ -880,7 +880,7 @@ async function checkRegistryIntegrity() {
   ]) {
     if (!taxonomy[key] || typeof taxonomy[key] !== "string") {
       violations.push({
-        file: "claude/config/taxonomy.json",
+        file: "agent/config/taxonomy.json",
         line: 1,
         message: `${key} must be a regex string`,
       });
@@ -890,18 +890,18 @@ async function checkRegistryIntegrity() {
       new RegExp(taxonomy[key]);
     } catch {
       violations.push({
-        file: "claude/config/taxonomy.json",
+        file: "agent/config/taxonomy.json",
         line: 1,
         message: `${key} must compile as a regex`,
       });
     }
   }
-  pushArrayViolations(violations, "claude/config/taxonomy.json", "managedDocumentFolders", taxonomy.managedDocumentFolders);
+  pushArrayViolations(violations, "agent/config/taxonomy.json", "managedDocumentFolders", taxonomy.managedDocumentFolders);
   const managedPaths = [];
   for (const entry of taxonomy.managedDocumentFolders || []) {
     if (!entry || typeof entry !== "object") {
       violations.push({
-        file: "claude/config/taxonomy.json",
+        file: "agent/config/taxonomy.json",
         line: 1,
         message: "managedDocumentFolders entries must be objects",
       });
@@ -910,7 +910,7 @@ async function checkRegistryIntegrity() {
     for (const field of ["path", "patternKey"]) {
       if (!entry[field] || typeof entry[field] !== "string") {
         violations.push({
-          file: "claude/config/taxonomy.json",
+          file: "agent/config/taxonomy.json",
           line: 1,
           message: `managedDocumentFolders entry missing ${field}`,
         });
@@ -918,7 +918,7 @@ async function checkRegistryIntegrity() {
     }
     if (typeof entry.recursive !== "boolean") {
       violations.push({
-        file: "claude/config/taxonomy.json",
+        file: "agent/config/taxonomy.json",
         line: 1,
         message: `managedDocumentFolders ${entry.path || "<unknown>"} recursive must be boolean`,
       });
@@ -927,7 +927,7 @@ async function checkRegistryIntegrity() {
       managedPaths.push(entry.path);
       if (!existsSync(path.join(REPO_ROOT, entry.path))) {
         violations.push({
-          file: "claude/config/taxonomy.json",
+          file: "agent/config/taxonomy.json",
           line: 1,
           message: `managedDocumentFolders path does not exist: ${entry.path}`,
         });
@@ -935,7 +935,7 @@ async function checkRegistryIntegrity() {
     }
     if (entry.patternKey && typeof taxonomy[entry.patternKey] !== "string") {
       violations.push({
-        file: "claude/config/taxonomy.json",
+        file: "agent/config/taxonomy.json",
         line: 1,
         message: `managedDocumentFolders ${entry.path || "<unknown>"} references unknown patternKey ${entry.patternKey}`,
       });
@@ -943,14 +943,14 @@ async function checkRegistryIntegrity() {
   }
   if (hasDuplicates(managedPaths)) {
     violations.push({
-      file: "claude/config/taxonomy.json",
+      file: "agent/config/taxonomy.json",
       line: 1,
       message: "managedDocumentFolders paths must not contain duplicates",
     });
   }
   if (!isSorted(managedPaths)) {
     violations.push({
-      file: "claude/config/taxonomy.json",
+      file: "agent/config/taxonomy.json",
       line: 1,
       message: "managedDocumentFolders paths must be sorted alphabetically",
     });
@@ -959,7 +959,7 @@ async function checkRegistryIntegrity() {
   for (const [key, value] of Object.entries(auditPolicy.garden || {})) {
     if (!Number.isInteger(value) || value <= 0) {
       violations.push({
-        file: "claude/config/audit-policy.json",
+        file: "agent/config/audit-policy.json",
         line: 1,
         message: `garden.${key} must be a positive integer`,
       });
@@ -969,7 +969,7 @@ async function checkRegistryIntegrity() {
     const value = auditPolicy[key];
     if (!Number.isInteger(value) || value <= 0) {
       violations.push({
-        file: "claude/config/audit-policy.json",
+        file: "agent/config/audit-policy.json",
         line: 1,
         message: `${key} must be a positive integer`,
       });
@@ -981,7 +981,7 @@ async function checkRegistryIntegrity() {
     for (const field of fields) {
       if (!entry[field] || !String(entry[field]).trim()) {
         violations.push({
-          file: "claude/config/exceptions.json",
+          file: "agent/config/exceptions.json",
           line: 1,
           message: `standardLengthGrandfathered entry missing ${field}`,
         });
@@ -989,14 +989,14 @@ async function checkRegistryIntegrity() {
     }
     if (!entry.expires && !entry.reviewAfter) {
       violations.push({
-        file: "claude/config/exceptions.json",
+        file: "agent/config/exceptions.json",
         line: 1,
         message: `standardLengthGrandfathered ${entry.path || "<unknown>"} requires expires or reviewAfter`,
       });
     }
     if (entry.path && !existsSync(path.join(REPO_ROOT, entry.path))) {
       violations.push({
-        file: "claude/config/exceptions.json",
+        file: "agent/config/exceptions.json",
         line: 1,
         message: `exception target does not exist: ${entry.path}`,
       });
@@ -1005,7 +1005,7 @@ async function checkRegistryIntegrity() {
       const decisionPath = String(entry.decision).split("#")[0];
       if (!existsSync(path.join(REPO_ROOT, decisionPath))) {
         violations.push({
-          file: "claude/config/exceptions.json",
+          file: "agent/config/exceptions.json",
           line: 1,
           message: `exception decision target does not exist: ${entry.decision}`,
         });
@@ -1060,7 +1060,7 @@ function manifestPathExists(value) {
 function pushManifestPathViolation(violations, field, value) {
   if (!manifestPathExists(value)) {
     violations.push({
-      file: "claude/config/agent-hub.json",
+      file: "agent/config/agent-hub.json",
       line: 1,
       message: `${field} target does not exist: ${value}`,
     });
@@ -1084,7 +1084,7 @@ function collectManifestStrings(value, out = []) {
 
 async function checkAgentHubManifest() {
   const violations = [];
-  const file = "claude/config/agent-hub.json";
+  const file = "agent/config/agent-hub.json";
   let manifest;
   try {
     manifest = await readJsonConfig("agent-hub.json");
@@ -1319,10 +1319,10 @@ const ROUTE_VALUE_EVIDENCE = {
 };
 
 const AUTHORING_ROUTING_FILES = [
-  "claude/skills/caol-make-command/SKILL.md",
-  "claude/skills/caol-make-skill/SKILL.md",
-  "claude/skills/caol-make-standard/SKILL.md",
-  "claude/rules/author-frontmatter.md",
+  "agent/skills/caol-make-command/SKILL.md",
+  "agent/skills/caol-make-skill/SKILL.md",
+  "agent/skills/caol-make-standard/SKILL.md",
+  "agent/rules/author-frontmatter.md",
 ];
 
 function pushStringArrayViolations(violations, file, key, value, options = {}) {
@@ -1390,7 +1390,7 @@ function selectProfilesForTask(task, profiles) {
 
 async function checkContextRouting() {
   const violations = [];
-  const file = "claude/config/context-routing.json";
+  const file = "agent/config/context-routing.json";
   let routing;
   try {
     routing = await readJsonConfig("context-routing.json");
@@ -1578,13 +1578,13 @@ async function checkContextRouting() {
     {
       kind: "skills",
       threshold: thresholds.skills,
-      files: await walk(path.join(REPO_ROOT, "claude", "skills"), (f) => path.basename(f) === "SKILL.md"),
+      files: await walk(path.join(AGENT_ROOT, "skills"), (f) => path.basename(f) === "SKILL.md"),
     },
     {
       kind: "standards",
       threshold: thresholds.standards,
       files: await walk(
-        path.join(REPO_ROOT, "claude", "standards"),
+        path.join(AGENT_ROOT, "standards"),
         (f) => f.endsWith(".md") && path.basename(f) !== "index.md"
       ),
     },
@@ -1702,41 +1702,41 @@ async function checkTaxonomy() {
   const violations = [];
   const taxonomy = await readJsonConfig("taxonomy.json");
   const categories = new Set(taxonomy.skillCommandCategories);
-  const skillEntries = await listDirOnce(path.join(REPO_ROOT, "claude", "skills"));
+  const skillEntries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   for (const entry of skillEntries) {
     if (!entry.isDirectory()) continue;
     const prefix = entry.name.split("-")[0];
     if (!categories.has(prefix)) {
       violations.push({
-        file: `claude/skills/${entry.name}/`,
+        file: `agent/skills/${entry.name}/`,
         line: 0,
-        message: `skill category ${JSON.stringify(prefix)} missing from claude/config/taxonomy.json`,
+        message: `skill category ${JSON.stringify(prefix)} missing from agent/config/taxonomy.json`,
       });
     }
   }
-  const commandEntries = await listDirOnce(path.join(REPO_ROOT, "claude", "commands"));
+  const commandEntries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
   for (const entry of commandEntries) {
     if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
     const stem = entry.name.slice(0, -".md".length);
     const prefix = stem.split("-")[0];
     if (!categories.has(prefix)) {
       violations.push({
-        file: `claude/commands/${entry.name}`,
+        file: `agent/commands/${entry.name}`,
         line: 0,
-        message: `command category ${JSON.stringify(prefix)} missing from claude/config/taxonomy.json`,
+        message: `command category ${JSON.stringify(prefix)} missing from agent/config/taxonomy.json`,
       });
     }
   }
 
   const standardGroups = new Set(taxonomy.standardGroups);
-  const standardEntries = await listDirOnce(path.join(REPO_ROOT, "claude", "standards"));
+  const standardEntries = await listDirOnce(path.join(AGENT_ROOT, "standards"));
   for (const entry of standardEntries) {
     if (!entry.isDirectory()) continue;
     if (!standardGroups.has(entry.name)) {
       violations.push({
-        file: `claude/standards/${entry.name}/`,
+        file: `agent/standards/${entry.name}/`,
         line: 0,
-        message: `standard group ${JSON.stringify(entry.name)} missing from claude/config/taxonomy.json`,
+        message: `standard group ${JSON.stringify(entry.name)} missing from agent/config/taxonomy.json`,
       });
     }
   }
@@ -1814,8 +1814,8 @@ async function checkMarkdownLinks() {
     path.join(REPO_ROOT, "SYSTEM.md"),
     path.join(REPO_ROOT, "AGENTS.md"),
     path.join(REPO_ROOT, "CLAUDE.md"),
-    path.join(REPO_ROOT, "claude", "rules", "index.md"),
-    path.join(REPO_ROOT, "claude", "standards", "index.md"),
+    path.join(AGENT_ROOT, "rules", "index.md"),
+    path.join(AGENT_ROOT, "standards", "index.md"),
   ];
   files.push(...(await walk(path.join(REPO_ROOT, "docs"), (f) => f.endsWith(".md"))));
   const seen = new Set();
@@ -1861,7 +1861,7 @@ async function checkGeneratedBlocks() {
       expected: await generateReadmeInventory(),
     },
     {
-      file: "claude/standards/policy/principles.md",
+      file: "agent/standards/policy/principles.md",
       id: "validator-checks",
       expected: generateValidatorChecksBlock(),
     },

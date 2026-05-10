@@ -1,8 +1,8 @@
 # caol-ila
 
-**LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `claude/` is symlinked to `~/.claude`.
+**LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `agent/` is symlinked to `~/.claude`.
 
-Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 
@@ -20,7 +20,7 @@ caol-ila/
 │   ├── decisions/            # Accepted policy decisions and rationale
 │   ├── plans/                # Migration and follow-up plans
 │   └── reference/            # Lookup docs such as system glossary
-├── claude/                   # Symlinked to ~/.claude
+├── agent/                    # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Claude Code deploy shim
 │   ├── rules/                # Always-applied constraints
 │   ├── standards/            # Reference docs, on-demand
@@ -40,10 +40,10 @@ Counts are validated by `scripts/validate-llm-first.mjs`.
 
 ```bash
 # macOS / Linux
-ln -s /path/to/caol-ila/claude ~/.claude
+ln -s /path/to/caol-ila/agent ~/.claude
 
 # Windows (admin PowerShell)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\caol-ila\claude"
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\caol-ila\agent"
 ```
 
 After symlinking, initialize machine config:
@@ -52,7 +52,7 @@ After symlinking, initialize machine config:
 /caol-manage-config setup
 ```
 
-This populates `~/.claude/private/caol-config/` from templates in `claude/skills/caol-manage-config/*.template.json`.
+This populates `~/.claude/private/caol-config/` from templates in `agent/skills/caol-manage-config/*.template.json`.
 
 ---
 
@@ -106,7 +106,7 @@ This populates `~/.claude/private/caol-config/` from templates in `claude/skills
 
 ## Standards (46)
 
-Reference docs in `claude/standards/`. Loaded on-demand, never auto.
+Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 | Group | Count | Files |
 |-------|------:|-------|
@@ -126,7 +126,7 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 ## Rules (26)
 
-Rules in `claude/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
+Rules in `agent/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
 | Load | Count | Files |
 |------|------:|-------|
@@ -150,7 +150,7 @@ Gitignored. Per-machine paths and specs.
 
 Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remove`, `setup`).
 
-## Shared registries (`claude/config/`)
+## Shared registries (`agent/config/`)
 
 | File | Content |
 |------|---------|
@@ -164,4 +164,4 @@ Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remo
 
 ---
 
-For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `claude/skills/caol-make-command/SKILL.md` or `claude/skills/caol-make-skill/SKILL.md`.
+For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/caol-make-command/SKILL.md` or `agent/skills/caol-make-skill/SKILL.md`.

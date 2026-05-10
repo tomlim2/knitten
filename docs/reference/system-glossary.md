@@ -1,7 +1,7 @@
 ---
 status: accepted
 load: on-demand
-standard: ../../claude/standards/policy/llm-first-docs.md
+standard: ../../agent/standards/policy/llm-first-docs.md
 ---
 
 # System Glossary
@@ -13,13 +13,13 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 | Term | Meaning | Use for | Do not use for |
 |------|---------|---------|----------------|
 | canonical policy | Shared policy every harness must follow | `SYSTEM.md` and policy that applies across harnesses | Machine-local state or generated output |
-| shared layer | Shared rules, standards, skills, and commands below `claude/` | Reusable policy or procedure loaded by multiple harnesses | Harness-only mechanics |
+| shared layer | Shared rules, standards, skills, and commands below `agent/` | Reusable policy or procedure loaded by multiple harnesses | Harness-only mechanics |
 | entry document | Harness-specific cold-start file that reads `SYSTEM.md` first | `CLAUDE.md`, `AGENTS.md`, and future root entry files | Long policy copies |
 | harness | Agent runtime that reads and executes repo instructions | Claude Code, Codex, or another agent runtime | A single file, command, or adapter |
 | adapter | Translation from shared intent to harness mechanics | Tool syntax, imports, approval flow, slash-command behavior | New policy |
 | platform mechanic | Runtime-specific behavior exposed by one harness | Claude `@` imports, Codex approval flow, tool names | Shared meaning |
 | agent hub | Repo shape that routes multiple harnesses through one canonical policy system | caol-ila's multi-agent operating model | A marketing README or generic index |
-| manifest | Machine-readable registry that connects hub parts | `claude/config/agent-hub.json` | Prose explanation |
+| manifest | Machine-readable registry that connects hub parts | `agent/config/agent-hub.json` | Prose explanation |
 | registry | Machine-readable JSON that owns managed values | Config enums, budgets, taxonomy, audit policy | Narrative docs |
 | validator | Script that enforces contracts and catches drift | `scripts/validate-llm-first.mjs` checks | Human-only review |
 | generated document | Markdown block or file derived from a registry or validator output | README inventory, validator check list, optional `AGENT-HUB.md` sections | Manually maintained prose |

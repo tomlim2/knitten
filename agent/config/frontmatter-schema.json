@@ -1,0 +1,32 @@
+{
+  "ruleLoadValues": [
+    "auto",
+    "triggered"
+  ],
+  "standardStatusValues": [
+    "accepted",
+    "proposed",
+    "draft",
+    "deprecated",
+    "superseded"
+  ],
+  "platformValues": [
+    "all",
+    "claude",
+    "codex"
+  ],
+  "portabilityValues": [
+    "shared",
+    "adapter",
+    "harness-specific"
+  ],
+  "platformMetadataPilotFiles": [
+    "agent/rules/canonical-first.md",
+    "agent/standards/policy/llm-first-policy.md",
+    "agent/standards/policy/platform-adapters.md",
+    "agent/standards/authoring/command-skill-reference.md",
+    "agent/skills/caol-make-skill/SKILL.md",
+    "agent/skills/review-audit-retarget/SKILL.md",
+    "agent/skills/dev-ask-codex/SKILL.md"
+  ]
+}

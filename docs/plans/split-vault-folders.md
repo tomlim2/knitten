@@ -11,7 +11,7 @@ parent: docs/plans/migrate-to-llm-first.md
 
 **Done for shotloom on 2026-05-01.** Same template applies to other projects (`bevy-vrm/`, `cinev-studio/`, etc.) when their `ops/` and `specs/` accumulate enough mixed-mutability content to warrant it.
 
-Companion standard: `claude/standards/obsidian/vault-audience.md` — declares per-folder audience, style, and mutability. Each shotloom subfolder now carries a `README.md` matching that standard.
+Companion standard: `agent/standards/obsidian/vault-audience.md` — declares per-folder audience, style, and mutability. Each shotloom subfolder now carries a `README.md` matching that standard.
 
 ---
 
@@ -30,7 +30,7 @@ One folder, two mutation policies → readers cannot tell what is safe to edit.
 
 ## Action
 
-Per project under Obsidian vault `claude/projects/<project>/`:
+Per project under Obsidian vault `agent/projects/<project>/`:
 
 1. New folder `decisions/` (or `adr/`) for frozen ADRs. Template: Status / Date / Context / Decision / Consequences.
 2. Move existing ADR-shaped files from `specs/` into `decisions/`.

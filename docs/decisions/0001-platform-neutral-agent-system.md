@@ -1,6 +1,7 @@
 ---
 status: accepted
 date: 2026-05-09
+partially_superseded_by: docs/decisions/0003-agent-root-directory.md
 ---
 # Platform-Neutral Agent System
 
@@ -13,14 +14,16 @@ date: 2026-05-09
 | `SYSTEM.md` | Current shared policy and top-level contract |
 | `CLAUDE.md` | Claude Code entry adapter |
 | `AGENTS.md` | Codex entry adapter |
-| `claude/{rules,standards,skills,commands}` | Shared source layers, classified by metadata |
+| `agent/{rules,standards,skills,commands}` | Shared source layers, classified by metadata |
 | `docs/decisions/` | Accepted rationale for policy choices |
 
 ## Context
 
 Claude Code and Codex need the same operating rules without duplicating policy. Duplicating policy in `CLAUDE.md`, `AGENTS.md`, or platform-specific folders creates drift: one harness follows an updated rule while another follows stale text.
 
-The `claude/` directory name is a deploy shape, not a policy boundary. Rename pressure exists because the content now targets multiple harnesses. A big rename breaks imports and runtime paths before the content has compatibility metadata.
+At decision time, the shared artifact directory was named `claude/`. Rename pressure existed because the content targeted multiple harnesses. A big rename would have broken imports and runtime paths before the content had compatibility metadata.
+
+Decision `0003` supersedes only the directory-rename block after metadata, adapter boundaries, and validation landed.
 
 ## Accepted Rule
 
@@ -36,7 +39,7 @@ The `claude/` directory name is a deploy shape, not a policy boundary. Rename pr
 When this decision changes:
 
 1. Edit `SYSTEM.md` if the operating contract changes.
-2. Edit `claude/standards/policy/platform-adapters.md` if metadata or adapter semantics change.
+2. Edit `agent/standards/policy/platform-adapters.md` if metadata or adapter semantics change.
 3. Edit `CLAUDE.md` and `AGENTS.md` if entry behavior changes.
 4. Edit `README.md`, `LOOKUP.md`, and indexes if navigation changes.
 5. Extend `scripts/validate-llm-first.mjs` for every new mechanically checkable invariant.
@@ -45,7 +48,7 @@ When this decision changes:
 
 | Topic | Status |
 |-------|--------|
-| Rename `claude/` to a neutral directory | Not accepted |
+| Rename `claude/` to a neutral directory | Superseded by `docs/decisions/0003-agent-root-directory.md` |
 | Treat `docs/decisions/` as executable policy | Not accepted |
 | Give each harness its own copy of shared rules | Not accepted |
 

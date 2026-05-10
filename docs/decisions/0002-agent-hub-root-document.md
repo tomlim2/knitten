@@ -12,13 +12,13 @@ Create `AGENT-HUB.md` as a thin root hub document.
 | Rule | Effect |
 |------|--------|
 | Thin only | The document links to canonical policy and manifest owners |
-| Generated inventory | Hub lists are generated from `claude/config/agent-hub.json` |
+| Generated inventory | Hub lists are generated from `agent/config/agent-hub.json` |
 | No policy prose | `SYSTEM.md` remains canonical policy |
 | Validator-owned | Generated hub inventory is checked by `scripts/validate-llm-first.mjs` |
 
 ## Context
 
-`caol-ila` now has `claude/config/agent-hub.json`. Agents need a cold-start-readable hub overview without treating the manifest JSON as prose policy.
+`caol-ila` now has `agent/config/agent-hub.json`. Agents need a cold-start-readable hub overview without treating the manifest JSON as prose policy.
 
 `README.md` answers "what exists in the repo". `LOOKUP.md` answers "where is X". `AGENT-HUB.md` answers "how do harnesses, registries, generated documents, runtime paths, and validators connect".
 
@@ -27,7 +27,7 @@ Create `AGENT-HUB.md` as a thin root hub document.
 | Topic | Owner |
 |-------|-------|
 | Canonical policy | `SYSTEM.md` |
-| Hub routing data | `claude/config/agent-hub.json` |
+| Hub routing data | `agent/config/agent-hub.json` |
 | Hub root overview | `AGENT-HUB.md` |
 | Generated hub inventory | `scripts/validate-llm-first.mjs` |
 

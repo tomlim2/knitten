@@ -2,7 +2,7 @@
 
 Goal-to-doc lookup. Read this when the question is **"where is X?"** — start here, not by scanning the tree.
 
-For "what exists in this repo?" use [`README.md`](README.md). For system terms see [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). For the policy stance see [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md).
+For "what exists in this repo?" use [`README.md`](README.md). For system terms see [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). For the policy stance see [`agent/standards/policy/llm-first-policy.md`](agent/standards/policy/llm-first-policy.md).
 
 ---
 
@@ -11,23 +11,23 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Goal | Read in this order |
 |------|---------------------|
 | Look up canonical system terminology | [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md) |
-| Edit any LLM-read doc (rule, standard, skill, command, README) | [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
-| Design a new layer (rule / standard / skill category / validator) | [`claude/standards/policy/llm-first-policy.md`](claude/standards/policy/llm-first-policy.md) |
+| Edit any LLM-read doc (rule, standard, skill, command, README) | [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
+| Design a new layer (rule / standard / skill category / validator) | [`agent/standards/policy/llm-first-policy.md`](agent/standards/policy/llm-first-policy.md) |
 | Explain why platform-neutral entry documents use canonical policy | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
 | Design caol-ila as an agent hub | [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md) |
-| Inspect current agent hub manifest | [`AGENT-HUB.md`](AGENT-HUB.md) → [`claude/config/agent-hub.json`](claude/config/agent-hub.json) |
-| Route context for domain-specific tasks | [`claude/rules/task-context-routing.md`](claude/rules/task-context-routing.md) → [`AGENT-HUB.md`](AGENT-HUB.md) → [`claude/config/context-routing.json`](claude/config/context-routing.json) |
-| Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
-| Recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
-| Name a new rule / standard / command / skill / plan | [`claude/standards/policy/naming.md`](claude/standards/policy/naming.md) |
-| Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`claude/config/README.md`](claude/config/README.md) |
-| Create a new slash command | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/rules/author-frontmatter.md`](claude/rules/author-frontmatter.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
-| Create a new skill | [`claude/rules/author-naming.md`](claude/rules/author-naming.md) → [`claude/standards/authoring/slash-commands.md`](claude/standards/authoring/slash-commands.md) |
-| Create a new rule | [`claude/rules/index.md`](claude/rules/index.md) (frontmatter pattern) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
-| Create a new standard | [`claude/standards/index.md`](claude/standards/index.md) → [`claude/standards/policy/llm-first-docs.md`](claude/standards/policy/llm-first-docs.md) |
-| Tag an Obsidian note | [`claude/standards/obsidian/obsidian-tag-taxonomy.md`](claude/standards/obsidian/obsidian-tag-taxonomy.md) |
-| Write an Obsidian note (any folder) | [`claude/standards/obsidian/vault-audience.md`](claude/standards/obsidian/vault-audience.md) → [`claude/rules/obsidian.md`](claude/rules/obsidian.md) → [`claude/standards/obsidian/obsidian-format.md`](claude/standards/obsidian/obsidian-format.md) |
-| Write a code review | [`claude/standards/review/review-template.md`](claude/standards/review/review-template.md) → language-specific `review-code-*.md` |
+| Inspect current agent hub manifest | [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/agent-hub.json`](agent/config/agent-hub.json) |
+| Route context for domain-specific tasks | [`agent/rules/task-context-routing.md`](agent/rules/task-context-routing.md) → [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/context-routing.json`](agent/config/context-routing.json) |
+| Run a structural / garden review | [`agent/standards/policy/garden-review.md`](agent/standards/policy/garden-review.md) |
+| Recall why a principle exists | [`agent/standards/policy/principles.md`](agent/standards/policy/principles.md) |
+| Name a new rule / standard / command / skill / plan | [`agent/standards/policy/naming.md`](agent/standards/policy/naming.md) |
+| Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`agent/config/README.md`](agent/config/README.md) |
+| Create a new slash command | [`agent/rules/author-naming.md`](agent/rules/author-naming.md) → [`agent/rules/author-frontmatter.md`](agent/rules/author-frontmatter.md) → [`agent/standards/authoring/slash-commands.md`](agent/standards/authoring/slash-commands.md) |
+| Create a new skill | [`agent/rules/author-naming.md`](agent/rules/author-naming.md) → [`agent/standards/authoring/slash-commands.md`](agent/standards/authoring/slash-commands.md) |
+| Create a new rule | [`agent/rules/index.md`](agent/rules/index.md) (frontmatter pattern) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
+| Create a new standard | [`agent/standards/index.md`](agent/standards/index.md) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
+| Tag an Obsidian note | [`agent/standards/obsidian/obsidian-tag-taxonomy.md`](agent/standards/obsidian/obsidian-tag-taxonomy.md) |
+| Write an Obsidian note (any folder) | [`agent/standards/obsidian/vault-audience.md`](agent/standards/obsidian/vault-audience.md) → [`agent/rules/obsidian.md`](agent/rules/obsidian.md) → [`agent/standards/obsidian/obsidian-format.md`](agent/standards/obsidian/obsidian-format.md) |
+| Write a code review | [`agent/standards/review/review-template.md`](agent/standards/review/review-template.md) → language-specific `review-code-*.md` |
 
 ---
 
@@ -35,10 +35,10 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 
 | Goal | Read |
 |------|------|
-| Work in shotloom repo | [`claude/rules/shotloom.md`](claude/rules/shotloom.md) |
-| Git op in a CINEV repo | [`claude/rules/cinev-git.md`](claude/rules/cinev-git.md) → [`claude/standards/cinev/cinev-git-workflow.md`](claude/standards/cinev/cinev-git-workflow.md) |
+| Work in shotloom repo | [`agent/rules/shotloom.md`](agent/rules/shotloom.md) |
+| Git op in a CINEV repo | [`agent/rules/cinev-git.md`](agent/rules/cinev-git.md) → [`agent/standards/cinev/cinev-git-workflow.md`](agent/standards/cinev/cinev-git-workflow.md) |
 | Set up a new machine | [`README.md`](README.md) "Setup" section |
-| Resolve a doc storage path | `claude/skills/caol-resolve-doc-path/SKILL.md` |
+| Resolve a doc storage path | `agent/skills/caol-resolve-doc-path/SKILL.md` |
 
 ---
 
@@ -46,25 +46,25 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 
 | Goal | Read |
 |------|------|
-| Review JS / CSS code | [`claude/standards/review/review-code-javascript.md`](claude/standards/review/review-code-javascript.md), [`claude/standards/review/review-code-css.md`](claude/standards/review/review-code-css.md) |
-| Review UE C++ / Python | [`claude/standards/review/review-code-unreal-cpp.md`](claude/standards/review/review-code-unreal-cpp.md), [`claude/standards/review/review-code-unreal-python.md`](claude/standards/review/review-code-unreal-python.md) |
-| Review TSL shaders | [`claude/standards/review/review-code-tsl.md`](claude/standards/review/review-code-tsl.md) |
-| Review UX / UX writing | [`claude/standards/review/review-ux.md`](claude/standards/review/review-ux.md), [`claude/standards/review/review-ux-writing.md`](claude/standards/review/review-ux-writing.md) |
-| Review AI motion (FBX) | [`claude/standards/review/review-ai-motion.md`](claude/standards/review/review-ai-motion.md) |
-| Review 3D rendering | [`claude/standards/review/review-3d-rendering.md`](claude/standards/review/review-3d-rendering.md) |
-| Review a spec doc | [`claude/standards/review/review-spec-doc.md`](claude/standards/review/review-spec-doc.md) |
+| Review JS / CSS code | [`agent/standards/review/review-code-javascript.md`](agent/standards/review/review-code-javascript.md), [`agent/standards/review/review-code-css.md`](agent/standards/review/review-code-css.md) |
+| Review UE C++ / Python | [`agent/standards/review/review-code-unreal-cpp.md`](agent/standards/review/review-code-unreal-cpp.md), [`agent/standards/review/review-code-unreal-python.md`](agent/standards/review/review-code-unreal-python.md) |
+| Review TSL shaders | [`agent/standards/review/review-code-tsl.md`](agent/standards/review/review-code-tsl.md) |
+| Review UX / UX writing | [`agent/standards/review/review-ux.md`](agent/standards/review/review-ux.md), [`agent/standards/review/review-ux-writing.md`](agent/standards/review/review-ux-writing.md) |
+| Review AI motion (FBX) | [`agent/standards/review/review-ai-motion.md`](agent/standards/review/review-ai-motion.md) |
+| Review 3D rendering | [`agent/standards/review/review-3d-rendering.md`](agent/standards/review/review-3d-rendering.md) |
+| Review a spec doc | [`agent/standards/review/review-spec-doc.md`](agent/standards/review/review-spec-doc.md) |
 
 ---
 
 ## Reference (raw lookup)
 
-- All commands: [`claude/commands/`](claude/commands/)
-- All skills: [`claude/skills/`](claude/skills/)
-- All standards: [`claude/standards/index.md`](claude/standards/index.md)
-- All rules: [`claude/rules/index.md`](claude/rules/index.md)
+- All commands: [`agent/commands/`](agent/commands/)
+- All skills: [`agent/skills/`](agent/skills/)
+- All standards: [`agent/standards/index.md`](agent/standards/index.md)
+- All rules: [`agent/rules/index.md`](agent/rules/index.md)
 - System glossary: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md)
 - Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md)
-- Task context routing rule: [`claude/rules/task-context-routing.md`](claude/rules/task-context-routing.md)
+- Task context routing rule: [`agent/rules/task-context-routing.md`](agent/rules/task-context-routing.md)
 - Task context routing plan: [`docs/plans/task-context-routing.md`](docs/plans/task-context-routing.md)
 - Completed LLM-first migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
 - Agent hub plan: [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md)
