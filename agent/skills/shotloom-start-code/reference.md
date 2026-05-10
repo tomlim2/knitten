@@ -19,7 +19,7 @@ Call signature takes `{ id: "STL-NN" }`. The issue body is returned in markdown 
 ## Step 2.5 — worktree base detection (full script)
 
 ```bash
-repo_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
+repo_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)
 if grep -qE '^\.?worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
   # prefer the convention already in .gitignore
   entry=$(grep -oE '^\.?worktrees/?' "$repo_root/.gitignore" | head -1 | tr -d '/')

@@ -24,7 +24,7 @@ Usage:
 Per the in-repo `AGENTS.md` and `.agent/` convention, agent operational docs live at repo root `.agent/`:
 
 ```
-$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)/.agent/handoff.md
+$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)/.agent/handoff.md
 ```
 
 If inside a worktree: path is `<worktree>/.agent/handoff.md` — each worktree has its own. The file is **tracked** (not gitignored) so it ships with the branch.
@@ -100,4 +100,4 @@ If inside a worktree: path is `<worktree>/.agent/handoff.md` — each worktree h
 ## Related
 
 - Repo `.agent/` folder convention: in-repo `AGENTS.md` and `.agent/README.md`
-- Codex 돌쇠's side of this protocol: `repo-paths.json → codex-base` (resolve via `jq -r '."codex-base"' ~/.claude/private/caol-config/repo-paths.json`). Codex reads the same `.agent/handoff.md` from its own workspace root.
+- Codex 돌쇠's side of this protocol: `repo-paths.json → codex-base` (resolve via `jq -re '."codex-base".path // ."codex-base" // empty' ~/.claude/private/caol-config/repo-paths.json`). Codex reads the same `.agent/handoff.md` from its own workspace root.

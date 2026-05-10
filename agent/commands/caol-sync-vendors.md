@@ -31,7 +31,7 @@ No arguments.
 Resolve knitten path from config:
 
 ```bash
-knitten=$(jq -r '.knitten' ~/.claude/private/caol-config/repo-paths.json)
+knitten=$(jq -re '.knitten.path // .knitten // empty' ~/.claude/private/caol-config/repo-paths.json) || { echo "repo-paths key 'knitten' not found"; exit 1; }
 [ -d "$knitten" ] || { echo "knitten not found — clone: git clone https://github.com/tomlim2/knitten.git $knitten"; exit 1; }
 ```
 

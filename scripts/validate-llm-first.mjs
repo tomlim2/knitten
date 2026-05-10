@@ -643,6 +643,30 @@ async function checkRulesIndexNoLinks() {
   return { name: "rules-index-no-links", violations };
 }
 
+async function checkRepoPathReads() {
+  const violations = [];
+  const files = [
+    ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => f.endsWith(".md") || f.endsWith(".sh"))),
+    ...(await walk(path.join(AGENT_ROOT, "commands"), (f) => f.endsWith(".md") || f.endsWith(".sh"))),
+  ];
+  const directReadRe =
+    /\bjq\s+-r[e]?\s+(['"])(\.(?:[A-Za-z0-9_-]+|"[^"]+"|\["[^"]+"\]))\1[^\n]*repo-paths\.json/;
+
+  for (const f of files) {
+    const lines = (await readFile(f, "utf8")).split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      if (!directReadRe.test(lines[i])) continue;
+      violations.push({
+        file: rel(f),
+        line: i + 1,
+        message:
+          "repo-paths.json entries may be objects; use '.key.path // .key // empty' or caol-resolve-doc-path repo mode",
+      });
+    }
+  }
+  return { name: "repo-path-reads", violations };
+}
+
 async function checkImportTargets() {
   const violations = [];
   const files = [path.join(REPO_ROOT, "CLAUDE.md"), path.join(AGENT_ROOT, "CLAUDE.md")];
@@ -2009,6 +2033,7 @@ const CHECKS = [
   { name: "context-routing", fn: checkContextRouting },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
   { name: "rules-index-no-links", fn: checkRulesIndexNoLinks },
+  { name: "repo-path-reads", fn: checkRepoPathReads },
   { name: "standards-status", fn: checkStandardsStatus },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },

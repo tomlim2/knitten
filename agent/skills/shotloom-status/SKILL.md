@@ -16,7 +16,7 @@ Single message, multiple Bash calls:
 
 ```bash
 # Worktrees
-git -C "$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)" worktree list --porcelain
+git -C "$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)" worktree list --porcelain
 
 # Open PRs authored by me
 gh pr list --repo CINEV/shotloom --author @me --state open --json number,title,headRefName,isDraft,reviewDecision,statusCheckRollup,updatedAt

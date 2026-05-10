@@ -30,7 +30,7 @@ git rev-parse --show-toplevel
 git rev-parse --abbrev-ref HEAD
 git log -1 --format="%an <%ae>"
 git status --short
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
+shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)
 ```
 
 Verify:

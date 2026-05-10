@@ -30,7 +30,7 @@ If unsure, recreate. Cheap insurance.
 Run in parallel:
 
 ```bash
-shotloom_root=$(jq -r '.shotloom' ~/.claude/private/caol-config/repo-paths.json)
+shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)
 git -C "$shotloom_root" rev-parse HEAD
 git -C "$shotloom_root" status --short
 date +"%Y-%m-%d %H:%M:%S %Z"
