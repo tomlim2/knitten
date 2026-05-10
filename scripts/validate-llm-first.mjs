@@ -1318,6 +1318,13 @@ const ROUTE_VALUE_EVIDENCE = {
   yaml: ["yaml", "yml"],
 };
 
+const AUTHORING_ROUTING_FILES = [
+  "claude/skills/caol-make-command/SKILL.md",
+  "claude/skills/caol-make-skill/SKILL.md",
+  "claude/skills/caol-make-standard/SKILL.md",
+  "claude/rules/author-frontmatter.md",
+];
+
 function pushStringArrayViolations(violations, file, key, value, options = {}) {
   pushArrayViolations(violations, file, key, value, options);
   if (!Array.isArray(value)) return;
@@ -1603,6 +1610,24 @@ async function checkContextRouting() {
           file: relPath,
           line: 1,
           message: "routing metadata on high-cost artifact must be listed in pilotFiles for generated inventory",
+        });
+      }
+    }
+  }
+
+  for (const authoringPath of AUTHORING_ROUTING_FILES) {
+    const fullPath = path.join(REPO_ROOT, authoringPath);
+    if (!existsSync(fullPath)) {
+      violations.push({ file, line: 1, message: `authoring routing file does not exist: ${authoringPath}` });
+      continue;
+    }
+    const text = await readFile(fullPath, "utf8");
+    for (const requiredText of ["context-routing.json", "context-profile"]) {
+      if (!text.includes(requiredText)) {
+        violations.push({
+          file: authoringPath,
+          line: 1,
+          message: `authoring flow must mention ${requiredText}`,
         });
       }
     }

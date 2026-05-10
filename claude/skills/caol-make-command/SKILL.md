@@ -72,6 +72,8 @@ When authoring a command or skill:
 
 **NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, and similar.
 
+**Routing metadata:** if the command is repo-specific, domain-specific, or likely to pull high-cost context, add routing fields from `~/.claude/config/context-routing.json`: `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`.
+
 **Advanced fields** (see `~/.claude/standards/authoring/slash-commands.md` "Frontmatter Reference (Full)" for the full table):
 
 - `name` — overrides directory/file-derived slash-name
@@ -108,6 +110,13 @@ When authoring a command or skill:
 ## Special Case: Unreal Engine
 
 For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the skill AND command automatically.
+
+## Routing Workflow
+
+1. Read `~/.claude/config/context-routing.json`.
+2. If the artifact matches an existing context profile, add the routing frontmatter fields.
+3. If no profile fits but the artifact is high-cost or domain-specific, stop and add the profile or an explicit `metadataExemptions` entry in the same change.
+4. Run `node scripts/validate-llm-first.mjs --check context-routing` from the caol-ila repo root.
 
 ---
 

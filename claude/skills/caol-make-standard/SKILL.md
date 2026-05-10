@@ -36,6 +36,16 @@ File name: `{topic}.md` in `~/.claude/standards/`.
 ## File Template
 
 ```markdown
+---
+status: proposed
+domains: {route-domain}
+repo-keys: {repo-key}
+languages: {language}
+task-types: {task-type}
+context-profile: {context-profile}
+exclude-when: {unrelated-route-domains}
+---
+
 # {Title}
 
 {One-line purpose — what this document is for.}
@@ -78,6 +88,7 @@ Structural rules:
 3. **Scope section** — mandatory. Tells future reader when this applies.
 4. **Examples section** — mandatory unless the doc IS an example (like a template file).
 5. **Related section** — always present, even if empty, so cross-links get added over time.
+6. **Routing metadata** — use `~/.claude/config/context-routing.json` for `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`. Omit optional axes when absent.
 
 ---
 
@@ -89,9 +100,11 @@ Structural rules:
    - One-line purpose
    - Which `standards/index.md` group it belongs to (Command Authoring, Multi-Agent, Research, Web, UE, Review, CINEV, Docs/System, or new group)
    - When-to-read hint for the index table
+   - Which context profile applies, or why this standard needs a `metadataExemptions` entry
 4. Write the file from the template, filling in `{Title}` and `{One-line purpose}`.
 5. Update `~/.claude/standards/index.md` — add a row to the chosen group.
-6. Print the new path and remind the user to fill in the sections.
+6. Run `node scripts/validate-llm-first.mjs --check context-routing`.
+7. Print the new path and remind the user to fill in the sections.
 
 ---
 

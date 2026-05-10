@@ -1,5 +1,6 @@
 ---
-status: in-progress
+status: done
+completed: 2026-05-10
 load: triggered
 trigger: reducing unnecessary context for routed tasks
 created: 2026-05-10
@@ -9,7 +10,7 @@ depends_on: docs/plans/agent-hub.md
 
 # Task Context Routing Plan
 
-**status:** partially implemented. P0 through P3 are implemented. P4 remains open.
+**status:** done. This plan added task context routing profiles, pilot metadata, synthetic route fixtures, generated hub inventory, high-cost metadata enforcement, and authoring flow prompts.
 
 Primary risk: metadata alone does not reduce context. A routing execution contract must define who classifies the task, which metadata syntax is valid, which axes are separate, and how fallback works.
 
@@ -178,7 +179,7 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 | P2 | done | Validate metadata on pilot files | Missing or unknown axis values fail validation |
 | P2.5 | done | Add generated routing inventory | `AGENT-HUB.md` routing block shows profiles and pilot coverage from registry |
 | P3 | done | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
-| P4 | pending | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
+| P4 | done | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
 
 ## P3 Expansion
 
@@ -191,6 +192,10 @@ P3 extends routing beyond the initial Unreal/Rust/Shotloom review pilot.
 | Obsidian vault work | `obsidian-vault` |
 
 `claude/config/context-routing.json` now owns high-cost thresholds for skills and standards. A high-cost skill or standard must declare routing metadata and appear in the generated inventory, or it must have a `metadataExemptions` entry with reason, decision, and review date.
+
+## P4 Authoring Flow
+
+New command, skill, and standard authoring flows now read `claude/config/context-routing.json` before writing route-domain artifacts. Domain-specific or repo-specific artifacts should add `context-profile` metadata immediately; high-cost artifacts must add routing metadata or an explicit `metadataExemptions` entry. The validator checks that the authoring entry documents keep this prompt path.
 
 ## P0 Inventory Columns
 

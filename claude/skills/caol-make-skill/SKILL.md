@@ -75,6 +75,26 @@ When creating a skill:
 
 ---
 
+## Routing Metadata
+
+When creating a skill, also read `~/.claude/config/context-routing.json`.
+
+Add routing fields when the skill is repo-specific, domain-specific, high-cost, or likely to load sibling standards:
+
+```yaml
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: implementation
+context-profile: rust-bevy
+exclude-when: unreal,obsidian
+```
+
+If no existing context profile fits, add one to `context-routing.json` or add a `metadataExemptions` entry with reason, decision, and review date. Then run `node scripts/validate-llm-first.mjs --check context-routing`.
+
+---
+
 ## UE skills — use the dedicated template
 
 **For `ue-*` (Unreal Engine) skills**, use `/ue-make-skill <verb> <noun>`. Template at `~/.claude/skills/ue-show-template/SKILL.md`. UE skills require specific Python patterns (run_in_editor.py, JSON export to `~/.claude/private/unreal/{noun}-{verb}/`, `[LogTag]` prefixes, and other patterns) — see reference.md for the full rationale.
