@@ -1,0 +1,184 @@
+---
+status: proposed
+load: triggered
+trigger: reducing unnecessary context for routed tasks
+created: 2026-05-10
+standard: claude/standards/policy/llm-first-docs.md
+depends_on: docs/plans/agent-hub.md
+---
+
+# Task Context Routing Plan
+
+**status:** not implemented. This plan defines how `caol-ila` should load only task-relevant rules, skills, standards, commands, and references after cold start.
+
+Primary risk: metadata alone does not reduce context. A routing execution contract must define who classifies the task, which metadata syntax is valid, which axes are separate, and how fallback works.
+
+## Goal
+
+| Problem | Target behavior |
+|---------|-----------------|
+| Unreal skills are visible during Rust work | Unreal inventory is discoverable, but Unreal bodies are not loaded unless the task matches Unreal |
+| Route-domain-specific standards compete for context | Task classification picks the relevant route domain before loading references |
+| Skill selection relies on filename intuition only | Metadata and validator checks make routing explicit |
+| Agents over-read "just in case" | Entry docs load navigation, then route to the smallest matching context |
+
+## Load Model
+
+| Phase | Load | Must not load |
+|-------|------|---------------|
+| Cold start | `SYSTEM.md`, entry document, auto rules, compact indexes | Route-domain skill bodies, long standards, repo-specific references |
+| Task classify | task text, repo path, user-named skill, nearby files | Full route-domain catalogs |
+| Route select | matching rule/standard/skill metadata | Non-matching route-domain bodies |
+| Execute | required skill body and direct references | Sibling skills with unrelated route domains |
+| Escalate | broader standards only when classification is ambiguous | Whole `claude/skills` tree |
+
+## Routing Execution Contract
+
+| Question | Required answer before P1 |
+|----------|---------------------------|
+| Who routes? | Entry document gives the routing instruction; a triggered routing rule may define details; validator enforces metadata; each harness performs the read sequence with its own tools |
+| What is routed? | Rule, standard, skill, command, and reference bodies; inventories remain discoverable |
+| What is not routed? | `SYSTEM.md`, entry documents, auto default-counter rules, `LOOKUP.md`, and compact indexes |
+| Fallback | If route confidence is low, ask a short clarification or read only the compact routing index |
+| Completion test | A sample Rust/Bevy task loads no Unreal skill bodies; a sample Unreal asset task loads no Rust/Bevy standards |
+
+The contract must become an accepted rule or standard before broad metadata rollout.
+
+## Tradeoffs
+
+| Cost | Expected impact | Control |
+|------|-----------------|---------|
+| Extra grep/read calls | 1-3 calls per routed task; one-time 5-10k token cost when classification needs evidence | Keep routing evidence compact and stop after a confident domain match |
+| Classifier prompt cost | About 0.5-1k tokens per ambiguous task | Prefer deterministic evidence: repo path, file extension, named skill, command, frontmatter |
+| Misclassification | Wrong route domain loads first, then reloads correct route domain | Pilot coverage and validator checks catch missing metadata before broad rollout |
+| Metadata maintenance | New skills and standards need routing fields | Add authoring flow in P4 so routing metadata is created with the artifact |
+| Over-routing | Too many route domains match and context grows again | Require explicit `context-profile` for high-cost route domains |
+
+Routing is justified only when the avoided route-domain context is larger than the classification overhead.
+
+## Current Baseline
+
+| Area | State |
+|------|-------|
+| Entry docs | already thin |
+| Auto rules | already separate from triggered rules |
+| Standards | on-demand by `claude/standards/index.md` |
+| Skills | loaded by harness/task match, but no repo-owned routing metadata |
+| Agent hub | `claude/config/agent-hub.json` inventories layers and validators |
+| Taxonomy | category prefixes exist, but prefixes are not enough for domain routing |
+
+## Non-Goals
+
+| Non-goal | Reason |
+|----------|--------|
+| Hide skills from inventory | Agents still need discovery |
+| Rewrite every skill in one pass | High churn; start with high-cost route domains |
+| Depend on one harness feature | Routing must work for Claude Code and Codex |
+| Create a semantic search system | Metadata and validator first; search can come later |
+| Move skill files | Routing is metadata, not a path migration |
+
+## Routing Vocabulary
+
+| Term | Meaning |
+|------|---------|
+| task route | A metadata-backed decision that a task belongs to one or more route domains |
+| route domain | Technical or knowledge area such as `unreal`, `rust`, `web`, or `obsidian` |
+| repo key | Repository key from `repo-paths.json`, such as `shotloom`, `cinev-studio`, or `caol-ila` |
+| task type | Work mode such as `review`, `git`, `authoring`, or `implementation` |
+| context profile | Named set of route domains, repo keys, task types, languages, and artifacts allowed for a task |
+| exclusion | Route domain or artifact that must not load unless explicitly requested |
+| route evidence | User words, repo path, file extension, named skill, command, or frontmatter |
+
+If these terms survive P1, add them to `docs/reference/system-glossary.md`.
+
+## System Alignment
+
+| Choice | Alignment |
+|--------|-----------|
+| `route domain` | Avoids confusing routing domains with registry `domain` fields in `agent-hub.json` |
+| `repo key` | Matches `repo-paths.json` and `repo-paths-keys.md`; avoids `project`, which is also a Claude runtime folder |
+| `task type` | Separates work mode from technology domain and repo identity |
+| `context profile` | Names a route bundle without becoming canonical policy |
+| Kebab-case metadata | Matches existing frontmatter style such as `argument-hint`; avoids camelCase in markdown frontmatter |
+| Triggered routing rule | Preserves the rule that auto rules are reserved for default-counters |
+
+## Proposed Metadata
+
+Add routing metadata to selected `SKILL.md`, command docs, standards, and triggered rules:
+
+```yaml
+domains: unreal
+repo-keys: cinev-studio
+languages: cpp,python
+task-types: implementation
+context-profile: unreal-assets
+exclude-when: rust,web
+```
+
+Use comma-separated scalar values unless the validator is upgraded to parse YAML arrays. P0.5 must explicitly decide the syntax before metadata rollout.
+
+## Initial Routing Axes
+
+| Axis | Values | Positive evidence |
+|------|--------|-------------------|
+| `domains` | `unreal`, `rust`, `web`, `obsidian` | technology, file extension, toolchain, domain terms |
+| `repo-keys` | `shotloom`, `cinev-studio`, `caol-ila` | repo path, issue prefix, `repo-paths.json` key |
+| `languages` | `cpp`, `python`, `rust`, `typescript`, `css` | file extension, compiler, framework |
+| `task-types` | `implementation`, `review`, `git`, `authoring`, `research` | user verb, command, PR context |
+
+Negative evidence belongs in `exclude-when` only for high-cost or high-risk artifacts. Default routing should be positive-match.
+
+## Contracts
+
+| Contract | Owner |
+|----------|-------|
+| Routing axis values | new `claude/config/context-routing.json` |
+| Skill/standard routing metadata | owning artifact frontmatter |
+| Context profiles | new `claude/config/context-routing.json` |
+| Generated routing inventory | optional generated block in `AGENT-HUB.md` |
+| Enforcement | `scripts/validate-llm-first.mjs` |
+
+## Execution Order
+
+| Tier | Status | Work | Acceptance |
+|------|--------|------|------------|
+| P0 | pending | Inventory high-cost route-domain artifacts | Table lists route domains, repo keys, task types, and high-cost artifacts |
+| P0.25 | pending | Define routing execution contract | Contract names who routes, metadata syntax, axes, fallback, and measurable pass/fail |
+| P0.5 | pending | Define `context-routing.json` schema | Schema names axes, profiles, evidence, pilot files, and exemptions |
+| P1 | pending | Add routing registry and validator skeleton | Registry parses; values are unique; profiles reference known axis values |
+| P1.5 | pending | Add pilot metadata to high-cost route domains | Unreal and Rust pilot artifacts have `domains` metadata |
+| P2 | pending | Validate metadata on pilot files | Missing or unknown axis values fail validation |
+| P2.5 | pending | Add generated routing inventory | `AGENT-HUB.md` shows profiles and pilot coverage from registry |
+| P3 | pending | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
+| P4 | pending | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
+
+## P0 Inventory Columns
+
+| Column | Meaning |
+|--------|---------|
+| artifact | skill, standard, rule, command, or reference |
+| current load path | auto, triggered, on-demand, command, harness task match |
+| likely route | proposed domains, repo-keys, languages, and task-types |
+| context cost | low, medium, high |
+| false-positive risk | when this artifact gets loaded for the wrong task |
+| metadata needed | `domains`, `repo-keys`, `languages`, `task-types`, `exclude-when`, or exemption |
+
+## Validator Requirements
+
+| Check | Behavior |
+|-------|----------|
+| routing registry | all axis values and profiles unique |
+| metadata field pairing | `domains`, `repo-keys`, `languages`, and `task-types` cannot reference unknown values |
+| pilot coverage | selected high-cost pilot files must include routing metadata |
+| exclusion sanity | `exclude-when` cannot include the same value as `domains` |
+| generated inventory | routing inventory block matches registry |
+
+## Success Criteria
+
+| Scenario | Measurable expected load |
+|----------|--------------------------|
+| Rust/Bevy task in shotloom | zero Unreal skill bodies; Rust, Shotloom, relevant review or git only |
+| Unreal asset task in CINEV | zero Rust/Bevy standards unless explicitly requested |
+| Obsidian note cleanup | zero source-code implementation skills |
+| Generic git request | git rules only unless repo-specific rule applies |
+| Ambiguous task | clarification or compact routing index before any route-domain body |
