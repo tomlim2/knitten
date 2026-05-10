@@ -95,7 +95,7 @@ The intentional asymmetry:
 | `hooks/` | caol-ila must hold these | durable harness scripts deployed to `~/.claude/hooks/` |
 | `settings.json` | caol-ila must hold this | per-machine secrets stay in `settings.local.json` |
 | `private/caol-config/doc-paths.json` and similar non-machine config | caol-ila | machine-specific entries below stay `~/.claude`-only |
-| `private/caol-config/{hardware,machine-paths,ccdb-bots}.json` | `~/.claude/` only | per-machine secrets, gitignored on purpose |
+| `private/caol-config/{hardware,machine-paths,repo-paths}.json` | `~/.claude/` only | per-machine paths and specs, gitignored on purpose |
 | `templates/`, `scheduled-tasks/`, `obsidian-staging/` | caol-ila only | not loaded by the harness at runtime |
 | `cache/`, `backups/`, `sessions/`, `tasks/`, `telemetry/`, `projects/`, `shell-snapshots/`, `paste-cache/`, `file-history/`, `ops/`, `plans/`, `downloads/`, `history.jsonl` | `~/.claude/` only | runtime/cache, not durable |
 

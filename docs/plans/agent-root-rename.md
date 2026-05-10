@@ -28,11 +28,11 @@ Rename the canonical repo source folder from `claude/` to `agent/` while preserv
 
 | Area | Action |
 |------|--------|
-| Decision record | Add accepted ADR for `agent/` canonical root |
+| Decision record | Add accepted ADR for the `agent/` agent root |
 | Filesystem | Move tracked shared source from `claude/` to `agent/` |
 | Gitignore | Move runtime ignore rules from `claude/...` to `agent/...` |
 | Docs | Rewrite canonical repo references to `agent/...` |
-| Validator | Read `agent/` as canonical root and map `@~/.claude/...` imports to `agent/...` |
+| Validator | Read `agent/` as agent root and map `@~/.claude/...` imports to `agent/...` |
 | Generated blocks | Regenerate README and AGENT-HUB path inventory |
 | Runtime symlink | Point `~/.claude` to `caol-ila/agent` |
 

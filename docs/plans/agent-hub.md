@@ -39,7 +39,7 @@ An agent hub is a repo that answers these questions without chat history:
 
 | Non-goal | Reason |
 |----------|--------|
-| Rename canonical root in this plan | Deferred here; later completed by `docs/decisions/0003-agent-root-directory.md` |
+| Rename agent root in this plan | Deferred here; later completed by `docs/decisions/0003-agent-root-directory.md` |
 | Duplicate rules per platform | duplicates create drift |
 | Convert docs to full HTML | Markdown remains canonical; tags are boundary markers only |
 | Treat decisions as executable policy | decision records explain rationale; policy executes from `SYSTEM.md` and shared layers |
@@ -211,7 +211,7 @@ Validated view rules:
 
 | Question | Answer |
 |----------|--------|
-| Rename canonical root now? | done by `docs/decisions/0003-agent-root-directory.md` |
+| Rename agent root now? | done by `docs/decisions/0003-agent-root-directory.md` |
 | Runtime constraint | Claude Code still reads `~/.claude/` as the deploy target |
 | Current neutrality mechanism | `agent/` canonical repo source, `SYSTEM.md`, entry documents, `agent-hub.json`, platform metadata, and adapter boundaries |
 | Compatibility shim | `~/.claude` points at `caol-ila/agent` |
