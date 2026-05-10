@@ -1288,6 +1288,7 @@ const ROUTING_METADATA_FIELDS = [
 
 const TASK_TYPE_EVIDENCE = {
   authoring: ["author", "make command", "make rule", "make skill", "write skill"],
+  deploy: ["deploy", "rollout", "ship"],
   git: ["branch", "commit", "merge", "pull", "push", "rebase"],
   implementation: ["build", "code", "ecs", "fix", "implement", "material"],
   research: ["find", "lookup", "research", "search"],
@@ -1301,6 +1302,8 @@ const ROUTE_VALUE_EVIDENCE = {
   cpp: ["c++", "cpp"],
   css: ["css"],
   javascript: ["javascript", "js"],
+  json: ["json"],
+  markdown: ["markdown", "md", "note"],
   "mega-melange": ["mega melange", "mega-melange"],
   obsidian: ["note", "obsidian", "vault"],
   python: ["python", "py"],
@@ -1312,6 +1315,7 @@ const ROUTE_VALUE_EVIDENCE = {
   "vrm2u-bevy": ["bevy-vrm", "vrm2u"],
   web: ["frontend", "web"],
   wgpu: ["webgpu", "wgpu"],
+  yaml: ["yaml", "yml"],
 };
 
 function pushStringArrayViolations(violations, file, key, value, options = {}) {
@@ -1444,6 +1448,7 @@ async function checkContextRouting() {
   }
 
   const pilotFiles = Array.isArray(routing.pilotFiles) ? routing.pilotFiles : [];
+  const pilotPathSet = new Set(pilotFiles.map((pilot) => pilot.path).filter(Boolean));
   if (pilotFiles.length === 0) {
     violations.push({ file, line: 1, message: "pilotFiles must be a non-empty array" });
   }
@@ -1519,6 +1524,85 @@ async function checkContextRouting() {
           file: pilot.path,
           line: 1,
           message: `frontmatter 'exclude-when' repeats active domain ${JSON.stringify(value)}`,
+        });
+      }
+    }
+  }
+
+  const exemptionPathSet = new Set();
+  for (const exemption of routing.metadataExemptions || []) {
+    if (!exemption || typeof exemption !== "object") {
+      violations.push({ file, line: 1, message: "metadataExemptions entries must be objects" });
+      continue;
+    }
+    for (const field of ["path", "reason", "decision"]) {
+      if (!exemption[field] || !String(exemption[field]).trim()) {
+        violations.push({ file, line: 1, message: `metadataExemptions entry missing ${field}` });
+      }
+    }
+    if (!exemption.reviewAfter && !exemption.expires) {
+      violations.push({
+        file,
+        line: 1,
+        message: `metadataExemptions ${exemption.path || "<unknown>"} requires reviewAfter or expires`,
+      });
+    }
+    if (exemption.path) {
+      exemptionPathSet.add(exemption.path);
+      if (!existsSync(path.join(REPO_ROOT, exemption.path))) {
+        violations.push({ file, line: 1, message: `metadata exemption target does not exist: ${exemption.path}` });
+      }
+    }
+    if (exemption.decision) {
+      const decisionPath = String(exemption.decision).split("#")[0];
+      if (!existsSync(path.join(REPO_ROOT, decisionPath))) {
+        violations.push({ file, line: 1, message: `metadata exemption decision target does not exist: ${exemption.decision}` });
+      }
+    }
+  }
+
+  const thresholds = routing.enforcement?.highCostByteThresholds || {};
+  for (const [kind, threshold] of Object.entries(thresholds)) {
+    if (!Number.isInteger(threshold) || threshold <= 0) {
+      violations.push({ file, line: 1, message: `enforcement.highCostByteThresholds.${kind} must be positive` });
+    }
+  }
+  const highCostTargets = [
+    {
+      kind: "skills",
+      threshold: thresholds.skills,
+      files: await walk(path.join(REPO_ROOT, "claude", "skills"), (f) => path.basename(f) === "SKILL.md"),
+    },
+    {
+      kind: "standards",
+      threshold: thresholds.standards,
+      files: await walk(
+        path.join(REPO_ROOT, "claude", "standards"),
+        (f) => f.endsWith(".md") && path.basename(f) !== "index.md"
+      ),
+    },
+  ];
+  for (const target of highCostTargets) {
+    if (!Number.isInteger(target.threshold) || target.threshold <= 0) continue;
+    for (const f of target.files) {
+      const relPath = rel(f);
+      const size = (await stat(f)).size;
+      if (size < target.threshold) continue;
+      const text = await readFile(f, "utf8");
+      const fm = parseFrontmatter(text);
+      const hasRoutingMetadata = Boolean(fm?.["context-profile"]);
+      if (!hasRoutingMetadata && !exemptionPathSet.has(relPath)) {
+        violations.push({
+          file: relPath,
+          line: 1,
+          message: `high-cost ${target.kind.slice(0, -1)} ${size} bytes requires routing metadata or metadataExemptions entry`,
+        });
+      }
+      if (hasRoutingMetadata && !pilotPathSet.has(relPath)) {
+        violations.push({
+          file: relPath,
+          line: 1,
+          message: "routing metadata on high-cost artifact must be listed in pilotFiles for generated inventory",
         });
       }
     }

@@ -1,5 +1,11 @@
 ---
 status: accepted
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: javascript
+task-types: implementation
+context-profile: web-frontend
+exclude-when: unreal,obsidian
 ---
 # JavaScript Coding Standards
 

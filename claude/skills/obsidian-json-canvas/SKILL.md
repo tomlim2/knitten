@@ -1,6 +1,12 @@
 ---
 name: json-canvas
 description: Create and edit Obsidian JSON Canvas (.canvas) files — nodes, edges, groups, mind maps, flowcharts.
+domains: obsidian
+repo-keys: caol-ila
+languages: json
+task-types: authoring,implementation
+context-profile: obsidian-vault
+exclude-when: rust,web,unreal
 ---
 
 # JSON Canvas Skill

@@ -1,5 +1,12 @@
 ---
 status: accepted
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: javascript,typescript
+frameworks: three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: unreal,obsidian
 ---
 # Three.js Shading Language (TSL) Coding Standards
 

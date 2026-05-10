@@ -1,5 +1,11 @@
 ---
 status: proposed
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: review
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 # Unreal Engine Python Coding Standards
 

@@ -1,5 +1,11 @@
 ---
 status: accepted
+domains: unreal
+repo-keys: anju,mega-melange
+languages: cpp
+task-types: review
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 # C++ and Unreal Engine Coding Standards
 

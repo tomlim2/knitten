@@ -1,6 +1,12 @@
 ---
 name: obsidian-markdown
 description: Create and edit Obsidian Flavored Markdown — wikilinks, embeds, callouts, frontmatter, tags, Obsidian-specific syntax.
+domains: obsidian
+repo-keys: caol-ila
+languages: markdown,yaml
+task-types: authoring,implementation
+context-profile: obsidian-vault
+exclude-when: rust,web,unreal
 ---
 
 # Obsidian Flavored Markdown Skill

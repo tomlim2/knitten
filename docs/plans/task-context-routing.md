@@ -9,7 +9,7 @@ depends_on: docs/plans/agent-hub.md
 
 # Task Context Routing Plan
 
-**status:** partially implemented. P0 through P2.5 are implemented for the high-cost pilot set. P3 and P4 remain open.
+**status:** partially implemented. P0 through P3 are implemented. P4 remains open.
 
 Primary risk: metadata alone does not reduce context. A routing execution contract must define who classifies the task, which metadata syntax is valid, which axes are separate, and how fallback works.
 
@@ -177,8 +177,20 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 | P1.5 | done | Add pilot metadata to high-cost route domains | Unreal, Rust/Bevy, and Shotloom review pilot artifacts have routing metadata |
 | P2 | done | Validate metadata on pilot files | Missing or unknown axis values fail validation |
 | P2.5 | done | Add generated routing inventory | `AGENT-HUB.md` routing block shows profiles and pilot coverage from registry |
-| P3 | pending | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
+| P3 | done | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
 | P4 | pending | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
+
+## P3 Expansion
+
+P3 extends routing beyond the initial Unreal/Rust/Shotloom review pilot.
+
+| Area | Profiles |
+|------|----------|
+| Shotloom deploy | `shotloom-deploy` |
+| Web implementation and review | `web-frontend`, `web-review` |
+| Obsidian vault work | `obsidian-vault` |
+
+`claude/config/context-routing.json` now owns high-cost thresholds for skills and standards. A high-cost skill or standard must declare routing metadata and appear in the generated inventory, or it must have a `metadataExemptions` entry with reason, decision, and review date.
 
 ## P0 Inventory Columns
 

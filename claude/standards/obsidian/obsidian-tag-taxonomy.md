@@ -1,5 +1,11 @@
 ---
 status: accepted
+domains: obsidian
+repo-keys: caol-ila
+languages: markdown,yaml
+task-types: authoring,implementation,review
+context-profile: obsidian-vault
+exclude-when: rust,web,unreal
 ---
 # Obsidian Tag Taxonomy
 

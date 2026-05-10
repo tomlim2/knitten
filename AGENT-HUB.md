@@ -60,7 +60,11 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 |---------|---------------|-----------|------------|------------|----------:|
 | `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
 | `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
+| `shotloom-deploy` | `rust`, `web` | `shotloom` | `bevy`, `wgpu` | `deploy` | 25000 |
 | `unreal-engine` | `unreal` | `anju`, `mega-melange` | - | `implementation`, `review` | 25000 |
+| `web-frontend` | `web` | `caol-ila`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `implementation` | 25000 |
+| `web-review` | `web` | `caol-ila`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `review` | 25000 |
+| `obsidian-vault` | `obsidian` | `caol-ila` | - | `authoring`, `implementation`, `review` | 25000 |
 
 ## Pilot Files
 
@@ -68,18 +72,38 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 |------|---------|------|
 | `claude/skills/cci-codex-port-bevy/SKILL.md` | `rust-bevy` | `medium` |
 | `claude/skills/dev-open-vrm-bevy/SKILL.md` | `rust-bevy` | `medium` |
+| `claude/skills/shotloom-deploy-web/SKILL.md` | `shotloom-deploy` | `high` |
 | `claude/skills/shotloom-respond-pr/SKILL.md` | `shotloom-review` | `high` |
 | `claude/skills/shotloom-review-before-pr/SKILL.md` | `shotloom-review` | `high` |
 | `claude/skills/ue-analyze-material/SKILL.md` | `unreal-engine` | `medium` |
+| `claude/skills/obsidian-json-canvas/SKILL.md` | `obsidian-vault` | `medium` |
+| `claude/skills/obsidian-obsidian-bases/SKILL.md` | `obsidian-vault` | `high` |
+| `claude/skills/obsidian-obsidian-markdown/SKILL.md` | `obsidian-vault` | `medium` |
 | `claude/standards/unreal/unreal-engine-asset.md` | `unreal-engine` | `high` |
 | `claude/standards/unreal/unreal-engine-cpp.md` | `unreal-engine` | `medium` |
+| `claude/standards/review/review-code-unreal-cpp.md` | `unreal-engine` | `low` |
+| `claude/standards/review/review-code-unreal-python.md` | `unreal-engine` | `medium` |
+| `claude/standards/language/css.md` | `web-frontend` | `medium` |
+| `claude/standards/language/javascript.md` | `web-frontend` | `medium` |
+| `claude/standards/language/three-shader-language.md` | `web-frontend` | `high` |
+| `claude/standards/review/review-code-astro.md` | `web-review` | `high` |
+| `claude/standards/review/review-code-css.md` | `web-review` | `medium` |
+| `claude/standards/review/review-code-javascript.md` | `web-review` | `high` |
+| `claude/standards/review/review-code-tsl.md` | `web-review` | `medium` |
+| `claude/standards/obsidian/note-inspection-checklist.md` | `obsidian-vault` | `medium` |
+| `claude/standards/obsidian/obsidian-format.md` | `obsidian-vault` | `medium` |
+| `claude/standards/obsidian/obsidian-tag-taxonomy.md` | `obsidian-vault` | `high` |
+| `claude/standards/obsidian/vault-audience.md` | `obsidian-vault` | `medium` |
 
 ## Route Fixtures
 
 | Task | Must load | Must not load | Max bytes |
 |------|-----------|---------------|----------:|
-| Implement Rust Bevy ECS in shotloom | `rust-bevy` | `shotloom-review`, `unreal-engine` | 25000 |
-| Review Shotloom Rust PR before opening | `shotloom-review` | `unreal-engine` | 25000 |
-| Unreal material graph in anju | `unreal-engine` | `rust-bevy`, `shotloom-review` | 25000 |
-| Obsidian note cleanup | - | `rust-bevy`, `shotloom-review`, `unreal-engine` | 5000 |
+| Implement Rust Bevy ECS in shotloom | `rust-bevy` | `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Review Shotloom Rust PR before opening | `shotloom-review` | `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Deploy Shotloom web image | `shotloom-deploy` | `rust-bevy`, `shotloom-review`, `unreal-engine`, `obsidian-vault` | 25000 |
+| Unreal material graph in anju | `unreal-engine` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Review Astro island hydration bug | `web-review` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `obsidian-vault` | 25000 |
+| Implement Three.js shader | `web-frontend` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `obsidian-vault` | 25000 |
+| Obsidian note cleanup | `obsidian-vault` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review` | 25000 |
 <!-- routing:end -->

@@ -1,5 +1,11 @@
 ---
 status: accepted
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css
+task-types: review
+context-profile: web-review
+exclude-when: unreal,obsidian
 ---
 # CSS Code Review Checklist
 

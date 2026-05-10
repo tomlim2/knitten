@@ -1,5 +1,12 @@
 ---
 status: proposed
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: javascript,typescript
+frameworks: three
+task-types: review
+context-profile: web-review
+exclude-when: unreal,obsidian
 ---
 # Three.js TSL Code Review Checklist
 

@@ -6,7 +6,11 @@
     ],
     "mustNotLoad": [
       "shotloom-review",
-      "unreal-engine"
+      "shotloom-deploy",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
     ],
     "maxBytes": 25000
   },
@@ -16,7 +20,24 @@
       "shotloom-review"
     ],
     "mustNotLoad": [
-      "unreal-engine"
+      "shotloom-deploy",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Deploy Shotloom web image",
+    "mustLoad": [
+      "shotloom-deploy"
+    ],
+    "mustNotLoad": [
+      "rust-bevy",
+      "shotloom-review",
+      "unreal-engine",
+      "obsidian-vault"
     ],
     "maxBytes": 25000
   },
@@ -27,18 +48,55 @@
     ],
     "mustNotLoad": [
       "rust-bevy",
-      "shotloom-review"
+      "shotloom-review",
+      "shotloom-deploy",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Review Astro island hydration bug",
+    "mustLoad": [
+      "web-review"
+    ],
+    "mustNotLoad": [
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "unreal-engine",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Implement Three.js shader",
+    "mustLoad": [
+      "web-frontend"
+    ],
+    "mustNotLoad": [
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "unreal-engine",
+      "obsidian-vault"
     ],
     "maxBytes": 25000
   },
   {
     "task": "Obsidian note cleanup",
-    "mustLoad": [],
+    "mustLoad": [
+      "obsidian-vault"
+    ],
     "mustNotLoad": [
       "rust-bevy",
       "shotloom-review",
-      "unreal-engine"
+      "shotloom-deploy",
+      "unreal-engine",
+      "web-frontend",
+      "web-review"
     ],
-    "maxBytes": 5000
+    "maxBytes": 25000
   }
 ]

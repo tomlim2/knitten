@@ -1,5 +1,12 @@
 ---
 status: accepted
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: javascript,typescript
+frameworks: astro
+task-types: review
+context-profile: web-review
+exclude-when: unreal,obsidian
 ---
 # Astro Framework Code Review Checklist
 

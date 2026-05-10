@@ -1,5 +1,11 @@
 ---
 status: proposed
+domains: obsidian
+repo-keys: caol-ila
+languages: markdown
+task-types: authoring
+context-profile: obsidian-vault
+exclude-when: rust,web,unreal
 ---
 
 # Vault Audience & Style Policy

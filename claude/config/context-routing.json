@@ -25,9 +25,12 @@
       "cpp",
       "css",
       "javascript",
+      "json",
+      "markdown",
       "python",
       "rust",
-      "typescript"
+      "typescript",
+      "yaml"
     ],
     "frameworks": [
       "astro",
@@ -37,6 +40,7 @@
     ],
     "taskTypes": [
       "authoring",
+      "deploy",
       "git",
       "implementation",
       "research",
@@ -88,6 +92,29 @@
       "maxBytes": 25000
     },
     {
+      "id": "shotloom-deploy",
+      "domains": [
+        "rust",
+        "web"
+      ],
+      "repoKeys": [
+        "shotloom"
+      ],
+      "languages": [
+        "css",
+        "rust",
+        "typescript"
+      ],
+      "frameworks": [
+        "bevy",
+        "wgpu"
+      ],
+      "taskTypes": [
+        "deploy"
+      ],
+      "maxBytes": 25000
+    },
+    {
       "id": "unreal-engine",
       "domains": [
         "unreal"
@@ -101,6 +128,74 @@
         "python"
       ],
       "taskTypes": [
+        "implementation",
+        "review"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "web-frontend",
+      "domains": [
+        "web"
+      ],
+      "repoKeys": [
+        "caol-ila",
+        "mmd-anju",
+        "ta-portfolio"
+      ],
+      "languages": [
+        "css",
+        "javascript",
+        "typescript"
+      ],
+      "frameworks": [
+        "astro",
+        "three"
+      ],
+      "taskTypes": [
+        "implementation"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "web-review",
+      "domains": [
+        "web"
+      ],
+      "repoKeys": [
+        "caol-ila",
+        "mmd-anju",
+        "ta-portfolio"
+      ],
+      "languages": [
+        "css",
+        "javascript",
+        "typescript"
+      ],
+      "frameworks": [
+        "astro",
+        "three"
+      ],
+      "taskTypes": [
+        "review"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "obsidian-vault",
+      "domains": [
+        "obsidian"
+      ],
+      "repoKeys": [
+        "caol-ila"
+      ],
+      "languages": [
+        "json",
+        "markdown",
+        "yaml"
+      ],
+      "taskTypes": [
+        "authoring",
         "implementation",
         "review"
       ],
@@ -119,6 +214,11 @@
       "contextCost": "medium"
     },
     {
+      "path": "claude/skills/shotloom-deploy-web/SKILL.md",
+      "profile": "shotloom-deploy",
+      "contextCost": "high"
+    },
+    {
       "path": "claude/skills/shotloom-respond-pr/SKILL.md",
       "profile": "shotloom-review",
       "contextCost": "high"
@@ -134,6 +234,21 @@
       "contextCost": "medium"
     },
     {
+      "path": "claude/skills/obsidian-json-canvas/SKILL.md",
+      "profile": "obsidian-vault",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/skills/obsidian-obsidian-bases/SKILL.md",
+      "profile": "obsidian-vault",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/skills/obsidian-obsidian-markdown/SKILL.md",
+      "profile": "obsidian-vault",
+      "contextCost": "medium"
+    },
+    {
       "path": "claude/standards/unreal/unreal-engine-asset.md",
       "profile": "unreal-engine",
       "contextCost": "high"
@@ -142,6 +257,103 @@
       "path": "claude/standards/unreal/unreal-engine-cpp.md",
       "profile": "unreal-engine",
       "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/review/review-code-unreal-cpp.md",
+      "profile": "unreal-engine",
+      "contextCost": "low"
+    },
+    {
+      "path": "claude/standards/review/review-code-unreal-python.md",
+      "profile": "unreal-engine",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/language/css.md",
+      "profile": "web-frontend",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/language/javascript.md",
+      "profile": "web-frontend",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/language/three-shader-language.md",
+      "profile": "web-frontend",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/standards/review/review-code-astro.md",
+      "profile": "web-review",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/standards/review/review-code-css.md",
+      "profile": "web-review",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/review/review-code-javascript.md",
+      "profile": "web-review",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/standards/review/review-code-tsl.md",
+      "profile": "web-review",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/obsidian/note-inspection-checklist.md",
+      "profile": "obsidian-vault",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/obsidian/obsidian-format.md",
+      "profile": "obsidian-vault",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/obsidian/obsidian-tag-taxonomy.md",
+      "profile": "obsidian-vault",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/standards/obsidian/vault-audience.md",
+      "profile": "obsidian-vault",
+      "contextCost": "medium"
+    }
+  ],
+  "enforcement": {
+    "highCostByteThresholds": {
+      "skills": 20000,
+      "standards": 14000
+    }
+  },
+  "metadataExemptions": [
+    {
+      "path": "claude/standards/multi-agent/agent-workflow.md",
+      "reason": "Shared multi-agent process standard; route domain split needs a separate multi-agent profile decision.",
+      "decision": "docs/plans/task-context-routing.md#execution-order",
+      "reviewAfter": "2026-06-10"
+    },
+    {
+      "path": "claude/standards/policy/principles.md",
+      "reason": "Core policy glossary and validator summary; intentionally shared across route domains.",
+      "decision": "docs/plans/task-context-routing.md#execution-order",
+      "reviewAfter": "2026-06-10"
+    },
+    {
+      "path": "claude/standards/review/review-3d-rendering.md",
+      "reason": "Cross-domain 3D review catalog; needs a future 3D route profile instead of being forced into web or unreal.",
+      "decision": "docs/plans/task-context-routing.md#execution-order",
+      "reviewAfter": "2026-06-10"
+    },
+    {
+      "path": "claude/standards/review/review-ux.md",
+      "reason": "Cross-domain UX review catalog; needs a future UX route profile instead of being forced into web.",
+      "decision": "docs/plans/task-context-routing.md#execution-order",
+      "reviewAfter": "2026-06-10"
     }
   ]
 }
