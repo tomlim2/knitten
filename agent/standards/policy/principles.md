@@ -193,15 +193,15 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 ### 6. Cold-start parsability
 
-**Statement:** Every artifact must be interpretable without prior session context. No "as we discussed", no implicit references, no shorthand only the previous session understood.
+**Statement:** Every artifact must be interpretable without prior session context. No `as we discussed`, no implicit references, no shorthand only the previous session understood.
 
 **Why discovered:** Foundational since `llm-first-docs.md`. Reinforced by every garden review — agent-to-agent handoffs that fail are the ones that assumed context.
 
 **Example:**
 - ✅ "STL-247 lockout: the gltf prefilter feature flag is on for >95% of users; remove the flag this PR."
-- ❌ "Finish what we talked about last week."
+- ❌ `Finish what we talked about last week.`
 
-**Enforced by:** `llm-first-docs.md` — body of the standard. No mechanical check yet (TODO: validator could detect "as we", "previously", "you know").
+**Enforced by:** `validate-llm-first.mjs` `banned-terms` check catches prior-session phrases; `llm-first-docs.md` defines the rule.
 
 ---
 

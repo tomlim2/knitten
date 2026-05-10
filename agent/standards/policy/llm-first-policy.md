@@ -50,7 +50,7 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 
 ## What this policy enforces
 
-1. **Cold-start parsability.** Every file must be interpretable without prior session context. No "as we discussed", no implicit references.
+1. **Cold-start parsability.** Every file must be interpretable without prior session context. No `as we discussed`, no implicit references.
 2. **Entry documents are adapters.** `CLAUDE.md` and `AGENTS.md` load `SYSTEM.md` first, then add harness-specific mechanics.
 3. **Explicit load semantics.** Every rule declares whether it is `auto` or `triggered`. The agent never has to guess.
 4. **Mechanical anti-rot.** Drift is caught by validators, not by human review. If a rule cannot be validated mechanically, it must be rewritten until it can.

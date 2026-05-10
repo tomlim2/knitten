@@ -438,11 +438,17 @@ async function systemTerminologyFiles() {
 const BANNED_TERMS = [
   "etc.",
   "…", // …
+  "as we discussed",
   "consider ",
+  "last time",
+  "previously discussed",
+  "previously mentioned",
   "usually ",
   "typically ",
   "should probably",
   "might want ",
+  "what we talked",
+  "you know what",
 ];
 
 function maskCodeSpans(line) {
