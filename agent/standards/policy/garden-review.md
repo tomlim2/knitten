@@ -27,7 +27,7 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 
 ### 1. Layer integrity (`llm-first-policy.md` §"Layered enforcement")
 
-- [ ] Every `agent/rules/*.md` (except `index.md`) has `load:` frontmatter and is registered in `rules/index.md` under the correct section (auto vs triggered).
+- [ ] Every `agent/rules/*.md` (except `index.md`) has `load:` frontmatter and is registered in `rules/index.md` under the correct section (auto vs triggered) using a code-span row, not a Markdown link.
 - [ ] Every `agent/standards/**/*.md` (except `index.md`) has `status:` frontmatter and is registered in `standards/index.md`.
 - [ ] Every triggered rule's `trigger:` line is still accurate — sample 5 random triggered rules and verify the trigger condition still describes when the rule applies.
 - [ ] No artifact bypasses its layer: a skill does not encode a constraint that should be a rule; a rule does not encode reference material that should be a standard. Spot-check 5 recent files.

@@ -74,7 +74,7 @@ Structural rules:
    - Which index group: Core, Command Authoring, or Domain-specific
    - Which standard (if any) backs this rule
 4. Write the file from the template.
-5. Update `~/.claude/rules/index.md` — add a row to the chosen group.
+5. Update `~/.claude/rules/index.md` — add a code-span row to the chosen group. Do not use Markdown links in the rules index.
 6. If the rule has `load: auto`, add it to root `CLAUDE.md` imports and `agent/rules/index.md`.
 7. Print the new path.
 

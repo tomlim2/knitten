@@ -615,6 +615,34 @@ async function checkRulesFrontmatter() {
   return { name: "rules-frontmatter", violations };
 }
 
+async function checkRulesIndexNoLinks() {
+  const violations = [];
+  const f = path.join(AGENT_ROOT, "rules", "index.md");
+  let text;
+  try {
+    text = await readFile(f, "utf8");
+  } catch {
+    return {
+      name: "rules-index-no-links",
+      violations: [{ file: "agent/rules/index.md", line: 0, message: "rules index not found" }],
+    };
+  }
+
+  const linkRe = /\[[^\]]+\]\(([^)]+)\)/g;
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    if (linkRe.test(lines[i])) {
+      violations.push({
+        file: "agent/rules/index.md",
+        line: i + 1,
+        message: "rules index must use code spans, not Markdown links, to preserve triggered-rule lazy loading",
+      });
+    }
+    linkRe.lastIndex = 0;
+  }
+  return { name: "rules-index-no-links", violations };
+}
+
 async function checkImportTargets() {
   const violations = [];
   const files = [path.join(REPO_ROOT, "CLAUDE.md"), path.join(AGENT_ROOT, "CLAUDE.md")];
@@ -1980,6 +2008,7 @@ const CHECKS = [
   { name: "agent-hub", fn: checkAgentHubManifest },
   { name: "context-routing", fn: checkContextRouting },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
+  { name: "rules-index-no-links", fn: checkRulesIndexNoLinks },
   { name: "standards-status", fn: checkStandardsStatus },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
