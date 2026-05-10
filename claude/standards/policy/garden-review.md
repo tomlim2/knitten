@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 
 # Garden Review Checklist
@@ -82,9 +82,3 @@ For each failing checkbox:
 ## Last clean runs
 
 (Append `- YYYY-MM-DD` here when garden review finds nothing.)
-
----
-
-## Why this is `proposed`
-
-This standard codifies a procedure that has run exactly once (the v3.0 → v3.1 migration). A second pass is needed before promoting to `accepted`. Until then, treat the checklist as a starting frame, not a final spec.

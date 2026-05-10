@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 platforms: all
 portability: shared
 ---

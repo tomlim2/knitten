@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 domains: obsidian
 repo-keys: caol-ila
 languages: markdown

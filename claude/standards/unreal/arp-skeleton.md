@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 # Auto Rig Pro (ARP) Skeleton Reference
 

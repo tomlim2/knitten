@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 # Python GUI UX Review Checklist
 

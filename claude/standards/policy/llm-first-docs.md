@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 # LLM-First Document Standard
 
