@@ -1,5 +1,11 @@
 ---
 description: "Export and analyze UE material node graphs. Use when debugging or documenting Unreal Engine materials."
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 
 # ue-analyze-material

@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "metadataSyntax": {
+    "format": "frontmatter",
+    "listStyle": "comma-separated scalars",
+    "optionalAxes": "omit-when-absent"
+  },
+  "repoKeysSource": "claude/private/caol-config/repo-paths.json",
+  "routingBlock": {
+    "path": "AGENT-HUB.md",
+    "startMarker": "<!-- routing:start -->",
+    "endMarker": "<!-- routing:end -->"
+  },
+  "fixtures": {
+    "path": "tests/routing-fixtures.json"
+  },
+  "axes": {
+    "domains": [
+      "obsidian",
+      "rust",
+      "unreal",
+      "web"
+    ],
+    "languages": [
+      "cpp",
+      "css",
+      "javascript",
+      "python",
+      "rust",
+      "typescript"
+    ],
+    "frameworks": [
+      "astro",
+      "bevy",
+      "three",
+      "wgpu"
+    ],
+    "taskTypes": [
+      "authoring",
+      "git",
+      "implementation",
+      "research",
+      "review"
+    ]
+  },
+  "profiles": [
+    {
+      "id": "rust-bevy",
+      "domains": [
+        "rust"
+      ],
+      "repoKeys": [
+        "anju",
+        "shotloom",
+        "vrm2u-bevy"
+      ],
+      "languages": [
+        "rust"
+      ],
+      "frameworks": [
+        "bevy",
+        "wgpu"
+      ],
+      "taskTypes": [
+        "implementation"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "shotloom-review",
+      "domains": [
+        "rust"
+      ],
+      "repoKeys": [
+        "shotloom"
+      ],
+      "languages": [
+        "rust",
+        "typescript"
+      ],
+      "frameworks": [
+        "bevy",
+        "wgpu"
+      ],
+      "taskTypes": [
+        "review"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "unreal-engine",
+      "domains": [
+        "unreal"
+      ],
+      "repoKeys": [
+        "anju",
+        "mega-melange"
+      ],
+      "languages": [
+        "cpp",
+        "python"
+      ],
+      "taskTypes": [
+        "implementation",
+        "review"
+      ],
+      "maxBytes": 25000
+    }
+  ],
+  "pilotFiles": [
+    {
+      "path": "claude/skills/cci-codex-port-bevy/SKILL.md",
+      "profile": "rust-bevy",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/skills/dev-open-vrm-bevy/SKILL.md",
+      "profile": "rust-bevy",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/skills/shotloom-respond-pr/SKILL.md",
+      "profile": "shotloom-review",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/skills/shotloom-review-before-pr/SKILL.md",
+      "profile": "shotloom-review",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/skills/ue-analyze-material/SKILL.md",
+      "profile": "unreal-engine",
+      "contextCost": "medium"
+    },
+    {
+      "path": "claude/standards/unreal/unreal-engine-asset.md",
+      "profile": "unreal-engine",
+      "contextCost": "high"
+    },
+    {
+      "path": "claude/standards/unreal/unreal-engine-cpp.md",
+      "profile": "unreal-engine",
+      "contextCost": "medium"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ Shared JSON registries, service credentials, and public service configuration.
 | File | Purpose | Git status |
 |------|---------|------------|
 | `agent-hub.json` | Harness, shared layer, registry, generated document, runtime path, and validator manifest | committed |
+| `context-routing.json` | Task route axes, context profiles, pilot files, generated block markers, and fixture path | committed |
 | `doc-budgets.json` | Document length budgets consumed by `validate-llm-first.mjs` | committed |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata file list | committed |
 | `taxonomy.json` | Skill/command categories, standard groups, naming regexes | committed |
@@ -28,6 +29,7 @@ Shared JSON registries, service credentials, and public service configuration.
 ## Skills that read from here
 
 - `cci-*` Slack skills read `.env` + `slack.json` via helper (see [cci-slack standard](../standards/cinev/cci-slack.md)).
+- Route-domain skills and standards use `context-routing.json` through the validator and the `AGENT-HUB.md` routing block.
 
 ## Adding a new service
 

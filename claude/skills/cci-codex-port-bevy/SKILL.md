@@ -2,6 +2,13 @@
 description: Codex로 bevy-vrm 파일/모듈을 shotloom-retarget으로 이식 계획. 단계별 PR 분할 + contract surface 제안.
 argument-hint: "<bevy-vrm 파일 경로> | --crate <path> [--adr <path>]... [--phase <text>] [--out-of-scope <text>] [--constraints <text>]"
 allowed-tools: Bash(codex:*), Bash(bash:*), Read, Glob
+domains: rust
+repo-keys: shotloom,vrm2u-bevy
+languages: rust
+frameworks: bevy,wgpu
+task-types: implementation
+context-profile: rust-bevy
+exclude-when: unreal,obsidian
 ---
 
 # cci-codex-port-bevy

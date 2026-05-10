@@ -86,6 +86,12 @@ async function readJsonConfig(name) {
   return parsed;
 }
 
+async function readJsonRel(relativePath) {
+  const p = path.join(REPO_ROOT, relativePath);
+  const text = await readFile(p, "utf8");
+  return JSON.parse(text);
+}
+
 function hasDuplicates(values) {
   return new Set(values).size !== values.length;
 }
@@ -318,9 +324,57 @@ async function generateAgentHubInventory() {
   return sections.join("\n");
 }
 
+async function generateAgentHubRouting() {
+  const routing = await readJsonConfig("context-routing.json");
+  const fixtures = await readJsonRel(routing.fixtures.path);
+  const sections = [];
+  sections.push("## Task Routing");
+  sections.push("");
+  sections.push(
+    "Load route-domain bodies only after a profile matches. Keep discovery in this compact index."
+  );
+  sections.push("");
+  sections.push("| Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |");
+  sections.push("|---------|---------------|-----------|------------|------------|----------:|");
+  for (const profile of routing.profiles) {
+    sections.push(
+      `| \`${profile.id}\` | ${inlineCodeList(profile.domains)} | ${inlineCodeList(profile.repoKeys)} | ${inlineCodeList(profile.frameworks || []) || "-"} | ${inlineCodeList(profile.taskTypes)} | ${profile.maxBytes} |`
+    );
+  }
+  sections.push("");
+  sections.push("## Pilot Files");
+  sections.push("");
+  sections.push("| File | Profile | Cost |");
+  sections.push("|------|---------|------|");
+  for (const pilot of routing.pilotFiles) {
+    sections.push(`| \`${pilot.path}\` | \`${pilot.profile}\` | \`${pilot.contextCost}\` |`);
+  }
+  sections.push("");
+  sections.push("## Route Fixtures");
+  sections.push("");
+  sections.push("| Task | Must load | Must not load | Max bytes |");
+  sections.push("|------|-----------|---------------|----------:|");
+  for (const fixture of fixtures) {
+    const mustLoad = fixture.mustLoad.length ? inlineCodeList(fixture.mustLoad) : "-";
+    const mustNotLoad = fixture.mustNotLoad.length ? inlineCodeList(fixture.mustNotLoad) : "-";
+    sections.push(`| ${fixture.task} | ${mustLoad} | ${mustNotLoad} | ${fixture.maxBytes} |`);
+  }
+  return sections.join("\n");
+}
+
 function findGeneratedBlock(text, id) {
   const startMarker = `<!-- generated:${id} -->`;
   const endMarker = `<!-- /generated:${id} -->`;
+  const start = text.indexOf(startMarker);
+  const end = text.indexOf(endMarker);
+  if (start === -1 || end === -1 || end < start) return null;
+  const bodyStart = start + startMarker.length;
+  const body = text.slice(bodyStart, end);
+  const line = text.slice(0, start).split("\n").length;
+  return { body, line };
+}
+
+function findMarkedBlock(text, startMarker, endMarker) {
   const start = text.indexOf(startMarker);
   const end = text.indexOf(endMarker);
   if (start === -1 || end === -1 || end < start) return null;
@@ -1162,7 +1216,13 @@ async function checkAgentHubManifest() {
       const generatedPath = path.join(REPO_ROOT, generated.path);
       if (existsSync(generatedPath)) {
         const text = await readFile(generatedPath, "utf8");
-        if (!text.includes(`generated:${generated.marker}`)) {
+        if (generated.startMarker || generated.endMarker) {
+          if (!generated.startMarker || !generated.endMarker) {
+            violations.push({ file, line: 1, message: `generatedDocuments ${generated.id} custom markers must be paired` });
+          } else if (!text.includes(generated.startMarker) || !text.includes(generated.endMarker)) {
+            violations.push({ file, line: 1, message: `generatedDocuments ${generated.id} custom marker missing` });
+          }
+        } else if (!text.includes(`generated:${generated.marker}`)) {
           violations.push({ file, line: 1, message: `generatedDocuments ${generated.id} marker missing` });
         }
       }
@@ -1216,6 +1276,317 @@ async function checkAgentHubManifest() {
   }
 
   return { name: "agent-hub", violations };
+}
+
+const ROUTING_METADATA_FIELDS = [
+  { field: "domains", axis: "domains", profileKey: "domains" },
+  { field: "repo-keys", axis: "repoKeys", profileKey: "repoKeys" },
+  { field: "languages", axis: "languages", profileKey: "languages" },
+  { field: "frameworks", axis: "frameworks", profileKey: "frameworks" },
+  { field: "task-types", axis: "taskTypes", profileKey: "taskTypes" },
+];
+
+const TASK_TYPE_EVIDENCE = {
+  authoring: ["author", "make command", "make rule", "make skill", "write skill"],
+  git: ["branch", "commit", "merge", "pull", "push", "rebase"],
+  implementation: ["build", "code", "ecs", "fix", "implement", "material"],
+  research: ["find", "lookup", "research", "search"],
+  review: ["audit", "pr", "review"],
+};
+
+const ROUTE_VALUE_EVIDENCE = {
+  anju: ["anju"],
+  astro: ["astro"],
+  bevy: ["bevy", "ecs"],
+  cpp: ["c++", "cpp"],
+  css: ["css"],
+  javascript: ["javascript", "js"],
+  "mega-melange": ["mega melange", "mega-melange"],
+  obsidian: ["note", "obsidian", "vault"],
+  python: ["python", "py"],
+  rust: ["cargo", "rust"],
+  shotloom: ["shotloom"],
+  three: ["three", "three.js"],
+  typescript: ["ts", "typescript"],
+  unreal: ["ue", "unreal"],
+  "vrm2u-bevy": ["bevy-vrm", "vrm2u"],
+  web: ["frontend", "web"],
+  wgpu: ["webgpu", "wgpu"],
+};
+
+function pushStringArrayViolations(violations, file, key, value, options = {}) {
+  pushArrayViolations(violations, file, key, value, options);
+  if (!Array.isArray(value)) return;
+  for (const item of value) {
+    if (!item || typeof item !== "string") {
+      violations.push({ file, line: 1, message: `${key} entries must be non-empty strings` });
+    }
+  }
+}
+
+function routeValuesFromFrontmatter(fm, field) {
+  if (!fm || !Object.prototype.hasOwnProperty.call(fm, field)) return null;
+  return parsePlatformList(fm[field]);
+}
+
+function hasTextEvidence(text, value) {
+  const terms = ROUTE_VALUE_EVIDENCE[value] || [String(value).replaceAll("-", " ")];
+  return terms.some((term) => text.includes(term));
+}
+
+function taskTypeEvidence(text) {
+  const out = new Set();
+  for (const [taskType, terms] of Object.entries(TASK_TYPE_EVIDENCE)) {
+    if (terms.some((term) => text.includes(term))) out.add(taskType);
+  }
+  return out;
+}
+
+function selectProfilesForTask(task, profiles) {
+  const text = task.toLowerCase();
+  const taskTypes = taskTypeEvidence(text);
+  const selected = [];
+  for (const profile of profiles) {
+    if (taskTypes.size > 0 && !profile.taskTypes.some((value) => taskTypes.has(value))) {
+      continue;
+    }
+    if (profile.taskTypes.length === 1 && profile.taskTypes[0] === "review" && !taskTypes.has("review")) {
+      continue;
+    }
+    let score = 0;
+    let routeScore = 0;
+    for (const key of ["domains", "languages", "frameworks"]) {
+      for (const value of profile[key] || []) {
+        if (hasTextEvidence(text, value)) {
+          score++;
+          routeScore++;
+        }
+      }
+    }
+    for (const value of profile.repoKeys || []) {
+      if (hasTextEvidence(text, value)) {
+        score++;
+      }
+    }
+    for (const value of profile.taskTypes || []) {
+      if (taskTypes.has(value)) score++;
+    }
+    if (routeScore === 0) continue;
+    if (score > 0) selected.push(profile);
+  }
+  return selected;
+}
+
+async function checkContextRouting() {
+  const violations = [];
+  const file = "claude/config/context-routing.json";
+  let routing;
+  try {
+    routing = await readJsonConfig("context-routing.json");
+  } catch (err) {
+    return {
+      name: "context-routing",
+      violations: [{ file, line: 1, message: `cannot read context routing registry: ${err.message}` }],
+    };
+  }
+
+  if (routing.version !== 1) {
+    violations.push({ file, line: 1, message: "version must be 1" });
+  }
+  if (routing.metadataSyntax?.listStyle !== "comma-separated scalars") {
+    violations.push({ file, line: 1, message: "metadataSyntax.listStyle must be comma-separated scalars" });
+  }
+
+  let repoPaths = {};
+  try {
+    repoPaths = await readJsonRel(routing.repoKeysSource);
+  } catch (err) {
+    violations.push({ file, line: 1, message: `cannot read repoKeysSource: ${err.message}` });
+  }
+  const repoKeys = new Set(Object.keys(repoPaths));
+
+  for (const axis of ["domains", "languages", "frameworks", "taskTypes"]) {
+    pushStringArrayViolations(violations, file, `axes.${axis}`, routing.axes?.[axis], { sorted: true });
+  }
+  const allowed = {
+    domains: new Set(routing.axes?.domains || []),
+    repoKeys,
+    languages: new Set(routing.axes?.languages || []),
+    frameworks: new Set(routing.axes?.frameworks || []),
+    taskTypes: new Set(routing.axes?.taskTypes || []),
+  };
+
+  pushUniqueIdViolations(violations, file, "profiles", routing.profiles);
+  const profiles = Array.isArray(routing.profiles) ? routing.profiles : [];
+  const profileIds = new Set(profiles.map((profile) => profile.id).filter(Boolean));
+  for (const profile of profiles) {
+    for (const entry of ROUTING_METADATA_FIELDS) {
+      const values = profile[entry.profileKey] || [];
+      if (entry.field !== "frameworks") {
+        pushStringArrayViolations(violations, file, `profiles.${profile.id}.${entry.profileKey}`, values);
+      }
+      if (entry.field === "frameworks" && values.length > 0) {
+        pushStringArrayViolations(violations, file, `profiles.${profile.id}.${entry.profileKey}`, values);
+      }
+      for (const value of values) {
+        if (!allowed[entry.axis].has(value)) {
+          violations.push({
+            file,
+            line: 1,
+            message: `profiles.${profile.id}.${entry.profileKey} has unknown value ${JSON.stringify(value)}`,
+          });
+        }
+      }
+    }
+    if (!Number.isInteger(profile.maxBytes) || profile.maxBytes <= 0) {
+      violations.push({ file, line: 1, message: `profiles.${profile.id}.maxBytes must be a positive integer` });
+    }
+  }
+
+  const pilotFiles = Array.isArray(routing.pilotFiles) ? routing.pilotFiles : [];
+  if (pilotFiles.length === 0) {
+    violations.push({ file, line: 1, message: "pilotFiles must be a non-empty array" });
+  }
+  for (const pilot of pilotFiles) {
+    if (!pilot.path || typeof pilot.path !== "string") {
+      violations.push({ file, line: 1, message: "pilotFiles entry missing path" });
+      continue;
+    }
+    const pilotPath = path.join(REPO_ROOT, pilot.path);
+    if (!existsSync(pilotPath)) {
+      violations.push({ file, line: 1, message: `pilot file does not exist: ${pilot.path}` });
+      continue;
+    }
+    if (!profileIds.has(pilot.profile)) {
+      violations.push({ file, line: 1, message: `pilot ${pilot.path} has unknown profile ${pilot.profile}` });
+    }
+    if (!["low", "medium", "high"].includes(pilot.contextCost)) {
+      violations.push({ file, line: 1, message: `pilot ${pilot.path} has invalid contextCost` });
+    }
+    const text = await readFile(pilotPath, "utf8");
+    const fm = parseFrontmatter(text);
+    if (!fm) {
+      violations.push({ file: pilot.path, line: 1, message: "pilot file missing YAML frontmatter" });
+      continue;
+    }
+    if (fm["context-profile"] !== pilot.profile) {
+      violations.push({
+        file: pilot.path,
+        line: 1,
+        message: `context-profile must match pilot profile ${pilot.profile}`,
+      });
+    }
+    for (const entry of ROUTING_METADATA_FIELDS) {
+      const values = routeValuesFromFrontmatter(fm, entry.field);
+      if (values === null && entry.field !== "frameworks") {
+        violations.push({ file: pilot.path, line: 1, message: `pilot file missing '${entry.field}' field` });
+        continue;
+      }
+      if (values === null) continue;
+      if (values.length === 0) {
+        violations.push({ file: pilot.path, line: 1, message: `frontmatter '${entry.field}' is empty` });
+      }
+      for (const value of values) {
+        if (!allowed[entry.axis].has(value)) {
+          violations.push({
+            file: pilot.path,
+            line: 1,
+            message: `frontmatter '${entry.field}' has unknown value ${JSON.stringify(value)}`,
+          });
+        }
+      }
+      const profile = profiles.find((candidate) => candidate.id === pilot.profile);
+      if (profile && values.some((value) => !(profile[entry.profileKey] || []).includes(value))) {
+        violations.push({
+          file: pilot.path,
+          line: 1,
+          message: `frontmatter '${entry.field}' must be covered by profile ${pilot.profile}`,
+        });
+      }
+    }
+    const domains = routeValuesFromFrontmatter(fm, "domains") || [];
+    const excluded = routeValuesFromFrontmatter(fm, "exclude-when") || [];
+    for (const value of excluded) {
+      if (!allowed.domains.has(value)) {
+        violations.push({
+          file: pilot.path,
+          line: 1,
+          message: `frontmatter 'exclude-when' has unknown route domain ${JSON.stringify(value)}`,
+        });
+      }
+      if (domains.includes(value)) {
+        violations.push({
+          file: pilot.path,
+          line: 1,
+          message: `frontmatter 'exclude-when' repeats active domain ${JSON.stringify(value)}`,
+        });
+      }
+    }
+  }
+
+  const routingBlockPath = routing.routingBlock?.path;
+  if (!routingBlockPath || !existsSync(path.join(REPO_ROOT, routingBlockPath))) {
+    violations.push({ file, line: 1, message: "routingBlock.path must point to an existing file" });
+  }
+  if (!routing.routingBlock?.startMarker || !routing.routingBlock?.endMarker) {
+    violations.push({ file, line: 1, message: "routingBlock requires startMarker and endMarker" });
+  }
+
+  let fixtures = [];
+  try {
+    fixtures = await readJsonRel(routing.fixtures.path);
+  } catch (err) {
+    violations.push({ file, line: 1, message: `cannot read routing fixtures: ${err.message}` });
+  }
+  if (!Array.isArray(fixtures) || fixtures.length === 0) {
+    violations.push({ file: routing.fixtures?.path || file, line: 1, message: "fixtures must be a non-empty array" });
+  }
+  for (const fixture of Array.isArray(fixtures) ? fixtures : []) {
+    if (!fixture.task || typeof fixture.task !== "string") {
+      violations.push({ file: routing.fixtures.path, line: 1, message: "fixture missing task" });
+      continue;
+    }
+    for (const key of ["mustLoad", "mustNotLoad"]) {
+      if (!Array.isArray(fixture[key])) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} ${key} must be an array` });
+        continue;
+      }
+      for (const profileId of fixture[key]) {
+        if (!profileIds.has(profileId)) {
+          violations.push({
+            file: routing.fixtures.path,
+            line: 1,
+            message: `fixture ${fixture.task} references unknown profile ${profileId}`,
+          });
+        }
+      }
+    }
+    if (!Number.isInteger(fixture.maxBytes) || fixture.maxBytes <= 0) {
+      violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} maxBytes must be positive` });
+    }
+    const selected = selectProfilesForTask(fixture.task, profiles);
+    const selectedIds = new Set(selected.map((profile) => profile.id));
+    for (const profileId of fixture.mustLoad || []) {
+      if (!selectedIds.has(profileId)) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} did not load ${profileId}` });
+      }
+    }
+    for (const profileId of fixture.mustNotLoad || []) {
+      if (selectedIds.has(profileId)) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} loaded forbidden ${profileId}` });
+      }
+    }
+    const totalBytes = selected.reduce((sum, profile) => sum + profile.maxBytes, 0);
+    if (Number.isInteger(fixture.maxBytes) && totalBytes > fixture.maxBytes) {
+      violations.push({
+        file: routing.fixtures.path,
+        line: 1,
+        message: `fixture ${fixture.task} budget ${totalBytes} exceeds maxBytes ${fixture.maxBytes}`,
+      });
+    }
+  }
+
+  return { name: "context-routing", violations };
 }
 
 async function checkTaxonomy() {
@@ -1390,6 +1761,12 @@ async function checkGeneratedBlocks() {
       id: "agent-hub-inventory",
       expected: await generateAgentHubInventory(),
     },
+    {
+      file: "AGENT-HUB.md",
+      startMarker: "<!-- routing:start -->",
+      endMarker: "<!-- routing:end -->",
+      expected: await generateAgentHubRouting(),
+    },
   ];
   for (const block of blocks) {
     const f = path.join(REPO_ROOT, block.file);
@@ -1400,12 +1777,16 @@ async function checkGeneratedBlocks() {
       violations.push({ file: block.file, line: 0, message: "generated block file not found" });
       continue;
     }
-    const found = findGeneratedBlock(text, block.id);
+    const found = block.id
+      ? findGeneratedBlock(text, block.id)
+      : findMarkedBlock(text, block.startMarker, block.endMarker);
     if (!found) {
       violations.push({
         file: block.file,
         line: 0,
-        message: `missing generated block generated:${block.id}`,
+        message: block.id
+          ? `missing generated block generated:${block.id}`
+          : `missing generated block ${block.startMarker}`,
       });
       continue;
     }
@@ -1413,7 +1794,7 @@ async function checkGeneratedBlocks() {
       violations.push({
         file: block.file,
         line: found.line,
-        message: `generated:${block.id} is stale`,
+        message: block.id ? `generated:${block.id} is stale` : `${block.startMarker} block is stale`,
       });
     }
   }
@@ -1426,6 +1807,7 @@ const CHECKS = [
   { name: "banned-terms", fn: checkBannedTerms },
   { name: "registry-integrity", fn: checkRegistryIntegrity },
   { name: "agent-hub", fn: checkAgentHubManifest },
+  { name: "context-routing", fn: checkContextRouting },
   { name: "rules-frontmatter", fn: checkRulesFrontmatter },
   { name: "standards-status", fn: checkStandardsStatus },
   { name: "platform-metadata", fn: checkPlatformMetadata },

@@ -78,6 +78,14 @@
       "secretPolicy": "no-secrets"
     },
     {
+      "id": "context-routing",
+      "path": "claude/config/context-routing.json",
+      "domain": "task route axes, context profiles, pilot files, and routing fixtures",
+      "format": "json",
+      "deployTarget": "~/.claude/config/context-routing.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
       "id": "doc-budgets",
       "path": "claude/config/doc-budgets.json",
       "domain": "document length budgets",
@@ -166,6 +174,16 @@
       "source": "claude/config/agent-hub.json",
       "mode": "generated-block",
       "validator": "generated-blocks"
+    },
+    {
+      "id": "agent-hub-routing",
+      "path": "AGENT-HUB.md",
+      "marker": "routing",
+      "startMarker": "<!-- routing:start -->",
+      "endMarker": "<!-- routing:end -->",
+      "source": "claude/config/context-routing.json",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
     }
   ],
   "runtimePathPolicies": [
@@ -249,6 +267,14 @@
       "listedCheck": "agent-hub",
       "covers": [
         "agent hub manifest schema"
+      ]
+    },
+    {
+      "id": "context-routing",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "context-routing",
+      "covers": [
+        "task route registry, pilot metadata, and route fixtures"
       ]
     },
     {

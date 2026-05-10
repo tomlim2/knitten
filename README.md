@@ -124,14 +124,14 @@ Reference docs in `claude/standards/`. Loaded on-demand, never auto.
 
 ---
 
-## Rules (25)
+## Rules (26)
 
 Rules in `claude/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
 | Load | Count | Files |
 |------|------:|-------|
 | `auto` | 8 | `ambiguity-scoring.md`, `behavior.md`, `canonical-first.md`, `external-recommendation-cross-check.md`, `git-defaults.md`, `security.md`, `session-start.md`, `verify-before-report.md` |
-| `triggered` | 16 | `author-frontmatter.md`, `author-naming.md`, `author-permissions.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom.md`, `slack.md`, `test-write.md`, `writing-external.md` |
+| `triggered` | 17 | `author-frontmatter.md`, `author-naming.md`, `author-permissions.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
 | `index` | 1 | `index.md` |
 <!-- /generated:readme-inventory -->
 
@@ -154,6 +154,8 @@ Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remo
 
 | File | Content |
 |------|---------|
+| `agent-hub.json` | Harness, shared layer, registry, generated document, runtime path, and validator manifest |
+| `context-routing.json` | Task route axes, context profiles, pilot files, and routing fixtures |
 | `doc-budgets.json` | Document length budgets used by validator checks |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata files |
 | `taxonomy.json` | Skill/command categories, standard groups, naming patterns |

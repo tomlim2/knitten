@@ -28,3 +28,10 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 | runtime path policy | Rule for classifying a runtime path's ownership and git policy | Durable, private, cache, session, or generated runtime paths | The path contents themselves |
 | canonical owner | File or registry that owns the editable value | Where an agent must edit first | Mirrors, shims, or generated views |
 | managed artifact | File, folder, registry, generated document, or runtime path governed by the hub | Inventory and drift checks | Arbitrary repo content |
+| task route | Metadata-backed decision that a task belongs to one or more route domains | Selecting task-specific context | Loading broad catalogs before classification |
+| route domain | Technical or knowledge area used for context routing | `unreal`, `rust`, `web`, or `obsidian` routing | Registry `domain` prose in `agent-hub.json` |
+| repo key | Repository identifier from `repo-paths.json` | Routing and machine-local path lookup | Human project names outside the registry |
+| task type | Work mode such as `implementation`, `review`, `git`, `authoring`, or `research` | Separating user intent from route domain | Technology or repository identity |
+| context profile | Named route bundle with domains, repo keys, task types, languages, frameworks, and max bytes | Loading the smallest matching task context | Canonical policy |
+| route evidence | User words, repo path, file extension, named skill, command, or frontmatter that supports a task route | Routing before reading high-cost bodies | Guessing without checking compact indexes |
+| exclusion | Route domain that must stay unloaded unless explicitly requested | Preventing sibling-domain context from loading | Security denial or permission policy |

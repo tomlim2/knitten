@@ -1,6 +1,13 @@
 ---
 description: Pre-PR self-review for Shotloom Rust — walks review-rust.md against the diff, reports defects. Does NOT create a PR.
 allowed-tools: Read, Bash(git:*), Bash(rg:*), Bash(cargo:*), Bash(node:*), Bash(gh:*), Bash(jq:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-before-pr

@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: in-progress
 load: triggered
 trigger: reducing unnecessary context for routed tasks
 created: 2026-05-10
@@ -9,7 +9,7 @@ depends_on: docs/plans/agent-hub.md
 
 # Task Context Routing Plan
 
-**status:** not implemented. This plan defines how `caol-ila` should load only task-relevant rules, skills, standards, commands, and references after cold start.
+**status:** partially implemented. P0 through P2.5 are implemented for the high-cost pilot set. P3 and P4 remain open.
 
 Primary risk: metadata alone does not reduce context. A routing execution contract must define who classifies the task, which metadata syntax is valid, which axes are separate, and how fallback works.
 
@@ -77,6 +77,18 @@ Routing is justified only when the avoided route-domain context is larger than t
 | Skills | loaded by harness/task match, but no repo-owned routing metadata |
 | Agent hub | `claude/config/agent-hub.json` inventories layers and validators |
 | Taxonomy | category prefixes exist, but prefixes are not enough for domain routing |
+
+## P0 Inventory
+
+| Artifact | Current load path | Likely route | Context cost | False-positive risk | Metadata needed |
+|----------|-------------------|--------------|--------------|---------------------|-----------------|
+| `claude/standards/unreal/unreal-engine-asset.md` | on-demand standard | `domains: unreal`, `repo-keys: anju,mega-melange`, `languages: cpp,python`, `task-types: implementation,review` | high | Rust or web work loads UE asset policy due generic asset wording | `domains`, `repo-keys`, `languages`, `task-types`, `context-profile`, `exclude-when` |
+| `claude/standards/unreal/unreal-engine-cpp.md` | on-demand standard | `domains: unreal`, `repo-keys: anju,mega-melange`, `languages: cpp`, `task-types: implementation,review` | medium | Rust C++ review or generic code review loads UE-only rules | `domains`, `repo-keys`, `languages`, `task-types`, `context-profile`, `exclude-when` |
+| `claude/skills/ue-analyze-material/SKILL.md` | triggered skill | `domains: unreal`, `repo-keys: anju,mega-melange`, `languages: python`, `task-types: implementation` | medium | Material or graph tasks outside UE load editor remote-exec steps | `domains`, `repo-keys`, `languages`, `task-types`, `context-profile`, `exclude-when` |
+| `claude/skills/cci-codex-port-bevy/SKILL.md` | triggered skill | `domains: rust`, `repo-keys: shotloom,vrm2u-bevy`, `languages: rust`, `frameworks: bevy,wgpu`, `task-types: implementation` | medium | General Codex planning loads Bevy migration prompt | `domains`, `repo-keys`, `languages`, `frameworks`, `task-types`, `context-profile`, `exclude-when` |
+| `claude/skills/dev-open-vrm-bevy/SKILL.md` | triggered skill | `domains: rust`, `repo-keys: anju,vrm2u-bevy`, `languages: rust`, `frameworks: bevy,wgpu`, `task-types: implementation` | medium | Unreal VRM or generic app-open tasks load Bevy run steps | `domains`, `repo-keys`, `languages`, `frameworks`, `task-types`, `context-profile`, `exclude-when` |
+| `claude/skills/shotloom-review-before-pr/SKILL.md` | triggered skill | `domains: rust`, `repo-keys: shotloom`, `languages: rust,typescript`, `frameworks: bevy,wgpu`, `task-types: review` | high | Generic review work loads Shotloom-only review workflow | `domains`, `repo-keys`, `languages`, `frameworks`, `task-types`, `context-profile`, `exclude-when` |
+| `claude/skills/shotloom-respond-pr/SKILL.md` | triggered skill | `domains: rust`, `repo-keys: shotloom`, `languages: rust,typescript`, `frameworks: bevy,wgpu`, `task-types: review` | high | Non-Shotloom PR work loads Shotloom gh workflow and comments cache flow | `domains`, `repo-keys`, `languages`, `frameworks`, `task-types`, `context-profile`, `exclude-when` |
 
 ## Non-Goals
 
@@ -158,13 +170,13 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 
 | Tier | Status | Work | Acceptance |
 |------|--------|------|------------|
-| P0 | pending | Inventory high-cost route-domain artifacts | Table lists route domains, repo keys, task types, and high-cost artifacts |
-| P0.25 | pending | Define routing execution contract | Contract names who routes, routing markers, metadata syntax, axes, fallback, and measurable pass/fail |
-| P0.5 | pending | Define `context-routing.json` schema | Schema names axes, profiles, evidence, pilot files, fixtures, budgets, and exemptions |
-| P1 | pending | Add routing registry and validator skeleton | Registry parses; values are unique; profiles reference known axis values |
-| P1.5 | pending | Add pilot metadata to high-cost route domains | Unreal and Rust pilot artifacts have `domains` metadata |
-| P2 | pending | Validate metadata on pilot files | Missing or unknown axis values fail validation |
-| P2.5 | pending | Add generated routing inventory | `AGENT-HUB.md` routing block shows profiles and pilot coverage from registry |
+| P0 | done | Inventory high-cost route-domain artifacts | Table lists route domains, repo keys, task types, and high-cost artifacts |
+| P0.25 | done | Define routing execution contract | `claude/rules/task-context-routing.md` names who routes, routing markers, metadata syntax, axes, fallback, and measurable pass/fail |
+| P0.5 | done | Define `context-routing.json` schema | `claude/config/context-routing.json` names axes, profiles, evidence, pilot files, fixtures, budgets, and exemptions |
+| P1 | done | Add routing registry and validator skeleton | Registry parses; values are unique; profiles reference known axis values |
+| P1.5 | done | Add pilot metadata to high-cost route domains | Unreal, Rust/Bevy, and Shotloom review pilot artifacts have routing metadata |
+| P2 | done | Validate metadata on pilot files | Missing or unknown axis values fail validation |
+| P2.5 | done | Add generated routing inventory | `AGENT-HUB.md` routing block shows profiles and pilot coverage from registry |
 | P3 | pending | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
 | P4 | pending | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
 

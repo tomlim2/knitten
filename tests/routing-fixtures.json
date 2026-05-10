@@ -1,0 +1,44 @@
+[
+  {
+    "task": "Implement Rust Bevy ECS in shotloom",
+    "mustLoad": [
+      "rust-bevy"
+    ],
+    "mustNotLoad": [
+      "shotloom-review",
+      "unreal-engine"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Review Shotloom Rust PR before opening",
+    "mustLoad": [
+      "shotloom-review"
+    ],
+    "mustNotLoad": [
+      "unreal-engine"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Unreal material graph in anju",
+    "mustLoad": [
+      "unreal-engine"
+    ],
+    "mustNotLoad": [
+      "rust-bevy",
+      "shotloom-review"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Obsidian note cleanup",
+    "mustLoad": [],
+    "mustNotLoad": [
+      "rust-bevy",
+      "shotloom-review",
+      "unreal-engine"
+    ],
+    "maxBytes": 5000
+  }
+]

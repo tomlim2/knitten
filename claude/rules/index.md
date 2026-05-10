@@ -25,6 +25,7 @@ Each rule declares `load:` in its frontmatter. **Auto** = always in cold-start c
 | [`obsidian.md`](obsidian.md) | triggered | working in the Obsidian vault |
 | [`cinev-git.md`](cinev-git.md) | triggered | git op in a CINEV repo |
 | [`shotloom.md`](shotloom.md) | triggered | working in the shotloom repo |
+| [`task-context-routing.md`](task-context-routing.md) | triggered | selecting task-specific context or loading route-domain artifacts |
 | [`slack.md`](slack.md) | triggered | sending any Slack message |
 | [`writing-external.md`](writing-external.md) | triggered | writing external-facing prose |
 | [`doc-write.md`](doc-write.md) | triggered | writing any doc to vault, staging, private/, ops/ |

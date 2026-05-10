@@ -16,7 +16,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Explain why platform-neutral entry documents use canonical policy | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
 | Design caol-ila as an agent hub | [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md) |
 | Inspect current agent hub manifest | [`AGENT-HUB.md`](AGENT-HUB.md) → [`claude/config/agent-hub.json`](claude/config/agent-hub.json) |
-| Route context for domain-specific tasks | [`docs/plans/task-context-routing.md`](docs/plans/task-context-routing.md) |
+| Route context for domain-specific tasks | [`claude/rules/task-context-routing.md`](claude/rules/task-context-routing.md) → [`AGENT-HUB.md`](AGENT-HUB.md) → [`claude/config/context-routing.json`](claude/config/context-routing.json) |
 | Run a structural / garden review | [`claude/standards/policy/garden-review.md`](claude/standards/policy/garden-review.md) |
 | Recall why a principle exists | [`claude/standards/policy/principles.md`](claude/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`claude/standards/policy/naming.md`](claude/standards/policy/naming.md) |
@@ -64,6 +64,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 - All rules: [`claude/rules/index.md`](claude/rules/index.md)
 - System glossary: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md)
 - Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md)
+- Task context routing rule: [`claude/rules/task-context-routing.md`](claude/rules/task-context-routing.md)
 - Task context routing plan: [`docs/plans/task-context-routing.md`](docs/plans/task-context-routing.md)
 - Completed LLM-first migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
 - Agent hub plan: [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md)

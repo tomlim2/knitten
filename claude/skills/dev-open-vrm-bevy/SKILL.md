@@ -2,6 +2,13 @@
 description: Open a Rust+Bevy VRM viewer project. Use when running Bevy VRM apps.
 argument-hint: "[project_path]"
 allowed-tools: Bash(cargo:*), Bash(cp:*), Bash(ls:*), Read
+domains: rust
+repo-keys: anju,vrm2u-bevy
+languages: rust
+frameworks: bevy,wgpu
+task-types: implementation
+context-profile: rust-bevy
+exclude-when: unreal,obsidian
 ---
 
 # dev-open-vrm-bevy

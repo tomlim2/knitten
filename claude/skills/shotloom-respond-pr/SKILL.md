@@ -2,6 +2,13 @@
 description: Read Shotloom PR review comments, fix issues, commit, and post inline replies
 argument-hint: "<pr-number>"
 allowed-tools: Read, Edit, Write, Glob, Grep, Agent, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-respond-pr

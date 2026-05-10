@@ -13,10 +13,10 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 |------|------:|-----------------|
 | Harnesses | 2 | `claude/config/agent-hub.json` `harnesses` |
 | Shared layers | 6 | `claude/config/agent-hub.json` `sharedLayers` |
-| Registries | 8 | `claude/config/agent-hub.json` `registries` |
-| Generated documents | 4 | `claude/config/agent-hub.json` `generatedDocuments` |
+| Registries | 9 | `claude/config/agent-hub.json` `registries` |
+| Generated documents | 5 | `claude/config/agent-hub.json` `generatedDocuments` |
 | Runtime path policies | 7 | `claude/config/agent-hub.json` `runtimePathPolicies` |
-| Validators | 14 | `claude/config/agent-hub.json` `validators` |
+| Validators | 15 | `claude/config/agent-hub.json` `validators` |
 
 ## Harnesses
 
@@ -41,6 +41,7 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | ID | Path | Domain |
 |----|------|--------|
 | `agent-hub` | `claude/config/agent-hub.json` | agent hub routing and validation metadata |
+| `context-routing` | `claude/config/context-routing.json` | task route axes, context profiles, pilot files, and routing fixtures |
 | `doc-budgets` | `claude/config/doc-budgets.json` | document length budgets |
 | `frontmatter-schema` | `claude/config/frontmatter-schema.json` | frontmatter enums and platform metadata pilot files |
 | `taxonomy` | `claude/config/taxonomy.json` | categories, standard groups, and naming patterns |
@@ -49,3 +50,36 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | `slack` | `claude/config/slack.json` | non-secret Slack channel IDs and message templates |
 | `doc-paths` | `claude/private/caol-config/doc-paths.json` | shared document routing |
 <!-- /generated:agent-hub-inventory -->
+
+<!-- routing:start -->
+## Task Routing
+
+Load route-domain bodies only after a profile matches. Keep discovery in this compact index.
+
+| Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |
+|---------|---------------|-----------|------------|------------|----------:|
+| `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
+| `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
+| `unreal-engine` | `unreal` | `anju`, `mega-melange` | - | `implementation`, `review` | 25000 |
+
+## Pilot Files
+
+| File | Profile | Cost |
+|------|---------|------|
+| `claude/skills/cci-codex-port-bevy/SKILL.md` | `rust-bevy` | `medium` |
+| `claude/skills/dev-open-vrm-bevy/SKILL.md` | `rust-bevy` | `medium` |
+| `claude/skills/shotloom-respond-pr/SKILL.md` | `shotloom-review` | `high` |
+| `claude/skills/shotloom-review-before-pr/SKILL.md` | `shotloom-review` | `high` |
+| `claude/skills/ue-analyze-material/SKILL.md` | `unreal-engine` | `medium` |
+| `claude/standards/unreal/unreal-engine-asset.md` | `unreal-engine` | `high` |
+| `claude/standards/unreal/unreal-engine-cpp.md` | `unreal-engine` | `medium` |
+
+## Route Fixtures
+
+| Task | Must load | Must not load | Max bytes |
+|------|-----------|---------------|----------:|
+| Implement Rust Bevy ECS in shotloom | `rust-bevy` | `shotloom-review`, `unreal-engine` | 25000 |
+| Review Shotloom Rust PR before opening | `shotloom-review` | `unreal-engine` | 25000 |
+| Unreal material graph in anju | `unreal-engine` | `rust-bevy`, `shotloom-review` | 25000 |
+| Obsidian note cleanup | - | `rust-bevy`, `shotloom-review`, `unreal-engine` | 5000 |
+<!-- routing:end -->
