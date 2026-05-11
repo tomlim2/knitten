@@ -143,6 +143,27 @@ Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical a
 
 Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC ↔ primitive cross-check verdict for every AC that cited a primitive (codified ✓ / wrong-shape ✗ with proposed split)**. **Stop. Do NOT edit yet — wait for user confirmation.**
 
+### Step 6.5: Draft per-ticket plan doc (mandatory once user confirms)
+
+Once the user confirms the Step 6 briefing, **write a durable plan doc to the shotloom vault `plans/` folder before any code edit**. The plan freezes intent at start-time so the work can be cross-checked by other tools (Gemini, Codex, sub-agent reviewers, human re-readers) without re-deriving it from the diff.
+
+**Location** — `<vault>/projects/shotloom/plans/<slug>.md`. Resolve via `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh devlog shotloom` and substitute the trailing `days/` with `plans/`. `<slug>` is the branch body (no STL-NN, no folder repetition, no `plan-` prefix) — e.g. branch `chore/ci-add-containerfile-smoke` → file `ci-add-containerfile-smoke.md`.
+
+**Shape** — frontmatter (`type/topic`, `project/shotloom`, `area/<A>`, `date`, `source`), then:
+
+| Section | Content |
+|---------|---------|
+| Intent | One paragraph: what the work changes, why, what stays unchanged. |
+| Decisions (locked) | Numbered list. Each entry: decision · rationale · rejected alternatives. The locked design choices from the Step 6 briefing land here. |
+| Acceptance | Verbatim from Linear (or derived if Linear had none) as `- [ ]` checklist. |
+| File map | Each file the work expects to touch, with a one-line note on the change kind (add / modify / move / delete). |
+| Verification | How to confirm acceptance — manual repro, gate commands, CI signal, follow-up issues. |
+| Open questions | Anything still ambiguous after briefing — flagged for early checkpoint, not silent guessing. |
+
+**Commit** — vault diff is obsidian-only (auto-commit per `~/.claude/rules/obsidian.md`). Commit + push from `caol-ila` immediately so the plan is durable across machines and reachable from sub-agent reviewers.
+
+**Do not** restate the Linear description verbatim — the plan is *your interpretation* of the work. Future-you / other agents read the plan to spot where your interpretation diverged from the diff, not to re-read Linear.
+
 ### Step 7: Mandatory post-write self-review (before any PR)
 
 **HARD RULE — auto-trigger on push.** The instant `git push` completes, **immediately invoke `/shotloom-review-before-pr` in the same turn**, without asking the user first.
