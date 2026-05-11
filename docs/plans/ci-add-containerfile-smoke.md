@@ -20,8 +20,8 @@ What stays the same: prod build pipeline (`build-web-image.yml`), tag-driven rel
 ## Decisions (locked)
 
 1. **Separate workflow `containerfile-smoke.yml`, not a step in `code.yml`.** Rationale: docker daemon / buildctl dependency in `code.yml` would affect every Rust/TS PR even when nothing in `apps/editor/Containerfile` changed. Path filter (`paths: ['apps/editor/Containerfile', 'apps/editor/nginx.conf', '.github/workflows/containerfile-smoke.yml']`) keeps the cost local to image-relevant PRs. Rejected: in-line step in `code.yml` (cost on every PR), in-line step in `build-web-image.yml` (publish workflow shouldn't run on PR).
-2. **Self-hosted `cinev-runner` + `buildctl`.** Rationale: matches `build-web-image.yml` exactly — same builder image, same cache mount surface, same pin (`scripts/pin-buildctl.sh`). Rejected: `ubuntu-latest` + dockerd (different builder semantics, no cache sharing with prod build, drift risk).
-3. **Health check via separate container spin-up, not Containerfile `HEALTHCHECK`.** Rationale: keeps the image surface unchanged. The smoke job pulls the just-built image, runs it with a random host port, polls `wget -q -O - http://localhost:<port>/` until it returns 200 or times out. Rejected: `HEALTHCHECK CMD wget …` in Containerfile (changes prod image, no value outside CI).
+2. **`ubuntu-latest` + Docker buildx (revised 2026-05-11 at impl time).** Rationale: `build-web-image.yml` uses `cinev-runner + buildctl` for *registry push*; smoke needs to `docker run` the local image, which requires a docker daemon. cinev-runner's daemon availability is not guaranteed for the smoke surface, and buildctl→local-image→docker-run requires a `type=docker` export round-trip that is fragile. ubuntu-latest ships Docker pre-installed; the smoke job is small enough (single image build, single container run) that hosted runtime is cheap and avoids drift between smoke and prod-publish surfaces. Rejected: `cinev-runner + buildctl` (smoke ≠ publish; docker socket assumption not stated by prod workflow).
+3. **Health check via separate container spin-up + external wget polling.** Rationale: keeps the image surface stable and the smoke explicit. `apps/editor/Containerfile` already carries `HEALTHCHECK CMD wget …` (line 115), but the smoke workflow polls externally with its own bounded budget so an image that *passes* HEALTHCHECK but is otherwise broken (wrong port, wrong content) still gets caught. Rejected: relying on `docker inspect --format='{{.State.Health.Status}}'` alone (slow — 30s interval × 3 retries; couples smoke to Containerfile's HEALTHCHECK timing).
 4. **`WORKFLOW.md` gets a one-line `## Testing` or new `## CI smoke` row.** Rationale: discoverability — future maintainers need to know which CI catches Containerfile breakage. `MAP.md` Release block does NOT change (deploy artifact path is unaffected).
 
 ## Acceptance
@@ -41,11 +41,10 @@ Derived from Linear Goal (no formal AC list on the issue):
 
 | File | Change kind | Note |
 |------|-------------|------|
-| `.github/workflows/containerfile-smoke.yml` | add | new workflow, single job |
+| `.github/workflows/containerfile-smoke.yml` | add | new workflow, single job on `ubuntu-latest` |
 | `WORKFLOW.md` | modify | add one row or short subsection |
-| `apps/editor/Containerfile` | **no change** | locked decision #3 |
+| `apps/editor/Containerfile` | **no change** | HEALTHCHECK already present; not used as smoke signal |
 | `apps/editor/nginx.conf` | **no change** | only listed as trigger path |
-| `scripts/pin-buildctl.sh` | reuse | called by the new workflow |
 
 ## Verification
 
