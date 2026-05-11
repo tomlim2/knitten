@@ -52,7 +52,7 @@ STL-99 "Retire retarget viewer"
 Confirm? (yes/no/other-state)
 ```
 
-Wait for explicit approval unless this skill is being called programmatically from `shotloom-start-code` or `shotloom-auto-pr` (those pass `--no-confirm` via a marker in `$ARGUMENTS` or are documented as auto-callers — treat their call as pre-approved). For user-typed invocations, always confirm.
+Wait for explicit approval unless this skill is being called programmatically from `shotloom-start-task` or `shotloom-auto-pr` (those pass `--no-confirm` via a marker in `$ARGUMENTS` or are documented as auto-callers — treat their call as pre-approved). For user-typed invocations, always confirm.
 
 ### Step 4: Transition
 
@@ -74,7 +74,7 @@ Call `save_issue` with `id: "STL-NN"` and `stateId: <id-for-target-state>`.
 
 These skills call `shotloom-linear-move` programmatically and do NOT require per-call user approval. The transitions they perform are:
 
-- **`shotloom-start-code`** — after worktree creation, transitions `Todo` or `Backlog` → `In Progress`. Skip silently if issue is already In Progress or later.
+- **`shotloom-start-task`** — after worktree creation, transitions `Todo` or `Backlog` → `In Progress`. Skip silently if issue is already In Progress or later.
 - **`shotloom-make-pr`** — at Step 9 (after PR creation), transitions `In Progress` → `In Review`. Skip if PR is `--draft` without a "ready" hint, or if issue is already In Review or later.
 - **`shotloom-auto-pr`** — when PR reaches MERGED (terminal handler in the React workflow), transitions → `Done`. Skip if already Done or Canceled.
 - **`shotloom-wrapup-task`** — when wrapping up a task with `merged` / `done-no-pr` mode, transitions → `Done`; with `abandoned` mode, → `Canceled`. Skip if already in target state.

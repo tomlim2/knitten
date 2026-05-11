@@ -59,8 +59,8 @@ For each Linear issue, resolve:
 One-line recommendation, prioritized:
 1. Any PR red → `/shotloom-auto-pr <N>` to diagnose
 2. Any PR approved + awaiting merge → merge it
-3. Any In Progress without worktree → resume via `/shotloom-start-code STL-NN`
-4. Otherwise, pick highest-priority Todo → `/shotloom-start-code STL-NN`
+3. Any In Progress without worktree → resume via `/shotloom-start-task STL-NN`
+4. Otherwise, pick highest-priority Todo → `/shotloom-start-task STL-NN`
 
 ## Notes
 

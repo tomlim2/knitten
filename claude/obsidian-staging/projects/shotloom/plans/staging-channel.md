@@ -80,7 +80,7 @@ Run these in order on alpha-exit. Stop if anything fails — the snapshot may ha
 
 ## Re-entry workflow
 
-1. Open `/shotloom-start-code STL-327` — re-fetches Linear, re-reads conventions, re-scans ADRs. This snapshot is *not* a substitute for that step.
+1. Open `/shotloom-start-task STL-327` — re-fetches Linear, re-reads conventions, re-scans ADRs. This snapshot is *not* a substitute for that step.
 2. Run the four-item Resume gate above.
 3. Create a fresh worktree from current `main`. Do NOT try to restore the torn-down branch from reflog — the snapshot is durable here; the dead branch SHA carries no extra value.
 4. Re-implement the workflow split from the commit message above, adapting to whatever shape `build-web-image.yml` has at re-entry time.

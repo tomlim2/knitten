@@ -3,7 +3,7 @@
 #
 # Fires on every user prompt. Reads {cwd, prompt} JSON from stdin.
 # If cwd is under shotloom-github AND prompt contains a work-start signal,
-# emits a system reminder on stdout telling Claude to invoke /shotloom-start-code.
+# emits a system reminder on stdout telling Claude to invoke /shotloom-start-task.
 #
 # Silent (exit 0, no stdout) when no match — no token cost.
 
@@ -36,16 +36,16 @@ shopt -u nocasematch
 
 # Skip if user already invoked the skill or we're already in mode
 case "$prompt" in
-  */shotloom-start-code*) exit 0 ;;
+  */shotloom-start-task*) exit 0 ;;
 esac
 
 cat <<'REMINDER'
 <system-reminder>
 Shotloom work-start signal detected (Linear reference in prompt, cwd under shotloom-github).
 
-MUST invoke the `/shotloom-start-code` skill now — before any Edit/Write/code reasoning. That skill performs the mandatory pre-write flow: Linear issue fetch via MCP, repo conventions re-read, category detection, targeted section load from shotloom-programming.md, ADR scan, and a Ready briefing.
+MUST invoke the `/shotloom-start-task` skill now — before any Edit/Write/code reasoning. That skill performs the mandatory pre-write flow: Linear issue fetch via MCP, repo conventions re-read, category detection, targeted section load from shotloom-programming.md, ADR scan, and a Ready briefing.
 
-Do not answer, plan, or edit code until /shotloom-start-code has completed.
+Do not answer, plan, or edit code until /shotloom-start-task has completed.
 </system-reminder>
 REMINDER
 

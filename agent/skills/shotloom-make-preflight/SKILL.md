@@ -80,7 +80,7 @@ Emit:
 
 **Fork this session for each work task.**
 Do NOT edit code or run commits in this session — it is a read-only base.
-When forked, the next step is `/shotloom-start-code STL-NN` for the issue.
+When forked, the next step is `/shotloom-start-task STL-NN` for the issue.
 
 Recreate this base when:
 - A new day starts
@@ -96,11 +96,11 @@ If the user asks to work on code in this session, refuse and tell them to fork f
 ## Design Notes
 
 - **No manifest / no hash check** — versioning adds complexity without clear payoff at current scale. Recreate cheaply.
-- **No Linear fetch** — issue state changes too often to cache. Fork session does its own fetch via `/shotloom-start-code`.
+- **No Linear fetch** — issue state changes too often to cache. Fork session does its own fetch via `/shotloom-start-task`.
 - **Base session is read-only** — editing the base pollutes every future fork. Enforce by convention, not by tooling.
 - **Fork-of-fork not recommended** — stale risk compounds. Fork only from the original base.
 
 ## Related
 
-- [`shotloom-start-code`](../shotloom-start-code/SKILL.md) — run inside the forked session for per-task setup (Linear fetch, worktree, category detect)
+- [`shotloom-start-task`](../shotloom-start-task/SKILL.md) — run inside the forked session for per-task setup (Linear fetch, worktree, category detect)
 - `~/.claude/rules/shotloom.md` — hub

@@ -69,7 +69,7 @@ Match each worktree branch → Linear STL (from commit body `Related to STL-NN` 
 One-line recommendation based on the state:
 - PR failing CI → "`/shotloom-auto-pr <N>` to auto-diagnose"
 - Worktree dirty → "commit via `/shotloom-commit` or stash"
-- Linear in-progress without worktree → "`/shotloom-start-code STL-NN` to kick off"
+- Linear in-progress without worktree → "`/shotloom-start-task STL-NN` to kick off"
 - All green → "nothing urgent"
 
 ## Notes

@@ -1,6 +1,6 @@
-# shotloom-start-code reference
+# shotloom-start-task reference
 
-Expanded detail for the shotloom-start-code skill. SKILL.md holds the happy path and the critical Step 7 auto-review rule; this file holds the worktree plumbing, the Ready-briefing template, and the worked examples.
+Expanded detail for the shotloom-start-task skill. SKILL.md holds the happy path and the critical Step 7 auto-review rule; this file holds the worktree plumbing, the Ready-briefing template, and the worked examples.
 
 ---
 

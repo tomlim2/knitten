@@ -4,7 +4,7 @@ argument-hint: "[STL-NN | linear-url | category]"
 allowed-tools: Read, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(code:*), Bash(jq:*)
 ---
 
-# shotloom-start-code
+# shotloom-start-task
 
 Mandatory pre-write flow before editing any Shotloom code. Auto-invoked by the `shotloom-linear-detect` hook when a Linear reference appears while cwd is under the `shotloom` repo (main checkout or any worktree under `.worktrees/` / `.claude/worktrees/`). Can also be invoked manually.
 
@@ -16,7 +16,7 @@ Mandatory pre-write flow before editing any Shotloom code. Auto-invoked by the `
 
 Zero args is valid — the skill will detect intent from current branch, `git status`, recent `git log`.
 
-Usage: `/shotloom-start-code STL-123` or `/shotloom-start-code` or `/shotloom-start-code rust`
+Usage: `/shotloom-start-task STL-123` or `/shotloom-start-task` or `/shotloom-start-task rust`
 
 ## Workflow
 

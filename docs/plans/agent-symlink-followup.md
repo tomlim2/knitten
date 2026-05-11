@@ -66,9 +66,9 @@ Repointed only the broken per-child symlinks. Conservative scope: did not collap
 
 ## Update — 2026-05-11 later session
 
-Discovered mid-session that `/shotloom-start-code`, `/shotloom-wrapup-task`, `/caol-resolve-doc-path`, and all `cci-*` skills returned `Unknown skill`. Root cause: `~/.claude/skills` was still pointing at the leftover stub `caol-ila/claude/skills/` (near-empty, only `skill-server/`), while the canonical 22 skills live in `caol-ila/agent/skills/`. The earlier remediation table had `commands` repointed but missed `skills` — leftover-stub resolution masked the divergence.
+Discovered mid-session that `/shotloom-start-task`, `/shotloom-wrapup-task`, `/caol-resolve-doc-path`, and all `cci-*` skills returned `Unknown skill`. Root cause: `~/.claude/skills` was still pointing at the leftover stub `caol-ila/claude/skills/` (near-empty, only `skill-server/`), while the canonical 22 skills live in `caol-ila/agent/skills/`. The earlier remediation table had `commands` repointed but missed `skills` — leftover-stub resolution masked the divergence.
 
-Fix: `ln -sfn caol-ila/agent/skills ~/.claude/skills`. Verified `ls ~/.claude/skills/shotloom-start-code/SKILL.md` and `caol-resolve-doc-path/resolve.sh` resolve. The Shotloom Linear-reference hook that mandates `/shotloom-start-code` as the pre-write gate had been silently bypassed for the duration of the drift (7+ weeks since 2026-03-23 stub) — guardrail miss is the larger lesson, not the symlink itself.
+Fix: `ln -sfn caol-ila/agent/skills ~/.claude/skills`. Verified `ls ~/.claude/skills/shotloom-start-task/SKILL.md` and `caol-resolve-doc-path/resolve.sh` resolve. The Shotloom Linear-reference hook that mandates `/shotloom-start-task` as the pre-write gate had been silently bypassed for the duration of the drift (7+ weeks since 2026-03-23 stub) — guardrail miss is the larger lesson, not the symlink itself.
 
 `~/.claude/config` is still on the stale path (Open work #2 below, now reduced to config only).
 

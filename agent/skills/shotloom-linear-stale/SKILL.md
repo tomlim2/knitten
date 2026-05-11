@@ -73,7 +73,7 @@ Use these instead of creating new ones when starting similar work:
 
 Each category ends with one-line action hint. Don't auto-execute — this is a review tool, user decides.
 
-- Dead In Progress → user picks: revive (`/shotloom-start-code`) / backlog (`/shotloom-linear-move STL-NN Backlog`) / cancel
+- Dead In Progress → user picks: revive (`/shotloom-start-task`) / backlog (`/shotloom-linear-move STL-NN Backlog`) / cancel
 - State mismatch → user picks: fix state / delete worktree / open PR
 - Ready to close → `/shotloom-linear-move STL-NN Done` per-issue
 - Zombie Todo → `/shotloom-linear-move STL-NN Backlog` or Cancel

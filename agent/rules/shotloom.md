@@ -104,4 +104,4 @@ Each subfolder has a `README.md` declaring its audience, style, and mutability. 
 
 **Why:** PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style" not actually in `adr-template.md`; Option-A workaround forced a P2 revert.
 
-**Full enforcement:** `/shotloom-start-code` Step 5b.
+**Full enforcement:** `/shotloom-start-task` Step 5b.

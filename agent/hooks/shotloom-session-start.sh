@@ -47,7 +47,7 @@ Shotloom session detected. Quick status:
 - Open PRs (mine): ${open_prs}
 
 Run \`/shotloom-status\` for the full dashboard.
-Start new work with \`/shotloom-start-code STL-NN\` — the hook will also auto-trigger when you mention a Linear issue.
+Start new work with \`/shotloom-start-task STL-NN\` — the hook will also auto-trigger when you mention a Linear issue.
 </system-reminder>
 REMINDER
 
