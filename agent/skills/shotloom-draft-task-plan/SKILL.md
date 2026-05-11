@@ -81,15 +81,11 @@ Body sections (in order):
 
 **Do not** restate the Linear description verbatim. The plan is *your interpretation* of the work — future-you / sub-agent reviewers read it to spot where your interpretation diverges from the diff.
 
-### Step 4: Show draft + approve
+### Step 4: Write + commit + push (no separate approval gate)
 
-Render the full draft inline. Wait for explicit user OK. Iterate on revisions before Step 5.
+The user's Step 6 briefing OK + invoking this skill IS the approval to land the plan. Do NOT add another "show draft and wait for OK" gate inside the skill — it duplicates the briefing approval and adds friction. Skill scope ends at file creation + commit/push.
 
-### Step 5: Write + commit + push
-
-After approval:
-
-1. `Write` the file to `$plan_path`.
+1. `Write` the drafted body directly to `$plan_path`.
 2. From the **caol-ila** working directory (not the shotloom worktree):
    - `git add docs/plans/<slug>.md`
    - `git commit -m "plan(shotloom): <slug>"` (single-line message; body optional)
@@ -99,7 +95,9 @@ After approval:
 
 `docs/plans/*.md` is tracked caol-ila state, NOT obsidian-staging — the obsidian auto-commit exception (`~/.claude/rules/obsidian.md`) does **not** apply, but commit + push are routine for caol-ila docs and do not need per-commit user approval. Only PR-mutating ops on caol-ila need approval (none here).
 
-### Step 6: Report + STOP
+**Exception — explicit user revision request.** If the user asks for changes ("이 부분 수정해서 다시", "revise X") AFTER the file lands, treat it as an update-mode re-invocation: amend the file, commit a follow-up (`plan(shotloom): <slug> — <revision summary>`), push. Do NOT pre-emptively ask for revisions before the initial Write.
+
+### Step 5: Report + STOP
 
 Emit a single short line:
 
@@ -113,7 +111,7 @@ Then end the turn. **Do not** start code edits in the shotloom worktree. **Do no
 ## Binding rules
 
 - **One artifact, one stop.** This skill writes exactly one plan doc and stops. It never touches shotloom worktree source files.
-- **Never bypass Step 4 approval.** Always show the rendered draft and wait for explicit OK before Write.
+- **No mid-skill approval gate.** Briefing OK + skill invocation = land the plan. Do not pause to ask "OK to write?" between draft and Write.
 - **Never commit caol-ila with `--no-verify`.** If a pre-commit hook fails, fix the underlying issue.
 - **Plan ≠ implementation.** Reading worktree source for the file-map section is allowed during draft authoring. Editing worktree source is not.
 
