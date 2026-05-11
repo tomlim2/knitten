@@ -1,12 +1,10 @@
 ---
-title: STL-327 staging channel separation — execution plan (alpha-deferred)
-tags:
-  - type/topic
-  - project/shotloom
-  - area/ci
-  - lib/github-actions
-date: 2026-05-11
-source: STL-327 backlog snapshot
+status: parked
+created: 2026-05-11
+load: triggered
+trigger: resuming STL-327 staging channel after alpha exit
+repo: shotloom
+linear: STL-327
 ---
 
 # Staging channel separation — execution plan (alpha-deferred)

@@ -145,11 +145,13 @@ Emit the compact briefing (template in reference.md) showing issue, branch, stan
 
 ### Step 6.5: Draft per-ticket plan doc (mandatory once user confirms)
 
-Once the user confirms the Step 6 briefing, **write a durable plan doc to the shotloom vault `plans/` folder before any code edit**. The plan freezes intent at start-time so the work can be cross-checked by other tools (Gemini, Codex, sub-agent reviewers, human re-readers) without re-deriving it from the diff.
+Once the user confirms the Step 6 briefing, **write a durable plan doc to `caol-ila/docs/plans/<slug>.md` before any code edit**. The plan freezes intent at start-time so the work can be cross-checked by other tools (Gemini, Codex, sub-agent reviewers, human re-readers) without re-deriving it from the diff.
 
-**Location** — `<vault>/projects/shotloom/plans/<slug>.md`. Resolve via `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh devlog shotloom` and substitute the trailing `days/` with `plans/`. `<slug>` is the branch body (no STL-NN, no folder repetition, no `plan-` prefix) — e.g. branch `chore/ci-add-containerfile-smoke` → file `ci-add-containerfile-smoke.md`.
+**Location** — `caol-ila/docs/plans/<slug>.md`. This is the canonical caol-ila plan folder (per `LOOKUP.md` "Design a new layer" row; sibling docs `agent-symlink-followup.md`, `harden-system-drift.md`, etc.). NOT the vault `agent/projects/shotloom/plans/` folder — that one is for retrospective snapshots / handoffs scoped to obsidian-vault audience, not for at-start execution plans that need cross-tool review.
 
-**Shape** — frontmatter (`type/topic`, `project/shotloom`, `area/<A>`, `date`, `source`), then:
+`<slug>` is the branch body (no STL-NN, no folder repetition, no `plan-` prefix) — e.g. branch `chore/ci-add-containerfile-smoke` → file `ci-add-containerfile-smoke.md`. Filename matches the branch so reviewers can correlate plan ↔ diff at a glance.
+
+**Shape** — frontmatter matches `docs/plans/` convention (`status: open|parked|done`, `created`, `load: triggered`, `trigger`, `repo`, `linear`), then:
 
 | Section | Content |
 |---------|---------|
@@ -160,7 +162,7 @@ Once the user confirms the Step 6 briefing, **write a durable plan doc to the sh
 | Verification | How to confirm acceptance — manual repro, gate commands, CI signal, follow-up issues. |
 | Open questions | Anything still ambiguous after briefing — flagged for early checkpoint, not silent guessing. |
 
-**Commit** — vault diff is obsidian-only (auto-commit per `~/.claude/rules/obsidian.md`). Commit + push from `caol-ila` immediately so the plan is durable across machines and reachable from sub-agent reviewers.
+**Commit** — `docs/plans/<slug>.md` is tracked caol-ila state, not obsidian-staging, so the obsidian auto-commit exception does NOT apply. Stage the file, commit with a `plan(<repo>): …` message, and push from `caol-ila` immediately so the plan is durable across machines and reachable from sub-agent reviewers.
 
 **Do not** restate the Linear description verbatim — the plan is *your interpretation* of the work. Future-you / other agents read the plan to spot where your interpretation diverged from the diff, not to re-read Linear.
 

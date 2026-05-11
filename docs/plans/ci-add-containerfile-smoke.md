@@ -1,12 +1,10 @@
 ---
-title: STL-358 Containerfile build smoke CI — execution plan
-tags:
-  - type/topic
-  - project/shotloom
-  - area/ci
-  - lib/github-actions
-date: 2026-05-11
-source: STL-358 start briefing
+status: open
+created: 2026-05-11
+load: triggered
+trigger: implementing STL-358 Containerfile build smoke CI
+repo: shotloom
+linear: STL-358
 ---
 
 # Containerfile build smoke CI — execution plan
