@@ -79,6 +79,80 @@ git status --short                                    # surface unstaged work
 
 Run `pwd` every time before first grep — cwd may silently reset between tool calls in long sessions.
 
+### Step 1.5: Applicability matrix — which groups run on this diff
+
+The full Rust review (groups A–G, T) only makes sense when the diff carries Rust or TS source. The doc/comment discipline groups (H, I, S), repo-conventions group (G), and a new markup-sanity group (M) still apply on yaml-only / md-only / workflow-only PRs. **Do NOT short-circuit the whole review just because there is no `.rs` file in the diff** — that is exactly the gap that let v0.1.3 through.
+
+Compute the file-type breakdown from the diff before Step 2:
+
+```bash
+rust_changed=$(git diff --name-only origin/main..HEAD -- '*.rs' | wc -l | tr -d ' ')
+ts_changed=$(git diff --name-only origin/main..HEAD -- '*.ts' '*.tsx' | wc -l | tr -d ' ')
+yaml_changed=$(git diff --name-only origin/main..HEAD -- '*.yml' '*.yaml' | wc -l | tr -d ' ')
+md_changed=$(git diff --name-only origin/main..HEAD -- '*.md' | wc -l | tr -d ' ')
+json_changed=$(git diff --name-only origin/main..HEAD -- '*.json' | wc -l | tr -d ' ')
+moved_or_renamed=$(git diff --name-status origin/main..HEAD | rg -c '^[DR]' || true)
+```
+
+| Group | Runs when | Skip rule |
+|-------|-----------|-----------|
+| A–F (Rust review per `review-rust.md`) | `rust_changed > 0` | Skip with explicit `### Group A–F — N/A (no Rust diff)` line |
+| G (repo conventions, doc-paths, ci-coverage) | **always** | Never skip — conventions catch yaml/md drift too |
+| H (doc / comment discipline) | `md_changed > 0` OR `rust_changed > 0` (added prose may live in `///`) | Skip only when both are 0 |
+| I (reverse-side audit) | `moved_or_renamed > 0` (any file moved / renamed / removed) | Skip otherwise |
+| **M (markup / manifest sanity — yaml / json / workflow lint)** | `yaml_changed + json_changed > 0` | Skip otherwise |
+| S (subagent verification of S1/S2/S3 prose claims) | any added prose carries S1/S2/S3 triggers (regardless of file type) | Skip when no triggers — the trigger check itself is mechanical |
+| T (test coverage on changed behavior) | `rust_changed > 0` | Skip when 0; ts-side tests out of scope here |
+
+Report the matrix at the top of the review so the user can audit which groups were live:
+
+```
+### Applicability — rust:N ts:N yaml:N md:N json:N moved:N
+Ran: G, H, M, S
+N/A: A, B, C, D, E, F, I, T
+```
+
+The review is **never wholly skipped** while commits exist on the branch. A workflow-yaml-only PR still runs G + M (+ H when any added comment text exists); silent whole-skip is precisely how v0.1.3 reached prod.
+
+### Group M — markup / manifest sanity
+
+Trigger: `yaml_changed + json_changed > 0`.
+
+Runs locally (CI mirrors most of these, but catching them here keeps round-trip short):
+
+```bash
+# M1 — GitHub Actions workflow yaml: action references pinned, no
+# placeholder secret names, no on.workflow_dispatch without inputs spec
+for f in $(git diff --name-only origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml'); do
+  python3 -c "import sys, yaml; yaml.safe_load(open('$f'))" || echo "::error::$f: invalid yaml"
+done
+
+# M2 — uses: pinned to a tag (not branch); flag unpinned references
+git diff origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+  | rg '^\+\s*uses: ' | rg -v '@v[0-9]|@[0-9a-f]{40}'
+
+# M3 — JSON files parseable
+for f in $(git diff --name-only origin/main..HEAD -- '*.json'); do
+  python3 -m json.tool "$f" >/dev/null 2>&1 || echo "::error::$f: invalid json"
+done
+
+# M4 — secrets reference uses ${{ secrets.NAME }} form, no hardcoded
+git diff origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+  | rg '^\+' | rg -i 'password|token|api_key|secret' | rg -v '\$\{\{\s*secrets\.'
+
+# M5 — workflow has a meaningful concurrency group when it can race
+# (skip if workflow runs on PR-only single-tag-style triggers)
+for f in $(git diff --name-only origin/main..HEAD -- '.github/workflows/*.yml'); do
+  if ! rg -q '^concurrency:' "$f"; then
+    echo "::note::$f: no concurrency group — confirm no race against itself"
+  fi
+done
+```
+
+Each hit is a candidate defect — human triage same as A–G.
+
+Findings escalate based on the rule: M1/M3 invalid syntax = P0 (the workflow does not run at all); M2 unpinned action = P2 (supply-chain hardening); M4 plaintext secret = P0; M5 missing concurrency = P3.
+
 ### Step 2: Load the standards (MANDATORY, in-repo only)
 
 **The shotloom in-repo guidelines are the only authority now.** Read in this order:

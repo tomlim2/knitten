@@ -181,7 +181,7 @@ The review is also required before `/shotloom-make-pr`, `gh pr create`, or decla
 
 Walks `docs/guidelines/review-rust.md` (in-repo formal Rust review spec; re-read every invocation). Fix every hit before opening PR.
 
-**Skip only when:** branch contains zero Rust/TS source changes (docs/md/ADR-only), OR user explicitly says "skip review" for this specific PR.
+**Skip only when:** the user explicitly says "skip review" for this specific PR. Branches with zero Rust/TS source changes (workflow-yaml-only, md-only, ADR-only) **still run** — `/shotloom-review-before-pr` Step 1.5 builds an applicability matrix and runs the groups that apply (G repo conventions, H doc discipline, M markup sanity, I reverse audit, S subagent verification) while marking Rust-specific groups as N/A. v0.1.3 shipped exactly because a non-Rust PR class was treated as review-exempt.
 
 Auto-commit/push cadence (per `~/.claude/rules/shotloom.md`) does NOT bypass the review — commits/push go out freely, but the review runs automatically right after, and the PR gate holds until review has passed.
 
