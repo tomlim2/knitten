@@ -1,5 +1,5 @@
 ---
-name: obsidian-markdown
+name: obsidian-obsidian-markdown
 description: Create and edit Obsidian Flavored Markdown — wikilinks, embeds, callouts, frontmatter, tags, Obsidian-specific syntax.
 domains: obsidian
 repo-keys: caol-ila

@@ -1,5 +1,5 @@
 ---
-name: json-canvas
+name: obsidian-json-canvas
 description: Create and edit Obsidian JSON Canvas (.canvas) files — nodes, edges, groups, mind maps, flowcharts.
 domains: obsidian
 repo-keys: caol-ila

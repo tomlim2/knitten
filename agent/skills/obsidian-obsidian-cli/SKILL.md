@@ -1,5 +1,5 @@
 ---
-name: obsidian-cli
+name: obsidian-obsidian-cli
 description: Interact with Obsidian vaults via the obsidian CLI — read/create/search notes, manage tasks, develop plugins.
 ---
 

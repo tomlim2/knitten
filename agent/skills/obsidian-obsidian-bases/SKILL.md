@@ -1,5 +1,5 @@
 ---
-name: obsidian-bases
+name: obsidian-obsidian-bases
 description: Create and edit Obsidian Bases (.base files) — table/card views, filters, formulas, database-like note views.
 domains: obsidian
 repo-keys: caol-ila

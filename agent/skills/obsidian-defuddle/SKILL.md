@@ -1,5 +1,5 @@
 ---
-name: defuddle
+name: obsidian-defuddle
 description: Extract clean markdown from web pages via Defuddle CLI — use instead of WebFetch for URLs, docs, articles, blog posts.
 ---
 

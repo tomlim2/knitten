@@ -1,3 +1,8 @@
+---
+name: claude-seo
+description: Universal SEO Analysis Skill for technical audits, content quality, and AI search optimization.
+---
+
 # Claude SEO: Universal SEO Analysis Skill
 
 ## Project Overview
