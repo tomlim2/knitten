@@ -1,18 +1,33 @@
 ---
 name: caol-setup-harness
-description: Connects external agent harnesses (Pi, Claude Code, Codex, Cursor) to the caol-ila durable source.
+description: Connects external agent harnesses (Pi, Claude Code, Codex, Cursor) to the caol-ila Agent Hub. Enforces user consent.
 ---
 
 # caol-setup-harness
 
-Use this skill when installing a new AI coding agent on the machine, or when the agent asks how to connect to global settings/prompts/skills.
+Use this skill when installing a new AI coding agent on the machine, or when configuring an agent to access the `caol-ila` Agent Hub globally.
 
 ## Purpose
-`caol-ila` is the durable source of truth for agent rules, standards, skills, and commands. Rather than manually copying files to global deploy targets (like `~/.pi` or `~/.claude`), this skill automatically configures the harness to point to `caol-ila/agent/`.
+`caol-ila` is the durable source of truth (the "Agent Hub") for rules, standards, skills, and commands. This skill maps those durable folders to local deploy targets (like `~/.pi/settings.json` or `~/.claude/skills`).
 
-## Execution
+## Execution Flow (MANDATORY)
 
-Run the Node script to link all registered harnesses:
+You **must** follow these three steps in order. Do not execute the final script without user approval.
+
+### 1. Explain the Action
+Tell the user: "To use the full capabilities of the Caol Ila Agent Hub, I need to link it to your current harness configuration (via symlinks or JSON config edits). I will run a dry run first to show you exactly what will change."
+
+### 2. Run the Dry Run
+Execute the script in dry-run mode to see the proposed changes without altering the filesystem:
+
+```bash
+node scripts/link-harnesses.mjs --dry-run
+```
+
+Show the output to the user and explicitly ask: **"Do you want to proceed and apply these changes?"**
+
+### 3. Apply the Changes
+Only if the user replies affirmatively (e.g., "yes", "proceed", "do it"), run the active script:
 
 ```bash
 node scripts/link-harnesses.mjs
@@ -21,9 +36,5 @@ node scripts/link-harnesses.mjs
 ## How it works
 1. Reads `agent/config/agent-hub.json`.
 2. Locates any harness with a `linkMethod` defined.
-3. Automatically sets up symlinks or edits global JSON configs (e.g., `~/.pi/settings.json`) to inject `caol-ila` paths.
-4. Preserves any existing config values it finds.
-
-## Validating (Phase 4)
-If you need to verify links are correct without mutating them:
-*(Validation logic pending full integration into validate-llm-first.mjs)*
+3. Automatically sets up symlinks or edits global JSON configs.
+4. Preserves any existing config values or real folders it finds by backing them up first.

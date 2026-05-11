@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 const CAOL_ILA_ROOT = path.resolve(__dirname, '..');
 
 const agentHubPath = path.join(CAOL_ILA_ROOT, 'agent', 'config', 'agent-hub.json');
+const isDryRun = process.argv.includes('--dry-run');
 
 function resolveHome(filepath) {
   if (filepath.startsWith('~/')) {
@@ -17,7 +18,9 @@ function resolveHome(filepath) {
 }
 
 async function linkHarnesses() {
+  if (isDryRun) console.log('\n=== DRY RUN MODE: No changes will be made ===\n');
   console.log(`[link-harnesses] CAOL_ILA_ROOT: ${CAOL_ILA_ROOT}`);
+  
   const hubData = JSON.parse(await fs.readFile(agentHubPath, 'utf8'));
 
   for (const harness of hubData.harnesses) {
@@ -34,11 +37,13 @@ async function linkHarnesses() {
       console.warn(`Unknown linkMethod: ${harness.linkMethod} for ${harness.id}`);
     }
   }
+  
+  if (isDryRun) console.log('\n=== END DRY RUN ===');
 }
 
 async function handleJsonConfig(harness, targetPath) {
   const targetDir = path.dirname(targetPath);
-  await fs.mkdir(targetDir, { recursive: true });
+  if (!isDryRun) await fs.mkdir(targetDir, { recursive: true });
 
   let config = {};
   try {
@@ -62,8 +67,11 @@ async function handleJsonConfig(harness, targetPath) {
   }
 
   if (modified) {
-    await fs.writeFile(targetPath, JSON.stringify(config, null, 2) + '\n');
-    console.log(`  [+] Updated JSON config at ${targetPath}`);
+    console.log(`  [+] Would update JSON config at ${targetPath}`);
+    if (!isDryRun) {
+      await fs.writeFile(targetPath, JSON.stringify(config, null, 2) + '\n');
+      console.log(`  [+] Updated JSON config at ${targetPath}`);
+    }
   } else {
     console.log(`  [=] JSON config already up to date at ${targetPath}`);
   }
@@ -75,7 +83,7 @@ async function handleSymlinks(harness, deployTarget) {
     return;
   }
 
-  await fs.mkdir(deployTarget, { recursive: true });
+  if (!isDryRun) await fs.mkdir(deployTarget, { recursive: true });
 
   for (const [targetName, relativeSourcePath] of Object.entries(harness.mappings)) {
     const sourcePath = path.join(CAOL_ILA_ROOT, relativeSourcePath);
@@ -89,20 +97,20 @@ async function handleSymlinks(harness, deployTarget) {
           console.log(`  [=] Symlink already correct: ${targetName} -> ${relativeSourcePath}`);
           continue;
         } else {
-          await fs.unlink(targetPath);
-          console.log(`  [-] Removed incorrect symlink: ${targetName}`);
+          console.log(`  [-] Would remove incorrect symlink: ${targetName}`);
+          if (!isDryRun) await fs.unlink(targetPath);
         }
       } else {
         const bakPath = `${targetPath}.bak.${Date.now()}`;
-        await fs.rename(targetPath, bakPath);
-        console.log(`  [!] Backed up existing real path ${targetName} to ${path.basename(bakPath)}`);
+        console.log(`  [!] Would back up existing real path ${targetName} to ${path.basename(bakPath)}`);
+        if (!isDryRun) await fs.rename(targetPath, bakPath);
       }
     } catch (err) {
       if (err.code !== 'ENOENT') throw err;
     }
 
-    await fs.symlink(sourcePath, targetPath);
-    console.log(`  [+] Created symlink: ${targetName} -> ${relativeSourcePath}`);
+    console.log(`  [+] Would create symlink: ${targetName} -> ${relativeSourcePath}`);
+    if (!isDryRun) await fs.symlink(sourcePath, targetPath);
   }
 }
 
