@@ -51,6 +51,9 @@
         ],
         "prompts": [
           "$CAOL_ILA_ROOT/agent/commands"
+        ],
+        "instructions": [
+          "$CAOL_ILA_ROOT/SYSTEM.md"
         ]
       }
     }
