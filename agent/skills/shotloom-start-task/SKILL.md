@@ -147,7 +147,7 @@ Emit the compact briefing (template in reference.md) showing issue, branch, stan
 
 Once the user confirms the Step 6 briefing, **write a durable plan doc to `caol-ila/docs/plans/<slug>.md` before any code edit**. The plan freezes intent at start-time so the work can be cross-checked by other tools (Gemini, Codex, sub-agent reviewers, human re-readers) without re-deriving it from the diff.
 
-**Location** — `caol-ila/docs/plans/<slug>.md`. This is the canonical caol-ila plan folder (per `LOOKUP.md` "Design a new layer" row; sibling docs `agent-symlink-followup.md`, `harden-system-drift.md`, etc.). NOT the vault `agent/projects/shotloom/plans/` folder — that one is for retrospective snapshots / handoffs scoped to obsidian-vault audience, not for at-start execution plans that need cross-tool review.
+**Location** — `caol-ila/docs/plans/<slug>.md`. This is the canonical caol-ila plan folder (per `LOOKUP.md` "Design a new layer" row; sibling docs include `agent-symlink-followup.md` and `harden-system-drift.md`). NOT the vault `agent/projects/shotloom/plans/` folder — that one is for retrospective snapshots / handoffs scoped to obsidian-vault audience, not for at-start execution plans that need cross-tool review.
 
 `<slug>` is the branch body (no STL-NN, no folder repetition, no `plan-` prefix) — e.g. branch `chore/ci-add-containerfile-smoke` → file `ci-add-containerfile-smoke.md`. Filename matches the branch so reviewers can correlate plan ↔ diff at a glance.
 

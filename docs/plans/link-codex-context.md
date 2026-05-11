@@ -46,6 +46,7 @@ related: docs/plans/agent-symlink-followup.md
 | Filename case | Use `SYSTEM.md`; do not create lowercase `system.md` |
 | Personal queue | Preserve `~/.codex/order/` behavior unless the user explicitly replaces it |
 | Shared policy | Do not copy `SYSTEM.md` content into `~/.codex/AGENTS.md`; link and instruct read instead |
+| Collision handling | Inspect each destination path before replacing it; back up non-matching files or directories first |
 | Secrets | Do not copy `auth.json`, state databases, logs, or session files |
 
 ## Execution Tasks
@@ -53,12 +54,14 @@ related: docs/plans/agent-symlink-followup.md
 | Task | Command / check | Acceptance |
 |------|-----------------|------------|
 | T1: Resolve paths | `CODEX_HOME="$(jq -r '."codex-home"' ~/.claude/private/caol-config/machine-paths.json)"` and `CAOL_ILA="$(jq -r '."caol-ila"' ~/.claude/private/caol-config/repo-paths.json)"` | both variables are non-empty directories |
-| T2: Back up entry | `cp "$CODEX_HOME/AGENTS.md" "$CODEX_HOME/AGENTS.md.backup.$(date +%Y%m%d-%H%M%S)"` | backup file exists |
-| T3: Link support paths | `ln -sfn "$CAOL_ILA/SYSTEM.md" "$CODEX_HOME/SYSTEM.md"`; `ln -sfn "$CAOL_ILA/agent" "$CODEX_HOME/agent"`; `ln -sfn "$CAOL_ILA/docs" "$CODEX_HOME/docs"` | each link resolves to `caol-ila` |
-| T4: Update shim | edit `$CODEX_HOME/AGENTS.md` so the first shared-policy read is `SYSTEM.md`, then keep the existing personal queue rules below it | file keeps queue rules and names `SYSTEM.md` first |
-| T5: Verify reads | `sed -n '1,40p' "$CODEX_HOME/AGENTS.md"` and `sed -n '1,20p' "$CODEX_HOME/SYSTEM.md"` | output shows shim and canonical policy |
-| T6: Verify links | `readlink "$CODEX_HOME/SYSTEM.md"`; `readlink "$CODEX_HOME/agent"`; `readlink "$CODEX_HOME/docs"` | each target is under `caol-ila` |
-| T7: Verify startup behavior | start a fresh Codex session and ask whether `SYSTEM.md` loaded | answer identifies `caol-ila/SYSTEM.md` or `~/.codex/SYSTEM.md` |
+| T2: Inspect collisions | `for p in AGENTS.md SYSTEM.md agent docs; do ls -ld "$CODEX_HOME/$p" 2>/dev/null || true; done` | every existing destination is understood before edits |
+| T3: Back up entry | `cp "$CODEX_HOME/AGENTS.md" "$CODEX_HOME/AGENTS.md.backup.$(date +%Y%m%d-%H%M%S)"` | backup file exists |
+| T4: Back up collisions | for each existing non-matching `SYSTEM.md`, `agent`, or `docs`, move it to `"$CODEX_HOME/<name>.backup.$(date +%Y%m%d-%H%M%S)"` | no non-matching destination remains |
+| T5: Link support paths | `ln -s "$CAOL_ILA/SYSTEM.md" "$CODEX_HOME/SYSTEM.md"`; `ln -s "$CAOL_ILA/agent" "$CODEX_HOME/agent"`; `ln -s "$CAOL_ILA/docs" "$CODEX_HOME/docs"` | each link resolves to `caol-ila` |
+| T6: Update shim | edit `$CODEX_HOME/AGENTS.md` so the first shared-policy read is `SYSTEM.md`, then keep the existing personal queue rules below it | file keeps queue rules and names `SYSTEM.md` first |
+| T7: Verify reads | `sed -n '1,40p' "$CODEX_HOME/AGENTS.md"` and `sed -n '1,20p' "$CODEX_HOME/SYSTEM.md"` | output shows shim and canonical policy |
+| T8: Verify links | `readlink "$CODEX_HOME/SYSTEM.md"`; `readlink "$CODEX_HOME/agent"`; `readlink "$CODEX_HOME/docs"` | each target is under `caol-ila` |
+| T9: Verify startup behavior | start a fresh Codex session and ask whether `SYSTEM.md` loaded | answer identifies `caol-ila/SYSTEM.md` or `~/.codex/SYSTEM.md` |
 
 ## Shim Shape
 
@@ -78,19 +81,17 @@ Read `SYSTEM.md` before applying global planning, rules, or repo conventions.
 |------|-----------------|
 | Find backup | `ls -t "$CODEX_HOME"/AGENTS.md.backup.* | head -1` |
 | Restore entry | `cp "$BACKUP" "$CODEX_HOME/AGENTS.md"` |
-| Remove support links | `rm "$CODEX_HOME/SYSTEM.md" "$CODEX_HOME/agent" "$CODEX_HOME/docs"` |
-| Verify rollback | `test -e "$CODEX_HOME/AGENTS.md"` and `test ! -e "$CODEX_HOME/SYSTEM.md"` |
+| Remove support links | remove `SYSTEM.md`, `agent`, and `docs` only when they are symlinks created by this plan |
+| Restore collisions | move any `*.backup.<timestamp>` collision backups back to their original names |
+| Verify rollback | `test -e "$CODEX_HOME/AGENTS.md"` and inspect `SYSTEM.md`, `agent`, and `docs` state |
 
 ## Direct Symlink Fallback
 
-Use this only after explicit user approval because it replaces personal Codex queue behavior:
+Use this only after explicit user approval because it replaces personal Codex queue behavior. Run T1 through T5 first so support links and collision backups are already handled.
 
 ```sh
 CODEX_HOME="$(jq -r '."codex-home"' ~/.claude/private/caol-config/machine-paths.json)"
 CAOL_ILA="$(jq -r '."caol-ila"' ~/.claude/private/caol-config/repo-paths.json)"
-cp "$CODEX_HOME/AGENTS.md" "$CODEX_HOME/AGENTS.md.backup.$(date +%Y%m%d-%H%M%S)"
-ln -sfn "$CAOL_ILA/AGENTS.md" "$CODEX_HOME/AGENTS.md"
-ln -sfn "$CAOL_ILA/SYSTEM.md" "$CODEX_HOME/SYSTEM.md"
-ln -sfn "$CAOL_ILA/agent" "$CODEX_HOME/agent"
-ln -sfn "$CAOL_ILA/docs" "$CODEX_HOME/docs"
+mv "$CODEX_HOME/AGENTS.md" "$CODEX_HOME/AGENTS.md.backup.$(date +%Y%m%d-%H%M%S)"
+ln -s "$CAOL_ILA/AGENTS.md" "$CODEX_HOME/AGENTS.md"
 ```

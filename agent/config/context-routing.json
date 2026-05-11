@@ -5,7 +5,7 @@
     "listStyle": "comma-separated scalars",
     "optionalAxes": "omit-when-absent"
   },
-  "repoKeysSource": "agent/private/caol-config/repo-paths.json",
+  "repoKeysSource": "agent/skills/caol-manage-config/repo-paths.template.json",
   "routingBlock": {
     "path": "AGENT-HUB.md",
     "startMarker": "<!-- routing:start -->",
