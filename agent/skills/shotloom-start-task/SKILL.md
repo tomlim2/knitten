@@ -139,32 +139,22 @@ If the cited pattern is **not codified** (template Usage Notes doesn't mention i
 
 Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style (`Accepted (amended YYYY-MM-DD)`)", but `docs/guidelines/adr-template.md` Usage Notes did not codify that form. The author noticed the gap at briefing time but applied "Option A" (use the form in this one ADR). Reviewer P2 Blocking forced revert. The right call at briefing time was to reject AC #2 and split.
 
-### Step 6: Ready briefing
+### Step 6: Ready briefing — END OF THIS SKILL
 
-Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC ↔ primitive cross-check verdict for every AC that cited a primitive (codified ✓ / wrong-shape ✗ with proposed split)**. **Stop. Do NOT edit yet — wait for user confirmation.**
+Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC ↔ primitive cross-check verdict for every AC that cited a primitive (codified ✓ / wrong-shape ✗ with proposed split)**.
 
-### Step 6.5: Draft per-ticket plan doc (mandatory once user confirms)
+After the briefing, **end the turn**. Do NOT edit code. Do NOT write a plan doc inside this skill. The Ready briefing is the only output.
 
-Once the user confirms the Step 6 briefing, **write a durable plan doc to `caol-ila/docs/plans/<slug>.md` before any code edit**. The plan freezes intent at start-time so the work can be cross-checked by other tools (Gemini, Codex, sub-agent reviewers, human re-readers) without re-deriving it from the diff.
+Tell the user explicitly what comes next:
 
-**Location** — `caol-ila/docs/plans/<slug>.md`. This is the canonical caol-ila plan folder (per `LOOKUP.md` "Design a new layer" row; sibling docs include `agent-symlink-followup.md` and `harden-system-drift.md`). NOT the vault `agent/projects/shotloom/plans/` folder — that one is for retrospective snapshots / handoffs scoped to obsidian-vault audience, not for at-start execution plans that need cross-tool review.
+> "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (플랜 문서 작성 + 커밋/푸시 후 정지). 구현은 플랜 검토가 끝나고 별도 지시 후 시작."
 
-`<slug>` is the branch body (no STL-NN, no folder repetition, no `plan-` prefix) — e.g. branch `chore/ci-add-containerfile-smoke` → file `ci-add-containerfile-smoke.md`. Filename matches the branch so reviewers can correlate plan ↔ diff at a glance.
+**Plan ↔ implementation are two distinct gates.** Plan-doc authoring is delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md), which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila, then stops. Implementation begins only after a separate user message ("구현 시작", "implement", "go", etc.).
 
-**Shape** — frontmatter matches `docs/plans/` convention (`status: open|parked|done`, `created`, `load: triggered`, `trigger`, `repo`, `linear`), then:
-
-| Section | Content |
-|---------|---------|
-| Intent | One paragraph: what the work changes, why, what stays unchanged. |
-| Decisions (locked) | Numbered list. Each entry: decision · rationale · rejected alternatives. The locked design choices from the Step 6 briefing land here. |
-| Acceptance | Verbatim from Linear (or derived if Linear had none) as `- [ ]` checklist. |
-| File map | Each file the work expects to touch, with a one-line note on the change kind (add / modify / move / delete). |
-| Verification | How to confirm acceptance — manual repro, gate commands, CI signal, follow-up issues. |
-| Open questions | Anything still ambiguous after briefing — flagged for early checkpoint, not silent guessing. |
-
-**Commit** — `docs/plans/<slug>.md` is tracked caol-ila state, not obsidian-staging, so the obsidian auto-commit exception does NOT apply. Stage the file, commit with a `plan(<repo>): …` message, and push from `caol-ila` immediately so the plan is durable across machines and reachable from sub-agent reviewers.
-
-**Do not** restate the Linear description verbatim — the plan is *your interpretation* of the work. Future-you / other agents read the plan to spot where your interpretation diverged from the diff, not to re-read Linear.
+This skill (`/shotloom-start-task`) NEVER:
+- Writes the plan doc itself.
+- Reads worktree source files for the file-map section (that belongs in `/shotloom-draft-task-plan`'s draft phase).
+- Edits any code in the worktree.
 
 ### Step 7: Mandatory post-write self-review (before any PR)
 
