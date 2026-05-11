@@ -1,6 +1,7 @@
 ---
 status: open
 created: 2026-05-11
+updated: 2026-05-11
 load: triggered
 trigger: working STL-227 — VRMC_springBone_extended_collider 180Y normalization
 repo: shotloom
@@ -19,10 +20,10 @@ fields, which today survive root-180Y normalization in the unrotated frame.
 For backward-facing VRM 1.x assets that use extended colliders, this leaves
 the simulation off-axis. The work extends the existing normalizer with an
 extended-collider branch that reuses the same node-parity gate and the same
-`rotate_vec3_180y_value` helper, adds unit tests mirroring the existing
-five-case pattern, and updates two documentation passages that currently
-declare extended collider as out of scope. No behavior changes for VRMs that
-do not use the extension.
+`rotate_vec3_180y_value` helper, materializes the non-invariant `plane.normal`
+default when omitted on an odd-parity node, adds unit tests, and updates two
+documentation passages that currently declare extended collider as out of
+scope. No behavior changes for VRMs that do not use the extension.
 
 ## Decisions (locked)
 
@@ -61,24 +62,59 @@ do not use the extension.
    available") — if no backward-facing VRM with extended collider is in
    `tests/` LFS, document the gap in the PR body and rely on synthetic-JSON
    coverage. Do not block the PR on fixture acquisition.
+7. **Materialize `plane.normal` default when omitted on an odd-parity node.**
+   Per the extended-collider spec, `plane.normal` defaults to `[0, 0, -1]`
+   when omitted. Unlike the base-schema defaults (sphere/capsule offset =
+   `[0, 0, 0]`, gravityDir = `[0, -1, 0]`, all 180Y-invariant), this default
+   is NOT invariant under 180Y — the rotated form is `[0, 0, 1]`. A presence-
+   only check would leave such a plane unrotated and silently off-axis. So
+   when a plane shape exists on a parity-odd collider AND its `normal` field
+   is missing, write `[0, 0, 1]` (the rotated default) explicitly before
+   continuing. `plane.offset`, `sphere.offset`, `capsule.offset`, and
+   `capsule.tail` all have `[0, 0, 0]` defaults that are 180Y-invariant, so
+   presence-only checks remain correct for them — no materialization needed.
+   *Rejected:* failing with a typed error on omitted normal — pushes the
+   burden to upstream tooling and breaks valid assets. *Rejected:* always
+   materializing every default — unnecessary churn for the invariant ones.
+8. **Doc-location for the field inventory: rustdoc, not spec doc.**
+   The full field list of vector pointers lives in the rustdoc above
+   `normalize_spring_bone_180y` (co-located with the implementation per
+   AFDS v2 §5.13 — "Put tricky algorithms, non-obvious invariants, and
+   implementation constraints here when one module clearly owns them").
+   `docs/specs/vrm-character-validation.md` carries a one-line coverage
+   declaration with a cross-link to the rustdoc; `docs/tech-debt/vrm-
+   backward-facing-audit-policy.md` carries the same one-line coverage
+   declaration. *Rejected:* duplicating the field list in the spec doc —
+   it would drift from the rustdoc as the spec evolves.
 
 ## Acceptance
 
-- [ ] Vector-field inventory section for `VRMC_springBone_extended_collider`
-      lives in either the function rustdoc or in the spec doc, citing plane
-      offset/normal and inside-collider offsets/tails.
+- [ ] Rustdoc above `normalize_spring_bone_180y` lists every
+      `VRMC_springBone_extended_collider` vec3 field the normalizer rotates
+      (plane offset, plane normal, inside sphere offset, inside capsule
+      offset, inside capsule tail) AND the `plane.normal` default
+      materialization behavior. The two doc passages below (spec + tech-
+      debt) carry only a one-line coverage declaration + cross-link, not
+      a duplicate field list.
 - [ ] `normalize_spring_bone_180y` handles the extension branch with the
       same odd-parity gate as the base collider path.
+- [ ] When a plane shape on a parity-odd collider has no `normal` field,
+      the normalizer writes `[0, 0, 1]` (the rotated default) before
+      continuing.
 - [ ] Regression tests (synthetic JSON):
       - plane offset + plane normal rotation when collider node parity odd.
+      - plane offset rotation + `normal` materialized to `[0, 0, 1]` when
+        collider parity is odd and the input omitted `normal`.
       - inside sphere offset rotation when parity odd.
       - inside capsule offset + tail rotation when parity odd.
-      - parity-even nodes leave extension shape untouched.
+      - parity-even nodes leave extension shape untouched (including no
+        materialization of an omitted `normal`).
       - malformed extended-collider vec3 propagates `MalformedVec3` with a
         correct pointer.
 - [ ] `docs/specs/vrm-character-validation.md` and
       `docs/tech-debt/vrm-backward-facing-audit-policy.md` no longer claim
-      "base schema only" / "extended collider not yet handled".
+      "base schema only" / "extended collider not yet handled"; both
+      cross-link to the rustdoc field list.
 - [ ] `cargo test -p shotloom-gltf` green.
 - [ ] PR body declares behavior change only for backward-facing VRMs that
       use `VRMC_springBone_extended_collider`; forward-facing VRMs and
@@ -88,35 +124,41 @@ do not use the extension.
 
 | Path | Kind | Note |
 |------|------|------|
-| `crates/shotloom-gltf/src/vrm_normalization.rs` | modify | add extended-collider branch inside `normalize_spring_bone_180y`; update rustdoc to drop "intentionally not touched" caveat; add 5 unit tests in the existing `#[cfg(test)] mod tests` block following the `normalize_spring_bone_180y_*` naming convention. |
-| `docs/specs/vrm-character-validation.md` | modify | lines ~128-144: update "base schema only" prose; add a row or paragraph naming the extension's covered vec3 fields. |
-| `docs/tech-debt/vrm-backward-facing-audit-policy.md` | modify | lines ~22-28: remove the "extended collider extension is not yet rewritten — see STL-227" sentence; replace with coverage declaration. |
+| `crates/shotloom-gltf/src/vrm_normalization.rs` | modify | Add extended-collider branch inside `normalize_spring_bone_180y`; materialize `plane.normal = [0, 0, 1]` when omitted on parity-odd collider; update rustdoc to drop the "intentionally not touched" caveat and add the full extension-field inventory (Decision #8); add 6 unit tests in the existing `#[cfg(test)] mod tests` block following the `normalize_spring_bone_180y_extended_collider_*` naming convention. |
+| `docs/specs/vrm-character-validation.md` | modify | Lines ~128-144: replace the "base schema only" paragraph with a one-line coverage declaration + cross-link to the `normalize_spring_bone_180y` rustdoc. No duplicate field list. |
+| `docs/tech-debt/vrm-backward-facing-audit-policy.md` | modify | Lines ~22-28: remove the "extended collider extension is not yet rewritten — see STL-227" sentence; replace with a one-line coverage declaration + cross-link to the rustdoc. |
 
 ## Verification
 
-- `cargo test -p shotloom-gltf` — must pass; new tests are
-  `normalize_spring_bone_180y_extended_collider_*`.
-- `cargo clippy --workspace --exclude shotloom-desktop -- -D warnings` — clean.
+- `pnpm test:rust` — wraps the CI form `cargo test --workspace $CARGO_WORKSPACE_EXCLUDES`
+  (where `CARGO_WORKSPACE_EXCLUDES = --exclude shotloom-desktop --exclude shotloom-tauri`,
+  per `.github/workflows/code.yml` line 19 and `package.json` line 37). The new
+  tests are `normalize_spring_bone_180y_extended_collider_*`.
+- Narrow form during iteration: `cargo test -p shotloom-gltf`.
+- `pnpm lint:rust` — wraps `cargo clippy --workspace $CARGO_WORKSPACE_EXCLUDES -- -D warnings`
+  (same exclude pair). Do NOT use `--exclude shotloom-desktop` alone — that
+  is stricter than CI and will fail on `shotloom-tauri` issues that CI
+  ignores.
 - `cargo fmt --check` — clean.
 - `node scripts/validate-doc-paths.mjs` — clean (doc edits do not break
   cross-refs).
 - `node scripts/validate-mermaid.mjs` — N/A (no mermaid).
 - `/shotloom-review-before-pr` after push — must run before opening PR.
-- Manual sanity: load a VRM 1.x asset known to use `VRMC_springBone_extended_collider`
-  with a backward-facing root. Confirm extended collider geometry sits on
-  the corrected axis after normalization. *(See Open questions — fixture
-  availability unknown.)*
+- **Fixture discovery** (run once before manual sanity):
+  ```bash
+  find crates -path '*/target' -prune -o \
+    \( -name '*.vrm' -o -name '*.glb' -o -name '*.gltf' \) -print | head
+  ```
+  Then for any hit, grep the asset JSON / glTF for
+  `VRMC_springBone_extended_collider` to confirm extension presence. If
+  zero hits, skip the manual sanity step and declare the gap in the PR
+  body (Decision #6).
+- **Conditional manual sanity** (only if fixture discovery returned a
+  matching asset): load the VRM 1.x asset with a backward-facing root,
+  confirm extended collider geometry sits on the corrected axis after
+  normalization.
 
 ## Open questions
 
-1. Is there a real backward-facing VRM 1.x asset with
-   `VRMC_springBone_extended_collider` in the existing fixture set
-   (`tests/`, LFS)? If yes, add a fixture-level integration test against
-   it; if no, surface the gap in the PR body and leave the synthetic JSON
-   tests as the regression surface.
-2. Should the rustdoc above `normalize_spring_bone_180y` carry the full
-   extension field list, or should that move to
-   `docs/specs/vrm-character-validation.md` and the rustdoc just cross-link?
-   Default: list in rustdoc (it changes when the spec changes — co-located
-   knowledge per AFDS v2 §5.13) with a one-line pointer to the spec for
-   the audit policy.
+None remaining — Decisions #7 (default materialization) and #8 (doc
+location) closed during round-1 plan review.
