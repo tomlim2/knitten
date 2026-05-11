@@ -57,6 +57,8 @@ agent/skills/canvas-design/canvas-fonts/
 # Skill server runtime
 agent/skills/skill-server/node_modules/
 agent/skills/skill-server/package-lock.json
+claude/skills/skill-server/node_modules/
+claude/skills/skill-server/package-lock.json
 
 # Claude Code session logs
 *.txt
@@ -78,3 +80,6 @@ hyperframes/transcript.json
 hyperframes/*.mp4
 hyperframes/*.mov
 hyperframes/*.webm
+
+# pi coding agent runtime
+.pi/
