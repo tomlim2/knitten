@@ -62,13 +62,22 @@ Repointed only the broken per-child symlinks. Conservative scope: did not collap
 | `~/.claude/rules` | `caol-ila/agent/rules` |
 | `~/.claude/settings.json` | `caol-ila/agent/settings.json` |
 | `~/.claude/standards` | `caol-ila/agent/standards` |
+| `~/.claude/skills` | `caol-ila/agent/skills` (added later 2026-05-11 — see Update below) |
+
+## Update — 2026-05-11 later session
+
+Discovered mid-session that `/shotloom-start-code`, `/shotloom-wrapup-task`, `/caol-resolve-doc-path`, and all `cci-*` skills returned `Unknown skill`. Root cause: `~/.claude/skills` was still pointing at the leftover stub `caol-ila/claude/skills/` (near-empty, only `skill-server/`), while the canonical 22 skills live in `caol-ila/agent/skills/`. The earlier remediation table had `commands` repointed but missed `skills` — leftover-stub resolution masked the divergence.
+
+Fix: `ln -sfn caol-ila/agent/skills ~/.claude/skills`. Verified `ls ~/.claude/skills/shotloom-start-code/SKILL.md` and `caol-resolve-doc-path/resolve.sh` resolve. The Shotloom Linear-reference hook that mandates `/shotloom-start-code` as the pre-write gate had been silently bypassed for the duration of the drift (7+ weeks since 2026-03-23 stub) — guardrail miss is the larger lesson, not the symlink itself.
+
+`~/.claude/config` is still on the stale path (Open work #2 below, now reduced to config only).
 
 ## Open work
 
 1. **Decide canonical `~/.claude/` shape on this machine.** Two viable options:
    - **(A) Keep per-child symlinks.** Cheap, no data migration. Diverges from the ADR's "single directory symlink" expectation. Update ADR 0003 / rename plan to recognize this as an acceptable variant.
    - **(B) Collapse to `~/.claude -> caol-ila/agent`.** Matches the ADR exactly. Requires relocating Claude Code runtime state currently living as real subdirs in `~/.claude/` (history, sessions, projects, backups, file-history, paste-cache, plugins, telemetry, ops, tasks, plans, downloads, cache, session-env, shell-snapshots) — likely under `~/.claude-runtime/` or similar — and re-establishing them inside `agent/` or via runtime path overrides.
-2. **Repoint `~/.claude/config` and `~/.claude/skills`** from `caol-ila/claude/...` to `caol-ila/agent/...`. They still resolve via the leftover stub and silently diverge from canonical sources.
+2. **Repoint `~/.claude/config`** from `caol-ila/claude/config` to `caol-ila/agent/config`. Still resolves via the leftover stub and silently diverges from canonical sources. (`~/.claude/skills` repointed in 2026-05-11 later-session update above.)
 3. **Remove the leftover `caol-ila/claude/` stub** once nothing references it. Confirm none of its `private/` / `obsidian-staging/` contents are unique before deletion.
 4. **Optional: add a validator check.** Extend `scripts/validate-llm-first.mjs` (or a new lint) to assert every `~/.claude/*` symlink on a dev machine points into `caol-ila/agent/`, so future renames cannot drift silently.
 
@@ -77,6 +86,6 @@ Repointed only the broken per-child symlinks. Conservative scope: did not collap
 | Check | Expected |
 |---|---|
 | `readlink ~/.claude/CLAUDE.md` | resolves into `caol-ila/agent/` (or `~/.claude` is itself a symlink to `caol-ila/agent`) |
-| `readlink ~/.claude/config` and `~/.claude/skills` | resolve into `caol-ila/agent/` (no longer stale) |
+| `readlink ~/.claude/config` | resolves into `caol-ila/agent/` (no longer stale; `~/.claude/skills` done 2026-05-11 later session) |
 | `~/Desktop/www/caol-ila/claude/` | removed, or explicitly documented as preserved with reason |
 | ADR 0003 | reflects the chosen `~/.claude/` shape on dev machines |
