@@ -5,17 +5,37 @@
       "id": "claude-code",
       "displayName": "Claude Code",
       "entryDocument": "CLAUDE.md",
-      "deployTarget": "~/.claude/CLAUDE.md",
+      "deployTarget": "~/.claude",
       "firstRead": "@SYSTEM.md",
-      "adapter": "claude"
+      "adapter": "claude",
+      "linkMethod": "symlink",
+      "mappings": {
+        "CLAUDE.md": "agent/CLAUDE.md",
+        "commands": "agent/commands",
+        "rules": "agent/rules",
+        "skills": "agent/skills",
+        "standards": "agent/standards",
+        "hooks": "agent/hooks",
+        "lib": "agent/lib",
+        "config": "agent/config",
+        "settings.json": "agent/settings.json",
+        "repo-registry.json": "agent/repo-registry.json"
+      }
     },
     {
       "id": "codex",
       "displayName": "Codex",
       "entryDocument": "AGENTS.md",
-      "deployTarget": "AGENTS.md",
+      "deployTarget": "~/.codex",
       "firstRead": "[`SYSTEM.md`](SYSTEM.md)",
-      "adapter": "codex"
+      "adapter": "codex",
+      "linkMethod": "symlink",
+      "mappings": {
+        "SYSTEM.md": "SYSTEM.md",
+        "agent": "agent",
+        "docs": "docs",
+        "skills": "agent/skills"
+      }
     },
     {
       "id": "pi",

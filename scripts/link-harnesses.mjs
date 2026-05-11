@@ -69,9 +69,41 @@ async function handleJsonConfig(harness, targetPath) {
   }
 }
 
-async function handleSymlinks(harness, targetPath) {
-  // Not fully implemented in registry yet, placeholder for symlink logic
-  console.log(`  [~] Symlink handling for ${harness.id} is pending mapping definitions in agent-hub.json`);
+async function handleSymlinks(harness, deployTarget) {
+  if (!harness.mappings) {
+    console.log(`  [~] No mappings defined for ${harness.id}`);
+    return;
+  }
+
+  await fs.mkdir(deployTarget, { recursive: true });
+
+  for (const [targetName, relativeSourcePath] of Object.entries(harness.mappings)) {
+    const sourcePath = path.join(CAOL_ILA_ROOT, relativeSourcePath);
+    const targetPath = path.join(deployTarget, targetName);
+
+    try {
+      const stats = await fs.lstat(targetPath);
+      if (stats.isSymbolicLink()) {
+        const currentTarget = await fs.readlink(targetPath);
+        if (currentTarget === sourcePath) {
+          console.log(`  [=] Symlink already correct: ${targetName} -> ${relativeSourcePath}`);
+          continue;
+        } else {
+          await fs.unlink(targetPath);
+          console.log(`  [-] Removed incorrect symlink: ${targetName}`);
+        }
+      } else {
+        const bakPath = `${targetPath}.bak.${Date.now()}`;
+        await fs.rename(targetPath, bakPath);
+        console.log(`  [!] Backed up existing real path ${targetName} to ${path.basename(bakPath)}`);
+      }
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+
+    await fs.symlink(sourcePath, targetPath);
+    console.log(`  [+] Created symlink: ${targetName} -> ${relativeSourcePath}`);
+  }
 }
 
 linkHarnesses().catch(err => {
