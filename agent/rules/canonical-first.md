@@ -21,6 +21,7 @@ You see an indicator (suffix, prefix, frontmatter field, folder name, naming pat
 | External LLM/web recommendation (term, path, library) | `SYSTEM.md` → entry document → `~/.claude/standards/` → repo docs |
 | Claim about a real-world entity (person, product, place) | A web fetch / search result, not training prior |
 | Path you're about to hardcode | `~/.claude/private/caol-config/*.json` |
+| Spec default / magic value / enum cited in code or doc | The spec's schema file directly — `gh api repos/<org>/<repo>/contents/<path>` for OSS, `WebFetch` for vendor docs. Never training prior or memory. |
 
 ## Action: 1-second grep, then declare
 
