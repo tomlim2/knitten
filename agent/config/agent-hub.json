@@ -41,7 +41,7 @@
       "id": "pi",
       "displayName": "Pi Coding Agent",
       "entryDocument": "SYSTEM.md",
-      "deployTarget": "~/.pi/settings.json",
+      "deployTarget": "~/.pi/agent/settings.json",
       "firstRead": "[`SYSTEM.md`](SYSTEM.md)",
       "adapter": "pi",
       "linkMethod": "json-config",
