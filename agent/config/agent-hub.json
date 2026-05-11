@@ -16,6 +16,23 @@
       "deployTarget": "AGENTS.md",
       "firstRead": "[`SYSTEM.md`](SYSTEM.md)",
       "adapter": "codex"
+    },
+    {
+      "id": "pi",
+      "displayName": "Pi Coding Agent",
+      "entryDocument": "SYSTEM.md",
+      "deployTarget": "~/.pi/settings.json",
+      "firstRead": "[`SYSTEM.md`](SYSTEM.md)",
+      "adapter": "pi",
+      "linkMethod": "json-config",
+      "configFormat": {
+        "skills": [
+          "$CAOL_ILA_ROOT/agent/skills"
+        ],
+        "prompts": [
+          "$CAOL_ILA_ROOT/agent/commands"
+        ]
+      }
     }
   ],
   "sharedLayers": [
