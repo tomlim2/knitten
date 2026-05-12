@@ -25,7 +25,7 @@ async function walk(dir, filter) {
   }
   for (const e of entries) {
     const full = path.join(dir, e.name);
-    if (e.isDirectory() && e.name === "node_modules") continue;
+    if (e.isDirectory() && (e.name === "node_modules" || e.name.startsWith("."))) continue;
     if (e.isDirectory()) out.push(...(await walk(full, filter)));
     else if (e.isFile() && filter(full)) out.push(full);
   }
@@ -150,7 +150,7 @@ async function commandNames() {
 async function skillNames() {
   const entries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   return entries
-    .filter((entry) => entry.isDirectory())
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
     .map((entry) => entry.name)
     .sort(sortInventoryFiles);
 }
@@ -723,7 +723,7 @@ async function checkInventoryCounts() {
   };
   const countDirs = async (sub) => {
     const ents = await listDirOnce(path.join(AGENT_ROOT, sub));
-    return ents.filter((e) => e.isDirectory()).length;
+    return ents.filter((e) => e.isDirectory() && !e.name.startsWith(".")).length;
   };
   const countMdRecursive = async (sub) => {
     const files = await walk(path.join(AGENT_ROOT, sub), (f) => f.endsWith(".md"));
@@ -1818,6 +1818,7 @@ async function checkTaxonomy() {
   const skillEntries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   for (const entry of skillEntries) {
     if (!entry.isDirectory()) continue;
+    if (entry.name.startsWith(".")) continue;
     const prefix = entry.name.split("-")[0];
     if (!categories.has(prefix)) {
       violations.push({

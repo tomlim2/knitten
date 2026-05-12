@@ -5,7 +5,7 @@ portability: shared
 ---
 # Harness Deployment Standard
 
-Defines how external LLM agents and harnesses (Claude Code, Pi, Codex, Cursor, etc.) connect to the durable configuration source in `caol-ila/agent/`.
+Defines how external LLM agents and harnesses, including Claude Code, Pi, Codex, Cursor, and future adapters, connect to the durable configuration source in `caol-ila/agent/`.
 
 ## Core Contract
 
@@ -31,7 +31,7 @@ When a harness natively supports reading external paths via configuration (like 
 All supported harnesses must be registered in `agent/config/agent-hub.json` under the `harnesses` array. The registry dictates:
 1. The `id` and `displayName` of the harness.
 2. The `deployTarget`.
-3. The `linkMethod` (`symlink`, `json-config`, etc.).
+3. The `linkMethod` (`symlink`, `json-config`, or another registered method).
 
 ## Validation
 

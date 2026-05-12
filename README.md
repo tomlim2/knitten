@@ -73,13 +73,13 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Skills (125)
+## Skills (127)
 
 | Category | Count |
 |----------|------:|
 | `dev-*` | 24 |
-| `shotloom-*` | 21 |
-| `caol-*` | 16 |
+| `shotloom-*` | 22 |
+| `caol-*` | 17 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
 | `ue-*` | 7 |
@@ -104,7 +104,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Standards (45)
+## Standards (47)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
@@ -115,7 +115,7 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 | `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
 | `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |
 | `obsidian/` | 4 | `note-inspection-checklist.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `vault-audience.md` |
-| `policy/` | 6 | `garden-review.md`, `llm-first-docs.md`, `llm-first-policy.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
+| `policy/` | 8 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
 | `research/` | 2 | `research-methodology.md`, `tech-spec-template.md` |
 | `review/` | 13 | `review-3d-rendering.md`, `review-ai-motion.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-spec-doc.md`, `review-template.md`, `review-ux-python-gui.md`, `review-ux-writing.md`, `review-ux.md` |
 | `system/` | 1 | `repo-paths-keys.md` |

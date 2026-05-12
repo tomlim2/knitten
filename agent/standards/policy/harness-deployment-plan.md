@@ -1,6 +1,9 @@
+---
+status: draft
+---
 # Harness Deployment Plan
 
-Current context: `caol-ila` defines the "durable source" (`caol-ila/agent/`) and mentions "deploy targets" (like `~/.claude/`) in `SYSTEM.md`. However, it lacks a standardized, cross-platform mechanism to actually deploy or link those artifacts globally for *any* agent (Claude, Codex, Pi, Cursor, etc.).
+Current context: `caol-ila` defines the "durable source" (`caol-ila/agent/`) and mentions "deploy targets" (like `~/.claude/`) in `SYSTEM.md`. However, it lacks a standardized, cross-platform mechanism to actually deploy or link those artifacts globally for *any* agent, including Claude, Codex, Pi, Cursor, and future harnesses.
 
 This plan standardizes harness deployment across all agents and models.
 
@@ -52,4 +55,4 @@ An agent should be able to instantly connect a new machine or a newly installed 
 ## Phase 4: Validation
 Ensure the local machine's state matches the deployment standard.
 - **Target:** `scripts/validate-harness-links.mjs`
-- **Duty:** Validates that `~/.pi/settings.json`, `~/.claude/skills`, etc., correctly point back to the `caol-ila` root, warning the user/agent if a link is broken. Fits into existing `scripts/validate-llm-first.mjs` flow.
+- **Duty:** Validates that `~/.pi/settings.json`, `~/.claude/skills`, and equivalent deploy targets correctly point back to the `caol-ila` root, warning the user/agent if a link is broken. Fits into existing `scripts/validate-llm-first.mjs` flow.

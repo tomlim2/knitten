@@ -149,7 +149,7 @@ Tell the user explicitly what comes next:
 
 > "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (플랜 문서 작성 + 커밋/푸시 후 정지). 구현은 플랜 검토가 끝나고 별도 지시 후 시작."
 
-**Plan ↔ implementation are two distinct gates.** Plan-doc authoring is delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md), which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila, then stops. Implementation begins only after a separate user message ("구현 시작", "implement", "go", etc.).
+**Plan ↔ implementation are two distinct gates.** Plan-doc authoring is delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md), which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila, then stops. Implementation begins only after a separate user message such as "구현 시작", "implement", or "go".
 
 This skill (`/shotloom-start-task`) NEVER:
 - Writes the plan doc itself.

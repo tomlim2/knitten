@@ -54,7 +54,7 @@ For updates: show the user the existing frontmatter `status` field and ask wheth
 
 ### Step 3: Draft the plan body
 
-Match the existing `caol-ila/docs/plans/` shape. Frontmatter convention (from sibling docs `agent-symlink-followup.md`, `harden-system-drift.md`, etc.):
+Match the existing `caol-ila/docs/plans/` shape. Frontmatter convention from sibling docs such as `agent-symlink-followup.md` and `harden-system-drift.md`:
 
 ```yaml
 ---
@@ -106,7 +106,7 @@ plan doc landed at <plan_path>
 구현 시작하려면 말씀주세요.
 ```
 
-Then end the turn. **Do not** start code edits in the shotloom worktree. **Do not** read the worktree source files in the same turn. Wait for an explicit user message ("구현 시작", "implement", "go", etc.).
+Then end the turn. **Do not** start code edits in the shotloom worktree. **Do not** read the worktree source files in the same turn. Wait for an explicit user message such as "구현 시작", "implement", or "go".
 
 ## Binding rules
 

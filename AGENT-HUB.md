@@ -11,7 +11,7 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 
 | Area | Count | Canonical owner |
 |------|------:|-----------------|
-| Harnesses | 2 | `agent/config/agent-hub.json` `harnesses` |
+| Harnesses | 3 | `agent/config/agent-hub.json` `harnesses` |
 | Shared layers | 6 | `agent/config/agent-hub.json` `sharedLayers` |
 | Registries | 9 | `agent/config/agent-hub.json` `registries` |
 | Generated documents | 5 | `agent/config/agent-hub.json` `generatedDocuments` |
@@ -22,8 +22,9 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 
 | ID | Entry document | Deploy target |
 |----|----------------|---------------|
-| `claude-code` | `CLAUDE.md` | `~/.claude/CLAUDE.md` |
-| `codex` | `AGENTS.md` | `AGENTS.md` |
+| `claude-code` | `CLAUDE.md` | `~/.claude` |
+| `codex` | `AGENTS.md` | `~/.codex` |
+| `pi` | `SYSTEM.md` | `~/.pi/agent/settings.json` |
 
 ## Shared Layers
 

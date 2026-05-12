@@ -12,6 +12,7 @@ Entry documents:
 |----------------|---------|------|
 | `CLAUDE.md` | Claude Code | Imports this file before Claude-specific `@~/.claude/...` layers |
 | `AGENTS.md` | Codex | Directs Codex to read this file before Codex-specific behavior |
+| `SYSTEM.md` | Pi Coding Agent | Configured as Pi's first shared-policy instruction |
 
 Do not add shared policy to an entry document. Put shared policy here, `agent/rules/`, `agent/standards/`, `agent/skills/`, or `agent/commands/`.
 
