@@ -14,7 +14,7 @@ This table is inventory only. Rule cells MUST use code spans, not Markdown links
 | `external-recommendation-cross-check.md` | auto | Cross-check Codex/Gemini/subagent suggestions against user's SYSTEM.md/standards before adopting |
 | `canonical-first.md` | auto | Meta — when you see a pattern (suffix/prefix/term), grep the skill/standard that defines it before mimicking |
 | `git-defaults.md` | auto | No auto-push / no Co-Authored-By / author identity |
-| `behavior.md` | auto | Output style, delegation, context budget (ambiguity moved out) |
+| `behavior.md` | auto | Output style, delegation, context budget, plan approval triggers |
 | `verify-before-report.md` | auto | Verify before presenting any result |
 | `security.md` | auto | Secrets handling, documentation language |
 | `session-start.md` | auto | Config reads + safety guards |
