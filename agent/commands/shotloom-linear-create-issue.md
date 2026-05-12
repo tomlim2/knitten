@@ -192,6 +192,26 @@ Related to STL-NN
 - 기술 용어(영문)는 원문 유지
 - 짧고 단정적인 문장
 
+**Scope 규칙 — 이 이슈가 *하는 것만* 적기 (엄수):**
+
+이슈 본문은 이 이슈가 ship 하는 내용만 기술. "다음 단계에서 무엇을 할 것이다" / "추후 follow-up 으로 X 한다" / "Phase 2 에서 Y 한다" 같은 후속 약속은 **본문에서 제거**. Linear 의 parent / related / blocked-by 관계가 후속 작업의 트리거이지 본문 prose 가 아니다. 본문에 박혀버린 future-tense 약속은:
+
+- 책임 위치가 흐려진다 (이 이슈의 AC 인지, 후속 이슈의 AC 인지 모호).
+- 후속 이슈가 생기지 않은 채 본문만 남으면 "약속한 작업이 사라진" 상태로 rot.
+- 본 이슈 AC 검토 시 reviewer 가 후속 약속까지 같이 평가해 scope 가 부풀어 보임.
+
+금지 표현 (active suppression — 본문에 들어가면 surface 해서 제거):
+- `... 는 follow-up (out of scope)` — 후속 작업 자체를 언급하지 말 것. 그냥 "out of scope" 만, 또는 행을 통째로 삭제.
+- `추후 ... 한다` / `다음 단계에서 ... 한다` / `Phase 2 에서 ... 한다` / `별 PR 또는 follow-up issue 에서 ... 한다`
+- `next steps`, `next pass`, `will follow up`, `deferred to a later`, `to be added later`
+- 본 이슈 AC 가 아닌 후속 작업의 acceptance criteria
+
+허용되는 미래 언급 (좁고 명시적):
+- `## Notes` 안에 "이 이슈가 다루지 않는 영역" 만 한 줄로 명시 (예: "automatic mesh-bound scaling — out of scope"). 후속이 무엇을 할지는 적지 않음.
+- 부모 / 관련 이슈는 Linear 의 `parentId` / `relatedTo` 로 연결 (본문 prose 가 아님).
+
+이 규칙은 PR description 에 적용되는 `shotloom-make-pr` 의 "Future/deferred work 금지" suppression 과 동일 원칙을 Linear 본문에 확장한 것.
+
 **Privacy / private repo 규칙 (엄수):**
 - **Shotloom Linear 이슈에 개인 private 레포를 절대 링크/언급하지 말 것.** 포함: `bevy-vrm`, `anju`, `mmd-anju`, `ta-portfolio`, `StoryPreviz`, 그 외 `~/.claude/private/caol-config/repo-paths.json`에 등록되었지만 CINEV 소유가 아닌 모든 레포.
 - bevy-vrm에서 shotloom으로 "port"/"이식"하는 작업일 때도 원본을 **"prior internal prototype"** / **"선행 R&D 코드"** / **"upstream reference implementation"** 같은 추상 표현으로만 지칭. 레포 이름, URL, 커밋 해시, 파일 경로 포함 금지.
