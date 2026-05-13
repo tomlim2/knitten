@@ -160,21 +160,13 @@ crates/shotloom-gltf/src/prop_preflight.rs
 Expose from `crates/shotloom-gltf/src/lib.rs`:
 
 ```rust
-pub use prop_preflight::{
-    preflight_prop_glb, PropPreflightError, PropPreflightReport,
-};
+pub use prop_preflight::{preflight_prop_glb, PropPreflightError};
 ```
 
 Suggested API:
 
 ```rust
-pub fn preflight_prop_glb(bytes: &[u8]) -> Result<PropPreflightReport, PropPreflightError>;
-
-pub struct PropPreflightReport {
-    pub scene_count: usize,
-    pub mesh_count: usize,
-    pub reachable_mesh_node_count: usize,
-}
+pub fn preflight_prop_glb(filename: &str, bytes: &[u8]) -> Result<(), PropPreflightError>;
 
 pub enum PropPreflightError {
     NotGlb,
@@ -186,13 +178,20 @@ pub enum PropPreflightError {
 }
 ```
 
+Do not expose a `PropPreflightReport` in this PR. No out-of-module consumer
+needs counts yet, so a report type would be speculative public API.
+
 Implementation notes:
 - Use the existing `gltf` crate dependency.
+- Validate the filename extension inside `preflight_prop_glb` before inspecting
+  bytes. A missing or non-`.glb` extension, compared with
+  `eq_ignore_ascii_case("glb")`, returns `PropPreflightError::NotGlb`.
 - Classify container header failures before handing bytes to the `gltf` crate:
   - `BadGlbHeader`: bytes are shorter than the 12-byte GLB header, the header
     cannot be read, the GLB container version is unsupported, or the declared
     total length is inconsistent.
-  - `NotGlb`: a readable 12-byte header exists but the magic is not `glTF`.
+  - `NotGlb`: the filename is not `.glb`, or a readable 12-byte header exists
+    but the magic is not `glTF`.
 - `gltf::Glb::from_slice(bytes)` is available and already used in tests.
 - `gltf::Gltf::from_slice(bytes)` is available and already used by the
   `sample_glb_fixture` test.
@@ -208,6 +207,7 @@ Implementation notes:
 
 Tests:
 - Happy path: `assets/props/debug_prop.glb` passes.
+- Reject a valid GLB payload when `filename` has a non-`.glb` extension.
 - Reject non-GLB bytes.
 - Reject GLB with unsupported `/asset/version`.
 - Reject GLB with no `scenes`.
@@ -226,7 +226,7 @@ crates/shotloom-engine/src/bridge/handlers/assets.rs
 ```
 
 Replace `validate_prop_import_bytes` with a call to
-`shotloom_gltf::preflight_prop_glb(&bytes)`.
+`shotloom_gltf::preflight_prop_glb(&filename, bytes.as_ref())`.
 
 Delete the old `validate_prop_import_bytes` helper. After the change, the prop
 registration path must have no remaining definition or call site for
@@ -272,6 +272,15 @@ On success:
   - cache bytes in `BundledVrmAssets`
   - emit `AssetRegistered`
   - emit `BundleChanged`
+- Preserve the existing `cache_imported_asset_bytes` failure path and message.
+  If caching imported prop bytes fails, return through that existing rejection
+  path without registering the asset.
+
+Tests:
+- Engine prop import rejection test covers the two-event failure order:
+  `ValidationDiagnostics` then `CommandRejected`.
+- Editor bridge snapshot covers the prop rejection wire shape, for example
+  `apps/editor/src/bridge/__tests__/__snapshots__/prop_import_rejected.expected.json`.
 
 ### S3 — Adjust Editor Only If Needed
 
@@ -304,6 +313,8 @@ Do not document `.gltf` as supported.
 ## Acceptance Criteria
 
 - [ ] `shotloom_gltf::preflight_prop_glb` exists and is public.
+- [ ] `preflight_prop_glb` takes both `filename` and `bytes`, and rejects
+      non-`.glb` filenames before registration.
 - [ ] Prop GLB preflight rejects non-GLB bytes, malformed GLB, unsupported glTF
       version, no scene, and no scene-reachable mesh.
 - [ ] `assets/props/debug_prop.glb` passes preflight.
@@ -315,8 +326,12 @@ Do not document `.gltf` as supported.
       code and mapper-owned message, then `CommandRejected`.
 - [ ] Mapper tests cover every `PropPreflightError` variant and assert rejection
       code, diagnostic code, and exact fixed message or `InvalidGltf` prefix.
+- [ ] Editor bridge snapshots include a prop import rejection fixture covering
+      the `ValidationDiagnostics` plus `CommandRejected` event sequence.
 - [ ] Failed prop import does not register an asset and still drains staged
       upload bytes.
+- [ ] Existing `cache_imported_asset_bytes` failure behavior and message are
+      unchanged.
 - [ ] Successful prop import still emits `AssetRegistered` and `BundleChanged`.
 - [ ] Imported prop asset still spawns through existing `spawn_prop_from_asset`.
 - [ ] VRM GLB is not rejected solely for having VRM extensions when imported as
@@ -336,6 +351,7 @@ cargo test -p shotloom-gltf prop_preflight
 cargo test -p shotloom-gltf
 cargo test -p shotloom-engine import_prop
 cargo test -p shotloom-core import_prop
+pnpm test:web -- src/bridge/__tests__/contract.test.ts
 pnpm test:web -- WorldAssetsPanel
 node scripts/validate-doc-paths.mjs
 ```
@@ -382,6 +398,7 @@ Manual repro:
 - Do not add a separate `ImportProp` command.
 - Do not add lowercase `reason_code` to `CommandRejected`.
 - Do not move validation above staged-byte draining in `handle_import_asset`.
+- Do not change the existing `cache_imported_asset_bytes` failure path.
 - Do not change `assets/props/<asset_id>.glb` URI shape.
 - Do not modify prop spawn, gizmo, or selection behavior as part of this PR.
 - Do not reject VRM-extension GLBs solely because they are VRM when the user
