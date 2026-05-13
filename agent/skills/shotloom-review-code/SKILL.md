@@ -97,7 +97,8 @@ Only after Phase 1 is fully reported, run the patterns in `reference.md`. These 
 - **Pattern D** — Library hygiene (logging in lib code, mixed-language comments, bare `allow(dead_code)`).
 - **Pattern E** — Build / platform (Linux dev-dep regressions, Cargo.lock drift, Windows fs ops).
 - **Pattern F** — Cross-crate & inherited-pattern hygiene.
-- **Pattern T** — Test coverage on changed behavior (enforces `~/.claude/rules/test-write.md`; the in-repo spec does not).
+- **Pattern T** — Test coverage on changed behavior (enforces `~/.claude/rules/test-write.md`; the in-repo spec does not). Includes T5: defensive / fallback branch without a matching test (TS `data-testid` fallbacks, Rust `_ =>` arms, empty-state guards).
+- **Pattern U** — Speculative public API surface. Barrel `index.ts` re-exports and `pub` items added without an out-of-module consumer in the same diff. Source of recurring "Maintainability" nits at review time.
 
 For each pattern: run the sweep command from reference.md, triage hits, report.
 

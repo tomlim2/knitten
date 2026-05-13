@@ -265,6 +265,31 @@ T3: <crate>/src/<file>.rs +impl From<NewType> for X — no new test maps to it.
     Fix: add test with distinct per-field values to pin the mapping, OR cite the pre-existing test name in the PR body.
 ```
 
+### T5: defensive / fallback branch without coverage
+
+Every reachable defensive branch — empty-state fallback, `unwrap_or_default` arm, "should-never-happen" `else` clause, error path that returns a placeholder — needs at least one unit test that exercises it. Without coverage, the branch is dead from a measurement standpoint and a future refactor can silently break it while every other test stays green.
+
+Triggers (any one):
+
+- A new `data-testid="<x>-fallback"` / `data-testid="<x>-empty"` / `data-testid="<x>-error"` element in TSX without a test matching `getByTestId("<x>-…")`.
+- A new Rust `match` arm `_ =>` or `None =>` that returns a non-trivial value, with no test in the same diff that constructs the precondition (empty input, missing config, malformed enum).
+- A new `if <guard> === undefined / .is_none()` early return whose body is non-empty, with no test exercising the guard's true branch.
+
+```bash
+# TS: new fallback-shaped testids without a matching test
+git diff origin/main..HEAD --unified=0 -- '*.tsx' \
+  | rg '^\+.*data-testid="([^"]*(?:-fallback|-empty|-none|-error|-no-[^"]+))"' -o -r '$1' \
+  | sort -u
+# For each testid, grep tests for getByTestId("<id>") usage.
+```
+
+Finding format:
+
+```
+T5: <path>:<line> +<branch shape> — branch reachable but no test exercises the precondition.
+    Fix: add a unit test that mocks the input to force the branch (e.g. `vi.mock("./<source>", () => ({ <empty-shape> }))` for TS), or cite the existing test that already covers it.
+```
+
 ### T4: tests referencing private items in OTHER crates by name
 
 ```bash
@@ -286,9 +311,63 @@ If the test is in crate `A` and the identifier is private in crate `B`, rewrite 
 
 ---
 
+## Pattern U — Speculative public API surface
+
+Barrel `index.ts` re-exports, public Rust `pub fn` / `pub use` items, and similar widenings of a module's contract surface should only land when an out-of-module consumer already needs them. Speculative re-exports turn future renames or removals into breaking changes for callers that do not exist yet, and are a recurring source of barrel drift.
+
+Rule: every newly exported symbol from a barrel / `pub` item must have at least one out-of-module consumer in the same diff. If the new symbol is only used by siblings reachable via relative imports / `crate::` paths inside the same module, drop the re-export; siblings should keep using the direct import.
+
+### U1: barrel widening without an external consumer (TS)
+
+```bash
+# 1. New `export {...}` / `export type {...}` lines added in any index.ts under apps/<x>/src
+git diff origin/main..HEAD --unified=0 -- 'apps/*/src/**/index.ts' \
+  | rg '^\+export\s+(\{[^}]+\}|type\s+\{[^}]+\}|\*)' -o
+# 2. For each new symbol name, grep for an import outside the symbol's own folder.
+ident="DebugSidebar"
+folder="apps/editor/src/components/debug"
+rg -l "from \".*${folder##*/components/}" apps/ --type ts --type tsx \
+  | rg -v "^${folder}/" \
+  | xargs -I{} rg -l "\\b${ident}\\b" {} 2>/dev/null
+```
+
+Zero out-of-folder hits → finding.
+
+### U2: speculative `pub` symbol without an external consumer (Rust)
+
+```bash
+# New `pub fn` / `pub struct` / `pub enum` / `pub use` in lib.rs / mod.rs entries
+git diff origin/main..HEAD --unified=0 -- 'crates/*/src/lib.rs' 'crates/*/src/**/mod.rs' \
+  | rg '^\+\s*pub\s+(fn|struct|enum|use|type)\s+([A-Za-z_][A-Za-z0-9_]*)' -o -r '$2' \
+  | sort -u
+# For each symbol, check if any other crate consumes it.
+ident="DebugSidebar"
+rg -n "use\s+[a-z_]+::${ident}\b|::${ident}\b" crates/ 2>/dev/null \
+  | rg -v "^crates/${owning_crate}/"
+```
+
+Zero out-of-crate hits → finding. Downgrade to `pub(crate)` if siblings need it; drop entirely if the symbol is only used inside its own module.
+
+Finding format:
+
+```
+U1: <path>:<line> +export {<symbol>} — no out-of-module consumer in the diff.
+    Fix: drop the re-export; siblings can keep using the direct relative import. Re-export later when an outside consumer arrives.
+```
+
+```
+U2: <crate>/src/<file>.rs +pub <kind> <symbol> — no out-of-crate consumer.
+    Fix: downgrade to `pub(crate)` (if siblings need it) or drop the `pub` entirely.
+```
+
+Tie-in: this is the "speculative public API" defect class — the more general form of `~/.claude/rules/code-write.md` "Start small, prove, then grow". Reviewers commonly cite it as a Maintainability nit; record it on the skill side so the next session catches it before review.
+
+---
+
 ## Sweep order
 
 1. **A–F** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
 2. **T** — test coverage on changed behavior (`rules/test-write.md` enforcement).
+3. **U** — speculative public API surface (barrel widening without consumer).
 
 Findings in T are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.
