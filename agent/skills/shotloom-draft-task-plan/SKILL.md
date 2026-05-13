@@ -1,5 +1,5 @@
 ---
-description: Draft cold-start Shotloom task plans after live code audit; stop on stale briefing; no implementation.
+description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; stop on stale briefing; no implementation.
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(jq:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 ---
@@ -7,8 +7,9 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(jq:*), Bash(ls:*
 # shotloom-draft-task-plan
 
 Plan-phase companion to `/shotloom-start-task`. Writes one durable execution
-plan to `caol-ila/docs/plans/<slug>.md`, commits, pushes, then stops.
-Implementation begins only after a separate user go-ahead.
+plan to `caol-ila/docs/plans/<slug>.md`, self-reviews it until material gaps are
+closed, commits, pushes, then stops. Implementation begins only after a separate
+user go-ahead.
 
 ## Purpose
 
@@ -160,12 +161,66 @@ Rules:
 - If the plan says "add", verify the target does not already exist.
 - If the plan says "reuse existing", name the existing implementation.
 
-### Step 5: Write + Commit + Push
+### Step 5: Run Iterative Plan Self-Review
+
+Do not land the first draft. Review the drafted plan as if it were a PR under
+implementation review, then revise it. Repeat until the latest review pass finds
+no unhandled material defects.
+
+Use this severity model:
+
+| Priority | Meaning | Required action before landing |
+|---|---|---|
+| P1 | Implementation would likely go wrong, rework, or create the wrong API. | Must be fixed in the plan. |
+| P2 | Reviewable ambiguity, missing test/doc acceptance, or risky edge case. | Fix in the plan unless explicitly scoped out with rationale. |
+| P3 | Nit, layout, naming, or speculative cleanup. | Fix when cheap; otherwise move to `Follow-Up Candidates` or `Traps`. |
+
+Run at least these review lenses:
+- **Current-code contradiction:** Does the plan add something that already
+  exists, cite a non-existent API, or miss an existing failure path?
+- **API boundary:** Are function signatures, ownership, input validation,
+  return types, and public surface area exact enough to avoid speculative APIs?
+- **Error and diagnostic ownership:** Are rejection codes, diagnostic codes,
+  human-readable messages, and event ordering owned by a named layer?
+- **Wire contract:** Does the plan preserve existing command/event shapes unless
+  a protocol change is explicitly in scope?
+- **Invariant preservation:** Does it mention staged-byte draining, cache
+  failure paths, existing success events, identity, paths, and URI shapes that
+  must not regress?
+- **Test evidence:** Are unit, integration, snapshot, fixture, manual repro, and
+  negative cases mapped to the changed behavior?
+- **Format and docs:** Will markdown tables render, paths resolve, and doc
+  updates match the actual repository structure?
+- **Scope creep:** Are tempting related features captured as non-goals or
+  follow-ups instead of hidden implementation work?
+
+For each pass:
+1. List findings internally as `P1`, `P2`, or `P3`.
+2. Patch the plan for every P1.
+3. Patch or explicitly scope every P2.
+4. Patch cheap P3 items; otherwise record them in `Traps` or
+   `Follow-Up Candidates`.
+5. Re-run a focused source check for any changed claim.
+
+Convergence rule:
+- Continue self-review until one full pass finds no P1 and no unhandled P2.
+- If a new P1 appears in any pass, fix it and run another full pass.
+- If only P3 items remain, land only after they are either fixed or documented.
+- If convergence requires changing the requested scope, stop and ask instead of
+  landing a misleading plan.
+
+When the user provides external review findings after a plan has landed, treat
+them as another self-review pass in update mode. Apply the same P1/P2/P3 model,
+revise the same plan, then commit and push a follow-up.
+
+### Step 6: Write + Commit + Push
 
 The user's Step 6 briefing OK plus invoking this skill is approval to land a
-valid plan. Do not add another approval gate after a clean current-state audit.
+valid plan. Do not add another approval gate after a clean current-state audit
+and converged self-review loop.
 
-Do not write if Step 2 found unresolved stale assumptions.
+Do not write if Step 2 found unresolved stale assumptions or Step 5 still has
+unhandled P1/P2 findings.
 
 For a clean plan:
 1. Write the drafted body to `$plan_path`.
@@ -180,7 +235,7 @@ For a clean plan:
 Only commit the plan file unless the user explicitly asked for related skill or
 doc updates in the same turn.
 
-### Step 6: Report + STOP
+### Step 7: Report + STOP
 
 Emit one short report:
 
@@ -198,6 +253,8 @@ required; modifying it is forbidden in this skill.
 
 - **Audit before write.** The live Shotloom tree outranks Linear and briefing
   text.
+- **Review before landing.** A plan is not ready until the iterative self-review
+  pass has converged.
 - **Stale briefing stops the skill.** Report conflicts instead of landing a
   misleading plan.
 - **One artifact, one stop.** This skill writes at most one plan doc.
