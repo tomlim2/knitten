@@ -42,3 +42,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR 리뷰에서 ADR/arch 문서의 책임 분산, 선행 참조, 범위 drift 지적을 기록.
 - 배운 것: ADR에는 durable decision만 두고 현재 topology는 `docs/arch/`로 위임한다.
 - [[shotloom/days/day-01|상세]]
+
+## Day 2 (05-13): STL-398 PR 리뷰 회고
+- VRM thumb slot warning PR에서 diagnostic spec table, parse policy, malformed input test 지적을 기록.
+- 배운 것: 새 diagnostic code는 warning text가 아니라 spec, failure policy, branch coverage까지 묶인 작은 contract다.
+- [[shotloom/days/day-02|상세]]
