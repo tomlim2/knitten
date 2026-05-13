@@ -364,10 +364,42 @@ Tie-in: this is the "speculative public API" defect class — the more general f
 
 ---
 
+## Pattern J — TypeScript defensive-shape patterns
+
+Trigger: `ts_changed > 0`. Three patterns the shotloom in-repo `docs/guidelines/review-typescript.md` did not yet name when this group was added; recurring on editor PRs as "defensive but lying" shapes that weaken the type system, hide call shapes, or make alarm-bell paths unreachable.
+
+Each hit is a candidate defect needing human triage — same triage discipline as Pattern H in the docs leaf. Grep is best-effort; the *judgment* is whether the literal/guard/parser actually has a live consumer that justifies the defensive form.
+
+- **J1 — Nullish-coalescing literal that fake-narrows `T | undefined`.** Find lines that paper over a `Maybe<T>` with a magic literal (typical shape: `const X = something()?.field ?? "literal"`). The literal often makes the type appear `string` when it is really `string | undefined`, hiding the missing case from every downstream caller. Triage rule: confirm the literal is a *meaningful* domain value (e.g. a real default like `"system"`, `"auto"`, `0`); a placeholder keyword borrowed from the first array entry is the defect form.
+- **J2 — Function signature widened beyond actual callers + dead `if (!arg)` guard.** Find `if (!<name>) return undefined` (or equivalent) added in the diff where the surrounding function's argument type includes `| undefined` / `| null`. Cross-check: does any current caller actually pass `undefined`? If every call site narrows beforehand, the widening + guard is dead code that lies about the contract. Tighten to the strict type; let future callers narrow at the call site.
+- **J3 — Parser over-tolerance: silently collapsing invalid input into valid input.** Find URL / path / query parsers added in the diff that use `.split(<sep>).find(<filter>)` or `array[0]` to "extract" a single token — these patterns silently drop the rest of the input. If the route already renders an unknown-input fallback, the over-tolerant parser makes that fallback unreachable for nested-path typos and broken bookmarks. Triage rule: preserve enough structure that invalid input flows through the existing unknown / fallback UI rather than being rewritten to look valid.
+
+Sweep commands:
+
+```bash
+# J1 — nullish-coalescing literal in production code
+git diff origin/main..HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
+  | rg '^\+' | rg '\?\?\s*"[a-z][\w-]*"' | rg -v '__tests__|\.test\.'
+
+# J2 — defensive `!arg` guard added on a widened signature
+git diff origin/main..HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
+  | rg '^\+' | rg 'if \(!\w+\)\s*return (undefined|null|\{|\[|\"\")'
+
+# J3 — first-non-empty path/URL extraction
+git diff origin/main..HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
+  | rg '^\+' | rg '\.split\("/"\)\.(find|filter)\(' \
+  | rg -v 'filter\(.*\)\.join\('   # join after filter is fine — drop the .find() over-tolerant shape
+```
+
+Findings escalate per the rule's source — all three default to P2 (maintainability / contract clarity / UX-signal preservation). When the in-repo `docs/guidelines/review-typescript.md` ships parallel section names for J1/J2/J3, prune the Pattern J entries here in the same PR — this pattern is for what the in-repo spec misses, not a parallel catalog. Same discipline as Pattern H in the docs leaf.
+
+---
+
 ## Sweep order
 
 1. **A–F** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
 2. **T** — test coverage on changed behavior (`rules/test-write.md` enforcement).
 3. **U** — speculative public API surface (barrel widening without consumer).
+4. **J** — TypeScript defensive-shape patterns (fires only when `ts_changed > 0`).
 
 Findings in T are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.

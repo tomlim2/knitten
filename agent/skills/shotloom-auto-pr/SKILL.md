@@ -8,17 +8,14 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Agent, Bash(gh:*), Bash(git:*), Ba
 
 Split into two halves:
 
-1. **Watcher** — `watch.sh` run in a `nohup` bash sleep-loop spawned by `start.sh` (PID tracked in `~/.claude/ops/pr-<N>/watcher.pid`). Every 180s polls PR via `gh`, diffs against `state.json`, exits silently on no-change. Claude is NOT invoked on no-change ticks. **macOS note:** launchd is blocked from `~/.claude/` by TCC, so we use `nohup` — watcher dies on reboot; re-run `start.sh` after boot. `stop.sh` keeps a legacy `launchctl unload` guard for hosts that still have a stale plist from earlier launchd-based versions.
+1. **Watcher** — `watch.sh` run in a `nohup` bash sleep-loop spawned by `start.sh` (PID tracked in `~/.claude/ops/pr-<N>/watcher.pid`). Polls PR via `gh` every `INTERVAL` seconds (default 300, override `start.sh <N> 180`), diffs against `state.json`, exits silently on no-change. Claude is NOT invoked on no-change ticks. **macOS note:** launchd is blocked from `~/.claude/` by TCC, so we use `nohup` — watcher dies on reboot; re-run `start.sh` after boot.
 2. **Reactor** — `/shotloom-auto-pr react <N>` is a headless handler the watcher fires ONLY when a real change is detected (new comment, new review, CI flipped to fail, state→MERGED/CLOSED). Reads `last-event.json`, applies fixes/replies, exits.
 
 Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing nothing.
 
 ## Approval exemption
 
-This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git-defaults.md` and `~/.claude/rules/shotloom.md` impose. Authorized 2026-04-21 (user). See:
-
-- `~/.claude/rules/shotloom.md` — bullet "**`/shotloom-auto-pr` skill — additional blanket exemption**"
-- `(deleted memory file)`
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git-defaults.md` and `~/.claude/rules/shotloom.md` impose. Authorized 2026-04-21 (user). Mirrored in `~/.claude/rules/shotloom.md` "Approval-gate exceptions" table.
 
 **Auto-approved inside the react cycle:**
 
@@ -26,18 +23,11 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 - inline review replies (`POST /pulls/<N>/comments/<id>/replies`)
 - suppressed-item review-level summary reply (`POST /pulls/<N>/reviews` with `event=COMMENT`)
 - reviewer re-request (`POST /pulls/<N>/requested_reviewers`)
-- PR body refresh (`gh pr edit <N> --body …`) — body content only, no state mutation
+- PR body refresh (`gh pr edit <N> --body <content>`) — body content only, no state mutation
 
-**Still requires explicit per-action user approval, even inside auto-pr:**
+**Still requires explicit per-action user approval, even inside auto-pr:** any `gh pr` state-changing flag (create / merge / close / reopen / ready / `edit --base|--title|--draft|--label` / `update-branch`), top-level PR comments, non-`COMMENT` reviews, thread resolution. Canonical list in `~/.claude/rules/shotloom.md` "Approval-gate exceptions" table.
 
-- `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr reopen`, `gh pr ready`
-- `gh pr edit --base`, `--title`, `--draft`, `--label` (any state-changing flag)
-- `gh pr update-branch` (rebase/merge of base into PR head)
-- top-level PR comments via `/issues/<N>/comments` or `gh pr comment`
-- `gh pr review --approve` / `--request-changes` (any review with non-`COMMENT` event)
-- thread resolution (graphql `resolveReviewThread`)
-
-The ready-to-merge report below is logged, not invoked. This list is mirrored in `~/.claude/rules/shotloom.md` and ``(deleted memory file)``; change all three together.
+The ready-to-merge report below is logged, not invoked.
 
 The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffected and keeps the per-comment batch approval gate.
 
@@ -166,10 +156,7 @@ Dispatch by event type:
     done
     ```
 
-    Constraints:
-    - Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id and the call silently returns nothing useful.
-    - Do NOT use `--branch` instead of `--commit` — branch filter is sha-agnostic and can hand back a run from a previous push that happens to share the same workflow name.
-    - Do NOT match `gh run list` by check `name` alone in a multi-job workflow — the check name is per-job, not per-workflow. The link-based path above is failure-immune to this; the fallback path is best-effort and will correctly skip when name resolution fails.
+    Footgun constraints in reference.md "fail_checks resolution constraints".
   - classify: fmt / clippy / test / doc-paths / complex
   - apply fix, re-run the **canonical gate bundle** by delegating to `/shotloom-check-gates` (full). Do NOT cherry-pick a subset here — drift between auto-pr's gate set and the make-pr / commit / respond-pr bundle is exactly the fault the 2026-04-25 audit flagged.
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
@@ -189,7 +176,7 @@ Protocol details (same as the pre-split skill):
 
 - Two reply surfaces, used in parallel within one react cycle (see split above):
   - Inline-comment findings: `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/comments/<id>/replies` — one call per finding.
-  - Suppressed/review-body findings: `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/reviews -f event=COMMENT -f body=…` — one bundled call per cycle, never multiple.
+  - Suppressed/review-body findings: `gh api -X POST /repos/CINEV/shotloom/pulls/<N>/reviews -f event=COMMENT -f body=<summary>` — one bundled call per cycle, never multiple.
   - Top-level PR comments via `/issues/<N>/comments` (or `gh pr comment`) are **forbidden** — they bypass the review thread surface that the merge gate's "zero unresolved threads" check is meant to drive.
 - **Never resolve review threads.** The reviewer owns the "Resolve conversation" click — it is their signal that the fix landed and is acceptable. Claude replies and pushes; the thread stays open until a human resolves it. The merge gate's `zero unresolved threads` check then gives the reviewer explicit veto until they are satisfied.
 - MANDATORY: re-request review from PR roster union (`reviewRequests` + anyone in `/reviews` REST, dedup, drop author).
@@ -213,17 +200,6 @@ End of react cycle, after any push lands + CI green:
 
 This is the architectural decision recorded as P0 from the 2026-04-25 skill audit: the prior auto-merge step exceeded the documented exemption.
 
-## Journal on terminal
-
-Resolve via `machine-paths.json`:
-
-```bash
-base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/caol-config/machine-paths.json)
-journal="$base/shotloom-pr-journal.md"
-```
-
-Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/merge-commit/cycle-totals.
-
 ## Worktree cleanup on MERGED
 
 1. Locate via `git worktree list --porcelain` for `refs/heads/<headRefName>`.
@@ -231,44 +207,9 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 3. If Linear STL resolvable: invoke `/shotloom-linear-move <STL-NN> Done` silently.
 4. Log to `~/.claude/ops/pr-<N>/log.md`.
 
-## State file shapes
+## Reference (state schema, journal template, nohup rationale, common failures)
 
-**`state.json`** (owned by `watch.sh`):
-
-```json
-{
-  "pr": 141, "state": "OPEN", "title": "...", "headRefName": "...",
-  "baseRefName": "main", "headRefOid": "...", "reviewDecision": "",
-  "mergeable": "MERGEABLE", "mergeStateStatus": "CLEAN", "isDraft": false,
-  "comment_ids": [], "review_ids": [], "fail_count": 0, "fail_checks": [],
-  "last_tick": "2026-04-22T08:57:00Z"
-}
-```
-
-**`last-event.json`** (watcher writes, react reads): present only on change / terminal.
-
-**`log.md`**: append-only. Entries only on real events. No silent-tick lines.
-
-## Why nohup not launchd / cron / ScheduleWakeup
-
-- launchd is **blocked** from `~/.claude/` by macOS TCC; jobs queued there silently fail to fire. Earlier versions tried launchd; this one runs `watch.sh` from a `nohup` bash sleep loop owned by `start.sh`.
-- nohup loop survives the user logging out but **does not survive reboot** — re-run `start.sh <N>` after boot.
-- Per-PR PID file in `~/.claude/ops/pr-<N>/watcher.pid` makes stop/start surgical.
-- Separate `watcher.log` / `react.log` per PR.
-- Does NOT consume Claude context tokens on no-change ticks — only fires `claude -p` when `watch.sh` detects a diff.
-- `stop.sh` carries a legacy `launchctl unload` guard so hosts that still have a stale plist from a launchd-era install can be cleanly converted by running `stop.sh` once.
-
-## Common failures
-
-| Symptom | Fix |
-|---------|-----|
-| `claude: command not found` in `watcher.log` | `~/.local/bin` not on PATH for the nohup process; export PATH in `start.sh` or use the absolute claude path |
-| Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback (no flock on host): `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap cleans the mkdir lock automatically; only manual cleanup needed if the watcher was SIGKILL'd. |
-| Watcher not firing | `kill -0 $(cat ~/.claude/ops/pr-<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick. |
-| `gh` auth prompt in nohup ctx | keychain locked at login; run `gh auth status` interactively in a regular shell once |
-| Duplicate react runs | `flock` in `watch.sh` prevents concurrent ticks; overlapping `claude -p` sessions are fine — each diffs state.json fresh and is idempotent |
-| Failed-check job-id resolution | `last-event.json` stores check **names** (not job ids). Reactor must call `gh run list --json` and resolve name → job-id before `gh run view --log-failed --job <id>`. |
-| Stale launchd plist from old install | `stop.sh <N>` unloads + removes any `com.shotloom.autopr.<N>.plist` left behind |
+See `~/.claude/skills/shotloom-auto-pr/reference.md` — "State file shapes", "Journal on terminal", "Why nohup not launchd", "Common failures".
 
 ## Related
 

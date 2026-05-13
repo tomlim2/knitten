@@ -129,3 +129,70 @@ The auto-pr loop stops only on:
 - Same in-scope fix attempt failing 3 cycles in a row (treat as ambiguous and surface)
 
 Unresolved out-of-scope and ambiguous items do **not** stop the loop — they accumulate in the briefing. When the PR finally gets user attention, the briefing is the full handoff.
+
+---
+
+## Journal on terminal
+
+Resolve via `machine-paths.json`:
+
+```bash
+base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' ~/.claude/private/caol-config/machine-paths.json)
+journal="$base/shotloom-pr-journal.md"
+```
+
+Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/merge-commit/cycle-totals.
+
+---
+
+## State file shapes
+
+**`state.json`** (owned by `watch.sh`):
+
+```json
+{
+  "pr": 141, "state": "OPEN", "title": "...", "headRefName": "...",
+  "baseRefName": "main", "headRefOid": "...", "reviewDecision": "",
+  "mergeable": "MERGEABLE", "mergeStateStatus": "CLEAN", "isDraft": false,
+  "comment_ids": [], "review_ids": [], "fail_count": 0, "fail_checks": [],
+  "last_tick": "2026-04-22T08:57:00Z"
+}
+```
+
+**`last-event.json`** (watcher writes, react reads): present only on change / terminal. `fail_checks` is an array of `{name, workflow, link}` objects — `link` is the github.com URL embedding `run_id` (and sometimes `job_id`).
+
+**`log.md`**: append-only. Entries only on real events. No silent-tick lines.
+
+---
+
+## Why nohup not launchd / cron / ScheduleWakeup
+
+- launchd is **blocked** from `~/.claude/` by macOS TCC; jobs queued there silently fail to fire.
+- nohup loop survives logout but **not reboot** — re-run `start.sh <N>` after boot.
+- Per-PR PID file in `~/.claude/ops/pr-<N>/watcher.pid` makes stop/start surgical.
+- Separate `watcher.log` / `react.log` per PR.
+- Does NOT consume Claude context tokens on no-change ticks — `claude -p` fires only when `watch.sh` detects a diff.
+- `stop.sh` keeps a legacy `launchctl unload` guard so hosts with a stale plist from a launchd-era install can be converted by running `stop.sh` once.
+
+---
+
+## fail_checks resolution constraints
+
+Footguns in the reactor's `fail_checks` → run_id/job_id resolution path (SKILL.md "React workflow" code block):
+
+- Do NOT pass `databaseId` from `gh run list` directly to `--job` — that is a run id; the call silently returns nothing useful.
+- Do NOT use `--branch` instead of `--commit` — branch filter is sha-agnostic and can hand back a run from a previous push that happens to share the same workflow name.
+- Do NOT match `gh run list` by check `name` alone in a multi-job workflow — the check name is per-job, not per-workflow. The link-based path is failure-immune; the fallback skips correctly when name resolution fails.
+
+---
+
+## Common failures
+
+| Symptom | Fix |
+|---------|-----|
+| `claude: command not found` in `watcher.log` | `~/.local/bin` not on PATH for the nohup process; export PATH in `start.sh` or use the absolute claude path |
+| Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback: `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap cleans the mkdir lock automatically; manual cleanup only needed after SIGKILL |
+| Watcher not firing | `kill -0 $(cat ~/.claude/ops/pr-<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick |
+| `gh` auth prompt in nohup ctx | keychain locked at login; run `gh auth status` interactively in a regular shell once |
+| Duplicate react runs | `flock` (or `mkdir` fallback) prevents concurrent ticks; overlapping `claude -p` sessions are fine — each re-diffs state.json and is idempotent |
+| Stale launchd plist from old install | `stop.sh <N>` unloads + removes any `com.shotloom.autopr.<N>.plist` left behind |

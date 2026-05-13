@@ -1,5 +1,5 @@
 ---
-description: Cold-start Rust/TS code-quality review via Explore subagent — Patterns A–F + T (test coverage). Pair skill of shotloom-review-docs
+description: Cold-start Rust/TS code-quality review via Explore subagent — Patterns A–F + T (test coverage) + U (speculative API) + J (TS defensive shapes). Pair skill of shotloom-review-docs
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(pwd), Bash(cd:*)
 ---
 
@@ -99,6 +99,7 @@ Only after Phase 1 is fully reported, run the patterns in `reference.md`. These 
 - **Pattern F** — Cross-crate & inherited-pattern hygiene.
 - **Pattern T** — Test coverage on changed behavior (enforces `~/.claude/rules/test-write.md`; the in-repo spec does not). Includes T5: defensive / fallback branch without a matching test (TS `data-testid` fallbacks, Rust `_ =>` arms, empty-state guards).
 - **Pattern U** — Speculative public API surface. Barrel `index.ts` re-exports and `pub` items added without an out-of-module consumer in the same diff. Source of recurring "Maintainability" nits at review time.
+- **Pattern J** — TypeScript defensive-shape patterns (J1 nullish-coalescing fake-narrow, J2 dead `!arg` guard on widened signature, J3 parser over-tolerance). Fires only when `ts_changed > 0`. Detail in `reference.md`.
 
 For each pattern: run the sweep command from reference.md, triage hits, report.
 
