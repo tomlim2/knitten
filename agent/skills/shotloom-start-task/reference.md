@@ -74,14 +74,24 @@ git worktree add "<worktree_dir>" "<branch>"
 **ADRs to honor:** <list>
 **Ask-first triggers for this task:** <filtered from §16>
 
+**AC primitive cross-check:**
+- <AC id>: <codified | wrong-shape> - <path/section evidence or split needed>
+
+**Plan-risk handoff for `/shotloom-draft-task-plan`:**
+- P1: <question to lock before implementation> - evidence: <path or rg hit>
+- P2: <ambiguity/test/doc gap to resolve in the plan> - evidence: <path or rg hit>
+- P3: <cheap nit or precedent to consider> - evidence: <path or rg hit>
+
 **Pre-write checklist passed:**
 - [x] gh auth: tomlim2
 - [x] commit identity: tomlim2 <deemo@vonvon.me>
 - [x] conventions re-read: AGENTS, CONTRIBUTING, CLAUDE, ADR index
 - [x] category: <category>
 - [x] targeted sections loaded
+- [x] AC primitive cross-check recorded
+- [x] plan-risk handoff seeded
 
-Ready. State the first code change you plan to make.
+Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.
 ```
 
 Emit exactly this. No code, no plan, no extra prose until the user confirms.

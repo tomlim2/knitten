@@ -1,7 +1,7 @@
 ---
-description: Pre-write gate for Shotloom coding — Linear fetch, conventions re-read, category-targeted standard load, Ready briefing
+description: Pre-write gate for Shotloom coding - Linear fetch, conventions re-read, plan-risk handoff, Ready briefing
 argument-hint: "[STL-NN | linear-url | category]"
-allowed-tools: Read, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(code:*), Bash(jq:*)
+allowed-tools: Read, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(code:*), Bash(jq:*)
 ---
 
 # shotloom-start-task
@@ -139,9 +139,45 @@ If the cited pattern is **not codified** (template Usage Notes doesn't mention i
 
 Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style (`Accepted (amended YYYY-MM-DD)`)", but `docs/guidelines/adr-template.md` Usage Notes did not codify that form. The author noticed the gap at briefing time but applied "Option A" (use the form in this one ADR). Reviewer P2 Blocking forced revert. The right call at briefing time was to reject AC #2 and split.
 
+### Step 5c: Seed the plan-review loop (mandatory)
+
+Before the Ready briefing, identify the likely plan defects that
+`/shotloom-draft-task-plan` must resolve. This is a briefing-level source check,
+not a plan doc and not an implementation design.
+
+Use targeted `rg` searches from the Shotloom worktree for identifiers named by
+Linear, the branch, the AC, or the affected modules:
+
+```bash
+rg -n "<command/event/type/helper/function names>" crates apps docs contracts MAP.md
+rg -n "<diagnostic/rejection/error names>" crates/shotloom-core crates/shotloom-engine apps/editor/src/bridge
+rg -n "<fixture/snapshot/test names>" crates apps assets docs
+```
+
+Read only the matching definitions needed to avoid false claims in the Ready
+briefing. Do not build the full file map; that belongs to
+`/shotloom-draft-task-plan`.
+
+Classify plan-risk seeds:
+
+| Priority | Seed type | Examples |
+|---|---|---|
+| P1 | Likely implementation rework if not locked in the plan. | API signatures, caller-owned inputs, existing helper removal, diagnostic message ownership, event ordering, public surface area, old path replacement. |
+| P2 | Likely review ambiguity if omitted. | Edge cases, negative tests, snapshots, fixture coverage, manual repro details, invariant preservation, docs updates, out-of-scope boundaries. |
+| P3 | Cheap nits that reduce review churn. | Test layout, naming, markdown rendering, precedent references, future telemetry notes. |
+
+For each seed, record:
+- priority (`P1`, `P2`, or `P3`)
+- evidence path or `rg` hit
+- the exact question the plan must answer
+
+Continue adding seeds until there is no obvious unhandled P1 or P2 ambiguity at
+briefing time. If a seed implies a scope change, mark it as an ask-first trigger
+instead of silently expanding the task.
+
 ### Step 6: Ready briefing — END OF THIS SKILL
 
-Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC ↔ primitive cross-check verdict for every AC that cited a primitive (codified ✓ / wrong-shape ✗ with proposed split)**.
+Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC-to-primitive cross-check verdict for every AC that cited a primitive (codified / wrong-shape with proposed split)**, and the Step 5c plan-risk handoff.
 
 After the briefing, **end the turn**. Do NOT edit code. Do NOT write a plan doc inside this skill. The Ready briefing is the only output.
 
@@ -153,7 +189,9 @@ Tell the user explicitly what comes next:
 
 This skill (`/shotloom-start-task`) NEVER:
 - Writes the plan doc itself.
-- Reads worktree source files for the file-map section (that belongs in `/shotloom-draft-task-plan`'s draft phase).
+- Reads worktree source files for the full file-map section (that belongs in
+  `/shotloom-draft-task-plan`'s draft phase). Targeted definition reads for the
+  Step 5c plan-risk handoff are allowed.
 - Edits any code in the worktree.
 
 ### Step 7: Mandatory post-write self-review (before any PR)
@@ -179,6 +217,8 @@ Auto-commit/push cadence (per `~/.claude/rules/shotloom.md`) does NOT bypass the
 
 - **Never skip Step 1 pre-flight.** Wrong gh user or wrong repo = hard stop.
 - **Never skip Step 3 re-read.** Stale memory is the #1 cause of CHANGES_REQUESTED.
+- **Never skip Step 5c plan-risk handoff.** The draft-plan skill needs seeded
+  P1/P2 questions before it starts its own review loop.
 - **Never open a PR without running `/shotloom-review-before-pr` first** (Step 7). Applies to every PR touching Rust or TS source, even under the auto-commit/push exemption.
 - If Linear MCP fetch fails, report the error but continue — use branch/commit hints.
 - The Ready briefing is the **only** output at Step 6. No code, no plan, no extra prose until user confirms.
