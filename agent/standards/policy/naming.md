@@ -68,7 +68,7 @@ Pattern: `{category}-{verb}-{subject}`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
 
-Full rules + external-wrapper details: `~/.claude/rules/author-naming.md`.
+Full rules + external-wrapper details: `~/.claude/rules/author.md`.
 
 ### Rules (`agent/rules/*.md`)
 
@@ -79,7 +79,7 @@ Pattern: `{verb-or-domain-or-trigger}.md`
 | Auto default-counter | `{topic}-defaults.md` or single noun | `git-defaults.md`, `behavior.md`, `security.md` |
 | Triggered content-creation | `{noun}-write.md` (verb-form trio) | `code-write.md`, `doc-write.md`, `test-write.md` |
 | Triggered domain | `{domain}.md` | `obsidian.md`, `slack.md`, `shotloom.md`, `cinev-git.md` |
-| Triggered authoring | `author-{aspect}.md` (family prefix) | `author-naming.md`, `author-frontmatter.md`, `author-permissions.md` |
+| Triggered authoring | `author.md` (single file when aspects share a trigger) | `author.md` — naming + frontmatter + permissions |
 | Triggered lifecycle phase | `{family}-{phase}.md` (family prefix) | `pr-mutate.md`, `pr-comment.md`, `pr-create.md` |
 | Triggered moment | `{verb-phrase}.md` | `session-start.md`, `verify-before-report.md`, `reread-repo-conventions.md` |
 

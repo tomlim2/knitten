@@ -17,8 +17,6 @@ Detailed reference: `agent/standards/` (read on demand).
 
 @~/.claude/rules/ambiguity-scoring.md
 
-@~/.claude/rules/external-recommendation-cross-check.md
-
 @~/.claude/rules/canonical-first.md
 
 @~/.claude/rules/git-defaults.md

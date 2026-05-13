@@ -12,6 +12,7 @@ On-demand reference docs. For always-applied rules see [`rules/index.md`](../rul
 | [`principles.md`](policy/principles.md) | deciding whether a new pattern fits the layer model or tracing principle rationale |
 | [`naming.md`](policy/naming.md) | naming any new rule, standard, command, skill, plan, or vault file |
 | [`llm-first-docs.md`](policy/llm-first-docs.md) | editing SYSTEM.md, entry documents, rules, skills, commands, or standards |
+| [`metaphor-style.md`](policy/metaphor-style.md) | picking metaphor domain (kitchen vs orchestra) when explaining technical concepts |
 | **Authoring** | |
 | [`slash-commands.md`](authoring/slash-commands.md) | creating a command — frontmatter, patterns, templates |
 | [`command-skill-reference.md`](authoring/command-skill-reference.md) | looking up an existing command or skill |

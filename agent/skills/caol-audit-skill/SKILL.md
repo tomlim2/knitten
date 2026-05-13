@@ -27,9 +27,7 @@ Examples:
 |------|----------|
 | `~/.claude/standards/policy/llm-first-docs.md` | 7 writing rules + length budget + self-audit list |
 | `~/.claude/standards/policy/llm-first-policy.md` | Layer assignment + duplication + cross-layer reference |
-| `~/.claude/rules/author-naming.md` | Naming convention for skill / command |
-| `~/.claude/rules/author-frontmatter.md` | Required frontmatter fields, field order |
-| `~/.claude/rules/author-permissions.md` | `allowed-tools` specificity |
+| `~/.claude/rules/author.md` | Naming, frontmatter, `allowed-tools` for skill / command |
 
 ## Resolve target
 
@@ -63,7 +61,7 @@ cmd="$HOME/.claude/commands/$name.md"
 |----|---------------------|
 | B1 | Apply the budget that matches the target type: skills/SKILL.md ≤ 200, commands ≤ 100, auto rule body ≤ 40, triggered rule body ≤ 120, standards ≤ 500, SYSTEM.md ≤ 150, entry documents ≤ 150. Over budget → split to `reference.md` or push detail down a layer. |
 
-### F. Frontmatter (rules/author-frontmatter.md, author-permissions.md)
+### F. Frontmatter (rules/author.md — Frontmatter + Permissions sections)
 
 | ID | Check |
 |----|-------|
@@ -72,7 +70,7 @@ cmd="$HOME/.claude/commands/$name.md"
 | F3 | Field order: `description` → `argument-hint` → `allowed-tools` |
 | F4 | `allowed-tools` patterns specific — no bare `Bash` |
 
-### N. Naming (rules/author-naming.md)
+### N. Naming (rules/author.md — Naming section)
 
 | ID | Check |
 |----|-------|

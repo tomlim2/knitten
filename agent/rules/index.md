@@ -11,8 +11,7 @@ This table is inventory only. Rule cells MUST use code spans, not Markdown links
 | Rule | Load | Trigger / Scope |
 |------|------|-----------------|
 | `ambiguity-scoring.md` | auto | Meta-decision gate — 1-10 score before any ambiguous action; 9+ auto, else surface |
-| `external-recommendation-cross-check.md` | auto | Cross-check Codex/Gemini/subagent suggestions against user's SYSTEM.md/standards before adopting |
-| `canonical-first.md` | auto | Meta — when you see a pattern (suffix/prefix/term), grep the skill/standard that defines it before mimicking |
+| `canonical-first.md` | auto | Before adopting any external term/path/pattern/recommendation, verify against the user's canonical source |
 | `git-defaults.md` | auto | No auto-push / no Co-Authored-By / author identity |
 | `behavior.md` | auto | Output style, delegation, context budget, plan approval triggers |
 | `verify-before-report.md` | auto | Verify before presenting any result |
@@ -21,9 +20,7 @@ This table is inventory only. Rule cells MUST use code spans, not Markdown links
 | `code-write.md` | triggered | writing or editing code |
 | `reread-repo-conventions.md` | triggered | start of non-trivial work in any repo |
 | `test-write.md` | triggered | writing or reviewing code with tests |
-| `author-naming.md` | triggered | creating a command or skill |
-| `author-frontmatter.md` | triggered | creating a command |
-| `author-permissions.md` | triggered | creating a command or skill |
+| `author.md` | triggered | creating a command or skill (naming + frontmatter + permissions) |
 | `obsidian.md` | triggered | working in the Obsidian vault |
 | `cinev-git.md` | triggered | git op in a CINEV repo |
 | `shotloom.md` | triggered | working in the shotloom repo |

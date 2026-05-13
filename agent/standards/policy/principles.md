@@ -226,7 +226,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 **Statement:** Filenames carry meaning that compounds across the repo. Five micro-patterns:
 
 1. **Verb-form trio** — content-creation rules end in `-write` (`code-write`, `doc-write`, `test-write`).
-2. **Family prefix** — sibling rules share a prefix (`pr-mutate` / `pr-comment` / `pr-create`; `author-naming` / `author-frontmatter` / `author-permissions`).
+2. **Family prefix** — sibling rules share a prefix when their triggers differ (`pr-mutate` / `pr-comment` / `pr-create` — distinct moments in the PR lifecycle). When aspects share one trigger, collapse to a single file (`author.md` covers naming + frontmatter + permissions because they all fire at "creating a command or skill").
 3. **Scope match** — if the body is narrower than the filename promises, narrow the name (`git.md` → `git-defaults.md` once PR rules moved out; `writing.md` → `writing-external.md` once internal-prose was excluded).
 4. **Lifecycle phase = filename family** — when a rule's bullets cluster around lifecycle moments, split per phase and use a shared family prefix.
 5. **No metaphor when a literal works** — `MAP.md` → `LOOKUP.md`. The cold-start LLM should parse role from filename without prior context.

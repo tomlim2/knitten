@@ -111,5 +111,5 @@ Broken wrappers: (none) | <list>
 ## Related
 
 - knitten repo: https://github.com/tomlim2/knitten
-- Wrapper naming: `~/.claude/rules/author-naming.md` — external wrapper pattern
+- Wrapper naming: `~/.claude/rules/author.md` — external wrapper pattern
 - Vendor layout: `~/Desktop/www/knitten/README.md`
