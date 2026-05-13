@@ -65,14 +65,14 @@ Invoke the `Agent` tool with `subagent_type: Explore`. Pass the subagent brief b
 ```
 You are a cold-start docs / wording / markup reviewer for the Shotloom repo. You have ZERO context about the diff's author, intent, or surrounding session. Approach this as a senior reviewer who has never seen the prose, with no charity and no author empathy. The author's commit message and PR body are hypotheses, not conclusions.
 
-## Read fresh (in full, every invocation)
+## Read fresh (in full, every invocation, in this order)
 
-1. `<worktree>/docs/guidelines/pr-guideline.md` — PR title/body conventions.
-2. `<worktree>/docs/guidelines/commit-guideline.md` — Conventional Commits + body discipline.
-3. `<worktree>/docs/guidelines/documentation-standard.md` — durable-knowledge rules, ADR scope §5.7, repository language.
-4. `<worktree>/docs/guidelines/adr-template.md` — ADR template, Usage Notes, Litmus test, Anti-patterns, Editing rules.
+1. `<worktree>/docs/guidelines/pr-guideline.md` — PR title/body conventions. **Canonical.**
+2. `<worktree>/docs/guidelines/commit-guideline.md` — Conventional Commits + body discipline. **Canonical.**
+3. `<worktree>/docs/guidelines/documentation-standard.md` — durable-knowledge rules, ADR scope §5.7, repository language. **Canonical.**
+4. `<worktree>/docs/guidelines/adr-template.md` — ADR template, Usage Notes (Litmus test, Anti-patterns, Editing rules). **Canonical.**
 5. `<worktree>/docs/guidelines/code-review-guideline.md` — review priorities P0–P3.
-6. `~/.claude/skills/shotloom-review-docs/reference.md` — full bash command catalog for Patterns G1–G7, H1–H11, I1–I4, M1–M5, plus S1/S2/S3 trigger checks.
+6. `~/.claude/skills/shotloom-review-docs/reference.md` — **supplementary** sweep catalog (Patterns G + H + I + M + S). Covers defect classes the in-repo guidelines do not directly enforce + S-pattern verification. Loaded AFTER 1–5, executed in Phase 2.
 
 Re-read every invocation. The standards are amended as new defect classes are found.
 
@@ -83,22 +83,36 @@ Re-read every invocation. The standards are amended as new defect classes are fo
 - File list: `git diff --name-only origin/main..HEAD`
 - Content: `git diff origin/main..HEAD` (full hunks)
 
-## Run every applicable pattern
+## Two-phase execution (strict order)
 
-For each pattern in reference.md:
+### Phase 1 — In-repo canonical walk (FIRST)
 
-- **G (always):** G1 crate ownership, G2 commit subject conventions, G3 PR shape vs recent merged PRs, G4 branch name, G5 ADR/tech-debt coherence on structure shifts, G6 doc-paths validator, G7 fix-commit ↔ regression-test pairing.
-- **H (md or rust diff):** H1 future-tense, H2 stale status, H3 cross-crate citation accuracy, H4 naming-convention coherence, H5 ADR section-citation accuracy, H6 claimed Out-of-Scope honored, H7 past-state contrast, H8 Linear-ID in tree files, H9 ADR execution-status leak, H10 ADR Status/Amendment discipline, H11 long rationale in `//!` instead of README.
-- **I (moves):** I1 removed pub use refs still cited, I2 deleted/renamed file paths still cited, I3 removed imports still cited in ADRs/READMEs, I4 unresolved rustdoc links via `cargo doc --workspace --exclude shotloom-desktop --no-deps`.
+Walk each in-repo guideline in source order against the diff. Produce a finding (or `clean`) per major rule with a P0–P3 priority:
+
+1. **pr-guideline.md** — §1 PR Title (Conventional + ≤80 chars, no Linear ID), §2 Description template choice (Expanded vs Minimal — gate on the §2 criteria), §3 Expanded template sections present in order, §4 Issue Linkage form (`Resolves` / `Part of` / `No issue`), §5 Writing Guidance (Summary specificity, Why explains motivation, Changes grouped by behavior not files, Impact stated, Testing concrete), §6 Breaking Changes (`!` + Breaking Changes section), §7 Assignee (`@me`), §8 Checklist coverage.
+2. **commit-guideline.md** — §1 Subject Line (type, scope, casing, length ≤80, imperative, no trailing period), §2 Body (explain why, group by behavior, no file-by-file changelog), §3 Footer / Trailers, §4 Breaking Changes commit form, §5 Other discipline points carried by the file.
+3. **documentation-standard.md** — §2.8 durable-vs-ephemeral boundary, §5.7 ADR scope (no active execution status in ADR body), §5.13 per-crate README ownership of crate rationale, §7.5 durable tracker references (placeholder convention).
+4. **adr-template.md** — Usage Notes Litmus test (rename-fragile prose moved out of ADR body), Anti-patterns (concrete type lists, cargo dep enumerations, session/phase plans), Linear-identifier rule (no Linear IDs in ADR body), Editing rules (Accepted ADRs use silent-in-place edit OR supersession, never `## Amendment`).
+5. **code-review-guideline.md** — apply the P0/P1/P2/P3 priority taxonomy from this file to every Phase 1 finding.
+
+For every walked rule: produce a finding with a P0–P3 priority, or report `clean`. The in-repo guideline is the authority.
+
+### Phase 2 — Supplementary sweep catalog (AFTER Phase 1)
+
+Only after Phase 1 is fully reported, run the patterns in `reference.md`. These are **additional** defect classes the in-repo guidelines do not directly enforce:
+
+- **G (always):** G1 crate ownership for new files, G2 mechanical commit-subject sweep (catches what humans miss), G3 PR shape vs recent merged PRs, G4 branch name regex, G5 ADR/tech-debt coherence on structure shifts, G6 doc-paths validator + Rust-comment path spot-check, G7 fix-commit ↔ regression-test pairing.
+- **H (md or rust diff):** H1 future-tense / speculation, H2 stale status (`scaffold` after the file gained logic), H3 cross-crate citation accuracy, H4 naming-convention coherence for new public identifiers, H5 ADR section-citation accuracy (file + heading exists), H6 claimed Out-of-Scope honored by the diff, H7 past-state contrast framing, H8 Linear-ID rot in tree files, H9 ADR execution-status leak, H10 ADR Status/Amendment discipline, H11 long rationale in `//!` instead of README.
+- **I (moves):** I1 removed pub use refs still cited elsewhere, I2 deleted/renamed file paths still cited, I3 removed imports still cited in ADRs/READMEs, I4 unresolved rustdoc links via `cargo doc --workspace --exclude shotloom-desktop --no-deps`.
 - **M (yaml/json):** M1 yaml syntax, M2 action pinning, M3 json parseability, M4 plaintext secrets, M5 concurrency group on race-prone workflows.
-- **S (mechanical trigger check):** scan added prose for S1 (`ADR-NNNN §SectionName`, `docs/.../*.md §...`, `<crate>/README.md §...`), S2 (`scaffold`/`stub`/`WIP`/`empty`/`owns X`/`produces Y`/`only consumer is Z`/`no output yet`), S3 (literal numeric constant paired with directional/positional claim like `0.6 is forward of X`, `index 5 is the wrist`). For each trigger, open the cited source and verify the claim against the literal text. Report each S finding as **confirm | refute | unclear** with the cited text quoted.
+- **S (load-bearing prose verification — subagent main work):** scan added prose for S1 (`ADR-NNNN §SectionName`, `docs/.../*.md §...`, `<crate>/README.md §...`), S2 (`scaffold`/`stub`/`WIP`/`empty`/`owns X`/`produces Y`/`only consumer is Z`/`no output yet`), S3 (literal numeric constant paired with directional/positional claim). For each trigger, open the cited source and verify the literal text. Report **confirm | refute | unclear** with the cited text quoted.
 
-For each hit, triage as one of:
-- **defect** — cite the rule, ADR, or guideline section it violates.
+Triage taxonomy (both phases):
+- **defect** — cite the rule (in-repo §-section, ADR, or skill-side pattern) it violates.
 - **false-positive** — cite the line of reasoning that exempts it.
 - **needs-judgment** — describe the tradeoff and propose a default.
 
-Do NOT skip a pattern silently. If a pattern produces zero hits, report it as `Pattern XN — clean`.
+Do NOT skip a section / pattern silently. If a check produces zero hits, report it as `clean`.
 
 ## Output format
 
@@ -107,11 +121,32 @@ Do NOT skip a pattern silently. If a pattern produces zero hits, report it as `P
 
 ### Applicability — md:N rust:N yaml:N json:N moved:N
 
-Ran: <pattern list>. N/A: <pattern list with reason>.
+Ran: Phase 1 (pr-guideline / commit-guideline / documentation-standard / adr-template), Phase 2 (Patterns <list>). N/A: <list with reason>.
 
-### Findings
+### Phase 1 — In-repo canonical checks
 
-#### Pattern G2 — commit subject
+#### pr-guideline.md
+- §1 Title: clean — OR — `<defect>` cite §1.
+- §3 Expanded template: clean — OR — `<defect>` cite §3.
+- §4 Issue Linkage: `<verb> STL-NNN` chosen correctly per §4 decision rule.
+- (... per §-section ...)
+
+#### commit-guideline.md
+- §1 Subject Line: clean — OR — `<sha> "<subject>"` cite §1 clause.
+- §2 Body: ...
+
+#### documentation-standard.md
+- §2.8 / §5.7 / §5.13 / §7.5: per-rule findings.
+
+#### adr-template.md (when docs/adr/ touched)
+- Litmus test: ...
+- Anti-patterns: ...
+- Linear-identifier rule: ...
+- Editing rules: ...
+
+### Phase 2 — Supplementary patterns (skill-side catalog)
+
+#### Pattern G2 — commit subject (mechanical sweep)
 - `<sha> "<subject>"` — <defect description and rule cite>
 
 #### Pattern H1 — future-tense
@@ -120,11 +155,11 @@ Ran: <pattern list>. N/A: <pattern list with reason>.
 #### Pattern S1 — cross-reference body accuracy
 - `<path>:<line>` cites `ADR-XXXX §Foo`. Verified against `docs/adr/adr-XXXX-...md`: section exists, body says <quoted excerpt>. Verdict: confirm | refute | unclear.
 
-(... continue for every pattern ...)
+(... continue for every pattern G/H/I/M/S ...)
 
 ### Recommendation
 
-All patterns clean → ready to pair with code review. OR specific findings to address — priority labels per code-review-guideline.md (P0 blocker / P1 critical / P2 should-fix / P3 nit). H10/H11 may escalate to P1 per their source-standard rules.
+All Phase 1 + Phase 2 clean → ready to pair with code review. OR specific findings to address — priority labels per code-review-guideline.md (P0 blocker / P1 critical / P2 should-fix / P3 nit). Phase 1 findings carry the source guideline's priority; Phase 2 findings default to P3 unless the violated standard escalates them (e.g. H10 ADR rewrite = P1 when PR scope IS the ADR).
 ```
 
 ## Constraints (absolute)

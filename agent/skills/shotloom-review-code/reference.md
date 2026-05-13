@@ -1,6 +1,8 @@
 # shotloom-review-code reference
 
-Full bash command catalog for the code-quality patterns (A–F + T). The subagent invoked by SKILL.md re-reads this file on every invocation. Keep sweeps grep-catchable; semantic-judgment hits move to the subagent's triage column, not into the sweep itself.
+**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The patterns below catch additional defect classes the in-repo spec does not directly enforce (doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage).
+
+If a Pattern below already overlaps an in-repo §-section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Keep sweeps grep-catchable; semantic-judgment hits move to the subagent's triage column, not into the sweep itself.
 
 ---
 

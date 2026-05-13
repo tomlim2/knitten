@@ -1,6 +1,8 @@
 # shotloom-review-docs reference
 
-Full bash command catalog for docs / wording / markup discipline patterns (G + H + I + M + S). The subagent invoked by SKILL.md re-reads this file on every invocation. Pattern S (load-bearing prose claims) requires the subagent to open cited sources and verify literal text — the grep is mechanical, the verification is the subagent's main work.
+**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The canonical authorities are the in-repo `<shotloom>/docs/guidelines/` files (`pr-guideline.md`, `commit-guideline.md`, `documentation-standard.md`, `adr-template.md`), which the subagent walks first in Phase 1. The patterns below catch additional defect classes the in-repo guidelines do not directly enforce (mechanical doc/comment sweeps, PR-induced staleness, yaml/json sanity, load-bearing prose verification).
+
+If a Pattern below already overlaps an in-repo guideline section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Pattern S (load-bearing prose claims) requires the subagent to open cited sources and verify literal text — the grep is mechanical, the verification is the subagent's main work.
 
 ---
 
