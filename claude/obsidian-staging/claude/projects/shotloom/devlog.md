@@ -47,3 +47,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - VRM thumb slot warning PR에서 diagnostic spec table, parse policy, malformed input test 지적을 기록.
 - 배운 것: 새 diagnostic code는 warning text가 아니라 spec, failure policy, branch coverage까지 묶인 작은 contract다.
 - [[shotloom/days/day-02|상세]]
+
+## Day 3 (05-13): STL-380 PR body 회고
+- PR #310에서 final code와 PR description이 어긋난 두 문장(Debug header link, sidebar width)을 기록.
+- 배운 것: fix-up commit 뒤에는 PR body의 UI 요소와 numeric CSS claim을 final diff로 다시 검산한다.
+- [[shotloom/days/day-03|상세]]
