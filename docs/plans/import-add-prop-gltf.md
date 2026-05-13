@@ -84,8 +84,12 @@ diagnostics.
    - Scan all scenes. Pass if any scene yields at least one reachable mesh node;
      do not restrict validation to the default scene only.
    - Recommended: require the referenced mesh to contain at least one primitive.
+   - VRM GLB is still valid glTF 2.0 content. If the user imports it through
+     `kind: "prop"`, prop preflight may pass; asset classification is determined
+     by the user's import kind, not by rejecting VRM extensions in this preflight.
    - Out of scope: material quality, texture availability, skinning, animation,
-     scale normalization, thumbnail generation.
+     scale normalization, thumbnail generation, and buffer/accessor data
+     integrity beyond structural glTF parsing.
 
 5. **Use broad bridge rejection code plus detailed diagnostic code.**
    - Keep `CommandRejectionCode::AssetDecodeFailed` for container / parse
@@ -105,6 +109,8 @@ diagnostics.
    - Diagnostic message ownership is fixed in the engine mapper. The mapper must
      use the message table in S2; implementation must not invent ad hoc strings
      at call sites.
+   - Non-`InvalidGltf` messages are fixed static strings. `InvalidGltf(detail)`
+     uses the fixed prefix from S2 plus the parser detail.
 
 6. **Preserve existing runtime invariants.**
    - `handle_import_asset` must keep taking staged bytes before validation so
@@ -182,6 +188,11 @@ pub enum PropPreflightError {
 
 Implementation notes:
 - Use the existing `gltf` crate dependency.
+- Classify container header failures before handing bytes to the `gltf` crate:
+  - `BadGlbHeader`: bytes are shorter than the 12-byte GLB header, the header
+    cannot be read, the GLB container version is unsupported, or the declared
+    total length is inconsistent.
+  - `NotGlb`: a readable 12-byte header exists but the magic is not `glTF`.
 - `gltf::Glb::from_slice(bytes)` is available and already used in tests.
 - `gltf::Gltf::from_slice(bytes)` is available and already used by the
   `sample_glb_fixture` test.
@@ -217,6 +228,11 @@ crates/shotloom-engine/src/bridge/handlers/assets.rs
 Replace `validate_prop_import_bytes` with a call to
 `shotloom_gltf::preflight_prop_glb(&bytes)`.
 
+Delete the old `validate_prop_import_bytes` helper. After the change, the prop
+registration path must have no remaining definition or call site for
+`validate_prop_import_bytes`; `shotloom_gltf::preflight_prop_glb` is the only
+prop-byte validation path before registration.
+
 Add a mapper:
 
 ```rust
@@ -238,10 +254,11 @@ Mapping policy:
 | `NoScene` | `AssetValidationFailed` | `prop_no_scene` | `Prop GLB must contain at least one scene.` |
 | `NoReachableMesh` | `AssetValidationFailed` | `prop_no_reachable_mesh` | `Prop GLB must contain a mesh node reachable from a scene.` |
 
-The mapper owns both the diagnostic code and the diagnostic message. Use
-`Diagnostic::error(code, prop_preflight_diagnostic_message(err))`. Do not rely on
-`Display` output or construct diagnostic messages in the import handler body.
-Only `InvalidGltf(detail)` may include dynamic detail, and it must use the
+The mapper owns both the diagnostic code and the diagnostic message. Implement
+the message function as a fixed `match`/static table over `PropPreflightError`.
+Use `Diagnostic::error(code, prop_preflight_diagnostic_message(err))`. Do not
+rely on `Display` output or construct diagnostic messages in the import handler
+body. Only `InvalidGltf(detail)` may include dynamic detail, and it must use the
 stable prefix shown above.
 
 On failure:
@@ -291,12 +308,19 @@ Do not document `.gltf` as supported.
       version, no scene, and no scene-reachable mesh.
 - [ ] `assets/props/debug_prop.glb` passes preflight.
 - [ ] `ImportAsset { kind: "prop" }` uses the new preflight.
+- [ ] The `validate_prop_import_bytes` definition and call site are removed;
+      prop registration has no validation path except
+      `shotloom_gltf::preflight_prop_glb`.
 - [ ] Failed prop import emits `ValidationDiagnostics` with a stable diagnostic
       code and mapper-owned message, then `CommandRejected`.
+- [ ] Mapper tests cover every `PropPreflightError` variant and assert rejection
+      code, diagnostic code, and exact fixed message or `InvalidGltf` prefix.
 - [ ] Failed prop import does not register an asset and still drains staged
       upload bytes.
 - [ ] Successful prop import still emits `AssetRegistered` and `BundleChanged`.
 - [ ] Imported prop asset still spawns through existing `spawn_prop_from_asset`.
+- [ ] VRM GLB is not rejected solely for having VRM extensions when imported as
+      `kind: "prop"`.
 - [ ] Generic non-VRM GLB still fails under `kind: "character"`.
 - [ ] Docs state GLB-only support and do not promise `.gltf`.
 
@@ -333,8 +357,19 @@ Manual repro:
 4. Import `assets/props/debug_prop.glb`.
 5. Confirm the prop asset appears.
 6. Click it and confirm `spawn_prop_from_asset` places it in the current shot.
-7. Import a corrupt `.glb`; confirm validation diagnostic + rejection surface.
-8. Try generic GLB as `kind: "character"` through the existing character path or
+7. Import targeted invalid samples and confirm each emits
+   `ValidationDiagnostics` followed by `CommandRejected`:
+   - Rename a text file to `.glb`: `prop_not_glb`.
+   - Import a zero-byte `.glb`: `prop_bad_glb_header`.
+   - Import a GLB whose JSON declares non-`"2.0"` `/asset/version`:
+     `prop_unsupported_gltf_version`.
+   - Import a structurally invalid glTF 2.0 GLB: `prop_invalid_gltf`.
+   - Import a glTF 2.0 GLB with `scenes: []`: `prop_no_scene`.
+   - Import a GLB with mesh data but no mesh node reachable from any scene root:
+     `prop_no_reachable_mesh`.
+8. Try a VRM GLB through `kind: "prop"` and confirm it follows the prop path if
+   it is valid glTF 2.0 with a reachable mesh.
+9. Try generic GLB as `kind: "character"` through the existing character path or
    smoke test; confirm it still fails.
 
 ---
@@ -349,6 +384,9 @@ Manual repro:
 - Do not move validation above staged-byte draining in `handle_import_asset`.
 - Do not change `assets/props/<asset_id>.glb` URI shape.
 - Do not modify prop spawn, gizmo, or selection behavior as part of this PR.
+- Do not reject VRM-extension GLBs solely because they are VRM when the user
+  imports them as `kind: "prop"`.
+- Do not treat prop preflight as full buffer/accessor integrity validation.
 - Do not loosen character VRM validation to make prop GLBs pass there.
 
 ---
