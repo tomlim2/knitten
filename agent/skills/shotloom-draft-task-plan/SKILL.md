@@ -238,6 +238,52 @@ Run at least these review lenses:
 - **Scope creep:** Are tempting related features captured as non-goals or
   follow-ups instead of hidden implementation work?
 
+#### External Claude review protocol
+
+If the user asks to use Claude, another model, or an external agent to improve
+the plan, use that agent only as a reviewer of the current canonical draft.
+Never ask for or accept a wholesale replacement plan once `$plan_path` already
+exists.
+
+Reviewer prompt contract:
+- Provide the current plan text, Ready briefing, relevant Linear AC, and the
+  live-code evidence gathered in Step 2.
+- State that the current plan is the canonical draft.
+- Instruct the reviewer to preserve existing `Locked Decisions` unless live-code
+  evidence proves them wrong.
+- Ask for `P1` / `P2` / `P3` findings only, with plan line references,
+  live-code evidence, and minimal patch suggestions.
+- Forbid rewriting the whole plan, renaming the plan, deleting the plan, or
+  producing a new standalone plan body.
+- Forbid broadening specific diagnostics into generic buckets, weakening API
+  signatures, or replacing already-converged decisions without evidence.
+
+Reviewer output must have this shape:
+
+```text
+## Findings
+| Prio | Plan line | Issue | Evidence | Minimal patch |
+
+## Keep
+<decisions that are sound and must not be changed>
+
+## Do Not Rewrite
+<sections or decisions to preserve>
+
+## Patch Suggestions
+<small section-level edits only>
+```
+
+Triage rule:
+- Treat external output as evidence, not authority.
+- Verify every finding against live source before editing the plan.
+- Apply only minimal patches that strengthen the canonical plan.
+- If the reviewer returns a complete replacement plan anyway, do not adopt it.
+  Mine it only for new evidenced findings, then patch the existing plan.
+- If the reviewer writes a parallel `.md` file, keep it uncommitted and compare
+  it as review input. Do not replace `$plan_path` unless the user explicitly
+  selects that file after seeing the delta.
+
 For each pass:
 1. List findings internally as `P1`, `P2`, or `P3`.
 2. Patch the plan for every P1.
@@ -329,6 +375,9 @@ required; modifying it is forbidden in this skill.
   rejected alternatives. They do not block writing the plan.
 - **Review before landing.** A plan is not ready until the iterative self-review
   pass has converged.
+- **External agents are reviewers, not planners of record.** Claude or another
+  model may supply P1/P2/P3 findings and minimal patches, but must not replace
+  the canonical plan wholesale.
 - **Factual-conflict briefing stops the skill before commit, not before write.**
   When Step 2 stop conditions fire, still write the draft to disk under a
   suffix so the user can read both the proposed scope and the conflict
