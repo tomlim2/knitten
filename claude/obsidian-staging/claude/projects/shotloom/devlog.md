@@ -52,3 +52,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #310에서 final code와 PR description이 어긋난 두 문장(Debug header link, sidebar width)을 기록.
 - 배운 것: fix-up commit 뒤에는 PR body의 UI 요소와 numeric CSS claim을 final diff로 다시 검산한다.
 - [[shotloom/days/day-03|상세]]
+
+## Day 4 (05-13): STL-402 PR 리뷰 회고
+- PR #317에서 private policy helper의 undocumented branch policy, table drift risk, PR testing checklist mismatch를 기록.
+- 배운 것: 후속 PR이 의존할 private helper는 intentional `None`, table role, fallback/tie behavior를 문서와 테스트로 같이 pin한다.
+- [[shotloom/days/day-04|상세]]
