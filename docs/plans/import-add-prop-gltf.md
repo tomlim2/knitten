@@ -87,6 +87,9 @@ diagnostics.
    - VRM GLB is still valid glTF 2.0 content. If the user imports it through
      `kind: "prop"`, prop preflight may pass; asset classification is determined
      by the user's import kind, not by rejecting VRM extensions in this preflight.
+   - Prop preflight is binary pass/fail and emits no success warnings. Unlike
+     the VRM character path, it should not emit `ValidationDiagnostics` together
+     with `AssetRegistered` in this PR.
    - Out of scope: material quality, texture availability, skinning, animation,
      scale normalization, thumbnail generation, and buffer/accessor data
      integrity beyond structural glTF parsing.
@@ -192,20 +195,24 @@ Implementation notes:
     total length is inconsistent.
   - `NotGlb`: the filename is not `.glb`, or a readable 12-byte header exists
     but the magic is not `glTF`.
-- `gltf::Glb::from_slice(bytes)` is available and already used in tests.
-- `gltf::Gltf::from_slice(bytes)` is available and already used by the
-  `sample_glb_fixture` test.
-- Inspect the GLB JSON chunk before calling `gltf::Gltf::from_slice(bytes)`.
+- Use `gltf::Glb::from_slice(bytes)` for GLB container parsing, matching the
+  precedent in `crates/shotloom-gltf/src/vrm_extract.rs`. Do not call
+  `gltf::Gltf::from_slice` directly on GLB container bytes.
+- Inspect the GLB JSON chunk before typed glTF parsing.
   Read `/asset/version` from the raw JSON and reject any missing or non-`"2.0"`
-  value as `UnsupportedGltfVersion`. Calling the `gltf` crate first can collapse
-  glTF 1.0 input into a generic parse error, which would make this variant
-  unreachable.
+  value as `UnsupportedGltfVersion`. Calling a typed glTF parser first can
+  collapse glTF 1.0 input into a generic parse error, which would make this
+  variant unreachable.
 - Traverse each scene's root nodes and descendants. Count a mesh node only when
   it is reachable from a scene root.
 - Scan every scene. Validation passes if any scene contains at least one
   reachable mesh node.
 
 Tests:
+- Place synthetic negative unit tests inline in
+  `crates/shotloom-gltf/src/prop_preflight.rs` under `#[cfg(test)]`.
+- Put the committed fixture happy-path coverage in the existing
+  `crates/shotloom-gltf/tests/` integration-test layout.
 - Happy path: `assets/props/debug_prop.glb` passes.
 - Reject a valid GLB payload when `filename` has a non-`.glb` extension.
 - Reject non-GLB bytes.
