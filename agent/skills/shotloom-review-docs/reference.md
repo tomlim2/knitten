@@ -1,0 +1,415 @@
+# shotloom-review-docs reference
+
+Full bash command catalog for docs / wording / markup discipline patterns (G + H + I + M + S). The subagent invoked by SKILL.md re-reads this file on every invocation. Pattern S (load-bearing prose claims) requires the subagent to open cited sources and verify literal text — the grep is mechanical, the verification is the subagent's main work.
+
+---
+
+## Pattern G — Structural / repo-convention coherence
+
+### G1: new files under changed crates — crate ownership matches file's concern?
+
+```bash
+for f in $(git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/src/*.rs'); do
+  echo "=== NEW FILE: $f ==="
+  crate=$(echo "$f" | cut -d/ -f1-2)
+  echo "Existing content in $crate:"
+  git ls-files "$crate/src/" | head -8
+done
+# Does the crate's ADR/mission cover this file's concern?
+```
+
+### G2: commit subjects against docs/guidelines/commit-guideline.md
+
+```bash
+git log origin/main..HEAD --format='%s' | while read subj; do
+  len=${#subj}
+  if [ "$len" -gt 80 ]; then echo "TOO LONG ($len): $subj"; fi
+  case "$subj" in
+    feat\(*|fix\(*|docs\(*|test\(*|refactor\(*|chore\(*|ci\(*|build\(*|perf\(*|style\(*) ;;
+    *) echo "NON-CONVENTIONAL: $subj" ;;
+  esac
+done
+# Also visually check imperative mood and no trailing period.
+```
+
+### G3: PR title + body shape vs recent merged PRs
+
+```bash
+gh pr list --state merged --limit 5 --json number,title,body 2>/dev/null \
+  | python3 -c 'import json,sys; [print(f"--- PR #{p[\"number\"]}: {p[\"title\"]}"); print(p["body"][:400]) for p in json.load(sys.stdin)]' \
+  2>/dev/null
+# Compare section headings, footer shape, checkbox usage with draft body.
+```
+
+### G4: branch name convention
+
+```bash
+branch=$(git rev-parse --abbrev-ref HEAD)
+case "$branch" in
+  feat/*|fix/*|refactor/*|chore/*|hotfix/*|release/*) ;;
+  *) echo "BRANCH NAME: $branch does not match feat/fix/refactor/chore/hotfix/release prefix" ;;
+esac
+# Shotloom: no stl-NN prefix — Linear's auto-suggestion is a UI hint, not canonical.
+```
+
+### G5: ADR / tech-debt coherence when structure shifts
+
+```bash
+git diff --name-only origin/main..HEAD -- 'crates/*/src/' 'crates/Cargo.toml' \
+  | rg 'lib\.rs|mod\.rs' \
+  && echo "Structure may have shifted — verify docs/adr/ or docs/tech-debt/ reflect it"
+git diff --name-only origin/main..HEAD -- 'docs/adr/' 'docs/tech-debt/' 'docs/adr/README.md' 'docs/tech-debt/README.md'
+# If crate structure changed but no ADR/tech-debt edit — justify in PR body or add one.
+```
+
+### G6: doc-paths validator + Rust comment path spot-check
+
+```bash
+node scripts/validate-doc-paths.mjs 2>&1 | tail -2
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -o '`(docs|crates|scripts|examples|fixtures)/[^`]+`' \
+  | sort -u
+# For each path in Rust comments, `ls` it.
+```
+
+### G7: every fix-type commit ships a paired regression test
+
+```bash
+for sha in $(git log origin/main..HEAD --format='%H' --grep='^fix'); do
+  subj=$(git log -1 --format='%s' "$sha")
+  has_test=$(git show --stat "$sha" | rg -c '#\[test\]|_test\.rs')
+  if [ "${has_test:-0}" = "0" ]; then
+    later_test=$(git log "$sha..HEAD" --format='%s' | rg -c '^test\(' || true)
+    if [ "${later_test:-0}" = "0" ]; then
+      echo "FIX COMMIT WITHOUT TEST: $sha $subj"
+    fi
+  fi
+done
+# A fix: commit without a paired regression test violates rules/test-write.md.
+```
+
+---
+
+## Pattern H — Doc & comment discipline
+
+These catch doc/comment drift the in-repo `docs/guidelines/review-rust.md` does not enforce: speculative future-tense, stale status claims, broken cross-crate citations, naming-convention incoherence, ADR-prose discipline, Linear-ID rot, and overlong `//!` rationale that belongs in a per-crate README.
+
+Mindset: **doc must describe what IS, not what MIGHT BE.** A comment that promises future work without a concrete issue ID is a wish. A comment that claims "scaffold only" after the file gained 200 lines of logic is a lie. A "lives in `crate-x`" reference where `crate-x` does not exist breaks the next reader's grep. Default verdict on every H finding: rewrite to current-state-only, or cite a specific STL-NN that exists.
+
+### H1: future-tense / speculation in added prose
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '\b(will\s+(?:add|land|move|become|expose|introduce|migrate|emit)|future\b|follow[- ]up|lands?\s+in|planned|TODO|will\s+be|to\s+be\s+(?:added|defined|implemented)|eventually|soon|coming soon|next pass|phase [0-9]|\bTBD\b|TBA)\b' \
+  | rg -v 'STL-[0-9]+'
+```
+
+For each hit:
+- Cite a concrete `STL-NN` that exists and is open, **or** drop the future-work claim entirely and describe only the current state.
+- Pre-existing TODO comments untouched by the diff are out of scope.
+- Exception: PR descriptions, commit bodies, ADR Status / Amendment blocks.
+
+### H2: stale status claims on touched lib/mod docs
+
+```bash
+for f in $(git diff --name-only origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs'); do
+  echo "=== $f ==="
+  head -40 "$f" | rg -in '\b(scaffold|stub|WIP|placeholder|reserved|empty|TODO|coming soon|not yet)\b'
+done
+```
+
+For each hit verify against the current file's actual content; status word that no longer matches the code is a lie — rewrite or delete.
+
+### H3: cross-crate citation accuracy
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '(lives in|moved to|owned by|owns|consumes|now in|re-exported (?:from|via))\s+`?(shotloom-[a-z0-9-]+|shotloom_[a-z0-9_]+)' \
+  | sort -u
+```
+
+For each hit verify the cited crate / module path exists and the symbol is actually owned / re-exported there.
+
+### H4: naming-convention coherence for new public identifiers
+
+```bash
+# 1. New crate names
+git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/Cargo.toml' \
+  | xargs -I{} dirname {} | xargs -I{} basename {}
+# Each MUST match shotloom-<domain>-<role>.
+
+# 2. New public types / traits / fns in changed files
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+  | rg '^\+pub (struct|enum|trait|fn|const|type) [A-Za-z_]'
+# Verify against sibling crate's analogue (same suffix shape).
+
+# 3. Module file layout vs sibling crates
+for new_crate in $(git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/src/lib.rs' | xargs -I{} dirname {}); do
+  echo "=== $new_crate ==="
+  ls "$new_crate"
+done
+```
+
+### H5: ADR section-citation accuracy
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -o 'ADR-[0-9]{4}' \
+  | sort -u \
+  | while read adr; do
+      lower=$(echo "$adr" | tr 'A-Z' 'a-z')
+      hits=$(ls docs/adr/${lower}-*.md 2>/dev/null | head -1)
+      if [ -z "$hits" ]; then
+        echo "MISSING ADR FILE for $adr"
+      fi
+    done
+```
+
+For each ADR cited with `§SectionName`, manually open the ADR and confirm the section heading exists. (Body-text verification of the section moves to Pattern S1.)
+
+### H6: claimed Out-of-Scope items honored by the diff
+
+```bash
+git diff --name-only origin/main..HEAD | rg -q 'Cargo\.toml' && \
+  git log origin/main..HEAD --format='%B' | rg -i 'out of scope.*dep' && \
+  echo "VERIFY: PR claims no new deps but Cargo.toml changed."
+
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' | rg '^\+pub fn|^\-pub fn' | head -20
+# Cross-check against any "Out of scope: API change" claim.
+```
+
+### H7: past-state contrast framing in added comments
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '\b(previously|prior pipeline|was unconstrained|used to|before this change|now\s+(?:we|the))\b'
+```
+
+Comments live forever; the contrast becomes meaningless once the prior version is forgotten. Rewrite to describe what the symbol IS. Exception: changelog, commit body, PR description, ADR Amendment blocks.
+
+### H8: Linear-ID references anywhere in the working tree
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' '*.toml' '*.json' \
+  | rg '^\+' \
+  | rg 'STL-[0-9]+'
+```
+
+Linear IDs belong in commit messages and PR descriptions only. Rewrite prose to describe *what* (rule, invariant, algorithm); let commit / PR carry *who-asked-for-it*. Exceptions: ADR Status / Amendment blocks (per H10); CHANGELOG-style files.
+
+### H9: execution-status leak in ADR body
+
+```bash
+git diff origin/main..HEAD -- 'docs/adr/*.md' \
+  | rg '^\+' \
+  | rg -in 'Implementation status|Implementation log|landed in|this PR scopes|this PR locks|formalized by PR #|as of [0-9]{4}-[0-9]{2}-[0-9]{2}|currently scoped to'
+```
+
+`documentation-standard.md` §5.7 excludes active execution status from ADR body (including README index). Right home: per-crate README, CHANGELOG, commit body, PR description.
+
+### H10: ADR Status / Amendment discipline
+
+```bash
+# Linear-ID in ADR Decision / Consequences / Alternatives
+git diff origin/main..HEAD -- 'docs/adr/*.md' \
+  | rg '^\+' \
+  | rg -in 'STL-[0-9]+' \
+  | rg -v 'Status:|Amendment'
+
+# Session-plan / port-plan prose
+git diff origin/main..HEAD -- 'docs/adr/*.md' \
+  | rg '^\+' \
+  | rg -in '\b(Session\s+[0-9]|Phase\s+[0-9]|will\s+land\s+(?:in|when)|ports?\s+them|defers?\s+to\s+whenever|Revised during port|incremental port)\b'
+
+# In-place Decision rewrite vs canonical amendment style
+for adr in $(git diff --name-only origin/main..HEAD -- 'docs/adr/*.md'); do
+  echo "=== $adr ==="
+  rg -n '^\*\*Status:\*\*|^Status:' "$adr"
+  git diff origin/main..HEAD -- "$adr" \
+    | rg '^[-+].*##\s+(Decision|Consequences|Alternatives)' && \
+    echo "  WARN: decision-section header changed in diff — verify Status banner reflects amendment per adr-template.md Usage Notes"
+done
+```
+
+Material Decision-section edits to an Accepted ADR must bump Status to `Accepted (amended YYYY-MM-DD)` and add an Amendment block, not rewrite in place. Proposed ADRs may edit in place. Session-plan / port-plan prose is forbidden in any ADR body section. H10 hits where the PR's scope IS the ADR escalate to P1.
+
+### H11: long rationale in `//!` instead of crate README
+
+```bash
+# Added //! blocks longer than 40 lines, or 3+ new # Heading subsections of prose
+git diff origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs' \
+  | rg -c '^\+//!' \
+  | awk -F: '$2 > 40 {print}'
+```
+
+Rationale lives in per-crate README per `documentation-standard.md` §5.13. Surface as candidate; the verdict is "leave in `//!`" only when no `crates/<this>/README.md` exists.
+
+---
+
+## Pattern I — Reverse-side audit (PR-induced staleness)
+
+These run **after** Pattern H clears. Where A1 / H3 sweep `^+` lines for forward issues, Pattern I sweeps the converse: when this PR removes / moves / renames a symbol, grep the repo for **unchanged** prose that cites the OLD location and is now stale because of *this PR's change*.
+
+Mindset: **A1/H3 catch what the PR adds; I catches what the PR breaks elsewhere.** "Pre-existing line" is not an excuse — the diff caused the staleness, so the diff owns the fix.
+
+### I1: symbols this PR removes from a crate's public surface
+
+```bash
+git diff origin/main..HEAD -- 'crates/*/src/lib.rs' \
+  | rg '^-\s*pub use ' \
+  | rg -o '`?[A-Za-z_][A-Za-z0-9_]*`?' \
+  | sort -u
+```
+
+For each removed symbol `X` from crate `shotloom-y`:
+
+```bash
+rg -n "shotloom_y::X|shotloom-y.*\bX\b" crates/ docs/ MAP.md AGENTS.md 2>/dev/null
+```
+
+### I2: file deletions / renames
+
+```bash
+git diff --name-status origin/main..HEAD | rg '^[DR]'
+
+old_path="crates/shotloom-gltf/src/vrm_foot_contact.rs"   # ← per finding
+rg -n "$old_path|$(basename "$old_path" .rs)" crates/ docs/ 2>/dev/null
+```
+
+### I3: module-internal imports removed from a non-test source file
+
+```bash
+git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+  | rg '^-use\s+(shotloom_[a-z_]+::[A-Za-z0-9_:]+)' \
+  | rg -o 'shotloom_[a-z_]+::[A-Za-z0-9_:]+' \
+  | sort -u
+```
+
+For each removed fully-qualified path:
+
+```bash
+qualified="shotloom_gltf::extract_foot_contact_data"
+rg -n "$qualified" crates/ docs/ 2>/dev/null
+```
+
+### I4: workspace-wide unresolved-link sweep on doc comments
+
+Trigger: PR touches any `///` / `//!` doc comment OR renames any file in `crates/`.
+
+```bash
+cargo doc --workspace --exclude shotloom-desktop --no-deps 2>&1 | rg "warning: unresolved link"
+```
+
+Triage rule: any new unresolved-link warning whose file is in this PR's diff is in-scope; pre-existing warnings on files this PR did not touch are out-of-scope.
+
+---
+
+## Pattern M — Markup / manifest sanity
+
+Trigger: `yaml_changed + json_changed > 0`. Catches workflow yaml / JSON syntax + supply-chain hardening at review time so CI failures do not cost a round-trip.
+
+```bash
+# M1 — GitHub Actions workflow yaml syntax
+for f in $(git diff --name-only origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml'); do
+  python3 -c "import sys, yaml; yaml.safe_load(open('$f'))" || echo "::error::$f: invalid yaml"
+done
+
+# M2 — uses: pinned to a tag (not branch); flag unpinned refs
+git diff origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+  | rg '^\+\s*uses: ' | rg -v '@v[0-9]|@[0-9a-f]{40}'
+
+# M3 — JSON files parseable
+for f in $(git diff --name-only origin/main..HEAD -- '*.json'); do
+  python3 -m json.tool "$f" >/dev/null 2>&1 || echo "::error::$f: invalid json"
+done
+
+# M4 — secrets reference uses ${{ secrets.NAME }} form, no hardcoded
+git diff origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+  | rg '^\+' | rg -i 'password|token|api_key|secret' | rg -v '\$\{\{\s*secrets\.'
+
+# M5 — workflow has meaningful concurrency group when it can race
+for f in $(git diff --name-only origin/main..HEAD -- '.github/workflows/*.yml'); do
+  if ! rg -q '^concurrency:' "$f"; then
+    echo "::note::$f: no concurrency group — confirm no race against itself"
+  fi
+done
+```
+
+Priorities: M1 / M3 invalid syntax = P0 (workflow does not run). M2 unpinned action = P2 (supply-chain hardening). M4 plaintext secret = P0. M5 missing concurrency = P3.
+
+---
+
+## Pattern S — Load-bearing prose verification (subagent territory)
+
+Three defect classes are **not author-reviewable** — the same model that wrote the prose silently re-rationalizes the same claim. Author-self-review repeatedly clears them; reviewers catch them. The fix is structural: this Pattern S section is the subagent's main work, not a grep sweep.
+
+The grep step below is just the **trigger check** — mechanical scan for added prose carrying S1/S2/S3 patterns. For every trigger hit, the subagent MUST open the cited source, paste the literal text into the report, and verify confirm | refute | unclear.
+
+### S1: cross-reference body accuracy
+
+Trigger:
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '(ADR-[0-9]{4}|docs/[a-z/]+\.md|crates/[a-z-]+/README\.md)\s*§'
+```
+
+Failure mode: section exists (H5 verifies), but the literal text says something weaker / different / about a sibling concern. Subagent opens the cited file, pastes the section text, verifies the prose's paraphrase matches.
+
+### S2: sibling-crate state claim
+
+Trigger:
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '\b(scaffold|stub|WIP|empty|owns\s+\w+|produces\s+\w+|no output yet|only consumer is)\b' \
+  | rg -i 'shotloom-[a-z-]+|shotloom_[a-z_]+'
+```
+
+Subagent opens the named crate's `lib.rs` / `types.rs` / `Cargo.toml`, pastes a one-line evidence quote, confirms or refutes.
+
+### S3: numeric / geometric claim about a constant
+
+Trigger:
+
+```bash
+git diff origin/main..HEAD -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg -in '[0-9]+(\.[0-9]+)?\s+(is|=|→|->)\s+(forward|backward|left|right|up|down|wrist|elbow|shoulder|hip|toe|axis|ratio)'
+```
+
+Subagent opens the code where the constant is used, derives the geometric meaning from arithmetic, confirms or refutes the prose.
+
+### Subagent verification format
+
+For each S1/S2/S3 hit:
+
+```
+Pattern S<N> at `<path>:<line>`:
+  Claim: "<paraphrased from diff>"
+  Cited source: `<file>` §<section>
+  Literal text: "<verbatim excerpt>"
+  Verdict: confirm | refute | unclear
+  (If refute) Corrected wording: "<proposed rewrite>"
+```
+
+Skip the dispatch only when the diff contains zero S1/S2/S3 triggers. The trigger check is mechanical; the verification is the subagent's main responsibility.
+
+---
+
+## Sweep order
+
+1. **G** (always) — repo conventions, commit / PR / branch shape, doc-paths validator.
+2. **H** (md or rust diff) — doc & comment discipline.
+3. **I** (moves) — reverse-side audit.
+4. **M** (yaml / json) — markup / manifest sanity.
+5. **S** (load-bearing prose triggers) — open cited sources, verify literal text.
+
+Findings in H/I/M/S are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through.
