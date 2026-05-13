@@ -7,7 +7,8 @@ allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bas
 
 Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs Patterns A–F + T against the current diff, and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
 
-Pair skill: `shotloom-review-docs` covers docs/wording discipline. Umbrella `shotloom-review-before-pr` invokes both in parallel.
+Pair skill: `shotloom-review-docs` covers docs/wording discipline.
+Umbrella `shotloom-review-before-pr` invokes code first, then docs.
 
 ## Arguments
 
@@ -77,7 +78,7 @@ Walk `docs/guidelines/review-rust.md` **section by section, in source order**, a
 2. §2 Panic discipline (P0) — `unwrap` / `expect` / `panic!` on non-test paths?
 3. §3 Error propagation (P0) — `Result` mishandling, dropped errors, `unwrap_or_default` on fallible IO?
 4. §4 Unsafe code (P0) — `unsafe` blocks without justifying comment + invariant statement?
-5. §5 Ownership and lifetimes (P1) — gratuitous `.clone()`, unnecessary `Rc<RefCell<…>>`, lifetime-elision misuse?
+5. §5 Ownership and lifetimes (P1) — gratuitous `.clone()`, unnecessary `Rc<RefCell<T>>`, lifetime-elision misuse?
 6. §6 ECS patterns (P1) — Bevy system signatures, schedule placement, query soundness?
 7. §7 Serialization and serde (P1) — `#[serde(default)]` masking schema drift, tag/untagged mistakes?
 8. §8 WASM compatibility (P1) — std::time, std::thread, fs uses unguarded by `#[cfg(not(target_arch = "wasm32"))]`?
@@ -91,7 +92,7 @@ For every §-section: produce a finding (or `clean`) with a P0/P1/P2/P3 priority
 
 Only after Phase 1 is fully reported, run the patterns in `reference.md`. These are **additional** defect classes the in-repo spec does not directly enforce:
 
-- **Pattern A** — Doc ↔ Code coherence (backticked identifier resolution, file path references, top-of-file state descriptions, etc.).
+- **Pattern A** — Doc ↔ Code coherence (backticked identifier resolution, file path references, top-of-file state descriptions).
 - **Pattern B** — Classifier / dispatch asymmetry.
 - **Pattern C** — Silent fallback in hot path (overlaps §3 partially; surface where the in-repo spec is silent).
 - **Pattern D** — Library hygiene (logging in lib code, mixed-language comments, bare `allow(dead_code)`).
@@ -117,7 +118,7 @@ Do NOT skip a section / pattern silently. If a check produces zero hits, report 
 
 ### Applicability — rust:N ts:N
 
-Ran: Phase 1 (review-rust.md §1–11), Phase 2 (Patterns <list>). N/A: <list with reason — typically "no Rust diff" or "no Cargo.toml change">.
+Ran: Phase 1 (review-rust.md §1-11), Phase 2 (Patterns <list>). N/A: <list with reason, e.g. "no Rust diff" or "no Cargo.toml change">.
 
 ### Phase 1 — In-repo review-rust.md checks (canonical)
 
@@ -125,16 +126,16 @@ Ran: Phase 1 (review-rust.md §1–11), Phase 2 (Patterns <list>). N/A: <list wi
 - clean — OR — `<path>:<line>` — <defect> — cite §1 clause.
 
 #### §2 Panic discipline (P0)
-- ...
+- clean — OR — `<path>:<line>` — <defect> — cite §2 clause.
 
-(... continue for every §-section through §11 ...)
+Continue for every §-section through §11.
 
 ### Phase 2 — Supplementary patterns (skill-side catalog)
 
 #### Pattern A1 — backticked identifiers
-- `<path>:<line>` — `<identifier>` <one-line defect description and rule cite>
+- clean — OR — `<path>:<line>` — `<identifier>` <one-line defect description and rule cite>
 
-(... continue for every pattern A–F + T ...)
+Continue for every pattern A-F + T + U + J that applies.
 
 ### Recommendation
 
@@ -170,7 +171,7 @@ User fixes findings, re-invokes — restart from Step 1. Skill is idempotent.
 ## Related
 
 - `shotloom-review-docs` — paired skill for docs / comment / markup / PR-prose discipline.
-- `shotloom-review-before-pr` — umbrella router invoking both in parallel.
+- `shotloom-review-before-pr` — umbrella router invoking code first, then docs.
 - `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec.
 - `docs/guidelines/code-review-guideline.md` (in shotloom repo) — review priorities.
 - `~/.claude/rules/test-write.md` — unit test requirement (Pattern T enforces).

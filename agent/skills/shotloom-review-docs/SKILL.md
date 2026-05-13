@@ -7,7 +7,8 @@ allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bas
 
 Cold-start docs / wording / markup review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/pr-guideline.md`, `commit-guideline.md`, `documentation-standard.md`, and `adr-template.md` fresh on every invocation, runs Patterns G + H + I + M + S against the current diff, and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose; a cold-start subagent is the structural fix for the doc-claim self-rationalization failure mode.
 
-Pair skill: `shotloom-review-code` covers Rust/TS code quality. Umbrella `shotloom-review-before-pr` invokes both in parallel.
+Pair skill: `shotloom-review-code` covers Rust/TS code quality.
+Umbrella `shotloom-review-before-pr` invokes code first, then docs.
 
 ## Arguments
 
@@ -133,16 +134,16 @@ Ran: Phase 1 (pr-guideline / commit-guideline / documentation-standard / adr-tem
 
 #### commit-guideline.md
 - §1 Subject Line: clean — OR — `<sha> "<subject>"` cite §1 clause.
-- §2 Body: ...
+- §2 Body: clean — OR — `<sha> "<subject>"` cite §2 clause.
 
 #### documentation-standard.md
 - §2.8 / §5.7 / §5.13 / §7.5: per-rule findings.
 
 #### adr-template.md (when docs/adr/ touched)
-- Litmus test: ...
-- Anti-patterns: ...
-- Linear-identifier rule: ...
-- Editing rules: ...
+- Litmus test: clean — OR — `<path>:<line>` cite template note.
+- Anti-patterns: clean — OR — `<path>:<line>` cite template note.
+- Linear-identifier rule: clean — OR — `<path>:<line>` cite template note.
+- Editing rules: clean — OR — `<path>:<line>` cite template note.
 
 ### Phase 2 — Supplementary patterns (skill-side catalog)
 
@@ -155,7 +156,7 @@ Ran: Phase 1 (pr-guideline / commit-guideline / documentation-standard / adr-tem
 #### Pattern S1 — cross-reference body accuracy
 - `<path>:<line>` cites `ADR-XXXX §Foo`. Verified against `docs/adr/adr-XXXX-...md`: section exists, body says <quoted excerpt>. Verdict: confirm | refute | unclear.
 
-(... continue for every pattern G/H/I/M/S ...)
+Continue for every pattern G/H/I/M/S that applies.
 
 ### Recommendation
 
@@ -185,18 +186,15 @@ User fixes findings, re-invokes — restart from Step 1. Skill is idempotent.
 
 - **Cold-start subagent dispatch is mandatory every invocation.** Never inline the sweep into the main session. The cold-start guarantee is the entire point.
 - **Read-only by contract.** The Explore subagent type is read-only.
-- **Re-read standards inside the subagent.** Main session does not need to load `pr-guideline.md` etc.
+- **Re-read standards inside the subagent.** Main session does not need to load the docs standards.
 - **Sibling skill split:** Rust/TS code quality lives in `shotloom-review-code`. This skill only covers docs / comment / markup / PR-prose / Linear-discipline.
 
 ## Related
 
 - `shotloom-review-code` — paired skill for Rust/TS code quality + test coverage.
-- `shotloom-review-before-pr` — umbrella router invoking both in parallel.
+- `shotloom-review-before-pr` — umbrella router invoking code first, then docs.
 - `docs/guidelines/pr-guideline.md` (in shotloom repo) — PR body shape.
 - `docs/guidelines/commit-guideline.md` (in shotloom repo) — Conventional Commits.
 - `docs/guidelines/documentation-standard.md` (in shotloom repo) — durable-knowledge rules.
 - `docs/guidelines/adr-template.md` (in shotloom repo) — ADR template + Usage Notes.
-
-## Additional Resources
-
-[reference.md](reference.md) — full bash command catalog for every pattern.
+- [reference.md](reference.md) — full bash command catalog for every pattern.
