@@ -31,7 +31,7 @@ Verified against `/Users/younsoolim/Desktop/www/shotloom` on 2026-05-13.
 | Bridge kind | `AssetImportKind::Prop` already exists | `crates/shotloom-core/src/bridge/mod.rs` |
 | Bridge command | `ImportAsset { kind, upload_id, filename, display_name }` already carries prop | `BridgeCommand::ImportAsset` |
 | Rust serde test | `import_prop_asset_command_serde_round_trip` already exists | `crates/shotloom-core/src/bridge/mod.rs` |
-| TS type | `AssetImportKind = "character" | "animation" | "prop"` already exists | `apps/editor/src/bridge/types.ts` |
+| TS type | `AssetImportKind` already includes `"character"`, `"animation"`, and `"prop"` | `apps/editor/src/bridge/types.ts` |
 | Editor UI | World Assets panel already dispatches `kind: "prop"` | `apps/editor/src/components/WorldAssetsPanel.tsx` |
 | Web picker | prop picker accepts `.glb,model/gltf-binary` only | `apps/editor/src/runtime/web.ts` |
 | Tauri picker | prop dialog filters `GLB` only | `crates/shotloom-tauri/src/tauri_commands.rs` |
@@ -81,6 +81,8 @@ diagnostics.
 4. **Preflight proves reachable mesh content, not render quality.**
    - Required: valid GLB container, glTF asset version 2.0, at least one scene,
      and at least one scene-reachable node that references a valid mesh.
+   - Scan all scenes. Pass if any scene yields at least one reachable mesh node;
+     do not restrict validation to the default scene only.
    - Recommended: require the referenced mesh to contain at least one primitive.
    - Out of scope: material quality, texture availability, skinning, animation,
      scale normalization, thumbnail generation.
@@ -100,6 +102,9 @@ diagnostics.
      - `prop_no_reachable_mesh`
    - Do not add a lowercase `reason_code` field to `CommandRejected`; that is
      not the current bridge shape.
+   - Diagnostic message ownership is fixed in the engine mapper. The mapper must
+     use the message table in S2; implementation must not invent ad hoc strings
+     at call sites.
 
 6. **Preserve existing runtime invariants.**
    - `handle_import_asset` must keep taking staged bytes before validation so
@@ -180,9 +185,15 @@ Implementation notes:
 - `gltf::Glb::from_slice(bytes)` is available and already used in tests.
 - `gltf::Gltf::from_slice(bytes)` is available and already used by the
   `sample_glb_fixture` test.
+- Inspect the GLB JSON chunk before calling `gltf::Gltf::from_slice(bytes)`.
+  Read `/asset/version` from the raw JSON and reject any missing or non-`"2.0"`
+  value as `UnsupportedGltfVersion`. Calling the `gltf` crate first can collapse
+  glTF 1.0 input into a generic parse error, which would make this variant
+  unreachable.
 - Traverse each scene's root nodes and descendants. Count a mesh node only when
   it is reachable from a scene root.
-- If using raw JSON for the version check, read `/asset/version == "2.0"`.
+- Scan every scene. Validation passes if any scene contains at least one
+  reachable mesh node.
 
 Tests:
 - Happy path: `assets/props/debug_prop.glb` passes.
@@ -212,18 +223,26 @@ Add a mapper:
 fn prop_preflight_error_to_events(
     err: &PropPreflightError,
 ) -> (CommandRejectionCode, Diagnostic)
+
+fn prop_preflight_diagnostic_message(err: &PropPreflightError) -> String
 ```
 
 Mapping policy:
 
-| Error class | Command rejection | Diagnostic code |
-|---|---|---|
-| `NotGlb` | `AssetDecodeFailed` | `prop_not_glb` |
-| `BadGlbHeader` | `AssetDecodeFailed` | `prop_bad_glb_header` |
-| `UnsupportedGltfVersion` | `AssetValidationFailed` | `prop_unsupported_gltf_version` |
-| `InvalidGltf(_)` | `AssetDecodeFailed` | `prop_invalid_gltf` |
-| `NoScene` | `AssetValidationFailed` | `prop_no_scene` |
-| `NoReachableMesh` | `AssetValidationFailed` | `prop_no_reachable_mesh` |
+| Error class | Command rejection | Diagnostic code | Diagnostic message source |
+|---|---|---|---|
+| `NotGlb` | `AssetDecodeFailed` | `prop_not_glb` | `Prop import expects a binary .glb file.` |
+| `BadGlbHeader` | `AssetDecodeFailed` | `prop_bad_glb_header` | `Prop GLB has an invalid container header.` |
+| `UnsupportedGltfVersion` | `AssetValidationFailed` | `prop_unsupported_gltf_version` | `Prop GLB must declare glTF asset version 2.0.` |
+| `InvalidGltf(detail)` | `AssetDecodeFailed` | `prop_invalid_gltf` | `Prop GLB could not be parsed as glTF 2.0: {detail}` |
+| `NoScene` | `AssetValidationFailed` | `prop_no_scene` | `Prop GLB must contain at least one scene.` |
+| `NoReachableMesh` | `AssetValidationFailed` | `prop_no_reachable_mesh` | `Prop GLB must contain a mesh node reachable from a scene.` |
+
+The mapper owns both the diagnostic code and the diagnostic message. Use
+`Diagnostic::error(code, prop_preflight_diagnostic_message(err))`. Do not rely on
+`Display` output or construct diagnostic messages in the import handler body.
+Only `InvalidGltf(detail)` may include dynamic detail, and it must use the
+stable prefix shown above.
 
 On failure:
 1. Emit `BridgeEvent::ValidationDiagnostics { diagnostics: vec![diagnostic] }`.
@@ -273,7 +292,7 @@ Do not document `.gltf` as supported.
 - [ ] `assets/props/debug_prop.glb` passes preflight.
 - [ ] `ImportAsset { kind: "prop" }` uses the new preflight.
 - [ ] Failed prop import emits `ValidationDiagnostics` with a stable diagnostic
-      code and then `CommandRejected`.
+      code and mapper-owned message, then `CommandRejected`.
 - [ ] Failed prop import does not register an asset and still drains staged
       upload bytes.
 - [ ] Successful prop import still emits `AssetRegistered` and `BundleChanged`.
