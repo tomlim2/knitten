@@ -51,6 +51,10 @@ agent/tmp/
 __pycache__/
 *.pyc
 
+# Codex-managed system skills — auto-generated per machine, not portable.
+# The `.codex-system-skills.marker` rewrites on every codex run.
+agent/skills/.system/
+
 # Font binaries in skills
 agent/skills/canvas-design/canvas-fonts/
 
