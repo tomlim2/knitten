@@ -32,14 +32,29 @@ install Tailwind, add dependencies, or refactor existing components.
 
 2. **Define surface selection without changing existing product specs.** The
    new guideline names toast, inline feedback, banner, modal dialog,
-   destructive modal, and progress overlay, while explicitly pointing to
-   `docs/specs/error-ux.md` for Alpha failure-mode mappings.
+   destructive modal, and progress overlay, while linking to
+   `docs/specs/error-ux.md` for Alpha failure-mode mappings. The link is
+   reference-only: no copied table, no summarized failure-mode list, and no
+   restated owner text.
    *Rationale:* `error-ux.md` already owns specific cases such as VRM import
    failure, save failure, and export failure. The new guideline should help
    reviewers classify future UI work without silently rewriting those
    requirements.
    *Rejected:* moving `error-ux.md` content into the guideline. That would
    create two sources of truth for failure-mode behavior.
+
+   A modal is destructive when it confirms an action that cannot be undone by a
+   single immediate user action in the same surface. Reversibility is the
+   criterion, not data loss alone. Asset deletion, animation overwrite, project
+   reset, bundle replacement, permission revocation, and work-loss actions are
+   destructive; a recoverable preference toggle is not.
+
+   Progress overlay is a behavior contract, not a locked component primitive.
+   It means the surface blocks conflicting user input, shows determinate or
+   indeterminate progress, and resolves to completion, cancellation, or an
+   error surface. The first feature that needs a reusable implementation owns
+   that primitive in a follow-up PR, with an ADR only if the architecture
+   boundary changes.
 
 3. **Keep Radix Dialog as the named modal primitive.** The guideline should
    say standard dialogs use `@radix-ui/react-dialog` and remain controlled at
@@ -99,7 +114,7 @@ install Tailwind, add dependencies, or refactor existing components.
 |------|------|------|
 | `docs/guidelines/ui-feedback-surfaces.md` | add | New reviewer and authoring guideline for toast, inline, banner, modal, destructive modal, and progress overlay selection. |
 | `docs/guidelines/README.md` | modify | Add the new guideline to the local guideline index. |
-| `MAP.md` | modify | Add a canonical lookup entry for editor UI feedback surface guidance. |
+| `MAP.md` | modify | Add a Frontend lookup entry mapping toast/modal/banner/progress feedback guidance to the new guideline. |
 
 ## Verification
 
