@@ -251,6 +251,34 @@ git diff origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs' \
 
 Rationale lives in per-crate README per `documentation-standard.md` §5.13. Surface as candidate; the verdict is "leave in `//!`" only when no `crates/<this>/README.md` exists.
 
+### H12: decision-by-deferral phrasing in durable docs
+
+Distinct from H1 (future-tense verb forms). H12 catches phrasings that **look present-tense but smuggle deferral** — the prose appears to make a decision while actually naming a future artifact (PR, migration, follow-up issue, implementer, "consumer count") as the real decision point. The doc itself ducks the call.
+
+Three principles for any decision sentence in a durable doc:
+
+1. **Future-tense form** ("will be decided", "lands in a later PR") = drop. (H1 already covers this.)
+2. **Present-tense form, actually pinned** ("Tailwind is the default styling system") = OK. Re-check rename-fragility per the Litmus test.
+3. **Silence over explicit non-decision.** A durable doc that says "X is implementation choice" / "Y is decided per consumer" / "Z is intentionally underspecified" adds noise. The doc's silence already grants the freedom — explicit "we leave this open" prose is itself the defect, because future readers wonder whether the silence was deliberate or forgetful (and the prose proves it was deliberate but adds no other operational signal). Drop the sentence; let silence carry the freedom.
+
+Sweep:
+
+```bash
+git diff origin/main..HEAD -- 'docs/adr/*.md' 'docs/specs/*.md' 'docs/arch/*.md' '*/README.md' \
+  | rg '^\+' \
+  | rg -in '\bdecided\s+(in|per|when|by)\s+(the|a|each|implementation|first|next)|left\s+(open|to)\s+(implementation|the\s+implementer|each|future)|intentionally\s+(underspecified|deferred|TBD|left\s+open|open)|implementation\s+choice\s+(and|;|,)|pinned\s+(in|by|at)\s+(the|each|implementation|first|next)|to\s+be\s+(decided|chosen|pinned)\s+(in|by|at|per)|wait[s]?\s+for\s+(a|the)\s+(concrete|real|first)|justif(ies|y)\s+them|TBD\s+(by|in)\s+(the|next|first)|defers?\s+to\s+(implementation|the\s+implementer)'
+```
+
+For each hit, apply the three-principle decision:
+
+- The sentence pins a concrete present-tense choice → keep, re-check rename-fragility.
+- The sentence defers to a future artifact while pretending to decide → **drop**.
+- The sentence adds explicit "we leave this open" framing → **drop**, let silence carry the freedom.
+
+Priority: P3 default; escalates to P2 when the deferral lives inside an ADR's `## Decision` section (Decision is the durable claim; diluting it with "decided later" prose defeats the ADR shape).
+
+Real precedent (added 2026-05-13): ADR-0047 draft initially carried "Concrete class-composition tooling (helper functions, variant systems, per-primitive wrapper packages) is implementation choice and is decided in the first migration PR, not pinned here." This passed H1 (no `will` / `future` / `phase`) but failed H12 — "decided in the first migration PR" is deferral phrased as present-tense. Sentence dropped; ADR Decision stops at the actual pinned choice.
+
 ---
 
 ## Pattern I — Reverse-side audit (PR-induced staleness)
