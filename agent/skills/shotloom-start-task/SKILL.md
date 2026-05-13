@@ -170,14 +170,57 @@ For each seed, record:
 - priority (`P1`, `P2`, or `P3`)
 - evidence path or `rg` hit
 - the exact question the plan must answer
+- **AC-trace** — the AC line, ADR, or repo precedent that demands this seed.
+  If no AC line / ADR / precedent demands it, the seed is "related but not
+  required" — move it to a follow-up note, not a plan-risk seed. This is the
+  "Required by AC?" filter: in-scope items must trace to demand, not to
+  adjacency.
 
 Continue adding seeds until there is no obvious unhandled P1 or P2 ambiguity at
 briefing time. If a seed implies a scope change, mark it as an ask-first trigger
 instead of silently expanding the task.
 
+### Step 5d: Sibling-draft scan (mandatory)
+
+Before the Ready briefing, scan `caol-ila/docs/plans/` for sibling plan
+artifacts whose slug overlaps the work at hand. The next skill in the chain
+(`/shotloom-draft-task-plan`) cannot consume what it doesn't know exists, and
+parallel-agent workflows often leave Codex / Gemini / other-Claude plans for
+the same Linear issue in this folder.
+
+```bash
+caol_ila=$(jq -r '."caol-ila".path // ."caol-ila" // empty' \
+  ~/.claude/private/caol-config/repo-paths.json)
+# Derive a slug stem from the Linear scope/verb/subject, e.g. "import-add-prop".
+# Match liberally — siblings often carry suffixes (-codex, -gemini, -draft,
+# -v2) or live one folder up by accident.
+ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+ls "$caol_ila/docs/"       2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
+  "docs/plans/" | rg -i "<scope>|<subject>" | head -5
+```
+
+For every match (working-tree present OR recently-deleted at HEAD):
+
+1. **Read tool, full body** — not `cat`, not `head`, not `git show | head`.
+   Bash dumps drop file content into context without the attention budget the
+   Read tool provides; this matters when the sibling carries Locked Decisions
+   the next skill must compare against.
+2. Record in the Ready briefing's "Sibling drafts" row: slug, status (working
+   tree / staged / HEAD / deleted), stance summary (one sentence — what scope
+   did that draft pick?), notable disagreement signal vs the briefing's own
+   scope.
+
+If a sibling draft's scope conflicts with the user's stated direction, surface
+that explicitly in the briefing — the user is likely comparing agents and
+needs the conflict visible.
+
+If zero siblings are found, write `Sibling drafts: none found` in the briefing
+so the next skill knows the scan ran and was empty (not skipped).
+
 ### Step 6: Ready briefing — END OF THIS SKILL
 
-Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC-to-primitive cross-check verdict for every AC that cited a primitive (codified / wrong-shape with proposed split)**, and the Step 5c plan-risk handoff.
+Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC-to-primitive cross-check verdict for every AC that cited a primitive (codified / wrong-shape with proposed split)**, the Step 5c plan-risk handoff, and the Step 5d sibling-draft inventory.
 
 After the briefing, **end the turn**. Do NOT edit code. Do NOT write a plan doc inside this skill. The Ready briefing is the only output.
 

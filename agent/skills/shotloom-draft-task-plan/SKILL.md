@@ -238,6 +238,87 @@ Run at least these review lenses:
 - **Scope creep:** Are tempting related features captured as non-goals or
   follow-ups instead of hidden implementation work?
 
+#### Step 5a: Mandatory stance rotation (no early exit on author lens)
+
+Pass 1 from the author seat ("did I miss anything?") catches what the author
+already meant to write. It does not catch what the author silently omitted.
+Pass 1 with zero findings is the trivial case, not convergence.
+
+Before declaring convergence, run AT LEAST these four passes, each from a
+different reviewer stance. Findings from any pass must be patched and the
+next pass re-run from a fresh stance.
+
+| Pass | Stance | Lead question |
+|---|---|---|
+| 1 | Author | "Did I write what I meant to write?" |
+| 2 | Paranoid reviewer | "What's silently missing? What would a strict round-1 reviewer flag? What invariants, error paths, or edge cases are unstated?" |
+| 3 | Minimalist reviewer | "What's speculative API? What's added 'because related' instead of 'required by an AC line / ADR / repo precedent'? What can be cut to Follow-Up Candidates?" |
+| 4 | Domain reviewer | "Does each plan line trace to an AC line, an ADR, or a repo precedent? If a line has no such trace, why is it in scope rather than in Follow-Up Candidates?" |
+
+The convergence rule below (formerly "one full pass finds no P1") is replaced:
+convergence requires that Pass 4 (Domain reviewer) finds no unhandled material
+defect AND every floor check in Step 5c passes. Pass 1 alone is never
+sufficient.
+
+#### Step 5b: Mandatory parallel-draft consumption
+
+The Ready briefing emitted by `/shotloom-start-task` carries a "Sibling drafts"
+inventory (Step 5d in that skill). If that inventory is non-empty, this step
+is mandatory. If the inventory is absent or stale, run the scan yourself
+before proceeding:
+
+```bash
+caol_ila=$(jq -r '."caol-ila".path // ."caol-ila" // empty' \
+  ~/.claude/private/caol-config/repo-paths.json)
+ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<slug-stem>"
+ls "$caol_ila/docs/"       2>/dev/null | rg -i "<slug-stem>"
+git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
+  "docs/plans/" | rg -i "<slug-stem>" | head -5
+```
+
+For every sibling draft found:
+
+1. **Read the FULL body via the Read tool** — not `cat`, not `head`,
+   not `git show <path>` via Bash. Bash dumps drop file content into context
+   without the attention budget the Read tool provides. Sibling plans
+   typically carry Locked Decisions, Traps, and Manual Repro items that
+   require careful per-line reading, not pattern-matching.
+2. Diff sibling Locked Decisions against your plan's. For every disagreement,
+   record one line: "Sibling X chose A; I chose B because <live-code evidence
+   path>." If you cannot cite live-code evidence, reconsider — the sibling
+   is candidate findings, not noise.
+3. Mine the sibling's Traps, Non-Goals, Manual Repro, and Acceptance Criteria
+   for items missing from yours. Adopt every item that has verifiable
+   live-code evidence; reject only with explicit rationale recorded in your
+   Locked Decisions section.
+4. If a sibling proposes a stricter API signature, a finer error-code split,
+   or a defensive invariant your plan lacks, default to adopting it unless
+   you can cite evidence against.
+
+This is NOT "review by another agent" (that's the External Claude review
+protocol below). This is the author absorbing adjacent thinking before
+declaring convergence. The user is paying for parallel-agent comparison —
+ignoring siblings wastes that investment.
+
+#### Step 5c: Structural floor checks
+
+Before Step 6, every plan must satisfy these floor counts. If any check
+fails, the plan is not converged and another pass is required.
+
+| Floor | Reason it matters |
+|---|---|
+| Traps section has ≥ 2 defensive items against patterns the plan DID NOT propose. | Anti-creep contract for implementation phase. Cheap to write, expensive to discover in review. |
+| Non-Goals section has ≥ 5 explicit adjacent-concern exclusions. | Each unlisted adjacent concern is a future scope-creep argument. |
+| Manual repro in Verification has one line per user-facing diagnostic / error / rejection code. | Review pass/fail must be observable per code, not judgment-based. |
+| Implementation Plan starts with an S0-style baseline re-check step (or AC for one). | State drifts between plan-write time and implement-start time; force a re-grep before edits. |
+| Every Locked Decision has explicit `Rationale:` AND `Rejected alternatives:` labels. | Reviewer needs to see the road not taken, not just the road taken. |
+| Every user-facing string (diagnostic code, error variant, label) defaults to split rather than collapse. Collapse only with rationale. | Collapsing later is expensive (i18n / UX branching already shipped); splitting now is free. |
+| Every in-scope plan line traces to an AC line, an ADR, or a repo precedent. | Scope discipline; prevents "added because related" creep. |
+
+A plan that satisfies all four passes (Step 5a) AND all seven floor checks
+(Step 5c) AND consumed every sibling draft (Step 5b) is converged. A plan
+that fails any of these is not, regardless of P1/P2 count.
+
 #### External Claude review protocol
 
 If the user asks to use Claude, another model, or an external agent to improve
@@ -292,12 +373,21 @@ For each pass:
    `Follow-Up Candidates`.
 5. Re-run a focused source check for any changed claim.
 
-Convergence rule:
-- Continue self-review until one full pass finds no P1 and no unhandled P2.
-- If a new P1 appears in any pass, fix it and run another full pass.
-- If only P3 items remain, land only after they are either fixed or documented.
-- If convergence requires changing the requested scope, stop and ask instead of
-  landing a misleading plan.
+Convergence rule (replaces "one full pass with no findings"):
+- Pass 1 (Author lens) with zero findings is never sufficient on its own. It
+  is the trivial case — the author lens cannot catch what the author silently
+  omitted.
+- Convergence requires ALL of:
+  - Pass 4 (Domain reviewer per Step 5a) finds no unhandled P1 and no
+    unhandled P2.
+  - Step 5b sibling-draft consumption has run for every sibling listed in
+    the Ready briefing (or zero siblings confirmed by scan).
+  - Step 5c floor checks all pass.
+- If a new P1 appears in any pass, fix it and re-run from the next stance.
+- If only P3 items remain after the four-pass rotation, land only after they
+  are either fixed or recorded in `Traps` / `Follow-Up Candidates`.
+- If convergence requires changing the requested scope, stop and ask instead
+  of landing a misleading plan.
 
 When the user provides external review findings after a plan has landed, treat
 them as another self-review pass in update mode. Apply the same P1/P2/P3 model,
@@ -374,7 +464,10 @@ required; modifying it is forbidden in this skill.
   the named scope are resolved by picking a default and documenting the
   rejected alternatives. They do not block writing the plan.
 - **Review before landing.** A plan is not ready until the iterative self-review
-  pass has converged.
+  pass has converged. "Converged" means: Step 5a four-pass stance rotation
+  completed, Step 5b parallel-draft consumption ran for every sibling in the
+  Ready briefing, and Step 5c structural floor checks all pass. A Pass-1
+  no-findings result alone is never convergence.
 - **External agents are reviewers, not planners of record.** Claude or another
   model may supply P1/P2/P3 findings and minimal patches, but must not replace
   the canonical plan wholesale.

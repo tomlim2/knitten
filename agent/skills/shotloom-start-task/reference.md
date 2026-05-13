@@ -78,9 +78,13 @@ git worktree add "<worktree_dir>" "<branch>"
 - <AC id>: <codified | wrong-shape> - <path/section evidence or split needed>
 
 **Plan-risk handoff for `/shotloom-draft-task-plan`:**
-- P1: <question to lock before implementation> - evidence: <path or rg hit>
-- P2: <ambiguity/test/doc gap to resolve in the plan> - evidence: <path or rg hit>
+- P1: <question to lock before implementation> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent that demands this>
+- P2: <ambiguity/test/doc gap to resolve in the plan> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
 - P3: <cheap nit or precedent to consider> - evidence: <path or rg hit>
+
+**Sibling drafts (caol-ila/docs/plans/):**
+- <slug>.md - <working-tree | staged | HEAD | deleted> - stance: <one-line scope summary> - <agrees | disagrees> with this briefing
+- (or: "none found" if Step 5d scan returned empty)
 
 **Pre-write checklist passed:**
 - [x] gh auth: tomlim2
@@ -90,6 +94,7 @@ git worktree add "<worktree_dir>" "<branch>"
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] plan-risk handoff seeded
+- [x] sibling-draft scan run (caol-ila/docs/plans/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.
 ```
