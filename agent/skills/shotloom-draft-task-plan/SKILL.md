@@ -1,5 +1,5 @@
 ---
-description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; stop on stale briefing; no implementation.
+description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; always writes the .md artifact; stop-and-ask only on factual briefing conflicts.
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(jq:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 ---
@@ -11,6 +11,19 @@ plan to `caol-ila/docs/plans/<slug>.md`, self-reviews it until material gaps are
 closed, commits, pushes, then stops. Implementation begins only after a separate
 user go-ahead.
 
+## Mandatory Output
+
+**This skill MUST end with a `.md` file present on disk at `$plan_path`.**
+Writing the file is non-deferrable. Commit/push is conditional (see Step 6),
+but disk-write is not. If you reach the end of the skill without writing the
+`.md`, you have failed the skill's contract.
+
+Stop-and-ask without writing is allowed **only** for the two cases listed in
+Step 2 ("Factual stop conditions"). All other ambiguity (which library to
+reuse, which of several valid implementation paths to take, which default to
+pick) is handled by the `## Locked Decisions` section of the plan, not by
+stopping the skill.
+
 ## Purpose
 
 This skill is a **cold-start plan author**, not a briefing formatter.
@@ -18,8 +31,13 @@ This skill is a **cold-start plan author**, not a briefing formatter.
 stale because the Shotloom worktree may already contain partial or complete
 implementation. This skill must audit the live codebase before writing a plan.
 
-If live code contradicts the briefing, stop before writing. Report the stale
-assumptions and ask for a revised scope.
+When live code disagrees with the briefing, distinguish two cases:
+
+| Case | Skill behavior |
+|---|---|
+| **Factual conflict** — briefing claims X exists/doesn't exist but live code says the opposite | Rewrite the plan's scope around what is actually true; do not stop. |
+| **Implementation-choice conflict** — briefing names a scope element (e.g. `.gltf` support) but multiple valid implementation paths exist (embed-only, multi-upload, zip-bundle) | Pick a default; document alternatives in `## Locked Decisions` with `Rejected alternatives:`; do not stop. |
+| **Missing-scope conflict** — briefing assumes a wire shape, fixture, event, ADR, or dependency that does not exist in the repo at all | Stop and ask (Step 2 factual stop condition). |
 
 ## Arguments
 
@@ -102,23 +120,49 @@ Classify every relevant item:
 | Missing | No live implementation found. |
 | Conflict | Briefing claims a shape that live code contradicts. |
 
-Stop conditions:
-- If the briefing says to add something that already exists, rewrite the scope
-  around the actual remaining gap.
-- If the briefing assumes a wire shape, event, file, fixture, or command that
-  does not exist, stop and report it unless the correction is obvious and narrow.
-- If `.gltf`, multi-file import, protocol changes, new dependencies, or ADR
-  changes appear necessary but were not in the briefing, stop and ask.
+**Audit-driven adjustments (continue and write the plan):**
+- If the briefing says to add something that already exists, rewrite the
+  scope around the actual remaining gap. Continue.
+- If the briefing names a scope element but the implementation path is
+  ambiguous (multiple valid options), pick the smallest correct default
+  and document alternatives in `## Locked Decisions` under
+  `Rejected alternatives:`. Continue.
+
+**Factual stop conditions (stop and ask without writing the plan body to
+disk):** These are the ONLY two cases that block writing.
+
+1. **Wrong-shape briefing primitive citation** — the briefing cites a
+   primitive (template, standard, ADR section, repo rule) but the cited
+   pattern is not codified in that primitive. The plan would smuggle in
+   single-file standard invention. Report the AC ↔ primitive mismatch
+   and ask for a split.
+2. **Out-of-briefing scope expansion** — implementing the named scope
+   forces a protocol change, a new dependency, a new ADR, or a multi-file
+   import design that the briefing did not even mention. This is
+   different from an ambiguous implementation path within a named scope:
+   here the scope itself is enlarging.
+
+Anything else — implementation choice, library reuse, error policy,
+diagnostic shape, test seam, doc-update wording — is **not a stop**. It
+goes in `## Locked Decisions` and the plan still gets written.
 
 ### Step 3: Detect Create vs Update Mode
 
-If `$plan_path` exists, read it and treat the run as an update. Otherwise create
-from scratch.
+Distinguish four states by reading both `$plan_path` and `git status` /
+`git show HEAD:docs/plans/<slug>.md`:
 
-For updates:
-- Show the existing `status` and title.
-- Default to replacing stale content in-place if the user explicitly asked for a
-  revised plan.
+| Disk | Index | HEAD | Treat as |
+|---|---|---|---|
+| absent | absent | absent | Create. Write fresh. |
+| present | committed | matches | Update. Default to in-place replace; show existing `status` and title. |
+| absent | staged-delete | present | **In-progress rewrite by another author/agent.** Surface both: the HEAD body and the proposed new body. Ask the user which to keep. This is the ONE Step-6 approval gate the skill permits. |
+| present (untracked) | absent | present (different content) | **Parallel draft scenario** (e.g. user comparing two AI agents' drafts). Do not overwrite the working-tree file silently. Ask whether to overwrite, append a `-claude` / `-codex` suffix, or stop. |
+
+For ordinary updates (row 2):
+- Show the existing `status` and title before overwriting.
+- Default to replacing stale content in-place if the user explicitly asked
+  for a revised plan via `/shotloom-draft-task-plan` re-invocation, "redo
+  the plan", or similar.
 - Start a revision section only when historical comparison is useful.
 
 ### Step 4: Draft Cold-Start Plan Body
@@ -217,23 +261,45 @@ revise the same plan, then commit and push a follow-up.
 
 The user's Step 6 briefing OK plus invoking this skill is approval to land a
 valid plan. Do not add another approval gate after a clean current-state audit
-and converged self-review loop.
+and converged self-review loop, **except** for the Step 3 row-3 (staged-delete)
+and row-4 (parallel-draft) edge cases.
 
-Do not write if Step 2 found unresolved stale assumptions or Step 5 still has
-unhandled P1/P2 findings.
+#### Step 6a: Write to disk (MANDATORY, unconditional)
 
-For a clean plan:
-1. Write the drafted body to `$plan_path`.
-2. From the caol-ila working directory:
-   - `git add docs/plans/<slug>.md`
-   - `git commit -m "plan(shotloom): <slug>"`
-   - `git log -1 --format="%an <%ae>"`
-   - `git push`
-3. Expected caol-ila author identity: `tomlim2 <tomandlim@gmail.com>`.
-4. If hooks fail, fix the cause and retry. Never use `--no-verify`.
+`Write` the drafted body to `$plan_path` on disk. This is non-deferrable.
+Even when one of the following applies, the `.md` body MUST exist on disk
+before the skill ends — under a temporary suffix if necessary:
 
-Only commit the plan file unless the user explicitly asked for related skill or
-doc updates in the same turn.
+| Condition | Action |
+|---|---|
+| Step 2 factual stop condition fired | Write the body anyway as `$plan_path.draft` so the user can read the proposed scope side-by-side with the conflict report. |
+| Step 5 left an unhandled P1/P2 | Continue self-review until convergence. Do not exit. The convergence loop has no time budget; converge or report that you cannot. Disk-write happens after convergence. |
+| Step 3 row 3 (staged delete + HEAD) | Write under `$plan_path.claude.md` so HEAD content stays intact for comparison. Ask user which to keep. |
+| Step 3 row 4 (parallel draft) | Write under `$plan_path.claude.md`. Ask user which to keep. |
+| Anything else | Write directly to `$plan_path`. |
+
+Reaching the end of the skill turn without any `.md` artifact on disk is
+a contract violation. If you find yourself about to do that, write the
+current best-effort draft to `$plan_path.partial.md` and surface the
+reason.
+
+#### Step 6b: Commit + push (conditional)
+
+Only proceed past 6b's first line if 6a wrote directly to `$plan_path`
+(not to a `.draft.md`, `.claude.md`, or `.partial.md` suffix). Otherwise
+skip 6b — disk artifact is enough for the user to act on.
+
+From the caol-ila working directory:
+1. `git add docs/plans/<slug>.md`
+2. `git commit -m "plan(shotloom): <slug>"`
+3. `git log -1 --format="%an <%ae>"`
+4. `git push`
+
+Expected caol-ila author identity: `tomlim2 <tomandlim@gmail.com>`. If
+hooks fail, fix the cause and retry. Never use `--no-verify`.
+
+Only commit the plan file unless the user explicitly asked for related
+skill or doc updates in the same turn.
 
 ### Step 7: Report + STOP
 
@@ -251,13 +317,24 @@ required; modifying it is forbidden in this skill.
 
 ## Binding Rules
 
+- **Always write the `.md` to disk.** Step 6a is unconditional. Ending the
+  skill turn without a `.md` artifact on disk is a contract violation, even
+  when Step 2 fires or Step 5 cannot converge — use a `.draft.md` /
+  `.partial.md` / `.claude.md` suffix in those cases, but write something.
 - **Audit before write.** The live Shotloom tree outranks Linear and briefing
   text.
+- **Implementation-choice ambiguity goes in Locked Decisions, not in a
+  stop.** Multiple valid library/error/diagnostic/test/api paths within
+  the named scope are resolved by picking a default and documenting the
+  rejected alternatives. They do not block writing the plan.
 - **Review before landing.** A plan is not ready until the iterative self-review
   pass has converged.
-- **Stale briefing stops the skill.** Report conflicts instead of landing a
-  misleading plan.
-- **One artifact, one stop.** This skill writes at most one plan doc.
+- **Factual-conflict briefing stops the skill before commit, not before write.**
+  When Step 2 stop conditions fire, still write the draft to disk under a
+  suffix so the user can read both the proposed scope and the conflict
+  report.
+- **One plan artifact, one commit.** This skill commits at most one
+  `docs/plans/<slug>.md`. Drafts written under suffixes are not committed.
 - **Plan is not implementation.** Worktree source edits require a later user
   message such as `implement`, `go`, or an explicit implementation request.
 - **No hidden scope expansion.** Protocol changes, `.gltf` multi-file support,
