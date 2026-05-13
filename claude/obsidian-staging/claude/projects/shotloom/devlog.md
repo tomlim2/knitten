@@ -57,3 +57,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #317에서 private policy helper의 undocumented branch policy, table drift risk, PR testing checklist mismatch를 기록.
 - 배운 것: 후속 PR이 의존할 private helper는 intentional `None`, table role, fallback/tie behavior를 문서와 테스트로 같이 pin한다.
 - [[shotloom/days/day-04|상세]]
+
+## Day 5 (05-13): STL-400 PR 리뷰 회고
+- PR #313에서 GLB fixture provenance, default-empty assertion, fixture path helper, attribution discoverability 지적을 기록.
+- 배운 것: binary fixture는 source/license/LFS/discoverability까지 함께 test contract로 다뤄야 한다.
+- [[shotloom/days/day-05|상세]]
