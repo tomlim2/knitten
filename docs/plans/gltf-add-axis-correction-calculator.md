@@ -1,6 +1,7 @@
 ---
 status: open
 created: 2026-05-13
+updated: 2026-05-13
 load: triggered
 trigger: working STL-408 — VRM axis-bake correction quaternion calculator
 repo: shotloom
@@ -50,21 +51,27 @@ rebake inverse bind matrices, emit diagnostics, wire
    *Rejected:* accepting node indices, `HumanoidMap`, or raw JSON. That
    mixes Phase 2a topology policy and Phase 2e wiring into the math slice.
 
-4. **Compute local correction by conjugating the world arc into bone
-   local space.** Let `d_world = normalize(child_world_position -
-   bone_world_position)`, `y_world = bone_world_rotation * Vec3::Y`,
-   `q_world = rotation_arc(y_world, d_world)`, and
+4. **Compute local correction for right-multiply application by
+   conjugating the world arc into bone local space.** Phase 2c applies
+   the correction as `new_local_rotation = old_local_rotation * q_local`.
+   Let `d_world = normalize(child_world_position - bone_world_position)`,
+   `y_world = bone_world_rotation * Vec3::Y`,
+   `q_world = Quat::from_rotation_arc(y_world, d_world)`, and
    `q_local = bone_world_rotation.inverse() * q_world *
    bone_world_rotation`.
    *Rationale:* Phase 2c applies the correction in local bone space; the
    formula guarantees `bone_world_rotation * (q_local * Vec3::Y)` points
-   at `d_world`.
+   at `d_world`. Near-identity input flows through
+   `Quat::from_rotation_arc` unchanged and returns identity up to
+   floating-point epsilon.
    *Rejected:* returning `q_world` directly. That makes the caller own
    space conversion and risks double-applying world-space orientation.
 
 5. **Return `None` for invalid inputs.** No correction is produced when
    either position is non-finite, `bone_world_rotation` is non-finite,
-   or the child direction length is below an epsilon threshold.
+   or the child direction satisfies
+   `length_squared < LENGTH_EPSILON * LENGTH_EPSILON`, where
+   `LENGTH_EPSILON = 1e-6`.
    *Rationale:* asset-derived transform data is untrusted. A pure helper
    must not normalize zero or non-finite vectors into NaN quaternions.
    *Rejected:* returning `Quat::IDENTITY` for invalid inputs. Identity
@@ -73,7 +80,8 @@ rebake inverse bind matrices, emit diagnostics, wire
 
 6. **Use a deterministic local `+X` 180-degree fallback for opposite
    direction.** If the current local `Y` world direction and child
-   direction are at or below the near-opposite dot threshold, return
+   direction satisfy `dot <= OPPOSITE_DOT_THRESHOLD`, where
+   `OPPOSITE_DOT_THRESHOLD = -1.0 + 1e-6`, return
    `Quat::from_rotation_x(PI)` in local space.
    *Rationale:* shortest-arc rotation is underdetermined at 180 degrees;
    choosing local `+X` keeps output stable across platforms and avoids
@@ -90,23 +98,23 @@ rebake inverse bind matrices, emit diagnostics, wire
 
 ## Acceptance
 
-- [ ] `crates/shotloom-gltf/src/vrm_axis_bake/correction.rs`가
-      추가되고 private module로 연결됨
-- [ ] correction helper가 현재 bone world rotation의 local `Y` 축을
-      primary child world direction에 맞추는 deterministic quaternion을
-      반환함
-- [ ] identity case에서 identity 또는 epsilon-equivalent quaternion을
-      반환함
-- [ ] 90도 axis-direction case가 기대 quaternion / rotated vector로
-      검증됨
-- [ ] zero-length child direction, non-finite transform/input은 `None`
-      등 명시적 no-correction 결과로 방어됨
-- [ ] near-opposite direction은 deterministic하게 처리되고 단위
-      테스트로 고정됨
-- [ ] normalized GLB bytes, rest pose, inverseBindMatrix, mesh data,
-      `NORMALIZED_VRM_CACHE_VERSION`은 변경하지 않음
-- [ ] 후속 Phase 2c apply 단계에서 재사용할 수 있는 함수 경계가
-      분리되어 있음
+- [ ] `crates/shotloom-gltf/src/vrm_axis_bake/correction.rs` exists and
+      is connected through the private module root.
+- [ ] The helper returns a deterministic quaternion that aligns the
+      current bone world rotation's local `Y` axis to the primary-child
+      world direction.
+- [ ] The identity case returns identity or an epsilon-equivalent
+      quaternion.
+- [ ] The 90-degree axis-direction case is verified by expected
+      quaternion or rotated-vector assertions.
+- [ ] Zero-length child direction and non-finite transform/input return
+      an explicit no-correction result.
+- [ ] Near-opposite direction uses the deterministic local `+X`
+      180-degree fallback and is pinned by a unit test.
+- [ ] Normalized GLB bytes, rest pose, inverseBindMatrix, mesh data, and
+      `NORMALIZED_VRM_CACHE_VERSION` stay unchanged.
+- [ ] The function boundary is reusable by the follow-up Phase 2c apply
+      step.
 
 ## File map
 
