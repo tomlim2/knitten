@@ -25,6 +25,7 @@ Load only when the task requires the corresponding implementation details:
 | `references/JAVASCRIPT-REFERENCE.md` | looking up JS / Node.js examples or advanced patterns |
 | `references/CSS.md` | writing or changing CSS |
 | `references/CSS-REFERENCE.md` | looking up CSS examples or advanced patterns |
+| `references/THREE-SHADER-LANGUAGE.md` | writing or changing Three.js TSL shaders |
 
 ## Design Thinking
 

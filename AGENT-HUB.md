@@ -109,7 +109,6 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | `agent/skills/dev-open-mmd-anju/SKILL.md` | `web-frontend` | `medium` |
 | `agent/skills/dev-show-design-status/SKILL.md` | `web-frontend` | `low` |
 | `agent/skills/frontend-design/SKILL.md` | `web-frontend` | `medium` |
-| `agent/standards/language/three-shader-language.md` | `web-frontend` | `high` |
 | `agent/skills/dev-review-publish/SKILL.md` | `web-review` | `medium` |
 | `agent/skills/review-audit-ux/SKILL.md` | `web-review` | `medium` |
 | `agent/skills/review-audit-web-spec/SKILL.md` | `web-review` | `medium` |

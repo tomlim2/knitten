@@ -13,7 +13,7 @@ Static code audit checklist for detecting 3D rendering performance issues in Chr
 
 - `../review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` — JS coding standards checklist
 - `../review-audit-ux/references/REVIEW-UX.md` — UX/UI code audit checklist
-- `three-shader-language.md` — TSL coding standards
+- `../../frontend-design/references/THREE-SHADER-LANGUAGE.md` — TSL coding standards
 - `review-template.md` — Output format (for **structuring** review feedback)
 
 This document defines **what to check** from a 3D rendering performance perspective. Use `review-template.md` for how to format findings.

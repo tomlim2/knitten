@@ -111,7 +111,7 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 
 - `references/REVIEW-3D-RENDERING.md` — 3D rendering performance checklist (55+ items)
 - `references/REVIEW-CODE-TSL.md` — Three.js TSL review checklist
-- `standards/language/three-shader-language.md` — TSL coding standards
+- `../frontend-design/references/THREE-SHADER-LANGUAGE.md` — TSL coding standards
 - `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS)
 - `skills/review-audit-ux/SKILL.md` — UX/UI review
