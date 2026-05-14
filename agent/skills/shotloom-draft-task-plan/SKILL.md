@@ -1,493 +1,189 @@
 ---
-description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; always writes the .md artifact; stop-and-ask only on factual briefing conflicts.
+description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; write one plan artifact, commit only clean direct plans, then stop
 argument-hint: "[slug]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(jq:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 ---
 
 # shotloom-draft-task-plan
 
-Plan-phase companion to `/shotloom-start-task`. Writes one durable execution
-plan to `caol-ila/docs/plans/<slug>.md`, self-reviews it until material gaps are
-closed, commits, pushes, then stops. Implementation begins only after a separate
-user go-ahead.
+Plan-phase companion to `/shotloom-start-task`. Audit live Shotloom code, write
+one plan artifact, commit and push only a clean direct plan, then stop.
+Implementation needs a later user message.
 
-## Mandatory Output
+## Mandatory Contract
 
-**This skill MUST end with a `.md` file present on disk at `$plan_path`.**
-Writing the file is non-deferrable. Commit/push is conditional (see Step 6),
-but disk-write is not. If you reach the end of the skill without writing the
-`.md`, you have failed the skill's contract.
+After Step 1 resolves `$plan_path`, every stop writes one `.md` artifact:
 
-Stop-and-ask without writing is allowed **only** for the two cases listed in
-Step 2 ("Factual stop conditions"). All other ambiguity (which library to
-reuse, which of several valid implementation paths to take, which default to
-pick) is handled by the `## Locked Decisions` section of the plan, not by
-stopping the skill.
+| Result | Artifact | Commit |
+|---|---|---|
+| Clean converged plan | `<plan_dir>/<slug>.md` | Yes |
+| Step 2 factual stop | `<plan_dir>/<slug>.draft.md` | No |
+| Unconverged draft | `<plan_dir>/<slug>.partial.md` | No |
+| Parallel or staged-delete plan | `<plan_dir>/<slug>.claude.md` | No |
+
+Pre-Step-1 failures stop without writing because no target path exists.
 
 ## Purpose
 
-This skill is a **cold-start plan author**, not a briefing formatter.
-`/shotloom-start-task` Step 6 is a hypothesis. Linear and briefing text may be
-stale because the Shotloom worktree may already contain partial or complete
-implementation. This skill must audit the live codebase before writing a plan.
-
-When live code disagrees with the briefing, distinguish two cases:
-
-| Case | Skill behavior |
-|---|---|
-| **Factual conflict** — briefing claims X exists/doesn't exist but live code says the opposite | Rewrite the plan's scope around what is actually true; do not stop. |
-| **Implementation-choice conflict** — briefing names a scope element (e.g. `.gltf` support) but multiple valid implementation paths exist (embed-only, multi-upload, zip-bundle) | Pick a default; document alternatives in `## Locked Decisions` with `Rejected alternatives:`; do not stop. |
-| **Missing-scope conflict** — briefing assumes a wire shape, fixture, event, ADR, or dependency that does not exist in the repo at all | Stop and ask (Step 2 factual stop condition). |
+This skill is a cold-start plan author, not a briefing formatter. Linear and the
+Ready briefing are inputs; live Shotloom code is canonical evidence. Already-done
+briefing items become current-state evidence. Ambiguous implementation choices
+go in `## Locked Decisions`. Missing primitives or scope expansion create a
+`.draft.md` conflict artifact.
 
 ## Arguments
 
-- `[slug]` - kebab-case slug for the plan file. Optional; default is the
-  current worktree branch body with the `<type>/` prefix stripped.
-
-If no argument is provided and no Shotloom worktree branch is active, show usage
-and stop. Never invent a slug.
-
-Usage:
-- `/shotloom-draft-task-plan` inside an active worktree
-- `/shotloom-draft-task-plan gltf-normalize-extended-collider`
+- `[slug]` - optional kebab-case plan slug.
+- Without `[slug]`, derive from current branch body after `<type>/`.
+- If branch is `main`, `HEAD`, or lacks `/`, show usage and stop.
+- Never invent a slug.
 
 ## Preconditions
 
-- `/shotloom-start-task` has run in this session and the user OK'd the Step 6
-  Ready briefing.
-- Current cwd is inside a Shotloom repo or Shotloom worktree.
-- `caol-ila` repo path is resolvable from
-  `~/.claude/private/caol-config/repo-paths.json`.
-
-If any precondition fails, surface the failure and stop.
+- `/shotloom-start-task` has run and the user accepted the Ready briefing.
+- cwd is inside Shotloom main checkout or a Shotloom worktree.
+- `caol-resolve-doc-path` resolves `shotloom` and `caol-ila`.
+- Pre-Step-1 failure: report and stop.
 
 ## Workflow
 
 ### Step 1: Resolve Inputs
 
-Resolve the branch, slug, Shotloom root, caol-ila root, and plan path.
+Run:
 
 ```bash
-branch=$(git rev-parse --abbrev-ref HEAD)
-slug=${1:-${branch#*/}}
-caol_ila=$(jq -r '."caol-ila".path // ."caol-ila" // .caol_ila.path // .caol_ila // empty' ~/.claude/private/caol-config/repo-paths.json)
-plan_path="$caol_ila/docs/plans/$slug.md"
+branch="$(git rev-parse --abbrev-ref HEAD)"
+repo_root="$(git rev-parse --show-toplevel)"
+git_common="$(git rev-parse --git-common-dir)"
+origin="$(git remote get-url origin)"
+shotloom_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom)"
+shotloom_root="${shotloom_root#RESOLVED_PATH=}"
+caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
+caol_ila="${caol_ila#RESOLVED_PATH=}"
+```
+
+Derive `slug`:
+
+```bash
+if [ -n "$1" ]; then
+  slug="$1"
+else
+  if [ "$branch" = "main" ] || [ "$branch" = "HEAD" ] || ! [[ "$branch" == */* ]]; then
+    echo "usage: /shotloom-draft-task-plan <kebab-slug>"
+    exit 1
+  fi
+  slug="${branch#*/}"
+fi
 ```
 
 Verify:
-- `slug` is non-empty kebab-case.
-- `slug` has no `<type>/` prefix.
+- `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
 - `$caol_ila/docs/plans/` exists.
-- Shotloom root is the repo being audited.
+- cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Surface:
-
-```text
-plan slug = <slug>
-target = <plan_path>
-shotloom root = <path>
-```
+Set `plan_path="$caol_ila/docs/plans/$slug.md"`. Surface plan slug, target,
+and Shotloom root.
 
 ### Step 2: Run Current-State Audit
 
-Before drafting, verify what already exists in the live Shotloom tree. This is
-mandatory even if the briefing sounds complete.
+Before drafting, search the live Shotloom tree. Choose terms from Linear,
+branch, Ready briefing, AC, ADR, and affected modules. Search examples:
+[reference.md](reference.md).
 
-Run targeted searches from the Shotloom root. Choose terms from the issue and
-briefing:
+Read matching source files that define wire shape, handler branch, editor entry
+point, fixtures, tests, and docs. Classify each surface as `Already Done`,
+`Partial`, `Missing`, or `Conflict`.
 
-```bash
-git status --short
-rg -n "<primary type/function/command names>" crates apps docs contracts MAP.md
-rg -n "<bridge command/event/kind names>" crates/shotloom-core apps/editor/src/bridge crates/shotloom-engine
-rg -n "<editor entry point names>" apps/editor/src
-rg -n "<fixture or asset names>" assets crates apps docs
-```
+Factual stop conditions:
+1. Cited primitive mismatch: briefing cites a template, standard, ADR, or repo
+   rule that does not codify the cited pattern.
+2. Out-of-briefing expansion: scope forces protocol change, dependency, ADR, or
+   multi-file import design absent from the briefing.
 
-Read the matching source files that define:
-- existing bridge wire shape
-- handler branch
-- editor entry point
-- tests and fixtures
-- docs that already claim the behavior
-
-Classify every relevant item:
-
-| Class | Meaning |
-|---|---|
-| Already Done | Live code already implements this part. |
-| Partial | Live code exists but is weaker than the target behavior. |
-| Missing | No live implementation found. |
-| Conflict | Briefing claims a shape that live code contradicts. |
-
-**Audit-driven adjustments (continue and write the plan):**
-- If the briefing says to add something that already exists, rewrite the
-  scope around the actual remaining gap. Continue.
-- If the briefing names a scope element but the implementation path is
-  ambiguous (multiple valid options), pick the smallest correct default
-  and document alternatives in `## Locked Decisions` under
-  `Rejected alternatives:`. Continue.
-
-**Factual stop conditions (stop and ask without writing the plan body to
-disk):** These are the ONLY two cases that block writing.
-
-1. **Wrong-shape briefing primitive citation** — the briefing cites a
-   primitive (template, standard, ADR section, repo rule) but the cited
-   pattern is not codified in that primitive. The plan would smuggle in
-   single-file standard invention. Report the AC ↔ primitive mismatch
-   and ask for a split.
-2. **Out-of-briefing scope expansion** — implementing the named scope
-   forces a protocol change, a new dependency, a new ADR, or a multi-file
-   import design that the briefing did not even mention. This is
-   different from an ambiguous implementation path within a named scope:
-   here the scope itself is enlarging.
-
-Anything else — implementation choice, library reuse, error policy,
-diagnostic shape, test seam, doc-update wording — is **not a stop**. It
-goes in `## Locked Decisions` and the plan still gets written.
+If a stop condition fires, draft the conflict report as `.draft.md` in Step 6a,
+skip commit, then ask for the split or scope decision.
 
 ### Step 3: Detect Create vs Update Mode
 
-Distinguish four states by reading both `$plan_path` and `git status` /
-`git show HEAD:docs/plans/<slug>.md`:
+Inspect `$plan_path`, `git status`, and `git show HEAD:docs/plans/<slug>.md`.
+Use Read for files present on disk. Use `git show HEAD:<path>` only for
+HEAD-only or deleted-at-HEAD content.
 
-| Disk | Index | HEAD | Treat as |
+| Disk | Index | HEAD | Action |
 |---|---|---|---|
-| absent | absent | absent | Create. Write fresh. |
-| present | committed | matches | Update. Default to in-place replace; show existing `status` and title. |
-| absent | staged-delete | present | **In-progress rewrite by another author/agent.** Surface both: the HEAD body and the proposed new body. Ask the user which to keep. This is the ONE Step-6 approval gate the skill permits. |
-| present (untracked) | absent | present (different content) | **Parallel draft scenario** (e.g. user comparing two AI agents' drafts). Do not overwrite the working-tree file silently. Ask whether to overwrite, append a `-claude` / `-codex` suffix, or stop. |
+| absent | absent | absent | Create direct plan. |
+| present | committed | matches | Update direct plan in place. Surface current title and `status` first. |
+| absent | staged-delete | present | Write `.claude.md`; ask which body to keep. |
+| present untracked | absent | present different | Write `.claude.md`; ask whether to overwrite, keep suffix, or stop. |
 
-For ordinary updates (row 2):
-- Show the existing `status` and title before overwriting.
-- Default to replacing stale content in-place if the user explicitly asked
-  for a revised plan via `/shotloom-draft-task-plan` re-invocation, "redo
-  the plan", or similar.
-- Start a revision section only when historical comparison is useful.
+### Step 4: Draft Plan Body
 
-### Step 4: Draft Cold-Start Plan Body
+Use the frontmatter, section order, and body rules in [reference.md](reference.md).
 
-Match the `caol-ila/docs/plans/` frontmatter convention:
+Draft around the audited remaining gap. Do not restate Linear verbatim. Do not
+list complete work as future work. Use concrete file paths. Verify every `add`
+target is missing and every `reuse` target is named.
 
-```yaml
----
-status: open
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
-load: triggered
-trigger: <when to re-read this plan>
-repo: shotloom
-linear: STL-NN
----
-```
+### Step 5: Self-Review Until Converged
 
-Use this body structure by default:
+Review the draft as a PR reviewer, patch it, then re-check changed claims
+against source. Severity: `P1` wrong API/layer/scope, `P2` missing required
+test/doc/edge/invariant/error branch, `P3` cheap cleanup.
 
-| Section | Required content |
-|---|---|
-| `# <Title>` | Action title derived from the real remaining work, not stale Linear wording. |
-| `## Cold-Start Summary` | One paragraph stating what is already true and what remains. |
-| `## Current State` | Table of audited surfaces with evidence paths. |
-| `## Problem` | The concrete remaining gap after audit. |
-| `## Locked Decisions` | Numbered decisions with rationale and rejected alternatives. |
-| `## Non-Goals` | Explicit exclusions, especially stale or tempting scope creep. |
-| `## Implementation Plan` | Staged plan from smallest proof to broader updates. |
-| `## Acceptance Criteria` | Checklist tied to the remaining gap, not duplicated completed work. |
-| `## Verification` | Focused gates first, then broad gates, then manual repro. |
-| `## Traps` | False paths that would break current architecture. |
-| `## Follow-Up Candidates` | Real but out-of-scope work. |
+Convergence requires four stance passes, sibling draft consumption, structural
+floor checks, and zero unhandled `P1`/`P2`. Details: [reference.md](reference.md).
 
-Rules:
-- Do not restate Linear verbatim.
-- Do not list already-complete work as future work.
-- Do not promise unsupported formats or workflows.
-- Use concrete file paths in `Current State`.
-- If the plan says "add", verify the target does not already exist.
-- If the plan says "reuse existing", name the existing implementation.
+If convergence changes requested scope, write `.draft.md`, skip commit, and ask.
 
-### Step 5: Run Iterative Plan Self-Review
+### Step 6: Write, Commit, Push
 
-Do not land the first draft. Review the drafted plan as if it were a PR under
-implementation review, then revise it. Repeat until the latest review pass finds
-no unhandled material defects.
+#### Step 6a: Write Artifact
 
-Use this severity model:
+Write exactly one artifact according to the Mandatory Contract table. If a
+clean plan cannot land, write the best current draft under the correct suffix
+and report the blocker.
 
-| Priority | Meaning | Required action before landing |
-|---|---|---|
-| P1 | Implementation would likely go wrong, rework, or create the wrong API. | Must be fixed in the plan. |
-| P2 | Reviewable ambiguity, missing test/doc acceptance, or risky edge case. | Fix in the plan unless explicitly scoped out with rationale. |
-| P3 | Nit, layout, naming, or speculative cleanup. | Fix when cheap; otherwise move to `Follow-Up Candidates` or `Traps`. |
+#### Step 6b: Commit Direct Plan Only
 
-Run at least these review lenses:
-- **Current-code contradiction:** Does the plan add something that already
-  exists, cite a non-existent API, or miss an existing failure path?
-- **API boundary:** Are function signatures, ownership, input validation,
-  return types, and public surface area exact enough to avoid speculative APIs?
-- **Error and diagnostic ownership:** Are rejection codes, diagnostic codes,
-  human-readable messages, and event ordering owned by a named layer?
-- **Wire contract:** Does the plan preserve existing command/event shapes unless
-  a protocol change is explicitly in scope?
-- **Invariant preservation:** Does it mention staged-byte draining, cache
-  failure paths, existing success events, identity, paths, and URI shapes that
-  must not regress?
-- **Test evidence:** Are unit, integration, snapshot, fixture, manual repro, and
-  negative cases mapped to the changed behavior?
-- **Format and docs:** Will markdown tables render, paths resolve, and doc
-  updates match the actual repository structure?
-- **Scope creep:** Are tempting related features captured as non-goals or
-  follow-ups instead of hidden implementation work?
+Continue only when Step 6a wrote directly to `$plan_path`.
 
-#### Step 5a: Mandatory stance rotation (no early exit on author lens)
-
-Pass 1 from the author seat ("did I miss anything?") catches what the author
-already meant to write. It does not catch what the author silently omitted.
-Pass 1 with zero findings is the trivial case, not convergence.
-
-Before declaring convergence, run AT LEAST these four passes, each from a
-different reviewer stance. Findings from any pass must be patched and the
-next pass re-run from a fresh stance.
-
-| Pass | Stance | Lead question |
-|---|---|---|
-| 1 | Author | "Did I write what I meant to write?" |
-| 2 | Paranoid reviewer | "What's silently missing? What would a strict round-1 reviewer flag? What invariants, error paths, or edge cases are unstated?" |
-| 3 | Minimalist reviewer | "What's speculative API? What's added 'because related' instead of 'required by an AC line / ADR / repo precedent'? What can be cut to Follow-Up Candidates?" |
-| 4 | Domain reviewer | "Does each plan line trace to an AC line, an ADR, or a repo precedent? If a line has no such trace, why is it in scope rather than in Follow-Up Candidates?" |
-
-The convergence rule below (formerly "one full pass finds no P1") is replaced:
-convergence requires that Pass 4 (Domain reviewer) finds no unhandled material
-defect AND every floor check in Step 5c passes. Pass 1 alone is never
-sufficient.
-
-#### Step 5b: Mandatory parallel-draft consumption
-
-The Ready briefing emitted by `/shotloom-start-task` carries a "Sibling drafts"
-inventory (Step 5d in that skill). If that inventory is non-empty, this step
-is mandatory. If the inventory is absent or stale, run the scan yourself
-before proceeding:
+From `caol-ila`:
 
 ```bash
-caol_ila=$(jq -r '."caol-ila".path // ."caol-ila" // empty' \
-  ~/.claude/private/caol-config/repo-paths.json)
-ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<slug-stem>"
-ls "$caol_ila/docs/"       2>/dev/null | rg -i "<slug-stem>"
-git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
-  "docs/plans/" | rg -i "<slug-stem>" | head -5
+git config user.name
+git config user.email
+git add docs/plans/<slug>.md
+git commit -m "plan(shotloom): <slug>"
+git push
 ```
 
-For every sibling draft found:
+Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. If hooks
+fail, fix the cause and retry. Never use `--no-verify`.
 
-1. **Read the FULL body via the Read tool** — not `cat`, not `head`,
-   not `git show <path>` via Bash. Bash dumps drop file content into context
-   without the attention budget the Read tool provides. Sibling plans
-   typically carry Locked Decisions, Traps, and Manual Repro items that
-   require careful per-line reading, not pattern-matching.
-2. Diff sibling Locked Decisions against your plan's. For every disagreement,
-   record one line: "Sibling X chose A; I chose B because <live-code evidence
-   path>." If you cannot cite live-code evidence, reconsider — the sibling
-   is candidate findings, not noise.
-3. Mine the sibling's Traps, Non-Goals, Manual Repro, and Acceptance Criteria
-   for items missing from yours. Adopt every item that has verifiable
-   live-code evidence; reject only with explicit rationale recorded in your
-   Locked Decisions section.
-4. If a sibling proposes a stricter API signature, a finer error-code split,
-   or a defensive invariant your plan lacks, default to adopting it unless
-   you can cite evidence against.
+Commit only `docs/plans/<slug>.md` unless the user explicitly requested skill
+or doc edits in the same turn.
 
-This is NOT "review by another agent" (that's the External Claude review
-protocol below). This is the author absorbing adjacent thinking before
-declaring convergence. The user is paying for parallel-agent comparison —
-ignoring siblings wastes that investment.
+### Step 7: Report and Stop
 
-#### Step 5c: Structural floor checks
-
-Before Step 6, every plan must satisfy these floor counts. If any check
-fails, the plan is not converged and another pass is required.
-
-| Floor | Reason it matters |
-|---|---|
-| Traps section has ≥ 2 defensive items against patterns the plan DID NOT propose. | Anti-creep contract for implementation phase. Cheap to write, expensive to discover in review. |
-| Non-Goals section has ≥ 5 explicit adjacent-concern exclusions. | Each unlisted adjacent concern is a future scope-creep argument. |
-| Manual repro in Verification has one line per user-facing diagnostic / error / rejection code. | Review pass/fail must be observable per code, not judgment-based. |
-| Implementation Plan starts with an S0-style baseline re-check step (or AC for one). | State drifts between plan-write time and implement-start time; force a re-grep before edits. |
-| Every Locked Decision has explicit `Rationale:` AND `Rejected alternatives:` labels. | Reviewer needs to see the road not taken, not just the road taken. |
-| Every user-facing string (diagnostic code, error variant, label) defaults to split rather than collapse. Collapse only with rationale. | Collapsing later is expensive (i18n / UX branching already shipped); splitting now is free. |
-| Every in-scope plan line traces to an AC line, an ADR, or a repo precedent. | Scope discipline; prevents "added because related" creep. |
-
-A plan that satisfies all four passes (Step 5a) AND all seven floor checks
-(Step 5c) AND consumed every sibling draft (Step 5b) is converged. A plan
-that fails any of these is not, regardless of P1/P2 count.
-
-#### External Claude review protocol
-
-If the user asks to use Claude, another model, or an external agent to improve
-the plan, use that agent only as a reviewer of the current canonical draft.
-Never ask for or accept a wholesale replacement plan once `$plan_path` already
-exists.
-
-Reviewer prompt contract:
-- Provide the current plan text, Ready briefing, relevant Linear AC, and the
-  live-code evidence gathered in Step 2.
-- State that the current plan is the canonical draft.
-- Instruct the reviewer to preserve existing `Locked Decisions` unless live-code
-  evidence proves them wrong.
-- Ask for `P1` / `P2` / `P3` findings only, with plan line references,
-  live-code evidence, and minimal patch suggestions.
-- Forbid rewriting the whole plan, renaming the plan, deleting the plan, or
-  producing a new standalone plan body.
-- Forbid broadening specific diagnostics into generic buckets, weakening API
-  signatures, or replacing already-converged decisions without evidence.
-
-Reviewer output must have this shape:
-
-```text
-## Findings
-| Prio | Plan line | Issue | Evidence | Minimal patch |
-
-## Keep
-<decisions that are sound and must not be changed>
-
-## Do Not Rewrite
-<sections or decisions to preserve>
-
-## Patch Suggestions
-<small section-level edits only>
-```
-
-Triage rule:
-- Treat external output as evidence, not authority.
-- Verify every finding against live source before editing the plan.
-- Apply only minimal patches that strengthen the canonical plan.
-- If the reviewer returns a complete replacement plan anyway, do not adopt it.
-  Mine it only for new evidenced findings, then patch the existing plan.
-- If the reviewer writes a parallel `.md` file, keep it uncommitted and compare
-  it as review input. Do not replace `$plan_path` unless the user explicitly
-  selects that file after seeing the delta.
-
-For each pass:
-1. List findings internally as `P1`, `P2`, or `P3`.
-2. Patch the plan for every P1.
-3. Patch or explicitly scope every P2.
-4. Patch cheap P3 items; otherwise record them in `Traps` or
-   `Follow-Up Candidates`.
-5. Re-run a focused source check for any changed claim.
-
-Convergence rule (replaces "one full pass with no findings"):
-- Pass 1 (Author lens) with zero findings is never sufficient on its own. It
-  is the trivial case — the author lens cannot catch what the author silently
-  omitted.
-- Convergence requires ALL of:
-  - Pass 4 (Domain reviewer per Step 5a) finds no unhandled P1 and no
-    unhandled P2.
-  - Step 5b sibling-draft consumption has run for every sibling listed in
-    the Ready briefing (or zero siblings confirmed by scan).
-  - Step 5c floor checks all pass.
-- If a new P1 appears in any pass, fix it and re-run from the next stance.
-- If only P3 items remain after the four-pass rotation, land only after they
-  are either fixed or recorded in `Traps` / `Follow-Up Candidates`.
-- If convergence requires changing the requested scope, stop and ask instead
-  of landing a misleading plan.
-
-When the user provides external review findings after a plan has landed, treat
-them as another self-review pass in update mode. Apply the same P1/P2/P3 model,
-revise the same plan, then commit and push a follow-up.
-
-### Step 6: Write + Commit + Push
-
-The user's Step 6 briefing OK plus invoking this skill is approval to land a
-valid plan. Do not add another approval gate after a clean current-state audit
-and converged self-review loop, **except** for the Step 3 row-3 (staged-delete)
-and row-4 (parallel-draft) edge cases.
-
-#### Step 6a: Write to disk (MANDATORY, unconditional)
-
-`Write` the drafted body to `$plan_path` on disk. This is non-deferrable.
-Even when one of the following applies, the `.md` body MUST exist on disk
-before the skill ends — under a temporary suffix if necessary:
-
-| Condition | Action |
-|---|---|
-| Step 2 factual stop condition fired | Write the body anyway as `$plan_path.draft` so the user can read the proposed scope side-by-side with the conflict report. |
-| Step 5 left an unhandled P1/P2 | Continue self-review until convergence. Do not exit. The convergence loop has no time budget; converge or report that you cannot. Disk-write happens after convergence. |
-| Step 3 row 3 (staged delete + HEAD) | Write under `$plan_path.claude.md` so HEAD content stays intact for comparison. Ask user which to keep. |
-| Step 3 row 4 (parallel draft) | Write under `$plan_path.claude.md`. Ask user which to keep. |
-| Anything else | Write directly to `$plan_path`. |
-
-Reaching the end of the skill turn without any `.md` artifact on disk is
-a contract violation. If you find yourself about to do that, write the
-current best-effort draft to `$plan_path.partial.md` and surface the
-reason.
-
-#### Step 6b: Commit + push (conditional)
-
-Only proceed past 6b's first line if 6a wrote directly to `$plan_path`
-(not to a `.draft.md`, `.claude.md`, or `.partial.md` suffix). Otherwise
-skip 6b — disk artifact is enough for the user to act on.
-
-From the caol-ila working directory:
-1. `git add docs/plans/<slug>.md`
-2. `git commit -m "plan(shotloom): <slug>"`
-3. `git log -1 --format="%an <%ae>"`
-4. `git push`
-
-Expected caol-ila author identity: `tomlim2 <tomandlim@gmail.com>`. If
-hooks fail, fix the cause and retry. Never use `--no-verify`.
-
-Only commit the plan file unless the user explicitly asked for related
-skill or doc updates in the same turn.
-
-### Step 7: Report + STOP
-
-Emit one short report:
-
-```text
-plan doc landed at <plan_path>
-Implementation needs a separate go-ahead.
-```
-
-Then end the turn.
-
-Do not edit Shotloom source files. Reading Shotloom source for the audit is
-required; modifying it is forbidden in this skill.
+Emit `plan doc landed at <plan_path>` and
+`Implementation needs a separate go-ahead.` Then end the turn. Do not edit
+Shotloom source files in this skill.
 
 ## Binding Rules
 
-- **Always write the `.md` to disk.** Step 6a is unconditional. Ending the
-  skill turn without a `.md` artifact on disk is a contract violation, even
-  when Step 2 fires or Step 5 cannot converge — use a `.draft.md` /
-  `.partial.md` / `.claude.md` suffix in those cases, but write something.
-- **Audit before write.** The live Shotloom tree outranks Linear and briefing
-  text.
-- **Implementation-choice ambiguity goes in Locked Decisions, not in a
-  stop.** Multiple valid library/error/diagnostic/test/api paths within
-  the named scope are resolved by picking a default and documenting the
-  rejected alternatives. They do not block writing the plan.
-- **Review before landing.** A plan is not ready until the iterative self-review
-  pass has converged. "Converged" means: Step 5a four-pass stance rotation
-  completed, Step 5b parallel-draft consumption ran for every sibling in the
-  Ready briefing, and Step 5c structural floor checks all pass. A Pass-1
-  no-findings result alone is never convergence.
-- **External agents are reviewers, not planners of record.** Claude or another
-  model may supply P1/P2/P3 findings and minimal patches, but must not replace
-  the canonical plan wholesale.
-- **Factual-conflict briefing stops the skill before commit, not before write.**
-  When Step 2 stop conditions fire, still write the draft to disk under a
-  suffix so the user can read both the proposed scope and the conflict
-  report.
-- **One plan artifact, one commit.** This skill commits at most one
-  `docs/plans/<slug>.md`. Drafts written under suffixes are not committed.
-- **Plan is not implementation.** Worktree source edits require a later user
-  message such as `implement`, `go`, or an explicit implementation request.
-- **No hidden scope expansion.** Protocol changes, `.gltf` multi-file support,
-  new dependencies, ADRs, and broad UX changes require explicit scope.
-- **No `--no-verify`.** Hook failures are real feedback.
+- Audit before write. Live Shotloom code outranks Linear and briefing text.
+- After `$plan_path` resolves, every stop writes a direct or suffix `.md`.
+- Implementation-choice ambiguity goes in `## Locked Decisions`.
+- Factual stop conditions stop before commit, not before writing.
+- External agents are reviewers only. They return `P1` / `P2` / `P3` findings
+  against the current canonical draft.
+- One plan artifact, one direct-plan commit.
+- Plan is not implementation. Source edits need a later user request.
+- Protocol changes, multi-file `.gltf` support, dependencies, ADRs, and broad
+  UX changes require explicit scope.
+- No `--no-verify`.
 
 ## Related
 
-- `/shotloom-start-task` - Step 1-6 pre-flight and Ready briefing.
-- `~/.claude/rules/shotloom.md` - Shotloom gates and approval matrix.
-- `caol-ila/docs/plans/` - destination folder; inspect sibling plans for local
-  style.
-- `caol-ila/LOOKUP.md` "Design a new layer" row - canonical pointer to this
-  folder.
+`/shotloom-start-task`, `~/.claude/rules/shotloom.md`,
+`caol-ila/docs/plans/`, [reference.md](reference.md).
