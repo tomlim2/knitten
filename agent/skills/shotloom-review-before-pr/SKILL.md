@@ -3,13 +3,20 @@ description: Run Shotloom pre-PR review through initial code/docs passes and ind
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
 domains: rust,typescript,docs
 repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-before-pr
 
 Run pre-PR self-review on the current Shotloom branch. The skill uses
-read-only Explore subagents. Pass A is a cold-start review. Pass B is an
-independent verification perspective after fixes change `HEAD`.
+read-only Explore subagents. The first pass for each phase is a cold-start
+review. Later passes in the same phase are independent verification passes
+from different angles after fixes change `HEAD`; they are not fresh cold-start
+restarts.
 
 ## Arguments
 
@@ -18,13 +25,17 @@ worktree.
 
 ## Review Shape
 
-| Phase | Initial cold-start pass | Independent verification pass |
+| Phase | Initial cold-start pass | Follow-up verification passes |
 |---|---|---|
-| Code | code pass A | code pass B only if code fixes changed `HEAD` |
-| Docs | docs pass A | docs pass B only if docs fixes changed `HEAD` |
+| Code | code pass A | code pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
+| Docs | targeted docs pass A | docs pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
 
 Run phases sequentially: code first, docs second. Docs review includes
 comments and docstrings, so it must read the post-code-fix tree.
+
+Stop a phase when its latest report is clean or contains only P3/nit
+findings. If the last remaining issues are nits, either fix/accept those nits
+once and move on, but do not keep cycling that phase solely to chase more nits.
 
 ## Workflow
 
@@ -72,7 +83,7 @@ declines fixes, compute:
 code_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_step1" && echo true || echo false)
 ```
 
-### Step 3: Code Pass B If Needed
+### Step 3: Code Verification Passes If Needed
 
 If `code_fixes_applied=false`, set
 `head_after_code=$(git rev-parse HEAD)` and continue to Step 4.
@@ -82,39 +93,120 @@ using the `shotloom-review-code` Step 3 checklist. Override the role
 framing with this preamble:
 
 ```text
-This is an independent verification pass after pass-A fixes changed HEAD.
+This is an independent verification pass after earlier fixes changed HEAD.
 Use the code-review catalog as a verification checklist for current HEAD.
-Review from a different angle: confirm pass-A issues are fixed, look for
-regressions introduced by fixes, and report any pre-existing defect still
-visible in the current diff. Do not rely on the authoring session or on
-pass-A conclusions; check directly.
+Review from a different angle than all earlier passes in this phase: confirm
+previously reported P0-P2 issues are fixed, look for regressions introduced by
+fixes, and report any pre-existing defect still visible in the current diff.
+Do not rely on the authoring session or on earlier pass conclusions; check
+directly.
 ```
 
 Render the report verbatim under:
 
 ```markdown
-## Pre-PR review - branch <branch> - code pass B (verify)
+## Pre-PR review - branch <branch> - code pass <letter> (verify)
 ```
 
-If pass B finds issues, ask whether to fix now. If fixes change `HEAD`,
-do not run code pass C. Either stop and re-invoke this skill for a fresh
-review cycle, or accept the residual risk and continue to docs.
+If the verification pass finds P0-P2 issues, fix/ask whether to fix now. If
+fixes change `HEAD`, run the next code verification pass with the same
+verification preamble and a new pass letter. Do not restart code pass A unless
+the user explicitly asks for a fresh cold-start review.
+
+If the verification pass is clean or contains only P3/nit findings, stop the
+code review loop. Fix or accept the final nits once, then set
+`head_after_code=$(git rev-parse HEAD)` and continue to docs without another
+code pass.
 
 Record `head_after_code=$(git rev-parse HEAD)`.
 
-### Step 4: Docs Pass A
+### Step 4: Targeted Docs Pass A
 
 Dispatch one read-only Explore subagent.
 
 | Field | Value |
 |---|---|
-| `description` | `Docs review pass A (cold-start) - Patterns G + H + I + M + S` |
-| `prompt` | Read `~/.claude/skills/shotloom-review-docs/SKILL.md` Step 3 and pass it verbatim with `<worktree>` and `<branch>` substituted. |
+| `description` | `Docs review pass A (targeted context) - changed zones + related terms` |
+| `prompt` | Use the targeted docs brief below with `<worktree>` and `<branch>` substituted. |
+
+#### Targeted docs brief
+
+```text
+You are a targeted Shotloom docs/comment reviewer. This is not a broad
+cold-start docs audit. Stay near the implementation zone changed by the branch.
+
+Read fresh:
+1. `<worktree>/docs/guidelines/documentation-standard.md`
+2. `<worktree>/docs/guidelines/code-review-guideline.md`
+3. `~/.claude/skills/shotloom-review-docs/reference.md` only for targeted
+   G/H/S checks that apply to changed prose.
+
+Diff under review:
+- Worktree: `<worktree>`
+- Branch: `<branch>`
+- File list: `git diff --name-only origin/main..HEAD`
+- Content: `git diff origin/main..HEAD`
+
+Related issue and decision context:
+- Detect a Linear issue from `$ARGUMENTS`, PR body, or recent commit footers
+  like `Related to STL-NN`. If a Linear connector is visible, fetch the issue
+  and use its title, problem statement, acceptance criteria, affected modules,
+  linked ADRs, and linked specs as context. If Linear is unavailable, say so
+  and continue from local branch/commit hints.
+- Check related ADRs deliberately. Start from ADRs linked by Linear, then
+  `docs/adr/README.md`, then exact keyword matches in `docs/adr/`. Do not scan
+  unrelated ADRs just to fill the report.
+- Treat code comments and rustdoc in changed or nearby implementation files as
+  docs. Review them with the same previous-vs-current behavior standard as
+  markdown docs.
+
+Scope:
+1. Identify changed docs/comments/rustdoc/prose in the diff.
+2. Extract implementation-zone keywords from changed code and docs. Include
+   domain terms, diagnostic codes, cache/version strings, function names, and
+   behavior words. Examples: `normalize_vrm`, `axis-bake`, `humanoid`,
+   `inverseBindMatrices`, `skin`, `cache`, `VRM 0.x`, `VRM 1.x`,
+   `normalized_vrm_axis_bake`.
+3. Search only nearby related docs/comments/ADRs for those terms. Prefer
+   changed files first, then directly related ADRs, specs, guidelines, and
+   architecture pages. Do not run a repository-wide prose audit except for
+   exact diagnostic/code/path references introduced by the diff.
+4. Compare previous wording against current wording:
+   - What did the pre-branch text imply before?
+   - What does the branch now claim?
+   - Is there stale contrast, future-tense, old behavior, or an incomplete
+     replacement near the same topic?
+5. Use actual review findings from the code phase as inspiration for targeted
+   terms. For example, if code review discussed malformed skins,
+   inverse-bind metadata, cache versioning, or best-effort skips, check whether
+   docs/comments now describe that boundary accurately.
+
+Report only actionable mismatches in the changed/related zone. If a broad docs
+standard would require PR-body-only content and no PR body exists, mark it N/A.
+
+Output:
+## Docs review — branch <branch>
+
+### Applicability
+- Targeted terms searched: ...
+- Context sources checked: Linear issue/ACs, ADRs, changed comments/rustdoc,
+  related docs, with unavailable sources called out.
+- Files checked: ...
+
+### Findings
+- clean, OR findings with P0/P1/P2/P3 priority and source rule/pattern.
+
+### Previous vs Current Notes
+- Briefly list any important changed meaning that was verified as coherent.
+
+### Recommendation
+- clean / nit-only / P0-P2 remains.
+```
 
 Render the report verbatim under:
 
 ```markdown
-## Pre-PR review - branch <branch> - docs pass A
+## Pre-PR review - branch <branch> - docs pass A (targeted)
 ```
 
 If findings exist, ask which findings to fix. After the user finishes or
@@ -124,32 +216,37 @@ declines fixes, compute:
 docs_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_after_code" && echo true || echo false)
 ```
 
-### Step 5: Docs Pass B If Needed
+### Step 5: Docs Verification Passes If Needed
 
 If `docs_fixes_applied=false`, continue to Step 6.
 
-If `docs_fixes_applied=true`, dispatch one read-only Explore subagent
-using the `shotloom-review-docs` Step 3 checklist. Override the role
-framing with this preamble:
+If `docs_fixes_applied=true`, dispatch one read-only Explore subagent using
+the same targeted docs brief. Override the role framing with this preamble:
 
 ```text
-This is an independent verification pass after pass-A docs fixes changed
-HEAD. Use the docs-review catalog as a verification checklist for current
-HEAD. Review from a different angle: confirm pass-A issues are fixed,
-look for regressions introduced by fixes, and report any pre-existing
-defect still visible in the current diff. Do not rely on the authoring
-session or on pass-A conclusions; check directly.
+This is an independent verification pass after earlier docs fixes changed
+HEAD. Use the targeted docs brief as a verification checklist for current
+HEAD. Review from a different angle than all earlier docs passes: confirm
+previously reported P0-P2 issues are fixed, look for regressions introduced by
+fixes, and report any stale previous-vs-current wording still visible around
+the changed implementation zone. Do not rely on the authoring session or on
+earlier pass conclusions; check directly.
 ```
 
 Render the report verbatim under:
 
 ```markdown
-## Pre-PR review - branch <branch> - docs pass B (verify)
+## Pre-PR review - branch <branch> - docs pass <letter> (verify)
 ```
 
-If pass B finds issues, ask whether to fix now. If fixes change `HEAD`,
-do not run docs pass C. Either stop and re-invoke this skill for a fresh
-review cycle, or accept the residual risk and continue.
+If the verification pass finds P0-P2 issues, fix/ask whether to fix now. If
+fixes change `HEAD`, run the next docs verification pass with the same
+verification preamble and a new pass letter. Do not restart docs pass A unless
+the user explicitly asks for a fresh cold-start review.
+
+If the verification pass is clean or contains only P3/nit findings, stop the
+docs review loop. Fix or accept the final nits once, then continue to Step 6
+without another docs pass.
 
 ### Step 6: Recommendation
 
@@ -158,8 +255,9 @@ Report one of:
 | Result | Recommendation |
 |---|---|
 | All fired passes clean | `Ready to /shotloom-make-pr` |
+| Only P3/nit findings remain | `Ready to /shotloom-make-pr`; note fixed/accepted nits |
 | Findings fixed or accepted | `Ready to /shotloom-make-pr`; note accepted residual risk |
-| Pass B found unresolved issues | Fix and re-invoke, or document accepted risk in PR body |
+| Latest verification pass found P0-P2 issues | Keep fixing and run the next verification pass |
 
 Add one short Korean paragraph only if findings were non-clean.
 
@@ -167,9 +265,17 @@ Add one short Korean paragraph only if findings were non-clean.
 
 - Always run code before docs.
 - Always use read-only Explore subagents.
-- Never run pass B unless the matching pass A fix gate changed `HEAD`.
-- Label pass B as independent verification after fixes changed `HEAD`.
-- Never run pass C; re-invoke this skill for a fresh review cycle.
+- Docs passes are targeted to changed implementation-zone terms and nearby
+  related wording, especially previous-vs-current behavior. They are not broad
+  cold-start repository docs audits unless the user explicitly asks.
+- Never run a verification pass unless the matching phase's fixes changed
+  `HEAD`.
+- Label every follow-up pass as independent verification after fixes changed
+  `HEAD`.
+- Only the first pass of each phase is cold-start. Later passes are different
+  verification perspectives, not fresh cold-start restarts.
+- Continue verification while P0-P2 findings remain and fixes keep changing
+  `HEAD`; stop once the latest pass is clean or nit-only.
 - Do not push, create PRs, or post PR comments.
 - Use this umbrella for default pre-PR review. Use leaf skills only for
   narrow rechecks.
