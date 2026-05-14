@@ -7,6 +7,10 @@ disable-model-invocation: true
 
 MCP server for CINEV art branch Slack integration.
 
+## Skill-owned standards
+
+Read `references/CCI-SLACK.md` only when sending CINEV Slack messages, configuring channels, or updating Slack MCP behavior.
+
 ## Purpose
 
 Provides MCP tools for Slack messaging and thread management used by art branch workflows. Replaces individual Python scripts in `cci-art-send-notice`, `cci-art-send-merge-notice`, `cci-art-send-merge-result`, and `cci-art-create-branch`.

@@ -10,6 +10,10 @@ disable-model-invocation: true
 
 Send automated alert messages to the CINEV team Slack channel via the Arnyang (아르리므) bot.
 
+## Skill-owned standards
+
+Read `~/.claude/skills/cci-serve-mcp/references/CCI-SLACK.md` only when changing Slack channel, token, username, or message delivery behavior.
+
 ## Purpose
 
 Deliver team-wide automated notifications (CI outcomes, PR state changes, deploy signals, scheduled reports) to the team Slack channel. This skill is **user-invocable only** — agents cannot auto-invoke it, and every send requires explicit per-message approval in the chat.

@@ -7,6 +7,13 @@ argument-hint: "[create|merge-prep|merge-notice|merge-result|cleanup|status]"
 
 Unified orchestrator for CINEV art branch lifecycle. Run daily — it reads current state and day-of-week, then suggests or executes the right action.
 
+## Skill-owned standards
+
+Read these references only when needed:
+
+- `references/CINEV-GIT-WORKFLOW.md` — safe CINEV git operations
+- `~/.claude/skills/cci-serve-mcp/references/CCI-SLACK.md` — Slack channel and message delivery rules
+
 ## Purpose
 
 Replaces 5+ separate commands with one entry point. Old commands (`/cci-art-create-branch`, `/cci-art-prepare-merge`, and other variants) are thin redirects.

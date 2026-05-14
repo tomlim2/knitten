@@ -17,4 +17,4 @@ Verify all before requesting user approval to call `gh pr create`:
 
 - shotloom (CINEV/shotloom) → `~/.claude/rules/shotloom.md`
 
-Full reference: `~/.claude/standards/cinev/cinev-git-workflow.md`.
+Full reference: `~/.claude/skills/cci-manage-art-branch/references/CINEV-GIT-WORKFLOW.md`.

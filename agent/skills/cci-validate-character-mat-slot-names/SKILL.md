@@ -6,6 +6,10 @@ description: "Validate character SkeletalMesh material slot names against DataTa
 
 Validate material slot names on character SkeletalMesh assets referenced in a DataTable.
 
+## Skill-owned standards
+
+Read `references/CINEV-CHARACTER-ASSET-NAMING.md` only when validating character asset, material, mesh, or texture names.
+
 ## Purpose
 
 Two-step workflow for validating character material slot names:

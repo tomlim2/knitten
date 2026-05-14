@@ -7,6 +7,10 @@ disable-model-invocation: true
 
 Send messages to Slack art channel.
 
+## Skill-owned standards
+
+Read `~/.claude/skills/cci-serve-mcp/references/CCI-SLACK.md` only when changing Slack channel, token, username, or message delivery behavior.
+
 ## Purpose
 
 Send formatted messages to the Slack art channel for team communication about art branch operations.

@@ -34,7 +34,7 @@ This standard governs **`caol-ila` repository artifacts only** — files inside 
 |--------------|----------|
 | Code identifiers (Rust struct/fn/var, Python class, JS variable, C++ symbol) | each language's own convention (rustfmt, PEP 8, ESLint, project-specific style guide) |
 | Filenames in other repos (shotloom, cinev-engine, bevy-vrm, personal projects) | that repo's own `CONTRIBUTING.md` / `AGENTS.md` |
-| Unreal Engine asset names (`SM_`, `T_`, `M_`, `BP_`, ...) | `~/.claude/standards/cinev/cinev-character-asset-naming.md` |
+| Unreal Engine asset names (`SM_`, `T_`, `M_`, `BP_`, ...) | `~/.claude/skills/cci-validate-character-mat-slot-names/references/CINEV-CHARACTER-ASSET-NAMING.md` |
 | HTML/CSS class names, IDs, custom properties | language standard (`~/.claude/standards/language/css.md`) |
 | Variable names inside example snippets in this repo's docs | code conventions of the snippet's language |
 

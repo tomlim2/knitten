@@ -12,6 +12,10 @@ allowed-tools:
 
 6-Layer VRM structural validator. Wraps `vrm_validator.py` and presents results as structured markdown.
 
+## Skill-owned standards
+
+Read `references/CINEV-VRM-SHADING.md` only when validating CINEV VRM material readiness, source classification, or outline policy.
+
 ## Arguments
 
 ```
