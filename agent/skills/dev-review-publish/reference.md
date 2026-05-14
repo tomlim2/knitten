@@ -32,7 +32,7 @@ Launch 3 Task subagents in parallel (+ 1 more if `has3D`). Each reads the releva
 > severity is one of: critical, error, suggestion.
 
 **C. UX Writing** — `subagent_type: Explore`
-> Read `~/.claude/standards/review/review-ux-writing.md`.
+> Read `~/.claude/skills/review-audit-ux/references/REVIEW-UX-WRITING.md`.
 > Audit all HTML/JS files in the target directory for UX writing issues.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
@@ -137,7 +137,7 @@ Output the final report in the format below.
 - `skills/review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` — JS code quality checklist
 - `skills/review-audit-web/references/REVIEW-CODE-CSS.md` — CSS code quality checklist
 - `skills/review-audit-ux/references/REVIEW-UX.md` — UX/UI audit checklist
-- `standards/review/review-ux-writing.md` — UX writing checklist
+- `skills/review-audit-ux/references/REVIEW-UX-WRITING.md` — UX writing checklist
 - `skills/dev-check-publish/SKILL.md` — Deploy readiness checklist
 - `skills/review-audit-3d/references/REVIEW-3D-RENDERING.md` — 3D rendering performance checklist (conditional)
 - `standards/review/review-template.md` — Review output format

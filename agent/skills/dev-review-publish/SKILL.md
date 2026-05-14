@@ -35,7 +35,7 @@ Launch parallel Task subagents, each reading its relevant skill-owned reference 
 
 - **A. Code Quality** — JS/CSS audit against `review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` and `review-audit-web/references/REVIEW-CODE-CSS.md`
 - **B. UX/UI Audit** — HTML/JS/CSS audit against `review-audit-ux/references/REVIEW-UX.md`
-- **C. UX Writing** — HTML/JS audit against `review-ux-writing.md`
+- **C. UX Writing** — HTML/JS audit against `review-audit-ux/references/REVIEW-UX-WRITING.md`
 - **D. 3D Rendering** *(only if has3D)* — JS/TS/GLSL/WGSL audit against `review-audit-3d/references/REVIEW-3D-RENDERING.md`
 
 ### Pass 2: Publish Check

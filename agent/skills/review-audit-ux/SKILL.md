@@ -15,7 +15,10 @@ Static UX/UI code audit against a 70+ item checklist.
 
 ## Skill-owned standards
 
-Read `references/REVIEW-UX.md` only when auditing UX/UI layout, interaction, accessibility, motion, consistency, typography, semantic HTML, performance UX, or forms.
+Read these references only when their scope appears:
+
+- `references/REVIEW-UX.md` — UX/UI layout, interaction, accessibility, motion, consistency, typography, semantic HTML, performance UX, or forms
+- `references/REVIEW-UX-WRITING.md` — UI text, button labels, error messages, empty states, and confirmation copy
 
 ## Purpose
 
@@ -102,5 +105,6 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 ## Related
 
 - `references/REVIEW-UX.md` — UX/UI audit checklist (70+ items)
+- `references/REVIEW-UX-WRITING.md` — UX writing checklist
 - `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS standards)

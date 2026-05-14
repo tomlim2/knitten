@@ -8,7 +8,10 @@ Static 3D rendering performance audit against a 55+ item checklist.
 
 ## Skill-owned standards
 
-Read `references/REVIEW-3D-RENDERING.md` only when auditing 3D rendering performance.
+Read these references only when their scope appears:
+
+- `references/REVIEW-3D-RENDERING.md` — 3D rendering performance
+- `references/REVIEW-CODE-TSL.md` — Three.js TSL shader code
 
 ## Purpose
 
@@ -107,6 +110,7 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 ## Related
 
 - `references/REVIEW-3D-RENDERING.md` — 3D rendering performance checklist (55+ items)
+- `references/REVIEW-CODE-TSL.md` — Three.js TSL review checklist
 - `standards/language/three-shader-language.md` — TSL coding standards
 - `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS)

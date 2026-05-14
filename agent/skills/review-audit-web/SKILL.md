@@ -19,6 +19,7 @@ Read these references only when their file type appears in the review scope:
 
 - `references/REVIEW-CODE-JAVASCRIPT.md` — `.js`, `.jsx`, `.ts`, `.tsx`
 - `references/REVIEW-CODE-CSS.md` — `.css`, `.scss`, `.less`
+- `references/REVIEW-CODE-ASTRO.md` — `.astro`, Astro routes, endpoints, and config
 
 ## Purpose
 
@@ -45,8 +46,9 @@ Unified web code review command that applies both JavaScript and CSS checklists 
 
 | File Type | Checklist |
 |-----------|-----------|
-| `.js`, `.jsx`, `.ts`, `.tsx` | `review-code-javascript.md` |
-| `.css`, `.scss`, `.less` | `review-code-css.md` |
+| `.astro`, `astro.config.*`, `src/pages/api/**` | `REVIEW-CODE-ASTRO.md` |
+| `.js`, `.jsx`, `.ts`, `.tsx` | `REVIEW-CODE-JAVASCRIPT.md` |
+| `.css`, `.scss`, `.less` | `REVIEW-CODE-CSS.md` |
 
 Output follows `review-template.md` format.
 
@@ -57,4 +59,5 @@ Output follows `review-template.md` format.
 - `commands/review-audit-web.md` — Slash command definition
 - `references/REVIEW-CODE-JAVASCRIPT.md` — JS review checklist
 - `references/REVIEW-CODE-CSS.md` — CSS review checklist
+- `references/REVIEW-CODE-ASTRO.md` — Astro review checklist
 - `standards/review/review-template.md` — Review output format

@@ -53,8 +53,8 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 |------|------|
 | Review JS / CSS code | [`agent/skills/review-audit-web/SKILL.md`](agent/skills/review-audit-web/SKILL.md) → `references/REVIEW-CODE-JAVASCRIPT.md` or `references/REVIEW-CODE-CSS.md` |
 | Review UE C++ / Python | [`agent/standards/review/review-code-unreal-cpp.md`](agent/standards/review/review-code-unreal-cpp.md), [`agent/standards/review/review-code-unreal-python.md`](agent/standards/review/review-code-unreal-python.md) |
-| Review TSL shaders | [`agent/standards/review/review-code-tsl.md`](agent/standards/review/review-code-tsl.md) |
-| Review UX / UX writing | [`agent/skills/review-audit-ux/SKILL.md`](agent/skills/review-audit-ux/SKILL.md) → `references/REVIEW-UX.md`; [`agent/standards/review/review-ux-writing.md`](agent/standards/review/review-ux-writing.md) |
+| Review TSL shaders | [`agent/skills/review-audit-3d/SKILL.md`](agent/skills/review-audit-3d/SKILL.md) → `references/REVIEW-CODE-TSL.md` |
+| Review UX / UX writing | [`agent/skills/review-audit-ux/SKILL.md`](agent/skills/review-audit-ux/SKILL.md) → `references/REVIEW-UX.md` or `references/REVIEW-UX-WRITING.md` |
 | Review AI motion (FBX) | [`agent/skills/review-audit-ai-motion/SKILL.md`](agent/skills/review-audit-ai-motion/SKILL.md) → `references/REVIEW-AI-MOTION.md` |
 | Review 3D rendering | [`agent/skills/review-audit-3d/SKILL.md`](agent/skills/review-audit-3d/SKILL.md) → `references/REVIEW-3D-RENDERING.md` |
 | Review a spec doc | [`agent/skills/review-audit-web-spec/SKILL.md`](agent/skills/review-audit-web-spec/SKILL.md) → `references/REVIEW-SPEC-DOC.md` |

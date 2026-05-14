@@ -427,16 +427,6 @@
       "path": "agent/skills/review-audit-web/SKILL.md",
       "profile": "web-review",
       "contextCost": "low"
-    },
-    {
-      "path": "agent/standards/review/review-code-astro.md",
-      "profile": "web-review",
-      "contextCost": "high"
-    },
-    {
-      "path": "agent/standards/review/review-code-tsl.md",
-      "profile": "web-review",
-      "contextCost": "medium"
     }
   ],
   "enforcement": {
