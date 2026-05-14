@@ -15,13 +15,16 @@ exclude-when: unreal,obsidian
 Run pre-PR self-review on the current Shotloom branch. The skill uses
 read-only Explore subagents. The first pass for each phase is a cold-start
 review. Later passes in the same phase are independent verification passes
-from different angles after fixes change `HEAD`; they are not fresh cold-start
-restarts.
+from different angles after fixes change `HEAD`. If later verification passes
+find P0-P2 issues and fixes change `HEAD` again, continue the same review chain
+with the next pass letter instead of restarting at pass A.
 
 ## Arguments
 
-None. Operates on `git diff origin/main..HEAD` from the current Shotloom
-worktree.
+None. Operates on the PR diff, `git diff origin/main...HEAD`, from the
+current Shotloom worktree. The three-dot diff is required because branches may
+be behind `origin/main`; a two-dot tree diff can misread base-branch additions
+as deletions in the review branch.
 
 ## Review Shape
 
@@ -117,6 +120,14 @@ If the verification pass is clean or contains only P3/nit findings, stop the
 code review loop. Fix or accept the final nits once, then set
 `head_after_code=$(git rev-parse HEAD)` and continue to docs without another
 code pass.
+
+Each verification pass must:
+
+- use the same independent-verification preamble;
+- review current `HEAD` directly;
+- confirm prior findings were fixed;
+- look for regressions introduced by the latest fixes;
+- render under `code pass <letter> (verify)`.
 
 Record `head_after_code=$(git rev-parse HEAD)`.
 
@@ -248,6 +259,14 @@ If the verification pass is clean or contains only P3/nit findings, stop the
 docs review loop. Fix or accept the final nits once, then continue to Step 6
 without another docs pass.
 
+Each verification pass must:
+
+- use the same independent-verification preamble;
+- review current `HEAD` directly;
+- confirm prior findings were fixed;
+- look for regressions introduced by the latest fixes;
+- render under `docs pass <letter> (verify)`.
+
 ### Step 6: Recommendation
 
 Report one of:
@@ -257,7 +276,7 @@ Report one of:
 | All fired passes clean | `Ready to /shotloom-make-pr` |
 | Only P3/nit findings remain | `Ready to /shotloom-make-pr`; note fixed/accepted nits |
 | Findings fixed or accepted | `Ready to /shotloom-make-pr`; note accepted residual risk |
-| Latest verification pass found P0-P2 issues | Keep fixing and run the next verification pass |
+| Latest verification pass found P0-P2 issues | Fix and continue with next pass, or document accepted risk in PR body |
 
 Add one short Korean paragraph only if findings were non-clean.
 

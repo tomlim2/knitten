@@ -19,7 +19,10 @@ Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reus
 
 ## Arguments
 
-None. Operates on `git diff origin/main..HEAD` from the current shotloom worktree.
+None. Operates on the PR diff, `git diff origin/main...HEAD`, from the current
+shotloom worktree. The three-dot diff is required because branches may be
+behind `origin/main`; a two-dot tree diff can misread base-branch additions as
+deletions in the review branch.
 
 ## Workflow
 
@@ -46,11 +49,11 @@ Refuse if HEAD is `main`, branch has zero commits ahead of `origin/main`, or cwd
 Group G (repo conventions, doc-paths, ci-coverage) always runs — even on Rust-only or yaml-only diffs, the commit / PR / branch conventions still apply. The other groups gate on file-type presence:
 
 ```bash
-md_changed=$(git diff --name-only origin/main..HEAD -- '*.md' | wc -l | tr -d ' ')
-rust_changed=$(git diff --name-only origin/main..HEAD -- '*.rs' | wc -l | tr -d ' ')
-yaml_changed=$(git diff --name-only origin/main..HEAD -- '*.yml' '*.yaml' | wc -l | tr -d ' ')
-json_changed=$(git diff --name-only origin/main..HEAD -- '*.json' | wc -l | tr -d ' ')
-moved=$(git diff --name-status origin/main..HEAD | grep -cE '^[DR]' || true)
+md_changed=$(git diff --name-only origin/main...HEAD -- '*.md' | wc -l | tr -d ' ')
+rust_changed=$(git diff --name-only origin/main...HEAD -- '*.rs' | wc -l | tr -d ' ')
+yaml_changed=$(git diff --name-only origin/main...HEAD -- '*.yml' '*.yaml' | wc -l | tr -d ' ')
+json_changed=$(git diff --name-only origin/main...HEAD -- '*.json' | wc -l | tr -d ' ')
+moved=$(git diff --name-status origin/main...HEAD | grep -cE '^[DR]' || true)
 echo "md=$md_changed rust=$rust_changed yaml=$yaml_changed json=$json_changed moved=$moved"
 ```
 
@@ -88,8 +91,8 @@ Re-read every invocation. The standards are amended as new defect classes are fo
 
 - Worktree: `<pwd>`
 - Branch: `<branch>`
-- File list: `git diff --name-only origin/main..HEAD`
-- Content: `git diff origin/main..HEAD` (full hunks)
+- File list: `git diff --name-only origin/main...HEAD`
+- Content: `git diff origin/main...HEAD` (full hunks)
 
 ## Two-phase execution (strict order)
 

@@ -19,7 +19,10 @@ Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reus
 
 ## Arguments
 
-None. Operates on `git diff origin/main..HEAD` from the current shotloom worktree.
+None. Operates on the PR diff, `git diff origin/main...HEAD`, from the current
+shotloom worktree. The three-dot diff is required because branches may be
+behind `origin/main`; a two-dot tree diff can misread base-branch additions as
+deletions in the review branch.
 
 ## Workflow
 
@@ -44,8 +47,8 @@ Refuse if HEAD is `main`, branch has zero commits ahead of `origin/main`, or cwd
 ### Step 2: applicability check
 
 ```bash
-rust_changed=$(git diff --name-only origin/main..HEAD -- '*.rs' | wc -l | tr -d ' ')
-ts_changed=$(git diff --name-only origin/main..HEAD -- '*.ts' '*.tsx' | wc -l | tr -d ' ')
+rust_changed=$(git diff --name-only origin/main...HEAD -- '*.rs' | wc -l | tr -d ' ')
+ts_changed=$(git diff --name-only origin/main...HEAD -- '*.ts' '*.tsx' | wc -l | tr -d ' ')
 echo "rust=$rust_changed ts=$ts_changed"
 ```
 
@@ -72,8 +75,8 @@ Re-read every invocation. The standards are amended as new defect classes are fo
 
 - Worktree: `<pwd>`
 - Branch: `<branch>`
-- File list: `git diff --name-only origin/main..HEAD`
-- Content: `git diff origin/main..HEAD` (full hunks)
+- File list: `git diff --name-only origin/main...HEAD`
+- Content: `git diff origin/main...HEAD` (full hunks)
 
 ## Two-phase execution (strict order)
 
