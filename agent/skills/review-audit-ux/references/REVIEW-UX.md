@@ -13,6 +13,8 @@ Static code audit checklist for detecting UX/UI issues by reading HTML, CSS, and
 
 - `../review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` — JS coding standards checklist
 - `../review-audit-web/references/REVIEW-CODE-CSS.md` — CSS coding standards checklist
+- `../../frontend-design/references/UI-DESIGN.md` — UI/UX design principles
+- `../../frontend-design/references/DESIGN-SYSTEM.md` — Typo-base design system when applicable
 - `review-template.md` — Output format (for **structuring** review feedback)
 
 This document defines **what to check** from a UX perspective. Use `review-template.md` for how to format findings.

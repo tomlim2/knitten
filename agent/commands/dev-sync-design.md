@@ -238,7 +238,7 @@ Version comment by file type:
 ## Rules
 
 1. **design-show-components is the canonical reference**
-   - design-system.md = Specification document
+   - `skills/frontend-design/references/DESIGN-SYSTEM.md` = Specification document
    - design-show-components = Actual implementation reference
    - When in conflict, showcase wins
    - Always compare against showcase actual CSS values
@@ -280,7 +280,7 @@ Version comment by file type:
 ❌ **Don't:** Just update version stamps without checking styles
 ✅ **Do:** Compare each CSS property against showcase and fix mismatches
 
-❌ **Don't:** Only read design-system.md specification
+❌ **Don't:** Only read `skills/frontend-design/references/DESIGN-SYSTEM.md` specification
 ✅ **Do:** Read design-show-components actual CSS as the reference implementation
 
 ❌ **Don't:** Report mismatches and stop

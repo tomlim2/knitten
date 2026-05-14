@@ -50,6 +50,7 @@ Displays all available UI patterns and components from the Typo-base design syst
 ## Files
 
 - `index.html` - Component showcase page
+- `../frontend-design/references/DESIGN-SYSTEM.md` - Design system philosophy and decision rules
 
 ## Technical Details
 

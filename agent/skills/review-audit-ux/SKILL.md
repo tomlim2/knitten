@@ -19,6 +19,8 @@ Read these references only when their scope appears:
 
 - `references/REVIEW-UX.md` — UX/UI layout, interaction, accessibility, motion, consistency, typography, semantic HTML, performance UX, or forms
 - `references/REVIEW-UX-WRITING.md` — UI text, button labels, error messages, empty states, and confirmation copy
+- `../frontend-design/references/UI-DESIGN.md` — UI/UX design principles when the audit needs design baseline context
+- `../frontend-design/references/DESIGN-SYSTEM.md` — Typo-base design system when the audited UI claims or uses it
 
 ## Purpose
 

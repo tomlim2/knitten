@@ -415,5 +415,5 @@ Usage: /git-collect-commits <repo_path> [--author name]
 - `caol-make-command/SKILL.md` - Command creation rulebook
 - `caol-make-skill/SKILL.md` - Skill creation rulebook
 - `SYSTEM.md` - Canonical policy
-- `design-system.md` - UI/CSS standards
+- `skills/frontend-design/references/DESIGN-SYSTEM.md` - UI/CSS standards
 - `unreal-engine.md` - UE-specific standards
