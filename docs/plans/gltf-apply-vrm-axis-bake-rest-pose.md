@@ -31,7 +31,7 @@ inverseBindMatrix rebake.
 | Primary-child topology policy | Already Done | `crates/shotloom-gltf/src/vrm_axis_bake/primary_child.rs` selects direct children from `&HumanoidMap` plus `nodes[]`, skips malformed children, and has synthetic JSON tests. |
 | Correction quaternion math | Already Done | `crates/shotloom-gltf/src/vrm_axis_bake/correction.rs` computes local-space `q_corr_local` and tests right-multiply application, invalid inputs, and opposite-direction fallback. |
 | Helper visibility | Partial | `primary_child_for_humanoid_bone` and `correction_for_primary_child` are private file-local functions with `#[allow(dead_code)]`; sibling `apply.rs` cannot call them yet. |
-| Rest-pose extraction precedent | Partial | `crates/shotloom-gltf/src/vrm_extract.rs` parses TRS nodes, builds parent maps, resolves global matrices, and exposes `HumanoidMap`, but its `NodeLocal` helpers are private to that module. |
+| Rest-pose extraction precedent | Partial | `crates/shotloom-gltf/src/vrm_extract.rs` parses TRS nodes, builds parent maps, resolves global matrices, and exposes `HumanoidMap`, but its `NodeLocal` helpers are private and its JSON parsing defaults malformed components instead of using the stricter skip policy this apply helper needs. |
 | GLB normalization mutation precedent | Out of scope | `crates/shotloom-gltf/src/vrm_normalization.rs` has parse/rebuild helpers and 180Y mutation logic, but STL-409 says not to wire production `normalize_vrm`. |
 | Cache version | Already Done for prior phase | `crates/shotloom-import/src/lib.rs` keeps `NORMALIZED_VRM_CACHE_VERSION = "v3"`; STL-409 does not change normalized artifacts. |
 | T-pose appearance validation | Out of scope | `docs/specs/vrm-character-validation.md` and `docs/tech-debt/vrm-tpose-appearance-validation.md` place mesh-skinning appearance validation outside local rotation-only checks. |
@@ -70,7 +70,7 @@ parent-child distances stay fixed.
 3. **Use a narrow apply API over `&HumanoidMap` and mutable `nodes[]`.**
    Rationale: STL-409 explicitly scopes the implementation to humanoid map plus
    `nodes[]`; this mirrors the Phase 2a picker input and avoids raw GLB parse /
-   rebuild behavior. Suggested private shape:
+   rebuild behavior. Private shape:
    `apply_axis_bake_to_nodes(humanoid: &HumanoidMap, nodes: &mut [Value]) ->
    AxisBakeApplyStats`.
    Rejected alternatives: accepting raw GLB bytes, mutating
@@ -96,13 +96,15 @@ parent-child distances stay fixed.
 
 6. **Compensate each direct child with the inverse local correction.**
    Rationale: The STL-409 brief names direct-child compensation with
-   `q_corr_local.inverse()`. For each direct child of a corrected bone, rotate
-   its local `translation` and local `rotation` by the inverse correction while
-   leaving finite identity or finite uniform `scale` unchanged. Synthetic tests
-   pin world position, world rotation, and parent-child distance after
-   compensation.
-   Rejected alternatives: compensating only child rotation, compensating all
-   descendants directly, or deferring compensation to the mesh-rebake phase.
+   `q_corr_local.inverse()`. For each direct child of a corrected bone, write
+   `child.translation = q_corr_local.inverse() * old_child_translation` and
+   `child.rotation = q_corr_local.inverse() * old_child_rotation`. Leave the
+   target bone's local `translation` and `scale` unchanged. Leave direct-child
+   finite uniform `scale` unchanged. Synthetic tests pin world position, world
+   rotation, and parent-child distance after compensation.
+   Rejected alternatives: compensating only child rotation, writing
+   `old_child_rotation * q_corr_local.inverse()`, compensating all descendants
+   directly, or deferring compensation to the mesh-rebake phase.
 
 7. **Skip unsupported or invalid node shapes without diagnostics.**
    Rationale: `review-domain.md` treats glTF/VRM as untrusted asset input, and
@@ -200,8 +202,10 @@ TRS helpers:
   entries
 - global transform resolver that rejects unresolved cycles by skip/stats, not
   panic
-- `AxisBakeApplyStats` with corrected, compensated, and skipped counts for
-  unit-test assertions
+- `AxisBakeApplyStats` with explicit count fields:
+  `corrected_bones`, `compensated_children`, `no_op_already_aligned`,
+  `skipped_no_primary_child`, `skipped_invalid_transform`,
+  `skipped_invalid_correction`, and `skipped_unresolved_hierarchy`
 
 ### S3 — Implement Root-to-Leaf Apply Loop
 
@@ -215,12 +219,16 @@ Inside `apply_axis_bake_to_nodes`:
 5. Resolve current global transforms.
 6. Call `correction_for_primary_child(bone_world_rotation, bone_world_position,
    child_world_position)`.
-7. If correction is `None` or identity-equivalent, leave JSON unchanged and
-   count no-op/skip according to the test policy.
-8. Write `bone.rotation = bone.rotation * q_corr_local`.
-9. For every valid direct child, apply `q_corr_local.inverse()` to the child's
-   local `translation` and `rotation`.
-10. Recompute globals before processing the next target bone.
+7. If correction is `None`, leave JSON unchanged and increment
+   `skipped_invalid_correction`.
+8. If correction is identity-equivalent under the test epsilon, leave JSON
+   unchanged and increment `no_op_already_aligned`.
+9. Write `bone.rotation = bone.rotation * q_corr_local`; leave target
+   `translation` and `scale` unchanged.
+10. For every valid direct child, write
+    `child.translation = q_corr_local.inverse() * old_child_translation` and
+    `child.rotation = q_corr_local.inverse() * old_child_rotation`.
+11. Recompute globals before processing the next target bone.
 
 ### S4 — Pin Synthetic JSON Tests
 
@@ -229,7 +237,8 @@ Add tests in `apply.rs`:
 - Direct child world position and world rotation are preserved after
   compensation.
 - Parent-child distance is preserved after compensation.
-- Canonical/no-op chain keeps JSON unchanged or identity-equivalent.
+- Canonical/no-op chain keeps JSON unchanged or identity-equivalent under the
+  test epsilon.
 - Leaf or missing humanoid slot skips without panic.
 - Invalid child references from `children` are ignored.
 - Degenerate child direction skips without panic and leaves JSON unchanged.
@@ -238,6 +247,8 @@ Add tests in `apply.rs`:
   JSON unchanged.
 - Parent-first chain test proves topological order does not invalidate child
   alignment.
+- Stats tests pin no-op, no-primary-child, invalid-transform,
+  invalid-correction, and unresolved-hierarchy buckets.
 
 ### S5 — Scope Guard Re-Read
 
@@ -260,9 +271,12 @@ After implementation, re-read the diff and verify:
 - [ ] After correction, target bone world local `+Y` aligns to the chosen
       primary child direction within the test epsilon.
 - [ ] Direct child world position and world rotation stay fixed after
-      compensation.
+      compensation by left-multiplying child local rotation with
+      `q_corr_local.inverse()`.
 - [ ] Parent-child distance stays fixed after compensation.
-- [ ] Canonical/no-op input stays unchanged or identity-equivalent.
+- [ ] Target bone local `translation` and `scale` stay unchanged.
+- [ ] Canonical/no-op input stays unchanged or identity-equivalent under the
+      test epsilon.
 - [ ] Malformed nodes, missing humanoid slots, invalid child entries,
       unresolved hierarchy, and degenerate child direction skip without panic.
 - [ ] `cargo test -p shotloom-gltf vrm_axis_bake` passes.
@@ -306,6 +320,8 @@ Review gate:
   diagnostics, and cache invalidation.
 - Do not compensate only child rotations; child local translation must also be
   inverse-rotated to preserve child world position.
+- Do not right-multiply child local rotation during compensation; use
+  `q_corr_local.inverse() * old_child_rotation`.
 - Do not process humanoid bones in `HashMap` iteration order; root-to-leaf
   order is required.
 - Do not add public API exports from `shotloom-gltf`.
