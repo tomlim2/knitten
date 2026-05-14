@@ -7,7 +7,11 @@ user-invocable: true
 
 # review-audit-ai-motion
 
-Grade AI-generated character motion against the `review-ai-motion` standard, then attribute faults to the responsible pipeline stage (Generator / Rig / Retarget / Physics / Viewer).
+Grade AI-generated character motion against its skill-owned rubric, then attribute faults to the responsible pipeline stage (Generator / Rig / Retarget / Physics / Viewer).
+
+## Skill-owned standards
+
+Read `references/REVIEW-AI-MOTION.md` only when grading generated motion or attributing faults.
 
 ## Arguments
 
@@ -24,7 +28,7 @@ Usage: `/review-audit-ai-motion <source.fbx> [retargeted]`
 
 ### Step 1: Load the rubric
 
-Read `~/.claude/standards/review/review-ai-motion.md` in full. That document defines:
+Read `references/REVIEW-AI-MOTION.md` in full. That document defines:
 - 7 core metrics (foot skate, penetration, jitter, contact accuracy, pose plausibility, root correlation, temporal coherence)
 - Grade thresholds (A/B/C/F)
 - **Fault attribution matrix** — the key deliverable
@@ -174,5 +178,5 @@ RECOMMEND:
 
 ## Related
 
-- `~/.claude/standards/review/review-ai-motion.md` — rubric + fault matrix (canonical reference)
+- `references/REVIEW-AI-MOTION.md` — rubric + fault matrix
 - `~/.claude/skills/review-audit-retarget/SKILL.md` — for **V** stage (viewer/skinning) diagnosis
