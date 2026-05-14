@@ -94,6 +94,7 @@ Structural rules:
 
 ## Related
 
+- `caol-manage-artifact` — CRUD router for shared artifacts
 - `caol-make-standard` — long reference docs
 - `caol-make-skill` — reusable skills
 - `caol-make-command` — slash commands

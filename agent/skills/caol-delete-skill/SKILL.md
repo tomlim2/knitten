@@ -70,6 +70,7 @@ Return:
 
 ## Related
 
+- `agent/skills/caol-manage-artifact/SKILL.md`
 - `agent/skills/caol-make-skill/SKILL.md`
 - `agent/skills/caol-edit-skill/SKILL.md`
 - `agent/skills/caol-update-skill/SKILL.md`

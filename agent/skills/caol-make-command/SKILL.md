@@ -129,6 +129,7 @@ For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the s
 
 ## Related Files
 
+- `skills/caol-manage-artifact/SKILL.md` - CRUD router for shared artifacts
 - `commands/caol-make-command.md` - Command wrapper for this skill
 - `skills/caol-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
 - `commands/ue-make-skill.md` - UE-specific skill/command generator

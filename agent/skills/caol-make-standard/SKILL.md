@@ -118,6 +118,7 @@ Structural rules:
 
 ## Related
 
+- `caol-manage-artifact` — CRUD router for shared artifacts
 - `caol-make-rule` — short enforcement rules (one-liners)
 - `caol-make-skill` — reusable skills
 - `caol-make-command` — slash commands

@@ -22,6 +22,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Recall why a principle exists | [`agent/standards/policy/principles.md`](agent/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`agent/standards/policy/naming.md`](agent/standards/policy/naming.md) |
 | Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`agent/config/README.md`](agent/config/README.md) |
+| Route CRUD for skill / rule / standard / command / plan artifacts | [`agent/skills/caol-manage-artifact/SKILL.md`](agent/skills/caol-manage-artifact/SKILL.md) |
 | Create a new slash command | [`agent/skills/caol-make-command/SKILL.md`](agent/skills/caol-make-command/SKILL.md) → `references/SLASH-COMMANDS.md` |
 | Create a new skill | [`agent/skills/caol-make-skill/SKILL.md`](agent/skills/caol-make-skill/SKILL.md) |
 | Edit an existing skill | [`agent/skills/caol-edit-skill/SKILL.md`](agent/skills/caol-edit-skill/SKILL.md) |
