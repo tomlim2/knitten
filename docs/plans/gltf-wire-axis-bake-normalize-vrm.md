@@ -21,8 +21,10 @@ diagnostics, validation diagnostics, and metadata summary. This plan wires the
 existing private primitive into the normalization tail, emits one import-visible
 diagnostic only when the pass mutates the artifact, keeps canonical no-op inputs
 byte-stable, and bumps the native normalized-VRM cache if bytes can change.
-Retarget pose recalibration, rig-branch removal, thumb CMC work, and editor UI
-changes stay out of scope.
+Round 1 review judges this as one reviewable PR because it touches one
+normalization boundary, one existing private primitive family, its cache/docs
+contract, and focused tests; retarget pose recalibration, rig-branch removal,
+thumb CMC work, and editor UI changes stay out of scope.
 
 ## Current State
 
@@ -31,7 +33,7 @@ changes stay out of scope.
 | Production VRM normalizer | Partial | `crates/shotloom-gltf/src/vrm_normalization.rs` routes VRM1 and VRM0 through `normalize_vrm_bones_180y` and then `finalize_normalized_vrm`, but `finalize_normalized_vrm` only parses JSON with `parse_glb_json`, appends thumb-slot quality and validation diagnostics, extracts metadata, and returns `normalized.bytes`. |
 | GLB parse/rebuild helpers | Already Done | `vrm_normalization.rs` has private `parse_glb(data) -> GlbParts` and `rebuild_glb(json, bin) -> Vec<u8>` helpers used by normalization code. |
 | Axis-bake private primitive | Partial | `crates/shotloom-gltf/src/vrm_axis_bake/apply.rs` has `pub(super) fn apply_axis_bake_to_nodes` and private `fn apply_axis_bake_to_document_parts(...) -> AxisBakeApplyStats`; the document-parts helper mutates nodes and BIN data, but it is not callable from `vrm_normalization.rs` through `vrm_axis_bake/mod.rs`. |
-| Axis-bake stats | Already Done | `AxisBakeApplyStats` tracks corrected bones, compensated children, no-op alignment, skipped transform/correction/hierarchy cases, rebaked inverse bind matrices, missing inverse bind matrices, and malformed inverse bind inputs. |
+| Axis-bake stats | Partial | `AxisBakeApplyStats` tracks corrected bones, compensated children, no-op alignment, skipped transform/correction/hierarchy cases, rebaked inverse bind matrices, missing inverse bind matrices, and malformed inverse bind inputs, but the type is only `pub(super)` to `vrm_axis_bake` today and cannot be named by sibling `vrm_normalization.rs`. |
 | Humanoid map extraction | Partial | `crates/shotloom-gltf/src/vrm_extract.rs` has private `build_humanoid_node_map` and public `extract_humanoid_map`, but `extract_humanoid_map` calls `crate::normalize_vrm` first, so production wiring must not call it from inside `normalize_vrm`. |
 | Diagnostic type and conversion | Already Done | `VrmDiagnostic` has `Warning`, `Error`, and `Info` severities in `vrm_normalization.rs`; `shotloom-import/src/lib.rs` maps all three through `convert_vrm_diagnostic`; engine direct import maps them in `crates/shotloom-engine/src/bridge/handlers/assets.rs`. |
 | Native normalized VRM cache | Partial | `crates/shotloom-import/src/lib.rs` uses `NORMALIZED_VRM_CACHE_VERSION = "v3"`, previously bumped for normalized-byte changes from VRM1 180Y correction. |
@@ -69,13 +71,17 @@ diagnostic contracts.
 2. **Add a crate-private axis-bake document helper; do not expose a public API.**
    Rationale: `apply_axis_bake_to_document_parts` already has the right
    primitive shape but is private to `apply.rs`. `vrm_axis_bake/mod.rs` should
-   expose a `pub(crate)` or `pub(super)` wrapper usable by
-   `vrm_normalization.rs`, while keeping `shotloom-gltf`'s public exports
+   expose a `pub(crate)` wrapper usable by sibling `vrm_normalization.rs`.
+   Because `pub(super)` inside `apply.rs` only reaches the `vrm_axis_bake`
+   module, the wrapper must also return either a `pub(crate)` stats type or a
+   narrower `pub(crate)` summary with the fields the finalizer needs for
+   mutation and diagnostic counts. Keep `shotloom-gltf`'s public exports
    unchanged. ADR-0030 places this work below normalizer crates and does not
    require a stable API.
    Rejected alternatives: making `apply_axis_bake_to_document_parts` public;
-   moving axis-bake code into `vrm_normalization.rs`; duplicating the rebake
-   logic in the normalizer tail.
+   using `pub(super)` and then trying to call it from a sibling module; moving
+   axis-bake code into `vrm_normalization.rs`; duplicating the rebake logic in
+   the normalizer tail.
 
 3. **Build the humanoid map directly from the already-parsed normalized JSON.**
    Rationale: `extract_humanoid_map` is public but calls `normalize_vrm`, so
@@ -91,10 +97,15 @@ diagnostic contracts.
    Rationale: Existing normalization repairs that change bytes but preserve a
    usable asset, such as `normalized_backward_root_180y` and
    `vrm0_synthesized_meta`, are `Info`. Axis-bake is an automatic
-   canonicalization, not a user-actionable validation failure. The diagnostic
-   should have a distinct code such as `normalized_vrm_axis_bake`, include
-   counts for corrected bones, compensated children, and rebaked inverse bind
-   matrices, and remain silent for no-op canonical rigs.
+   canonicalization, not a user-actionable validation failure. STL-291's older
+   umbrella text says `Diagnostic::warning`, but STL-419 narrows Phase 2e to
+   choosing a `VrmDiagnostic` code/severity/message; live code and
+   `docs/tech-debt/vrm-backward-facing-audit-policy.md` keep automatic
+   normalization repairs at `Info` until a stronger import policy is decided.
+   The diagnostic should have a distinct code such as
+   `normalized_vrm_axis_bake`, include counts for corrected bones, compensated
+   children, and rebaked inverse bind matrices, and remain silent for no-op
+   canonical rigs.
    Rejected alternatives: `Warning`, which overstates a successful repair and
    conflicts with current 180Y precedent; emitting one diagnostic per bone,
    which is noisy for normal imports; emitting a no-op diagnostic for
@@ -186,7 +197,9 @@ crates/shotloom-gltf/src/vrm_axis_bake/mod.rs
 
 Changes:
 - Expose the document-parts helper to the parent crate with the narrowest
-  visibility needed by `vrm_normalization.rs`.
+  visibility needed by sibling `vrm_normalization.rs`: a `pub(crate)` wrapper
+  from `vrm_axis_bake/mod.rs`, plus either a `pub(crate)` `AxisBakeApplyStats`
+  or a smaller `pub(crate)` output summary.
 - Keep `apply_axis_bake_to_nodes` available for existing unit tests.
 - Add an `AxisBakeApplyStats` method or local helper that answers whether the
   pass changed the artifact, using at least `corrected_bones` and
@@ -208,9 +221,12 @@ Preferred shape:
   -> Result<HumanoidMap, VrmRestError>` that does not call `normalize_vrm`.
 - From the normalizer tail, pass the already-parsed JSON and final bytes after
   180Y cleanup.
-- Convert any map-construction failure into existing validation diagnostics
-  rather than a new public error unless the JSON is structurally impossible to
-  parse.
+- If the humanoid map cannot be built because `humanBones` is missing or a
+  mapped node index is invalid, skip axis-bake and rely on the existing
+  `validate_normalized_vrm_json` diagnostics (`missing_humanoid_bones`,
+  `missing_required_bone`, `invalid_humanoid_bone_node`) that run later in the
+  same tail. Do not add a second axis-bake-specific validation diagnostic for
+  the same malformed metadata.
 
 ### S3 — Wire Axis-Bake Into the Finalizer Tail
 
@@ -252,6 +268,9 @@ Changes:
 - Do not add fields to `VrmNormalizationDebugStages`.
 - Keep `converted_vrm1_bytes` as the post-VRM0-conversion/pre-normalization
   bytes it already represents.
+- Add or update a debug-stage regression that compares
+  `debug_normalize_vrm_stages(input).normalized_bytes` with
+  `normalize_vrm(input).normalized_bytes` for at least one axis-baked fixture.
 
 ### S5 — Bump Native Cache Version and Document Diagnostic Code
 
@@ -265,9 +284,15 @@ docs/specs/vrm-character-validation.md
 Changes:
 - Change `NORMALIZED_VRM_CACHE_VERSION` from `"v3"` to `"v4"` and update the
   adjacent comment to name axis-bake rest-pose + inverse bind rebake.
-- Add a diagnostic row or paragraph for `normalized_vrm_axis_bake` as an
-  `Info` normalization-time diagnostic.
+- Add `normalized_vrm_axis_bake` to the `Info-only diagnostics` table in
+  `docs/specs/vrm-character-validation.md`, and add a short normalization
+  paragraph near `Backward-facing root normalization` describing that the pass
+  aligns humanoid local +Y axes to primary children and rebakes inverse bind
+  matrices while preserving no-op canonical inputs.
 - Do not change engine bridge contracts; existing diagnostic mapping is enough.
+- Do not change runtime character-thumbnail cache salts; that cache key already
+  includes `normalized_vrm_sha256`, so changed normalized bytes naturally create
+  a different thumbnail key.
 
 ### S6 — Pin Focused Tests
 
@@ -286,6 +311,9 @@ Coverage:
 - yoya and minjoon backward fixtures produce normalized bones whose local +Y
   points toward the chosen primary child after `normalize_vrm`.
 - At least one VRM0 fixture proves the converted path also gets axis-baked.
+- The local +Y assertion uses the post-normalize JSON and the same
+  primary-child policy as production; it must not call `extract_humanoid_map`
+  in a way that hides a failed first pass behind a second normalization.
 - Applying `normalize_vrm` twice is idempotent for a fixture that axis-bakes on
   the first pass.
 - Existing malformed/missing IBM unit tests remain non-panicking; add a
@@ -315,8 +343,8 @@ Coverage:
 ## Verification
 
 - Focused: `cargo test -p shotloom-gltf vrm_axis_bake`
-- Focused: `cargo test -p shotloom-gltf vrm1_backward_fixture`
-- Focused: `cargo test -p shotloom-gltf vrm_axis_bake_normalization`
+- Focused: `cargo test -p shotloom-gltf --test vrm1_backward_fixture`
+- Focused: `cargo test -p shotloom-gltf --test vrm_axis_bake_normalization`
 - Focused cache check: `cargo test -p shotloom-import normalized_artifact_path`
 - Required lint: `cargo clippy -p shotloom-gltf -- -D warnings`
 - Broader Rust gate before PR: `pnpm validate:rust`
@@ -331,6 +359,8 @@ Coverage:
 
 - Do not call `extract_humanoid_map` from inside `normalize_vrm`; it calls
   `normalize_vrm` and would recurse.
+- Do not call `extract_humanoid_map` in fixture assertions if that would
+  normalize the already-normalized output again and mask the first-pass result.
 - Do not always rebuild GLB bytes after parsing; canonical no-op byte identity
   is an existing normalization invariant.
 - Do not promote axis-bake to `Warning` without an explicit policy decision;
@@ -339,6 +369,8 @@ Coverage:
   boundary.
 - Do not let cache v3 serve post-axis-bake artifacts after normalized bytes
   change.
+- Do not touch runtime thumbnail cache versions for this normalized-byte change;
+  the thumbnail key already includes the normalized VRM hash.
 
 ## Follow-Up Candidates
 
