@@ -1,6 +1,13 @@
 ---
 description: Open MMD Player (Three.js WebGPU viewer). Use when opening or launching the mmd-player-anju web app.
 allowed-tools: Bash(npx:*), Bash(open:*), Bash(curl:*), Bash(lsof:*), Read
+domains: web
+repo-keys: mmd-anju
+languages: css,javascript,typescript
+frameworks: three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
 ---
 
 # dev-open-mmd-anju

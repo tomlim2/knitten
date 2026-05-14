@@ -1,6 +1,13 @@
 ---
-name: claude-seo
 description: Universal SEO Analysis Skill for technical audits, content quality, and AI search optimization.
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
+name: claude-seo
 ---
 
 # Claude SEO: Universal SEO Analysis Skill

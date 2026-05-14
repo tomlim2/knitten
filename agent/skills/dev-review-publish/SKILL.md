@@ -1,7 +1,14 @@
 ---
 description: "Final publish review — parallel code quality, UX/UI, UX writing, and deploy readiness checks with auto-fix."
-allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(npx:*)
 argument-hint: "[directory or file]"
+allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(npx:*)
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: review
+context-profile: web-review
+exclude-when: rust,unreal,obsidian
 ---
 
 # dev-review-publish

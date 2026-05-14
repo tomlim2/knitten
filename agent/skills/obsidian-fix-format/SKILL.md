@@ -1,11 +1,21 @@
 ---
-name: obsidian-fix-format
 description: Scan and fix common Obsidian markdown formatting glitches in the vault — frontmatter glued to headings (`---#`), missing blank lines, etc.
+domains: obsidian
+repo-keys: caol-ila
+languages: markdown,yaml
+task-types: authoring,implementation
+context-profile: obsidian-vault
+exclude-when: rust,web,unreal
+name: obsidian-fix-format
 ---
 
 # Obsidian Fix Format
 
 Bundle of cleanup passes for the full Obsidian vault root (`obsidian` key in `machine-paths.json`).
+
+## Skill-owned standards
+
+Read `references/NOTE-INSPECTION-CHECKLIST.md` only when inspecting one note, planning a bulk note audit, or extending report-only checks.
 
 ## Vault path
 

@@ -1,5 +1,12 @@
 ---
 description: "Live Design System component showcase with copyable HTML examples."
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
 ---
 
 # design-show-components

@@ -13,6 +13,14 @@ exclude-when: rust,web,unreal
 
 Create and edit valid Obsidian Flavored Markdown. Obsidian extends CommonMark and GFM with wikilinks, embeds, callouts, properties, comments, and other syntax. This skill covers only Obsidian-specific extensions -- standard Markdown (headings, bold, italic, lists, quotes, code blocks, tables) is assumed knowledge.
 
+## Skill-owned standards
+
+Read these references only when the task needs them:
+
+- `references/VAULT-AUDIENCE.md` — choosing folder audience and style for vault notes
+- `references/OBSIDIAN-FORMAT.md` — creating or migrating vault Markdown
+- `references/TAG-TAXONOMY.md` — assigning, auditing, or adding tags
+
 ## Workflow: Creating an Obsidian Note
 
 1. **Add frontmatter** with properties (title, tags, aliases) at the top of the file. See [PROPERTIES.md](references/PROPERTIES.md) for all property types.
@@ -107,6 +115,8 @@ See [PROPERTIES.md](references/PROPERTIES.md) for all property types, tag syntax
 ```
 
 Tags can contain letters, numbers (not first character), underscores, hyphens, and forward slashes. Tags can also be defined in frontmatter under the `tags` property.
+
+For vault tags, read `references/TAG-TAXONOMY.md` before adding or inventing tags.
 
 ## Comments
 

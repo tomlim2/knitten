@@ -1,11 +1,19 @@
 ---
-name: obsidian-obsidian-cli
 description: Interact with Obsidian vaults via the obsidian CLI — read/create/search notes, manage tasks, develop plugins.
+domains: obsidian
+repo-keys: caol-ila
+languages: json,markdown,yaml
+task-types: authoring,implementation
+context-profile: obsidian-vault
+exclude-when: rust,web,unreal
+name: obsidian-obsidian-cli
 ---
 
 # Obsidian CLI
 
 Use the `obsidian` CLI to interact with a running Obsidian instance. Requires Obsidian to be open.
+
+For creating or editing vault Markdown through the CLI, route the content decision through `obsidian-obsidian-markdown`; that skill owns vault format, audience, and tag references.
 
 ## Command reference
 

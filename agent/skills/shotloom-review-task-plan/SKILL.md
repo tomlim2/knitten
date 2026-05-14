@@ -2,6 +2,13 @@
 description: Review an existing Shotloom task plan before implementation; gather fresh Linear/code/docs context, patch the plan until only nit findings remain, commit and push plan-only changes, then stop
 argument-hint: "[slug-or-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-task-plan

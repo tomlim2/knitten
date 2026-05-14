@@ -1,5 +1,11 @@
 ---
 description: "Validate and fix UE asset names against naming conventions. Use when checking Unreal Engine asset naming."
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 
 # ue-validate-asset-name

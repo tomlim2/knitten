@@ -1,7 +1,14 @@
 ---
-name: design-make-theme
 description: Style slides, docs, or HTML landing pages with a theme — 10 pre-set color/font themes or generate a custom one.
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
 license: Complete terms in LICENSE.txt
+name: design-make-theme
 ---
 
 

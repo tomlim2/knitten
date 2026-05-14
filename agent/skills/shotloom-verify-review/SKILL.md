@@ -2,6 +2,13 @@
 description: Verify a Shotloom PR review's inline comments landed and watch for replies
 argument-hint: "<pr-number> [review-id]"
 allowed-tools: Bash(gh:*), Bash(python3:*), Bash(mkdir:*), Bash(cat:*), Read, CronCreate, CronDelete, CronList
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-verify-review

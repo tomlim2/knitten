@@ -73,13 +73,13 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Skills (127)
+## Skills (134)
 
 | Category | Count |
 |----------|------:|
+| `shotloom-*` | 25 |
 | `dev-*` | 24 |
-| `shotloom-*` | 22 |
-| `caol-*` | 17 |
+| `caol-*` | 21 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
 | `ue-*` | 7 |
@@ -104,7 +104,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Standards (47)
+## Standards (48)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
@@ -115,7 +115,7 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 | `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
 | `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |
 | `obsidian/` | 4 | `note-inspection-checklist.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `vault-audience.md` |
-| `policy/` | 8 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
+| `policy/` | 9 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `metaphor-style.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
 | `research/` | 2 | `research-methodology.md`, `tech-spec-template.md` |
 | `review/` | 13 | `review-3d-rendering.md`, `review-ai-motion.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-spec-doc.md`, `review-template.md`, `review-ux-python-gui.md`, `review-ux-writing.md`, `review-ux.md` |
 | `system/` | 1 | `repo-paths-keys.md` |
@@ -124,14 +124,14 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 ---
 
-## Rules (26)
+## Rules (23)
 
 Rules in `agent/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
 | Load | Count | Files |
 |------|------:|-------|
-| `auto` | 8 | `ambiguity-scoring.md`, `behavior.md`, `canonical-first.md`, `external-recommendation-cross-check.md`, `git-defaults.md`, `security.md`, `session-start.md`, `verify-before-report.md` |
-| `triggered` | 17 | `author-frontmatter.md`, `author-naming.md`, `author-permissions.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
+| `auto` | 7 | `ambiguity-scoring.md`, `behavior.md`, `canonical-first.md`, `git-defaults.md`, `security.md`, `session-start.md`, `verify-before-report.md` |
+| `triggered` | 15 | `author.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
 | `index` | 1 | `index.md` |
 <!-- /generated:readme-inventory -->
 

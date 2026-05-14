@@ -22,12 +22,15 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Recall why a principle exists | [`agent/standards/policy/principles.md`](agent/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`agent/standards/policy/naming.md`](agent/standards/policy/naming.md) |
 | Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`agent/config/README.md`](agent/config/README.md) |
-| Create a new slash command | [`agent/rules/author-naming.md`](agent/rules/author-naming.md) → [`agent/rules/author-frontmatter.md`](agent/rules/author-frontmatter.md) → [`agent/standards/authoring/slash-commands.md`](agent/standards/authoring/slash-commands.md) |
-| Create a new skill | [`agent/rules/author-naming.md`](agent/rules/author-naming.md) → [`agent/standards/authoring/slash-commands.md`](agent/standards/authoring/slash-commands.md) |
+| Create a new slash command | [`agent/rules/author.md`](agent/rules/author.md) → [`agent/standards/authoring/slash-commands.md`](agent/standards/authoring/slash-commands.md) |
+| Create a new skill | [`agent/skills/caol-make-skill/SKILL.md`](agent/skills/caol-make-skill/SKILL.md) |
+| Edit an existing skill | [`agent/skills/caol-edit-skill/SKILL.md`](agent/skills/caol-edit-skill/SKILL.md) |
+| Update an existing skill | [`agent/skills/caol-update-skill/SKILL.md`](agent/skills/caol-update-skill/SKILL.md) |
+| Delete an existing skill | [`agent/skills/caol-delete-skill/SKILL.md`](agent/skills/caol-delete-skill/SKILL.md) |
 | Create a new rule | [`agent/rules/index.md`](agent/rules/index.md) (frontmatter pattern) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
 | Create a new standard | [`agent/standards/index.md`](agent/standards/index.md) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
-| Tag an Obsidian note | [`agent/standards/obsidian/obsidian-tag-taxonomy.md`](agent/standards/obsidian/obsidian-tag-taxonomy.md) |
-| Write an Obsidian note (any folder) | [`agent/standards/obsidian/vault-audience.md`](agent/standards/obsidian/vault-audience.md) → [`agent/rules/obsidian.md`](agent/rules/obsidian.md) → [`agent/standards/obsidian/obsidian-format.md`](agent/standards/obsidian/obsidian-format.md) |
+| Tag an Obsidian note | [`agent/skills/obsidian-obsidian-markdown/SKILL.md`](agent/skills/obsidian-obsidian-markdown/SKILL.md) → `references/TAG-TAXONOMY.md` |
+| Write an Obsidian note (any folder) | [`agent/skills/obsidian-obsidian-markdown/SKILL.md`](agent/skills/obsidian-obsidian-markdown/SKILL.md) → `references/VAULT-AUDIENCE.md` → `references/OBSIDIAN-FORMAT.md` |
 | Write a code review | [`agent/standards/review/review-template.md`](agent/standards/review/review-template.md) → language-specific `review-code-*.md` |
 
 ---

@@ -71,29 +71,56 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | File | Profile | Cost |
 |------|---------|------|
-| `agent/skills/dev-open-vrm-bevy/SKILL.md` | `rust-bevy` | `medium` |
-| `agent/skills/shotloom-deploy-web/SKILL.md` | `shotloom-deploy` | `high` |
-| `agent/skills/shotloom-respond-pr/SKILL.md` | `shotloom-review` | `high` |
-| `agent/skills/shotloom-review-before-pr/SKILL.md` | `shotloom-review` | `high` |
-| `agent/skills/ue-analyze-material/SKILL.md` | `unreal-engine` | `medium` |
+| `agent/skills/obsidian-defuddle/SKILL.md` | `obsidian-vault` | `low` |
+| `agent/skills/obsidian-fix-format/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-json-canvas/SKILL.md` | `obsidian-vault` | `medium` |
 | `agent/skills/obsidian-obsidian-bases/SKILL.md` | `obsidian-vault` | `high` |
+| `agent/skills/obsidian-obsidian-cli/SKILL.md` | `obsidian-vault` | `medium` |
 | `agent/skills/obsidian-obsidian-markdown/SKILL.md` | `obsidian-vault` | `medium` |
-| `agent/standards/unreal/unreal-engine-asset.md` | `unreal-engine` | `high` |
-| `agent/standards/unreal/unreal-engine-cpp.md` | `unreal-engine` | `medium` |
+| `agent/skills/dev-open-vrm-bevy/SKILL.md` | `rust-bevy` | `medium` |
+| `agent/skills/shotloom-deploy-web/SKILL.md` | `shotloom-deploy` | `high` |
+| `agent/skills/shotloom-send-deploy-status/SKILL.md` | `shotloom-deploy` | `medium` |
+| `agent/skills/shotloom-auto-pr/SKILL.md` | `shotloom-review` | `high` |
+| `agent/skills/shotloom-make-pr/SKILL.md` | `shotloom-review` | `medium` |
+| `agent/skills/shotloom-make-preflight/SKILL.md` | `shotloom-review` | `medium` |
+| `agent/skills/shotloom-respond-pr/SKILL.md` | `shotloom-review` | `high` |
+| `agent/skills/shotloom-review-before-pr/SKILL.md` | `shotloom-review` | `high` |
+| `agent/skills/shotloom-review-code/SKILL.md` | `shotloom-review` | `high` |
+| `agent/skills/shotloom-review-docs/SKILL.md` | `shotloom-review` | `high` |
+| `agent/skills/shotloom-review-task-plan/SKILL.md` | `shotloom-review` | `medium` |
+| `agent/skills/shotloom-verify-review/SKILL.md` | `shotloom-review` | `medium` |
+| `agent/skills/shotloom-watch-pr/SKILL.md` | `shotloom-review` | `medium` |
+| `agent/skills/ue-analyze-material/SKILL.md` | `unreal-engine` | `medium` |
+| `agent/skills/ue-check-redirectors/SKILL.md` | `unreal-engine` | `medium` |
+| `agent/skills/ue-cleanup-assets/SKILL.md` | `unreal-engine` | `medium` |
+| `agent/skills/ue-fix-nanite-translucent/SKILL.md` | `unreal-engine` | `low` |
+| `agent/skills/ue-generate-spritesheet/SKILL.md` | `unreal-engine` | `medium` |
+| `agent/skills/ue-show-template/SKILL.md` | `unreal-engine` | `low` |
+| `agent/skills/ue-validate-asset-name/SKILL.md` | `unreal-engine` | `medium` |
 | `agent/standards/review/review-code-unreal-cpp.md` | `unreal-engine` | `low` |
 | `agent/standards/review/review-code-unreal-python.md` | `unreal-engine` | `medium` |
+| `agent/standards/unreal/unreal-engine-asset.md` | `unreal-engine` | `high` |
+| `agent/standards/unreal/unreal-engine-cpp.md` | `unreal-engine` | `medium` |
+| `agent/skills/claude-seo/SKILL.md` | `web-frontend` | `medium` |
+| `agent/skills/design-huashu-make-prototype/SKILL.md` | `web-frontend` | `low` |
+| `agent/skills/design-make-theme/SKILL.md` | `web-frontend` | `medium` |
+| `agent/skills/design-show-components/SKILL.md` | `web-frontend` | `low` |
+| `agent/skills/dev-check-publish/SKILL.md` | `web-frontend` | `medium` |
+| `agent/skills/dev-open-matcap-painter/SKILL.md` | `web-frontend` | `low` |
+| `agent/skills/dev-open-mmd-anju/SKILL.md` | `web-frontend` | `medium` |
+| `agent/skills/dev-show-design-status/SKILL.md` | `web-frontend` | `low` |
+| `agent/skills/frontend-design/SKILL.md` | `web-frontend` | `medium` |
 | `agent/standards/language/css.md` | `web-frontend` | `medium` |
 | `agent/standards/language/javascript.md` | `web-frontend` | `medium` |
 | `agent/standards/language/three-shader-language.md` | `web-frontend` | `high` |
+| `agent/skills/dev-review-publish/SKILL.md` | `web-review` | `medium` |
+| `agent/skills/review-audit-ux/SKILL.md` | `web-review` | `medium` |
+| `agent/skills/review-audit-web-spec/SKILL.md` | `web-review` | `medium` |
+| `agent/skills/review-audit-web/SKILL.md` | `web-review` | `low` |
 | `agent/standards/review/review-code-astro.md` | `web-review` | `high` |
 | `agent/standards/review/review-code-css.md` | `web-review` | `medium` |
 | `agent/standards/review/review-code-javascript.md` | `web-review` | `high` |
 | `agent/standards/review/review-code-tsl.md` | `web-review` | `medium` |
-| `agent/standards/obsidian/note-inspection-checklist.md` | `obsidian-vault` | `medium` |
-| `agent/standards/obsidian/obsidian-format.md` | `obsidian-vault` | `medium` |
-| `agent/standards/obsidian/obsidian-tag-taxonomy.md` | `obsidian-vault` | `high` |
-| `agent/standards/obsidian/vault-audience.md` | `obsidian-vault` | `medium` |
 
 ## Route Fixtures
 

@@ -1,5 +1,12 @@
 ---
 description: "Pre-publication audit for GitHub Pages / static hosting — before first deploy or after significant changes."
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
 ---
 
 # dev-check-publish

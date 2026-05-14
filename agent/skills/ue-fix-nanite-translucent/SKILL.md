@@ -1,6 +1,12 @@
 ---
-name: ue-fix-nanite-translucent
 description: Fix translucent materials displaying over opaque Nanite materials in Unreal Engine 5.
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
+name: ue-fix-nanite-translucent
 ---
 
 # ue-fix-nanite-translucent v0.1.0

@@ -1,5 +1,11 @@
 ---
 description: "Pattern reference for creating UE Editor skills. Use when creating new Unreal Engine automation skills."
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 
 # ue-show-template

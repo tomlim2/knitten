@@ -1,5 +1,11 @@
 ---
 description: "Find and delete unused assets in UE Editor. Use when cleaning up Unreal Engine project size."
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 disable-model-invocation: true
 ---
 

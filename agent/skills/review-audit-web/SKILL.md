@@ -1,5 +1,12 @@
 ---
 description: "Review JavaScript and CSS code against coding standards checklists. Use when reviewing frontend code quality."
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: review
+context-profile: web-review
+exclude-when: rust,unreal,obsidian
 ---
 
 # review-audit-web

@@ -16,10 +16,10 @@ trigger: working in the Obsidian vault
   - For any code-bearing devlog, also add `lang/<language>` + `lib/<framework>` AND `area/<topic>`. `lang+lib` covers the *tool*, `area` covers the *subject* — they do not substitute each other. (e.g. mmd-anju shader devlog: `lang/javascript + lib/threejs + area/shader`.)
   - Slot allocation order before save: required (`type/`, `project/`) → conditional (`lang/`, `lib/`) → semantic (`area/`) → state (`status/`).
   - Max 5 tags total. Don't pad — but a tech devlog with only `type/` + `project/` is too sparse to filter on later.
-  - **Verify each tag exists** in `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md` Live Tag Inventory before using. If new, add the row to the inventory in the same commit (do not let the standard drift).
+  - **Verify each tag exists** in `~/.claude/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md` Live Tag Inventory before using. If new, add the row to the inventory in the same commit (do not let the reference drift).
   - Inline `#tag` only at document footer for learnings markers (`#rule`, `#failed`, `#gotcha`).
-  - **Bulk re-tagging (5+ notes) → delegate to subagent.** Dispatch `general-purpose` (sonnet, `run_in_background: true` for 20+) with the `note-inspection-checklist.md` brief. Subagent returns `path | current | proposed | rationale`; main thread approves before any write. Do not consume main context reading dozens of bodies.
-  - Per-note inspection: see `~/.claude/standards/obsidian/note-inspection-checklist.md` (8-step + tagging workflow).
+  - **Bulk re-tagging (5+ notes) → delegate to subagent.** Dispatch `general-purpose` (sonnet, `run_in_background: true` for 20+) with the `NOTE-INSPECTION-CHECKLIST.md` brief. Subagent returns `path | current | proposed | rationale`; main thread approves before any write. Do not consume main context reading dozens of bodies.
+  - Per-note inspection: see `~/.claude/skills/obsidian-fix-format/references/NOTE-INSPECTION-CHECKLIST.md` (8-step + tagging workflow).
 - **Accidental inline tags — NEVER write bare `#NNN` or `#word` in body prose.** Obsidian treats any whitespace-prefixed `#text` as a tag and pollutes the tag pane. Cases that bite: PR/issue numbers (`#154`), hex colors (`#1a1c2c`), checklist items (`#1`, `#TODO`). Fixes in priority order:
   - **Markdown link** for PRs/issues: `[#154](https://github.com/owner/repo/pull/154)` — semantic + safe.
   - **Inline code** for literal references: `` `#154` ``, `` `#1a1c2c` `` — never tagged.
@@ -27,7 +27,7 @@ trigger: working in the Obsidian vault
   - **Drop the space**: `PR#154` (no space before `#`) is not interpreted as a tag.
   Verify before save: search the body for `(^|\s)#[A-Za-z0-9]` — any hit that isn't an intentional learnings marker (`#rule`/`#failed`/`#gotcha` at document footer) needs one of the fixes above.
 - **Location** — `{obsidian-vault}/agent/` for all Claude-authored docs.
-- **Audience declared by folder** — Every vault subfolder has a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Default for unmarked folders: strict LLM-first. See `~/.claude/standards/obsidian/vault-audience.md`.
+- **Audience declared by folder** — Every vault subfolder has a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Default for unmarked folders: strict LLM-first. See `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
 
 ## Auto-commit + auto-push for Obsidian-only changes
 
@@ -47,4 +47,4 @@ Applies to ANY repo and ANY day. The only gate is "diff is purely Obsidian docs"
 - **PR operations still need per-PR approval.** `gh pr create`, `gh pr merge`, `gh pr close`, `gh pr edit`, and any review/issue comment are NEVER auto-exempt.
 - **Repo-specific stricter rules win.** If the repo has its own pre-PR/pre-push gates (e.g. shotloom's fmt/clippy/check/doc-paths chain via `~/.claude/rules/shotloom.md`), run those gates first. The Obsidian exception removes the verbal-approval step, not validation.
 
-Full audience matrix + style policy: `~/.claude/standards/obsidian/vault-audience.md`. Format spec + tag conventions: `~/.claude/standards/obsidian/obsidian-format.md`.
+Full audience matrix + style policy: `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`. Format spec + tag conventions: `~/.claude/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md`.

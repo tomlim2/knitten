@@ -2,6 +2,13 @@
 description: Poll a Shotloom PR for check status, new comments, and state changes
 argument-hint: "<pr-number-or-url>"
 allowed-tools: Bash(gh:*), Read, CronCreate, CronDelete, CronList
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-watch-pr

@@ -1,6 +1,13 @@
 ---
 description: Cold-start Rust/TS code-quality review via Explore subagent — Patterns A–F + T (test coverage) + U (speculative API) + J (TS defensive shapes). Pair skill of shotloom-review-docs
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(pwd), Bash(cd:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-code

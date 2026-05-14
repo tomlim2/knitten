@@ -2,6 +2,13 @@
 description: Draft and open a Shotloom PR per repo guideline, with local gates and approval before `gh pr create`
 argument-hint: "[pr-number-to-supersede]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-make-pr

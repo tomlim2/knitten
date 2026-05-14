@@ -1,7 +1,14 @@
 ---
-name: frontend-design
 description: Production-grade frontend — web components, landing pages, dashboards, React, HTML/CSS. Distinctive, not generic AI aesthetics.
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
 license: Complete terms in LICENSE.txt
+name: frontend-design
 ---
 
 This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.

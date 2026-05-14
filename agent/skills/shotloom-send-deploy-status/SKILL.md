@@ -2,6 +2,13 @@
 description: "Post Shotloom deploy start / success notices to the CINEV team Slack channel via Arnyang. Two phases: start (top-level notice + detail thread reply) and success (broadcast + detail thread reply)."
 argument-hint: "<start|success> --version vX.Y.Z [field flags]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*)
+domains: rust,web
+repo-keys: shotloom
+languages: css,rust,typescript
+frameworks: bevy,wgpu
+task-types: deploy
+context-profile: shotloom-deploy
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-send-deploy-status

@@ -1,5 +1,12 @@
 ---
 description: "Audit technical specs and PRDs across engineering, design, brand, and audience perspectives for completeness."
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: review
+context-profile: web-review
+exclude-when: rust,unreal,obsidian
 ---
 
 # review-audit-web-spec

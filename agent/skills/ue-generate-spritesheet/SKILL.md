@@ -1,5 +1,11 @@
 ---
 description: "Generate sprite sheets from image sequences for UE flipbook textures. Use when creating flipbook animations."
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 
 # ue-generate-spritesheet

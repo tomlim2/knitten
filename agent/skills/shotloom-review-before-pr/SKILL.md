@@ -1,7 +1,7 @@
 ---
 description: Run Shotloom pre-PR review through initial code/docs passes and independent verify passes
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
-domains: rust,typescript,docs
+domains: rust
 repo-keys: shotloom
 languages: rust,typescript
 frameworks: bevy,wgpu

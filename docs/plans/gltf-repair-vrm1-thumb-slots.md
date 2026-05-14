@@ -20,7 +20,7 @@ consumer (retarget, finger_axis_map, finger_compare) to carry rig-aware
 branches and produces visibly inconsistent thumb poses across rigs even
 when the retarget output is bit-identical.
 
-Phase 1 lifts the fix to the single source of truth: a private repair
+Phase 1 lifts the fix to the canonical owner: a private repair
 pass inside `shotloom-gltf` that runs as the last *metadata-mutation*
 step of `finalize_normalized_vrm` — after the 180Y bone-transform
 diagnostic, before `validate_normalized_vrm` and metadata extraction.

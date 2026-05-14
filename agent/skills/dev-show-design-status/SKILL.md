@@ -1,5 +1,12 @@
 ---
 description: "Web dashboard showing design system version status across skills. Use when checking design system alignment."
+domains: web
+repo-keys: caol-ila,mmd-anju,ta-portfolio
+languages: css,javascript,typescript
+frameworks: astro,three
+task-types: implementation
+context-profile: web-frontend
+exclude-when: rust,unreal,obsidian
 ---
 
 # dev-show-design-status

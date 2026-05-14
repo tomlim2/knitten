@@ -31,10 +31,13 @@
       "adapter": "codex",
       "linkMethod": "symlink",
       "mappings": {
+        "AGENT-HUB.md": "AGENT-HUB.md",
         "SYSTEM.md": "SYSTEM.md",
         "agent": "agent",
         "docs": "docs",
-        "skills": "agent/skills"
+        "rules": "agent/rules",
+        "standards": "agent/standards",
+        "commands": "agent/commands"
       }
     },
     {

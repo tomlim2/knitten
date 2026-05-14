@@ -1,6 +1,13 @@
 ---
 description: Cold-start docs / wording / markup review via Explore subagent — Patterns G + H + I + M + S. Pair skill of shotloom-review-code
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(node:*), Bash(pwd), Bash(cd:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-docs

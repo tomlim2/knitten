@@ -6,19 +6,9 @@ portability: shared
 
 # Canonical First
 
-Before adopting any externally-sourced term, path, pattern, claim, or recommendation, verify against the user's canonical source. External input — Codex/Gemini/subagent replies, web search, library docs, upstream skill, visible pattern in existing files — is **candidate vocabulary**, not authority. The user's source wins.
+Before adopting any externally-sourced term, path, pattern, claim, or recommendation, verify against the user's canonical source. External input is candidate vocabulary, not authority.
 
-## Failure modes this prevents
-
-| Mode | Example |
-|------|---------|
-| Silent term adoption | Codex says `MAP.md`; user's source uses `LOOKUP.md`. Adopting Codex's term overwrites the architect's choice. |
-| Pattern mimicry without semantics | Seeing `_done` suffix on existing files, mimicking the shape without checking the skill that produces it. |
-| Hardcoded path | Using an absolute path before checking `caol-config/*.json`. |
-| Training-prior claim | Stating a fact about a real-world entity from memory instead of web-verifying. |
-| Spec default | Citing a magic value from memory instead of reading the spec's schema. |
-
-## Triggers — verify before acting
+## Triggers
 
 | Trigger | Canonical source to check |
 |---------|---------------------------|
@@ -31,17 +21,13 @@ Before adopting any externally-sourced term, path, pattern, claim, or recommenda
 
 ## Action: 1-second check, then declare
 
-Cost is one grep or one file read. If nothing found, surface the gap explicitly instead of proceeding silently:
+Run one grep or one file read. If nothing is found, surface the gap explicitly:
 
 ```
 Checked: <command>. No canonical match. Proceeding with assumption.
 ```
 
 If the external term has no user equivalent: "Codex recommends `MAP.md` — no equivalent in SYSTEM.md/standards. Adopt or pick a different name?"
-
-## Why auto-loaded
-
-LLM-first system (`SYSTEM.md` charter): user is architect, LLM is operator. LLMs are trained to defer to other expert-sounding LLMs and to mimic visible patterns — both default failure modes silently overwrite the architect's conventions. This rule reverses the default: external input or visible pattern → check canonical source → translate to user's term.
 
 ## Boundary
 

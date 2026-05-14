@@ -1,4 +1,5 @@
 ---
+status: accepted
 title: Metaphor style — kitchen or orchestra
 description: Reference for picking metaphor domain when explaining technical concepts to this user.
 platforms: all

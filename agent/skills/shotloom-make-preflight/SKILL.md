@@ -1,6 +1,13 @@
 ---
 description: Load all Shotloom rules/conventions/standards into a base session for forking — run once per day, fork for actual work
 allowed-tools: Read, Glob, Bash(git:*), Bash(ls:*), Bash(date:*)
+domains: rust
+repo-keys: shotloom
+languages: rust,typescript
+frameworks: bevy,wgpu
+task-types: review
+context-profile: shotloom-review
+exclude-when: unreal,obsidian
 ---
 
 # shotloom-make-preflight

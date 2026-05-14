@@ -1435,7 +1435,7 @@ const AUTHORING_ROUTING_FILES = [
   "agent/skills/caol-make-command/SKILL.md",
   "agent/skills/caol-make-skill/SKILL.md",
   "agent/skills/caol-make-standard/SKILL.md",
-  "agent/rules/author-frontmatter.md",
+  "agent/rules/author.md",
 ];
 
 function pushStringArrayViolations(violations, file, key, value, options = {}) {

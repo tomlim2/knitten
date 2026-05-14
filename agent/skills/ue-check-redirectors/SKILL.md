@@ -1,5 +1,11 @@
 ---
 description: "Scan /Game/ for ObjectRedirectors and identify broken redirectors after asset moves or renames."
+domains: unreal
+repo-keys: anju,mega-melange
+languages: python
+task-types: implementation
+context-profile: unreal-engine
+exclude-when: rust,web,obsidian
 ---
 
 # ue-check-redirectors

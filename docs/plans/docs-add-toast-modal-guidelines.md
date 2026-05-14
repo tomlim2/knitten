@@ -79,7 +79,7 @@ install Tailwind, add dependencies, or refactor existing components.
    docs own the final rule.
    *Rationale:* Vercel Geist and Academy are good external calibration points,
    and `CINEV/cinev-frontend` has implementation examples. Neither is the
-   Shotloom source of truth.
+   Shotloom canonical owner.
    *Rejected:* copying CINEV frontend's global modal stores. Shotloom's
    current app shape is different and does not need that architecture.
 
