@@ -1,29 +1,32 @@
 # shotloom-start-task reference
 
-Expanded detail for the shotloom-start-task skill. SKILL.md holds the happy path and the critical Step 7 auto-review rule; this file holds the worktree plumbing, the Ready-briefing template, and the worked examples.
+Expanded detail for the shotloom-start-task skill. SKILL.md holds the required
+flow; this file holds the worktree plumbing, Ready-briefing template, and
+worked examples.
 
 ---
 
-## Linear MCP schema fetch
+## Linear connector discovery
 
-The tool id `mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__get_issue` is deferred in most sessions. Before calling it, fetch the schema:
+Linear MCP server names vary by harness. Do not hard-code a server UUID.
 
 ```
-ToolSearch query="select:mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__get_issue"
+ToolSearch query="Linear get_issue list_issue_statuses save_issue"
 ```
 
-Call signature takes `{ id: "STL-NN" }`. The issue body is returned in markdown — parse for "Problem", "Acceptance criteria", "Affected", "ADR".
+Use the discovered `get_issue`, `list_issue_statuses`, and `save_issue` tools.
+In Codex sessions these often appear under `mcp__codex_apps__linear.*`; in
+Claude sessions the MCP server prefix can differ.
 
 ---
 
 ## Step 2.5 — worktree base detection (full script)
 
 ```bash
-repo_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)
-if grep -qE '^\.?worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
-  # prefer the convention already in .gitignore
-  entry=$(grep -oE '^\.?worktrees/?' "$repo_root/.gitignore" | head -1 | tr -d '/')
-  worktree_base="$repo_root/$entry"
+repo_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom)"
+repo_root="${repo_root#RESOLVED_PATH=}"
+if grep -qE '^\.worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
+  worktree_base="$repo_root/.worktrees"
 else
   worktree_base="$(dirname "$repo_root")/shotloom-worktrees"
   mkdir -p "$worktree_base"
@@ -57,6 +60,54 @@ git worktree add "<worktree_dir>" "<branch>"
 
 ---
 
+## AC primitive precedent
+
+PR #208 (STL-247) is the defect class. AC #2 cited "ADR template Usage Notes
+canonical amendment style (`Accepted (amended YYYY-MM-DD)`)", but
+`docs/guidelines/adr-template.md` did not codify that form. The author noticed
+the gap and applied the form in one ADR anyway; review blocked and forced a
+revert. Correct briefing verdict: AC wrong-shape, split primitive-codification
+before application.
+
+## Plan-risk seed taxonomy
+
+| Priority | Seed type | Examples |
+|---|---|---|
+| P1 | Likely implementation rework if not locked in the plan. | API signatures, caller-owned inputs, existing helper removal, diagnostic message ownership, event ordering, public surface area, old path replacement. |
+| P2 | Likely review ambiguity if omitted. | Edge cases, negative tests, snapshots, fixture coverage, manual repro details, invariant preservation, docs updates, out-of-scope boundaries. |
+| P3 | Cheap nits that reduce review churn. | Test layout, naming, markdown rendering, precedent references, future telemetry notes. |
+
+For each seed, record priority, evidence path or `rg` hit, exact plan question,
+and AC-trace. If no AC line, ADR, or precedent demands the seed, move it to a
+follow-up note instead of plan-risk handoff.
+
+Search examples:
+
+```bash
+rg -n "<command/event/type/helper/function names>" crates apps docs contracts MAP.md
+rg -n "<diagnostic/rejection/error names>" crates/shotloom-core crates/shotloom-engine apps/editor/src/bridge
+rg -n "<fixture/snapshot/test names>" crates apps assets docs
+```
+
+## Sibling draft scan
+
+Match liberally: scope, subject, Linear ID, and obvious slug stems. Siblings can
+carry suffixes (`-codex`, `-gemini`, `-v2`) or live one folder above
+`docs/plans/`. For every working-tree, staged, HEAD, or recently-deleted match,
+read the full body and record: slug, status, stance summary, and disagreement
+signal.
+
+```bash
+caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
+caol_ila="${caol_ila#RESOLVED_PATH=}"
+ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+ls "$caol_ila/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
+  "docs/plans/" | rg -i "<scope>|<subject>" | head -5
+```
+
+---
+
 ## Step 6 — Ready briefing template
 
 ```
@@ -70,7 +121,7 @@ git worktree add "<worktree_dir>" "<branch>"
 
 **Branch:** <current-branch>  (base: <base>)  <N> commits ahead, <clean|N dirty files>
 
-**Standards loaded:** programming.md §<list>, docs/guidelines/review-rust.md (ready on pre-PR)
+**Standards loaded:** AGENTS.md, CONTRIBUTING.md, docs/guidelines/error-handling.md, docs/guidelines/review-rust.md, docs/guidelines/commit-guideline.md, docs/guidelines/pr-guideline.md, <category additions>
 **ADRs to honor:** <list>
 **Ask-first triggers for this task:** <filtered from §16>
 
@@ -80,7 +131,7 @@ git worktree add "<worktree_dir>" "<branch>"
 **Plan-risk handoff for `/shotloom-draft-task-plan`:**
 - P1: <question to lock before implementation> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent that demands this>
 - P2: <ambiguity/test/doc gap to resolve in the plan> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
-- P3: <cheap nit or precedent to consider> - evidence: <path or rg hit>
+- P3: <cheap nit or precedent to review> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent, or related-follow-up>
 
 **Sibling drafts (caol-ila/docs/plans/):**
 - <slug>.md - <working-tree | staged | HEAD | deleted> - stance: <one-line scope summary> - <agrees | disagrees> with this briefing

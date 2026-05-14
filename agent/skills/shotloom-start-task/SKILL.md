@@ -1,12 +1,14 @@
 ---
-description: Pre-write gate for Shotloom coding - Linear fetch, conventions re-read, plan-risk handoff, Ready briefing
+description: Pre-write gate for Shotloom coding - Linear fetch, worktree setup, convention re-read, plan-risk handoff, Ready briefing
 argument-hint: "[STL-NN | linear-url | category]"
-allowed-tools: Read, Glob, Grep, Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(code:*), Bash(jq:*)
+allowed-tools: Read, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
 ---
 
 # shotloom-start-task
 
-Mandatory pre-write flow before editing any Shotloom code. Auto-invoked by the `shotloom-linear-detect` hook when a Linear reference appears while cwd is under the `shotloom` repo (main checkout or any worktree under `.worktrees/` / `.claude/worktrees/`). Can also be invoked manually.
+Mandatory pre-write flow before editing Shotloom code. Auto-invoked by the
+`shotloom-linear-detect` hook when a Linear reference appears while cwd is
+inside the Shotloom main checkout or a Shotloom worktree.
 
 ## Arguments
 
@@ -27,51 +29,61 @@ Run in parallel:
 ```bash
 gh auth status
 git rev-parse --show-toplevel
+git rev-parse --git-common-dir
 git rev-parse --abbrev-ref HEAD
 git log -1 --format="%an <%ae>"
 git status --short
-shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)
+git remote get-url origin
+bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom
 ```
 
 Verify:
-- `git rev-parse --show-toplevel` matches `$shotloom_root`
+- The resolver returns the Shotloom main checkout path.
+- The cwd is Shotloom if one condition is true:
+  - `git rev-parse --show-toplevel` equals the resolved checkout path.
+  - `git rev-parse --git-common-dir` resolves to `<shotloom_root>/.git`.
+  - `origin` matches `CINEV/shotloom` or `github.com/CINEV/shotloom`.
 - `gh` active user is `tomlim2`
-- commit identity is `tomlim2 <deemo@vonvon.me>` (warn but don't block — first commit on branch may set it)
+- commit identity is `tomlim2 <deemo@vonvon.me>` (warn but don't block — first commit on branch can set it)
 - if uncommitted changes exist, report and ask whether to stash/commit/proceed
 
 **Hard stop on wrong repo or wrong gh user.**
 
 ### Step 2: Resolve Linear issue
 
-Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body `Related to STL-NN` on the current branch. Do **not** parse the branch name for an STL prefix — Shotloom branches use `feat/<description>` per `~/.claude/rules/shotloom.md` and never carry an STL ID. Linear's auto-suggested `deemo/stl-NN-…` shape is a Linear UI hint, not the canonical branch name.
+Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body
+`Related to STL-NN` on the current branch. Do **not** parse the branch name for
+an STL prefix — Shotloom branches use `feat/<description>` per
+`~/.claude/rules/shotloom.md` and never carry an STL ID.
 
-If identifier found, fetch via `mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__get_issue`. Extract: problem statement, acceptance criteria, affected modules/crates, linked ADRs, linked specs.
+If an identifier is found, use the currently available Linear connector to
+fetch the issue. If no Linear `get_issue` tool is visible, discover it with a
+tool search for `Linear get_issue`; MCP server names vary by harness and must
+not be hard-coded. Extract: problem statement, acceptance criteria, affected
+modules/crates, linked ADRs, linked specs.
 
-If no identifier and no args, skip — rely on git state for category detection.
+If no identifier is found, skip Step 2.5 and rely on git state for category
+detection.
 
 ### Step 2.5: Create worktree for the Linear issue
 
-Skip if the current branch already matches the Linear issue. Otherwise:
+Skip this step if no Linear issue was resolved. Before deriving a branch, read
+`CONTRIBUTING.md` Branch Naming Policy and `~/.claude/rules/shotloom.md`
+Worktree dir naming.
 
-1. **Type prefix** from Linear title — must be one of repo-allowed `feat`/`fix`/`chore`/`hotfix`/`release` per `CONTRIBUTING.md`. `test`/`docs`/`refactor`/`style`/`perf`/`build`/`ops` Linear titles all map to `chore/` (line 119: "default branch type for docs-only, style-only, test-only, build-only, ops-only, and repository maintenance work"). `bug` label → `fix`. Default → `feat`.
-2. **Branch name** (repo rule: no STL-NN in branch): `<type>/<scope>-<verb>-<subject>`, max 50 chars, lowercase + hyphens only, no trailing hyphen.
-   - `<scope>` = conventional commit scope from Linear title (`retarget`, `engine`, `editor`, `bridge`, `gltf`, `fbx`, `import`, `core`, `web`, `desktop`, `assets`, `docs`, `ci`, `timeline`, `normalizer`, and similar). Same scope used in commit messages — so branch name and `type(scope):` commit headers stay aligned.
-   - `<verb>` = imperative action (`add`, `verify`, `fix`, `align`, `wire`, `extract`, `pin`, `rename`, `split`, `move`, `scope`, `update`, `remove`).
-   - `<subject>` = concise object of the work.
-   - Example: Linear `test(retarget): 4-finger alignment baseline — xiao + yoya` → `feat/retarget-verify-finger-baseline-xiao-yoya`.
-   - Linear's `gitBranchName` field (`deemo/stl-NN-…`) is a UI hint — ignore it.
-3. **Worktree base:** prefer `.worktrees/` if gitignored, else `<parent>/shotloom-worktrees/`. For Shotloom today this is `<shotloom>/.worktrees/`.
-4. **Worktree dir name:** `<worktree_base>/<scope>-<verb>-<subject>` — same kebab body as the branch, **no `stl-NN-` prefix**. Consistent with the branch-naming rule: Linear IDs appear in neither branch names nor local worktree paths. Linear's `gitBranchName` field is a UI hint, ignored here too.
-5. **Create from latest `origin/main`:**
-   ```bash
-   cd "$shotloom_root"
-   git fetch origin main
-   git worktree add "<worktree_dir>" -b "<branch>" origin/main
-   ```
-   If worktree dir exists, report and stop. If branch exists, use without `-b`.
-6. Ask user: open in VS Code? Default yes.
-7. All subsequent steps operate **inside the worktree**.
-8. **Auto-move Linear state** — if resolved issue is `Todo` or `Backlog`, invoke `/shotloom-linear-move <STL-NN> "In Progress"` silently.
+Derive the canonical branch from the Linear title. If the current branch equals
+that derived branch, stay in the current checkout or worktree. Otherwise:
+
+1. Derive branch as `<type>/<scope>-<verb>-<subject>`, max 50 chars, no
+   Linear ID. See `reference.md` for derivation rules.
+2. Derive worktree dir as `<worktree_base>/<scope>-<verb>-<subject>`, no
+   Linear ID. Prefer `<shotloom>/.worktrees/` if gitignored.
+3. Create from latest `origin/main`; if the dir exists, report and stop. If
+   the branch exists, use the existing branch. Commands: `reference.md`.
+4. All subsequent steps operate **inside the worktree**.
+5. **Auto-move Linear state** — if the issue is `Todo` or `Backlog`, move it to
+   `In Progress` with the available Linear connector. If the connector is
+   unavailable, report and continue.
 
 See [reference.md](reference.md) for the branch-name derivation example and the full worktree-base detection script.
 
@@ -105,118 +117,38 @@ Always load from the shotloom repo:
 - `docs/guidelines/pr-guideline.md` — PR title / body / review-reply policy
 - `CONTRIBUTING.md` — repo language, branch naming, pre-commit hooks
 
-Per-category additions (still in-repo):
-
-| Category | Additional reads |
-|----------|------------------|
-| `rust` | none beyond the always-load set |
-| `ts` | `docs/guidelines/review-typescript.md` |
-| `bridge` | `docs/ipc/bridge-contract.md` + `review-typescript.md` |
-| `docs` | `docs/guidelines/documentation-standard.md` |
-| `test` | (covered by `review-rust.md`) |
-| `mixed` | everything |
-
-Canonical in-repo Rust review spec:
-
-- `docs/guidelines/review-rust.md` — formal Rust review spec. Walk this against the diff before push. Loaded by `/shotloom-review-before-pr`.
-
-For Rust, also scan `docs/adr/` for ADRs relevant to the affected crate.
+Per-category additions: `ts` loads `review-typescript.md`; `bridge` loads
+`docs/ipc/bridge-contract.md` and `review-typescript.md`; `docs` loads
+`documentation-standard.md`; `mixed` loads all of them. For Rust, scan
+`docs/adr/` for ADRs relevant to the affected crate.
 
 ### Step 5b: Cross-check Linear AC against cited primitives (mandatory)
 
-For each acceptance criterion in the Linear issue that cites a repo primitive — template, standard, rule, ADR section, in-repo guideline — open the primitive's actual file and confirm:
-
-1. The cited section / clause exists at the named path.
-2. The pattern the AC asks you to enforce is actually codified in that primitive.
-
-If the cited pattern is **not codified** (template Usage Notes doesn't mention it; the rule file doesn't carry the constraint; the ADR section points elsewhere), the AC is **wrong-shape** — it asks you to enforce a standard that doesn't exist.
-
-**Default response: reject the AC. Do NOT apply Option-A/B/C workarounds.** The right move is:
-
-- Surface the AC ↔ primitive mismatch in the Step 6 Ready briefing as a separate bullet.
-- Propose splitting the work: file a follow-up issue to *codify the cited pattern in the primitive* as its own PR, then revisit this AC after the primitive is updated.
-- Do NOT smuggle the uncodified pattern into a single ADR / file in this PR. Single-file standard invention recreates the defect class the AC was trying to enforce against, and round 1 review will P2-Block it.
-
-Trigger: PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style (`Accepted (amended YYYY-MM-DD)`)", but `docs/guidelines/adr-template.md` Usage Notes did not codify that form. The author noticed the gap at briefing time but applied "Option A" (use the form in this one ADR). Reviewer P2 Blocking forced revert. The right call at briefing time was to reject AC #2 and split.
+For each AC that cites a repo primitive, open the primitive and confirm the
+cited section and pattern exist. If the primitive does not codify the pattern,
+mark the AC `wrong-shape`, reject that AC in the briefing, and propose a
+separate primitive-codification issue. Do not apply one-file workarounds. See
+`reference.md` for the PR #208/STL-247 precedent.
 
 ### Step 5c: Seed the plan-review loop (mandatory)
 
-Before the Ready briefing, identify the likely plan defects that
-`/shotloom-draft-task-plan` must resolve. This is a briefing-level source check,
-not a plan doc and not an implementation design.
+Before the Ready briefing, run targeted `rg` searches for identifiers named by
+Linear, branch, AC, or affected modules. Search examples: `reference.md`.
 
-Use targeted `rg` searches from the Shotloom worktree for identifiers named by
-Linear, the branch, the AC, or the affected modules:
-
-```bash
-rg -n "<command/event/type/helper/function names>" crates apps docs contracts MAP.md
-rg -n "<diagnostic/rejection/error names>" crates/shotloom-core crates/shotloom-engine apps/editor/src/bridge
-rg -n "<fixture/snapshot/test names>" crates apps assets docs
-```
-
-Read only the matching definitions needed to avoid false claims in the Ready
-briefing. Do not build the full file map; that belongs to
-`/shotloom-draft-task-plan`.
-
-Classify plan-risk seeds:
-
-| Priority | Seed type | Examples |
-|---|---|---|
-| P1 | Likely implementation rework if not locked in the plan. | API signatures, caller-owned inputs, existing helper removal, diagnostic message ownership, event ordering, public surface area, old path replacement. |
-| P2 | Likely review ambiguity if omitted. | Edge cases, negative tests, snapshots, fixture coverage, manual repro details, invariant preservation, docs updates, out-of-scope boundaries. |
-| P3 | Cheap nits that reduce review churn. | Test layout, naming, markdown rendering, precedent references, future telemetry notes. |
-
-For each seed, record:
-- priority (`P1`, `P2`, or `P3`)
-- evidence path or `rg` hit
-- the exact question the plan must answer
-- **AC-trace** — the AC line, ADR, or repo precedent that demands this seed.
-  If no AC line / ADR / precedent demands it, the seed is "related but not
-  required" — move it to a follow-up note, not a plan-risk seed. This is the
-  "Required by AC?" filter: in-scope items must trace to demand, not to
-  adjacency.
-
-Continue adding seeds until there is no obvious unhandled P1 or P2 ambiguity at
-briefing time. If a seed implies a scope change, mark it as an ask-first trigger
-instead of silently expanding the task.
+Read only matching definitions needed for the briefing. Record P1/P2/P3 seeds
+with evidence, exact plan question, and AC/ADR/precedent trace. If a seed lacks
+that trace, move it to follow-up notes. If a seed implies scope change, mark it
+as ask-first. Full taxonomy: `reference.md`.
 
 ### Step 5d: Sibling-draft scan (mandatory)
 
-Before the Ready briefing, scan `caol-ila/docs/plans/` for sibling plan
-artifacts whose slug overlaps the work at hand. The next skill in the chain
-(`/shotloom-draft-task-plan`) cannot consume what it doesn't know exists, and
-parallel-agent workflows often leave Codex / Gemini / other-Claude plans for
-the same Linear issue in this folder.
+Before the Ready briefing, scan `caol-ila/docs/plans/` and `caol-ila/docs/`
+for sibling plan artifacts whose slug overlaps the work at hand. Commands:
+`reference.md`.
 
-```bash
-caol_ila=$(jq -r '."caol-ila".path // ."caol-ila" // empty' \
-  ~/.claude/private/caol-config/repo-paths.json)
-# Derive a slug stem from the Linear scope/verb/subject, e.g. "import-add-prop".
-# Match liberally — siblings often carry suffixes (-codex, -gemini, -draft,
-# -v2) or live one folder up by accident.
-ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-ls "$caol_ila/docs/"       2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
-  "docs/plans/" | rg -i "<scope>|<subject>" | head -5
-```
-
-For every match (working-tree present OR recently-deleted at HEAD):
-
-1. **Read tool, full body** — not `cat`, not `head`, not `git show | head`.
-   Bash dumps drop file content into context without the attention budget the
-   Read tool provides; this matters when the sibling carries Locked Decisions
-   the next skill must compare against.
-2. Record in the Ready briefing's "Sibling drafts" row: slug, status (working
-   tree / staged / HEAD / deleted), stance summary (one sentence — what scope
-   did that draft pick?), notable disagreement signal vs the briefing's own
-   scope.
-
-If a sibling draft's scope conflicts with the user's stated direction, surface
-that explicitly in the briefing — the user is likely comparing agents and
-needs the conflict visible.
-
-If zero siblings are found, write `Sibling drafts: none found` in the briefing
-so the next skill knows the scan ran and was empty (not skipped).
+Read every match in full with the Read tool. Record slug, status, stance, and
+disagreement signal. If zero siblings are found, write `Sibling drafts: none
+found`.
 
 ### Step 6: Ready briefing — END OF THIS SKILL
 
@@ -228,7 +160,11 @@ Tell the user explicitly what comes next:
 
 > "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (플랜 문서 작성 + 커밋/푸시 후 정지). 구현은 플랜 검토가 끝나고 별도 지시 후 시작."
 
-**Plan ↔ implementation are two distinct gates.** Plan-doc authoring is delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md), which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila, then stops. Implementation begins only after a separate user message such as "구현 시작", "implement", or "go".
+**Plan ↔ implementation are two distinct gates.** Plan-doc authoring is
+delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md),
+which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila,
+then stops. Implementation begins only after a separate user message such as
+"구현 시작", "implement", or "go".
 
 This skill (`/shotloom-start-task`) NEVER:
 - Writes the plan doc itself.
@@ -237,43 +173,17 @@ This skill (`/shotloom-start-task`) NEVER:
   Step 5c plan-risk handoff are allowed.
 - Edits any code in the worktree.
 
-### Step 7: Mandatory post-write self-review (before any PR)
-
-**HARD RULE — auto-trigger on push.** The instant `git push` completes, **immediately invoke `/shotloom-review-before-pr` in the same turn**, without asking the user first.
-
-Do NOT:
-- Ask "PR 열까요?" before running the review.
-- Pause after reporting push result and wait for instruction.
-- Jump from push → `/shotloom-make-pr` or `gh pr create` directly.
-
-Fixed sequence: **gates pass → commit → push → `/shotloom-review-before-pr` (no approval needed) → report findings → ask user before PR**.
-
-The review is also required before `/shotloom-make-pr`, `gh pr create`, or declaring "done" — even with no recent push.
-
-Walks `docs/guidelines/review-rust.md` (in-repo formal Rust review spec; re-read every invocation). Fix every hit before opening PR.
-
-**Skip only when:** the user explicitly says "skip review" for this specific PR. Branches with zero Rust/TS source changes (workflow-yaml-only, md-only, ADR-only) **still run** — `/shotloom-review-before-pr` Step 1.5 builds an applicability matrix and runs the groups that apply (G repo conventions, H doc discipline, M markup sanity, I reverse audit, S subagent verification) while marking Rust-specific groups as N/A. v0.1.3 shipped exactly because a non-Rust PR class was treated as review-exempt.
-
-Auto-commit/push cadence (per `~/.claude/rules/shotloom.md`) does NOT bypass the review — commits/push go out freely, but the review runs automatically right after, and the PR gate holds until review has passed.
-
 ## Binding rules
 
 - **Never skip Step 1 pre-flight.** Wrong gh user or wrong repo = hard stop.
 - **Never skip Step 3 re-read.** Stale memory is the #1 cause of CHANGES_REQUESTED.
 - **Never skip Step 5c plan-risk handoff.** The draft-plan skill needs seeded
   P1/P2 questions before it starts its own review loop.
-- **Never open a PR without running `/shotloom-review-before-pr` first** (Step 7). Applies to every PR touching Rust or TS source, even under the auto-commit/push exemption.
+- **Never open a PR without running `/shotloom-review-before-pr` first.** The
+  persistent push/PR rule lives in `~/.claude/rules/shotloom.md`.
 - If Linear MCP fetch fails, report the error but continue — use branch/commit hints.
 - The Ready briefing is the **only** output at Step 6. No code, no plan, no extra prose until user confirms.
-- If user says "skip pre-flight" / "already did this", log the decision and skip Step 3 only — never skip Step 1. Step 7 review opt-out ("skip review") must be stated explicitly per-PR.
-
-## Related
-
-- Hook: `~/.claude/hooks/shotloom-linear-detect.sh` (auto-invoker)
-- `~/.claude/rules/shotloom.md` — hub
-- in-repo `docs/guidelines/*` — writing rules (authoritative)
-- in-repo `docs/guidelines/review-rust.md` — formal Rust review spec for pre-PR self-review
-- `~/.claude/rules/shotloom.md` — Claude-side PR gates / auto-commit policy
+- If user says "skip pre-flight" / "already did this", log the decision and skip Step 3 only — never skip Step 1.
 
 ## Additional Resources
 

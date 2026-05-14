@@ -7,7 +7,7 @@ trigger: working in the shotloom repo
 
 Operational rules with **no in-repo equivalent**. The full project ruleset (commit, PR, review, branch, error-handling conventions, ECS patterns, ADRs) lives in shotloom's own `docs/guidelines/`, `AGENTS.md`, `CONTRIBUTING.md`, and `docs/adr/`. Read those at session start. This file only carries what those don't cover.
 
-Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom` (returns `RESOLVED_PATH=…`).
+Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom` (returns `RESOLVED_PATH=<path>`).
 
 ## Identity
 
@@ -40,6 +40,14 @@ Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). 
 | PR body refresh (`gh pr edit --body`) | **No, only inside `/shotloom-auto-pr`** | Body content only — title/base/draft still need approval |
 
 `/shotloom-auto-pr` is invoked by the user typing `/shotloom-auto-pr <N>` directly, or by accepting the offer at the end of `/shotloom-make-pr`.
+
+## Post-push self-review
+
+- **After every `git push` from a Shotloom worktree, immediately run `/shotloom-review-before-pr` in the same turn.** Do not ask first.
+- **Before `/shotloom-make-pr`, `gh pr create`, or declaring implementation done, run `/shotloom-review-before-pr` on the latest diff.**
+- Fixed order: gates pass → commit → push → `/shotloom-review-before-pr` → report findings → ask before PR creation.
+- Skip only when the user explicitly says `skip review` for that specific PR.
+- Doc-only and workflow-only branches still run the review skill; it marks Rust/TS checks N/A and runs the applicable repo/docs passes.
 
 ## `/claude-review` is a CI trigger, not a Claude Code skill
 
@@ -80,7 +88,7 @@ Each subfolder has a `README.md` declaring its audience, style, and mutability. 
 
 - **No `stl-NN-` prefix in the worktree dir path.** Use `<worktree_base>/<scope>-<verb>-<subject>` — same kebab body as the branch (which also has no STL-NN per `CONTRIBUTING.md` Branch Naming Policy).
 - Linear IDs do not appear in branch names, worktree dir paths, or PR titles. They appear only in PR description footers (`Resolves STL-NN` / `Part of STL-NN`) and in commit footers when relevant.
-- Linear's auto-suggested `gitBranchName` (`deemo/stl-NN-…`) is a UI hint only — never used as the actual branch or directory name.
+- Linear's auto-suggested `gitBranchName` (`deemo/stl-NN-slug`) is a UI hint only — never used as the actual branch or directory name.
 - Example: branch `feat/retarget-canonicalize-thumb-chain` → worktree dir `.worktrees/retarget-canonicalize-thumb-chain/`.
 
 ## File naming convention

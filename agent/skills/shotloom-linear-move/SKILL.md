@@ -25,9 +25,11 @@ Usage:
 ### Step 1: Fetch current state
 
 ```
-ToolSearch query="select:mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__get_issue"
+ToolSearch query="Linear get_issue list_issue_statuses save_issue"
 ```
-Call with `id: "STL-NN"`. Extract `state.name`, `title`, `assignee`, `url`.
+Use the currently available Linear connector; MCP server names vary by harness
+and must not be hard-coded. Call `get_issue` with `id: "STL-NN"`. Extract
+`state.name`, `title`, `assignee`, `url`.
 
 ### Step 2: Resolve target state
 
@@ -57,11 +59,13 @@ Wait for explicit approval unless this skill is being called programmatically fr
 ### Step 4: Transition
 
 ```
-ToolSearch query="select:mcp__9d8f80bf-47aa-4193-a076-99b399b9d6dd__save_issue"
+ToolSearch query="Linear list_issue_statuses save_issue"
 ```
-Call `save_issue` with `id: "STL-NN"` and `stateId: <id-for-target-state>`.
+Resolve the target state name with `list_issue_statuses` for team "Shotloom".
+Call `save_issue` with `id: "STL-NN"` and `state: "<target-state>"`.
 
-(To resolve `stateId`, first call `list_issue_statuses` for team "Shotloom" once and cache.)
+If the connector requires a state ID instead of a state name, use the matching
+ID from `list_issue_statuses`.
 
 ### Step 5: Report
 
