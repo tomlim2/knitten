@@ -99,7 +99,6 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | `agent/skills/ue-validate-asset-name/SKILL.md` | `unreal-engine` | `medium` |
 | `agent/standards/review/review-code-unreal-cpp.md` | `unreal-engine` | `low` |
 | `agent/standards/review/review-code-unreal-python.md` | `unreal-engine` | `medium` |
-| `agent/standards/unreal/unreal-engine-asset.md` | `unreal-engine` | `high` |
 | `agent/standards/unreal/unreal-engine-cpp.md` | `unreal-engine` | `medium` |
 | `agent/skills/claude-seo/SKILL.md` | `web-frontend` | `medium` |
 | `agent/skills/design-huashu-make-prototype/SKILL.md` | `web-frontend` | `low` |

@@ -344,11 +344,6 @@
       "contextCost": "medium"
     },
     {
-      "path": "agent/standards/unreal/unreal-engine-asset.md",
-      "profile": "unreal-engine",
-      "contextCost": "high"
-    },
-    {
       "path": "agent/standards/unreal/unreal-engine-cpp.md",
       "profile": "unreal-engine",
       "contextCost": "medium"

@@ -41,6 +41,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 |------|------|
 | Work in shotloom repo | [`agent/rules/shotloom.md`](agent/rules/shotloom.md) |
 | Git op in a CINEV repo | [`agent/rules/cinev-git.md`](agent/rules/cinev-git.md) → [`agent/standards/cinev/cinev-git-workflow.md`](agent/standards/cinev/cinev-git-workflow.md) |
+| Validate UE asset names | [`agent/skills/ue-validate-asset-name/SKILL.md`](agent/skills/ue-validate-asset-name/SKILL.md) → `references/UNREAL-ENGINE-ASSET.md` |
 | Set up a new machine | [`README.md`](README.md) "Setup" section |
 | Resolve a doc storage path | `agent/skills/caol-resolve-doc-path/SKILL.md` |
 

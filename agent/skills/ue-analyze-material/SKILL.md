@@ -12,9 +12,9 @@ exclude-when: rust,web,obsidian
 
 Export and analyze Unreal Engine material node graphs.
 
-## Standards Reference
+## Skill-owned standards
 
-**Asset Naming Conventions:** `~/.claude/standards/unreal/unreal-engine-asset.md`
+When material asset naming, prefixes, or suffixes matter, read `~/.claude/skills/ue-validate-asset-name/references/UNREAL-ENGINE-ASSET.md`.
 
 Materials should follow naming conventions:
 - Base materials: `M_` prefix

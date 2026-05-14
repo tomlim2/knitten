@@ -12,9 +12,9 @@ exclude-when: rust,web,obsidian
 
 Validate and fix Unreal Engine asset names against naming conventions.
 
-## Standards Reference
+## Skill-owned standards
 
-**Asset Naming Conventions:** `~/.claude/standards/unreal/unreal-engine-asset.md`
+Read `references/UNREAL-ENGINE-ASSET.md` only when checking naming rules, prefix/suffix tables, texture suffixes, or CJK asset handling.
 
 This skill enforces all 9 naming rules defined in the asset naming standard. See the standard for complete details on:
 - Validation rules (ASCII_ONLY, PREFIX, PASCAL_CASE, and similar conventions)
@@ -119,7 +119,7 @@ Uses shared `run_in_editor.py` (same as ue-analyze-material).
 ## Technical Notes
 
 ### CJK Assets
-See `unreal-engine-asset.md` for CJK translation rules and API limitations.
+See `references/UNREAL-ENGINE-ASSET.md` for CJK translation rules and API limitations.
 
 **Key limitation:** `rename_asset()` fails on CJK paths. Safe workaround: `duplicate_loaded_asset()` + `consolidate_assets()`.
 
