@@ -21,7 +21,7 @@ exclude-when: unreal,obsidian
 
 **Review checklist** for JavaScript/Node.js code reviews. This is a companion to:
 
-- `javascript.md` — Coding standards (for **generating** code)
+- `../../frontend-design/references/JAVASCRIPT.md` — Coding standards (for **generating** code)
 - `review-template.md` — Output format (for **structuring** review feedback)
 
 This document defines **what to check**. Use `review-template.md` for how to format findings.
@@ -133,7 +133,7 @@ Sections marked **(if applicable)** only apply when the codebase uses that techn
   - *PERF-04 · Node.js Official Docs*
 
 - ⚠️ 👁 **Independent async operations parallelized** — Sequential `await` on independent calls converted to `Promise.all()`
-  - *IND-PERF-01 · javascript.md reference*
+  - *IND-PERF-01 · JAVASCRIPT.md reference*
 
 - ⚠️ 👁 **Event loop monitoring** — Production has event loop latency monitoring. Overloaded server responds 503 instead of timing out
   - *PERF-05 · OWASP*
@@ -142,16 +142,16 @@ Sections marked **(if applicable)** only apply when the codebase uses that techn
 
 ## Maintainability
 
-> For coding style rules (naming, const/let, ES6+, SRP, nesting, early returns, comments), see **javascript.md**. Below are review-specific checkpoints not covered there.
+> For coding style rules (naming, const/let, ES6+, SRP, nesting, early returns, comments), see **../../frontend-design/references/JAVASCRIPT.md**. Below are review-specific checkpoints not covered there.
 
 - 💡 👁 **Descriptive variable names** — No single-letter or cryptic abbreviations (`i`, `j`, `e`, `el`, `btn`, `v`, `cb`). Use full descriptive names: `layerIndex`, `event`, `element`, `button`, `value`, `callback`. Applies to loop indices, callback parameters, and all local variables
-  - *MAINT-01 · javascript.md Naming Conventions · Airbnb Style Guide*
+  - *MAINT-01 · JAVASCRIPT.md Naming Conventions · Airbnb Style Guide*
 
 - 💡 👁 **Magic values** — Bare numeric/string literals in conditionals, loop bounds, and config extracted to named constants with explanatory names
   - *MAINT-02 · Microsoft Engineering Playbook*
 
 - 💡 👁 **Comments explain "why"** — Comments describe reasoning and intent, not what the code does. Complex business rules have rationale documented
-  - *MAINT-06 · javascript.md reference*
+  - *MAINT-06 · JAVASCRIPT.md reference*
 
 - 💡 👁 **Separation of concerns** — Business logic, data access, and API/presentation layers are in separate modules. Controllers are thin
   - *IND-CQ-13*

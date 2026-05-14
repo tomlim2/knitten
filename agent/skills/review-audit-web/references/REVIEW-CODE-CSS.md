@@ -21,7 +21,7 @@ exclude-when: unreal,obsidian
 
 **Review checklist** for CSS code reviews. This is a companion to:
 
-- `css.md` — Coding standards (for **generating** code)
+- `../../frontend-design/references/CSS.md` — Coding standards (for **generating** code)
 - `review-template.md` — Output format (for **structuring** review feedback)
 
 This document defines **what to check**. Use `review-template.md` for how to format findings.
@@ -121,41 +121,41 @@ Sections marked **(if applicable)** only apply when the codebase uses that techn
 
 ## Architecture & Maintainability
 
-> For detailed coding rules (naming, BEM, layout patterns), see **css.md**.
+> For detailed coding rules (naming, BEM, layout patterns), see **../../frontend-design/references/CSS.md**.
 
 - 💡 👁 **Z-index uses named tokens** — All z-index values defined as CSS custom properties (`--z-modal`, `--z-toast`). No magic numbers like `99999`
-  - *ARCH-01 · css.md Z-Index Management*
+  - *ARCH-01 · CSS.md Z-Index Management*
 
 - 💡 👁 **No magic numbers** — Hardcoded values like `top: 37px` or `margin-left: -3px` replaced with variables, calculations, or documented justification
-  - *ARCH-02 · css.md Code Smells*
+  - *ARCH-02 · CSS.md Code Smells*
 
 - 💡 👁 **No bare element selectors in components** — Component stylesheets use class selectors, not bare `header {}`, `a {}`, `ul {}` which affect the entire page
-  - *ARCH-03 · css.md Code Smells*
+  - *ARCH-03 · CSS.md Code Smells*
 
 - 💡 👁 **Consistent naming convention** — All class names follow the project's chosen convention (e.g. BEM, OOCSS) consistently. No mixing conventions
-  - *ARCH-04 · css.md Naming Conventions*
+  - *ARCH-04 · CSS.md Naming Conventions*
 
 - 💡 👁 **No undoing styles** — Declarations that reset previous styles (`border: none`, `padding: 0` to counteract) indicate the original rule was too broad. Build styles additively
-  - *ARCH-05 · css.md Code Smells*
+  - *ARCH-05 · CSS.md Code Smells*
 
 - 💡 👁 **Design tokens via custom properties** — Colors, spacing, typography, and shadows use CSS custom properties, not hardcoded values in component styles
-  - *ARCH-06 · css.md Colors & Theming*
+  - *ARCH-06 · CSS.md Colors & Theming*
 
 ---
 
 ## Responsive Design (if applicable)
 
 - 💡 👁 **Mobile-first media queries** — Uses `min-width` queries to layer enhancements progressively. Not `max-width` desktop-first
-  - *RESP-01 · css.md Layout*
+  - *RESP-01 · CSS.md Layout*
 
 - 💡 👁 **Content-driven breakpoints** — Breakpoints set where content breaks, not at device widths (768px for "iPad")
-  - *RESP-02 · css.md Layout*
+  - *RESP-02 · CSS.md Layout*
 
 - 💡 👁 **Logical properties for i18n** — `margin-inline-start` instead of `margin-left`, `inline-size` instead of `width`. Required if RTL support needed
-  - *RESP-03 · css.md Layout*
+  - *RESP-03 · CSS.md Layout*
 
 - 💡 👁 **Grid for 2D, Flexbox for 1D** — Page-level layouts use Grid. Component alignment uses Flexbox. No Flexbox `flex-wrap` hacks for grid layouts
-  - *RESP-04 · css.md Layout*
+  - *RESP-04 · CSS.md Layout*
 
 ---
 

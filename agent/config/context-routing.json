@@ -394,16 +394,6 @@
       "contextCost": "medium"
     },
     {
-      "path": "agent/standards/language/css.md",
-      "profile": "web-frontend",
-      "contextCost": "medium"
-    },
-    {
-      "path": "agent/standards/language/javascript.md",
-      "profile": "web-frontend",
-      "contextCost": "medium"
-    },
-    {
       "path": "agent/standards/language/three-shader-language.md",
       "profile": "web-frontend",
       "contextCost": "high"

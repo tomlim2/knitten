@@ -157,6 +157,6 @@ Full checklist details with severity tables, fix patterns, and output format tem
 
 ## Related
 
-- `standards/language/javascript.md` — JS coding standards
-- `standards/language/css.md` — CSS coding standards
+- `skills/frontend-design/references/JAVASCRIPT.md` — JS coding standards
+- `skills/frontend-design/references/CSS.md` — CSS coding standards
 - `skills/review-audit-web/` — Code quality review (different focus: code standards vs deploy readiness)

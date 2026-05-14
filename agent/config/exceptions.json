@@ -1,12 +1,6 @@
 {
   "standardLengthGrandfathered": [
     {
-      "path": "agent/standards/language/javascript-reference.md",
-      "reason": "JS reference catalog predates the standard body cap.",
-      "decision": "docs/plans/harden-system-drift.md",
-      "reviewAfter": "2026-08-09"
-    },
-    {
       "path": "agent/standards/language/three-shader-language.md",
       "reason": "TSL pattern catalog predates the standard body cap.",
       "decision": "docs/plans/harden-system-drift.md",

@@ -15,6 +15,17 @@ This skill guides creation of distinctive, production-grade frontend interfaces 
 
 The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
 
+## Skill-Owned References
+
+Load only when the task requires the corresponding implementation details:
+
+| Reference | Use when |
+|-----------|----------|
+| `references/JAVASCRIPT.md` | writing or changing JavaScript / TypeScript |
+| `references/JAVASCRIPT-REFERENCE.md` | looking up JS / Node.js examples or advanced patterns |
+| `references/CSS.md` | writing or changing CSS |
+| `references/CSS-REFERENCE.md` | looking up CSS examples or advanced patterns |
+
 ## Design Thinking
 
 Before coding, understand the context and commit to a BOLD aesthetic direction:
