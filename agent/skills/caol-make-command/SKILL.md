@@ -6,6 +6,13 @@ description: "Naming rules and templates for creating Claude Code commands and s
 
 Command and skill creation generator for Claude Code with comprehensive naming rules.
 
+## Skill-owned standards
+
+Read these references only when needed:
+
+- `references/SLASH-COMMANDS.md` — command frontmatter, permissions, argument guards, templates, and execution patterns
+- `references/COMMAND-SKILL-REFERENCE.md` — detailed Claude command and skill examples
+
 ## Purpose
 
 This skill helps create new Claude Code commands and skills following the standardized naming convention and structure. It serves as the authoritative rulebook for command/skill creation.
@@ -74,7 +81,7 @@ When authoring a command or skill:
 
 **Routing metadata:** if the command is repo-specific, domain-specific, or likely to pull high-cost context, add routing fields from `~/.claude/config/context-routing.json`: `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`.
 
-**Advanced fields** (see `~/.claude/standards/authoring/slash-commands.md` "Frontmatter Reference (Full)" for the full table):
+**Advanced fields** (see `references/SLASH-COMMANDS.md` "Frontmatter Reference (Full)" for the full table):
 
 - `name` — overrides directory/file-derived slash-name
 - `when_to_use` — extra trigger phrases, appended to description in the listing

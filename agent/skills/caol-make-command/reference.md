@@ -159,7 +159,7 @@ How to use this skill, with examples.
 8. **Include guard**: If using `$ARGUMENTS`
 9. **Test**: Verify command works as expected
 
-**Complete pattern documentation:** `~/.claude/standards/authoring/slash-commands.md`
+**Complete pattern documentation:** `~/.claude/skills/caol-make-command/references/SLASH-COMMANDS.md`
 
 ### For Skills
 
@@ -247,6 +247,7 @@ User: "Create ue-analyze-texture command"
 
 - `commands/caol-make-command.md` - Command wrapper for this skill
 - `skills/caol-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
+- `skills/caol-make-command/references/COMMAND-SKILL-REFERENCE.md` - Detailed command and skill examples
 - `commands/ue-make-skill.md` - UE-specific skill/command generator
 - `skills/ue-show-template/SKILL.md` - UE skill template
 - `SYSTEM.md` - Canonical policy

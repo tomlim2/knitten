@@ -44,7 +44,7 @@ Naming for **rules / standards / plans / vault notes** (not commands/skills): `~
 - **Argument validation** — if the command accepts arguments, it MUST validate them. If no argument is given, show usage and ask. **NEVER auto-execute.**
 - **Required sections:** frontmatter, H1 title, Arguments (if applicable), Workflow.
 
-Full authoring guide: `~/.claude/standards/authoring/slash-commands.md`.
+Full authoring guide: `~/.claude/skills/caol-make-command/references/SLASH-COMMANDS.md`.
 
 ## Permissions
 
@@ -52,4 +52,4 @@ Full authoring guide: `~/.claude/standards/authoring/slash-commands.md`.
 - **Pattern examples:** `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, `Bash(mv:*), Bash(ls:*)`.
 - **Principle:** grant the minimum permission that lets the command work.
 
-Full frontmatter reference: `~/.claude/standards/authoring/slash-commands.md`.
+Full frontmatter reference: `~/.claude/skills/caol-make-command/references/SLASH-COMMANDS.md`.

@@ -214,4 +214,4 @@ Full template in [reference.md](reference.md).
 
 For the full SKILL.md template, detailed frontmatter examples (user-only deploy, forked agent, monorepo `paths`), String Substitutions worked examples, Dynamic Shell Injection patterns, UE-skill rationale, and subagent/visual-output patterns, see [reference.md](reference.md).
 
-Canonical docs: <https://code.claude.com/docs/en/skills>. Slash-commands standard: `~/.claude/standards/authoring/slash-commands.md`.
+Canonical docs: <https://code.claude.com/docs/en/skills>. Slash-command patterns: `~/.claude/skills/caol-make-command/references/SLASH-COMMANDS.md`.
