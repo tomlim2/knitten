@@ -8,7 +8,7 @@ allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bas
 Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs Patterns A–F + T against the current diff, and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
 
 Pair skill: `shotloom-review-docs` covers docs/wording discipline.
-Umbrella `shotloom-review-before-pr` invokes code first, then docs.
+Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reuses this catalog with a verification preamble.
 
 ## Arguments
 
@@ -163,7 +163,7 @@ User fixes findings, re-invokes — restart from Step 1. Skill is idempotent.
 
 ## Binding rules
 
-- **Cold-start subagent dispatch is mandatory every invocation.** Never inline the sweep into the main session. The cold-start guarantee is the entire point of the skill — author-self-review is the failure mode this replaces.
+- **Default invocation is cold-start.** Never inline the sweep into the main session. If `shotloom-review-before-pr` reuses this catalog for pass B, its verification preamble controls the role framing; keep pattern and output rules.
 - **Read-only by contract.** The Explore subagent type is read-only.
 - **Re-read standards inside the subagent.** Main session does not need to load `review-rust.md`.
 - **Sibling skill split:** docs/wording discipline lives in `shotloom-review-docs`. This skill only covers Rust/TS code quality patterns + test coverage.

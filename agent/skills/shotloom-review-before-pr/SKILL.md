@@ -1,5 +1,5 @@
 ---
-description: Run Shotloom pre-PR cold review through code and docs Explore passes
+description: Run Shotloom pre-PR review through initial code/docs passes and independent verify passes
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
 domains: rust,typescript,docs
 repo-keys: shotloom
@@ -8,8 +8,8 @@ repo-keys: shotloom
 # shotloom-review-before-pr
 
 Run pre-PR self-review on the current Shotloom branch. The skill uses
-read-only Explore subagents so review context stays cold and independent
-from the authoring session.
+read-only Explore subagents. Pass A is a cold-start review. Pass B is an
+independent verification perspective after fixes change `HEAD`.
 
 ## Arguments
 
@@ -18,7 +18,7 @@ worktree.
 
 ## Review Shape
 
-| Phase | Required pass | Verification pass |
+| Phase | Initial cold-start pass | Independent verification pass |
 |---|---|---|
 | Code | code pass A | code pass B only if code fixes changed `HEAD` |
 | Docs | docs pass A | docs pass B only if docs fixes changed `HEAD` |
@@ -78,13 +78,16 @@ If `code_fixes_applied=false`, set
 `head_after_code=$(git rev-parse HEAD)` and continue to Step 4.
 
 If `code_fixes_applied=true`, dispatch one read-only Explore subagent
-with the same code brief plus this preamble:
+using the `shotloom-review-code` Step 3 checklist. Override the role
+framing with this preamble:
 
 ```text
-This is a verification pass. The author just applied fixes to address
-pass-A findings. Re-run the full pattern catalog on the current HEAD.
-Report any defect - pre-existing or newly introduced by the fix commit(s).
-Do not assume pass-A findings are resolved; check directly.
+This is an independent verification pass after pass-A fixes changed HEAD.
+Use the code-review catalog as a verification checklist for current HEAD.
+Review from a different angle: confirm pass-A issues are fixed, look for
+regressions introduced by fixes, and report any pre-existing defect still
+visible in the current diff. Do not rely on the authoring session or on
+pass-A conclusions; check directly.
 ```
 
 Render the report verbatim under:
@@ -94,8 +97,8 @@ Render the report verbatim under:
 ```
 
 If pass B finds issues, ask whether to fix now. If fixes change `HEAD`,
-do not run code pass C. Either stop and re-invoke this skill, or accept
-the residual risk and continue to docs.
+do not run code pass C. Either stop and re-invoke this skill for a fresh
+review cycle, or accept the residual risk and continue to docs.
 
 Record `head_after_code=$(git rev-parse HEAD)`.
 
@@ -126,13 +129,16 @@ docs_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_after_code" && echo 
 If `docs_fixes_applied=false`, continue to Step 6.
 
 If `docs_fixes_applied=true`, dispatch one read-only Explore subagent
-with the same docs brief plus this preamble:
+using the `shotloom-review-docs` Step 3 checklist. Override the role
+framing with this preamble:
 
 ```text
-This is a verification pass. The author just applied fixes to address
-pass-A docs findings. Re-run the full pattern catalog on the current HEAD.
-Report any defect - pre-existing or newly introduced. Do not assume
-pass-A findings are resolved; check directly.
+This is an independent verification pass after pass-A docs fixes changed
+HEAD. Use the docs-review catalog as a verification checklist for current
+HEAD. Review from a different angle: confirm pass-A issues are fixed,
+look for regressions introduced by fixes, and report any pre-existing
+defect still visible in the current diff. Do not rely on the authoring
+session or on pass-A conclusions; check directly.
 ```
 
 Render the report verbatim under:
@@ -142,8 +148,8 @@ Render the report verbatim under:
 ```
 
 If pass B finds issues, ask whether to fix now. If fixes change `HEAD`,
-do not run docs pass C. Either stop and re-invoke this skill, or accept
-the residual risk and continue.
+do not run docs pass C. Either stop and re-invoke this skill for a fresh
+review cycle, or accept the residual risk and continue.
 
 ### Step 6: Recommendation
 
@@ -162,7 +168,8 @@ Add one short Korean paragraph only if findings were non-clean.
 - Always run code before docs.
 - Always use read-only Explore subagents.
 - Never run pass B unless the matching pass A fix gate changed `HEAD`.
-- Never run pass C; re-invoke this skill for another cold round.
+- Label pass B as independent verification after fixes changed `HEAD`.
+- Never run pass C; re-invoke this skill for a fresh review cycle.
 - Do not push, create PRs, or post PR comments.
 - Use this umbrella for default pre-PR review. Use leaf skills only for
   narrow rechecks.
