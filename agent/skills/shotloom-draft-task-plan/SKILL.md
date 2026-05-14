@@ -124,14 +124,25 @@ Draft around the audited remaining gap. Do not restate Linear verbatim. Do not
 list complete work as future work. Use concrete file paths. Verify every `add`
 target is missing and every `reuse` target is named.
 
-### Step 5: Self-Review Until Converged
+### Step 5: Cold-Start Review Until Only Nits Remain
 
-Review the draft as a PR reviewer, patch it, then re-check changed claims
-against source. Severity: `P1` wrong API/layer/scope, `P2` missing required
-test/doc/edge/invariant/error branch, `P3` cheap cleanup.
+Review the draft through the cold-start review loop in
+[reference.md](reference.md). Round 1 is context collection and suitability:
+re-read Linear context, related issues, live code, current docs, sibling plans,
+and repo state; decide whether the plan is appropriate for one PR. Patch the
+plan before continuing.
 
-Convergence requires four stance passes, sibling draft consumption, structural
-floor checks, and zero unhandled `P1`/`P2`. Details: [reference.md](reference.md).
+Round 2 and later must use different review stances from the previous round.
+Patch the plan after every round with `P1` or `P2` findings, then re-check the
+patched claims against source. Keep looping until only `P3` / nit findings
+remain. Nit-only means the plan can proceed; do not block or keep polishing
+forever on harmless wording. Severity: `P1` wrong API/layer/scope or not-one-PR
+scope, `P2` missing required test/doc/edge/invariant/error branch, `P3` cheap
+cleanup/nit.
+
+Convergence requires first-round context collection, explicit one-PR suitability
+judgment, sibling draft consumption, structural floor checks, and zero
+unhandled `P1`/`P2`. Details: [reference.md](reference.md).
 
 If convergence changes requested scope, write `.draft.md`, skip commit, and ask.
 
@@ -176,7 +187,8 @@ Shotloom source files in this skill.
 - Implementation-choice ambiguity goes in `## Locked Decisions`.
 - Factual stop conditions stop before commit, not before writing.
 - External agents are reviewers only. They return `P1` / `P2` / `P3` findings
-  against the current canonical draft.
+  against the current canonical draft. Continue review/patch rounds until only
+  `P3`/nit findings remain.
 - One plan artifact, one direct-plan commit.
 - Plan is not implementation. Source edits need a later user request.
 - Protocol changes, multi-file `.gltf` support, dependencies, ADRs, and broad
@@ -185,5 +197,6 @@ Shotloom source files in this skill.
 
 ## Related
 
-`/shotloom-start-task`, `~/.claude/rules/shotloom.md`,
-`caol-ila/docs/plans/`, [reference.md](reference.md).
+`/shotloom-start-task`, `/shotloom-review-task-plan`,
+`~/.claude/rules/shotloom.md`, `caol-ila/docs/plans/`,
+[reference.md](reference.md).

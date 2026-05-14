@@ -60,13 +60,73 @@ linear: STL-NN
 - Every user-facing string defaults to split diagnostics or labels. Collapse
   only when `Rationale:` cites source evidence.
 
+## Step 5 - Cold-Start Review Loop
+
+The plan is not converged just because it is internally coherent. It is
+converged only after repeated cold-start review rounds leave no unhandled
+`P1`/`P2` findings.
+
+### Round 1 - Context and One-PR Suitability
+
+Gather context as if starting cold:
+
+```bash
+git status --short
+rg -n "<linear id>|<title keywords>|<primary symbols>" crates apps docs contracts assets MAP.md
+rg -n "<diagnostic/code/cache/bridge/test keywords>" crates apps docs contracts
+ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+```
+
+Also inspect:
+
+- Linear issue body and related/parent issues when available.
+- Current live code, not just the Ready briefing.
+- Current docs/specs/ADRs/cache notes relevant to the plan.
+- Sibling plans and recently deleted sibling plans.
+- Existing dirty files that may affect or conflict with the plan.
+
+Then answer before patching:
+
+| Question | Required judgment |
+|---|---|
+| One-PR suitability | Is the plan small enough for one reviewable PR? If not, split or write `.draft.md`. |
+| Scope fit | Does every proposed edit trace to Linear AC, ADR, repo precedent, or user instruction? |
+| Missing context | What live source or doc changed the plan from the Ready briefing? |
+| Blocking ambiguity | Does any implementation choice need user/Linear clarification before coding? |
+
+Patch all `P1`/`P2` findings from Round 1 before running Round 2.
+
+### Round 2+ - Different Stance Each Time
+
+Each later round must use a different stance from the previous round. Rotate
+through these, adding task-specific stances when useful:
+
+| Stance | Lead question |
+|---|---|
+| Paranoid implementer | Where will the code fail to compile, borrow, parse, cache, or validate? |
+| Minimal PR reviewer | What belongs in a follow-up because it makes the PR too large? |
+| Domain owner | Does the plan respect Shotloom ownership boundaries, ADRs, and diagnostics policy? |
+| Test owner | Would the proposed tests actually fail before the implementation and pass after? |
+| Docs/spec owner | Are docs/spec changes required, and are non-goals explicit enough? |
+| Release/cache owner | Does the plan invalidate cache, serialized state, or user-visible behavior correctly? |
+
+After every round:
+
+1. Record findings mentally by severity.
+2. Patch the plan for every `P1` and `P2`.
+3. Re-check changed claims against live source or docs.
+4. Run another stance if any `P1`/`P2` was found.
+
+Stop the loop only when the remaining findings are `P3`/nit. Nit-only findings
+do not block landing the plan; apply cheap wording fixes, otherwise proceed.
+
 ## Step 5 - Severity Model
 
 | Priority | Meaning | Required action |
 |---|---|---|
-| `P1` | Implementation follows the wrong API, layer, invariant, or scope. | Patch before landing. |
+| `P1` | Implementation follows the wrong API, layer, invariant, scope, or is not suitable for one PR. | Patch before landing; split or write `.draft.md` if it cannot fit. |
 | `P2` | Required test, doc, edge case, invariant, or diagnostic is absent. | Patch or scope out with rationale. |
-| `P3` | Naming, layout, markdown, or cheap cleanup. | Patch when cheap; else move to `Traps` or `Follow-Up Candidates`. |
+| `P3` | Naming, layout, markdown, wording, or cheap cleanup/nit. | Patch when cheap; otherwise proceed once all `P1`/`P2` are gone. |
 
 ## Step 5 - Review Lenses
 
@@ -85,7 +145,8 @@ Run each lens before declaring convergence:
 
 ## Step 5a - Stance Rotation
 
-Run four passes. Patch findings from a pass before running the next pass.
+Run these passes as the default Round 2+ rotation. Patch findings from a pass
+before running the next pass.
 
 | Pass | Stance | Lead question |
 |---|---|---|
