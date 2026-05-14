@@ -31,7 +31,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Create a new standard | [`agent/standards/index.md`](agent/standards/index.md) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
 | Tag an Obsidian note | [`agent/skills/obsidian-obsidian-markdown/SKILL.md`](agent/skills/obsidian-obsidian-markdown/SKILL.md) → `references/TAG-TAXONOMY.md` |
 | Write an Obsidian note (any folder) | [`agent/skills/obsidian-obsidian-markdown/SKILL.md`](agent/skills/obsidian-obsidian-markdown/SKILL.md) → `references/VAULT-AUDIENCE.md` → `references/OBSIDIAN-FORMAT.md` |
-| Write a code review | [`agent/standards/review/review-template.md`](agent/standards/review/review-template.md) → language-specific `review-code-*.md` |
+| Write a code review | [`agent/standards/review/review-template.md`](agent/standards/review/review-template.md) → relevant `review-audit-*` skill reference |
 
 ---
 
@@ -51,13 +51,13 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 
 | Goal | Read |
 |------|------|
-| Review JS / CSS code | [`agent/standards/review/review-code-javascript.md`](agent/standards/review/review-code-javascript.md), [`agent/standards/review/review-code-css.md`](agent/standards/review/review-code-css.md) |
+| Review JS / CSS code | [`agent/skills/review-audit-web/SKILL.md`](agent/skills/review-audit-web/SKILL.md) → `references/REVIEW-CODE-JAVASCRIPT.md` or `references/REVIEW-CODE-CSS.md` |
 | Review UE C++ / Python | [`agent/standards/review/review-code-unreal-cpp.md`](agent/standards/review/review-code-unreal-cpp.md), [`agent/standards/review/review-code-unreal-python.md`](agent/standards/review/review-code-unreal-python.md) |
 | Review TSL shaders | [`agent/standards/review/review-code-tsl.md`](agent/standards/review/review-code-tsl.md) |
-| Review UX / UX writing | [`agent/standards/review/review-ux.md`](agent/standards/review/review-ux.md), [`agent/standards/review/review-ux-writing.md`](agent/standards/review/review-ux-writing.md) |
+| Review UX / UX writing | [`agent/skills/review-audit-ux/SKILL.md`](agent/skills/review-audit-ux/SKILL.md) → `references/REVIEW-UX.md`; [`agent/standards/review/review-ux-writing.md`](agent/standards/review/review-ux-writing.md) |
 | Review AI motion (FBX) | [`agent/standards/review/review-ai-motion.md`](agent/standards/review/review-ai-motion.md) |
-| Review 3D rendering | [`agent/standards/review/review-3d-rendering.md`](agent/standards/review/review-3d-rendering.md) |
-| Review a spec doc | [`agent/standards/review/review-spec-doc.md`](agent/standards/review/review-spec-doc.md) |
+| Review 3D rendering | [`agent/skills/review-audit-3d/SKILL.md`](agent/skills/review-audit-3d/SKILL.md) → `references/REVIEW-3D-RENDERING.md` |
+| Review a spec doc | [`agent/skills/review-audit-web-spec/SKILL.md`](agent/skills/review-audit-web-spec/SKILL.md) → `references/REVIEW-SPEC-DOC.md` |
 
 ---
 

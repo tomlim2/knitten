@@ -13,6 +13,13 @@ exclude-when: rust,unreal,obsidian
 
 Review JavaScript and CSS code against coding standards checklists.
 
+## Skill-owned standards
+
+Read these references only when their file type appears in the review scope:
+
+- `references/REVIEW-CODE-JAVASCRIPT.md` — `.js`, `.jsx`, `.ts`, `.tsx`
+- `references/REVIEW-CODE-CSS.md` — `.css`, `.scss`, `.less`
+
 ## Purpose
 
 Unified web code review command that applies both JavaScript and CSS checklists in a single pass. Detects file types automatically and applies the matching review standard.
@@ -48,6 +55,6 @@ Output follows `review-template.md` format.
 ## Related
 
 - `commands/review-audit-web.md` — Slash command definition
-- `standards/review/review-code-javascript.md` — JS review checklist
-- `standards/review/review-code-css.md` — CSS review checklist
+- `references/REVIEW-CODE-JAVASCRIPT.md` — JS review checklist
+- `references/REVIEW-CODE-CSS.md` — CSS review checklist
 - `standards/review/review-template.md` — Review output format

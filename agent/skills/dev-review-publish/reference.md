@@ -17,16 +17,16 @@ If **any** match is found, set `has3D = true`. This determines whether subagent 
 
 ## Pass 1: Review (fan-out, 3-4 parallel subagents)
 
-Launch 3 Task subagents in parallel (+ 1 more if `has3D`). Each reads the relevant standard and audits all files in the target directory.
+Launch 3 Task subagents in parallel (+ 1 more if `has3D`). Each reads the relevant skill-owned reference and audits all files in the target directory.
 
 **A. Code Quality** — `subagent_type: Explore`
-> Read `~/.claude/standards/review/review-code-javascript.md` and `~/.claude/standards/review/review-code-css.md`.
+> Read `~/.claude/skills/review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` and `~/.claude/skills/review-audit-web/references/REVIEW-CODE-CSS.md`.
 > Audit all JS/CSS files in the target directory.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
 
 **B. UX/UI Audit** — `subagent_type: Explore`
-> Read `~/.claude/standards/review/review-ux.md`.
+> Read `~/.claude/skills/review-audit-ux/references/REVIEW-UX.md`.
 > Audit all HTML/JS/CSS files in the target directory.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
 > severity is one of: critical, error, suggestion.
@@ -38,7 +38,7 @@ Launch 3 Task subagents in parallel (+ 1 more if `has3D`). Each reads the releva
 > severity is one of: critical, error, suggestion.
 
 **D. 3D Rendering** *(only if `has3D`)* — `subagent_type: Explore`
-> Read `~/.claude/standards/review/review-3d-rendering.md`.
+> Read `~/.claude/skills/review-audit-3d/references/REVIEW-3D-RENDERING.md`.
 > Identify the 3D stack (renderer, material system, dependencies).
 > Audit all JS/TS/GLSL/WGSL files in the target directory against the 55-item 3D rendering checklist.
 > Return findings as a list: `{severity} | {id} | {file}:{line} | {description}`.
@@ -134,10 +134,10 @@ Output the final report in the format below.
 
 ## Related
 
-- `standards/review/review-code-javascript.md` — JS code quality checklist
-- `standards/review/review-code-css.md` — CSS code quality checklist
-- `standards/review/review-ux.md` — UX/UI audit checklist
+- `skills/review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` — JS code quality checklist
+- `skills/review-audit-web/references/REVIEW-CODE-CSS.md` — CSS code quality checklist
+- `skills/review-audit-ux/references/REVIEW-UX.md` — UX/UI audit checklist
 - `standards/review/review-ux-writing.md` — UX writing checklist
 - `skills/dev-check-publish/SKILL.md` — Deploy readiness checklist
-- `standards/review/review-3d-rendering.md` — 3D rendering performance checklist (conditional)
+- `skills/review-audit-3d/references/REVIEW-3D-RENDERING.md` — 3D rendering performance checklist (conditional)
 - `standards/review/review-template.md` — Review output format

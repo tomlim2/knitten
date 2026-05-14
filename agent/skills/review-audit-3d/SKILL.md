@@ -6,6 +6,10 @@ description: "Audit Three.js/WebGPU/WebGL 3D rendering — draw calls, shaders, 
 
 Static 3D rendering performance audit against a 55+ item checklist.
 
+## Skill-owned standards
+
+Read `references/REVIEW-3D-RENDERING.md` only when auditing 3D rendering performance.
+
 ## Purpose
 
 Detect rendering performance issues by reading JavaScript, WGSL, GLSL, and HTML source files without running the application. Covers draw calls, GPU pipeline, textures, shaders, geometry, frame budget, canvas upload, post-processing, animation, and profiling diagnostics.
@@ -56,7 +60,7 @@ Parse the argument:
 
 ### Step 2: Read the Checklist
 
-Read `~/.claude/standards/review/review-3d-rendering.md` for the full checklist.
+Read `references/REVIEW-3D-RENDERING.md` for the full checklist.
 
 ### Step 3: Identify 3D Stack
 
@@ -102,7 +106,7 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 
 ## Related
 
-- `standards/review/review-3d-rendering.md` — 3D rendering performance checklist (55+ items)
+- `references/REVIEW-3D-RENDERING.md` — 3D rendering performance checklist (55+ items)
 - `standards/language/three-shader-language.md` — TSL coding standards
 - `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS)

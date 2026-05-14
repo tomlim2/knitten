@@ -117,8 +117,6 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | `agent/skills/review-audit-web-spec/SKILL.md` | `web-review` | `medium` |
 | `agent/skills/review-audit-web/SKILL.md` | `web-review` | `low` |
 | `agent/standards/review/review-code-astro.md` | `web-review` | `high` |
-| `agent/standards/review/review-code-css.md` | `web-review` | `medium` |
-| `agent/standards/review/review-code-javascript.md` | `web-review` | `high` |
 | `agent/standards/review/review-code-tsl.md` | `web-review` | `medium` |
 
 ## Route Fixtures

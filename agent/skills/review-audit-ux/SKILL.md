@@ -13,6 +13,10 @@ exclude-when: rust,unreal,obsidian
 
 Static UX/UI code audit against a 70+ item checklist.
 
+## Skill-owned standards
+
+Read `references/REVIEW-UX.md` only when auditing UX/UI layout, interaction, accessibility, motion, consistency, typography, semantic HTML, performance UX, or forms.
+
 ## Purpose
 
 Detect UX/UI issues by reading HTML, CSS, and JavaScript source files without running the application. Covers layout, responsiveness, interaction patterns, accessibility, animation, consistency, typography, semantic HTML, performance UX, and forms.
@@ -65,7 +69,7 @@ Parse the argument:
 
 ### Step 2: Read the Checklist
 
-Read `~/.claude/standards/review/review-ux.md` for the full checklist.
+Read `references/REVIEW-UX.md` for the full checklist.
 
 ### Step 3: Read Source Files
 
@@ -97,6 +101,6 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 
 ## Related
 
-- `standards/review/review-ux.md` — UX/UI audit checklist (70+ items)
+- `references/REVIEW-UX.md` — UX/UI audit checklist (70+ items)
 - `standards/review/review-template.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS standards)

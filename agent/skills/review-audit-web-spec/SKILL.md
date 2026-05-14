@@ -13,6 +13,10 @@ exclude-when: rust,unreal,obsidian
 
 Audit spec documents across 4 perspectives: engineering, design, brand voice, and target audience.
 
+## Skill-owned standards
+
+Read `references/REVIEW-SPEC-DOC.md` only when auditing a technical spec, PRD, or website spec.
+
 ## Purpose
 
 Most freelancers and small teams review specs from a single engineering perspective. This skill applies a 4-perspective audit (engineering, design, brand voice, target audience) plus document quality — the level of review only performed by 5+ person agencies.
@@ -61,7 +65,7 @@ Read the full spec document. Note:
 
 ### Step 3: Read the Checklist
 
-Read `~/.claude/standards/review/review-spec-doc.md` for the full 32-item checklist.
+Read `references/REVIEW-SPEC-DOC.md` for the full 32-item checklist.
 
 ### Step 4: Audit (4 Perspectives + Document Quality)
 
@@ -100,7 +104,7 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 
 ## Related
 
-- `standards/review/review-spec-doc.md` — Spec document audit checklist (32 items)
+- `references/REVIEW-SPEC-DOC.md` — Spec document audit checklist (32 items)
 - `standards/review/review-template.md` — Review output format
 - `skills/review-audit-ux/SKILL.md` — UX/UI code audit
 - `skills/review-audit-web/SKILL.md` — JS/CSS code quality review

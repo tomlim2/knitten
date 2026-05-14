@@ -434,16 +434,6 @@
       "contextCost": "high"
     },
     {
-      "path": "agent/standards/review/review-code-css.md",
-      "profile": "web-review",
-      "contextCost": "medium"
-    },
-    {
-      "path": "agent/standards/review/review-code-javascript.md",
-      "profile": "web-review",
-      "contextCost": "high"
-    },
-    {
       "path": "agent/standards/review/review-code-tsl.md",
       "profile": "web-review",
       "contextCost": "medium"
@@ -465,18 +455,6 @@
     {
       "path": "agent/standards/policy/principles.md",
       "reason": "Core policy glossary and validator summary; intentionally shared across route domains.",
-      "decision": "docs/plans/task-context-routing.md#execution-order",
-      "reviewAfter": "2026-06-10"
-    },
-    {
-      "path": "agent/standards/review/review-3d-rendering.md",
-      "reason": "Cross-domain 3D review catalog; needs a future 3D route profile instead of being forced into web or unreal.",
-      "decision": "docs/plans/task-context-routing.md#execution-order",
-      "reviewAfter": "2026-06-10"
-    },
-    {
-      "path": "agent/standards/review/review-ux.md",
-      "reason": "Cross-domain UX review catalog; needs a future UX route profile instead of being forced into web.",
       "decision": "docs/plans/task-context-routing.md#execution-order",
       "reviewAfter": "2026-06-10"
     }
