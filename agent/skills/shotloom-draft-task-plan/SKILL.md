@@ -131,6 +131,11 @@ thumbnail cache + manifest. The plan must say what happens when the second
 mutation fails, and the verification must assert the final persisted artifact,
 not only intermediate counters or one side of the mutation.
 
+When the plan adds or changes Rust fixture/matrix tests, include a short test
+shape note: why those fixtures are in the matrix, whether each fixture gets its
+own `#[test]` or a collected-failures loop, which assertion proves behavior
+beyond presence, and whether any test output is intentionally env-gated.
+
 ### Step 5: Cold-Start Review Until Only Nits Remain
 
 Review the draft through the cold-start review loop in

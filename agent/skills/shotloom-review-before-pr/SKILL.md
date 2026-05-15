@@ -70,7 +70,7 @@ Dispatch one read-only Explore subagent.
 
 | Field | Value |
 |---|---|
-| `description` | `Code review pass A (cold-start) - Patterns A-F + T + U` |
+| `description` | `Code review pass A (cold-start) - review-rust + test lens + Patterns A-F + T + U` |
 | `prompt` | Read `~/.claude/skills/shotloom-review-code/SKILL.md` Step 3 and pass it verbatim with `<worktree>` and `<branch>` substituted. |
 
 Render the report verbatim under:
@@ -98,6 +98,9 @@ framing with this preamble:
 ```text
 This is an independent verification pass after earlier fixes changed HEAD.
 Use the code-review catalog as a verification checklist for current HEAD.
+If the changed HEAD is test-heavy, start by verifying the in-repo
+`review-rust.md` Test code review section before applying production-code
+patterns.
 Review from a different angle than all earlier passes in this phase: confirm
 previously reported P0-P2 issues are fixed, look for regressions introduced by
 fixes, and report any pre-existing defect still visible in the current diff.
