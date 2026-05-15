@@ -173,7 +173,10 @@ Payload rules:
 
 ### Step 7: Approval Gate
 
-Show the exact review payload summary before posting:
+Show the exact review payload summary before posting. This gate is mandatory
+for every GitHub review submission, including when the user says "post it",
+"달아주세요", or otherwise asks to proceed after discussing the finding.
+Proceed-only language does not approve unseen final wording.
 
 ```markdown
 Review event: REQUEST_CHANGES | COMMENT | APPROVE
@@ -189,8 +192,10 @@ Review body:
 Post this GitHub review? (y/N)
 ```
 
-Wait for explicit user approval. A single `y` approves this one review
-submission. Any edit request returns to Step 5 or Step 6.
+Wait for explicit approval after showing the final exact wording. A single `y`
+or "yes, post exactly this" approves this one review submission only. If the
+user has not seen the final body and every inline comment body in the current
+assistant turn, do not submit. Any edit request returns to Step 5 or Step 6.
 
 ### Step 8: Submit Review
 
