@@ -23,6 +23,9 @@ parser/resolver, the STL-424 clear command, or editor button wiring.
 As of the current `origin/main`, the stage-map contract and spec have landed;
 this command must preserve their `background_owner` identity fields while still
 keeping the bridge boundary narrow.
+This is suitable for one reviewable PR because it adds one bridge command, its
+engine handler, bridge DTO mirrors, contract docs, and focused tests while
+leaving parser, clear-all, and editor dispatch integration to sibling issues.
 
 ## Current State
 
@@ -39,7 +42,8 @@ keeping the bridge boundary narrow.
 | Stage Import debug UI | `apps/editor/src/components/debug/StageImportDebugPanel.tsx` | Partial | UI exposes three map buttons but keeps them disabled while waiting for STL-423/STL-424 commands and STL-431 dispatch wiring. |
 | Map document contract | `contracts/stage-map/`, `docs/specs/stage-map-document.md` | Already Done | Current `origin/main` includes the schema, minimal example, and spec. The spec defines normalized `map_id` values like `Map_1004:Stage1`, document ids like `Map_1004__Stage1`, and `background_owner` semantics. |
 | Roadmap doc | `docs/roadmap/single-stage-import.md` | Missing | Linear cites it, but the file is absent on current `origin/main`. |
-| STL-422 parser/resolver | `crates/shotloom-stage`, sibling plan | Missing / In Progress | No landed parser output type or resolver API is available on current `origin/main`; the sibling parser plan owns map-document parsing, GLB resolution, and source-transform conversion. |
+| STL-422 parser/resolver | `crates/shotloom-stage`, sibling plan | Missing / In Progress | No landed parser output type or resolver API is available on current `origin/main`; the sibling parser plan owns map-document parsing and GLB resolution, preserves source-space transforms, and defers final viewport conversion. |
+| STL-431 dispatch wiring | Linear STL-431 | Backlog | Expects the editor panel to dispatch a `spawn_background_props` bridge command after STL-423 lands. |
 
 ## Problem
 
@@ -67,32 +71,38 @@ engine.
 
 2. **The command consumes pre-resolved placement DTOs, not raw map documents.**
 
-   Rationale: STL-422 owns parsing, GLB resolution, and map-document transform
-   normalization and is not landed on current `origin/main`. STL-423 can still
+   Rationale: STL-422 owns parsing and GLB resolution and is not landed on
+   current `origin/main`. Its reviewed sibling plan preserves source-space
+   transforms rather than producing a bridge DTO directly. STL-423 can still
    define the engine bridge boundary by accepting a list of already-resolved
-   prop asset ids plus Shotloom-space authored transforms and contract identity
-   fields: normalized `map_id`, `document_id`, and per-placement `object_id`.
-   That keeps this PR reviewable and lets STL-422 connect later without
-   duplicating parser logic.
+   prop asset ids plus bridge-ready Shotloom-space authored transforms and
+   contract identity fields: normalized `map_id`, `document_id`, and
+   per-placement `object_id`. That keeps this PR reviewable and lets STL-422
+   and STL-431 connect later without duplicating parser logic inside the bridge
+   handler.
 
    Rejected alternatives: parsing map JSON inside the bridge handler would
    cross issue boundaries; waiting for a concrete STL-422 Rust type would block
    all bridge contract work even though the command DTO can express the narrow
    required input.
 
-3. **Use `ModelTransform` for document placement on the wire.**
+3. **Use Shotloom-space `ModelTransform` for document placement on the wire.**
 
    Rationale: `PropModel.base_transform` already persists `ModelTransform`, and
    `entity::transform_from_model` already converts that model transform into a
    Bevy transform. Sending the same shape avoids a second transform DTO and
-   makes tests assert the final persisted prop transform directly. This command
-   assumes STL-422 has already converted source document transforms into the
-   Shotloom/bridge coordinate convention; it should reject or diagnose
-   source-space payloads if a future DTO explicitly represents them.
+   makes tests assert the final persisted prop transform directly. The command
+   docs must state that payload transforms are already in Shotloom meters,
+   Y-up/right-handed, and `rotation_euler_xyz_deg` convention. STL-423 does not
+   parse or convert `story_previz_unreal` source transforms in the handler; a
+   later integration layer must convert parser output before dispatching
+   `spawn_background_props`.
 
    Rejected alternatives: sending only translation would fail the rotation and
    scale acceptance criteria; sending a matrix would invent a new transform
-   convention without an in-repo primitive.
+   convention without an in-repo primitive; accepting raw stage-map
+   `story_previz_unreal` transforms would pull parser/integration conversion
+   scope into this bridge command PR.
 
 4. **Store ownership as `PropModel.tags` in this PR.**
 
@@ -167,7 +177,8 @@ engine.
 ### S1 - Add Core Bridge DTOs
 
 1. In `crates/shotloom-core/src/bridge/mod.rs`, add a new command:
-   `SpawnBackgroundPropsFromAssets`.
+   `SpawnBackgroundProps` with wire type `spawn_background_props`, matching
+   STL-431's editor dispatch name.
 2. Payload shape:
    - `map_id: String`
    - `document_id: String`
@@ -183,7 +194,8 @@ engine.
    per-placement object ids or tags.
 4. `BackgroundPropPlacementDto` fields:
    - `asset_id: String`
-   - `transform: ModelTransform`
+   - `transform: ModelTransform` in Shotloom meters, Y-up/right-handed, and
+     `rotation_euler_xyz_deg` convention
    - `object_id: Option<String>`
    - `display_name: Option<String>`
    - `tags: Vec<String>`
@@ -269,7 +281,9 @@ engine.
    `apps/editor/src/bridge/__tests__/__snapshots__/`.
 5. Update `docs/ipc/bridge-contract.md` with:
    - command purpose
+   - wire name `spawn_background_props`
    - payload
+   - transform coordinate convention
    - event order
    - partial success semantics
    - rejection/diagnostic codes
@@ -351,11 +365,23 @@ UI buttons:
 5. Confirm existing user selection and active tool are unchanged.
 6. Dispatch a mixed valid/missing batch and confirm valid props spawn while
    `background_prop_asset_missing` appears in diagnostics.
-7. Dispatch an all-invalid batch and confirm the shot's prop count is unchanged
+7. Dispatch a mixed valid/unsupported-asset batch and confirm valid props spawn
+   while `background_prop_asset_unsupported` appears in diagnostics.
+8. Dispatch an empty placement list and confirm the shot's prop count is
+   unchanged, `background_prop_batch_empty` appears, and `CommandRejected` is
+   emitted.
+9. Dispatch an all-invalid batch and confirm the shot's prop count is unchanged
    and `CommandRejected` is emitted.
-8. Dispatch an invalid transform batch and confirm
+10. Dispatch an invalid transform batch and confirm
    `background_prop_transform_invalid` appears.
-9. Use the existing World Assets prop click-spawn path and confirm it still
+11. Dispatch a placement with an invalid object/tag value and confirm
+    `background_prop_tag_invalid` appears without mutating that placement.
+12. In a test harness or forced render-failure path, confirm
+    `background_prop_spawn_failed` rejects without persisted props or leftover
+    ECS entities.
+13. In a test harness with a non-fatal render warning, confirm
+    `background_prop_spawn_warning` is surfaced while valid props persist.
+14. Use the existing World Assets prop click-spawn path and confirm it still
    selects the spawned prop and promotes Select to Translate.
 
 ## Traps
@@ -364,9 +390,11 @@ UI buttons:
 - Do not treat a document id like `Map_1004__Stage1` as the normalized
   `map_id`; preserve it separately as `document_id`.
 - Do not convert `story_previz_unreal` source transforms in the bridge handler;
-  STL-422 must hand this command Shotloom-space `ModelTransform` values.
-- Do not enable Stage Import UI buttons; STL-431 owns dispatch wiring and
-  STL-425 owns the broader debug POC integration.
+  STL-422 may preserve source transforms, and the STL-431/STL-420 integration
+  path must convert before dispatching this command.
+- Do not enable Stage Import UI buttons; STL-425 already landed the fixed
+  disabled panel skeleton, STL-431 owns dispatch wiring, and STL-420 owns the
+  end-to-end debug POC.
 - Do not implement clear-all or delete props by asset id; STL-424 owns
   ownership-filtered removal.
 - Do not add a typed `background_owner` field in this bridge command PR.
@@ -381,11 +409,14 @@ UI buttons:
 ## Follow-Up Candidates
 
 - STL-422 parser/resolver can map real map documents into the new command DTO
-  with converted `ModelTransform` values and `background_owner` identity fields.
+  with `background_owner` identity fields once an integration layer converts
+  source transforms into bridge-ready `ModelTransform` values.
 - STL-424 clear-all command can filter on `background_map`,
   `owner:map_document`, `map:<map_id>`, and `document:<document_id>` tags.
 - STL-431 debug panel can enable buttons and dispatch fixed map payloads;
-  STL-425 can then exercise the full debug POC flow.
+  STL-425 can then exercise the full debug POC flow. That wiring must include
+  the source-transform conversion or call a dedicated conversion helper before
+  dispatch.
 - A future model PR can replace tags with typed `background_owner` metadata once
   the product wants a durable domain field instead of tag-backed ownership.
 - A later UX pass can summarize batch results in the debug panel instead of
