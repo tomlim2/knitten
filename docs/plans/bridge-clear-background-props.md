@@ -85,6 +85,10 @@ despawn, selection cleanup, bundle summaries, and coalesced `shot_loaded`.
 12. Update `docs/ipc/bridge-contract.md` with the command purpose, payload,
     scope, no-op semantics, rejection code, and event order. Trace: PR
     co-location checklist for interface changes.
+13. Add a shared bridge fixture/snapshot for `clear_background_props` through
+    `crates/shotloom-core/tests/generate_bridge_fixtures.rs`, and keep the
+    editor contract snapshot test green. Trace: bridge contract fixture
+    precedent for command wire shapes.
 
 ## Locked Decisions
 
@@ -204,8 +208,10 @@ despawn, selection cleanup, bundle summaries, and coalesced `shot_loaded`.
    `{"type":"clear_background_props"}`.
 5. Add `ClearBackgroundPropsCommand` to `apps/editor/src/bridge/types.ts`,
    include it in `BridgeCommand`, and add a TypeScript wire-shape test.
-6. Update generated/shared bridge fixtures only if the current fixture ratchet
-   requires every command variant to have a snapshot.
+6. Add `clear_background_props` to
+   `crates/shotloom-core/tests/generate_bridge_fixtures.rs` and generate the
+   matching editor snapshot under
+   `apps/editor/src/bridge/__tests__/__snapshots__/`.
 
 ### S2 - Add Engine Handler
 
@@ -284,8 +290,9 @@ Focused gates:
 
 ```bash
 cargo test -p shotloom-core clear_background_props
+cargo test -p shotloom-core --test generate_bridge_fixtures
 cargo test -p shotloom-engine bridge::tests::props::clear_background_props
-pnpm --filter @shotloom/editor test -- StageImportDebugPanel types
+pnpm --filter @shotloom/editor test -- types contract
 ```
 
 Broad gates before PR:
