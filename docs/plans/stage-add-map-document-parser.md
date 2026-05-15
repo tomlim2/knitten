@@ -26,7 +26,7 @@ spawn, editor debug UI, clear-all, and production asset catalog decisions.
 |---|---|---|---|
 | Stage crate boundary | `crates/shotloom-stage/src/lib.rs` | Partial | `StageRequest` and `StageStatus` exist; no map document module, parser, resolver, or placement output exists. |
 | Stage crate docs | `crates/shotloom-stage/README.md` | Partial | The crate explicitly depends on `shotloom-common` and not `shotloom-core`; parser output must preserve that boundary. |
-| Stage crate deps | `crates/shotloom-stage/Cargo.toml` | Partial | Only `shotloom-common` is present. Parser work needs existing workspace `serde` and likely dev-only `serde_json`; `thiserror` is acceptable if typed public errors are added. |
+| Stage crate deps | `crates/shotloom-stage/Cargo.toml` | Partial | Only `shotloom-common` is present. Parser work needs existing workspace `serde` and `serde_json`; `thiserror` is acceptable if typed public errors are added. Temp-directory tests may need a dev-only helper dependency. |
 | Map contract schema | `contracts/stage-map/stage-map-document.schema.json` | Already Done | Defines v1 document, object, candidate, transform, ownership, and diagnostic shapes with closed objects. |
 | Minimal example | `contracts/stage-map/examples/minimal-stage-map-document.json` | Already Done | Gives one resolved relative candidate object and one fixture candidate object for parser tests. |
 | Stage map spec | `docs/specs/stage-map-document.md` | Already Done | Defines selected filenames, local root layout, GLB lookup order, path safety, transform expectations, ownership, and diagnostic codes. |
@@ -162,6 +162,8 @@ bridge command shape before STL-423.
 - No production asset catalog or full Story Previz live API integration.
 - No committed local GLB collection or real exported map JSON files.
 - No broad transform/orientation correction for every prop asset.
+- No broad dependency expansion beyond the existing workspace serde stack,
+  `thiserror`, and a scoped test-only temp-directory helper if required.
 - No new ADR.
 
 ## Implementation Plan
@@ -201,7 +203,10 @@ bridge command shape before STL-423.
    - diagnostics list
 4. Add a typed public parser error enum with structured path/source context for
    file I/O and JSON parsing.
-5. Re-export only the intended public parser/resolver types from
+5. Add only narrow dependencies needed by the parser: workspace `serde`,
+   workspace `serde_json`, `thiserror` if the public error enum uses it, and a
+   dev-only temp-directory helper if resolver tests need one.
+6. Re-export only the intended public parser/resolver types from
    `crates/shotloom-stage/src/lib.rs`.
 
 ### S2 - Implement Document Loading
@@ -263,8 +268,10 @@ bridge command shape before STL-423.
    - invalid JSON maps to `map_document_parse_failed`
    - unknown object field or malformed transform maps to
      `map_document_schema_mismatch`
-4. Add tests for selected-map path helper output for the three selected files.
-5. Verify all emitted diagnostics use `source: "stage_map_document"` and bare
+4. If adding a temp-directory dev dependency, keep it scoped to
+   `crates/shotloom-stage` tests and call it out in the PR impact section.
+5. Add tests for selected-map path helper output for the three selected files.
+6. Verify all emitted diagnostics use `source: "stage_map_document"` and bare
    snake_case codes from the spec.
 
 ### S6 - Documentation Touches
