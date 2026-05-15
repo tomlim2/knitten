@@ -30,6 +30,7 @@ clear-all behavior stays in STL-424.
 | Existing debug cube cache | `feat/stage-import-bridge-poc` WIP | Reference only | WIP has `StageDebugCubeAssets`, `StageDebugCubeKind`, cached mesh/material handles, and a regression test, but it targets an older payload shape. |
 | Clear command | `origin/main` | Missing / Out of scope | No `ClearBackgroundProps` exists on `main`; STL-424 owns clear-all. |
 | Tests | `crates/shotloom-engine/src/bridge/tests/props.rs` | Partial | Background prop tests cover placement, tags, diagnostics, event order, rollback, and duplicate names; no debug cube asset reuse regression exists. |
+| Editor debug fixture precedent | `apps/editor/src/components/debug/__tests__/BackgroundPropTestMap.test.tsx` | Already Done | Existing editor tests use `prop_debug` in background prop payload expectations; the engine plan can reuse that asset id without changing the bridge. |
 | Render asset storage | `Assets<Mesh>`, `Assets<StandardMaterial>` in engine tests | Partial | Existing tests already initialize and count Bevy asset resources for prop rendering cases. |
 | Material policy | `docs/adr/adr-0031-bevy-material-usage-rules.md` | Codified primitive | Proposed ADR allows shared `StandardMaterial` handles and keeps material ownership in `shotloom-engine`. |
 | WASM build | `docs/adr/adr-0017-wasm-vite-integration.md` | Codified primitive | Rust engine changes require `pnpm build:wasm` before the editor consumes updated WASM output. |
@@ -82,8 +83,8 @@ rendering path.
    Rationale: `spawn_background_props_deferred` already converts DTOs into
    `PropModel`s with asset id, display name, source tags, and ownership tags.
    The implementation can branch only when the prop is the stage-import debug
-   cube asset and the display name identifies `floor`, `wall`, `obstacle`, or
-   `block`.
+   cube asset and the display name carries a debug-cube kind marker such as
+   `:floor:`, `:wall`, `:obstacle`, or `:block`.
 
    Rejected alternatives: adding new bridge fields or parser metadata would
    change the protocol; matching every background prop would bypass normal GLB
@@ -138,6 +139,11 @@ rendering path.
    keep clear behavior out of scope.
 4. Set worktree commit identity to `tomlim2 <deemo@vonvon.me>` before the first
    Shotloom commit.
+5. Re-read sibling plans before editing:
+   `stage-define-map-document-bundle-layout.md`,
+   `stage-add-map-document-parser.md`, and
+   `bridge-add-background-prop-batch-spawn.md`. Keep their parser, ownership,
+   diagnostics, and non-parser bridge boundaries intact.
 
 ### S1 - Add Debug Cube Render Cache
 
@@ -148,8 +154,12 @@ rendering path.
 2. Add a private `StageDebugCubeKind` enum for `Floor`, `Wall`, `Obstacle`, and
    `Block`.
 3. Add `stage_debug_cube_kind(model: &PropModel) -> Option<StageDebugCubeKind>`
-   that only matches the stage-import debug cube asset id and kind-bearing
-   display names.
+   that only matches:
+   - `asset_id == "prop_debug"`
+   - stage-import source/ownership tags already assigned by
+     `spawn_background_props_deferred`
+   - kind markers in the display name (`:floor:`, `:wall`, `:obstacle`,
+     `:block`)
 4. Use `world.init_resource::<StageDebugCubeAssets>()`,
    `world.init_resource::<Assets<Mesh>>()`, and
    `world.init_resource::<Assets<StandardMaterial>>()` in the cache accessor so
@@ -239,6 +249,19 @@ Manual/inspection checks:
 - Confirm repeated debug cube spawn does not add more than one debug cube mesh
   and four debug cube materials after cache warm-up.
 - Confirm no `clear_background_props` or TypeScript bridge change was added.
+
+## Sibling Plan Consumption
+
+- `stage-define-map-document-bundle-layout.md`: adopted the boundary that
+  stage-map ownership and document semantics remain contract-owned follow-up
+  context; STL-437 does not edit the schema or ownership primitive.
+- `stage-add-map-document-parser.md`: adopted the boundary that parser/resolver
+  work remains in `crates/shotloom-stage`; STL-437 consumes already-resolved
+  bridge placements only.
+- `bridge-add-background-prop-batch-spawn.md`: adopted the current
+  `spawn_background_props` command shape, ownership tags, diagnostics, event
+  ordering, and non-parser boundary. This plan only changes the debug cube
+  render path inside the existing engine handler.
 
 ## Traps
 
