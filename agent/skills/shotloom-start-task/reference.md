@@ -69,6 +69,21 @@ the gap and applied the form in one ADR anyway; review blocked and forced a
 revert. Correct briefing verdict: AC wrong-shape, split primitive-codification
 before application.
 
+## Intent-vs-literal AC precedent
+
+STL-437 is the counter-shape. The AC named repeated
+`spawn -> clear -> spawn`, but Linear/user intent was GPU asset leak
+prevention for stage debug cubes. `clear_background_props` was absent on
+`origin/main` and owned by STL-424. Correct briefing verdict:
+
+| Field | Value |
+|---|---|
+| Intent lens | Prevent repeated debug cube spawn from growing Bevy `Assets<Mesh>` / `Assets<StandardMaterial>` in proportion to cube count. |
+| Literal AC wording | `spawn -> clear -> spawn` stability. |
+| Primitive status | `clear_background_props` sibling-owned by STL-424, absent on current base. |
+| Start-task action | Do not block STL-437 on clear. Seed equivalent proof: repeated debug cube spawn batches keep mesh/material counts stable after cache warm-up. |
+| Ask-first only if | The implementation would need to add or edit `clear_background_props`, TypeScript mirrors, or bridge contract scope. |
+
 ## Plan-risk seed taxonomy
 
 | Priority | Seed type | Examples |
@@ -141,9 +156,10 @@ git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
 **Standards loaded:** AGENTS.md, CONTRIBUTING.md, docs/guidelines/error-handling.md, docs/guidelines/review-rust.md, docs/guidelines/commit-guideline.md, docs/guidelines/pr-guideline.md, <category additions>
 **ADRs to honor:** <list>
 **Ask-first triggers for this task:** <filtered from §16>
+**Intent lens:** <failure mode to prevent; note any user clarification that overrides literal AC wording>
 
 **AC primitive cross-check:**
-- <AC id>: <codified | wrong-shape> - <path/section evidence or split needed>
+- <AC id>: <codified | wrong-shape | verification-example | sibling-owned> - <path/section evidence, equivalent proof, sibling owner, or split needed>
 
 **Plan-risk handoff for `/shotloom-draft-task-plan`:**
 - P1: <question to lock before implementation> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent that demands this>

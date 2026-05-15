@@ -62,6 +62,20 @@ tool search for `Linear get_issue`; MCP server names vary by harness and must
 not be hard-coded. Extract: problem statement, acceptance criteria, affected
 modules/crates, linked ADRs, linked specs.
 
+Also extract the **intent lens**:
+- What failure mode is the issue trying to prevent?
+- Which AC lines are verification examples or current-branch notes rather than
+  required implementation primitives?
+- Did the user clarify the intent in chat? If yes, prefer that clarification
+  over a literal AC reading and quote it in the Ready briefing.
+
+Do not turn an AC's incidental workflow wording into a blocker when the stated
+problem can be proved on `origin/main` with an equivalent or stronger
+verification. Example: if an AC says `spawn -> clear -> spawn` but the issue
+intent is GPU asset leak prevention and `clear` belongs to a sibling issue,
+seed a plan question for stable asset counts after repeated spawn batches
+instead of blocking the task on the absent clear command.
+
 If no identifier is found, skip Step 2.5 and rely on git state for category
 detection.
 
@@ -130,6 +144,17 @@ mark the AC `wrong-shape`, reject that AC in the briefing, and propose a
 separate primitive-codification issue. Do not apply one-file workarounds. See
 `reference.md` for the PR #208/STL-247 precedent.
 
+If an AC cites a workflow step whose primitive is absent, classify it before
+rejecting:
+
+| Classification | Action |
+|---|---|
+| Required primitive | `wrong-shape`; propose split/codification before implementation. |
+| Verification example | Keep task viable; seed an equivalent stronger proof in Step 5c. |
+| Sibling-owned primitive | Mark ask-first only if implementation would need to edit that sibling surface. Otherwise keep it out of scope and state the sibling owner. |
+
+Use the issue problem statement and user clarifications to decide the row.
+
 ### Step 5c: Seed the plan-review loop (mandatory)
 
 Before the Ready briefing, run targeted `rg` searches for identifiers named by
@@ -139,6 +164,11 @@ Read only matching definitions needed for the briefing. Record P1/P2/P3 seeds
 with evidence, exact plan question, and AC/ADR/precedent trace. If a seed lacks
 that trace, move it to follow-up notes. If a seed implies scope change, mark it
 as ask-first. Full taxonomy: `reference.md`.
+
+Include at least one intent-preserving verification seed when the literal AC
+mentions a sibling-owned or absent workflow step but the failure mode can still
+be proved on the current base. The seed must name the original AC wording, the
+intent lens, the proposed equivalent proof, and the sibling issue if any.
 
 When the task can mutate coupled representations of one artifact, always add a
 plan-risk seed for atomicity. Examples: JSON + BIN, model + cache artifact,
@@ -158,7 +188,7 @@ found`.
 
 ### Step 6: Ready briefing — END OF THIS SKILL
 
-Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the Step 5b AC-to-primitive cross-check verdict for every AC that cited a primitive (codified / wrong-shape with proposed split)**, the Step 5c plan-risk handoff, and the Step 5d sibling-draft inventory.
+Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the intent lens**, **the Step 5b AC-to-primitive cross-check verdict for every AC that cited a primitive (codified / wrong-shape / verification-example / sibling-owned)**, the Step 5c plan-risk handoff, and the Step 5d sibling-draft inventory.
 
 After the briefing, **end the turn**. Do NOT edit code. Do NOT write a plan doc inside this skill. The Ready briefing is the only output.
 
