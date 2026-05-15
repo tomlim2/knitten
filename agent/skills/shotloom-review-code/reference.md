@@ -1,10 +1,51 @@
 # shotloom-review-code reference
 
-**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The patterns below catch additional defect classes the in-repo spec does not directly enforce (doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage).
+**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The test-code review lens and patterns below catch additional defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage).
 
 If a Pattern below already overlaps an in-repo §-section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Keep sweeps grep-catchable; semantic-judgment hits move to the subagent's triage column, not into the sweep itself.
 
 ---
+
+## Test Code Review Lens — P2/P3
+
+Test code has a different review surface from production code. Production code
+review protects runtime behavior, public contracts, and safety. Test code
+review protects the quality of the regression signal.
+
+Use this lens for `#[cfg(test)]` modules, integration tests, fixtures, and test
+helpers:
+
+- **Assertion strength — P2:** Assert the behavior under test, not only that a
+  name, item, or container exists. Presence-only checks are acceptable only
+  when topology presence is the full invariant. If the behavior is about
+  animation, parsing, diagnostics, or mutation, assert the relevant data shape
+  as well.
+- **Failure locality — P2:** Matrix tests should report the failing fixture or
+  case directly. Prefer one `#[test]` per meaningful case, a helper macro, or a
+  collected-failures pattern over a single loop that stops at the first case
+  without showing the rest of the matrix.
+- **Fixture rationale — P3:** Curated fixture lists need a short rationale near
+  the constant or table. A maintainer adding a fixture should know whether it
+  belongs in the matrix.
+- **Brittle assertions — P3:** Avoid exact string matches for diagnostic text
+  when a stable prefix, code, enum, or formatted expectation captures the
+  intended contract. Keep numeric cardinality in one assertion instead of
+  duplicating it inside a diagnostic string.
+- **Intentional partial fixtures — P3:** If a test omits parents, fields, or
+  branches on purpose, add a short comment naming the invariant. The comment is
+  useful when "fixing" the omission would change what the test exercises.
+- **Helper duplication — P3:** Duplicate fixture loaders and mirrored structs
+  are acceptable in integration-test binaries when sharing would add churn, but
+  call out intentional mirrors with a short comment. Factor them into
+  `tests/common/` when three or more tests need the same shape or when fields
+  change often.
+- **Green-run output — P3:** Avoid unconditional `println!` / `eprintln!` in
+  tests. Failure messages should carry the diagnostic context. Gate debug
+  traces behind an env var when green-run observability is actually needed.
+
+Do not apply production-path panic discipline to test helpers mechanically:
+descriptive `expect`, `unwrap`, and `panic!` are permitted in tests per
+`review-rust.md` §2.
 
 ## Pattern A — Doc ↔ Code coherence
 

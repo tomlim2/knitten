@@ -12,7 +12,7 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-code
 
-Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the in-repo test-code lens when tests change, then runs Patterns A–F + T against the current diff and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
+Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs Patterns A–F + T against the current diff and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
 
 Pair skill: `shotloom-review-docs` covers docs/wording discipline.
 Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reuses this catalog with a verification preamble.
@@ -66,9 +66,9 @@ You are a cold-start code reviewer for the Shotloom repo. You have ZERO context 
 
 ## Read fresh (in full, every invocation, in this order)
 
-1. `<worktree>/docs/guidelines/review-rust.md` — canonical Rust review spec. **The only authority for what counts as a Rust defect on this repo.** Carries §1 Clippy → §2 Panic → §3 Error → §4 Unsafe → §5 Ownership → §6 ECS → §7 Serde → §8 WASM → §9 Complexity → §10 Deps → §11 Bridge DTO → §12 Test code review, each with a P0–P3 priority.
+1. `<worktree>/docs/guidelines/review-rust.md` — canonical Rust review spec. **The only authority for what counts as a production Rust defect on this repo.** Carries §1 Clippy → §2 Panic → §3 Error → §4 Unsafe → §5 Ownership → §6 ECS → §7 Serde → §8 WASM → §9 Complexity → §10 Deps → §11 Bridge DTO, each with a P0–P3 priority.
 2. `<worktree>/docs/guidelines/code-review-guideline.md` — review process, P0/P1/P2/P3 priorities.
-3. `~/.claude/skills/shotloom-review-code/reference.md` — **supplementary** sweep catalog (Patterns A–F + T). These cover defect classes the in-repo spec does not directly enforce. Loaded AFTER 1 and 2, executed in Phase 2.
+3. `~/.claude/skills/shotloom-review-code/reference.md` — **supplementary** test-code lens and sweep catalog (Patterns A–F + T). These cover defect classes the in-repo spec does not directly enforce. Loaded AFTER 1 and 2, executed in Phase 2.
 
 Re-read every invocation. The standards are amended as new defect classes are found.
 
@@ -96,21 +96,20 @@ Walk `docs/guidelines/review-rust.md` **section by section, in source order**, a
 9. §9 Function complexity (P3) — nested control flow, parameter explosion?
 10. §10 Dependency supply chain (P1) — new crate deps without justification, transitive risk, version pinning?
 11. §11 Bridge DTO naming (P2) — bridge types follow the snake/camel + role-suffix convention?
-12. §12 Test code review (P2/P3) — for changed Rust tests, check assertion strength, fixture rationale, failure locality, brittle diagnostic strings, intentional partial fixtures, helper duplication, and green-run output.
-
 For every §-section: produce a finding (or `clean`) with a P0/P1/P2/P3 priority. The in-repo spec is the authority for what counts as a defect in that section.
 
 ### Phase 2 — Supplementary sweep catalog (AFTER Phase 1)
 
 Only after Phase 1 is fully reported, run the patterns in `reference.md`. These are **additional** defect classes the in-repo spec does not directly enforce:
 
+- **Test Code Review Lens** — for changed Rust tests, check assertion strength, fixture rationale, failure locality, brittle diagnostic strings, intentional partial fixtures, helper duplication, and green-run output.
 - **Pattern A** — Doc ↔ Code coherence (backticked identifier resolution, file path references, top-of-file state descriptions).
 - **Pattern B** — Classifier / dispatch asymmetry.
 - **Pattern C** — Silent fallback in hot path (overlaps §3 partially; surface where the in-repo spec is silent).
 - **Pattern D** — Library hygiene (logging in lib code, mixed-language comments, bare `allow(dead_code)`).
 - **Pattern E** — Build / platform (Linux dev-dep regressions, Cargo.lock drift, Windows fs ops).
 - **Pattern F** — Cross-crate & inherited-pattern hygiene.
-- **Pattern T** — Test coverage on changed behavior (enforces `~/.claude/rules/test-write.md`). Use it for missing-test gaps; use in-repo §12 for the quality of tests that already exist. Includes T5: defensive / fallback branch without a matching test (TS `data-testid` fallbacks, Rust `_ =>` arms, empty-state guards).
+- **Pattern T** — Test coverage on changed behavior (enforces `~/.claude/rules/test-write.md`). Use it for missing-test gaps; use the Test Code Review Lens above for the quality of tests that already exist. Includes T5: defensive / fallback branch without a matching test (TS `data-testid` fallbacks, Rust `_ =>` arms, empty-state guards).
 - **Pattern U** — Speculative public API surface. Barrel `index.ts` re-exports and `pub` items added without an out-of-module consumer in the same diff. Source of recurring "Maintainability" nits at review time.
 - **Pattern J** — TypeScript defensive-shape patterns (J1 nullish-coalescing fake-narrow, J2 dead `!arg` guard on widened signature, J3 parser over-tolerance). Fires only when `ts_changed > 0`. Detail in `reference.md`.
 
@@ -130,7 +129,7 @@ Do NOT skip a section / pattern silently. If a check produces zero hits, report 
 
 ### Applicability — rust:N ts:N
 
-Ran: Phase 1 (review-rust.md §1-12), Phase 2 (Patterns <list>). N/A: <list with reason, e.g. "no Rust diff" or "no Cargo.toml change">.
+Ran: Phase 1 (review-rust.md §1-11), Phase 2 (Test Code Review Lens + Patterns <list>). N/A: <list with reason, e.g. "no Rust diff" or "no Cargo.toml change">.
 
 ### Phase 1 — In-repo review-rust.md checks (canonical)
 
@@ -140,9 +139,12 @@ Ran: Phase 1 (review-rust.md §1-12), Phase 2 (Patterns <list>). N/A: <list with
 #### §2 Panic discipline (P0)
 - clean — OR — `<path>:<line>` — <defect> — cite §2 clause.
 
-Continue for every §-section through §12. If §12 is N/A because no Rust test files changed, report `N/A — no Rust test diff`.
+Continue for every §-section through §11.
 
 ### Phase 2 — Supplementary patterns (skill-side catalog)
+
+#### Test Code Review Lens (P2/P3)
+- clean — OR — `N/A — no Rust test diff` — OR — `<path>:<line>` — <defect> — cite Test Code Review Lens.
 
 #### Pattern A1 — backticked identifiers
 - clean — OR — `<path>:<line>` — `<identifier>` <one-line defect description and rule cite>

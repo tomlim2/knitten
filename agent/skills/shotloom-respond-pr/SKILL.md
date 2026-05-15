@@ -137,7 +137,7 @@ After a fix lands, confirm it aligns with the rules in `docs/guidelines/review-r
 
 For each resolved finding:
 1. Re-read `docs/guidelines/review-rust.md` and `docs/guidelines/code-review-guideline.md`.
-2. **Match existing rules first.** If the finding maps to an existing rule, note the section name in the capture block. For Rust test comments, try `review-rust.md` §12 "Test code review" before falling back to broad P2/P3 language in `code-review-guideline.md`.
+2. **Match existing rules first.** If the finding maps to an existing rule, note the section name in the capture block. For Rust test comments, try the skill-side `shotloom-review-code/reference.md` "Test Code Review Lens" before falling back to broad P2/P3 language in `code-review-guideline.md`.
 3. **If nothing matches**, flag as a potential new-rule candidate to surface to the user. Do NOT silently amend the in-repo spec from this skill — that requires its own PR.
 
 Filters:
