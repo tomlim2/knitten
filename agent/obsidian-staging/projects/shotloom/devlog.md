@@ -77,3 +77,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #340 wrapup에서 exact assertion 책임, fixture matrix rationale, integration behavior pin 지적을 기록.
 - 배운 것: test invariant는 count, wording, behavior survival을 별도 assertion으로 분리한다.
 - [[shotloom/days/day-08|상세]]
+
+## Day 9 (05-15): PR #341 wrapup
+- PR #341 wrapup에서 schema mismatch source chain, validation guard tests, resolver diagnostics 역할 분리를 기록.
+- 배운 것: parser/resolver PR은 typed cause, negative guard, partial resolve contract를 각각 pin해야 한다.
+- [[shotloom/days/day-09|상세]]
