@@ -17,6 +17,7 @@ briefing: ../briefings/shotloom/engine-reuse-debug-cube-assets.md
 - Current truth: `origin/main` already has `spawn_background_props`, normal GLB prop spawning through `crate::entity::spawn_prop`, and `Cube.glb` stage-map fixture references.
 - Required change: prove stage debug cubes use the normal `Cube.glb` prop path and do not grow direct Bevy mesh/material asset storage across repeated batches.
 - Locked boundary: no `clear_background_props`, no bridge protocol change, no parser/resolver change, no synthetic `StageDebugCubeAssets` unless live code proves the GLB path cannot satisfy the leak proof.
+- One-PR suitability: one focused engine test PR is sufficient when the existing GLB path passes; production code, bridge, editor, parser, clear-all, and WASM output stay out of scope unless the regression fails.
 - Proof method: focused engine regression for floor/wall/obstacle/block debug placements, stable `Assets<Mesh>` / `Assets<StandardMaterial>` counts, shared `SceneRoot`, plus `cargo check -p shotloom-engine`.
 
 ## Current State
