@@ -1,5 +1,5 @@
 ---
-description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; write one plan artifact, commit only clean direct plans, then stop
+description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; commit clean direct plans, then immediately run review-task-plan
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 ---
@@ -7,8 +7,9 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls
 # shotloom-draft-task-plan
 
 Plan-phase companion to `/shotloom-start-task`. Audit live Shotloom code, write
-one plan artifact, commit and push only a clean direct plan, then stop.
-Implementation needs a later user message.
+one plan artifact, commit and push only a clean direct plan, then immediately
+run `/shotloom-review-task-plan <slug>` on that plan. Implementation needs a
+later user message after the review skill finishes.
 
 ## Mandatory Contract
 
@@ -186,11 +187,22 @@ fail, fix the cause and retry. Never use `--no-verify`.
 Commit only `docs/plans/<slug>.md` unless the user explicitly requested skill
 or doc edits in the same turn.
 
-### Step 7: Report and Stop
+### Step 7: Chain to Review or Stop
 
-Emit `plan doc landed at <plan_path>` and
-`Implementation needs a separate go-ahead.` Then end the turn. Do not edit
-Shotloom source files in this skill.
+If Step 6b committed and pushed a direct plan at `$plan_path`, immediately run:
+
+```bash
+/shotloom-review-task-plan "$slug"
+```
+
+Let `/shotloom-review-task-plan` own the final report, review-plan commit, and
+implementation go-ahead reminder.
+
+If Step 6a wrote a suffix artifact (`.draft.md`, `.partial.md`, or
+`.claude.md`), report the artifact path and blocker, then stop. Do not run
+review-task-plan on non-direct artifacts.
+
+Do not edit Shotloom source files in this skill.
 
 ## Binding Rules
 
@@ -201,7 +213,8 @@ Shotloom source files in this skill.
 - External agents are reviewers only. They return `P1` / `P2` / `P3` findings
   against the current canonical draft. Continue review/patch rounds until only
   `P3`/nit findings remain.
-- One plan artifact, one direct-plan commit.
+- One plan artifact, one direct-plan commit, then one automatic
+  `/shotloom-review-task-plan <slug>` run for direct plans only.
 - Plan is not implementation. Source edits need a later user request.
 - Protocol changes, multi-file `.gltf` support, dependencies, ADRs, and broad
   UX changes require explicit scope.
