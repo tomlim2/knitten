@@ -84,17 +84,21 @@ prevention for stage debug cubes. `clear_background_props` was absent on
 | Start-task action | Do not block STL-437 on clear. Seed equivalent proof: repeated debug cube spawn batches keep mesh/material counts stable after cache warm-up. |
 | Ask-first only if | The implementation would need to add or edit `clear_background_props`, TypeScript mirrors, or bridge contract scope. |
 
-## Plan-risk seed taxonomy
+## Spec-risk seed taxonomy
 
 | Priority | Seed type | Examples |
 |---|---|---|
-| P1 | Likely implementation rework if not locked in the plan. | API signatures, caller-owned inputs, existing helper removal, diagnostic message ownership, event ordering, public surface area, old path replacement. |
-| P2 | Likely review ambiguity if omitted. | Edge cases, negative tests, snapshots, fixture coverage, manual repro details, invariant preservation, docs updates, out-of-scope boundaries. |
+| P1 | Likely implementation rework if not locked in the spec contract. | Requirements trace, API signatures, caller-owned inputs, existing helper removal, diagnostic message ownership, event ordering, public surface area, old path replacement. |
+| P2 | Likely validation ambiguity if omitted. | Edge cases, negative tests, snapshots, fixture coverage, manual repro details, invariant preservation, docs updates, out-of-scope boundaries. |
 | P3 | Cheap nits that reduce review churn. | Test layout, naming, markdown rendering, precedent references, future telemetry notes. |
 
-For each seed, record priority, evidence path or `rg` hit, exact plan question,
+For each seed, record priority, evidence path or `rg` hit, exact spec question,
 and AC-trace. If no AC line, ADR, or precedent demands the seed, move it to a
-follow-up note instead of plan-risk handoff.
+follow-up note instead of spec-risk handoff.
+
+Each seed must name the spec section it should affect: `Requirements`,
+`Locked Decisions`, `Non-Goals`, `Implementation Spec`, `Verification`, or
+`Traps`.
 
 ### Coupled artifact atomicity seed
 
@@ -105,7 +109,7 @@ of the same logical artifact in one operation:
 |---|---|
 | Priority | `P1` if partial persistence can corrupt runtime behavior or cache; otherwise `P2`. |
 | Evidence | The first mutation site and the later validation/write site, or cache/persistence boundary. |
-| Plan question | "Can any later failure persist only one side of the artifact? If yes, does the plan pre-validate, rollback, or skip the whole operation?" |
+| Spec question | "Can any later failure persist only one side of the artifact? If yes, does the spec pre-validate, rollback, or skip the whole operation?" |
 | Required verification | Assert final persisted bytes/state/event order, not just internal stats or one unchanged buffer. |
 
 Examples that trigger this seed: GLB JSON + BIN rebake, bundle model + manifest
@@ -121,7 +125,7 @@ rg -n "<fixture/snapshot/test names>" crates apps assets docs
 rg -n "rebuild|cache|persist|write|rebake|inverseBind|manifest|emit|changed_artifact" crates apps docs contracts
 ```
 
-## Sibling draft scan
+## Sibling spec scan
 
 Match liberally: scope, subject, Linear ID, and obvious slug stems. Siblings can
 carry suffixes (`-codex`, `-gemini`, `-v2`) or live one folder above
@@ -140,9 +144,22 @@ git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
 
 ---
 
-## Step 6 — Ready briefing template
+## Step 6 — Ready briefing artifact template
 
-```
+Path: `docs/briefings/shotloom/<slug>.md`
+
+```markdown
+---
+status: ready
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+load: triggered
+trigger: STL-NN
+repo: shotloom
+linear: STL-NN
+spec: ../../plans/<slug>.md
+---
+
 ### Shotloom coding mode — <category>
 
 **Issue:** STL-NN "<title>"
@@ -161,12 +178,12 @@ git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
 **AC primitive cross-check:**
 - <AC id>: <codified | wrong-shape | verification-example | sibling-owned> - <path/section evidence, equivalent proof, sibling owner, or split needed>
 
-**Plan-risk handoff for `/shotloom-draft-task-plan`:**
+**Spec-risk handoff for `/shotloom-draft-task-plan`:**
 - P1: <question to lock before implementation> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent that demands this>
-- P2: <ambiguity/test/doc gap to resolve in the plan> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
+- P2: <ambiguity/test/doc gap to resolve in the spec> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
 - P3: <cheap nit or precedent to review> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent, or related-follow-up>
 
-**Sibling drafts (caol-ila/docs/plans/):**
+**Sibling specs (caol-ila/docs/plans/):**
 - <slug>.md - <working-tree | staged | HEAD | deleted> - stance: <one-line scope summary> - <agrees | disagrees> with this briefing
 - (or: "none found" if Step 5d scan returned empty)
 
@@ -177,10 +194,11 @@ git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
 - [x] category: <category>
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
-- [x] plan-risk handoff seeded
-- [x] sibling-draft scan run (caol-ila/docs/plans/, full body via Read tool for every match)
+- [x] spec-risk handoff seeded
+- [x] sibling-spec scan run (caol-ila/docs/plans/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.
 ```
 
-Emit exactly this. No code, no plan, no extra prose until the user confirms.
+Write exactly this artifact and emit the same briefing in chat with the
+briefing path. No code, no spec, no extra prose until the user confirms.

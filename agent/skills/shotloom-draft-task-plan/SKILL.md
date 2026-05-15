@@ -1,56 +1,51 @@
 ---
-description: Draft cold-start Shotloom task plans after live code audit and iterative self-review; commit clean direct plans, then immediately run review-task-plan
+description: Author cold-start Shotloom task specs after live code audit and contract validation; commit clean direct specs, then immediately run review-task-plan
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 ---
 
 # shotloom-draft-task-plan
 
-Plan-phase companion to `/shotloom-start-task`. Audit live Shotloom code, write
-one plan artifact, commit and push only a clean direct plan, then immediately
-run `/shotloom-review-task-plan <slug>` on that plan. Implementation needs a
-later user message after the review skill finishes.
+Task-spec authoring companion to `/shotloom-start-task`. The command name is
+retained for compatibility, but the artifact it writes is a Shotloom task spec.
+Read the persisted Linear briefing, audit live Shotloom code, write one
+requirements/decisions/verification contract, commit and push only a clean
+direct spec plus its briefing, then immediately run
+`/shotloom-review-task-plan <slug>` on that spec. Implementation needs a later
+user message after the review skill finishes.
 
 ## Mandatory Contract
 
-After Step 1 resolves `$plan_path`, every stop writes one `.md` artifact:
+After Step 1 resolves `$spec_path`, every stop writes one `.md` artifact:
 
 | Result | Artifact | Commit |
 |---|---|---|
-| Clean converged plan | `<plan_dir>/<slug>.md` | Yes |
-| Step 2 factual stop | `<plan_dir>/<slug>.draft.md` | No |
-| Unconverged draft | `<plan_dir>/<slug>.partial.md` | No |
-| Parallel or staged-delete plan | `<plan_dir>/<slug>.claude.md` | No |
+| Clean converged spec | `$caol_ila/docs/plans/<slug>.md` + `$caol_ila/docs/briefings/shotloom/<slug>.md` | Yes |
+| Step 2 factual stop | `$caol_ila/docs/plans/<slug>.draft.md` | No |
+| Unconverged draft | `$caol_ila/docs/plans/<slug>.partial.md` | No |
+| Parallel or staged-delete spec | `$caol_ila/docs/plans/<slug>.claude.md` | No |
 
 Pre-Step-1 failures stop without writing because no target path exists.
 
 ## Purpose
 
-This skill is a cold-start plan author, not a briefing formatter. Linear and the
-Ready briefing are inputs; live Shotloom code is canonical evidence. Already-done
-briefing items become current-state evidence. Ambiguous implementation choices
-go in `## Locked Decisions`. Missing primitives or scope expansion create a
-`.draft.md` conflict artifact.
+This skill authors a task spec, not an implementation checklist or briefing.
+The spec is a pre-implementation contract: it locks requirements, evidence,
+decisions, non-goals, verification, and traps before source edits begin. The
+persisted Ready briefing is the required handoff input; live Shotloom code is
+canonical evidence. Missing primitives or scope expansion create a `.draft.md`
+conflict artifact.
 
 ## Arguments
 
-- `[slug]` - optional kebab-case plan slug.
+- `[slug]` - optional kebab-case spec slug.
 - Without `[slug]`, derive from current branch body after `<type>/`.
 - If branch is `main`, `HEAD`, or lacks `/`, show usage and stop.
 - Never invent a slug.
 
-## Preconditions
-
-- `/shotloom-start-task` has run and the user accepted the Ready briefing.
-- cwd is inside Shotloom main checkout or a Shotloom worktree.
-- `caol-resolve-doc-path` resolves `shotloom` and `caol-ila`.
-- Pre-Step-1 failure: report and stop.
-
 ## Workflow
 
 ### Step 1: Resolve Inputs
-
-Run:
 
 ```bash
 branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -62,8 +57,6 @@ shotloom_root="${shotloom_root#RESOLVED_PATH=}"
 caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
 caol_ila="${caol_ila#RESOLVED_PATH=}"
 ```
-
-Derive `slug`:
 
 ```bash
 if [ -n "$1" ]; then
@@ -78,17 +71,20 @@ fi
 ```
 
 Verify:
+- `/shotloom-start-task` has run and the user accepted the Ready briefing.
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
 - `$caol_ila/docs/plans/` exists.
+- `$caol_ila/docs/briefings/shotloom/$slug.md` exists.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Set `plan_path="$caol_ila/docs/plans/$slug.md"`. Surface plan slug, target,
-and Shotloom root.
+Set `spec_path="$caol_ila/docs/plans/$slug.md"`. Surface spec slug, target,
+briefing path, and Shotloom root.
 
 ### Step 2: Run Current-State Audit
 
-Before drafting, search the live Shotloom tree. Choose terms from Linear,
-branch, Ready briefing, AC, ADR, and affected modules. Search examples:
+Read `briefing_path="$caol_ila/docs/briefings/shotloom/$slug.md"` first. Before
+authoring, search the live Shotloom tree. Choose terms from the briefing,
+Linear, branch, AC, ADR, and affected modules. Search examples:
 [reference.md](reference.md).
 
 Read matching source files that define wire shape, handler branch, editor entry
@@ -101,72 +97,49 @@ Factual stop conditions:
 2. Out-of-briefing expansion: scope forces protocol change, dependency, ADR, or
    multi-file import design absent from the briefing.
 
-If a stop condition fires, draft the conflict report as `.draft.md` in Step 6a,
+If a stop condition fires, write the conflict report as `.draft.md` in Step 6a,
 skip commit, then ask for the split or scope decision.
 
 ### Step 3: Detect Create vs Update Mode
 
-Inspect `$plan_path`, `git status`, and `git show HEAD:docs/plans/<slug>.md`.
+Inspect `$spec_path`, `git status`, and `git show HEAD:docs/plans/<slug>.md`.
 Use Read for files present on disk. Use `git show HEAD:<path>` only for
 HEAD-only or deleted-at-HEAD content.
 
 | Disk | Index | HEAD | Action |
 |---|---|---|---|
-| absent | absent | absent | Create direct plan. |
-| present | committed | matches | Update direct plan in place. Surface current title and `status` first. |
+| absent | absent | absent | Create direct spec. |
+| present | committed | matches | Update direct spec in place. Surface current title and `status` first. |
 | absent | staged-delete | present | Write `.claude.md`; ask which body to keep. |
 | present untracked | absent | present different | Write `.claude.md`; ask whether to overwrite, keep suffix, or stop. |
 
-### Step 4: Draft Plan Body
+### Step 4: Author Spec Contract
 
-Use the frontmatter, section order, and body rules in [reference.md](reference.md).
-
-Draft around the audited remaining gap. Do not restate Linear verbatim. Do not
-list complete work as future work. Use concrete file paths. Verify every `add`
+Use the schema, section order, and body rules in [reference.md](reference.md).
+Author around the audited remaining gap. Do not restate Linear verbatim or list
+complete work as future work. Use concrete file paths. Verify every `add`
 target is missing and every `reuse` target is named.
 
-For any plan that mutates coupled representations of one artifact, explicitly
-lock the atomicity invariant before implementation. Examples: JSON + BIN,
-model + cache artifact, command state + event, serialized bundle + index,
-thumbnail cache + manifest. The plan must say what happens when the second
-mutation fails, and the verification must assert the final persisted artifact,
-not only intermediate counters or one side of the mutation.
+The spec must answer four questions before any implementation stage appears:
 
-When the plan adds or changes Rust fixture/matrix tests, include a short test
-shape note: why those fixtures are in the matrix, whether each fixture gets its
-own `#[test]` or a collected-failures loop, which assertion proves behavior
-beyond presence, and whether any test output is intentionally env-gated.
+| Question | Required answer |
+|---|---|
+| What exists now? | Current-state evidence table with paths and symbols. |
+| What must change? | Problem statement and acceptance criteria tied to Linear/user intent. |
+| What is locked? | Decisions, rejected alternatives, non-goals, invariants, and ownership. |
+| How is it proven? | Verification gates, manual repro, and failure-path evidence. |
 
-When the plan adds or changes Rust error types, parsers, loaders, validators,
-or external error conversions, include an error-source-chain note before the
-implementation stages. The note must identify every wrapped external error
-type, whether the plan preserves it with `#[source]` / typed fields, and which
-tests prove `std::error::Error::source()` is present or intentionally absent.
-Treat `external_error.to_string()` stored in a `String` field as a `P2` plan
-gap unless the plan explicitly says no source chain exists to preserve.
+Apply the specialized clauses in [reference.md](reference.md) for coupled
+artifact atomicity, Rust fixture shape, and error-source-chain proof.
 
-### Step 5: Cold-Start Review Until Only Nits Remain
+### Step 5: Validate Spec Contract Until Only Nits Remain
 
-Review the draft through the cold-start review loop in
-[reference.md](reference.md). Round 1 is context collection and suitability:
-re-read Linear context, related issues, live code, current docs, sibling plans,
-and repo state; decide whether the plan is appropriate for one PR. Patch the
-plan before continuing.
-
-Round 2 and later must use different review stances from the previous round.
-At least one round for Rust parser/loader/validator work must be an
-error-source-chain pass: inspect planned `thiserror` enums, `#[source]`
-attachments, `From`/`map_err` conversions, and any `String` fields that might
-flatten an external error. Patch the plan after every round with `P1` or `P2`
-findings, then re-check the patched claims against source. Keep looping until
-only `P3` / nit findings remain. Nit-only means the plan can proceed; do not
-block or keep polishing forever on harmless wording. Severity: `P1` wrong
-API/layer/scope or not-one-PR scope, `P2` missing required test/doc/edge/
-invariant/error branch or source-chain proof, `P3` cheap cleanup/nit.
-
-Convergence requires first-round context collection, explicit one-PR suitability
-judgment, sibling draft consumption, structural floor checks, and zero
-unhandled `P1`/`P2`. Details: [reference.md](reference.md).
+Validate through the loop in [reference.md](reference.md): first-round context
+collection, explicit one-PR suitability, sibling spec consumption, rotated
+stances, structural floor checks, and zero unhandled `P1`/`P2`. Patch every
+`P1`/`P2`, re-check claims against source, then continue until only `P3`/nit
+findings remain. For Rust parser/loader/validator work, include an
+error-source-chain pass.
 
 If convergence changes requested scope, write `.draft.md`, skip commit, and ask.
 
@@ -175,38 +148,39 @@ If convergence changes requested scope, write `.draft.md`, skip commit, and ask.
 #### Step 6a: Write Artifact
 
 Write exactly one artifact according to the Mandatory Contract table. If a
-clean plan cannot land, write the best current draft under the correct suffix
+clean spec cannot land, write the best current candidate under the correct suffix
 and report the blocker.
 
-#### Step 6b: Commit Direct Plan Only
+#### Step 6b: Commit Direct Spec Only
 
-Continue only when Step 6a wrote directly to `$plan_path`.
+Continue only when Step 6a wrote directly to `$spec_path`.
 
 From `caol-ila`:
 
 ```bash
 git config user.name
 git config user.email
+git add docs/briefings/shotloom/<slug>.md
 git add docs/plans/<slug>.md
-git commit -m "plan(shotloom): <slug>"
+git commit -m "docs(shotloom): spec <slug>"
 git push
 ```
 
 Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. If hooks
 fail, fix the cause and retry. Never use `--no-verify`.
 
-Commit only `docs/plans/<slug>.md` unless the user explicitly requested skill
-or doc edits in the same turn.
+Commit only `docs/briefings/shotloom/<slug>.md` and `docs/plans/<slug>.md`
+unless the user explicitly requested skill or doc edits in the same turn.
 
 ### Step 7: Chain to Review or Stop
 
-If Step 6b committed and pushed a direct plan at `$plan_path`, immediately run:
+If Step 6b committed and pushed a direct spec at `$spec_path`, immediately run:
 
 ```bash
 /shotloom-review-task-plan "$slug"
 ```
 
-Let `/shotloom-review-task-plan` own the final report, review-plan commit, and
+Let `/shotloom-review-task-plan` own the final report, review-spec commit, and
 implementation go-ahead reminder.
 
 If Step 6a wrote a suffix artifact (`.draft.md`, `.partial.md`, or
@@ -218,21 +192,14 @@ Do not edit Shotloom source files in this skill.
 ## Binding Rules
 
 - Audit before write. Live Shotloom code outranks Linear and briefing text.
-- After `$plan_path` resolves, every stop writes a direct or suffix `.md`.
+- The persisted briefing is mandatory input. Do not author a spec from chat
+  memory alone.
+- After `$spec_path` resolves, every stop writes a direct or suffix `.md`.
 - Implementation-choice ambiguity goes in `## Locked Decisions`.
 - Factual stop conditions stop before commit, not before writing.
-- External agents are reviewers only. They return `P1` / `P2` / `P3` findings
-  against the current canonical draft. Continue review/patch rounds until only
-  `P3`/nit findings remain.
-- One plan artifact, one direct-plan commit, then one automatic
-  `/shotloom-review-task-plan <slug>` run for direct plans only.
-- Plan is not implementation. Source edits need a later user request.
+- One briefing artifact, one task spec artifact, one direct-spec commit, then one automatic
+  `/shotloom-review-task-plan <slug>` run for direct specs only.
+- Spec is not implementation. Source edits need a later user request.
 - Protocol changes, multi-file `.gltf` support, dependencies, ADRs, and broad
   UX changes require explicit scope.
 - No `--no-verify`.
-
-## Related
-
-`/shotloom-start-task`, `/shotloom-review-task-plan`,
-`~/.claude/rules/shotloom.md`, `caol-ila/docs/plans/`,
-[reference.md](reference.md).

@@ -1,7 +1,7 @@
 ---
-description: Pre-write gate for Shotloom coding - Linear fetch, worktree setup, convention re-read, plan-risk handoff, Ready briefing
+description: Pre-write gate for Shotloom coding - Linear fetch, worktree setup, convention re-read, persisted briefing, spec-risk handoff
 argument-hint: "[STL-NN | linear-url | category]"
-allowed-tools: Read, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
 ---
 
 # shotloom-start-task
@@ -73,7 +73,7 @@ Do not turn an AC's incidental workflow wording into a blocker when the stated
 problem can be proved on `origin/main` with an equivalent or stronger
 verification. Example: if an AC says `spawn -> clear -> spawn` but the issue
 intent is GPU asset leak prevention and `clear` belongs to a sibling issue,
-seed a plan question for stable asset counts after repeated spawn batches
+seed a spec question for stable asset counts after repeated spawn batches
 instead of blocking the task on the absent clear command.
 
 If no identifier is found, skip Step 2.5 and rely on git state for category
@@ -155,15 +155,17 @@ rejecting:
 
 Use the issue problem statement and user clarifications to decide the row.
 
-### Step 5c: Seed the plan-review loop (mandatory)
+### Step 5c: Seed the spec-validation loop (mandatory)
 
 Before the Ready briefing, run targeted `rg` searches for identifiers named by
 Linear, branch, AC, or affected modules. Search examples: `reference.md`.
 
 Read only matching definitions needed for the briefing. Record P1/P2/P3 seeds
-with evidence, exact plan question, and AC/ADR/precedent trace. If a seed lacks
-that trace, move it to follow-up notes. If a seed implies scope change, mark it
-as ask-first. Full taxonomy: `reference.md`.
+with evidence, exact spec question, and AC/ADR/precedent trace. Each seed must
+target the future spec contract: requirements, locked decisions, non-goals,
+implementation stages, verification, or traps. If a seed lacks that trace, move
+it to follow-up notes. If a seed implies scope change, mark it as ask-first.
+Full taxonomy: `reference.md`.
 
 Include at least one intent-preserving verification seed when the literal AC
 mentions a sibling-owned or absent workflow step but the failure mode can still
@@ -171,58 +173,73 @@ be proved on the current base. The seed must name the original AC wording, the
 intent lens, the proposed equivalent proof, and the sibling issue if any.
 
 When the task can mutate coupled representations of one artifact, always add a
-plan-risk seed for atomicity. Examples: JSON + BIN, model + cache artifact,
+spec-risk seed for atomicity. Examples: JSON + BIN, model + cache artifact,
 state + event, serialized bundle + index, thumbnail bytes + manifest. The seed
-asks whether the plan pre-validates every later write before the first mutation,
+asks whether the spec pre-validates every later write before the first mutation,
 rolls back on partial failure, or proves partial persistence impossible.
 
-### Step 5d: Sibling-draft scan (mandatory)
+### Step 5d: Sibling spec scan (mandatory)
 
 Before the Ready briefing, scan `caol-ila/docs/plans/` and `caol-ila/docs/`
-for sibling plan artifacts whose slug overlaps the work at hand. Commands:
+for sibling spec artifacts whose slug overlaps the work at hand. Commands:
 `reference.md`.
 
 Read every match in full with the Read tool. Record slug, status, stance, and
-disagreement signal. If zero siblings are found, write `Sibling drafts: none
+disagreement signal. If zero siblings are found, write `Sibling specs: none
 found`.
 
-### Step 6: Ready briefing — END OF THIS SKILL
+### Step 6: Write Ready Briefing — END OF THIS SKILL
 
-Emit the compact briefing (template in reference.md) showing issue, branch, standards loaded, ADRs, ask-first triggers, pre-write checklist, **plus the intent lens**, **the Step 5b AC-to-primitive cross-check verdict for every AC that cited a primitive (codified / wrong-shape / verification-example / sibling-owned)**, the Step 5c plan-risk handoff, and the Step 5d sibling-draft inventory.
+Resolve the task slug from the created/current branch body after `<type>/`.
+Write the compact briefing to
+`$caol_ila/docs/briefings/shotloom/<slug>.md` using the template in
+`reference.md`. Create the directory if absent.
 
-After the briefing, **end the turn**. Do NOT edit code. Do NOT write a plan doc inside this skill. The Ready briefing is the only output.
+The briefing must show issue, branch, standards loaded, ADRs, ask-first
+triggers, pre-write checklist, **plus the intent lens**, **the Step 5b
+AC-to-primitive cross-check verdict for every AC that cited a primitive
+(codified / wrong-shape / verification-example / sibling-owned)**, the Step 5c
+spec-risk handoff, and the Step 5d sibling-spec inventory.
+
+Emit the same briefing content in chat plus the briefing path.
+
+After the briefing, **end the turn**. Do NOT edit code. Do NOT write a task spec
+doc inside this skill. Do NOT commit yet; `/shotloom-draft-task-plan` commits
+the briefing and spec together only after a clean direct spec lands.
 
 Tell the user explicitly what comes next:
 
-> "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (플랜 문서 작성 + 커밋/푸시 후 정지). 구현은 플랜 검토가 끝나고 별도 지시 후 시작."
+> "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (브리핑 문서 기반 태스크 스펙 작성 + 브리핑/스펙 커밋/푸시 후 정지). 구현은 스펙 검토가 끝나고 별도 지시 후 시작."
 > "구현이 끝나고 커밋/푸시한 뒤 PR을 만들기 전에는
 > `/shotloom-review-before-pr`를 실행해야 합니다. `/shotloom-make-pr`는
 > 이 리뷰가 아직 안 돌았다면 먼저 트리거하거나, 트리거할 수 없는
 > 환경에서는 실행하라고 멈춰야 합니다."
 
-**Plan ↔ implementation are two distinct gates.** Plan-doc authoring is
+**Spec ↔ implementation are two distinct gates.** Task-spec authoring is
 delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md),
 which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila,
-then stops. Implementation begins only after a separate user message such as
-"구현 시작", "implement", or "go".
+then stops. It reads `caol-ila/docs/briefings/shotloom/<slug>.md` first and
+commits that briefing with the spec. Implementation begins only after a
+separate user message such as "구현 시작", "implement", or "go".
 
 This skill (`/shotloom-start-task`) NEVER:
-- Writes the plan doc itself.
+- Writes the task spec doc itself.
 - Reads worktree source files for the full file-map section (that belongs in
-  `/shotloom-draft-task-plan`'s draft phase). Targeted definition reads for the
-  Step 5c plan-risk handoff are allowed.
+  `/shotloom-draft-task-plan`'s spec-authoring phase). Targeted definition
+  reads for the Step 5c spec-risk handoff are allowed.
 - Edits any code in the worktree.
 
 ## Binding rules
 
 - **Never skip Step 1 pre-flight.** Wrong gh user or wrong repo = hard stop.
 - **Never skip Step 3 re-read.** Stale memory is the #1 cause of CHANGES_REQUESTED.
-- **Never skip Step 5c plan-risk handoff.** The draft-plan skill needs seeded
-  P1/P2 questions before it starts its own review loop.
+- **Never skip Step 5c spec-risk handoff.** The task-spec authoring skill needs
+  seeded P1/P2 questions before it validates the spec contract.
 - **Never open a PR without running `/shotloom-review-before-pr` first.** The
   persistent push/PR rule lives in `~/.claude/rules/shotloom.md`.
 - If Linear MCP fetch fails, report the error but continue — use branch/commit hints.
-- The Ready briefing is the **only** output at Step 6. No code, no plan, no extra prose until user confirms.
+- The Ready briefing markdown file and matching chat briefing are the **only**
+  outputs at Step 6. No code, no spec, no extra prose until user confirms.
 - If user says "skip pre-flight" / "already did this", log the decision and skip Step 3 only — never skip Step 1.
 
 ## Additional Resources
