@@ -67,3 +67,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #336, #335, #332 wrapup에서 review findings와 local worktree cleanup rule을 기록.
 - 배운 것: PR footer와 실제 Linear 완료 범위가 충돌하면 PR body linkage를 먼저 고친다.
 - [[shotloom/days/day-06|상세]]
+
+## Day 7 (05-15): PR #337 wrapup
+- PR #337 wrapup에서 schema/prose ownership, Euler convention, path-safety guard, POC boundary 지적을 기록.
+- 배운 것: contract prose는 schema field shape를 반복하지 않고 behavior와 boundary만 설명한다.
+- [[shotloom/days/day-07|상세]]
