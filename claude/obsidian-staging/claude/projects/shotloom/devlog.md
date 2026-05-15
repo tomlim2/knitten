@@ -62,3 +62,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #313에서 GLB fixture provenance, default-empty assertion, fixture path helper, attribution discoverability 지적을 기록.
 - 배운 것: binary fixture는 source/license/LFS/discoverability까지 함께 test contract로 다뤄야 한다.
 - [[shotloom/days/day-05|상세]]
+
+## Day 6 (05-15): Shotloom merged PR wrapup
+- PR #336, #335, #332 wrapup에서 review findings와 local worktree cleanup rule을 기록.
+- 배운 것: `Part of` PR은 merged여도 parent Linear issue를 Done으로 닫지 않는다.
+- [[shotloom/days/day-06|상세]]
