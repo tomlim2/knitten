@@ -82,3 +82,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #341 wrapup에서 schema mismatch source chain, validation guard tests, resolver diagnostics 역할 분리를 기록.
 - 배운 것: parser/resolver PR은 typed cause, negative guard, partial resolve contract를 각각 pin해야 한다.
 - [[shotloom/days/day-09|상세]]
+
+## Day 10 (05-15): PR #342 wrapup
+- PR #342 wrapup에서 bridge batch caps, ownership tag authority, bounded diagnostics, rollback warning order, ruleset merge gate를 기록.
+- 배운 것: bridge batch command는 partial success 이전에 envelope bound와 ownership namespace를 먼저 잠근다.
+- [[shotloom/days/day-10|상세]]
