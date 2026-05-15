@@ -46,6 +46,7 @@ agent/*.log
 agent/logs/
 agent/temp/
 agent/tmp/
+tmp/
 
 # Python cache
 __pycache__/
@@ -66,6 +67,7 @@ claude/skills/skill-server/package-lock.json
 
 # Claude Code session logs
 *.txt
+!agent/skills/**/LICENSE.txt
 
 # OS files
 .DS_Store
