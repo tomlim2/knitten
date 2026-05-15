@@ -3,235 +3,220 @@ status: open
 created: 2026-05-15
 updated: 2026-05-15
 load: triggered
-trigger: working STL-437 - stage debug cube mesh/material asset reuse
+trigger: STL-437
 repo: shotloom
 linear: STL-437
+briefing: ../briefings/shotloom/engine-reuse-debug-cube-assets.md
 ---
 
 # Reuse stage debug cube render assets
 
-## Cold-Start Summary
+## Spec Contract
 
-`origin/main` already has the durable `spawn_background_props` bridge command,
-background prop placement DTOs, ownership tags, diagnostics, event ordering,
-and broad engine tests. STL-437 should not add or depend on
-`clear_background_props`. The remaining gap is a performance guard for the
-stage-import debug cube path: repeated debug cube batch spawns must reuse one
-cube `Mesh` and one `StandardMaterial` per debug cube kind instead of adding a
-fresh GPU asset per cube. This is a narrow engine/test PR on top of `main`;
-clear-all behavior stays in STL-424.
+- Briefing basis: `docs/briefings/shotloom/engine-reuse-debug-cube-assets.md` records STL-437, the `Cube.glb` user clarification, the `clear_background_props` sibling boundary, and the current dirty test candidate.
+- Current truth: `origin/main` already has `spawn_background_props`, normal GLB prop spawning through `crate::entity::spawn_prop`, and `Cube.glb` stage-map fixture references.
+- Required change: prove stage debug cubes use the normal `Cube.glb` prop path and do not grow direct Bevy mesh/material asset storage across repeated batches.
+- Locked boundary: no `clear_background_props`, no bridge protocol change, no parser/resolver change, no synthetic `StageDebugCubeAssets` unless live code proves the GLB path cannot satisfy the leak proof.
+- Proof method: focused engine regression for floor/wall/obstacle/block debug placements, stable `Assets<Mesh>` / `Assets<StandardMaterial>` counts, shared `SceneRoot`, plus `cargo check -p shotloom-engine`.
 
 ## Current State
 
 | Surface | Path | Classification | Evidence |
 |---|---|---|---|
-| Background spawn DTO | `crates/shotloom-core/src/bridge/mod.rs` | Already Done | `SpawnBackgroundProps { map_id, document_id, source, placements }` uses `BackgroundPropPlacementDto`. |
-| Background spawn handler | `crates/shotloom-engine/src/bridge/handlers/props.rs` | Partial | `spawn_background_props_deferred` prevalidates placements, builds `PropModel`s, calls `crate::entity::spawn_prop`, then emits diagnostics, `PropAdded`, and one `BundleChanged`. |
-| Existing debug cube cache | `feat/stage-import-bridge-poc` WIP | Reference only | WIP has `StageDebugCubeAssets`, `StageDebugCubeKind`, cached mesh/material handles, and a regression test, but it targets an older payload shape. |
-| Clear command | `origin/main` | Missing / Out of scope | No `ClearBackgroundProps` exists on `main`; STL-424 owns clear-all. |
-| Tests | `crates/shotloom-engine/src/bridge/tests/props.rs` | Partial | Background prop tests cover placement, tags, diagnostics, event order, rollback, and duplicate names; no debug cube asset reuse regression exists. |
-| Editor debug fixture precedent | `apps/editor/src/components/debug/__tests__/BackgroundPropTestMap.test.tsx` | Already Done | Existing editor tests use `prop_debug` in background prop payload expectations; the engine plan can reuse that asset id without changing the bridge. |
-| Render asset storage | `Assets<Mesh>`, `Assets<StandardMaterial>` in engine tests | Partial | Existing tests already initialize and count Bevy asset resources for prop rendering cases. |
-| Material policy | `docs/adr/adr-0031-bevy-material-usage-rules.md` | Codified primitive | Proposed ADR allows shared `StandardMaterial` handles and keeps material ownership in `shotloom-engine`. |
-| WASM build | `docs/adr/adr-0017-wasm-vite-integration.md` | Codified primitive | Rust engine changes require `pnpm build:wasm` before the editor consumes updated WASM output. |
+| Linear issue | STL-437 | Source intent | Scope asks for reusable debug cube render assets and a regression named `repeated_debug_cube_spawn_reuses_mesh_and_material_assets`. |
+| User clarification | `docs/briefings/shotloom/engine-reuse-debug-cube-assets.md` | Source intent | Use `Cube.glb`; the prop import location already has that file. Treat the document as a spec, not a plan. |
+| Worktree | `/Users/deemooooooooo/Desktop/www/shotloom-github/.worktrees/engine-reuse-debug-cube-assets` | Partial / dirty | `crates/shotloom-engine/src/bridge/tests/props.rs` already has an uncommitted test-only candidate. |
+| Background prop DTO | `crates/shotloom-core/src/bridge/mod.rs` | Already Done | `BackgroundPropPlacementDto` carries `asset_id`, `transform`, optional object/display fields, and tags. |
+| Background prop command | `crates/shotloom-core/src/bridge/mod.rs` | Already Done | `SpawnBackgroundProps` carries `map_id`, `document_id`, `source`, and resolved placements. |
+| Background prop handler | `crates/shotloom-engine/src/bridge/handlers/props.rs` | Already Done | `spawn_background_props_deferred` validates batch input, builds `PropModel`s, calls `crate::entity::spawn_prop`, rolls back ECS entities on render failure, persists valid props, emits diagnostics, `PropAdded`, then `BundleChanged`. |
+| GLB prop spawn | `crates/shotloom-engine/src/entity.rs` | Already Done | `spawn_prop_with_asset_resolution` uses `AssetServer::load(GltfAssetLabel::Scene(0).from_asset(...))` and inserts `SceneRoot(handle)`. |
+| Cube placeholder | `contracts/stage-map/examples/minimal-stage-map-document.json` | Already Done | Fixture candidate value is `Cube.glb`. |
+| Local prop root | `/Users/deemooooooooo/Downloads/props/Cube.glb` | Available local input | User identified this as the prop import location for the debug cube placeholder. |
+| Existing test area | `crates/shotloom-engine/src/bridge/tests/props.rs` | Partial | Existing tests cover background prop spawn, validation, diagnostics, rollback, duplicate names, and GLB `SceneRoot`; dirty candidate adds the debug cube regression. |
+| Clear command | `origin/main` | Missing / out of scope | No `ClearBackgroundProps` symbol exists; STL-424 owns clear. |
+| WASM policy | `docs/adr/adr-0017-wasm-vite-integration.md` | Applies conditionally | Production Rust changes require WASM build; test-only changes do not alter WASM output. |
+| Material policy | `docs/adr/adr-0031-bevy-material-usage-rules.md` | Applies if production material code changes | Shared material handles are allowed, but this spec prefers the existing GLB material path. |
 
 ## Problem
 
-Map stress cases such as `Map_1038__Stage1` can include many visual debug cubes
-for floor, wall, obstacle, and block cells. If every cube spawn adds a new
-`Mesh` and `StandardMaterial`, repeated POC loads can grow Bevy's GPU asset
-storage in proportion to cube count. The fix should make debug cube rendering
-reuse stable handles while preserving the existing durable background prop
-model mutation, diagnostics, event order, ownership tags, and non-debug prop
-rendering path.
+Stage debug maps can include many floor, wall, obstacle, and block cubes.
+The STL-437 risk is repeated debug loading creating avoidable Bevy render assets.
+On current `main`, the better implementation target is not a new debug-only
+mesh/material cache; it is a proof that debug cubes are normal background props
+using `prop_debug -> assets/props/Cube.glb` and therefore do not directly add
+one `Mesh` or `StandardMaterial` per cube in the engine handler.
+
+## Requirements
+
+1. The implementation must keep debug cube placements on the existing
+   `spawn_background_props` command and `crate::entity::spawn_prop` GLB path.
+   Source: STL-437 intent, user `Cube.glb` clarification, existing bridge command.
+2. The implementation must register or fixture `prop_debug` as an `AssetKind::Prop`
+   with URI `assets/props/Cube.glb` for the engine regression.
+   Source: `Cube.glb` fixture/local prop root evidence.
+3. The regression must cover floor, wall, obstacle, and block debug placements.
+   Source: Linear scope.
+4. The regression must repeat debug cube batches with distinct object/display
+   identities and prove `Assets<Mesh>` and `Assets<StandardMaterial>` counts stay
+   stable after the first batch.
+   Source: leak-prevention intent.
+5. The regression must assert spawned debug cube props carry the same `SceneRoot`
+   handle for `Cube.glb`.
+   Source: GLB prop spawn path.
+6. The implementation must not add `clear_background_props`, TypeScript bridge
+   mirrors, parser/resolver changes, bridge fields, or protocol docs.
+   Source: sibling-owned primitive boundary and Shotloom ask-first matrix.
+7. The implementation must keep existing background prop diagnostics, rollback,
+   model mutation, and event order unchanged.
+   Source: existing `spawn_background_props_deferred` behavior.
 
 ## Locked Decisions
 
-1. **Use `origin/main` as the implementation base.**
+1. **Use `Cube.glb` through the normal GLB prop path.**
 
-   Rationale: STL-423 is Done and `main` now owns the current
-   `spawn_background_props` DTO and handler. STL-437's leakage-prevention goal
-   can be proven without waiting for the STL-424 clear command.
+   Rationale: live code already resolves prop assets into `SceneRoot` through
+   `AssetServer`, and the user clarified that `Cube.glb` exists in the prop
+   import location.
 
-   Rejected alternatives: basing the plan on `feat/stage-import-bridge-poc`
-   would inherit an older bridge payload shape; adding clear-all here would
-   expand into STL-424.
+   Rejected alternatives: adding `StageDebugCubeAssets`, direct `Mesh3d`,
+   direct `MeshMaterial3d`, or kind-specific production materials for STL-437.
 
-2. **Treat the acceptance intent as leak prevention, not clear-command scope.**
+2. **Treat kind-specific material caching as satisfied by the GLB path for this PR.**
 
-   Rationale: Linear's concrete risk is unnecessary `Mesh` /
-   `StandardMaterial` growth when debug cube batches are repeatedly loaded.
-   Main lacks `clear_background_props`, so the direct regression should repeat
-   debug cube spawns and assert render asset counts stay stable after the
-   cache is warm.
+   Rationale: Linear's material cache wording came from the dirty POC branch.
+   On current `main`, using `Cube.glb` avoids direct `StandardMaterial` creation
+   in the handler and proves the same leak-prevention intent with less surface.
 
-   Rejected alternatives: a test-only clear helper would not prove the real
-   clear command; weakening the test to one spawn would miss the leak class.
+   Rejected alternatives: adding four production material handles for
+   floor/wall/obstacle/block, or weakening the test to entity counts only.
 
-3. **Keep the cache debug-cube-only and engine-owned.**
+3. **Do not implement clear behavior in STL-437.**
 
-   Rationale: ADR-0031 keeps Bevy materials in `shotloom-engine` and defaults
-   to `StandardMaterial`. Debug cubes are a POC visualization path, not a new
-   material system or product asset catalog.
+   Rationale: `clear_background_props` is absent from `origin/main` and related
+   work owns that primitive. A repeated spawn proof with stable render-asset
+   counts covers the leak class without expanding protocol scope.
 
-   Rejected alternatives: changing `crate::entity::spawn_prop` globally would
-   affect normal GLB prop rendering; adding a custom material would need a
-   material whitelist decision outside STL-437.
+   Rejected alternatives: adding a temporary clear helper, adding the real clear
+   command, or blocking STL-437 until STL-424 lands.
 
-4. **Detect debug cubes from the current background prop model shape.**
+4. **Accept a test-only implementation when it proves the existing path.**
 
-   Rationale: `spawn_background_props_deferred` already converts DTOs into
-   `PropModel`s with asset id, display name, source tags, and ownership tags.
-   The implementation can branch only when the prop is the stage-import debug
-   cube asset and the display name carries a debug-cube kind marker such as
-   `:floor:`, `:wall`, `:obstacle`, or `:block`.
+   Rationale: the current dirty worktree already appears to express STL-437 as
+   a regression around existing behavior. Production code changes are required
+   only if the test fails because live code cannot satisfy the requirements.
 
-   Rejected alternatives: adding new bridge fields or parser metadata would
-   change the protocol; matching every background prop would bypass normal GLB
-   rendering.
+   Rejected alternatives: forcing a production cache even when the existing GLB
+   path passes, or running `pnpm build:wasm` for a test-only diff.
 
-5. **Preserve batch atomicity and event order.**
+5. **Keep persistence and event atomicity unchanged.**
 
-   Rationale: the current handler prevalidates, renders valid props, rolls back
-   ECS entities on render failure, persists all valid `PropModel`s, then emits
-   diagnostics, `PropAdded`, and one `BundleChanged`. The debug cube branch
-   must fit inside the render-spawn phase without mutating the model earlier.
+   Rationale: `spawn_background_props_deferred` already prevalidates, rolls back
+   ECS entities on render failure, persists valid props, emits diagnostics,
+   emits `PropAdded`, then emits one `BundleChanged`.
 
-   Rejected alternatives: persisting models before debug render spawn would
-   create a partial model/ECS state risk; emitting separate events for debug
-   cubes would alter STL-423 behavior.
-
-6. **Test all four debug cube kinds in one regression matrix.**
-
-   Rationale: STL-437 names floor, wall, obstacle, and block. The test must
-   warm the cache with all four kinds, repeat another batch, and assert exactly
-   one mesh plus one material per kind is added by the debug cube path after
-   accounting for baseline Bevy assets.
-
-   Rejected alternatives: testing only floor/wall repeats the old WIP gap;
-   asserting only entity count would not catch GPU asset growth.
+   Rejected alternatives: persisting debug cube state before render spawn,
+   emitting debug-specific events, or changing existing diagnostics.
 
 ## Non-Goals
 
-- No `clear_background_props` command, TypeScript mirror, or contract section.
-- No bridge DTO, wire schema, diagnostic code, or event-order change.
-- No parser/resolver change in `crates/shotloom-stage`.
-- No editor panel wiring or fixture JSON update.
-- No general prop-rendering cache for normal GLB props.
-- No custom material, new dependency, ADR amendment, or material whitelist
-  change.
-- No change to single `spawn_prop_from_asset` selection/gizmo behavior.
-- No broad cleanup of the dirty `feat/stage-import-bridge-poc` worktree.
+- No `clear_background_props` command.
+- No TypeScript bridge mirror or fixture snapshot update.
+- No `shotloom-core` bridge DTO or event shape change.
+- No `crates/shotloom-stage` parser/resolver change.
+- No editor panel wiring.
+- No new dependency.
+- No ADR amendment.
+- No production material whitelist change.
+- No broad cleanup of `feat/stage-import-bridge-poc`.
+- No generated WASM output for a test-only proof.
 
-## Implementation Plan
+## Implementation Spec
 
 ### S0 - Baseline Re-Check
 
-1. Confirm branch `fix/engine-reuse-debug-cube-assets` is clean and based on
-   current `origin/main`.
-2. Re-run targeted searches:
+1. Confirm the implementation worktree is
+   `/Users/deemooooooooo/Desktop/www/shotloom-github/.worktrees/engine-reuse-debug-cube-assets`
+   on `fix/engine-reuse-debug-cube-assets`.
+2. Confirm only `crates/shotloom-engine/src/bridge/tests/props.rs` is dirty
+   before editing.
+3. Re-run:
    ```bash
    rg -n "SpawnBackgroundProps|BackgroundPropPlacementDto|spawn_background_props" crates/shotloom-core crates/shotloom-engine apps/editor/src/bridge docs/ipc
-   rg -n "Assets<Mesh>|Assets<StandardMaterial>|spawn_prop\\(|SceneRoot" crates/shotloom-engine/src
-   rg -n "prop_debug|debug cube|floor|wall|obstacle|block" crates apps docs contracts
+   rg -n "prop_debug|Cube.glb|SceneRoot|Assets<Mesh>|Assets<StandardMaterial>" crates apps contracts docs
+   rg -n "ClearBackgroundProps|clear_background_props" crates apps docs contracts
    ```
-3. Confirm no `ClearBackgroundProps` symbol exists on the implementation base;
-   keep clear behavior out of scope.
-4. Set worktree commit identity to `tomlim2 <deemo@vonvon.me>` before the first
-   Shotloom commit.
-5. Re-read sibling plans before editing:
-   `stage-define-map-document-bundle-layout.md`,
-   `stage-add-map-document-parser.md`, and
-   `bridge-add-background-prop-batch-spawn.md`. Keep their parser, ownership,
-   diagnostics, and non-parser bridge boundaries intact.
+4. Confirm `clear_background_props` is still absent on the base.
 
-### S1 - Add Debug Cube Render Cache
+### S1 - Keep Debug Cubes On The Existing GLB Path
 
-1. In `crates/shotloom-engine/src/bridge/handlers/props.rs`, add a private
-   `StageDebugCubeAssets` resource with:
-   - one cached `Handle<Mesh>` for `Cuboid::from_size(Vec3::ONE)`
-   - one cached `Handle<StandardMaterial>` per `StageDebugCubeKind`
-2. Add a private `StageDebugCubeKind` enum for `Floor`, `Wall`, `Obstacle`, and
-   `Block`.
-3. Add `stage_debug_cube_kind(model: &PropModel) -> Option<StageDebugCubeKind>`
-   that only matches:
-   - `asset_id == "prop_debug"`
-   - stage-import source/ownership tags already assigned by
-     `spawn_background_props_deferred`
-   - kind markers in the display name (`:floor:`, `:wall`, `:obstacle`,
-     `:block`)
-4. Use `world.init_resource::<StageDebugCubeAssets>()`,
-   `world.init_resource::<Assets<Mesh>>()`, and
-   `world.init_resource::<Assets<StandardMaterial>>()` in the cache accessor so
-   minimal tests and runtime app setup both have the required resources.
+1. In tests, fixture `prop_debug` as `AssetKind::Prop` with URI
+   `assets/props/Cube.glb`.
+2. Do not add a production debug cube renderer, resource, plugin, or material
+   cache unless S3 fails against the existing path.
+3. Keep `spawn_background_props_deferred` routing through
+   `crate::entity::spawn_prop`.
 
-### S2 - Route Debug Cubes Through Cached Handles
+### S2 - Preserve Existing Spawn Semantics
 
-1. Add a private `spawn_stage_debug_cube(world, model)` helper that creates the
-   same ECS identity components as normal prop rendering where relevant:
-   `Prop`, `ShotEntityIdComponent`, `BridgeEntityId`, `Name`, transform, and
-   pickability.
-2. Insert `Mesh3d(cached_mesh)` and
-   `MeshMaterial3d(cached_material_for_kind)` instead of a `SceneRoot`.
-3. In the existing render-spawn loop inside `spawn_background_props_deferred`,
-   branch:
-   - debug cube model -> `spawn_stage_debug_cube`
-   - everything else -> existing `crate::entity::spawn_prop`
-4. Keep the existing rollback behavior: if any later spawn fails, despawn all
-   entities already spawned in this batch before returning a rejection.
-5. Keep existing diagnostics and `PropAdded` / `BundleChanged` emission
-   unchanged. Debug cube spawn should not emit a special event.
+1. Preserve validation for map id, document id, source, placement count, asset
+   lookup, transform, names, and tags.
+2. Preserve rollback on render-spawn failure.
+3. Preserve diagnostics, `PropAdded`, and single `BundleChanged` event order.
+4. Preserve normal non-debug background prop behavior.
 
-### S3 - Add Regression Test
+### S3 - Land The Regression
 
-1. In `crates/shotloom-engine/src/bridge/tests/props.rs`, add a helper bundle
-   with a `prop_debug` `AssetKind::Prop`.
-2. Add `repeated_debug_cube_spawn_reuses_mesh_and_material_assets`.
-3. The test shape:
-   - record baseline `Assets<Mesh>` and `Assets<StandardMaterial>` counts;
-   - spawn one batch containing floor, wall, obstacle, and block debug cubes;
-   - record warmed counts and assert the delta is one mesh plus four materials;
-   - spawn a second batch with distinct object/display names to avoid model id
-     collision with the first batch;
-   - assert counts remain equal to the warmed counts.
-4. Assert the spawned debug cube entities are present as `Prop` entities and do
-   not carry `SceneRoot`, so the test proves the cached cube render path was
-   used instead of the GLB prop path.
-5. Keep failure messages local and explicit. Do not add unconditional
-   `println!` / `eprintln!` output.
+1. Add or keep `debug_cube_bundle()` in
+   `crates/shotloom-engine/src/bridge/tests/props.rs`.
+2. Add or keep helper functions for `Assets<Mesh>` and
+   `Assets<StandardMaterial>` counts.
+3. Add or keep `repeated_debug_cube_spawn_reuses_mesh_and_material_assets`.
+4. First batch: spawn floor, wall, obstacle, and block placements through
+   `prop_debug`.
+5. Assert mesh/material counts stay equal to the baseline.
+6. Second batch: spawn the same four labels with distinct object/display names.
+7. Assert mesh/material counts stay stable.
+8. Query `SceneRoot` on spawned `Prop` entities and assert all eight roots are
+   the same handle.
 
-### S4 - WASM and Docs Touches
+### S4 - Verify
 
-1. Run `pnpm build:wasm` after the Rust change.
-2. Include generated WASM package changes only if tracked files change.
-3. Avoid docs updates unless code review finds stale comments directly caused
-   by the new debug cube path. The bridge contract remains accurate because the
-   wire command and event behavior do not change.
+1. Run:
+   ```bash
+   cargo test -p shotloom-engine repeated_debug_cube_spawn_reuses_mesh_and_material_assets
+   cargo check -p shotloom-engine
+   ```
+2. If production Rust changes, run:
+   ```bash
+   pnpm build:wasm
+   ```
+3. Before PR, run the normal Shotloom gates required by
+   `/shotloom-review-before-pr`.
 
 ## Acceptance Criteria
 
-- [ ] Stage debug cube batch spawn does not create one mesh per cube.
-- [ ] Floor, wall, obstacle, and block debug cube materials are cached per kind.
-- [ ] Repeated debug cube spawn batches keep `Assets<Mesh>` and
-      `Assets<StandardMaterial>` counts stable after cache warm-up.
+- [ ] `prop_debug` debug cubes use `assets/props/Cube.glb` through the normal
+      background prop GLB path.
+- [ ] Floor, wall, obstacle, and block debug placements are covered.
+- [ ] Repeated debug cube batches do not increase direct Bevy `Assets<Mesh>` or
+      `Assets<StandardMaterial>` counts.
+- [ ] Spawned debug cube props share the same `Cube.glb` `SceneRoot` handle.
+- [ ] Existing background prop diagnostics, rollback, model mutation, and event
+      order remain unchanged.
 - [ ] `cargo test -p shotloom-engine repeated_debug_cube_spawn_reuses_mesh_and_material_assets` passes.
 - [ ] `cargo check -p shotloom-engine` passes.
-- [ ] `pnpm build:wasm` is run and any tracked WASM output is included.
-- [ ] Existing background prop spawn diagnostics, model mutation, event order,
-      and non-debug GLB prop rendering remain unchanged.
+- [ ] `pnpm build:wasm` runs only if production Rust changes.
 
 ## Verification
 
-Focused checks:
+Focused:
 
 ```bash
 cargo test -p shotloom-engine repeated_debug_cube_spawn_reuses_mesh_and_material_assets
-cargo test -p shotloom-engine bridge::tests::props
 cargo check -p shotloom-engine
-pnpm build:wasm
 ```
 
-Broader gates before commit/push:
+Before PR:
 
 ```bash
 cargo fmt --check
@@ -241,47 +226,32 @@ cargo test --workspace --exclude shotloom-desktop
 node scripts/validate-doc-paths.mjs
 ```
 
-Manual/inspection checks:
+Manual/inspection:
 
-- Confirm debug cube entities use `Mesh3d` and `MeshMaterial3d`, not
-  `SceneRoot`.
-- Confirm normal non-debug background props still call `crate::entity::spawn_prop`.
-- Confirm repeated debug cube spawn does not add more than one debug cube mesh
-  and four debug cube materials after cache warm-up.
-- Confirm no `clear_background_props` or TypeScript bridge change was added.
-
-## Sibling Plan Consumption
-
-- `stage-define-map-document-bundle-layout.md`: adopted the boundary that
-  stage-map ownership and document semantics remain contract-owned follow-up
-  context; STL-437 does not edit the schema or ownership primitive.
-- `stage-add-map-document-parser.md`: adopted the boundary that parser/resolver
-  work remains in `crates/shotloom-stage`; STL-437 consumes already-resolved
-  bridge placements only.
-- `bridge-add-background-prop-batch-spawn.md`: adopted the current
-  `spawn_background_props` command shape, ownership tags, diagnostics, event
-  ordering, and non-parser boundary. This plan only changes the debug cube
-  render path inside the existing engine handler.
+- Confirm debug cube entities use `SceneRoot` and not direct `Mesh3d` /
+  `MeshMaterial3d`.
+- Confirm no `clear_background_props` symbol was added.
+- Confirm no bridge command/event/schema file changed.
+- Confirm no production material cache was added unless the existing GLB path
+  failed S3 and the spec was updated first.
 
 ## Traps
 
-- Do not add `ClearBackgroundProps` to satisfy the older wording of the AC;
-  STL-424 owns clear-all.
-- Do not copy the WIP implementation verbatim; it used the older
-  `BackgroundPropPlacement` / `props` payload shape.
-- Do not detect debug cubes by `background_map` alone; normal background GLB
-  props also carry that tag.
-- Do not let the test pass by only counting spawned entities; the leak risk is
-  Bevy asset storage growth.
-- Do not assert absolute global asset counts without a baseline delta; test app
-  setup can add unrelated assets.
-- Do not change existing event order or selection/tool behavior while adding
-  the cached render path.
+- Do not satisfy old Linear wording by adding `clear_background_props`; that is
+  sibling-owned.
+- Do not copy the `feat/stage-import-bridge-poc` synthetic cache shape into
+  `main` without first proving the GLB path fails.
+- Do not use entity count as the leak proof; count render assets and assert
+  shared `SceneRoot`.
+- Do not assert absolute asset counts without a baseline from the same test app.
+- Do not change `spawn_background_props` event order while adding the test.
+- Do not run or commit WASM output for a test-only proof.
 
 ## Follow-Up Candidates
 
-- STL-424 can add `clear_background_props` and later extend the regression to
-  cover the real `spawn -> clear -> spawn` user path.
-- STL-431 can wire the editor panel to dispatch the current
-  `spawn_background_props` and future clear commands.
-- STL-432 can add editor-side fixture/command tests for the stage import panel.
+- STL-424 can add `clear_background_props` and later extend this proof to the
+  real `spawn -> clear -> spawn` user path.
+- STL-431 can wire the editor stage import panel to dispatch spawn/clear bridge
+  commands.
+- STL-432 can add editor-side fixture and command regressions for the stage
+  import panel.

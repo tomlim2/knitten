@@ -39,7 +39,7 @@ briefing: ../briefings/shotloom/<slug>.md
 | Section | Required content |
 |---|---|
 | `# <Title>` | Action title derived from live remaining work. |
-| `## Spec Contract` | Four bullets: briefing basis, current truth, required change, locked boundary, proof method. |
+| `## Spec Contract` | Five bullets: briefing basis, current truth, required change, locked boundary, proof method. |
 | `## Current State` | Evidence table with paths, symbols, classification, and what each surface proves. |
 | `## Problem` | Concrete remaining gap after audit, tied to Linear/user intent. |
 | `## Requirements` | Numbered implementation requirements. Each requirement maps to AC, ADR, repo precedent, or user clarification. |

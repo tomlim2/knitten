@@ -134,8 +134,8 @@ Nit-only findings do not block. Apply cheap wording fixes; otherwise proceed.
 
 Before landing, verify:
 
-- The spec has `## Spec Contract` or equivalent summary of current truth,
-  required change, locked boundary, and proof method.
+- The spec has `## Spec Contract` or equivalent summary of briefing basis,
+  current truth, required change, locked boundary, and proof method.
 - The spec has a current-state evidence table with concrete paths.
 - It has numbered requirements that trace to Linear AC, ADR, repo precedent, or
   user clarification.
