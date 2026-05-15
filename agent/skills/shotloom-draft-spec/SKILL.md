@@ -33,9 +33,13 @@ rules on top:
 2. Treat "draft plan" as legacy wording; write a **spec**, not a plan.
 3. After the direct spec lands, immediately run the review gate named in the
    compatibility workflow.
-4. Final response must share the reviewed spec path and ask whether to start
+4. If spec authoring or review uncovers a question for the user, stop and ask
+   before locking that choice into the spec. Use this for scope boundaries,
+   product intent, Linear interpretation, implementation trade-offs, or
+   unresolved P1/P2 review findings that cannot be answered from live code.
+5. Final response must share the reviewed spec path and ask whether to start
    implementation.
-5. Do not edit Shotloom source files before the user gives a separate
+6. Do not edit Shotloom source files before the user gives a separate
    implementation go-ahead.
 
 ## Output Contract

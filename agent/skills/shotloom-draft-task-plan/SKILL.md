@@ -134,6 +134,10 @@ The spec must answer four questions before any implementation stage appears:
 Apply the specialized clauses in [reference.md](reference.md) for coupled
 artifact atomicity, Rust fixture shape, and error-source-chain proof.
 
+If any answer depends on user intent rather than live code or written Linear
+scope, stop and ask the user before writing the direct spec. Do not bury the
+question as a guessed locked decision.
+
 ### Step 5: Validate Spec Contract Until Only Nits Remain
 
 Validate through the loop in [reference.md](reference.md): first-round context
@@ -144,6 +148,9 @@ findings remain. For Rust parser/loader/validator work, include an
 error-source-chain pass.
 
 If convergence changes requested scope, write `.draft.md`, skip commit, and ask.
+If convergence exposes a product, scope, or trade-off question that cannot be
+resolved from live code, Linear, sibling specs, or briefing evidence, stop and
+ask the user instead of guessing.
 
 ### Step 6: Write, Commit, Push
 
@@ -199,6 +206,8 @@ Do not edit Shotloom source files in this skill.
   memory alone.
 - After `$spec_path` resolves, every stop writes a direct or suffix `.md`.
 - Implementation-choice ambiguity goes in `## Locked Decisions`.
+- User-intent ambiguity does not go in `## Locked Decisions`; stop and ask the
+  user before committing the spec.
 - Factual stop conditions stop before commit, not before writing.
 - One briefing artifact, one task spec artifact, one direct-spec commit, then
   one automatic `/shotloom-review-task-plan <slug>` run for direct specs only.

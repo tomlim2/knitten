@@ -100,6 +100,9 @@ Before patching, decide whether the spec is suitable for one PR. If not,
 rewrite/split the spec if the split is obvious. If not obvious, patch the spec
 with an explicit `P1` blocker section, do not commit, and ask.
 
+If a finding requires user judgment about intent, scope, product behavior, or
+trade-off priority, ask the user before patching the spec into one choice.
+
 ### Step 3: Patch Serious Findings
 
 Patch the spec for every `P1` and `P2`. Re-check patched claims against live
@@ -159,6 +162,9 @@ Before landing, verify:
 Patch any `P1`/`P2` floor failure and run one more stance. `P3`/nit-only floor
 issues may be patched cheaply or left.
 
+If a `P1`/`P2` floor failure has multiple plausible fixes and live evidence
+does not choose one, stop and ask the user which direction to lock.
+
 ### Step 6: Commit Spec-Only Changes
 
 If the spec has no unhandled `P1`/`P2`, commit only that spec file from
@@ -194,5 +200,7 @@ Do not implement source changes in this skill.
 - Round 1 is always context gathering plus one-PR suitability.
 - Round 2+ must use different stances and continue until only nits remain.
 - `P1`/`P2` findings must be patched or explicitly blocked before landing.
+- `P1`/`P2` findings that require user intent must be asked before landing; do
+  not convert them into assumed decisions.
 - Nit-only means proceed with the spec; do not loop forever on wording.
 - Commit only the reviewed spec file.
