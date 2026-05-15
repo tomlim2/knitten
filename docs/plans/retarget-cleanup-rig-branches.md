@@ -18,8 +18,10 @@ the retarget layer sees target rest data, and Phase 2f pinned
 remaining Phase 2.5 gap is narrower: audit the retarget and character-model
 normalizer branches that still encode rig/version/finger special cases, delete
 only the branches proved redundant by the canonical artifact contract, and pin a
-classification for every branch that must remain. This plan does not change
-axis-bake, GLB normalization, DEFAULT_POSE numbers, or thumb CMC behavior.
+classification for every branch that must remain. This is suitable for one PR
+because it touches one default mapping literal, adjacent tests, and one README
+classification note; it does not change axis-bake, GLB normalization,
+DEFAULT_POSE numbers, or thumb CMC behavior.
 
 ## Current State
 
@@ -29,7 +31,7 @@ axis-bake, GLB normalization, DEFAULT_POSE numbers, or thumb CMC behavior.
 | Default source-to-VRM map | Partial | `crates/shotloom-retarget/src/lib.rs` maps ARP thumb source bones directly to VRM 1.0-style thumb slots, then also carries `vrm_version_overrides` for `0.x` and `1.0`. |
 | Version override config surface | Partial | `crates/shotloom-retarget/src/config.rs` keeps `RetargetConfig::vrm_version_overrides` and `resolve_vrm_bone` override precedence, with tests proving the generic config behavior. The field is deserializable config surface, not only the default config literal. |
 | Rest sync rule surface | Partial | `crates/shotloom-retarget/src/lib.rs` sets default rules `*Thumb* -> Skip` and non-thumb fingers -> `ScalarCurl`; `crates/shotloom-character-model-normalizer/src/align/arp_vrm.rs` gives `UserCalibrated` first priority before those rules. |
-| DEFAULT_POSE calibration | Already Done | `crates/shotloom-character-model-normalizer/src/align/arp_vrm_user_pose.rs` defines 10 arm/thumb deltas; `tests/rest_align_invariant.rs` pins all 10 through public `align_full_body_rest` even with no non-thumb axis map. |
+| DEFAULT_POSE calibration | Already Done | `crates/shotloom-character-model-normalizer/src/align/arp_vrm_user_pose.rs` defines 10 arm/thumb deltas; `crates/shotloom-character-model-normalizer/tests/rest_align_invariant.rs` pins all 10 through public `align_full_body_rest` even with no non-thumb axis map. |
 | Fixture matrix for calibration survival | Already Done | `crates/shotloom-retarget/tests/default_pose_recalibration.rs` runs presets `1`, `2`, `6`, `8`, `9`, and `13`, asserting DEFAULT_POSE bones exist in target rest and retarget output. |
 | Finger axis map | Partial | `crates/shotloom-character-model-normalizer/src/align/finger_axis_map.rs` excludes thumbs from `axis_map`, still emits thumb diagnostics, and uses fixed left/right non-thumb curl axes. The module doc states backward and VRM 0.x axis flips should be stripped before downstream code. |
 | Retargeter finger dynamics | Partial | `crates/shotloom-retarget/src/retargeter.rs` carries scalar curl, splay, and twist constants plus comments that per-rig overrides are intentionally not exposed. These are runtime finger transfer policy, not obviously axis-bake cleanup. |
@@ -159,7 +161,8 @@ Record the retained/deleted classification:
   public normalized path;
 - retained: generic `vrm_version_overrides` schema behavior;
 - retained: `UserCalibrated` DEFAULT_POSE priority;
-- retained: thumb exclusion from ScalarCurl pending STL-263;
+- retained: thumb exclusion from ScalarCurl pending the separate thumb CMC
+  algorithm follow-up;
 - retained: non-thumb ScalarCurl and retargeter splay/twist transfer policy;
 - retained: toe-less and foot-contact runtime fallbacks.
 
@@ -181,7 +184,11 @@ Expected narrow change:
 - keep `RetargetConfig::vrm_version_overrides` and
   `RetargetConfig::resolve_vrm_bone` unchanged;
 - keep `rest_sync_rules` unchanged unless a test failure proves a narrower
-  default is needed.
+  default is needed;
+- clean up any import fallout from removing the default `HashMap::from`
+  literal. If `std::collections::HashMap` is still needed only by the local
+  `#[cfg(test)]` module, import it there rather than leaving an unused root
+  import for clippy to catch.
 
 If removal changes retarget output for any matrix fixture, stop and convert the
 affected entry into a documented retained branch instead of forcing deletion.
@@ -244,8 +251,8 @@ Expected:
 - [ ] Generic `RetargetConfig::vrm_version_overrides` behavior stays intact.
 - [ ] DEFAULT_POSE `UserCalibrated` priority and all 10 arm/thumb deltas remain
       intact.
-- [ ] Thumb ScalarCurl exclusion remains explicitly tied to the STL-263
-      algorithm boundary without adding issue IDs to durable docs.
+- [ ] Thumb ScalarCurl exclusion remains explicitly tied to the separate thumb
+      CMC algorithm boundary without adding issue IDs to durable docs.
 - [ ] `cargo test -p shotloom-character-model-normalizer` passes.
 - [ ] `cargo test -p shotloom-retarget` passes.
 - [ ] The PR description lists removed branches and retained branches with the
