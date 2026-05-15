@@ -77,9 +77,9 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 | Category | Count |
 |----------|------:|
-| `shotloom-*` | 25 |
+| `shotloom-*` | 26 |
 | `dev-*` | 24 |
-| `caol-*` | 22 |
+| `caol-*` | 21 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
 | `ue-*` | 7 |
