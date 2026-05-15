@@ -100,15 +100,21 @@ node scripts/validate-doc-paths.mjs
 
 If no tests in a changed crate, do NOT skip — that violates `rules/test-write.md`. Add tests first.
 
-### Step 4: Confirm `/shotloom-review-before-pr`
+### Step 4: Trigger `/shotloom-review-before-pr`
 
-`shotloom-make-pr` does NOT inline pattern-based review. That's `/shotloom-review-before-pr`'s job.
+`shotloom-make-pr` does NOT inline pattern-based review. That's
+`/shotloom-review-before-pr`'s job.
 
 Ask:
 > Did you run `/shotloom-review-before-pr` on this branch and resolve all findings? (y/n)
 
 - **yes** → continue.
-- **no** → stop, instruct user to run it first. Do NOT auto-run — keep make-pr single-purpose.
+- **no** → trigger `/shotloom-review-before-pr` now if the current harness can
+  invoke local skills from this session. After it reports `Ready to
+  /shotloom-make-pr`, resume this skill from Step 5. If the harness cannot
+  invoke another skill directly, stop and instruct the user to run
+  `/shotloom-review-before-pr` first. Do not draft or create a PR before the
+  review skill has run.
 - **skip on insistence** → record `- [ ] /shotloom-review-before-pr — SKIPPED on user request` in Test plan so reviewers see it.
 
 ### Step 5: Draft title + body

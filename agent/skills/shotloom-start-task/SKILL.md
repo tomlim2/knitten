@@ -165,6 +165,10 @@ After the briefing, **end the turn**. Do NOT edit code. Do NOT write a plan doc 
 Tell the user explicitly what comes next:
 
 > "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (플랜 문서 작성 + 커밋/푸시 후 정지). 구현은 플랜 검토가 끝나고 별도 지시 후 시작."
+> "구현이 끝나고 커밋/푸시한 뒤 PR을 만들기 전에는
+> `/shotloom-review-before-pr`를 실행해야 합니다. `/shotloom-make-pr`는
+> 이 리뷰가 아직 안 돌았다면 먼저 트리거하거나, 트리거할 수 없는
+> 환경에서는 실행하라고 멈춰야 합니다."
 
 **Plan ↔ implementation are two distinct gates.** Plan-doc authoring is
 delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md),
