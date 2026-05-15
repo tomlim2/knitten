@@ -32,11 +32,11 @@ PR #335 approval 이후 follow-up nit는 `collect_axis_bake_stats`의 temporary 
 **지적 5 — frontend import surface는 toast와 CSS reset 경계를 같이 본다.**
 PR #332 리뷰는 Tailwind Preflight, import toasts, upload rejection code, prop spawn boundary, ADR bookkeeping을 같이 다뤘다. UI PR에서 styling pipeline과 user feedback path가 분리되어 보여도 실제 review boundary는 같은 user workflow다. → `8d20a54c` 계열 merge 결과로 debug prop panel, toast path, Tailwind ADR/docs가 함께 정리됐다.
 
-> [!tip] 가장 중요한 배운 것 — merged PR cleanup은 Linear semantics를 PR footer로 나눈다
-> `Resolves STL-NN` PR은 Linear Done까지 닫고, `Part of STL-NN` PR은 worktree만 치우고 Linear issue는 유지한다. PR #332가 `Part of STL-410`이라서 STL-410은 In Progress로 남겼다.
+> [!tip] 가장 중요한 배운 것 — wrapup은 PR footer와 실제 Linear scope를 같이 본다
+> PR #332는 실제로 STL-410과 STL-411을 닫았지만 Related Issues footer가 `Part of STL-410`으로 남아 있었다. Wrapup 판단은 PR footer를 1차 근거로 쓰되, 사용자가 scope mismatch를 지적하면 PR body와 Linear 상태를 함께 정정한다.
 
 > [!abstract] Rule
-> Wrapup에서 merged PR footer가 `Part of`이면 local worktree와 branch만 정리하고 parent Linear issue는 Done으로 이동하지 않는다. #rule
+> Wrapup에서 merged PR footer와 실제 Linear 완료 범위가 충돌하면 PR body linkage를 먼저 고친 뒤 Linear transition을 맞춘다. #rule
 
 > [!warning] main checkout cleanup order
 > 작업 worktree를 지울 때는 먼저 main checkout으로 이동한 뒤 `git worktree remove`를 실행한다. **교훈:** cleanup skill은 invocation cwd와 removal cwd를 분리해서 기록해야 한다.

@@ -65,5 +65,5 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 
 ## Day 6 (05-15): Shotloom merged PR wrapup
 - PR #336, #335, #332 wrapup에서 review findings와 local worktree cleanup rule을 기록.
-- 배운 것: `Part of` PR은 merged여도 parent Linear issue를 Done으로 닫지 않는다.
+- 배운 것: PR footer와 실제 Linear 완료 범위가 충돌하면 PR body linkage를 먼저 고친다.
 - [[shotloom/days/day-06|상세]]
