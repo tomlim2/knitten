@@ -73,7 +73,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Skills (135)
+## Skills (136)
 
 | Category | Count |
 |----------|------:|
@@ -100,6 +100,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 | `consulting-*` | 1 |
 | `drink-*` | 1 |
 | `frontend-*` | 1 |
+| `hatch-*` | 1 |
 | `system-*` | 1 |
 
 ---

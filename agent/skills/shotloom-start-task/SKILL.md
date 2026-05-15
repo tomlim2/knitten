@@ -140,6 +140,12 @@ with evidence, exact plan question, and AC/ADR/precedent trace. If a seed lacks
 that trace, move it to follow-up notes. If a seed implies scope change, mark it
 as ask-first. Full taxonomy: `reference.md`.
 
+When the task can mutate coupled representations of one artifact, always add a
+plan-risk seed for atomicity. Examples: JSON + BIN, model + cache artifact,
+state + event, serialized bundle + index, thumbnail bytes + manifest. The seed
+asks whether the plan pre-validates every later write before the first mutation,
+rolls back on partial failure, or proves partial persistence impossible.
+
 ### Step 5d: Sibling-draft scan (mandatory)
 
 Before the Ready briefing, scan `caol-ila/docs/plans/` and `caol-ila/docs/`

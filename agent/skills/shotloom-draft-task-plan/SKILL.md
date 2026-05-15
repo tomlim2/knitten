@@ -124,6 +124,13 @@ Draft around the audited remaining gap. Do not restate Linear verbatim. Do not
 list complete work as future work. Use concrete file paths. Verify every `add`
 target is missing and every `reuse` target is named.
 
+For any plan that mutates coupled representations of one artifact, explicitly
+lock the atomicity invariant before implementation. Examples: JSON + BIN,
+model + cache artifact, command state + event, serialized bundle + index,
+thumbnail cache + manifest. The plan must say what happens when the second
+mutation fails, and the verification must assert the final persisted artifact,
+not only intermediate counters or one side of the mutation.
+
 ### Step 5: Cold-Start Review Until Only Nits Remain
 
 Review the draft through the cold-start review loop in

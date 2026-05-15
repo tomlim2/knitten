@@ -40,6 +40,7 @@ Common flags:
 - `--etag-from STR` — pre-deploy ETag. Required.
 - `--etag-to STR` — post-deploy ETag. Required.
 - `--manifest-commit STR` — `<sha short-subject>` of prototype-manifest commit. Required.
+- `--release-url URL` — patch-note document URL, commonly the generated GitHub Release. Recommended.
 - `--target-url URL` — Default: `https://shotloom.cinamon.io`.
 
 ## Binding rules
@@ -101,7 +102,10 @@ Message B (thread reply under A):
 ```
 - ETag: $ETAG_FROM → $ETAG_TO  (rolled — proxy verification passed)
 - prototype-manifest commit: $MANIFEST_COMMIT
+- 패치노트: $RELEASE_URL
 ```
+
+Omit `패치노트:` only when `--release-url` is absent. Do not paste long patch notes into Slack; link the generated release or equivalent patch-note document.
 
 ### Step 4: Approval prompt (skipped when `--no-confirm`)
 
@@ -209,7 +213,8 @@ Sent: phase=success  broadcast_ts=<A_ts>  detail_ts=<B_ts>  thread=<THREAD_TS>
   --thread-ts 1778231639.532389 \
   --etag-from "69fbe8a2-32d" \
   --etag-to "69fdc84c-32d" \
-  --manifest-commit "8a698b2 chore(shotloom): update web image tag"
+  --manifest-commit "8a698b2 chore(shotloom): update web image tag" \
+  --release-url "https://github.com/CINEV/shotloom/releases/tag/v0.1.4"
 ```
 
 ## Related

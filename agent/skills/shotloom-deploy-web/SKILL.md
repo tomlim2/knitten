@@ -300,25 +300,29 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 ### Step 9: GitHub Release + Slack 결과 알림 (for-real only)
 
 ```bash
-gh release create "$version" --generate-notes --title "$version" \
-  ${prev_tag:+--notes-start-tag "$prev_tag"}
+release_url=$(gh release create "$version" --generate-notes --title "$version" \
+  ${prev_tag:+--notes-start-tag "$prev_tag"})
 ```
 
-Then delegate the thread-reply to `/shotloom-send-deploy-status result` — same canonical template, same per-message approval gate, same `cci-send-alert` underneath. Map the Step 8d terminal state to the `--state` flag and pass the matching field set.
+Then delegate the thread-reply to `/shotloom-send-deploy-status success` — same canonical template, same per-message approval gate, same `cci-send-alert` underneath. Use this only when Step 7 returned `start_ts`.
 
 ```
-/shotloom-send-deploy-status result \
+/shotloom-send-deploy-status success \
   --version $version \
   --thread-ts $start_ts \
-  --state <rolled | timed-out | skipped | rolled-back> \
-  [--etag-from $PRE_ETAG --etag-to $NEW_ETAG]   # state=rolled
-  [--prev-tag $prev_tag]                        # state=rolled-back
+  --etag-from "$PRE_ETAG" \
+  --etag-to "$NEW_ETAG" \
   --manifest-commit "<sha + short subject>" \
-  [--release-url <url>] \
-  [--start-iso <HH:MM>]
+  --release-url "$release_url" \
+  --target-url "$PROD_URL"
 ```
 
-If `start_ts` is empty (Step 7 skipped/failed), do NOT send a top-level result — surface the asymmetry in the Step 11 report instead.
+If `start_ts` is empty because Step 7 was skipped or failed, do **not** silently omit Slack. Use the fallback:
+
+1. Draft a top-level message through `/cci-send-alert` with the release tag, source short SHA, workflow URL, image, manifest commit, live URL result, ETag result, and patch-note document URL.
+2. Show the full draft and wait for explicit `y` under the per-message Slack gate.
+3. Send it as a top-level channel message.
+4. In Step 11, state that the normal threaded deploy notification could not be used because no start thread existed.
 
 ### Step 10: Devlog append (Obsidian)
 

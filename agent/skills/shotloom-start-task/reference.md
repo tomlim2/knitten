@@ -81,12 +81,29 @@ For each seed, record priority, evidence path or `rg` hit, exact plan question,
 and AC-trace. If no AC line, ADR, or precedent demands the seed, move it to a
 follow-up note instead of plan-risk handoff.
 
+### Coupled artifact atomicity seed
+
+Add this seed whenever the affected code can write more than one representation
+of the same logical artifact in one operation:
+
+| Field | Value |
+|---|---|
+| Priority | `P1` if partial persistence can corrupt runtime behavior or cache; otherwise `P2`. |
+| Evidence | The first mutation site and the later validation/write site, or cache/persistence boundary. |
+| Plan question | "Can any later failure persist only one side of the artifact? If yes, does the plan pre-validate, rollback, or skip the whole operation?" |
+| Required verification | Assert final persisted bytes/state/event order, not just internal stats or one unchanged buffer. |
+
+Examples that trigger this seed: GLB JSON + BIN rebake, bundle model + manifest
+index, command state + emitted event, cache artifact + version key, thumbnail
+bytes + catalog entry.
+
 Search examples:
 
 ```bash
 rg -n "<command/event/type/helper/function names>" crates apps docs contracts MAP.md
 rg -n "<diagnostic/rejection/error names>" crates/shotloom-core crates/shotloom-engine apps/editor/src/bridge
 rg -n "<fixture/snapshot/test names>" crates apps assets docs
+rg -n "rebuild|cache|persist|write|rebake|inverseBind|manifest|emit|changed_artifact" crates apps docs contracts
 ```
 
 ## Sibling draft scan

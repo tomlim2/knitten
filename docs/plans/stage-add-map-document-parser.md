@@ -119,7 +119,7 @@ bridge command shape before STL-423.
 
 7. **Pre-validate path safety before returning any resolved placement.**
 
-   Rationale: `relative_glb_path` must resolve under the canonical root, and
+   Rationale: `relative_glb_path` must resolve under the local POC root, and
    `absolute_glb_path` values with `..` segments or null bytes are invalid.
    The plan has no coupled persistent mutation, but it does have a coupled
    logical result: a placement plus diagnostics. Validation must complete for
@@ -225,11 +225,11 @@ bridge command shape before STL-423.
 ### S3 - Implement GLB Candidate Resolution
 
 1. Add resolver input options:
-   - canonical local POC root
+   - local POC root
    - optional `object_type` lookup map
    - optional policy for accepting `absolute_glb_path` during POC tests
 2. For each object, try `asset_candidates[]` in document order.
-3. Resolve `relative_glb_path` under the canonical root only after rejecting
+3. Resolve `relative_glb_path` under the local POC root only after rejecting
    leading separators, drive paths, URL schemes, `..` segments, and null bytes.
 4. Resolve `absolute_glb_path` only when the policy allows it, and reject `..`
    segments and null bytes before filesystem checks.

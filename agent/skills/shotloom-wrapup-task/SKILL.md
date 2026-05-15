@@ -1,12 +1,12 @@
 ---
-description: End-of-work cleanup for a Shotloom task — close Linear, remove worktree, append day log.
+description: End-of-work cleanup for a Shotloom task — close Linear, remove worktree, delegate retrospective logging.
 argument-hint: "[STL-NN]"
-allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(awk:*), Bash(bash:*)
 ---
 
 # shotloom-wrapup-task
 
-Wraps up one Shotloom task cleanly: transition Linear to Done, remove the worktree + branch, append a line to the day log.
+Wraps up one Shotloom task cleanly: transition Linear, remove the worktree + branch, stop the watcher, and delegate retrospective logging.
 
 Use when:
 - A PR has merged and `/shotloom-auto-pr` wasn't running to auto-cleanup, OR
@@ -42,13 +42,21 @@ case "$remote" in
     # Not inside a shotloom worktree — fall back to the main checkout
     # (only valid if user passed STL-NN explicitly so we know what to close)
     worktree=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-config/repo-paths.json)
-    current_branch=""  # unknown until user provides STL-NN
+    current_branch=""  # branch cleanup is disabled until explicitly resolved
     ;;
 esac
 
 shotloom_root=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-config/repo-paths.json)
+if [ -z "$shotloom_root" ] || [ "$shotloom_root" = "null" ]; then
+  echo "ERROR: repo-paths.json has no shotloom path"
+  exit 1
+fi
+if [ -z "$worktree" ] || [ "$worktree" = "null" ]; then
+  echo "ERROR: Shotloom worktree unresolved"
+  exit 1
+fi
 
-# resolve STL-NN from (in order):
+# Resolve STL-NN from (in order):
 #   1. $ARGUMENTS
 #   2. PR body `Related to STL-NN` (NOT "Resolves STL-NN" in commits — that
 #      string only appears in PR descriptions per ~/.claude/rules/shotloom.md)
@@ -56,12 +64,18 @@ shotloom_root=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-confi
 #   4. (do NOT parse branch name — Shotloom branches never carry STL-NN)
 ```
 
-Fetch the Linear issue via MCP (`mcp__…__get_issue`) to get current state and title.
+If `linear_id` is empty after resolution, stop before Linear, logging, worktree, or branch cleanup.
+
+Fetch the Linear issue with the Linear MCP issue-read tool to get current state and title.
 
 Fetch the PR state:
 ```bash
-gh pr list --repo CINEV/shotloom --head "$current_branch" --state all \
-  --json number,state,mergedAt,title --limit 1
+if [ -n "$current_branch" ]; then
+  gh pr list --repo CINEV/shotloom --head "$current_branch" --state all \
+    --json number,state,mergedAt,title --limit 1
+else
+  echo "No current branch resolved; skip branch-based PR lookup."
+fi
 ```
 
 Record: `linear_id`, `linear_state`, `pr_number`, `pr_state`, `merged_at`, `branch`, `worktree_path`.
@@ -77,7 +91,7 @@ Present the resolved context and ask the user to pick:
 | `paused` | Work paused, not merged yet | keep current (default: In Progress) | preserve worktree, optionally log |
 | `done-no-pr` | No PR (chore, local-only cleanup) | Done | remove if worktree exists |
 
-Default: auto-pick based on `pr_state` — `MERGED` → `merged`, `CLOSED` → `abandoned`, else ask.
+Default: auto-pick based on `pr_state`: `MERGED` → `merged`, `CLOSED` → `abandoned`, else ask.
 
 ### Step 3: Transition Linear
 
@@ -92,14 +106,19 @@ If mode is `abandoned`:
 If mode is `paused`:
 - Skip Linear transition. Just note current state in the log.
 
-### Step 4: Remove worktree + branch
+### Step 4: Return to main checkout, then remove worktree + branch
 
-If mode is NOT `paused` AND a worktree exists for `current_branch`:
+If mode is NOT `paused` AND `current_branch` is non-empty AND a worktree exists for `current_branch`:
 
 ```bash
-cd "$shotloom_root"  # must leave the worktree before removing it
+if [ -z "$current_branch" ]; then
+  echo "No current branch resolved; skip worktree and branch cleanup."
+  exit 0
+fi
 
-# find the worktree path
+cd "$shotloom_root" || exit 1  # main checkout; must leave the task worktree before removing it
+
+# Find the local task worktree used for this branch, then remove that worktree only.
 wt_path=$(git worktree list --porcelain | awk -v br="refs/heads/$current_branch" '
   /^worktree/ { wt=$2 }
   /^branch / { if ($2 == br) print wt }
@@ -136,58 +155,20 @@ if [ -n "$pr_number" ] && [ "$mode" != "paused" ]; then
 fi
 ```
 
-### Step 5: Append day log via `/learn-log-day` — RETROSPECTIVE ONLY
+### Step 5: Delegate day log via `/learn-log-day` — RETROSPECTIVE ONLY
 
-Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog` so Obsidian-format conventions (frontmatter, tags, callouts, wikilinks, path resolution) are handled in one place.
+Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog`; that skill owns frontmatter, tags, callouts, wikilinks, and path resolution.
 
-**The entry is a retrospective, not a status report.** PR number, branch name, commit SHAs, file lists, summary of the change — all of that already lives in the PR description and `git log`. Duplicating them in the devlog buries the only thing future-me actually needs: **what was pointed out in review and what to do differently next time**.
-
-#### What the entry MUST contain
-
-- **Single header line** with PR link only — no separate **PR / Linear / Branch / Worktree / Commits** metadata block. The PR link is enough; everything else is one click away.
-- **Numbered "지적" items** (criticisms / corrections received) — one per finding, each in this shape:
-  - **What** the reviewer (or CI, or the rule) pointed out, with a direct quote when meaningful.
-  - **Why** it was right — the underlying principle (ADR-NNNN section, standard ID, `docs/guidelines/review-rust.md` section, or similar).
-  - **What changed** in the PR as a result (commit SHA, file).
-- **`> [!tip]` callout** — the single most important insight from this PR. The thing future-me would want to remember in 6 months. Often a meta-insight: tooling drift, skill drift, process gap, missed convention.
-- **`> [!abstract] Rule` callout** — a one-line generalizable rule extracted from this PR's lessons, written so it could go straight into `~/.claude/rules/` or a standard. Tagged `#rule`.
-- **`> [!warning]` callouts** — process gotchas worth flagging for next time (e.g. "APPROVED + CI green ≠ mergeable when ruleset requires thread resolution"; "external repo default branch is `master`, lychee caught the 404"). Each ends with **교훈:** (lesson) — one sentence.
-
-#### What the entry MUST NOT contain
-
-- **No Branch / Worktree / Commit-list metadata block.** PR link covers it.
-- **No "what the PR did" summary.** That's the PR's `## Summary` — duplicating adds zero retrospective value.
-- **No celebratory framing** ("merged successfully", "all tests pass"). The retrospective is for what was *wrong*, not what worked.
-- **No agentless-register violations carried over from PR text.** Devlog can be first-person Korean (internal notes, not repo artifact); but still cite the standard / rule / file:line that drives each lesson, not "the reviewer told me X".
-
-#### Skeleton
-
-```markdown
-## <HH:MM> — STL-NN closed ([#<N>](<pr-url>))
-
-회고 — 리뷰에서 어떤 지적을 당했나, 무엇을 배웠나.
-
-**지적 1 — <one-line summary>.** <reviewer/CI quote when meaningful>. <why the principle is right>. → <what changed: commit SHA, file>.
-
-**지적 2 — <…>.** …
-
-**지적 3 — <…>.** …
-
-> [!tip] 가장 중요한 배운 것 — <one-line>
-> <2-3 sentences. The meta-insight. Often: tool/skill/process drift that fed the original defect.>
-
-> [!abstract] Rule
-> <One-line generalizable rule. Could be lifted into ~/.claude/rules/ or a standard verbatim.>
-
-> [!warning] <process gotcha>
-> <What happened, why it bit.> **교훈:** <one-sentence lesson.>
-```
-
-Skip any callout that has no real content — empty callouts are worse than absent ones.
-
-#### Length budget
-
-If the PR was uneventful (clean approval, no nits, no ruleset blockers), one paragraph is fine. If it carried multiple review rounds + CI failures + skill-drift discovery (like STL-193), three to five 지적 items + 1 tip + 1 rule + 1-2 warnings is the right shape. Past ~30 lines, audit for restated PR content.
+Pass a retrospective logging brief:
+- Use one header line with the PR link only.
+- Do not add Branch / Worktree / Commit-list metadata.
+- Do not summarize what the PR did.
+- Do not use celebratory framing.
+- Add numbered `지적` items for real review, CI, or rule findings.
+- For each `지적`, include what was pointed out, why the principle is right, and what changed.
+- Add `tip`, `abstract Rule`, and `warning` callouts only when they carry real content.
+- Cite the standard, rule, or file:line behind each lesson.
+- Skip empty callouts.
 
 If the Obsidian vault is writable (`obsidian-vault-claude` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
 
@@ -206,7 +187,7 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 ## Binding rules
 
 - **Never force** (`-D`, `--force`) without explicit user confirmation. Uncommitted changes or unmerged branches are signals — pause and ask.
-- **Never remove a worktree without leaving it first.** `cd $shotloom_root` before `git worktree remove`.
+- **Clean the used local task worktree only after moving to the main checkout.** `cd $shotloom_root` before `git worktree remove`; do not remove a worktree from inside itself.
 - **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go to `machine-paths.json → obsidian-vault-claude` (fallback: `obsidian-staging`).
 - **PR-level lifecycle is `/shotloom-auto-pr`'s job when running.** This skill is the manual equivalent — if auto-pr already did the Linear move and worktree cleanup on MERGE, this skill detects that and only appends the day log.
 - **Abandoned PRs** — worktree removal still requires the branch to be pushed (or user-approved discard). Local-only work should never be dropped silently.
@@ -215,5 +196,5 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 
 - `~/.claude/skills/shotloom-auto-pr/SKILL.md` — running watcher that auto-cleans on MERGE (this skill is the manual fallback)
 - `~/.claude/skills/shotloom-linear-move/SKILL.md` — Linear state transition
-- `~/.claude/skills/learn-log-day/SKILL.md` — richer day-log flow (this skill writes a single line; learn-log-day is for end-of-day consolidation)
+- `~/.claude/skills/learn-log-day/SKILL.md` — Obsidian devlog flow that owns day-log format and path conventions
 - `~/.claude/skills/shotloom-status/SKILL.md` — see active worktrees / PRs before deciding what to close

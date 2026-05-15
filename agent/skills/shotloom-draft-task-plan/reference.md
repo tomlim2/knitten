@@ -45,7 +45,7 @@ linear: STL-NN
 | `## Implementation Plan` | Stages from smallest proof to broader updates. First stage is S0 baseline re-check. |
 | `## Acceptance Criteria` | Checklist tied to remaining work. |
 | `## Verification` | Focused gates, broad gates, manual repro per diagnostic or rejection code. |
-| `## Traps` | Defensive warnings against false implementation paths. |
+| `## Traps` | Defensive warnings against false implementation paths, including partial mutation traps for coupled artifacts. |
 | `## Follow-Up Candidates` | Real out-of-scope work. |
 
 ## Step 4 - Body Rules
@@ -59,6 +59,15 @@ linear: STL-NN
 - Every in-scope line traces to an AC line, ADR, or repo precedent.
 - Every user-facing string defaults to split diagnostics or labels. Collapse
   only when `Rationale:` cites source evidence.
+- If one operation mutates more than one representation of the same artifact
+  (for example JSON + BIN, model + cache, state + event, bundle + index),
+  include a `Locked Decision` for atomicity: either pre-validate every later
+  mutation before the first write, rollback the first write on later failure,
+  or prove partial persistence is impossible.
+- Verification for coupled artifact mutation must assert the final persisted
+  artifact or emitted event sequence. Do not accept tests that check only one
+  side of the mutation, internal stats, or an unchanged buffer while another
+  representation can already be dirty.
 
 ## Step 5 - Cold-Start Review Loop
 
@@ -109,6 +118,7 @@ through these, adding task-specific stances when useful:
 | Test owner | Would the proposed tests actually fail before the implementation and pass after? |
 | Docs/spec owner | Are docs/spec changes required, and are non-goals explicit enough? |
 | Release/cache owner | Does the plan invalidate cache, serialized state, or user-visible behavior correctly? |
+| Coupled-artifact owner | If one operation mutates two representations, can any failure persist only one side? |
 
 After every round:
 
@@ -139,6 +149,7 @@ Run each lens before declaring convergence:
 | Error ownership | Rejection codes, diagnostics, messages, and event order have one owning layer. |
 | Wire contract | Existing command and event shapes stay intact unless protocol change is in scope. |
 | Invariants | Staged-byte draining, cache failures, success events, identity, paths, and URI shapes do not regress. |
+| Mutation atomicity | Coupled artifact writes pre-validate or roll back so cache/persistence cannot store half-updated state. |
 | Test evidence | Unit, integration, snapshot, fixture, manual, and negative cases map to changed behavior. |
 | Format and docs | Tables render, paths resolve, and doc targets match repo structure. |
 | Scope creep | Related features are in `Non-Goals` or `Follow-Up Candidates`. |
@@ -194,6 +205,7 @@ Every final direct plan must pass:
 | Traps | At least 2 defensive items against paths the plan does not propose. |
 | Non-Goals | At least 5 adjacent-concern exclusions. |
 | Manual repro | One line per user-facing diagnostic, error, or rejection code. |
+| Persisted artifact proof | Coupled artifact mutation plans assert final persisted bytes/state/event order, not only intermediate counters or one mutated side. |
 | Baseline | Implementation Plan starts with S0 baseline re-check or AC for one. |
 | Locked Decisions | Every decision has `Rationale:` and `Rejected alternatives:` labels. |
 | String split | Every user-facing string defaults to separate code or label; collapsed strings cite rationale. |
