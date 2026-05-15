@@ -72,3 +72,8 @@ Shotloom 작업 회고. PR 본문에 이미 남은 변경 요약은 반복하지
 - PR #337 wrapup에서 schema/prose ownership, Euler convention, path-safety guard, POC boundary 지적을 기록.
 - 배운 것: contract prose는 schema field shape를 반복하지 않고 behavior와 boundary만 설명한다.
 - [[shotloom/days/day-07|상세]]
+
+## Day 8 (05-15): PR #340 wrapup
+- PR #340 wrapup에서 exact assertion 책임, fixture matrix rationale, integration behavior pin 지적을 기록.
+- 배운 것: test invariant는 count, wording, behavior survival을 별도 assertion으로 분리한다.
+- [[shotloom/days/day-08|상세]]
