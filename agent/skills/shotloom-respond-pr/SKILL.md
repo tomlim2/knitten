@@ -175,6 +175,7 @@ Order matters: gates first, then commit, then push, then PR body. Updating the P
 3. On green:
    - `git add <files>` (by name, not `-A`)
    - Commit per `docs/guidelines/commit-guideline.md` (conventional, imperative, ≤80 char subject)
+   - Count the subject line before `git commit`; if it is over 80 characters, rewrite it first
    - `git push`
 
 4. **After push lands**, refresh the PR description so it matches the now-pushed branch:
@@ -386,7 +387,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 - **Repo-specific rule wins.** `~/.claude/rules/shotloom.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git-defaults.md` is supplementary — it applies only where shotloom-git.md does not override.
 - **Reply inline on each individual review comment**, NOT top-level PR comment (per `rules/git-defaults.md`).
 - **Suppressed items** — evaluate honestly; OK to defer scope-exceeding work.
-- **Commit message** — conventional, imperative, ≤80 char subject (per `docs/guidelines/commit-guideline.md` in the shotloom repo).
+- **Commit message** — conventional, imperative, ≤80 char subject, counted before commit (per `docs/guidelines/commit-guideline.md` in the shotloom repo).
 - **No Co-Authored-By line.**
 
 ## Common Failures

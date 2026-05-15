@@ -47,6 +47,9 @@ Read the staged diff, classify, and draft per `docs/guidelines/commit-guideline.
 Related to STL-NN   (commit footer only — never use "Resolves STL-NN" in commits per ~/.claude/rules/shotloom.md; closing linkage belongs in the PR description)
 ```
 
+Before asking for approval, count the first line exactly as Git will receive
+it. If the subject is over 80 characters, rewrite it before showing the draft.
+
 Type rules:
 - `feat` — new user-visible capability
 - `fix` — bug fix
