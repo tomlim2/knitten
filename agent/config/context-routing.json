@@ -474,6 +474,7 @@
         "agent/skills/shotloom-check-gates/SKILL.md",
         "agent/skills/shotloom-commit/SKILL.md",
         "agent/skills/shotloom-draft-adr/SKILL.md",
+        "agent/skills/shotloom-draft-spec/SKILL.md",
         "agent/skills/shotloom-draft-task-plan/SKILL.md",
         "agent/skills/shotloom-linear-move/SKILL.md",
         "agent/skills/shotloom-linear-stale/SKILL.md",

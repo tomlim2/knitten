@@ -204,28 +204,30 @@ spec-risk handoff, and the Step 5d sibling-spec inventory.
 Emit the same briefing content in chat plus the briefing path.
 
 After the briefing, **end the turn**. Do NOT edit code. Do NOT write a task spec
-doc inside this skill. Do NOT commit yet; `/shotloom-draft-task-plan` commits
-the briefing and spec together only after a clean direct spec lands.
+doc inside this skill. Do NOT commit yet; `/shotloom-draft-spec` commits the
+briefing and spec together only after a clean direct spec lands, then runs the
+spec review gate in the same workflow.
 
 Tell the user explicitly what comes next:
 
-> "Briefing OK → 다음 단계는 `/shotloom-draft-task-plan` (브리핑 문서 기반 태스크 스펙 작성 + 브리핑/스펙 커밋/푸시 후 정지). 구현은 스펙 검토가 끝나고 별도 지시 후 시작."
+> "Briefing OK → 다음 단계는 `/shotloom-draft-spec` (브리핑 문서 기반 스펙 작성 + 스펙 리뷰 + 브리핑/스펙 커밋/푸시). 마지막에는 스펙문서를 공유하고 구현할지 물어봅니다."
 > "구현이 끝나고 커밋/푸시한 뒤 PR을 만들기 전에는
 > `/shotloom-review-before-pr`를 실행해야 합니다. `/shotloom-make-pr`는
 > 이 리뷰가 아직 안 돌았다면 먼저 트리거하거나, 트리거할 수 없는
 > 환경에서는 실행하라고 멈춰야 합니다."
 
 **Spec ↔ implementation are two distinct gates.** Task-spec authoring is
-delegated to [`/shotloom-draft-task-plan`](../shotloom-draft-task-plan/SKILL.md),
-which writes `caol-ila/docs/plans/<slug>.md`, commits/pushes from caol-ila,
-then stops. It reads `caol-ila/docs/briefings/shotloom/<slug>.md` first and
-commits that briefing with the spec. Implementation begins only after a
-separate user message such as "구현 시작", "implement", or "go".
+delegated to [`/shotloom-draft-spec`](../shotloom-draft-spec/SKILL.md), which
+writes `caol-ila/docs/plans/<slug>.md`, runs the review loop, commits/pushes
+from caol-ila, shares the final spec path, then asks whether to implement. It
+reads `caol-ila/docs/briefings/shotloom/<slug>.md` first and commits that
+briefing with the spec. Implementation begins only after a separate user
+message such as "구현 시작", "implement", or "go".
 
 This skill (`/shotloom-start-task`) NEVER:
 - Writes the task spec doc itself.
 - Reads worktree source files for the full file-map section (that belongs in
-  `/shotloom-draft-task-plan`'s spec-authoring phase). Targeted definition
+  `/shotloom-draft-spec`'s spec-authoring phase). Targeted definition
   reads for the Step 5c spec-risk handoff are allowed.
 - Edits any code in the worktree.
 

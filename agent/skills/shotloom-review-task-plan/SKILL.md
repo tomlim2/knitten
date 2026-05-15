@@ -1,5 +1,5 @@
 ---
-description: Validate an existing Shotloom task spec before implementation; gather fresh Linear/code/docs context, patch the spec contract until only nit findings remain, commit and push spec-only changes, then stop
+description: Validate an existing Shotloom task spec before implementation; gather fresh Linear/code/docs context, patch the spec contract until only nit findings remain, commit and push spec-only changes, share the spec, then ask whether to implement
 argument-hint: "[slug-or-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 domains: rust
@@ -184,7 +184,7 @@ Report:
 - spec path
 - whether changes were committed/pushed
 - final review result: `nit-only` or blocked `P1`/`P2`
-- implementation still needs a separate go-ahead
+- ask whether to start implementation from the reviewed spec
 
 Do not implement source changes in this skill.
 

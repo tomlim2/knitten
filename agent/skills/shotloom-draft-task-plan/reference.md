@@ -1,9 +1,10 @@
-# shotloom-draft-task-plan reference
+# shotloom-draft-spec reference
 
-Expanded detail for the `shotloom-draft-task-plan` skill. The command name is
-retained for compatibility; this reference uses **task spec** for the artifact
-being written. `SKILL.md` holds the binding flow; this file holds the spec
-schema, validation lenses, sibling-spec handling, and external-review protocol.
+Expanded detail for the `shotloom-draft-spec` workflow. The legacy
+`shotloom-draft-task-plan` command name is retained only for compatibility.
+This reference uses **task spec** for the artifact being written. `SKILL.md`
+holds the binding flow; this file holds the spec schema, validation lenses,
+sibling-spec handling, and external-review protocol.
 
 ## Step 2 - Audit Search Examples
 

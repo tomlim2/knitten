@@ -1,18 +1,20 @@
 ---
-description: Author cold-start Shotloom task specs after live code audit and contract validation; commit clean direct specs, then immediately run review-task-plan
+description: Compatibility entry for Shotloom task specs; prefer shotloom-draft-spec for user-facing flows
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 ---
 
 # shotloom-draft-task-plan
 
-Task-spec authoring companion to `/shotloom-start-task`. The command name is
-retained for compatibility, but the artifact it writes is a Shotloom task spec.
-Read the persisted Linear briefing, audit live Shotloom code, write one
-requirements/decisions/verification contract, commit and push only a clean
-direct spec plus its briefing, then immediately run
-`/shotloom-review-task-plan <slug>` on that spec. Implementation needs a later
-user message after the review skill finishes.
+Compatibility alias for the Shotloom spec workflow. Prefer
+[`/shotloom-draft-spec`](../shotloom-draft-spec/SKILL.md) in new user-facing
+instructions.
+
+When this legacy name is invoked, run the same workflow as
+`/shotloom-draft-spec`: read the persisted Linear briefing, audit live Shotloom
+code, write one requirements/decisions/verification contract, commit and push
+only a clean direct spec plus its briefing, immediately run the spec review
+gate, share the final spec path, then ask whether to implement.
 
 ## Mandatory Contract
 
@@ -63,7 +65,7 @@ if [ -n "$1" ]; then
   slug="$1"
 else
   if [ "$branch" = "main" ] || [ "$branch" = "HEAD" ] || ! [[ "$branch" == */* ]]; then
-    echo "usage: /shotloom-draft-task-plan <kebab-slug>"
+    echo "usage: /shotloom-draft-spec <kebab-slug>"
     exit 1
   fi
   slug="${branch#*/}"
@@ -180,8 +182,9 @@ If Step 6b committed and pushed a direct spec at `$spec_path`, immediately run:
 /shotloom-review-task-plan "$slug"
 ```
 
-Let `/shotloom-review-task-plan` own the final report, review-spec commit, and
-implementation go-ahead reminder.
+Let `/shotloom-review-task-plan` own the review-spec commit and final report.
+The final report must include the spec path and ask the user whether to start
+implementation from the reviewed spec.
 
 If Step 6a wrote a suffix artifact (`.draft.md`, `.partial.md`, or
 `.claude.md`), report the artifact path and blocker, then stop. Do not run
@@ -197,8 +200,10 @@ Do not edit Shotloom source files in this skill.
 - After `$spec_path` resolves, every stop writes a direct or suffix `.md`.
 - Implementation-choice ambiguity goes in `## Locked Decisions`.
 - Factual stop conditions stop before commit, not before writing.
-- One briefing artifact, one task spec artifact, one direct-spec commit, then one automatic
-  `/shotloom-review-task-plan <slug>` run for direct specs only.
+- One briefing artifact, one task spec artifact, one direct-spec commit, then
+  one automatic `/shotloom-review-task-plan <slug>` run for direct specs only.
+- The user-facing next command name is `/shotloom-draft-spec`; this legacy
+  skill name remains only for compatibility.
 - Spec is not implementation. Source edits need a later user request.
 - Protocol changes, multi-file `.gltf` support, dependencies, ADRs, and broad
   UX changes require explicit scope.

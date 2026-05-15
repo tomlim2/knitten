@@ -73,11 +73,11 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 
 ---
 
-## Skills (136)
+## Skills (137)
 
 | Category | Count |
 |----------|------:|
-| `shotloom-*` | 26 |
+| `shotloom-*` | 27 |
 | `dev-*` | 24 |
 | `caol-*` | 21 |
 | `cci-*` | 10 |

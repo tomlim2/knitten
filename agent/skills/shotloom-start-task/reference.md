@@ -178,7 +178,7 @@ spec: ../../plans/<slug>.md
 **AC primitive cross-check:**
 - <AC id>: <codified | wrong-shape | verification-example | sibling-owned> - <path/section evidence, equivalent proof, sibling owner, or split needed>
 
-**Spec-risk handoff for `/shotloom-draft-task-plan`:**
+**Spec-risk handoff for `/shotloom-draft-spec`:**
 - P1: <question to lock before implementation> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent that demands this>
 - P2: <ambiguity/test/doc gap to resolve in the spec> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
 - P3: <cheap nit or precedent to review> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent, or related-follow-up>
@@ -197,7 +197,7 @@ spec: ../../plans/<slug>.md
 - [x] spec-risk handoff seeded
 - [x] sibling-spec scan run (caol-ila/docs/plans/, full body via Read tool for every match)
 
-Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.
+Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.
 ```
 
 Write exactly this artifact and emit the same briefing in chat with the

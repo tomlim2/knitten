@@ -7,7 +7,7 @@ Persistent task briefings live here.
 
 | Path | Use |
 |---|---|
-| `shotloom/<slug>.md` | Shotloom Linear briefing written by `/shotloom-start-task` before `/shotloom-draft-task-plan` authors the spec. |
+| `shotloom/<slug>.md` | Shotloom Linear briefing written by `/shotloom-start-task` before `/shotloom-draft-spec` authors and reviews the spec. |
 
 Rules:
 
