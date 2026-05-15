@@ -9,7 +9,7 @@ tags:
   - lang/{{LANG}}
   - lib/{{LIB}}
 date: {{YYYY-MM-DD}}
-source: claude
+source: agent
 ---
 
 # {{TOPIC_TITLE}}

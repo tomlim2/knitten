@@ -7,7 +7,7 @@ tags:
   - motion
   - ai
 date: 2026-04-17
-source: claude
+source: agent
 ---
 
 # AI-Generated Motion Review Standard

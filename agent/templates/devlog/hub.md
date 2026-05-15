@@ -5,7 +5,7 @@ tags:
   - project/{{PROJECT}}
   - area/{{AREA}}
 date: {{YYYY-MM-DD}}
-source: claude
+source: agent
 ---
 
 # {{PROJECT}} 개발일지

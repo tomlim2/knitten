@@ -8,7 +8,7 @@ tags:
   - area/game-dev
 date: 2026-05-15
 day: 6
-source: claude
+source: agent
 ---
 
 # Day 6 (05-15): Shotloom merged PR wrapup

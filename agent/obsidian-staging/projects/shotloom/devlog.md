@@ -5,7 +5,7 @@ tags:
   - project/shotloom
   - area/game-dev
 date: 2026-05-12
-source: claude
+source: agent
 ---
 
 # shotloom 개발일지

@@ -11,7 +11,7 @@ tags:
   # tool/{{TOOL}} for tool-level lessons (claude-code, cmux, gh, …).
   - tool/{{TOOL}}
 date: {{YYYY-MM-DD}}
-source: claude
+source: agent
 ---
 
 # {{ONE_LINE_TITLE}}

@@ -8,11 +8,11 @@
   "purposes": {
     "devlog": {
       "default": "obsidian:agent/projects/{project}",
-      "no-vault": "staging:agent/projects/{project}"
+      "no-vault": "staging:projects/{project}"
     },
     "learning": {
       "default": "obsidian:agent/projects/{project}",
-      "no-vault": "staging:agent/projects/{project}"
+      "no-vault": "staging:projects/{project}"
     },
     "learnings": {
       "default": "obsidian:learnings/projects",
@@ -20,7 +20,7 @@
     },
     "topic": {
       "default": "obsidian:agent/projects/{project}/topics",
-      "no-vault": "staging:agent/projects/{project}/topics"
+      "no-vault": "staging:projects/{project}/topics"
     },
     "consulting": {
       "default": "obsidian:consulting",
@@ -49,7 +49,7 @@
     },
     "postmortem": {
       "default": "obsidian:agent/projects/records",
-      "no-vault": "staging:agent/projects/records"
+      "no-vault": "staging:projects/records"
     },
     "vocab": {
       "default": "obsidian:30-resources/language",
@@ -57,7 +57,7 @@
     },
     "experiment": {
       "default": "obsidian:agent/projects/{project}",
-      "no-vault": "staging:agent/projects/{project}"
+      "no-vault": "staging:projects/{project}"
     },
     "spec": {
       "default": "obsidian:agent/specs",

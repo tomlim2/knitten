@@ -6,7 +6,7 @@ tags:
   - area/game-dev
 date: 2026-05-12
 day: 1
-source: claude
+source: agent
 ---
 
 # Day 1 (05-12): STL-369 / STL-372 PR 리뷰 회고

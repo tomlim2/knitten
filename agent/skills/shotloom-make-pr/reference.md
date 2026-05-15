@@ -28,7 +28,7 @@ tags:
   - shotloom
   - <task-specific tags, e.g. gltf, vrm, retarget, bridge, testing>
 date: <YYYY-MM-DD>
-source: claude
+source: agent
 ---
 
 # Shotloom devlog — <YYYY-MM-DD>

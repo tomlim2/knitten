@@ -109,7 +109,7 @@ tags:
   - {kind}             # devlog, learning, ops, plan, reference
   - {topic}            # retarget, rust, skeleton 등 기존 풀에서 매칭
 date: YYYY-MM-DD
-source: claude
+source: agent
 ---
 ```
 

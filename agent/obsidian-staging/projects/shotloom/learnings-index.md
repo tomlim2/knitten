@@ -6,7 +6,7 @@ tags:
   - area/game-dev
 date: 2026-05-12
 updated: 2026-05-12
-source: claude
+source: agent
 ---
 
 # shotloom Learnings

@@ -6,7 +6,7 @@ tags:
   - area/game-dev
 date: 2026-05-15
 day: 7
-source: claude
+source: agent
 ---
 
 # Day 7 (05-15): PR #337 wrapup

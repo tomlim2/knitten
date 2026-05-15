@@ -8,7 +8,7 @@ tags:
   - area/game-dev
 date: 2026-05-13
 day: 5
-source: claude
+source: agent
 ---
 
 # Day 5 (05-13): STL-400 PR 리뷰 회고

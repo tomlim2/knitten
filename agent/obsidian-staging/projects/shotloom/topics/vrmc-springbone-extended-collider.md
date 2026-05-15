@@ -5,7 +5,7 @@ tags:
   - project/shotloom
   - area/vrm
 date: 2026-05-11
-source: claude-code
+source: agent
 ---
 
 # VRMC_springBone_extended_collider

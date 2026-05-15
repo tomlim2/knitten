@@ -6,7 +6,7 @@ tags:
   - area/{{AREA}}
 date: {{YYYY-MM-DD}}
 updated: {{YYYY-MM-DD}}
-source: claude
+source: agent
 ---
 
 # {{PROJECT}} Learnings
@@ -62,5 +62,5 @@ append-only. Each entry = one ### subsection.
   That's the takeaway anyone (incl. future-you) skim-reads first.
 - Update top-level `updated:` field on every append.
 - Cross-project learnings use the flat shape instead — see
-  ~/.claude/templates/devlog/cross-learning.md.
+  agent/templates/devlog/cross-learning.md.
 -->

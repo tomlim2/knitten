@@ -6,7 +6,7 @@ tags:
   - area/ci
   - lib/github-actions
 date: 2026-05-08
-source: claude-code
+source: agent
 ---
 
 # Staging channel separation — CI/CD walkthrough

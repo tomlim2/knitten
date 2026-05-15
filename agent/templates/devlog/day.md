@@ -10,7 +10,7 @@ tags:
   - area/{{AREA}}
 date: {{YYYY-MM-DD}}
 day: {{N}}
-source: claude
+source: agent
 ---
 
 # Day {{N}} ({{MM-DD}}): {{ONE_LINE_TITLE}}
