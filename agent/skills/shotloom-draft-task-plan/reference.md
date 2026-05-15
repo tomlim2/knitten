@@ -68,6 +68,12 @@ linear: STL-NN
   artifact or emitted event sequence. Do not accept tests that check only one
   side of the mutation, internal stats, or an unchanged buffer while another
   representation can already be dirty.
+- Rust parser, loader, validator, and error-type plans must include
+  source-chain proof. Name each external error type, show where it is preserved
+  with `#[source]` / typed fields, and add verification that
+  `std::error::Error::source()` is present or intentionally absent. Do not
+  accept `external_error.to_string()` stored in a `String` field unless the plan
+  explains why no source chain can exist.
 
 ## Step 5 - Cold-Start Review Loop
 
@@ -115,6 +121,7 @@ through these, adding task-specific stances when useful:
 | Paranoid implementer | Where will the code fail to compile, borrow, parse, cache, or validate? |
 | Minimal PR reviewer | What belongs in a follow-up because it makes the PR too large? |
 | Domain owner | Does the plan respect Shotloom ownership boundaries, ADRs, and diagnostics policy? |
+| Error-source-chain owner | Do `thiserror` enums, `map_err` branches, and validator/schema errors preserve external causes instead of flattening them into strings? |
 | Test owner | Would the proposed tests actually fail before the implementation and pass after? |
 | Docs/spec owner | Are docs/spec changes required, and are non-goals explicit enough? |
 | Release/cache owner | Does the plan invalidate cache, serialized state, or user-visible behavior correctly? |
@@ -147,6 +154,7 @@ Run each lens before declaring convergence:
 | Current-code contradiction | Plan does not add existing code, cite absent APIs, or miss failure paths. |
 | API boundary | Signatures, ownership, validation, return types, and public surface are exact. |
 | Error ownership | Rejection codes, diagnostics, messages, and event order have one owning layer. |
+| Error source chain | Rust error enums preserve wrapped external errors with `#[source]`; internal validator-only errors explicitly have no source. |
 | Wire contract | Existing command and event shapes stay intact unless protocol change is in scope. |
 | Invariants | Staged-byte draining, cache failures, success events, identity, paths, and URI shapes do not regress. |
 | Mutation atomicity | Coupled artifact writes pre-validate or roll back so cache/persistence cannot store half-updated state. |
@@ -163,6 +171,7 @@ before running the next pass.
 |---|---|---|
 | 1 | Author | Did the draft contain every intended constraint? |
 | 2 | Paranoid reviewer | What invariant, error path, edge case, or review objection is absent? |
+| 2a | Error-source-chain reviewer | Which planned `thiserror` variant or `map_err` branch could lose a wrapped external cause by converting it into `String`? |
 | 3 | Minimalist reviewer | What speculative API or related feature belongs outside scope? |
 | 4 | Domain reviewer | Does each plan line trace to an AC, ADR, or repo precedent? |
 
@@ -209,6 +218,7 @@ Every final direct plan must pass:
 | Baseline | Implementation Plan starts with S0 baseline re-check or AC for one. |
 | Locked Decisions | Every decision has `Rationale:` and `Rejected alternatives:` labels. |
 | String split | Every user-facing string defaults to separate code or label; collapsed strings cite rationale. |
+| Error source chain | Rust parser/loader/validator plans preserve external causes with `#[source]`, and tests cover `Error::source()` for source/no-source variants. |
 | Traceability | Every in-scope line traces to an AC, ADR, or repo precedent. |
 
 If any floor fails, patch the plan and re-run the relevant review lens.

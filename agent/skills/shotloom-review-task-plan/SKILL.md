@@ -110,6 +110,7 @@ Run more rounds with a different stance each time. Useful stances:
 | Paranoid implementer | Where will the code fail to compile, borrow, parse, cache, or validate? |
 | Minimal PR reviewer | What should be follow-up because it makes this PR too large? |
 | Domain owner | Does it respect Shotloom ADRs, module boundaries, diagnostics, and cache policy? |
+| Error-source-chain owner | Do planned Rust error enums and conversions preserve wrapped external errors with `#[source]`, instead of flattening them into `String`? |
 | Test owner | Would tests fail before implementation and pass after? |
 | Docs/spec owner | Are docs required, and are non-goals explicit? |
 | Release/cache owner | Does it invalidate cache/state/user-visible behavior correctly? |
@@ -137,6 +138,10 @@ Before landing, verify:
 - Traps list at least two false paths.
 - Verification includes manual repro for each user-facing diagnostic,
   rejection, or behavior label introduced by the plan.
+- Rust parser/loader/validator/error plans include source-chain proof: every
+  wrapped external error is preserved with `#[source]` / typed fields, every
+  intentional no-source schema or validator error says why, and verification
+  includes `Error::source()` assertions when applicable.
 - Sibling-plan disagreements are adopted or rejected with live-code rationale.
 
 Patch any `P1`/`P2` floor failure and run one more stance. `P3`/nit-only floor

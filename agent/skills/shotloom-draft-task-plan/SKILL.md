@@ -137,6 +137,14 @@ shape note: why those fixtures are in the matrix, whether each fixture gets its
 own `#[test]` or a collected-failures loop, which assertion proves behavior
 beyond presence, and whether any test output is intentionally env-gated.
 
+When the plan adds or changes Rust error types, parsers, loaders, validators,
+or external error conversions, include an error-source-chain note before the
+implementation stages. The note must identify every wrapped external error
+type, whether the plan preserves it with `#[source]` / typed fields, and which
+tests prove `std::error::Error::source()` is present or intentionally absent.
+Treat `external_error.to_string()` stored in a `String` field as a `P2` plan
+gap unless the plan explicitly says no source chain exists to preserve.
+
 ### Step 5: Cold-Start Review Until Only Nits Remain
 
 Review the draft through the cold-start review loop in
@@ -146,12 +154,15 @@ and repo state; decide whether the plan is appropriate for one PR. Patch the
 plan before continuing.
 
 Round 2 and later must use different review stances from the previous round.
-Patch the plan after every round with `P1` or `P2` findings, then re-check the
-patched claims against source. Keep looping until only `P3` / nit findings
-remain. Nit-only means the plan can proceed; do not block or keep polishing
-forever on harmless wording. Severity: `P1` wrong API/layer/scope or not-one-PR
-scope, `P2` missing required test/doc/edge/invariant/error branch, `P3` cheap
-cleanup/nit.
+At least one round for Rust parser/loader/validator work must be an
+error-source-chain pass: inspect planned `thiserror` enums, `#[source]`
+attachments, `From`/`map_err` conversions, and any `String` fields that might
+flatten an external error. Patch the plan after every round with `P1` or `P2`
+findings, then re-check the patched claims against source. Keep looping until
+only `P3` / nit findings remain. Nit-only means the plan can proceed; do not
+block or keep polishing forever on harmless wording. Severity: `P1` wrong
+API/layer/scope or not-one-PR scope, `P2` missing required test/doc/edge/
+invariant/error branch or source-chain proof, `P3` cheap cleanup/nit.
 
 Convergence requires first-round context collection, explicit one-PR suitability
 judgment, sibling draft consumption, structural floor checks, and zero
