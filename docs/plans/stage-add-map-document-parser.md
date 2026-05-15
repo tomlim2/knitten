@@ -177,6 +177,9 @@ bridge command shape before STL-423.
    `docs/specs/stage-map-document.md`.
 4. Confirm no `crates/shotloom-stage/src/map_document.rs` or equivalent parser
    module already exists before adding one.
+5. Run `shotloom-review-task-plan` against this plan before implementation and
+   patch every P1/P2 finding. Treat this as the default implementation gate, not
+   an optional extra review.
 
 ### S1 - Add Stage Map DTOs and Error Surface
 
@@ -297,6 +300,8 @@ bridge command shape before STL-423.
 
 ## Verification
 
+- Pre-implementation: `shotloom-review-task-plan` completed with no unhandled
+  P1/P2 findings.
 - `cargo test -p shotloom-stage`
 - `cargo test -p shotloom-stage map_document`
 - `cargo fmt --check`
