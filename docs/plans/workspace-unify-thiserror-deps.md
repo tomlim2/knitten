@@ -191,10 +191,12 @@ to remove.
 1. Run the `cargo metadata --no-deps` query from S0.
 2. Confirm every selected package still has a `thiserror` dependency and that
    the manifest diff shows workspace inheritance.
-3. Confirm no selected package still has a textual direct
+3. Confirm root `Cargo.toml` has the only intentional direct textual
    `thiserror = "2"` entry.
-4. Confirm `git diff -- Cargo.lock` is empty.
-5. If `Cargo.lock` changes, stop and inspect before running broad gates; do not
+4. Confirm no selected crate manifest still has a textual direct
+   `thiserror = "2"` entry.
+5. Confirm `git diff -- Cargo.lock` is empty.
+6. If `Cargo.lock` changes, stop and inspect before running broad gates; do not
    accept incidental lockfile drift.
 
 ### S4 - Run Required Rust Gates
@@ -225,12 +227,21 @@ to remove.
 Focused checks:
 
 ```bash
-rg -n '^thiserror\s*=\s*"2"' Cargo.toml crates/*/Cargo.toml
+rg -n '^thiserror\s*=\s*"2"' Cargo.toml
+rg -n '^thiserror\s*=\s*"2"' crates/*/Cargo.toml
 rg -n '^thiserror\s*=\s*\{\s*workspace\s*=\s*true\s*\}' crates/*/Cargo.toml
 cargo metadata --no-deps --format-version=1 \
   | jq -r '.packages[] | select(.dependencies[]? | .name=="thiserror") | [.name, .manifest_path, (.dependencies[] | select(.name=="thiserror") | .req)] | @tsv'
-git diff -- Cargo.lock
+git diff --exit-code -- Cargo.lock
 ```
+
+Expected focused-check shape:
+
+- first `rg`: one root `Cargo.toml` hit
+- second `rg`: no crate manifest hits
+- workspace-inheritance `rg`: one hit per selected crate manifest
+- metadata query: one row per selected package, all still resolving `thiserror`
+- lockfile diff: empty
 
 Required gates:
 
