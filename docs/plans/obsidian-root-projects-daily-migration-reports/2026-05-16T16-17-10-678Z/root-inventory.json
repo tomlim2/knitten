@@ -1,0 +1,50 @@
+[
+  {
+    "name": ".claude",
+    "type": "dir"
+  },
+  {
+    "name": ".obsidian",
+    "type": "dir"
+  },
+  {
+    "name": ".trash",
+    "type": "dir"
+  },
+  {
+    "name": "agent",
+    "type": "dir"
+  },
+  {
+    "name": "attachments",
+    "type": "dir"
+  },
+  {
+    "name": "CLAUDE.md",
+    "type": "file"
+  },
+  {
+    "name": "consulting",
+    "type": "dir"
+  },
+  {
+    "name": "drinks",
+    "type": "dir"
+  },
+  {
+    "name": "LOOKUP.md",
+    "type": "file"
+  },
+  {
+    "name": "notes",
+    "type": "dir"
+  },
+  {
+    "name": "references",
+    "type": "dir"
+  },
+  {
+    "name": "tutoring",
+    "type": "dir"
+  }
+]

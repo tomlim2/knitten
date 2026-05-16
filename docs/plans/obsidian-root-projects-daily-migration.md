@@ -414,3 +414,4 @@ git diff --check
 |------|--------|--------|
 | 2026-05-17 | Created spec | Pending cold-start review |
 | 2026-05-17 | Added path config/constants batch | `vault-structure.json`, resolver `structure` mode, root/daily/path drift validators, and active reference cleanup implemented before vault moves |
+| 2026-05-17 | Applied vault root migration | Root now contains `.obsidian/`, `.trash/`, `attachments/`, `daily/`, `projects/`; structure validators pass; note-level `obsidian-contract` cleanup remains |
