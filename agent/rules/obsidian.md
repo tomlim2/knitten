@@ -27,7 +27,7 @@ trigger: working in the Obsidian vault
   - **Drop the space**: `PR#154` (no space before `#`) is not interpreted as a tag.
   Verify before save: search the body for `(^|\s)#[A-Za-z0-9]` — any hit that isn't an intentional learnings marker (`#rule`/`#failed`/`#gotcha` at document footer) needs one of the fixes above.
 - **Location** — `{obsidian-vault}/agent/` for all agent-authored docs.
-- **Audience declared by folder** — Every vault subfolder has a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Default for unmarked folders: strict LLM-first. See `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
+- **Audience declared by folder** — New project roots and durable folders have a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Repeated folders (`days/`, `learnings/`) inherit from parent. Default for unmarked folders: strict LLM-first. See `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
 
 ## Auto-commit + auto-push for Obsidian-only changes
 
@@ -36,7 +36,7 @@ Exception to `~/.claude/rules/git-defaults.md`. The diff must contain ONLY Obsid
 | Diff content | Auto-commit allowed? |
 |--------------|----------------------|
 | Files inside `machine-paths.json → obsidian` / `obsidian-agent-root` / legacy `obsidian-vault-claude` | **Yes** |
-| Files inside `obsidian-staging` (currently `caol-ila/agent/temp-learnings/`) | **Yes** |
+| Files inside `obsidian-staging` (currently `caol-ila/agent/obsidian-staging/`) | **Yes** |
 | `.md` files with Obsidian frontmatter (`title`, `tags`, `date`, `source`) | **Yes** |
 | Mixed: any of the above + code/config | **No** — split the commit, or get explicit approval for the bundle |
 

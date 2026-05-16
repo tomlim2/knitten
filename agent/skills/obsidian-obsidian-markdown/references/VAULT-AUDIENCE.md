@@ -83,7 +83,16 @@ For `days/` and `learnings/` only. The reader is the author themselves, recallin
 
 ## Per-folder README
 
-Every vault project's subfolder MUST contain a `README.md` declaring:
+New durable vault folders MUST contain a `README.md` declaring audience, style, mutability, and naming.
+
+README required for:
+
+| Folder type | Required? |
+|-------------|-----------|
+| new project root under `agent/projects/<project>/` | yes |
+| durable folders: `specs/`, `plans/`, `topics/`, `decisions/`, `ops/missions/` | yes |
+| repeated entry folders: `days/`, `learnings/` | no, parent README covers them |
+| ephemeral folders: `ops/runs/` | no, unless promoted to durable |
 
 ```markdown
 ---

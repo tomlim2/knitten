@@ -24,14 +24,16 @@ tags:
   - type/devlog
   - project/shotloom
 date: YYYY-MM-DD
-source: notion-export | manual | claude
+source: agent
 ---
 ```
 
 - `title`: document title (double-quoted)
-- `tags`: structured axes — see tag taxonomy below
+- `tags`: structured axes — includes exactly one `type/...` tag and exactly one `project/...` tag; see tag taxonomy below
 - `date`: creation date or original authoring date
-- `source`: origin (notion-export, manual, claude)
+- `source`: origin. Allowed values: `agent`, `manual`, `notion-export`, `codex`, `claude-code`
+
+Do not add a top-level `type:` frontmatter field. Document type is encoded only as a `type/...` tag.
 
 ---
 
@@ -76,7 +78,7 @@ content
 
 **Full taxonomy (read before tagging): `~/.claude/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md`**
 
-3-axis system: `type/` (always) + `project/` (always) + optional `area/`, `lang/`, `tool/`, `status/`.
+Structured tag axes: `type/` (always) + `project/` (always) + optional axes from `TAG-TAXONOMY.md`, including `area/`, `fmt/`, `lang/`, `lib/`, `sys/`, `tech/`, `llm/`, `hobby/`, and `status/`.
 
 Quick reference:
 

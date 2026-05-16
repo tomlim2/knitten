@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 created: 2026-05-16
 updated: 2026-05-16
 owner: caol-ila
@@ -179,3 +179,15 @@ Add a report-only vault audit command before large migrations.
 - README requirement is enforceable on new durable folders.
 - Known nested `agent/agent` structure is removed.
 - Validator passes.
+
+## Execution Notes
+
+2026-05-16 execution completed S1:
+
+| Item | Result |
+|------|--------|
+| `OBSIDIAN-FORMAT.md` | source enum updated; top-level `type:` prohibited |
+| `NOTE-INSPECTION-CHECKLIST.md` | frontmatter contract changed to `title`, `tags`, `date`, `source` |
+| `VAULT-AUDIENCE.md` | README requirement narrowed to project roots and durable folders |
+| `rules/obsidian.md` | staging path corrected; README rule narrowed |
+| nested vault path | `agent/agent/learnings/*` moved to `agent/learnings/*` |

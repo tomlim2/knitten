@@ -20,7 +20,7 @@ The 8 steps below are an inspection order, not a tree. Each step has: check cond
 
 | # | Step | Check | Auto? |
 |---|------|-------|-------|
-| 1 | frontmatter | 5 fields present (`title` `type` `tags` `date` `source`) | partial |
+| 1 | frontmatter | 4 fields present (`title` `tags` `date` `source`) | partial |
 | 2 | tags | axis allocation + body evidence | manual |
 | 3 | H1 | exists, matches title, in first 30 lines | partial |
 | 4 | filename | slug only — no folder/project/type repeat | manual |
@@ -31,9 +31,11 @@ The 8 steps below are an inspection order, not a tree. Each step has: check cond
 
 ---
 
-## 1. Frontmatter (5 fields)
+## 1. Frontmatter (4 fields)
 
-**Check:** YAML frontmatter present with `title`, `type`, `tags`, `date`, `source`. Optional: `status`, `updated`, `aliases`, `revisit`.
+**Check:** YAML frontmatter present with `title`, `tags`, `date`, `source`. Optional: `status`, `updated`, `aliases`, `revisit`, `audience`.
+
+Document type is encoded as exactly one `type/...` tag inside `tags`, never as a top-level `type:` field.
 
 **Why:** LLM parses frontmatter before body. Missing fields = cold-start cost.
 
@@ -41,7 +43,7 @@ The 8 steps below are an inspection order, not a tree. Each step has: check cond
 
 **Auto:** `obsidian-fix-format --check missing-h1` flags H1 missing; frontmatter validation is manual.
 
-**Violation action:** Add missing fields. If `type` cannot be inferred, ask the author.
+**Violation action:** Add missing fields. If the `type/...` tag cannot be inferred, ask the author.
 
 ---
 
