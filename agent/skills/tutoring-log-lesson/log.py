@@ -24,6 +24,8 @@ def create_lesson_file(
 ) -> Path:
     """Create a lesson markdown file."""
     ensure_dirs(student)
+    content = content.replace("\\n", "\n")
+    next_steps = next_steps.replace("\\n", "\n")
 
     # Parse date to get weekday
     dt = datetime.strptime(date, "%Y-%m-%d")
@@ -35,7 +37,16 @@ def create_lesson_file(
     filepath = get_student_dir(student) / filename
 
     # Create markdown content
-    md_content = f"""# {student} - Lesson Log
+    md_content = f"""---
+title: {student} - Lesson Log {date}
+tags:
+  - type/reference
+  - project/tutoring
+date: {date}
+source: manual
+---
+
+# {student} - Lesson Log {date}
 
 ## {date} ({weekday}) {start_time}-{end_time} | {location}
 
