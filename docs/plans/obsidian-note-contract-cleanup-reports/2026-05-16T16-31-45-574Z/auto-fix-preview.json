@@ -1,0 +1,688 @@
+[
+  {
+    "file": "projects/ai/topics/ai-academies.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/automation/topics/rag-agents.md",
+    "changes": [
+      "flat-tags.normalize",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/build-vs-packaging.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/dry-principle.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/dto-pattern.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/nest_documents_241123.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/pydantic.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/sequence-diagram.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/what-is-deployment.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/career/topics/cinamon-career-final.md",
+    "changes": [
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/career/topics/cinamon.md",
+    "changes": [
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/career/topics/freelancer-career-final.md",
+    "changes": [
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/career/topics/me.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/career/topics/resume.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/megamelange-build-packaging.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/megamelange-build-process.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/megamelange-token-cost.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/vrm-mtoon.md",
+    "changes": [
+      "flat-tags.normalize"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/champagne.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/paris-wine-bars.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/whisky.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/wine.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/git-workflows/topics/git-commands-used.md",
+    "changes": [
+      "flat-tags.normalize",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/git-workflows/topics/git-early-days.md",
+    "changes": [
+      "flat-tags.normalize",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/hyper3d/topics/sato-hyper3d-mesh-tokenizer.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/flexoki-color-list.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/github-recovery-codes.md",
+    "changes": [
+      "flat-tags.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/journal/2025/2025-retrospective.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/nvidia-lyra-2-generative-3d-worlds.md",
+    "changes": [
+      "flat-tags.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/roblox-obj-to-fbx.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/basic-wobble.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/fresnel.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/gpgpu-flow-field-particles.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/mod.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/normal-tangent-bitangent.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/write-solutions.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/graphics-theory/bottleneck.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/graphics-theory/cross-product.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/graphics-theory/deferred-shading.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/graphics-theory/forward-vs-deferred-rendering.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/graphics-theory/sin-cos.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-02-22_GeminiGamePortfolioUX_done.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-03-08_포트폴리오 UX 컨설팅 및 진도 체크_done.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-03-22_콜롬비아 대학원 합격 및 포폴_게임 진도_done.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-04-05_포폴 UI_UX 가이드라인_done.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-04-18_Codex 활용 새 프로젝트 시작 — 뉴욕 탐험 게임_done.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-05-02_Work Journey Interactive Experience 프로토타입.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/blender-unreal-import-warnings.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/vrm-workflow/vrm-mtoon.md",
+    "changes": [
+      "flat-tags.normalize"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/customizing-threejs-materials-with-shader.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/noise-texture.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/ray-marching-tips.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/set-threejs-texture-with-glsl.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/space-type-generator.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/tauri.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/usestate-vs-useref.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-02-23.md",
+    "changes": [
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-02-26.md",
+    "changes": [
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-02-27.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-02-29.md",
+    "changes": [
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-03-01.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-03-04.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-03-06.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-03-26.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-03-27.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-04-19.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-06-05.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2024-06-06.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-06-27.md",
+    "changes": [
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-07-27.md",
+    "changes": [
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-07-30.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-07-31.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-01.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-05.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-07.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-11.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-13.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-14.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-18.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-20.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-25.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-26.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-27.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-28.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-08-31.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-05.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-06.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-08.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-09.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-10.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-11.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-15.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-17.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-18.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-22.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-23.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-09-24.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-10-01.md",
+    "changes": [
+      "flat-tags.normalize",
+      "project-tag.dedupe",
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-10-03.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-10-04.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-10-05.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-10-06.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  },
+  {
+    "file": "daily/2025-10-07.md",
+    "changes": [
+      "type-tag.dedupe"
+    ]
+  }
+]

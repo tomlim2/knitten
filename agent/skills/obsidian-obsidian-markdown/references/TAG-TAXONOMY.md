@@ -44,6 +44,8 @@ Always required. Exactly one per note.
 | `type/profile` | Structured personal career record (resume data, role summaries) |
 | `type/note` | Freeform personal note, hobby log, inbox capture — no formal structure |
 | `type/review` | Code or asset review document |
+| `type/journal` | Whole-day personal daily note with mixed project and life entries |
+| `type/index` | Folder or vault lookup/index document |
 
 ---
 
@@ -64,6 +66,27 @@ Always required. Exactly one per note.
 | `project/graphics-study` | Standalone graphics/3D/shader study notes (Blender, GLSL, Three.js, rendering theory) |
 | `project/cross-project` | Cross-project agent learnings and conventions |
 | `project/project-weekend` | Weekend project and studio-weekend docs |
+| `project/ai` | AI topic bucket and references |
+| `project/archive` | Archived imported notes |
+| `project/arp-bone-standard` | Auto-Rig Pro bone standard notes |
+| `project/automation` | Automation topic bucket |
+| `project/backend` | Backend architecture and implementation notes |
+| `project/bevy-vrm-fbx-arm-scan` | bevy-vrm FBX arm scan work |
+| `project/blender` | Blender notes |
+| `project/career` | Career and job-search notes |
+| `project/communication` | Communication notes |
+| `project/git-workflows` | Git workflow notes |
+| `project/graphics` | Graphics topic bucket |
+| `project/graphics-glossary` | Graphics glossary notes |
+| `project/image-prompts` | Image prompt notes |
+| `project/language-learning` | Language-learning notes |
+| `project/math` | Math notes |
+| `project/rendering` | Rendering topic bucket |
+| `project/shotloom-md-bak` | Shotloom migrated backup notes |
+| `project/unreal` | Unreal Engine notes |
+| `project/vrm2u-bevy` | VRM2U Bevy notes |
+| `project/web-graphics` | Web graphics notes |
+| `project/web3d` | Web 3D notes |
 
 Add new rows here as new projects appear. Do not invent a new tag mid-session without adding it to this table.
 
@@ -495,6 +518,11 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 |-----|------:|-------|
 | `hobby/cocktail` | 2 | cocktail notes |
 | `hobby/tasting` | 1 | tasting notes |
+| `hobby/champagne` | 1 | champagne notes |
+| `hobby/streaming` | 1 | streaming hobby notes |
+| `hobby/travel` | 1 | travel notes |
+| `hobby/whisky` | 1 | whisky notes |
+| `hobby/wine` | 2 | wine notes |
 
 ### llm/ (7 tags, 9 usages)
 

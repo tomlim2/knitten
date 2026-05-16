@@ -1,0 +1,354 @@
+{
+  "apply": true,
+  "filesScanned": 747,
+  "filesChanged": 56,
+  "changes": [
+    {
+      "file": "projects/ai/topics/ai-academies.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/backend/topics/dry-principle.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/backend/topics/mcp-architecture.md",
+      "changes": [
+        "tags.trim",
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/backend/topics/nest_documents_1.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/backend/topics/nest_documents_2.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/backend/topics/nest_documents_3.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/blender/topics/Procedural Shading/generating-pbr-maps.md",
+      "changes": [
+        "tags.trim",
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/blender/topics/Procedural Shading/pbr.md",
+      "changes": [
+        "tags.trim",
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/blender/topics/Procedural Shading/procedural-textures.md",
+      "changes": [
+        "tags.trim",
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/blender/topics/ShaderComposition/blending-and-masking.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/caol-ila/topics/legacy-claude-entry.md",
+      "changes": [
+        "frontmatter.insert"
+      ]
+    },
+    {
+      "file": "projects/career/topics/cinamon.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/specs/npr-showcase-spec.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/character-customization-history.md",
+      "changes": [
+        "frontmatter.project.remove",
+        "frontmatter.started.to-created",
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/commandlet-postprocess-debug.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/megamelange-build-process.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/pmx-to-ue5-pipeline.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/screenshot-settings.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/syncmi-textures-guide.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/ue5-variables-dump.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/vrm-import-settings.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/vrm-mtoon.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/vrm-standard-pbr.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/vrm-to-ue-pipeline.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/git-workflows/topics/git-commands-used.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/image-prompts/topics/character-pose-grid-4x4.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/math/topics/coordinate-systems.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/math/topics/quaternion-questions.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/personal/topics/nvidia-lyra-2-generative-3d-worlds.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/project-weekend/archive/aquarium/design/aquarium-reframe-v2.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/project-weekend/archive/aquarium/design/rarity-balance-v1.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/project-weekend/days/2026-05-05.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/rendering/topics/glsl/gpgpu-flow-field-particles.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/shotloom/days/2026-05-07/web-image-cicd.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/shotloom/learnings/crossoriginisolated.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/blender-unreal-import-warnings.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/sdf-face-shadow-sky-light.md",
+      "changes": [
+        "tags.trim",
+        "h1.normalize"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/toon-rendering/toon shader/front-hair/front-hair-issue.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/toon-rendering/toon shader/toon-tonemapping.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/toon-rendering/toon shader/vrm-blender-issues.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/vrm-workflow/vrm-mtoon.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/vrm-workflow/vrm-standard-pbr.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/vrm-workflow/vrm-to-ue.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/web-graphics/topics/coffee-smoke.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/web-graphics/topics/customizing-threejs-materials-with-shader.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/web-graphics/topics/glsl.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/web-graphics/topics/noise-texture.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/web-graphics/topics/ray-marching-tips.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "projects/web-graphics/topics/set-threejs-texture-with-glsl.md",
+      "changes": [
+        "tags.trim"
+      ]
+    },
+    {
+      "file": "daily/2025-06-27.md",
+      "changes": [
+        "tags.trim",
+        "h1.normalize",
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "daily/2025-07-27.md",
+      "changes": [
+        "tags.trim",
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "daily/2025-08-05.md",
+      "changes": [
+        "tags.trim",
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "daily/2025-08-11.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "daily/2025-08-13.md",
+      "changes": [
+        "inline-tags.escape"
+      ]
+    },
+    {
+      "file": "daily/2025-10-05.md",
+      "changes": [
+        "h1.normalize"
+      ]
+    }
+  ]
+}

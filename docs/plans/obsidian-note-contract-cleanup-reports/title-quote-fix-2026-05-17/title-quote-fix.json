@@ -1,0 +1,350 @@
+{
+  "count": 69,
+  "changed": [
+    {
+      "file": "projects/bevy-vrm/days/2026-03-17.md",
+      "old": "2026-03-17 — Day 1: 프로젝트 셋업 + VRM 로딩",
+      "new": "\"2026-03-17 — Day 1: 프로젝트 셋업 + VRM 로딩\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-18.md",
+      "old": "2026-03-18 — Day 2: 런타임 VRM 로더 + 디버그 도구",
+      "new": "\"2026-03-18 — Day 2: 런타임 VRM 로더 + 디버그 도구\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-19/retargeter-start.md",
+      "old": "2026-03-19 — Day 3: CINEV MetaHuman → VRM 리타게터",
+      "new": "\"2026-03-19 — Day 3: CINEV MetaHuman → VRM 리타게터\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-19/three-vrm-formula.md",
+      "old": "2026-03-19 — Day 4-5: LEFT/RIGHT 공식 → three-vrm 공식 탐색",
+      "new": "\"2026-03-19 — Day 4-5: LEFT/RIGHT 공식 → three-vrm 공식 탐색\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-20/auto-load-height.md",
+      "old": "2026-03-20 — Day 8: VRM 0.x 자동 로드 + 높이 보정 동적화",
+      "new": "\"2026-03-20 — Day 8: VRM 0.x 자동 로드 + 높이 보정 동적화\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-20/coord-flip.md",
+      "old": "2026-03-20 — Day 7: VRM 0.x 180°Y 기저 변환 — 다리 정상화",
+      "new": "\"2026-03-20 — Day 7: VRM 0.x 180°Y 기저 변환 — 다리 정상화\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-20/fbx-timeline.md",
+      "old": "2026-03-20 — Day 9: FBX-driven timeline + seamless model swap",
+      "new": "\"2026-03-20 — Day 9: FBX-driven timeline + seamless model swap\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-21/npr-viewer-spinoff.md",
+      "old": "2026-03-21 — Day 11: NPR Shader Viewer 독립 프로젝트",
+      "new": "\"2026-03-21 — Day 11: NPR Shader Viewer 독립 프로젝트\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-21/timeline-controller.md",
+      "old": "2026-03-21 — Day 10: 타임라인 컨트롤러 + 마스터 클록 아키텍처",
+      "new": "\"2026-03-21 — Day 10: 타임라인 컨트롤러 + 마스터 클록 아키텍처\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-24.md",
+      "old": "Day 12 (03-24): 기초 파이프라인 구축",
+      "new": "\"Day 12 (03-24): 기초 파이프라인 구축\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-25.md",
+      "old": "Day 13 (03-25): 구조 정리 + 디버그 UI",
+      "new": "\"Day 13 (03-25): 구조 정리 + 디버그 UI\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-26.md",
+      "old": "Day 14 (03-26): VRM 0.x 좌표계 정규화 + Rest Pose",
+      "new": "\"Day 14 (03-26): VRM 0.x 좌표계 정규화 + Rest Pose\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-27.md",
+      "old": "Day 15 (03-27): Joint Limits + RQ 시스템 + Shoulder Compensation",
+      "new": "\"Day 15 (03-27): Joint Limits + RQ 시스템 + Shoulder Compensation\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-03-30.md",
+      "old": "Day 1 (03-30): Multi-agent ops 첫 실전 — shotloom VRM import + retarget MetaHuman",
+      "new": "\"Day 1 (03-30): Multi-agent ops 첫 실전 — shotloom VRM import + retarget MetaHuman\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-01.md",
+      "old": "Day 3 (04-01): IK full-body FK evaluator + hand rotation + right finger curl fix",
+      "new": "\"Day 3 (04-01): IK full-body FK evaluator + hand rotation + right finger curl fix\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-02.md",
+      "old": "Day 4 (04-02): Identity-rest bone 분석, virtual rest 구현, 아키텍처 정리",
+      "new": "\"Day 4 (04-02): Identity-rest bone 분석, virtual rest 구현, 아키텍처 정리\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-06.md",
+      "old": "2026-04-06: Finger Bind Pose Fix",
+      "new": "\"2026-04-06: Finger Bind Pose Fix\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-07.md",
+      "old": "2026-04-07: Finger Muscle-Space Retarget",
+      "new": "\"2026-04-07: Finger Muscle-Space Retarget\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-08.md",
+      "old": "2026-04-08: Skeleton Remap + Sitting Pose",
+      "new": "\"2026-04-08: Skeleton Remap + Sitting Pose\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-09.md",
+      "old": "2026-04-09: main.rs 모듈 분리",
+      "new": "\"2026-04-09: main.rs 모듈 분리\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-10.md",
+      "old": "2026-04-10: arp2vrm-score 설계",
+      "new": "\"2026-04-10: arp2vrm-score 설계\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-11.md",
+      "old": "2026-04-11: Finger v5 1D Scalar Curl — 성공",
+      "new": "\"2026-04-11: Finger v5 1D Scalar Curl — 성공\""
+    },
+    {
+      "file": "projects/bevy-vrm/days/2026-04-18.md",
+      "old": "2026-04-18: bevy_vrm1 첫 OSS 기여",
+      "new": "\"2026-04-18: bevy_vrm1 첫 OSS 기여\""
+    },
+    {
+      "file": "projects/bevy-vrm/learnings/arp2vrm-score-cli.md",
+      "old": "arp2vrm-score: 검증 게이트 CLI 설계",
+      "new": "\"arp2vrm-score: 검증 게이트 CLI 설계\""
+    },
+    {
+      "file": "projects/bevy-vrm/learnings/finger-curl-pipeline.md",
+      "old": "Finger Retarget: Curl-Only Pipeline",
+      "new": "\"Finger Retarget: Curl-Only Pipeline\""
+    },
+    {
+      "file": "projects/bevy-vrm/learnings/finger-rebasis-approaches.md",
+      "old": "Finger Retarget: Rebasis Approaches",
+      "new": "\"Finger Retarget: Rebasis Approaches\""
+    },
+    {
+      "file": "projects/bevy-vrm/ops/R-018-dispatch.md",
+      "old": "작업 지시: R-018 전신 rest pose audit + validator 보강",
+      "new": "\"작업 지시: R-018 전신 rest pose audit + validator 보강\""
+    },
+    {
+      "file": "projects/bevy-vrm/ops/R-019-dispatch.md",
+      "old": "Task: R-019 Add rest_pose_offsets for locomotion bones",
+      "new": "\"Task: R-019 Add rest_pose_offsets for locomotion bones\""
+    },
+    {
+      "file": "projects/bevy-vrm/ops/R-020-dispatch.md",
+      "old": "Task: R-020 lowerArm rest pose verification — VRM 0.x + 1.0",
+      "new": "\"Task: R-020 lowerArm rest pose verification — VRM 0.x + 1.0\""
+    },
+    {
+      "file": "projects/bevy-vrm/ops/R-021-dispatch.md",
+      "old": "Task: R-021 T2M FBX arm/hand keyframe analysis",
+      "new": "\"Task: R-021 T2M FBX arm/hand keyframe analysis\""
+    },
+    {
+      "file": "projects/bevy-vrm/ops/R-022-dispatch.md",
+      "old": "Task: R-022 rest_pose_preserve — partial A-pose retention in retarget output",
+      "new": "\"Task: R-022 rest_pose_preserve — partial A-pose retention in retarget output\""
+    },
+    {
+      "file": "projects/bevy-vrm/ops/codex-runs/2026-04-14/port-bevy-112847.md",
+      "old": "ADR-0023: Retargeter Validation Contract and Diagnostic Boundary",
+      "new": "\"ADR-0023: Retargeter Validation Contract and Diagnostic Boundary\""
+    },
+    {
+      "file": "projects/bevy-vrm/plans/1d-curl-pipeline.md",
+      "old": "다음 세션: 1D Scalar Curl Pipeline",
+      "new": "\"다음 세션: 1D Scalar Curl Pipeline\""
+    },
+    {
+      "file": "projects/bevy-vrm/plans/finger-twist.md",
+      "old": "다음 세션: Finger Twist 근본 해결",
+      "new": "\"다음 세션: Finger Twist 근본 해결\""
+    },
+    {
+      "file": "projects/bevy-vrm/plans/finger-worldspace-delta.md",
+      "old": "다음 세션: Finger Retarget 개선",
+      "new": "\"다음 세션: Finger Retarget 개선\""
+    },
+    {
+      "file": "projects/bevy-vrm/plans/vrmsl.md",
+      "old": "다음 세션: vrmsl (VRM Shotloom)",
+      "new": "\"다음 세션: vrmsl (VRM Shotloom)\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/experiments-bone-mesh-mismatch.md",
+      "old": "Experiments: bevy-vrm / bone-mesh-mismatch",
+      "new": "\"Experiments: bevy-vrm / bone-mesh-mismatch\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/experiments-finger-backward-curl.md",
+      "old": "Experiments: bevy-vrm / finger-backward-curl",
+      "new": "\"Experiments: bevy-vrm / finger-backward-curl\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/experiments-finger-metacarpal-fold.md",
+      "old": "Experiments: bevy-vrm / finger-metacarpal-fold",
+      "new": "\"Experiments: bevy-vrm / finger-metacarpal-fold\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/experiments-retarget-shoulder.md",
+      "old": "Experiments: bevy-vrm / retarget-shoulder",
+      "new": "\"Experiments: bevy-vrm / retarget-shoulder\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/experiments-thumb-bind-pose.md",
+      "old": "Experiments: bevy-vrm / thumb bind pose curl",
+      "new": "\"Experiments: bevy-vrm / thumb bind pose curl\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/experiments-wrist-change-of-basis.md",
+      "old": "Experiments: bevy-vrm / wrist change-of-basis retarget",
+      "new": "\"Experiments: bevy-vrm / wrist change-of-basis retarget\""
+    },
+    {
+      "file": "projects/bevy-vrm/topics/portfolio-retarget-ai-dev.md",
+      "old": "포폴 아이디어: 리타겟 파이프라인 + AI 활용 개발 환경",
+      "new": "\"포폴 아이디어: 리타겟 파이프라인 + AI 활용 개발 환경\""
+    },
+    {
+      "file": "projects/bevy-vrm-fbx-arm-scan/learnings/bevy-vrm-fbx-arm-scan.md",
+      "old": "FBX Arm/Hand Bone Scan: 25_06672_F_DNTSuperSukiShukiRush",
+      "new": "\"FBX Arm/Hand Bone Scan: 25_06672_F_DNTSuperSukiShukiRush\""
+    },
+    {
+      "file": "projects/caol-ila/days/2026-04-23.md",
+      "old": "2026-04-23: Hyperframes 셋업 + video-* 스킬 래퍼",
+      "new": "\"2026-04-23: Hyperframes 셋업 + video-* 스킬 래퍼\""
+    },
+    {
+      "file": "projects/caol-ila/days/2026-04-29.md",
+      "old": "Day 01 (04-29): 스킬 목록 토큰 다이어트",
+      "new": "\"Day 01 (04-29): 스킬 목록 토큰 다이어트\""
+    },
+    {
+      "file": "projects/caol-ila/days/2026-05-05.md",
+      "old": "Day 02 (05-05): 스킬 사용량 추적 + 데일리 라이트 트라이어드 LLM-first 재정비",
+      "new": "\"Day 02 (05-05): 스킬 사용량 추적 + 데일리 라이트 트라이어드 LLM-first 재정비\""
+    },
+    {
+      "file": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+      "old": "Claude Code 훅: 사용자-슬래시는 PreToolUse 발화 안 함",
+      "new": "\"Claude Code 훅: 사용자-슬래시는 PreToolUse 발화 안 함\""
+    },
+    {
+      "file": "projects/caol-ila/learnings/learning-rust-bin-vs-lib.md",
+      "old": "Rust: bin vs lib",
+      "new": "\"Rust: bin vs lib\""
+    },
+    {
+      "file": "projects/caol-ila/learnings/learning-rust-crates.md",
+      "old": "Rust: crate란?",
+      "new": "\"Rust: crate란?\""
+    },
+    {
+      "file": "projects/caol-ila/learnings/learning-rust-traits.md",
+      "old": "Rust: Traits (트레이트)",
+      "new": "\"Rust: Traits (트레이트)\""
+    },
+    {
+      "file": "projects/caol-ila/plans/todo-at-home-2026-04-21.md",
+      "old": "2026-04-21: 집 맥에서 할 일 — Claude 설정 중앙화 후속",
+      "new": "\"2026-04-21: 집 맥에서 할 일 — Claude 설정 중앙화 후속\""
+    },
+    {
+      "file": "projects/caol-ila/topics/javascript-code-review-criteria.md",
+      "old": "JavaScript/Node.js Code Review Criteria: Research Findings",
+      "new": "\"JavaScript/Node.js Code Review Criteria: Research Findings\""
+    },
+    {
+      "file": "projects/hyper3d/topics/sato-hyper3d-mesh-tokenizer.md",
+      "old": "SATO: Strips as Tokens — Mesh Topology & UV Generation",
+      "new": "\"SATO: Strips as Tokens — Mesh Topology & UV Generation\""
+    },
+    {
+      "file": "projects/personal/topics/tegaki.md",
+      "old": "Resource: Tegaki — Handwriting Animation from Google Fonts",
+      "new": "\"Resource: Tegaki — Handwriting Animation from Google Fonts\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-14/stl74-pr-open.md",
+      "old": "04-14: STL-74 PR open + sequential-PR 패턴",
+      "new": "\"04-14: STL-74 PR open + sequential-PR 패턴\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-14/stl74-revision.md",
+      "old": "04-14 (오후): STL-74 리뷰 대응 revision + 스킬/룰 정비",
+      "new": "\"04-14 (오후): STL-74 리뷰 대응 revision + 스킬/룰 정비\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-15/stl78-fbx-importer-planning.md",
+      "old": "04-15: STL-78 FBX animation importer 계획 + Linear skill 개편 + bevy-vrm 상류 싱크",
+      "new": "\"04-15: STL-78 FBX animation importer 계획 + Linear skill 개편 + bevy-vrm 상류 싱크\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-15/stl78-merge-stl89-prep.md",
+      "old": "04-15 (밤): STL-78 머지까지 + STL-89 prep",
+      "new": "\"04-15 (밤): STL-78 머지까지 + STL-89 prep\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-15/stl78-pr-flow.md",
+      "old": "04-15 (저녁): STL-78 PR `#72` — 3회 셀프리뷰도 못잡은 5건, 패턴 13-17 추가",
+      "new": "\"04-15 (저녁): STL-78 PR `#72` — 3회 셀프리뷰도 못잡은 5건, 패턴 13-17 추가\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-21/pr-review.md",
+      "old": "2026-04-21: Shotloom PR 리뷰 + cci-send-alert 스킬 신규",
+      "new": "\"2026-04-21: Shotloom PR 리뷰 + cci-send-alert 스킬 신규\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-22/stl-169-fixture-helper.md",
+      "old": "STL-169 — refactor(fixtures): centralize workspace_root helper and rename face to facial",
+      "new": "\"STL-169 — refactor(fixtures): centralize workspace_root helper and rename face to facial\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-22/stl-170-adr-fixture-names.md",
+      "old": "STL-170 — docs(adr): replace stale fixture names in ADR-0024 with directory layout",
+      "new": "\"STL-170 — docs(adr): replace stale fixture names in ADR-0024 with directory layout\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-22/stl142.md",
+      "old": "2026-04-22: STL-142 fixture consolidation 머지",
+      "new": "\"2026-04-22: STL-142 fixture consolidation 머지\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-24/stl-172-fbx-anim-rename-closed.md",
+      "old": "2026-04-24: STL-172 shotloom-fbx-anim crate rename merged",
+      "new": "\"2026-04-24: STL-172 shotloom-fbx-anim crate rename merged\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-28/stl228.md",
+      "old": "2026-04-28: STL-228 body + STL-234 face normalizer 함수 이전 머지",
+      "new": "\"2026-04-28: STL-228 body + STL-234 face normalizer 함수 이전 머지\""
+    },
+    {
+      "file": "projects/shotloom/days/2026-04-29/stl242.md",
+      "old": "2026-04-29: STL-242 foot contact 이전",
+      "new": "\"2026-04-29: STL-242 foot contact 이전\""
+    },
+    {
+      "file": "projects/shotloom/learnings/finger-retarget-scalar-rationale.md",
+      "old": "Shotloom Finger Retarget: scalar curl approach rationale",
+      "new": "\"Shotloom Finger Retarget: scalar curl approach rationale\""
+    },
+    {
+      "file": "projects/web-graphics/topics/tauri.md",
+      "old": "Tauri: 웹 기술로 데스크톱 앱을 만드는 빠르고 안전한 방법",
+      "new": "\"Tauri: 웹 기술로 데스크톱 앱을 만드는 빠르고 안전한 방법\""
+    }
+  ]
+}

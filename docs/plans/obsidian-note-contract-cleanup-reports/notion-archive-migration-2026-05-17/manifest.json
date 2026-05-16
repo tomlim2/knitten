@@ -1,0 +1,729 @@
+{
+  "apply": true,
+  "source": "projects/cinev-studio/topics/cinev/notion-archive",
+  "targetIndex": "projects/cinev-studio/topics/cinev/legacy-worklog.md",
+  "targetDir": "projects/cinev-studio/topics/cinev/legacy-worklog",
+  "moved": 47,
+  "tagChanged": 29,
+  "collisions": [],
+  "moves": [
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 5월 12일 인천공항 맵 프로파일링 결과 및 개선안 공유",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 5월 12일 인천공항 맵 프로파일링 결과 및 개선안 공유"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 5월 12일 인천공항 맵 프로파일링 결과 및 개선안 공유.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 5월 12일 인천공항 맵 프로파일링 결과 및 개선안 공유.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 1일 러셀 에셋 v2 3060 프로파일링 결과",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 6월 1일 러셀 에셋 v2 3060 프로파일링 결과"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 1일 러셀 에셋 v2 3060 프로파일링 결과.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 6월 1일 러셀 에셋 v2 3060 프로파일링 결과.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 28일 빈민가 프로파일링",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 6월 28일 빈민가 프로파일링"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 28일 빈민가 프로파일링.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 6월 28일 빈민가 프로파일링.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 8일 힐사이드 벗꽃나무 프로파일링",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 6월 8일 힐사이드 벗꽃나무 프로파일링"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 8일 힐사이드 벗꽃나무 프로파일링.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/2023년 6월 8일 힐사이드 벗꽃나무 프로파일링.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/PCG 작업 기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/PCG 작업 기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/PCG 작업 기록.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/PCG 작업 기록.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/README.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 셋팅값 뽀개기",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/나나이트 셋팅값 뽀개기"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 셋팅값 뽀개기.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/나나이트 셋팅값 뽀개기.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 최적화 기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/나나이트 최적화 기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 최적화 기록.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/나나이트 최적화 기록.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/랜드스케이프 마테리얼, 브러시 파이 기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/랜드스케이프 마테리얼, 브러시 파이 기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/랜드스케이프 마테리얼, 브러시 파이 기록.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/랜드스케이프 마테리얼, 브러시 파이 기록.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/먼지 데칼 및 세이더 구현 머리정리용 기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/먼지 데칼 및 세이더 구현 머리정리용 기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/먼지 데칼 및 세이더 구현 머리정리용 기록.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/먼지 데칼 및 세이더 구현 머리정리용 기록.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 스크린 결과물 공유",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/반응형 오브젝트 스크린 결과물 공유"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 스크린 결과물 공유.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/반응형 오브젝트 스크린 결과물 공유.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 회전체 결과 및 BP 사용법 공유",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/반응형 오브젝트 회전체 결과 및 BP 사용법 공유"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 회전체 결과 및 BP 사용법 공유.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/반응형 오브젝트 회전체 결과 및 BP 사용법 공유.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/스크린 4종",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/스크린 4종"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/스크린 4종.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/스크린 4종.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/스킨컬러 복구기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/스킨컬러 복구기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/스킨컬러 복구기록.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/스킨컬러 복구기록.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/시계 bp (링크)",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/시계 bp (링크)"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/시계 bp (링크).md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/시계 bp (링크).md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/식생 마테리얼 데모 제작 기록 (머리 정리용)",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/식생 마테리얼 데모 제작 기록 (머리 정리용)"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/식생 마테리얼 데모 제작 기록 (머리 정리용).md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/식생 마테리얼 데모 제작 기록 (머리 정리용).md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/월드맵 제작 작업 플로우 제안",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/월드맵 제작 작업 플로우 제안"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/월드맵 제작 작업 플로우 제안.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/월드맵 제작 작업 플로우 제안.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/웨더 노드 메인 마테리얼 적용 기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/웨더 노드 메인 마테리얼 적용 기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/웨더 노드 메인 마테리얼 적용 기록.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/웨더 노드 메인 마테리얼 적용 기록.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/이미시브, 라이트 bp 컨트롤러 제작",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/이미시브, 라이트 bp 컨트롤러 제작"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/이미시브, 라이트 bp 컨트롤러 제작.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/이미시브, 라이트 bp 컨트롤러 제작.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/조명 기기 2종",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/조명 기기 2종"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/조명 기기 2종.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/조명 기기 2종.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/프로파일링 방법 공유 (230602 버전)",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/프로파일링 방법 공유 (230602 버전)"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/프로파일링 방법 공유 (230602 버전).md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/프로파일링 방법 공유 (230602 버전).md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/플리커 잔상 컨트롤 하는 방법",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/플리커 잔상 컨트롤 하는 방법"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/플리커 잔상 컨트롤 하는 방법.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/플리커 잔상 컨트롤 하는 방법.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/피부 색상 기능용 Material Function 간단 정리",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/피부 색상 기능용 Material Function 간단 정리"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/피부 색상 기능용 Material Function 간단 정리.md",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/피부 색상 기능용 Material Function 간단 정리.md"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정 파라미터 연구 조사, 구현 기록",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/피부 컬러 보정 파라미터 연구 조사, 구현 기록"
+    },
+    {
+      "from": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정",
+      "to": "projects/cinev-studio/topics/cinev/legacy-worklog/피부 컬러 보정"
+    }
+  ],
+  "tagChanges": [
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 5월 12일 인천공항 맵 프로파일링 결과 및 개선안 공유.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/profiling",
+        "area/unreal-engine",
+        "area/optimization"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/optimization",
+        "area/unreal-engine",
+        "area/profiling"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 1일 러셀 에셋 v2 3060 프로파일링 결과.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/profiling",
+        "area/unreal-engine",
+        "area/optimization"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/optimization",
+        "area/unreal-engine",
+        "area/profiling"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 28일 빈민가 프로파일링.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/profiling",
+        "area/unreal-engine",
+        "area/optimization"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/optimization",
+        "area/unreal-engine",
+        "area/profiling"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 8일 힐사이드 벗꽃나무 프로파일링.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/profiling",
+        "area/unreal-engine",
+        "area/optimization",
+        "area/vegetation"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/optimization",
+        "area/unreal-engine",
+        "area/profiling"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/PCG 작업 기록.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/landscape",
+        "area/unreal-engine",
+        "area/environment"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/landscape",
+        "area/environment",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/README.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 셋팅값 뽀개기.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/unreal-engine",
+        "area/optimization",
+        "sys/nanite"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/nanite",
+        "area/optimization",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 최적화 기록.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/unreal-engine",
+        "area/optimization",
+        "sys/nanite"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/nanite",
+        "area/optimization",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/랜드스케이프 마테리얼, 브러시 파이 기록.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/landscape",
+        "area/unreal-engine",
+        "area/shader",
+        "area/environment"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/shader",
+        "area/landscape",
+        "area/environment"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/먼지 데칼 및 세이더 구현 머리정리용 기록.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/unreal-engine",
+        "area/shader",
+        "area/decal",
+        "area/environment"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/material",
+        "area/shader",
+        "area/environment"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 스크린 결과물 공유.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 회전체 결과 및 BP 사용법 공유.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/스크린 4종.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/스킨컬러 복구기록.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/material",
+        "area/shader",
+        "area/character"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/시계 bp (링크).md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/식생 마테리얼 데모 제작 기록 (머리 정리용).md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/unreal-engine",
+        "area/shader",
+        "area/vegetation",
+        "area/environment"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/material",
+        "area/shader",
+        "area/environment"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/월드맵 제작 작업 플로우 제안.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/level-design",
+        "area/unreal-engine",
+        "area/environment"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/environment",
+        "area/unreal-engine",
+        "area/level-design"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/웨더 노드 메인 마테리얼 적용 기록.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/unreal-engine",
+        "area/shader",
+        "area/weather",
+        "area/environment"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/material",
+        "area/shader",
+        "area/environment"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/이미시브, 라이트 bp 컨트롤러 제작.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine",
+        "area/lighting"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "sys/blueprint",
+        "area/unreal-engine",
+        "area/lighting"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/조명 기기 2종.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/shader",
+        "area/unreal-engine",
+        "area/lighting"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/shader",
+        "area/unreal-engine",
+        "area/lighting"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/프로파일링 방법 공유 (230602 버전).md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/profiling",
+        "area/unreal-engine",
+        "area/optimization"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/optimization",
+        "area/unreal-engine",
+        "area/profiling"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/플리커 잔상 컨트롤 하는 방법.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/shader",
+        "area/unreal-engine",
+        "area/lighting"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/shader",
+        "area/unreal-engine",
+        "area/lighting"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 색상 기능용 Material Function 간단 정리.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/material",
+        "area/shader",
+        "area/character"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/230315-스킨톤-character actor blueprint 정리.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/skin-color",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/skin-color",
+        "area/material",
+        "area/shader"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/230420-눈붉은기-마스크.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/skin-color",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/skin-color",
+        "area/material",
+        "area/shader"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/230508-LOD작업.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/skin-color",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character",
+        "area/optimization"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/skin-color",
+        "area/material",
+        "area/shader"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/230510-LOD마테리얼구현.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/skin-color",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character",
+        "area/optimization"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/skin-color",
+        "area/material",
+        "area/shader"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/README.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/skin-color"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/skin-color",
+        "area/material"
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/이것저것.md",
+      "changed": true,
+      "tagsBefore": [
+        "type/devlog",
+        "project/cinev",
+        "area/material",
+        "area/skin-color",
+        "area/unreal-engine",
+        "area/shader",
+        "area/character"
+      ],
+      "tagsAfter": [
+        "type/reference",
+        "project/cinev",
+        "area/skin-color",
+        "area/material",
+        "area/shader"
+      ]
+    }
+  ]
+}

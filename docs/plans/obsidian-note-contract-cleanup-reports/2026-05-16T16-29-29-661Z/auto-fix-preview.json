@@ -1,0 +1,2781 @@
+[
+  {
+    "file": "projects/_cross-project/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/ai/topics/601-real-ai.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/ai/topics/ai-automation-services-to-build.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/ai/topics/openai-new-features.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/archive/topics/_flfi(1).md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/arp-bone-standard/learnings/arp-bone-standard.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/automation/topics/content-automation.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/automation/topics/lead-gen-automation.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/automation/topics/rag-agents.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/automation/topics/voice-agent.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/build-vs-packaging.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "project-tag.infer",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/dry-principle.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/dto-pattern.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/mcp-architecture.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/nest.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/nest_documents_1.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/nest_documents_2.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/nest_documents_241123.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/nest_documents_3.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/pydantic.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "project-tag.infer",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/sequence-diagram.md",
+    "changes": [
+      "project-tag.infer",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/backend/topics/what-is-deployment.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-17.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-18.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-19/retargeter-start.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-19/three-vrm-formula.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-20/auto-load-height.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-20/coord-flip.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-20/fbx-timeline.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-21/npr-viewer-spinoff.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-21/timeline-controller.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-24.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-25.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-26.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-27.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-03-30.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-01.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-02.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-06.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-07.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-08.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-09.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-10.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-11.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/arp-retargeter-inner-finding.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/diagnostic-layer.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/foot-rs-dead-code.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/hand-dir-alignment.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/metric-assumption-mismatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/orchestrator.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/phase2-3-landing-plus-axis-realization.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/pipeline-gating.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/postprocess-promotion.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/rubric-b12-fix.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/rubric-c12-fix.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/source-anim-split.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/sweep-baseline.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/sweep-bin-pipeline-entry.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-13/tier1-retargeter-contract.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-14/c11-c14-residual.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-14/fbx-animation-importer-rename.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/2026-04-18.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/days/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/2026-03-24-27.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/2026-04-09.md",
+    "changes": [
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/2026-04-12.md",
+    "changes": [
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/apose-arcing-error.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/arp-vrm-adapter.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/arp2vrm-score-cli.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/bevy-fk-convention.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/bevy-module-split.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/bevy-vrm.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/facial-expression.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/finger-bind-scope.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/finger-curl-pipeline.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/finger-rebasis-approaches.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/foot-sole-offset.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/inverse-bind-matrix.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/legacy-index.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/retarget-learnings.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/rms-error-metric.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/skeleton-remap.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/vrm-bind-conjugation.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/vrm-humanoid-bones.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/learnings/white-studio-setup.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-017-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-018-dispatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-018-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-019-dispatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-019-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-020-dispatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-020-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-021-dispatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-021-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-022-dispatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-022-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/R-024-result.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/codex-runs/2026-04-14/analyze-motion-112359.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/ops/codex-runs/2026-04-14/port-bevy-112847.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/plans/1d-curl-pipeline.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/plans/finger-twist.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/plans/finger-worldspace-delta.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/plans/scoring-system.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/plans/vrmsl.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/specs/retarget-refactor-proposal.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-bone-mesh-mismatch.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-finger-backward-curl.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-finger-metacarpal-fold.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-log.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-retarget-shoulder.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-thumb-bind-pose.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/experiments-wrist-change-of-basis.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/legacy-devlog.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/portfolio-retarget-ai-dev.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm/topics/retarget-quality-rubric.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/bevy-vrm-fbx-arm-scan/learnings/bevy-vrm-fbx-arm-scan.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/blender/topics/obj-structure.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/codex-base/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/codex-base/memories/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/days/2026-04-23.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/days/2026-04-29.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/days/2026-05-05.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/days/2026-05-10.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/2026-04-13.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/_template.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/agent-system-lessons.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-minecraft-server-infra.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-rust-bin-vs-lib.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-rust-crates.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-rust-traits.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-telemetry.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/learnings/learning-upstream-contribution.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/plans/todo-at-home-2026-04-21.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/specs/vault-cleanup-analysis.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/specs/vault-cleanup-plan.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/css-code-review-criteria.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/hyperframes-reference.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/javascript-code-review-criteria.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/mmd-vrm-spring-bone-parameters.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/motion-driven-effects-auto-trigger.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/multi-pass-agent-pipeline-design.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/notion-portfolio-best-practices.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/project-overview.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/threejs-tsl.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/vrm-0x-vs-1.0-spec-comparison.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/caol-ila/topics/website-spec-review-tools.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/career/topics/freelancer-career-final.md",
+    "changes": [
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/career/topics/me.md",
+    "changes": [
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/cinev/learnings/cinev.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/INDEX.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/blender-clothes-workflow.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/booth-pm-references.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/camera-manager.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/character-customization-history.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/character-thumbnail-guide.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/cinev-ue-accounts.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/commandlet-postprocess-debug.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/commandlet-render-settings.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/custom-ui-components.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/lilToon.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/makeup-layer-blend-index.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/megamelange-build-packaging.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/megamelange-build-process.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 5월 12일 인천공항 맵 프로파일링 결과 및 개선안 공유.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 1일 러셀 에셋 v2 3060 프로파일링 결과.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 28일 빈민가 프로파일링.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/2023년 6월 8일 힐사이드 벗꽃나무 프로파일링.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/PCG 작업 기록.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 셋팅값 뽀개기.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/나나이트 최적화 기록.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/랜드스케이프 마테리얼, 브러시 파이 기록.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/먼지 데칼 및 세이더 구현 머리정리용 기록.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 스크린 결과물 공유.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/반응형 오브젝트 회전체 결과 및 BP 사용법 공유.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/스크린 4종.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/스킨컬러 복구기록.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/시계 bp (링크).md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/식생 마테리얼 데모 제작 기록 (머리 정리용).md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/월드맵 제작 작업 플로우 제안.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/웨더 노드 메인 마테리얼 적용 기록.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/이미시브, 라이트 bp 컨트롤러 제작.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/조명 기기 2종.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/프로파일링 방법 공유 (230602 버전).md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/플리커 잔상 컨트롤 하는 방법.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 색상 기능용 Material Function 간단 정리.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/notion-archive/피부 컬러 보정/230315-스킨톤-character actor blueprint 정리.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/pmx-format.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/pmx-model-sources.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/pmx-to-ue5-pipeline.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/project-casual.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/project-character-customization.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/screenshot-settings.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/sdf-shadow.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/syncmi-textures-guide.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/texture-optimization-guide.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/toon shader/ParameterName.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/toon shader/UE5で削除された r.TonemapperFilm 0 の代替手法.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/toon-shader-overview.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/ue-style-guide.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/ue5-variables-dump.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/ui-frequency-bug.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/uts2.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/vrm-mtoon.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/vrm-standard-pbr.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/cinev/vrm-to-ue-pipeline.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/hsa/HSA/hsa-character-dal-feedback.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/hsa/HSA/hsa-guide-dog-character-feedback.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/hsa/HSA/hsa-lab-design-feedback.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/cinev-studio/topics/just-wander-sphere-cube.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/communication/topics/how-to-persuade.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/champagne.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/paris-wine-bars.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/whisky.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/drinks/topics/wine.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/git-workflows/topics/git-commands-used.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/git-workflows/topics/git-early-days.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/hyper3d/topics/sato-hyper3d-mesh-tokenizer.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/job-search-2026/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/krafton-hackathon/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/matcap-painter/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/math/topics/coordinate-systems.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/math/topics/quaternion-questions.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/math/topics/quaternion.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/megamelange/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/mmd-anju/learnings/mmd-anju.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/mmd-player-anju/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/00-dashboard.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/flexoki-color-list.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/github-recovery-codes.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/index.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/journal/00-Index.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/journal/2025/2025-retrospective.md",
+    "changes": [
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/journal/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/misc-ids-and-passwords.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/monthly-subscriptions.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/nvidia-lyra-2-generative-3d-worlds.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/roblox-obj-to-fbx.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/songs.md",
+    "changes": [
+      "date.backfill",
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/tegaki.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/vault-lookup.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/스캔옵스(ScanOps).md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/personal/topics/인생게임 the game of life for nintendo switch.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/algorithm-design-v8.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/aquarium-reframe-v2.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/description-tones-v1.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/english-seeds-v3.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/movement-types-v6.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/ornamental-fish-v4.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/rarity-balance-v1.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/seed-words-v1.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/seed-words.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/aquarium/design/v7-ideas.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/studio-tycoon/days/2026-04-18.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/studio-tycoon/devlog.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/studio-tycoon/research/design-criteria.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/studio-tycoon/research/genre-analysis.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/studio-tycoon/research/niche-gaps.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/archive/studio-tycoon/research/similar-games.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/days/2026-04-26.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/days/2026-05-02/two-to-twelve.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/days/2026-05-02.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/days/2026-05-04.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/days/2026-05-05.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/project-weekend/topics/project-history.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/glsl/write-solutions.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/graphics-theory/bottleneck.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/guilty-gear-strive-background-techniques-part1.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/rendering/topics/guilty-gear-strive-effect-techniques-part1.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/shotloom/README.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-14/stl74-pr-open.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-14/stl74-revision.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-15/stl78-fbx-importer-planning.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-15/stl78-merge-stl89-prep.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-15/stl78-port-handoff.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-15/stl78-pr-flow.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-16/shotloom-watch-pr-skill.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-16/stl-96-review-response.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-16/stl-97-boundary-refactor.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-21/pr-review.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-21/shotloom-workflow-skills.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-21/stl-114-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-22/stl-169-fixture-helper.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-22/stl-170-adr-fixture-names.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-22/stl142.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-22/vrm-normalization.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-24/stl-172-fbx-anim-rename-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-24/stl172-crate-rename.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-27/stl-208-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-28/stl-183-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-28/stl-221-rest-pose-taxonomy.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-28/stl228.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-29/stl242.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-30/stl-215-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-30/stl-246-verification-pr.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-30/stl-246-wire-up.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-04-30/stl-275-draft.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-04.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-07/stl-326-buildkit-decisions.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-07/web-image-cicd.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-07/worktree-cleanup.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-08/pr-261-review-round1-cicd-study.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-08/pr-262-debug-spawn-run.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-08/stl-326-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-08/stl-335-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-08/stl-346-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-08/stl-359.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-12/stl-373.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-13/stl-408-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/days/2026-05-14/stl-417-closed.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/decisions/pmx-import-placeholder.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/bevy-custom-material-flags.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/bevy-shadows-enabled-scope.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/bootstrap.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/canonicalization.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/character-outline-render-layers-mask-boundary.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/contract-surface.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/contradiction.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/cross-platform-float-regression.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/crossoriginisolated.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/entanglement.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/finger-rest-align-glossary.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/finger-retarget-scalar-rationale.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/gltf-material-name-uniqueness.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/honest-caveat.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/import-normalize-retarget-pipeline.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/jump-flood-algorithm.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/post-pp-overlay-as-foundation.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/scaffold.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/selection-highlight-cost-estimation.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/selection-highlight-qa.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/selection-highlight-system.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/shader-debug-pipeline.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/shotloom.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/upstream-pr-code-proof.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/learnings/vrm-import-needs-unity-style-canonicalization.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/ops/missions/pr-journal.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/ops/missions/stl-154-handoff.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/ops/runs/conventions-summary-2026-04-15.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/ops/runs/stash-angry-hellman-debug.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/plans/stl-114-plan.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/plans/stl-99-plan.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/specs/animation-retarget-spec.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/specs/preflight-spec.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/specs/release-web-workflow.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/specs/selection-highlight-system-umbrella.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/shotloom/topics/webgpu-mtoon-color-analysis.md",
+    "changes": [
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-02-22_GeminiGamePortfolioUX_done.md",
+    "changes": [
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-03-08_포트폴리오 UX 컨설팅 및 진도 체크_done.md",
+    "changes": [
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-03-22_콜롬비아 대학원 합격 및 포폴_게임 진도_done.md",
+    "changes": [
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-04-05_포폴 UI_UX 가이드라인_done.md",
+    "changes": [
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-04-18_Codex 활용 새 프로젝트 시작 — 뉴욕 탐험 게임_done.md",
+    "changes": [
+      "type-key.to-tag",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/tutoring/lessons/이석민/2026-05-02_Work Journey Interactive Experience 프로토타입.md",
+    "changes": [
+      "type-key.to-tag",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/blender-unreal-import-warnings.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/diffuse-color-vs-albedo.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/first-custom-engine-setup.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/nonlinear-hard-cutoff-mapping.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/sdf-face-shadow-sky-light.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/shader-tutorial.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/toon-rendering/toon shader/parameter-name.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/toon-rendering/toon shader/references.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/toon-rendering/toon shader/ue5-tonemapper-film-alternative.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/toon-shader-hlsl-ue5.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/udim-batch-material-issues.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/ue-python-primary-data-asset.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/ue-shader-optimization-normalize.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/vrm-eye-position-reference-1.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/vrm-eye-position-reference.md",
+    "changes": [
+      "title.backfill",
+      "date.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/unreal/topics/vrm-workflow/vrm-mtoon.md",
+    "changes": [
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "projects/web-graphics/topics/tauri.md",
+    "changes": [
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2024-02-23.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-02-26.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-02-27.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-02-29.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-03-01.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-03-04.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-03-06.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-03-26.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-03-27.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-04-19.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-06-05.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2024-06-06.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-06-27.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-07-27.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-07-30.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-07-31.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-08-01.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-08-05.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-08-07.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "daily/2025-08-11.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-08-13.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-08-14.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-08-18.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-08-20.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-08-25.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-08-26.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-08-27.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "daily/2025-08-28.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-08-31.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-05.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-09-06.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-08.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-09.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-10.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-11.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-15.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-17.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-18.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-09-22.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-09-23.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-09-24.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-10-01.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "project-tag.infer"
+    ]
+  },
+  {
+    "file": "daily/2025-10-03.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-10-04.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-10-05.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-10-06.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag"
+    ]
+  },
+  {
+    "file": "daily/2025-10-07.md",
+    "changes": [
+      "source.normalize",
+      "type-key.to-tag",
+      "h1.mechanical"
+    ]
+  },
+  {
+    "file": "daily/2026-02-24.md",
+    "changes": [
+      "title.backfill",
+      "source.normalize",
+      "h1.mechanical"
+    ]
+  }
+]

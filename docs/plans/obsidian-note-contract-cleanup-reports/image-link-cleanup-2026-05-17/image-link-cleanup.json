@@ -1,0 +1,183 @@
+{
+  "count": 6,
+  "changed": [
+    {
+      "file": "projects/backend/topics/nest_documents_1.md",
+      "removed": [
+        {
+          "alt": "Notion Image",
+          "target": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4baa5c64-e766-46b5-ab69-a1be10364a7e/3ce308c2-ed2e-4ae7-a4a3-2438640533e7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C..."
+        },
+        {
+          "alt": "Notion Image",
+          "target": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4baa5c64-e766-46b5-ab69-a1be10364a7e/d45316f4-3e28-416c-ad2e-6f29a36d38cf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C..."
+        },
+        {
+          "alt": "Notion Image",
+          "target": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4baa5c64-e766-46b5-ab69-a1be10364a7e/951956fa-a814-47a5-99d2-29093106429f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C..."
+        },
+        {
+          "alt": "Notion Image",
+          "target": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4baa5c64-e766-46b5-ab69-a1be10364a7e/69ebd427-8d28-48ad-80fc-ee495e6e04fa/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C..."
+        }
+      ]
+    },
+    {
+      "file": "projects/backend/topics/nest_documents_2.md",
+      "removed": [
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://ayond.jp/assets/img/ogimage.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://quickdraw.withgoogle.com/static/shareimg.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://christmas.rogue.studio/images/share-image-min.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://2017.makemepulse.com/assets/images/makemepulse-wishes-2017.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://2019.makemepulse.com/assets/img/makemepulse-wishes-2019.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://scope-typeface.com/assets/images/og.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://www.patatap.com/images/thumbnail.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://touchpianist.com/icon.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://jazzkeys.plan8.co/social.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://hackertyper.com/hackertyper.jpg"
+        },
+        {
+          "alt": "Notion Image",
+          "target": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4baa5c64-e766-46b5-ab69-a1be10364a7e/97041893-656f-49a3-aa9a-06c6d4e40ecf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C..."
+        }
+      ]
+    },
+    {
+      "file": "projects/backend/topics/nest_documents_3.md",
+      "removed": [
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://ayond.jp/assets/img/ogimage.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://quickdraw.withgoogle.com/static/shareimg.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://christmas.rogue.studio/images/share-image-min.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://2017.makemepulse.com/assets/images/makemepulse-wishes-2017.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://2019.makemepulse.com/assets/img/makemepulse-wishes-2019.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://scope-typeface.com/assets/images/og.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://www.patatap.com/images/thumbnail.png"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "http://touchpianist.com/icon.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://jazzkeys.plan8.co/social.jpg"
+        },
+        {
+          "alt": "Bookmark Thumbnail",
+          "target": "https://hackertyper.com/hackertyper.jpg"
+        },
+        {
+          "alt": "Notion Image",
+          "target": "https://prod-files-secure.s3.us-west-2.amazonaws.com/4baa5c64-e766-46b5-ab69-a1be10364a7e/97041893-656f-49a3-aa9a-06c6d4e40ecf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-C..."
+        }
+      ]
+    },
+    {
+      "file": "projects/cinev-studio/topics/cinev/vrm-mtoon.md",
+      "removed": [
+        {
+          "alt": "alicia MToon",
+          "target": "https://vrm.dev/en/assets/images/mtoon_about-75e99c93aba9a7d9415dd528a4de9ec3.png"
+        },
+        {
+          "alt": "select MToon",
+          "target": "https://vrm.dev/en/assets/images/set_mtoon-35001d415be906331e66e551804df42c.png"
+        },
+        {
+          "alt": "MToon Rendering",
+          "target": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA64AAACSCAYAAABFVpc5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAABqbSURBVHhe7d13dxPH18Dx581wkpNGC8EODr2EEjAEQg..."
+        }
+      ]
+    },
+    {
+      "file": "projects/rendering/topics/glsl/normal-tangent-bitangent.md",
+      "removed": [
+        {
+          "alt": "",
+          "target": "https://threejs-journey.com/assets/lessons/70/016.png"
+        },
+        {
+          "alt": "",
+          "target": "https://threejs-journey.com/assets/lessons/70/022.jpg"
+        },
+        {
+          "alt": "",
+          "target": "https://threejs-journey.com/assets/lessons/70/023.png"
+        },
+        {
+          "alt": "",
+          "target": "https://threejs-journey.com/assets/lessons/70/024.png"
+        },
+        {
+          "alt": "",
+          "target": "https://threejs-journey.com/assets/lessons/70/025.png"
+        }
+      ]
+    },
+    {
+      "file": "projects/unreal/topics/vrm-workflow/vrm-mtoon.md",
+      "removed": [
+        {
+          "alt": "alicia MToon",
+          "target": "https://vrm.dev/en/assets/images/mtoon_about-75e99c93aba9a7d9415dd528a4de9ec3.png"
+        },
+        {
+          "alt": "select MToon",
+          "target": "https://vrm.dev/en/assets/images/set_mtoon-35001d415be906331e66e551804df42c.png"
+        },
+        {
+          "alt": "MToon Rendering",
+          "target": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA64AAACSCAYAAABFVpc5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAABqbSURBVHhe7d13dxPH18Dx581wkpNGC8EODr2EEjAEQg..."
+        }
+      ]
+    }
+  ]
+}
