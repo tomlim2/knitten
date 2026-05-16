@@ -19,6 +19,25 @@ from different angles after fixes change `HEAD`. If later verification passes
 find P0-P2 issues and fixes change `HEAD` again, continue the same review chain
 with the next pass letter instead of restarting at pass A.
 
+## Delegation Authorization
+
+Invoking this skill is an explicit request to delegate the review passes to
+read-only subagents. For Codex harnesses with a "spawn agents only when the user
+explicitly asks" rule, this skill invocation itself is the explicit delegation
+request because the workflow cannot satisfy its review contract without
+independent subagent passes.
+
+Subagent scope is read-only:
+
+- Allowed: inspect the worktree, read files, run read-only git/rg commands, and
+  report findings.
+- Forbidden: edit files, stage, commit, push, post GitHub comments, change
+  Linear, or run destructive commands.
+
+If a harness cannot spawn subagents after this authorization, stop and report
+that the pre-PR review gate is blocked. Do not silently substitute a local-only
+review and call the gate complete.
+
 ## Arguments
 
 None. Operates on the PR diff, `git diff origin/main...HEAD`, from the
