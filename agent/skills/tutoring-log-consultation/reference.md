@@ -68,7 +68,7 @@ Student file format template, full workflow details for all 3 actions, and notes
 
 ### Action: `list`
 
-1. Glob `{obsidian_vault}/agent/tutoring/consultations/*.md`
+1. Resolve `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`, then glob `consultations/*.md` below it
 2. For each file, read 상담 횟수 and latest consultation date
 3. Display table:
 
@@ -112,6 +112,6 @@ Student file format template, full workflow details for all 3 actions, and notes
 ## Notes
 
 - Student filenames: 학생 이름 그대로 사용 (e.g., `이석민.md`)
-- All data stored in Obsidian vault (`{obsidian_vault}/agent/tutoring/consultations/`)
+- All data stored below the configured tutoring destination (`resolve.sh doc tutoring` + `/consultations/`)
 - Consultations are append-only — never delete past records
 - 상담 내용은 한국어로 작성

@@ -261,7 +261,7 @@
 
         async function loadDrinks() {
             try {
-                const res = await fetch('/api/files?path=drinks/drinks.json');
+                const res = await fetch('/api/files?path=projects/drinks/drinks.json');
                 const data = await res.json();
 
                 if (data.drinks && Array.isArray(data.drinks)) {

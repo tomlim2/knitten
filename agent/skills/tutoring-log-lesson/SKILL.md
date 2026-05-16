@@ -96,13 +96,13 @@ python paid.py "StudentName" --list     # List pending only
 - `paid.py` - Payment marking script (renames lesson files with `_done` suffix)
 - `utils.py` - Shared utilities
 - `web/` - Invoice generator web UI (served at `/invoice` by skill server)
-- `presets.json.example` - Template for student/teacher info (copy to vault `agent/tutoring/presets.json`)
+- `presets.json.example` - Template for student/teacher info (copy to `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`/presets.json`)
 
 ## Workflow
 
 1. Log lesson → `log.py`
 2. Generate invoice → `invoice.py --open` (browser opens with auto-filled lessons)
-3. PDF saved → moved to vault `agent/tutoring/invoices/`
+3. PDF saved → moved to `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`/invoices/`
 4. After payment received → `paid.py` (renames lesson files with `_done` suffix to drop from pending)
 
 ## Operator mode

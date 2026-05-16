@@ -14,7 +14,7 @@ Expanded detail for the learn-archive-week skill. SKILL.md holds the happy path 
 | research/resource | configured project `topics/` destination |
 | ops (dispatch/result, task 기록) | configured project `ops/runs/` destination |
 | stl-*-plan.md, shotloom-conventions | configured shotloom project folder |
-| codex-base (memories/order/rules/AGENTS) | `agent/references/codex-base/{path-preserved}.md` |
+| codex-base (memories/order/rules/AGENTS) | configured caol-ila research/topic destination via `resolve.sh doc research`; preserve source path in the title/body, not in a legacy vault folder |
 | word-of-the-day | configured language-learning project folder |
 
 ---

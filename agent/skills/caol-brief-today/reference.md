@@ -38,7 +38,8 @@ Per PR 한 줄:
 ### 3M.4 미정리 어제 일지 (obsidianAvailable gate)
 
 ```bash
-find "{obsidianClaudeDir}/obsidian-staging" -type f -name "*.md" -mtime -2
+staging="$(jq -r '."obsidian-staging" // empty' ~/.claude/private/caol-config/machine-paths.json)"
+test -n "$staging" && find "$staging" -type f -name "*.md" -mtime -2
 ```
 
 ### Morning output template
@@ -112,7 +113,8 @@ gh pr list --author "@me" --state all \
 ### 3E.2 승격 후보 (obsidianAvailable gate)
 
 ```bash
-find "{obsidianClaudeDir}/obsidian-staging" -type f -name "*.md" \
+staging="$(jq -r '."obsidian-staging" // empty' ~/.claude/private/caol-config/machine-paths.json)"
+test -n "$staging" && find "$staging" -type f -name "*.md" \
   -newermt "$(TZ=Asia/Seoul date +%Y-%m-%d)"
 ```
 
@@ -121,7 +123,8 @@ find "{obsidianClaudeDir}/obsidian-staging" -type f -name "*.md" \
 ### 3E.3 중복 감지
 
 ```bash
-find "{obsidianClaudeDir}" -type f -name "*.md" \
+vault="$(jq -r '."obsidian" // empty' ~/.claude/private/caol-config/machine-paths.json)"
+test -n "$vault" && find "$vault" -type f -name "*.md" \
   -newermt "$(TZ=Asia/Seoul date -v-7d +%Y-%m-%d)"
 ```
 
@@ -134,7 +137,8 @@ find "{obsidianClaudeDir}" -type f -name "*.md" \
 ### 3E.4 오래된 staging
 
 ```bash
-find "{obsidianClaudeDir}/obsidian-staging" -type f -name "*.md" -mtime +7
+staging="$(jq -r '."obsidian-staging" // empty' ~/.claude/private/caol-config/machine-paths.json)"
+test -n "$staging" && find "$staging" -type f -name "*.md" -mtime +7
 ```
 
 7일+ → `/learn-archive-week` 또는 삭제 제안.

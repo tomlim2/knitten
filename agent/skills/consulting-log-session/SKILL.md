@@ -40,13 +40,13 @@ Usage:
 Consulting logs are stored in **Obsidian vault** (not `private/`):
 
 ```
-{obsidian_vault}/agent/consulting/
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc consulting`
 ├── nexon.md               # Company history file
 ├── krafton.md
 └── the-lab.md
 ```
 
-**Obsidian vault path:** !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh consulting`
+**Obsidian path:** Resolve with `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc consulting`.
 
 Each company gets ONE file. Sessions accumulate in reverse chronological order (newest first).
 

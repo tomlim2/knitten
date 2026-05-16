@@ -4,11 +4,13 @@
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from datetime import datetime
 
 _MACHINE_PATHS = Path.home() / ".claude" / "private" / "caol-config" / "machine-paths.json"
+_RESOLVER = Path.home() / ".claude" / "skills" / "caol-resolve-doc-path" / "resolve.sh"
 
 
 def get_obsidian_vault_dir() -> Path:
@@ -29,12 +31,29 @@ def get_obsidian_vault_dir() -> Path:
 
 def get_lessons_dir() -> Path:
     """Get the lessons directory path."""
-    return get_obsidian_vault_dir() / "projects" / "tutoring" / "lessons"
+    return get_tutoring_dir() / "lessons"
 
 
 def get_invoices_dir() -> Path:
     """Get the invoices directory path."""
-    return get_obsidian_vault_dir() / "projects" / "tutoring" / "invoices"
+    return get_tutoring_dir() / "invoices"
+
+
+def get_tutoring_dir() -> Path:
+    """Resolve the configured tutoring document destination."""
+    if _RESOLVER.exists():
+        try:
+            output = subprocess.check_output(
+                [str(_RESOLVER), "doc", "tutoring"],
+                text=True,
+                stderr=subprocess.STDOUT,
+            )
+            for line in output.splitlines():
+                if line.startswith("RESOLVED_PATH="):
+                    return Path(line.split("=", 1)[1])
+        except subprocess.CalledProcessError as exc:
+            sys.exit(f"tutoring/utils.py: resolver failed: {exc.output.strip()}")
+    return get_obsidian_vault_dir() / "projects" / "tutoring"
 
 
 def get_student_dir(student_name: str) -> Path:

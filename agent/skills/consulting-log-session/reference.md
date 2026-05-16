@@ -32,7 +32,7 @@ Company file format template, full workflow details for all 3 actions, and notes
 
 ### Action: `list`
 
-1. Glob `{obsidian_vault}/agent/consulting/*.md`
+1. Resolve `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc consulting`, then glob `*.md` below it
 2. For each file, read total sessions count
 3. Display table:
 
@@ -57,6 +57,6 @@ Company file format template, full workflow details for all 3 actions, and notes
 ## Notes
 
 - Company filenames: lowercase, hyphens for spaces (e.g., `smile-gate.md`)
-- All data stored in Obsidian vault (`{obsidian_vault}/agent/consulting/`)
+- All data stored below the configured consulting destination (`resolve.sh doc consulting`)
 - Sessions are append-only — never delete past records
 - For portfolio use, run `/consulting-log-session summary` to get exportable data

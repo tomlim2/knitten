@@ -101,7 +101,7 @@ Example: `ue-analyze-material` -> `~/.claude/private/unreal/material-analyze/`
 
 **Tutoring Skills (`tutoring-*`):**
 ```
-Obsidian/agent/tutoring/
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`
 ├── invoices/
 │   └── YYYY-MM_StudentName.pdf
 ├── presets.json
@@ -119,7 +119,7 @@ Obsidian configured cross-learning destination
 
 **Drink Tracking (`drink-*`):**
 ```
-Obsidian/agent/drinks/
+!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc drinks`
 └── drinks.json
 ```
 
@@ -282,7 +282,8 @@ agent/private/
 
 Sensitive files should have restricted permissions:
 ```bash
-chmod 600 "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes/agent/tutoring/students.json"
+tutoring_dir="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring | awk -F= '/^RESOLVED_PATH=/{print $2}')"
+chmod 600 "$tutoring_dir/students.json"
 ```
 
 ---

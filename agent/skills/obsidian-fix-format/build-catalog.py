@@ -1,13 +1,9 @@
 #!/usr/bin/env python3
-"""Build catalog.json + refresh AUTO areas in INDEX/LOOKUP.
+"""Build the vault catalog for the current Obsidian root.
 
 - Reads vault path from machine-paths.json (no hardcoded paths)
-- Generates `agent/.vault-catalog.json` (deterministic note metadata)
-- Updates `<!-- AUTO:START -->` ... `<!-- AUTO:END -->` blocks in:
-    - notes/INDEX.md
-    - work/INDEX.md
-- Never touches content outside AUTO markers (human curation preserved)
-- Does NOT write LOOKUP.md (treated as durable, manually maintained)
+- Generates `.vault-catalog.json` at the vault root (deterministic note metadata)
+- Does not update legacy `notes/INDEX.md` files; folder indexes are README/topic notes
 
 Usage:
   python3 ~/.claude/skills/obsidian-fix-format/build-catalog.py
@@ -89,23 +85,6 @@ def build_catalog():
 AUTO_RE = re.compile(r'(<!-- AUTO:START -->\n)(.*?)(\n<!-- AUTO:END -->)', re.S)
 
 
-def update_auto_block(path: Path, new_inner: str) -> bool:
-    """Replace content between AUTO markers; preserve everything else.
-
-    Returns True if file changed, False if marker not found.
-    """
-    if not path.exists():
-        return False
-    text = path.read_text(encoding='utf-8')
-    if 'AUTO:START' not in text:
-        return False
-    new_text = AUTO_RE.sub(lambda m: m.group(1) + new_inner + m.group(3), text, count=1)
-    if new_text != text:
-        path.write_text(new_text, encoding='utf-8')
-        return True
-    return False
-
-
 def index_areas(catalog: dict, prefix: str, depth: int = 1) -> str:
     """Count notes per sub-area under the given path prefix.
 
@@ -121,27 +100,11 @@ def index_areas(catalog: dict, prefix: str, depth: int = 1) -> str:
     lines = [f'- **{k}** ({v})' for k, v in sorted(areas.items(), key=lambda x: -x[1])]
     return '\n'.join(lines)
 
-
-# (prefix, INDEX.md path relative to VAULT)
-INDEX_TARGETS = [
-    ('notes', 'notes/INDEX.md'),
-    ('notes/work', 'notes/work/INDEX.md'),
-]
-
-
 def main():
     catalog = build_catalog()
-    out = VAULT / 'claude' / '.vault-catalog.json'
+    out = VAULT / '.vault-catalog.json'
     out.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f"catalog: {out}  (notes={catalog['stats']['total']})")
-
-    for prefix, rel in INDEX_TARGETS:
-        idx = VAULT / rel
-        inner = index_areas(catalog, prefix)
-        if update_auto_block(idx, inner):
-            print(f"refreshed AUTO: {rel}")
-        else:
-            print(f"skip {rel} (missing AUTO markers or no change)")
 
 
 if __name__ == '__main__':

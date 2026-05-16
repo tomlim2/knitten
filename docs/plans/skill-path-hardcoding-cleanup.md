@@ -122,12 +122,20 @@ Expected:
 
 | Step | Action | Status |
 |------|--------|--------|
-| 1 | Patch tutoring and consulting skills to resolver-based destinations | pending |
-| 2 | Patch daily briefing skill away from `{obsidian}/claude` | pending |
-| 3 | Patch private guide and archive references | pending |
-| 4 | Patch or retire `build-catalog.py` legacy `notes/INDEX.md` behavior | pending |
-| 5 | Review drink and Shotloom path-producing snippets | pending |
-| 6 | Run validators and grep checks | pending |
+| 1 | Patch tutoring and consulting skills to resolver-based destinations | completed |
+| 2 | Patch daily briefing skill away from `{obsidian}/claude` | completed |
+| 3 | Patch private guide and archive references | completed |
+| 4 | Patch or retire `build-catalog.py` legacy `notes/INDEX.md` behavior | completed |
+| 5 | Review drink and Shotloom path-producing snippets | completed |
+| 6 | Run validators and grep checks | completed |
+
+## Execution Log
+
+| Date | Action | Result |
+|------|--------|--------|
+| 2026-05-17 | Patched active skill path producers | Legacy `agent/<domain>` vault path grep returned 0 active matches |
+| 2026-05-17 | Classified remaining broad drift matches | Remaining matches are validator deny-list patterns plus an explicit `notes/INDEX.md` retirement note |
+| 2026-05-17 | Ran validators | `path-config-drift`, `root-structure`, `project-structure`, Python compile, and `git diff --check` passed |
 
 ## Open Questions
 
