@@ -9,7 +9,7 @@ Pull every external vendor in [knitten](https://github.com/tomlim2/knitten) to i
 
 Scope: this command only touches `knitten/vendor/*` (git pull via `knitten/scripts/sync.sh`). It does NOT audit internal caol-ila skills, does NOT update descriptions or frontmatter, and does NOT write to the caol-ila repo. For anything else (per-skill drift audit, wrapper review, skill-level metadata updates), that's a different command's job.
 
-knitten holds third-party Claude skills (`vendor/` folder, gitignored). caol-ila wrappers `@import` from knitten's vendor paths. This command:
+knitten holds third-party vendor skills (`vendor/` folder, gitignored). caol-ila wrappers `@import` from knitten's vendor paths. This command:
 
 1. Shows how far each vendor is behind its upstream
 2. Asks for confirmation

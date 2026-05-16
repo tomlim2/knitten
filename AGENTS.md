@@ -16,11 +16,11 @@ System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossa
 
 ## Codex Adapter
 
-Shared rules, standards, skills, and commands are binding repository conventions for Codex unless they depend on Claude-specific runtime features.
+Shared rules, standards, skills, and commands are binding repository conventions for Codex unless they depend on another harness's runtime features.
 
-If a shared instruction uses Claude-only mechanics, translate the intent into Codex behavior and follow higher-priority Codex platform instructions.
+If a shared instruction uses another harness's mechanics, translate the intent into Codex behavior and follow higher-priority Codex platform instructions.
 
-If frontmatter declares `platforms: claude`, treat the artifact as reference unless the user asks about Claude or the task edits that artifact.
+If frontmatter declares another platform, treat the artifact as reference unless the user asks about that platform or the task edits that artifact.
 
 If frontmatter declares `portability: adapter`, preserve the shared intent and substitute Codex tools, approval flow, and file-read mechanics.
 

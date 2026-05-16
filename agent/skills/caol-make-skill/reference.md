@@ -1,6 +1,6 @@
 # caol-make-skill Reference
 
-Detailed implementation patterns, templates, and guidelines for creating Claude Code skills.
+Detailed implementation patterns, templates, and guidelines for creating skills.
 
 ---
 
@@ -446,7 +446,7 @@ Append $ARGUMENTS to logs/${CLAUDE_SESSION_ID}.log via:
 
 ### Inline preprocessing
 
-The `` !`command` `` form runs the shell command **before** the skill content reaches Claude. The command output replaces the backtick expression.
+The `` !`command` `` form runs the shell command **before** the skill content reaches the agent. The command output replaces the backtick expression.
 
 ```yaml
 ---
@@ -468,7 +468,7 @@ allowed-tools: Bash(gh *)
 Summarize the PR's intent and flag risky changes.
 ```
 
-Claude never sees the `` !`gh pr diff` `` literal — only the diff text.
+The agent never sees the `` !`gh pr diff` `` literal — only the diff text.
 
 ### Block form (multi-line)
 
@@ -540,7 +540,7 @@ Two independent switches. Default: both true.
 |------|---------------------------|------------------|
 | Normal skill (both can invoke) | `false` (default) | `true` (default) |
 | Manual-only side-effects (deploy, send-slack) | `true` | `true` |
-| Background reference (Claude-only, hidden from `/`) | `false` | `false` |
+| Background reference (hidden from `/`) | `false` | `false` |
 | Disabled (neither can invoke) | use deny rule in `/permissions` instead | |
 
 ### Background reference example
@@ -555,7 +555,7 @@ user-invocable: false
 The legacy auth module predates our JWT refresh flow...
 ```
 
-Claude loads this when relevant, but it never appears in the `/` menu.
+The harness loads this when relevant, but it never appears in the `/` menu.
 
 ---
 
@@ -727,7 +727,7 @@ Run: `python ${CLAUDE_SKILL_DIR}/scripts/tree.py .`
 
 ## Dynamic Shell Injection — patterns (moved from SKILL.md)
 
-Skills can embed live shell output into the prompt before Claude sees it. This is **preprocessing** — Claude only receives the final rendered content, not the command text.
+Skills can embed live shell output into the prompt before the agent sees it. This is **preprocessing** — the agent only receives the final rendered content, not the command text.
 
 ### Inline form
 

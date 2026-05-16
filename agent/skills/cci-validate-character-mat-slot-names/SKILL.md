@@ -15,7 +15,7 @@ Read `references/CINEV-CHARACTER-ASSET-NAMING.md` only when validating character
 Two-step workflow for validating character material slot names:
 
 1. **Export** (inside UE Editor) - Python script reads a DataTable, loads referenced SkeletalMesh assets, extracts material slot names, and validates against required slots
-2. **Analyze** (in Claude Code) - Command reads the JSON and provides structured validation report
+2. **Analyze** - The agent reads the JSON and provides a structured validation report
 
 Ensures that all character meshes have required material slots (e.g., `Body_MTL`) for consistent post-processing and rendering pipelines.
 
@@ -25,7 +25,7 @@ Ensures that all character meshes have required material slots (e.g., `Body_MTL`
 
 ### One-Step (recommended)
 
-Select a character DataTable in the Content Browser, then from Claude Code:
+Select a character DataTable in the Content Browser, then run:
 
 ```
 /cci-validate-character-mat-slot-names --export
@@ -49,7 +49,7 @@ exec(open(r"${CLAUDE_SKILL_DIR}/export_character_mat_slot_data.py").read())
 
 JSON is saved to `~/.claude/private/unreal/character-mat-slot-validate/{name}.json`.
 
-#### Step 2: Analyze in Claude Code
+#### Step 2: Analyze
 
 ```
 /cci-validate-character-mat-slot-names DT_Characters    # Analyze specific export

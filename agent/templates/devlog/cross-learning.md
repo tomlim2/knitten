@@ -8,7 +8,7 @@ tags:
   - lang/{{LANG}}
   - lib/{{LIB}}
   - area/{{AREA}}
-  # tool/{{TOOL}} for tool-level lessons (claude-code, cmux, gh, …).
+  # tool/{{TOOL}} for tool-level lessons (codex, cmux, gh).
   - tool/{{TOOL}}
 date: {{YYYY-MM-DD}}
 source: agent
@@ -58,7 +58,7 @@ the searchable anchors — don't move them to frontmatter.
 
 Tag rules:
 - type/learning + project/_cross-project required.
-- tool/ for Claude Code / cmux / gh / etc lessons.
+- tool/ for Codex / cmux / gh lessons.
 - lang/ + lib/ when anchored to a language/framework. Both or neither.
 - area/ describes the subject (observability, hooks, performance, build, …).
 - Max 5 tags total — drop the least informative axis if you exceed.

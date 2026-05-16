@@ -44,7 +44,7 @@ ps aux | grep -E 'python|python3' | grep -v grep
 - **Only 1 GPU process at a time. No exceptions.**
 - MPS (Apple Silicon) CANNOT share.
 - User must `kill <PID>` or use `--device cpu`.
-- **NEVER use `killall python`** — kills Claude Code too.
+- **NEVER use `killall python`** — it can kill the active agent runtime too.
 
 ### 0-3. Script Exists + Readable
 
@@ -135,7 +135,7 @@ This caught d=24 instability on Day 1 (range 74%~99%). See reference.md for samp
 4. MPS (Apple Silicon) CANNOT share. Period.
 5. CUDA can technically share but shouldn't in hackathons
 6. Kill by PID only: `kill <PID>`
-7. **NEVER `killall python`** — kills Claude Code
+7. **NEVER `killall python`** — it can kill the active agent runtime
 8. Serial > parallel on single GPU. Always.
 
 ## Common Failure Modes

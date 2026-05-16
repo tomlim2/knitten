@@ -1,21 +1,21 @@
 ---
-description: "Naming rules and templates for creating Claude Code commands and skills. Use when creating new commands or skills."
+description: "Naming rules and templates for creating caol-ila commands and skills. Use when creating new commands or skills."
 ---
 
 # caol-make-command
 
-Command and skill creation generator for Claude Code with comprehensive naming rules.
+Command and skill creation generator with comprehensive naming rules.
 
 ## Skill-owned standards
 
 Read these references only when needed:
 
 - `references/SLASH-COMMANDS.md` — command frontmatter, permissions, argument guards, templates, and execution patterns
-- `references/COMMAND-SKILL-REFERENCE.md` — detailed Claude command and skill examples
+- `references/COMMAND-SKILL-REFERENCE.md` — detailed command and skill examples
 
 ## Purpose
 
-This skill helps create new Claude Code commands and skills following the standardized naming convention and structure. It serves as the authoritative rulebook for command/skill creation.
+This skill helps create new caol-ila commands and skills following the standardized naming convention and structure. It serves as the authoritative rulebook for command/skill creation.
 
 ---
 
@@ -62,7 +62,7 @@ Each name consists of three parts separated by hyphens:
 
 ## Category Registry
 
-Canonical command and skill categories live in `~/.claude/config/taxonomy.json` under `skillCommandCategories`.
+Canonical command and skill categories live in `agent/config/taxonomy.json` under `skillCommandCategories`.
 
 When authoring a command or skill:
 
@@ -79,14 +79,14 @@ When authoring a command or skill:
 
 **NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, and similar.
 
-**Routing metadata:** if the command is repo-specific, domain-specific, or likely to pull high-cost context, add routing fields from `~/.claude/config/context-routing.json`: `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`.
+**Routing metadata:** if the command is repo-specific, domain-specific, or likely to pull high-cost context, add routing fields from `agent/config/context-routing.json`: `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`.
 
 **Advanced fields** (see `references/SLASH-COMMANDS.md` "Frontmatter Reference (Full)" for the full table):
 
 - `name` — overrides directory/file-derived slash-name
 - `when_to_use` — extra trigger phrases, appended to description in the listing
-- `disable-model-invocation: true` — user-only, Claude cannot auto-invoke (deploys, commits)
-- `user-invocable: false` — Claude-only, hidden from `/` menu (background knowledge)
+- `disable-model-invocation: true` — user-only, model cannot auto-invoke (deploys, commits)
+- `user-invocable: false` — hidden from `/` menu (background knowledge)
 - `context: fork` + `agent: Explore|Plan|general-purpose|<custom>` — run in isolated subagent
 - `paths: [glob, …]` — restrict auto-activation to matching files (monorepos)
 - `effort: low|medium|high|xhigh|max` — per-skill effort override
@@ -98,7 +98,7 @@ When authoring a command or skill:
 
 **String substitutions:** `$ARGUMENTS`, `$ARGUMENTS[N]`, `$0`/`$1`, `${CLAUDE_SESSION_ID}`, `${CLAUDE_SKILL_DIR}`. See standard for examples.
 
-**Dynamic shell injection:** Inline `` !`command` `` or fenced ` ```! ` block — executed before Claude sees the content.
+**Dynamic shell injection:** Inline `` !`command` `` or fenced ` ```! ` block — executed before the agent sees the content.
 
 ---
 
@@ -120,7 +120,7 @@ For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the s
 
 ## Routing Workflow
 
-1. Read `~/.claude/config/context-routing.json`.
+1. Read `agent/config/context-routing.json`.
 2. If the artifact matches an existing context profile, add the routing frontmatter fields.
 3. If no profile fits but the artifact is high-cost or domain-specific, stop and add the profile or an explicit `metadataExemptions` entry in the same change.
 4. Run `node scripts/validate-llm-first.mjs --check context-routing` from the caol-ila repo root.

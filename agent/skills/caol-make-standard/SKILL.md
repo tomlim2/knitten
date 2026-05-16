@@ -1,5 +1,5 @@
 ---
-description: "Structure and template for creating Claude Code standards (long reference docs). Use when creating a new standard."
+description: "Structure and template for creating caol-ila standards (long reference docs). Use when creating a new standard."
 ---
 
 # caol-make-standard
@@ -8,7 +8,7 @@ Generator for `standards/*.md` — long-form reference docs read on-demand.
 
 ## Purpose
 
-Standards contain detailed rationale, templates, and domain guides. They are NOT auto-loaded; they live in `~/.claude/standards/` and are read when a specific task calls for them.
+Standards contain detailed rationale, templates, and domain guides. They are NOT auto-loaded; they live in `agent/standards/` and are read when a specific task calls for them.
 
 This skill defines the structure so every standard looks consistent and gets registered in `standards/index.md`.
 
@@ -25,7 +25,7 @@ Do NOT use this when:
 
 ## Naming
 
-File name: `{topic}.md` in `~/.claude/standards/`.
+File name: `{topic}.md` in `agent/standards/<group>/`.
 
 - Lowercase, hyphen-separated.
 - Scope prefix if domain-specific: `cinev-*`, `review-code-*`, `review-ux-*`, `unreal-engine-*`.
@@ -88,21 +88,21 @@ Structural rules:
 3. **Scope section** — mandatory. Tells future reader when this applies.
 4. **Examples section** — mandatory unless the doc IS an example (like a template file).
 5. **Related section** — always present, even if empty, so cross-links get added over time.
-6. **Routing metadata** — use `~/.claude/config/context-routing.json` for `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`. Omit optional axes when absent.
+6. **Routing metadata** — use `agent/config/context-routing.json` for `domains`, `repo-keys`, `languages`, `frameworks` when relevant, `task-types`, `context-profile`, and `exclude-when`. Omit optional axes when absent.
 
 ---
 
 ## Workflow
 
 1. Parse filename from `$ARGUMENTS` (single token, lowercase, hyphens).
-2. Check `~/.claude/standards/{name}.md` does not already exist. Abort if it does.
+2. Check `agent/standards/<group>/{name}.md` does not already exist. Abort if it does.
 3. Ask the user:
    - One-line purpose
    - Which `standards/index.md` group it belongs to (Command Authoring, Multi-Agent, Research, Web, UE, Review, CINEV, Docs/System, or new group)
    - When-to-read hint for the index table
    - Which context profile applies, or why this standard needs a `metadataExemptions` entry
 4. Write the file from the template, filling in `{Title}` and `{One-line purpose}`.
-5. Update `~/.claude/standards/index.md` — add a row to the chosen group.
+5. Update `agent/standards/index.md` — add a row to the chosen group.
 6. Run `node scripts/validate-llm-first.mjs --check context-routing`.
 7. Print the new path and remind the user to fill in the sections.
 
@@ -111,7 +111,7 @@ Structural rules:
 ## After Creation
 
 - Fill the Scope, main sections, and Examples with real content.
-- If any bullet in the new standard is a hard must-follow rule, promote it to `~/.claude/rules/` via `caol-make-rule`.
+- If any bullet in the new standard is a hard must-follow rule, promote it to `agent/rules/` via `caol-make-rule`.
 - Commit: `feat: add standards/{name}.md — {topic}`.
 
 ---

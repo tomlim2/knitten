@@ -5,7 +5,7 @@ status: accepted
 
 **Version:** 1.1.0
 
-Standard patterns for multi-pass agent commands in Claude Code.
+Standard patterns for multi-pass agent commands.
 
 ---
 

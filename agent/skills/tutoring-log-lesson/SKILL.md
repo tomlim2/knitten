@@ -107,9 +107,9 @@ python paid.py "StudentName" --list     # List pending only
 
 ## Operator mode
 
-Claude drives data entry, not the user. Default path:
+The agent drives data entry, not the user. Default path:
 
-1. Claude reads pending lessons from vault (excludes `_invoiced` and `_done`)
+1. The agent reads pending lessons from vault (excludes `_invoiced` and `_done`)
 2. **Print summary in chat first** — list each lesson (date, hours, topic) + total. Wait for user OK before opening browser. Skip if user explicitly said "그냥 열어줘" or similar.
 3. After OK: `invoice.py <student> --open` — browser auto-fills + auto-submits, lands on preview
 4. User saves PDF → server marks matching lesson files `_invoiced` automatically

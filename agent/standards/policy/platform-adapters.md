@@ -49,7 +49,7 @@ Add these fields during portability migration:
 | Harness | Entry document | Duty |
 |---------|----------------|------|
 | Claude Code | `CLAUDE.md` | Import shared layers, then apply Claude Code mechanics |
-| Codex | `AGENTS.md` | Read shared layers, translate Claude-only mechanics only when intent applies |
+| Codex | `AGENTS.md` | Read shared layers, translate Claude Code mechanics only when intent applies |
 | New harness | New root entry document | Register in `SYSTEM.md`, load `SYSTEM.md` first, keep shared policy out of the entry document |
 
 ## New harness workflow

@@ -2,7 +2,7 @@
   "anju": { "description": "Graphics/shader experiments, UE Python tools" },
   "ta-portfolio": { "description": "Technical artist portfolio site" },
   "obsidian": { "description": "Obsidian vault for markdown docs and invoices" },
-  "caol-ila": { "description": "Global Claude Code configuration" },
+  "caol-ila": { "description": "Agent hub configuration" },
   "cinev-studio": { "description": "CINEV main project (UE)" },
   "cinev-git": { "description": "CINEV second project (UE)" },
   "mega-melange": { "description": "MegaMelange - NLP-driven UE control system" },

@@ -76,7 +76,7 @@ Create a cron job that fires every 1 minute:
 CronCreate: cron "*/1 * * * *", recurring true
 ```
 
-The cron prompt should instruct Claude to:
+The cron prompt should instruct the active harness to:
 
 1. **Check PR state:**
    ```bash
@@ -134,7 +134,7 @@ Report final status on stop.
 
 - This is **not real-time** — 1-minute polling. There will be up to 60s delay.
 - `gh` CLI must be authenticated as `tomlim2` (same as all shotloom ops).
-- The cron job lives only in the current session — exits when Claude exits.
+- The cron job lives only in the current session — exits when the harness exits.
 - Multiple PRs can be watched simultaneously by invoking multiple times.
 - **Reports stay terse.** This is a polling skill; output is delta-only status updates ("Checks: 3/3 pass", "New comment from @reviewer"). The lower-resolution Korean briefing rule used in `shotloom-respond-pr` does NOT apply here — watchers must stay scannable, not narrative. When `auto-pr` is the right fit (long sessions, autonomous reactor), prefer it over this skill.
 
@@ -144,7 +144,7 @@ Report final status on stop.
 |---|---|
 | Short session, want passive notifications | `shotloom-watch-pr` (this skill) |
 | Long-running PR, want autonomous CI fixes + review responses | `shotloom-auto-pr start <N>` |
-| Want to merge gh-CLI fail-fast checks into Claude reactor | `shotloom-auto-pr` |
+| Want to merge gh-CLI fail-fast checks into the autonomous PR reactor | `shotloom-auto-pr` |
 
 `shotloom-auto-pr` superseded the active half of this skill (PR reaction). Watch-pr remains for short-lived, attended monitoring where you don't want a background watcher process.
 

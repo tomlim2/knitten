@@ -1,16 +1,16 @@
 ---
-description: "Structure rules and templates for creating Claude Code skills. Use when creating new skills."
+description: "Structure rules and templates for creating caol-ila skills. Use when creating new skills."
 platforms: claude
 portability: harness-specific
 ---
 
 # caol-make-skill
 
-Skill creation generator for Claude Code with comprehensive structure rules.
+Skill creation generator with comprehensive structure rules.
 
 ## Purpose
 
-Authoritative rulebook for skill creation. Claude Code merged custom commands into skills: a file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy`. Skills are the recommended format — they support directories, supporting files, subagent execution, dynamic context injection.
+Authoritative rulebook for skill creation. Claude Code merged custom commands into skills: a file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy`. Skills are the recommended format for repeatable procedures because they support directories, supporting files, subagent execution, and dynamic context injection.
 
 ---
 
@@ -26,7 +26,7 @@ skills/{category}-{verb}-{subject}/
 └── scripts/              # executed, not loaded as context
 ```
 
-`SKILL.md` is the only required file. Other files inside the skill dir are **not auto-loaded** — Claude reads them on-demand when SKILL.md references them.
+`SKILL.md` is the only required file. Other files inside the skill dir are **not auto-loaded** — the harness reads them on-demand when `SKILL.md` references them.
 
 ---
 
@@ -64,7 +64,7 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ## Category Registry
 
-Canonical command and skill categories live in `~/.claude/config/taxonomy.json` under `skillCommandCategories`.
+Canonical command and skill categories live in `agent/config/taxonomy.json` under `skillCommandCategories`.
 
 When creating a skill:
 
@@ -77,7 +77,7 @@ When creating a skill:
 
 ## Routing Metadata
 
-When creating a skill, also read `~/.claude/config/context-routing.json`.
+When creating a skill, also read `agent/config/context-routing.json`.
 
 Add routing fields when the skill is repo-specific, domain-specific, high-cost, or likely to load sibling standards:
 
@@ -112,8 +112,8 @@ All fields are optional; only `description` is recommended. Canonical: <https://
 | `when_to_use` | string | — | Additional trigger guidance. Appended to `description`. |
 | `argument-hint` | string | — | Autocomplete hint, e.g. `"[issue-number]"`. |
 | `allowed-tools` | string or list | — | Tools usable without per-use approval. Does NOT restrict other tools. |
-| `disable-model-invocation` | boolean | `false` | `true` = user-only; Claude cannot auto-invoke. Use for deploys, commits. |
-| `user-invocable` | boolean | `true` | `false` = hide from `/` menu; Claude-only. Background/reference skills. |
+| `disable-model-invocation` | boolean | `false` | `true` = user-only; model cannot auto-invoke. Use for deploys, commits. |
+| `user-invocable` | boolean | `true` | `false` = hide from `/` menu. Use for background/reference skills. |
 | `model` | string | session | Per-skill model override. |
 | `effort` | `low`\|`medium`\|`high`\|`xhigh`\|`max` | session | Per-skill effort override. |
 | `context` | `fork` | inline | Set to `fork` to run in a forked subagent context. |
@@ -150,7 +150,7 @@ Worked examples for each in [reference.md](reference.md).
 
 ## Dynamic Shell Injection (overview)
 
-Skills can embed live shell output into the prompt before Claude sees it (preprocessing — Claude sees the rendered content, not the command). Inline: `` !`git rev-parse --abbrev-ref HEAD` ``. Block form: ` ```! ` fenced. Full patterns in reference.md.
+Skills can embed live shell output into the prompt before the agent sees it (preprocessing — the agent sees the rendered content, not the command). Inline: `` !`git rev-parse --abbrev-ref HEAD` ``. Block form: ` ```! ` fenced. Full patterns in reference.md.
 
 ---
 
@@ -160,7 +160,7 @@ Three phases: **discovery** (session start), **invocation** (when used), **compa
 
 ### Session start (discovery)
 
-Claude Code scans skills and loads **only the frontmatter** (`name`, `description`, `when_to_use`). Body not read until invoked.
+The Claude Code harness scans skills and loads **only the frontmatter** (`name`, `description`, `when_to_use`). Body not read until invoked.
 
 - Target startup cost: ~100 tokens (frontmatter only)
 - `description` + `when_to_use` capped at 1,536 chars in listing

@@ -59,7 +59,7 @@ Always required. Exactly one per note.
 | `project/bevy-vrm` | bevy-vrm renderer |
 | `project/mmd-anju` | MMD Anju player |
 | `project/codex-base` | Codex base workspace |
-| `project/caol-ila` | Claude config / skills repo |
+| `project/caol-ila` | agent hub / skills repo |
 | `project/personal` | Personal notes, journal, passwords, hobby lists |
 | `project/graphics-study` | Standalone graphics/3D/shader study notes (Blender, GLSL, Three.js, rendering theory) |
 

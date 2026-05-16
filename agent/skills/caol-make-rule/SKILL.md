@@ -38,7 +38,7 @@ If in doubt: start as a rule. If it grows past 10 bullets, promote to a standard
 
 ## Naming
 
-File name: `{topic}.md` in `~/.claude/rules/`.
+File name: `{topic}.md` in `agent/rules/`.
 
 - Lowercase, hyphen-separated, short (1-3 words).
 - Scope prefix if domain-specific: `cinev-*`.
@@ -52,7 +52,7 @@ File name: `{topic}.md` in `~/.claude/rules/`.
 - **{Rule title}** — {one-line imperative, "ALWAYS X" or "NEVER X"}
 - **{Rule title}** — {one-line imperative}
 - **{Rule title}** — {one-line imperative}
-- Full reference: @~/.claude/standards/{related}.md
+- Full reference: `agent/standards/{related}.md`
 ```
 
 Structural rules:
@@ -67,14 +67,14 @@ Structural rules:
 ## Workflow
 
 1. Parse filename from `$ARGUMENTS`.
-2. Check `~/.claude/rules/{name}.md` does not exist. Abort if it does.
+2. Check `agent/rules/{name}.md` does not exist. Abort if it does.
 3. Ask the user:
    - Short scope description (for `rules/index.md`)
    - The bullets themselves (or confirm the user will fill them in after)
    - Which index group: Core, Command Authoring, or Domain-specific
    - Which standard (if any) backs this rule
 4. Write the file from the template.
-5. Update `~/.claude/rules/index.md` — add a code-span row to the chosen group. Do not use Markdown links in the rules index.
+5. Update `agent/rules/index.md` — add a code-span row to the chosen group. Do not use Markdown links in the rules index.
 6. If the rule has `load: auto`, add it to root `CLAUDE.md` imports and `agent/rules/index.md`.
 7. Print the new path.
 
@@ -84,7 +84,7 @@ Structural rules:
 
 - Fill the bullets if not already.
 - If this rule was extracted from an existing standard, add a cross-reference note to the standard's "Related" section (pointing to `rules/{name}.md`).
-- If this rule belongs in every session, add an import to root `CLAUDE.md`:
+- If this rule belongs in every Claude Code session, add an import to root `CLAUDE.md`:
   ```markdown
   @~/.claude/rules/{name}.md
   ```

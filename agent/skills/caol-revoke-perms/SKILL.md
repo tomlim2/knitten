@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Close down YOLO mode — restore `~/.claude/settings.json` from the backup created by `/caol-grant-perms`, then delete the grant state file. Idempotent: if no grant is active, says so and exits.
 
-**User-only — Claude must not auto-invoke this** (`disable-model-invocation: true`). Treat as the safety partner of `/caol-grant-perms`.
+**User-only — the model must not auto-invoke this** (`disable-model-invocation: true`). Treat as the safety partner of `/caol-grant-perms`.
 
 ## Arguments
 

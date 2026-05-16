@@ -41,7 +41,7 @@ Examples:
 
 ## Command Checklist (12 checks)
 
-Apply these checks to each command file (`~/.claude/commands/*.md`).
+Apply these checks to each command file (`agent/commands/*.md`).
 
 ### Format (F1–F4)
 
@@ -65,7 +65,7 @@ Apply these checks to each command file (`~/.claude/commands/*.md`).
 
 ## Skill Checklist (11 checks)
 
-Apply these checks to each skill file (`~/.claude/skills/*/SKILL.md`).
+Apply these checks to each skill file (`agent/skills/*/SKILL.md`).
 
 ### Structure (S1–S2)
 
@@ -94,7 +94,7 @@ Note: Version and Changelog fields are NOT required — versioning is tracked vi
 
 ## Standards Checklist (6 checks)
 
-Apply these checks to each standards file (`~/.claude/standards/*.md`).
+Apply these checks to each standards file (`agent/standards/**/*.md`).
 
 ### Structure (ST1–ST3)
 
@@ -104,9 +104,9 @@ Apply these checks to each standards file (`~/.claude/standards/*.md`).
 
 ### References (SR1–SR3)
 
-- **SR1. Listed in standards index:** The file must appear in `~/.claude/standards/index.md`. WARN if missing — either add to index or question if the file is still needed.
+- **SR1. Listed in standards index:** The file must appear in `agent/standards/index.md`. WARN if missing — either add to index or question if the file is still needed.
 - **SR2. Cross-references valid:** Any paths to other files (`~/.claude/...`, `@path/...`) must point to files that actually exist. Verify with Glob.
-- **SR3. Internal consistency:** If the standard references specific commands or skills by name, those must exist. Verify with Glob against `~/.claude/commands/{name}.md` or `~/.claude/skills/{name}/SKILL.md`.
+- **SR3. Internal consistency:** If the standard references specific commands or skills by name, those must exist. Verify with Glob against `agent/commands/{name}.md` or `agent/skills/{name}/SKILL.md`.
 
 ## Workflow
 
@@ -119,9 +119,9 @@ Parse `$ARGUMENTS` to determine:
 ### Step 2: Scan
 
 Glob for files based on scope:
-- Commands: `~/.claude/commands/{pattern}.md` (default pattern: `*`)
-- Skills: `~/.claude/skills/{pattern}/SKILL.md` (default pattern: `*`)
-- Standards: `~/.claude/standards/{pattern}.md` (default pattern: `*`)
+- Commands: `agent/commands/{pattern}.md` (default pattern: `*`)
+- Skills: `agent/skills/{pattern}/SKILL.md` (default pattern: `*`)
+- Standards: `agent/standards/**/{pattern}.md` (default pattern: `*`)
 
 Read each matched file.
 

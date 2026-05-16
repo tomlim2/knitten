@@ -12,7 +12,7 @@ export default defineConfig({
   },
   vite: {
     server: {
-      // Watch the Obsidian vault and Claude config so HMR fires when
+      // Watch the Obsidian vault and deploy target config so HMR fires when
       // learnings / standards / skills / hardware / repos change on disk.
       // review-code-astro.md CONF-A04 — keep fs watcher off noisy/large dirs
       watch: {

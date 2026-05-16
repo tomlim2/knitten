@@ -417,5 +417,5 @@ db.execute(query, [email, hashedPassword]);
 
 - This template is for **review output format**, not review checklist
 - For detailed review checklists, see domain-specific standards (e.g. review-code-unreal-cpp.md)
-- All reviews should reference applicable standards from `~/.claude/standards/`
+- All reviews must reference applicable standards from `agent/standards/` or skill-owned references.
 - Severity levels: CRITICAL (security/bugs), ERROR (standard violations), WARNING (suggestions)

@@ -34,8 +34,8 @@ This standard governs **`caol-ila` repository artifacts only** — files inside 
 |--------------|----------|
 | Code identifiers (Rust struct/fn/var, Python class, JS variable, C++ symbol) | each language's own convention (rustfmt, PEP 8, ESLint, project-specific style guide) |
 | Filenames in other repos (shotloom, cinev-engine, bevy-vrm, personal projects) | that repo's own `CONTRIBUTING.md` / `AGENTS.md` |
-| Unreal Engine asset names (`SM_`, `T_`, `M_`, `BP_`, ...) | `~/.claude/skills/cci-validate-character-mat-slot-names/references/CINEV-CHARACTER-ASSET-NAMING.md` |
-| HTML/CSS class names, IDs, custom properties | frontend skill reference (`~/.claude/skills/frontend-design/references/CSS.md`) |
+| Unreal Engine asset names (`SM_`, `T_`, `M_`, `BP_`, ...) | `agent/skills/cci-validate-character-mat-slot-names/references/CINEV-CHARACTER-ASSET-NAMING.md` |
+| HTML/CSS class names, IDs, custom properties | `agent/skills/frontend-design/references/CSS.md` |
 | Variable names inside example snippets in this repo's docs | code conventions of the snippet's language |
 
 When working in another repo, follow that repo's naming rules. This standard does not transfer.
@@ -68,7 +68,7 @@ Pattern: `{category}-{verb}-{subject}`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
 
-Full rules + external-wrapper details: `~/.claude/rules/author.md`.
+Full rules + external-wrapper details: `agent/rules/author.md`.
 
 ### Rules (`agent/rules/*.md`)
 
@@ -112,7 +112,7 @@ Mechanical pattern lives in `agent/config/taxonomy.json` key `planFilenamePatter
 
 ### Vault notes (`{vault}/agent/projects/<project>/<folder>/*.md`)
 
-Folder governs naming. See `~/.claude/standards/obsidian/vault-audience.md`.
+Folder governs naming. See `agent/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
 
 | Folder | Pattern | Examples |
 |--------|---------|----------|

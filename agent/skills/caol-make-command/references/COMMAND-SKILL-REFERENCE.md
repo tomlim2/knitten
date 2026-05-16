@@ -5,7 +5,7 @@ portability: harness-specific
 ---
 # Command & Skill Reference
 
-Detailed examples and patterns for writing Claude Code commands and skills.
+Detailed examples and patterns for writing commands and skills.
 Referenced from `SYSTEM.md` and authoring skills.
 
 ---
@@ -21,7 +21,7 @@ argument-hint: "[type]"
 
 # Command Title
 
-Instructions for Claude on how to execute this command.
+Instructions for the agent on how to execute this command.
 
 ## Dynamic Execution
 
@@ -59,7 +59,7 @@ Show the user the list of Python files found.
 ```markdown
 # git-commit-collector
 
-Git commit history extraction skill for Claude Code.
+Git commit history extraction skill.
 
 ## Usage
 

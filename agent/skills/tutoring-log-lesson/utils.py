@@ -11,8 +11,8 @@ from datetime import datetime
 _MACHINE_PATHS = Path.home() / ".claude" / "private" / "caol-config" / "machine-paths.json"
 
 
-def get_obsidian_claude_dir() -> Path:
-    """Resolve the Obsidian claude directory from machine-paths.json.
+def get_obsidian_vault_dir() -> Path:
+    """Resolve the Obsidian vault directory from machine-paths.json.
 
     Falls back to obsidian-staging on machines without an iCloud vault. Exits
     with a clear message if neither key is configured.
@@ -29,12 +29,12 @@ def get_obsidian_claude_dir() -> Path:
 
 def get_lessons_dir() -> Path:
     """Get the lessons directory path."""
-    return get_obsidian_claude_dir() / "tutoring" / "lessons"
+    return get_obsidian_vault_dir() / "tutoring" / "lessons"
 
 
 def get_invoices_dir() -> Path:
     """Get the invoices directory path."""
-    return get_obsidian_claude_dir() / "tutoring" / "invoices"
+    return get_obsidian_vault_dir() / "tutoring" / "invoices"
 
 
 def get_student_dir(student_name: str) -> Path:

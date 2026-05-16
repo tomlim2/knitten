@@ -3,7 +3,7 @@ status: accepted
 ---
 # Slash Commands Standard
 
-Common patterns, rules, and templates for all Claude Code slash commands.
+Common patterns, rules, and templates for slash commands.
 
 ---
 
@@ -107,8 +107,8 @@ Commands and skills share the same frontmatter. All fields are optional; `descri
 | `when_to_use` | string | — | Additional trigger guidance (phrases, example requests). |
 | `argument-hint` | string | — | Autocomplete hint for required/optional args. |
 | `allowed-tools` | string or list | — | Tools usable without per-use approval while active. Does NOT restrict other tools. |
-| `disable-model-invocation` | boolean | `false` | `true` = user-only; Claude cannot auto-invoke. Use for deploys, commits, Slack sends. |
-| `user-invocable` | boolean | `true` | `false` = hide from `/` menu; Claude-only. Use for background/reference skills. |
+| `disable-model-invocation` | boolean | `false` | `true` = user-only; model cannot auto-invoke. Use for deploys, commits, Slack sends. |
+| `user-invocable` | boolean | `true` | `false` = hide from `/` menu. Use for background/reference skills. |
 | `model` | string | session | Per-skill model override. |
 | `effort` | `low`\|`medium`\|`high`\|`xhigh`\|`max` | session | Per-skill effort override. |
 | `context` | `fork` | inline | Set to `fork` to run in a forked subagent context. |
@@ -147,7 +147,7 @@ npm --version
 ```
 ````
 
-Runs before Claude sees the content — Claude receives the command output, not the command text. Can be disabled globally via `"disableSkillShellExecution": true` in settings.
+Runs before the agent sees the content — the agent receives the command output, not the command text. Can be disabled globally via `"disableSkillShellExecution": true` in settings.
 
 ---
 

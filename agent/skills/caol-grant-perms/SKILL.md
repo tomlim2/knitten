@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Open up `~/.claude/settings.json` for autonomous work — grant Edit / Write / MultiEdit / NotebookEdit / Bash(*) so the harness stops asking per-action approval. Backs up settings.json first, records grant state, prints how to revoke.
 
-**User-only — Claude must not auto-invoke this** (`disable-model-invocation: true`). Treat as security-sensitive: a granted state lets every subsequent tool call run without approval until `/caol-revoke-perms`.
+**User-only — the model must not auto-invoke this** (`disable-model-invocation: true`). Treat as security-sensitive: a granted state lets every subsequent tool call run without approval until `/caol-revoke-perms`.
 
 ## Arguments
 
@@ -96,8 +96,8 @@ EOF
 - **Idempotent guard:** if `caol-perms-grant.json` already exists, refuse. Stops accidental double-grant which would lose the original backup pointer.
 - **Backup retention:** old `.bak.*` files are NOT auto-cleaned. Periodic `rm ~/.claude/settings.json.bak.*` is fine since each grant creates a fresh one.
 - **Why user-global, not project-local:** the user explicitly asked for global scope (single switch across all repos). Project-local (`.claude/settings.local.json`) would be safer but requires per-repo grant.
-- **Why disable-model-invocation:** Claude must never auto-grant itself elevated permissions. Only the user types `/caol-grant-perms`.
-- **Restart not required:** Claude Code re-reads settings.json on next tool dispatch; grant takes effect immediately.
+- **Why disable-model-invocation:** The model must never auto-grant itself elevated permissions. Only the user types `/caol-grant-perms`.
+- **Restart not required:** The harness re-reads settings.json on next tool dispatch; grant takes effect immediately.
 
 ## Related
 

@@ -61,11 +61,11 @@ Then enumerate and read every file under:
 
 ### Step 3: Read global Shotloom standards (parallel)
 
-From `~/.claude/` (Claude-side only — in-repo `docs/guidelines/` is canonical for writing/review rules and is loaded in Step 2):
+From `~/.claude/` (harness-side only — in-repo `docs/guidelines/` is canonical for writing/review rules and is loaded in Step 2):
 
 - the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — PR scope classification policy (no in-repo equivalent)
 - `~/.claude/rules/shotloom.md` — hub rule (routing + answering style)
-- `~/.claude/rules/shotloom.md` — Claude-side gates (gh auth, auto-commit, CI exclude flags)
+- `~/.claude/rules/shotloom.md` — harness-side gates (gh auth, auto-commit, CI exclude flags)
 
 ### Step 4: Read ADR index entries
 
@@ -82,7 +82,7 @@ Emit:
 **shotloom HEAD:** <short-sha>
 **Loaded:**
 - Repo: AGENTS, CONTRIBUTING, CLAUDE, ADR index, N guideline files, M .agent files
-- Claude-side: ~/.claude/rules/shotloom.md, ~/.claude/skills/shotloom-auto-pr/reference.md (PR-scope policy)
+- Harness-side: ~/.claude/rules/shotloom.md, ~/.claude/skills/shotloom-auto-pr/reference.md (PR-scope policy)
 - ADR titles indexed: <count>
 
 **Fork this session for each work task.**

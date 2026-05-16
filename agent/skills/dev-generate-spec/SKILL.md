@@ -10,7 +10,7 @@ Technical specification document generator for Claude Code.
 
 Analyzes code (plugin, module, or directory) and generates a technical specification document following the skill-owned template in `references/TECH-SPEC-TEMPLATE.md`.
 
-**Note:** This is a Claude-driven workflow skill with no standalone script. It is invoked exclusively via the `/spec` command.
+**Note:** This is an agent-driven workflow skill with no standalone script. It is invoked exclusively via the `/spec` command.
 
 ## Usage
 

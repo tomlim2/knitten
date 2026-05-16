@@ -13,7 +13,7 @@ Verify all before requesting user approval to call `gh pr create`:
 - Any referenced Linear/GitHub issues exist, are in the right project, and are cross-linked.
 - If superseding a prior PR, the redirect comment and the prior PR number are prepared in the new PR description.
 
-**Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated Claude-side meta in `~/.claude/rules/<repo>.md`, consult and satisfy it in addition to the bullets above:
+**Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated harness-side meta in `~/.claude/rules/<repo>.md`, consult and satisfy it in addition to the bullets above:
 
 - shotloom (CINEV/shotloom) → `~/.claude/rules/shotloom.md`
 

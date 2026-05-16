@@ -4,7 +4,7 @@ description: "Extract git commit history for portfolio or analysis. Use when col
 
 # git-collect-commits
 
-Git commit history extraction skill for Claude Code.
+Git commit history extraction skill.
 
 ---
 
