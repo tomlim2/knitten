@@ -14,13 +14,14 @@ except FileNotFoundError:
 except json.JSONDecodeError as e:
     sys.exit(f"fill_tags_from_name.py: invalid JSON in {_PATHS_FILE}: {e}")
 
-_VAULT_CLAUDE = _PATHS.get("obsidian-vault-claude")
-if not _VAULT_CLAUDE:
-    print("obsidian-vault-claude not configured on this machine — nothing to do")
+_VAULT = _PATHS.get("obsidian") or _PATHS.get("obsidian-agent-root") or _PATHS.get("obsidian-vault-claude")
+if not _VAULT:
+    print("obsidian not configured on this machine — nothing to do")
     sys.exit(0)
 
-# obsidian-vault-claude points at {vault}/claude; use parent for MyNotes dir.
-VAULT = Path(_VAULT_CLAUDE).parent
+VAULT = Path(_VAULT)
+if VAULT.name in {"agent", "claude"}:
+    VAULT = VAULT.parent
 EXCLUDE_DIRS = {".trash", ".obsidian"}  # config only — all user docs included
 DRY_RUN = False
 

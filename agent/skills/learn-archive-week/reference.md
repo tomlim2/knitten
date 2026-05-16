@@ -83,7 +83,7 @@ Retained for historical context — the scripts now automate this flow.
 
 ### Step 1: 경로 + 주 범위 확정
 
-1. `~/.claude/private/caol-config/machine-paths.json` 읽어서 `obsidian-vault-claude` 경로 추출
+1. `~/.claude/private/caol-config/machine-paths.json` 읽어서 `obsidian-agent-root` 경로 추출 (`obsidian-vault-claude`는 legacy fallback)
 2. 오늘 날짜 기준 이번 주 월요일 00:00 계산 (`--week-start` 있으면 덮어씀)
 3. 주 범위 = `[monday 00:00, today 23:59]`
 

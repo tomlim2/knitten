@@ -2,14 +2,14 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import { readDoc } from '../../lib/doc-discovery';
-import { obsidianClaudeDir } from '../../lib/paths';
+import { obsidianAgentDir } from '../../lib/paths';
 import { renderMarkdown } from '../../lib/markdown';
 import { join } from 'node:path';
 
 const slug = Astro.params.slug;
 if (!slug) return Astro.redirect('/learnings');
-const claudeDir = obsidianClaudeDir();
-const root = claudeDir ? join(claudeDir, 'learnings') : null;
+const agentDir = obsidianAgentDir();
+const root = agentDir ? join(agentDir, 'learnings') : null;
 // readDoc applies safeResolveUnder internally — null on traversal attempts.
 const doc = root ? readDoc(root, slug) : null;
 if (!doc) return Astro.redirect('/learnings');

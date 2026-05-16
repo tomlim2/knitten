@@ -3,13 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import { discoverSkills } from '../lib/skill-discovery';
 import { walkMarkdown } from '../lib/doc-discovery';
-import { STANDARDS_DIR, obsidianClaudeDir } from '../lib/paths';
+import { STANDARDS_DIR, obsidianAgentDir } from '../lib/paths';
 import { join } from 'node:path';
 
 const skillCount = discoverSkills().length;
 const standardsCount = walkMarkdown(STANDARDS_DIR).length;
-const claudeDir = obsidianClaudeDir();
-const learningsCount = claudeDir ? walkMarkdown(join(claudeDir, 'learnings')).length : 0;
+const agentDir = obsidianAgentDir();
+const learningsCount = agentDir ? walkMarkdown(join(agentDir, 'learnings')).length : 0;
 ---
 
 <BaseLayout title="Browse" activeNav="/browse">

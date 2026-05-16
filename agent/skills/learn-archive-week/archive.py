@@ -5,10 +5,9 @@ Idempotent: skips files with existing valid frontmatter if already at destinatio
 See SKILL.md for full spec.
 
 Machine-specific absolute paths are loaded from
-``~/.claude/private/caol-config/machine-paths.json`` (keys: ``obsidian-staging``,
-``codex-home``, ``obsidian-vault-claude``). Missing keys abort the run with a
-clear message — on machines without an Obsidian vault (e.g. the work Mac) this
-script is not meant to run.
+``~/.claude/private/caol-config/machine-paths.json``. Writers use
+``obsidian-agent-root`` and fall back to the legacy ``obsidian-vault-claude``
+key only while older machines migrate.
 """
 from __future__ import annotations
 import json
@@ -26,7 +25,7 @@ _PATHS_FILE = HOME / ".claude" / "private" / "caol-config" / "machine-paths.json
 try:
     _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
 except FileNotFoundError:
-    sys.exit(f"archive.py: missing {_PATHS_FILE}. Populate it with obsidian-staging / codex-home / obsidian-vault-claude keys.")
+    sys.exit(f"archive.py: missing {_PATHS_FILE}. Populate it with obsidian-staging / codex-home / obsidian-agent-root keys.")
 except json.JSONDecodeError as e:
     sys.exit(f"archive.py: invalid JSON in {_PATHS_FILE}: {e}")
 
@@ -38,9 +37,16 @@ def _require(key: str) -> Path:
     return Path(val)
 
 
+def _agent_root() -> Path:
+    val = _PATHS.get("obsidian-agent-root") or _PATHS.get("obsidian-vault-claude")
+    if not val:
+        sys.exit("archive.py: machine-paths.json missing 'obsidian-agent-root' (legacy fallback: 'obsidian-vault-claude').")
+    return Path(val)
+
+
 TEMP = _require("obsidian-staging")
 CODEX = _require("codex-home")
-VAULT = _require("obsidian-vault-claude")
+VAULT = _agent_root()
 
 DRY_RUN = "--dry-run" in sys.argv
 

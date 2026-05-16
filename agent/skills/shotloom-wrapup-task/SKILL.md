@@ -170,7 +170,7 @@ Pass a retrospective logging brief:
 - Cite the standard, rule, or file:line behind each lesson.
 - Skip empty callouts.
 
-If the Obsidian vault is writable (`obsidian-vault-claude` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
+If the Obsidian vault is writable (`obsidian-agent-root` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
 
 **After learn-log-day writes the file**, commit and push it from the caol-ila repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
 
@@ -188,7 +188,7 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 
 - **Never force** (`-D`, `--force`) without explicit user confirmation. Uncommitted changes or unmerged branches are signals — pause and ask.
 - **Clean the used local task worktree only after moving to the main checkout.** `cd $shotloom_root` before `git worktree remove`; do not remove a worktree from inside itself.
-- **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go to `machine-paths.json → obsidian-vault-claude` (fallback: `obsidian-staging`).
+- **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go to `machine-paths.json → obsidian-agent-root` (legacy fallback: `obsidian-vault-claude`; staging fallback: `obsidian-staging`).
 - **PR-level lifecycle is `/shotloom-auto-pr`'s job when running.** This skill is the manual equivalent — if auto-pr already did the Linear move and worktree cleanup on MERGE, this skill detects that and only appends the day log.
 - **Abandoned PRs** — worktree removal still requires the branch to be pushed (or user-approved discard). Local-only work should never be dropped silently.
 

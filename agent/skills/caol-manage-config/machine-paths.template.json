@@ -1,6 +1,7 @@
 {
   "_comment": "Machine-specific tool/app paths. Copy to ~/.claude/private/caol-config/machine-paths.json and fill in paths for this machine.",
   "obsidian":              "",
+  "obsidian-agent-root":   "",
   "obsidian-vault-claude": "",
   "obsidian-staging":      "",
   "blender":               "",

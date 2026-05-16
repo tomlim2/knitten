@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Consolidate semantic-duplicate tags in Obsidian vault.
-
-Vault path is loaded from ``~/.claude/private/caol-config/machine-paths.json``
-(key ``obsidian-vault-claude``). On machines without the vault this script
-exits early — there is nothing to consolidate.
-"""
+"""Consolidate semantic-duplicate tags in the Obsidian vault."""
 import json
 import re
 import sys
@@ -18,13 +13,13 @@ except FileNotFoundError:
 except json.JSONDecodeError as e:
     sys.exit(f"tag_consolidate.py: invalid JSON in {_PATHS_FILE}: {e}")
 
-_VAULT = _PATHS.get("obsidian-vault-claude")
+_VAULT = _PATHS.get("obsidian") or _PATHS.get("obsidian-agent-root") or _PATHS.get("obsidian-vault-claude")
 if not _VAULT:
-    sys.exit("tag_consolidate.py: machine-paths.json missing 'obsidian-vault-claude' — no vault on this machine, nothing to consolidate.")
+    sys.exit("tag_consolidate.py: machine-paths.json missing 'obsidian' (fallbacks: 'obsidian-agent-root', 'obsidian-vault-claude').")
 
-# obsidian-vault-claude points at {vault}/claude. Walk the whole vault for tag
-# consolidation, so broaden to the parent and exclude config directories.
-VAULT = Path(_VAULT).parent
+VAULT = Path(_VAULT)
+if VAULT.name in {"agent", "claude"}:
+    VAULT = VAULT.parent
 EXCLUDE_DIRS = {".trash", ".obsidian"}  # config only — all user docs included
 
 TAG_MAP = {

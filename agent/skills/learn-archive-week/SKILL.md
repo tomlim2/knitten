@@ -7,7 +7,7 @@ user-invocable: true
 
 # IMPORTANT: Permission gotcha
 
-Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iCloud Obsidian vault path (resolved via `obsidian-vault-claude` in `~/.claude/private/caol-config/machine-paths.json`). Only the main Claude Code session does.
+Sub-agents spawned via the `Agent` tool may not have write access to the iCloud Obsidian vault path (resolved via `obsidian-agent-root` in `~/.claude/private/caol-config/machine-paths.json`). Run vault writes in the main session.
 
 **Therefore: run `archive.py` directly in the main session — do NOT delegate to subagents.**
 
@@ -25,7 +25,7 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 각 단계는 **idempotent** — 중복 실행해도 문제 없음. `.obsidian/`, `.trash/`만 제외하고 vault 전체가 관리 대상.
 
-> 머신 한정 절대경로(`obsidian-staging`, `codex-home`, `obsidian-vault-claude`)는 `~/.claude/private/caol-config/machine-paths.json`에서 읽어온다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
+> 머신 한정 절대경로(`obsidian-staging`, `codex-home`, `obsidian-agent-root`)는 `~/.claude/private/caol-config/machine-paths.json`에서 읽어온다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다. `obsidian-vault-claude`는 legacy fallback only.
 
 ---
 
@@ -52,7 +52,7 @@ Sub-agents spawned via the `Agent` tool do **NOT** have write access to the iClo
 
 ### Destination (Obsidian vault)
 
-`{obsidian-vault-claude}/` 아래. 경로는 `machine-paths.json` 의 `obsidian-vault-claude` 키에서 읽음. 분류별 목적지 매핑은 reference.md 참조.
+`{obsidian-agent-root}/` 아래. 경로는 `machine-paths.json` 의 `obsidian-agent-root` 키에서 읽음. 분류별 목적지 매핑은 reference.md 참조.
 
 ---
 

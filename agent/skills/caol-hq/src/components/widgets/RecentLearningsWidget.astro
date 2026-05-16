@@ -2,16 +2,16 @@
 import WidgetFrame from '../WidgetFrame.astro';
 import EmptyState from '../EmptyState.astro';
 import { walkMarkdown } from '../../lib/doc-discovery';
-import { obsidianClaudeDir } from '../../lib/paths';
+import { obsidianAgentDir } from '../../lib/paths';
 import { join } from 'node:path';
 
-const claudeDir = obsidianClaudeDir();
-const root = claudeDir ? join(claudeDir, 'learnings') : null;
+const agentDir = obsidianAgentDir();
+const root = agentDir ? join(agentDir, 'learnings') : null;
 
 let items: Array<{ slug: string; name: string; mtime: Date }> = [];
 let error: string | null = null;
 if (!root) {
-    error = 'obsidian-vault-claude 미등록';
+    error = 'obsidian-agent-root 미등록';
 } else {
     try {
         items = walkMarkdown(root)

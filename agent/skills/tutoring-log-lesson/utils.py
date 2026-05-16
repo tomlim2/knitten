@@ -20,10 +20,10 @@ def get_obsidian_vault_dir() -> Path:
     try:
         paths = json.loads(_MACHINE_PATHS.read_text(encoding="utf-8"))
     except FileNotFoundError:
-        sys.exit(f"tutoring/utils.py: missing {_MACHINE_PATHS} — populate obsidian-vault-claude or obsidian-staging.")
-    target = paths.get("obsidian-vault-claude") or paths.get("obsidian-staging")
+        sys.exit(f"tutoring/utils.py: missing {_MACHINE_PATHS} — populate obsidian-agent-root or obsidian-staging.")
+    target = paths.get("obsidian-agent-root") or paths.get("obsidian-vault-claude") or paths.get("obsidian-staging")
     if not target:
-        sys.exit("tutoring/utils.py: machine-paths.json has neither 'obsidian-vault-claude' nor 'obsidian-staging'.")
+        sys.exit("tutoring/utils.py: machine-paths.json has neither 'obsidian-agent-root' nor legacy fallback 'obsidian-vault-claude' nor 'obsidian-staging'.")
     return Path(target)
 
 

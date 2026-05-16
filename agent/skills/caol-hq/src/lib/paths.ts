@@ -45,7 +45,7 @@ export function loadMachinePaths(): Record<string, string> {
     }
 }
 
-export function obsidianClaudeDir(): string | null {
+export function obsidianAgentDir(): string | null {
     const machine = loadMachinePaths();
-    return machine['obsidian-vault-claude'] ?? machine['obsidian-staging'] ?? null;
+    return machine['obsidian-agent-root'] ?? machine['obsidian-vault-claude'] ?? machine['obsidian-staging'] ?? null;
 }
