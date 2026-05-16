@@ -42,70 +42,57 @@ TEMP = _require("obsidian-staging")
 CODEX = _require("codex-home")
 VAULT = _require("obsidian-vault-claude")
 
-WEEK_START = datetime(2026, 5, 4)
-WEEK_END = datetime(2026, 5, 11)  # exclusive
-
 DRY_RUN = "--dry-run" in sys.argv
 
 # (src_rel_from_base, base, dest_rel_from_vault, tags, source_value, delete_source)
 MAPPING: list[tuple[Path, Path, Path, list[str], str, bool]] = []
 
-# ---------- shotloom days (this week) ----------
-# Per ~/.claude/rules/shotloom.md: vault destination is `projects/shotloom/`
-# (NOT `projects/shotloom-rd/`) and staging path mirrors vault layout, so it's
-# a 1:1 path transform.
-SHOTLOOM_DAYS = [
-    "2026-05-04-thumb-canonical-world-investigation.md",
-    "2026-05-06-housekeeping.md",
-    "2026-05-07-deploy-doc-routing.md",
-    "2026-05-07-stl-326-buildkit-decisions.md",
-    "2026-05-07-web-build-small-fixes.md",
-    "2026-05-07-web-image-cicd.md",
-    "2026-05-07-worktree-cleanup.md",
-    "2026-05-07-yq-hardening.md",
-    "2026-05-08-pr-261-review-round1-cicd-study.md",
-    "2026-05-08-pr-262-debug-spawn-run.md",
-    "2026-05-08-stl-326-closed.md",
-    "2026-05-08-stl-335-closed.md",
-    "2026-05-08-stl-346-closed.md",
-]
-for fn in SHOTLOOM_DAYS:
-    MAPPING.append((
-        Path("projects/shotloom/days") / fn, TEMP,
-        Path("projects/shotloom/days") / fn,
-        ["shotloom", "devlog"], "claude", True,
-    ))
+def infer_destination(rel: Path) -> tuple[Path, list[str]]:
+    """Infer vault destination and coarse tags from the staging path."""
+    parts = rel.parts
+    name = rel.name
 
-# ---------- shotloom learnings (this week) ----------
-SHOTLOOM_LEARNINGS = [
-    "canonicalization.md",
-    "character-outline-render-layers-mask-boundary.md",
-    "crossoriginisolated.md",
-    "jump-flood-algorithm.md",
-    "post-pp-overlay-as-foundation.md",
-    "selection-highlight-cost-estimation.md",
-    "selection-highlight-qa.md",
-    "selection-highlight-system.md",
-    "vrm-import-needs-unity-style-canonicalization.md",
-]
-for fn in SHOTLOOM_LEARNINGS:
-    MAPPING.append((
-        Path("projects/shotloom/learnings") / fn, TEMP,
-        Path("projects/shotloom/learnings") / fn,
-        ["shotloom", "learning"], "claude", True,
-    ))
+    if name.startswith("shotloom-devlog-"):
+        return Path("projects/shotloom/days") / name, ["shotloom", "devlog"]
 
-# ---------- shotloom specs (this week) ----------
-SHOTLOOM_SPECS = [
-    "release-web-workflow.md",
-    "selection-highlight-system-umbrella.md",
-]
-for fn in SHOTLOOM_SPECS:
-    MAPPING.append((
-        Path("projects/shotloom/specs") / fn, TEMP,
-        Path("projects/shotloom/specs") / fn,
-        ["shotloom", "spec"], "claude", True,
-    ))
+    if len(parts) >= 3 and parts[0] == "projects":
+        project = parts[1]
+        bucket = parts[2]
+        kind_by_bucket = {
+            "days": "devlog",
+            "learnings": "learning",
+            "specs": "spec",
+            "topics": "reference",
+            "ops": "ops",
+        }
+        return rel, [project, kind_by_bucket.get(bucket, "reference")]
+
+    if len(parts) >= 2 and parts[0] == "agent" and parts[1] == "learnings":
+        return rel, ["_cross-project", "learning"]
+
+    if parts and parts[0] == "private-learnings":
+        return Path("agent/learnings") / name, ["_cross-project", "learning"]
+
+    if parts and parts[0] == "private-ops":
+        return Path("agent/ops") / name, ["_cross-project", "ops"]
+
+    return Path("agent/_inbox") / rel, ["_cross-project", "reference"]
+
+
+def build_mapping() -> list[tuple[Path, Path, Path, list[str], str, bool]]:
+    if not TEMP.exists():
+        return []
+    entries = []
+    for src in sorted(TEMP.rglob("*.md")):
+        if any(part in {".obsidian", ".trash"} for part in src.parts):
+            continue
+        rel = src.relative_to(TEMP)
+        dest_rel, tags = infer_destination(rel)
+        entries.append((rel, TEMP, dest_rel, tags, "agent", True))
+    return entries
+
+
+MAPPING.extend(build_mapping())
 
 
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?\n)---\s*\n", re.DOTALL)
