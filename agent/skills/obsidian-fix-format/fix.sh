@@ -175,16 +175,53 @@ function parseFrontmatter(text) {
     }
   }
 
-  return { obj, body };
+  return { raw, obj, body };
 }
 
 const files = walk(root);
+const knownFrontmatterKeys = new Set([
+  'aliases',
+  'audience',
+  'company',
+  'created',
+  'date',
+  'day',
+  'department',
+  'employment_type',
+  'last_updated',
+  'location',
+  'owner',
+  'position',
+  'revisit',
+  'source',
+  'status',
+  'tags',
+  'title',
+  'updated',
+  'url',
+  'version',
+]);
+
 for (const file of files) {
   const text = fs.readFileSync(file, 'utf8');
   const fm = parseFrontmatter(text);
   if (!fm) {
     add(file, 'frontmatter.missing', 'no leading YAML frontmatter');
     continue;
+  }
+
+  let listContext = false;
+  for (const line of fm.raw.split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    if (/^[A-Za-z0-9_-]+:\s*/.test(line)) {
+      const key = line.split(':', 1)[0];
+      if (!knownFrontmatterKeys.has(key)) add(file, 'frontmatter.unknown-key', key);
+      listContext = line.startsWith('tags:') && line.trim() === 'tags:';
+      continue;
+    }
+    if (listContext && /^\s*-\s+/.test(line)) continue;
+    if (/^\s/.test(line)) continue;
+    add(file, 'frontmatter.unknown-line', line.trim());
   }
 
   for (const key of ['title', 'tags', 'date', 'source']) {
