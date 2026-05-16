@@ -105,6 +105,11 @@ If no tests in a changed crate, do NOT skip — that violates `rules/test-write.
 `shotloom-make-pr` does NOT inline pattern-based review. That's
 `/shotloom-review-before-pr`'s job.
 
+If this skill was invoked directly by `shotloom-review-before-pr` in the same
+session after code and docs passes reported clean or nit-only, treat the review
+gate as already satisfied and continue to Step 5. Do not ask the user to confirm
+the gate again.
+
 Ask:
 > Did you run `/shotloom-review-before-pr` on this branch and resolve all findings? (y/n)
 

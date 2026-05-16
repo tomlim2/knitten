@@ -1,5 +1,5 @@
 ---
-description: Run Shotloom pre-PR review through initial code/docs passes and independent verify passes
+description: Run Shotloom pre-PR review through code/docs passes, then hand off to shotloom-make-pr when clean
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
 domains: rust
 repo-keys: shotloom
@@ -12,12 +12,13 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-before-pr
 
-Run pre-PR self-review on the current Shotloom branch. The skill uses
-read-only Explore subagents. The first pass for each phase is a cold-start
-review. Later passes in the same phase are independent verification passes
-from different angles after fixes change `HEAD`. If later verification passes
-find P0-P2 issues and fixes change `HEAD` again, continue the same review chain
-with the next pass letter instead of restarting at pass A.
+Run pre-PR self-review on the current Shotloom branch, then immediately hand
+off to `shotloom-make-pr` once both code and docs phases are clean or nit-only.
+The skill uses read-only Explore subagents. The first pass for each phase is a
+cold-start review. Later passes in the same phase are independent verification
+passes from different angles after fixes change `HEAD`. If later verification
+passes find P0-P2 issues and fixes change `HEAD` again, continue the same review
+chain with the next pass letter instead of restarting at pass A.
 
 ## Delegation Authorization
 
@@ -58,6 +59,11 @@ comments and docstrings, so it must read the post-code-fix tree.
 Stop a phase when its latest report is clean or contains only P3/nit
 findings. If the last remaining issues are nits, either fix/accept those nits
 once and move on, but do not keep cycling that phase solely to chase more nits.
+
+Do not stop after a clean code phase. A clean or nit-only code phase
+automatically continues to the targeted docs phase. A clean or nit-only docs
+phase automatically continues to `shotloom-make-pr`; the make-PR skill still
+owns its local gates, PR body draft, and explicit `gh pr create` approval.
 
 ## Workflow
 
@@ -108,7 +114,7 @@ code_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_step1" && echo true 
 ### Step 3: Code Verification Passes If Needed
 
 If `code_fixes_applied=false`, set
-`head_after_code=$(git rev-parse HEAD)` and continue to Step 4.
+`head_after_code=$(git rev-parse HEAD)` and continue automatically to Step 4.
 
 If `code_fixes_applied=true`, dispatch one read-only Explore subagent
 using the `shotloom-review-code` Step 3 checklist. Override the role
@@ -140,8 +146,8 @@ the user explicitly asks for a fresh cold-start review.
 
 If the verification pass is clean or contains only P3/nit findings, stop the
 code review loop. Fix or accept the final nits once, then set
-`head_after_code=$(git rev-parse HEAD)` and continue to docs without another
-code pass.
+`head_after_code=$(git rev-parse HEAD)` and continue automatically to docs
+without another code pass.
 
 Each verification pass must:
 
@@ -289,23 +295,39 @@ Each verification pass must:
 - look for regressions introduced by the latest fixes;
 - render under `docs pass <letter> (verify)`.
 
-### Step 6: Recommendation
+### Step 6: Make-PR Handoff
 
-Report one of:
+If the latest code and docs passes are clean or nit-only, invoke
+`shotloom-make-pr` immediately in the same worktree. Do not stop at a
+"ready" recommendation. The handoff is part of this skill's default success
+path.
+
+`shotloom-make-pr` must still:
+
+- run its own local CI-equivalent gates;
+- draft the title/body from its whitelisted inputs;
+- ask for explicit per-PR approval before `gh pr create`.
+
+If the current harness cannot invoke another local skill directly, report:
+`Ready to /shotloom-make-pr — run it next in this same worktree`.
+
+Report one of these outcomes:
 
 | Result | Recommendation |
 |---|---|
-| All fired passes clean | `Ready to /shotloom-make-pr` |
-| Only P3/nit findings remain | `Ready to /shotloom-make-pr`; note fixed/accepted nits |
-| Findings fixed or accepted | `Ready to /shotloom-make-pr`; note accepted residual risk |
+| All fired passes clean | Invoke `shotloom-make-pr` now |
+| Only P3/nit findings remain | Invoke `shotloom-make-pr` now; note fixed/accepted nits |
+| Findings fixed or accepted | Invoke `shotloom-make-pr` now; note accepted residual risk |
 | Latest verification pass found P0-P2 issues | Fix and continue with next pass, or document accepted risk in PR body |
 
 Add one short Korean paragraph only if findings were non-clean.
 
 ## Binding Rules
 
-- Always run code before docs.
+- Always run code before docs, and never stop after code while docs has not run.
 - Always use read-only Explore subagents.
+- After docs is clean or nit-only, immediately hand off to `shotloom-make-pr`
+  unless the harness cannot invoke local skills.
 - Docs passes are targeted to changed implementation-zone terms and nearby
   related wording, especially previous-vs-current behavior. They are not broad
   cold-start repository docs audits unless the user explicitly asks.
@@ -317,7 +339,8 @@ Add one short Korean paragraph only if findings were non-clean.
   verification perspectives, not fresh cold-start restarts.
 - Continue verification while P0-P2 findings remain and fixes keep changing
   `HEAD`; stop once the latest pass is clean or nit-only.
-- Do not push, create PRs, or post PR comments.
+- Do not push, create PRs, or post PR comments inside this review skill. PR
+  creation belongs only to the `shotloom-make-pr` handoff.
 - Use this umbrella for default pre-PR review. Use leaf skills only for
   narrow rechecks.
 
