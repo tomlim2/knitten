@@ -1,0 +1,45 @@
+action	old_path	new_path	detail
+move	projects/_cross-project/_glossary.md	learnings/projects/graphics-glossary.md	content normalized
+move	projects/_cross-project/caol-ila.md	learnings/projects/caol-ila.md	content normalized
+move	projects/_cross-project/general.md	learnings/learning-general-agent-ops.md	content normalized
+move	projects/_cross-project/graphics.md	learnings/projects/graphics.md	content normalized
+move	projects/_cross-project/slack.md	learnings/learning-slack-integration.md	content normalized
+move	projects/_cross-project/unreal.md	learnings/projects/unreal.md	content normalized
+move	projects/_cross-project/web3d.md	learnings/projects/web3d.md	content normalized
+move	projects/bevy-vrm/briefing.md	projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/briefing.md	content normalized
+move	projects/bevy-vrm/log.md	projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/log.md	content normalized
+move	projects/bevy-vrm/timeline.md	projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/timeline.md	content normalized
+move	projects/bevy-vrm/devlog.md	projects/bevy-vrm/topics/legacy-devlog.md	content normalized
+move	projects/bevy-vrm/experiments-log.md	projects/bevy-vrm/topics/experiments-log.md	content normalized
+move	projects/bevy-vrm/learnings-index.md	projects/bevy-vrm/learnings/legacy-index.md	content normalized
+move	projects/bevy-vrm/todo-scoring.md	projects/bevy-vrm/plans/scoring-system.md	content normalized
+move	projects/bevy-vrm/idea-portfolio-retarget-ai-dev.md	projects/bevy-vrm/topics/portfolio-retarget-ai-dev.md	content normalized
+move	projects/bevy-vrm/shoulder-slerp-experiment.md	projects/bevy-vrm/topics/shoulder-slerp-experiment.md	content normalized
+move	projects/cinev-studio/character-system-interview.md	projects/cinev-studio/topics/character-system-interview.md	content normalized
+move	projects/cinev-studio/learnings.md	projects/cinev-studio/learnings/cinev-studio.md	content normalized
+move	projects/cinev-studio/pmx2vrm.md	projects/cinev-studio/topics/pmx2vrm.md	content normalized
+move	projects/cinev-studio/ta-154-capacity-reduction.md	projects/cinev-studio/learnings/ta-154-capacity-reduction.md	content normalized
+move	projects/cinev-studio/vrm-duplicate-texture-name.md	projects/cinev-studio/learnings/vrm-duplicate-texture-name.md	content normalized
+move	projects/cinev-studio/vrm4u.md	projects/cinev-studio/topics/vrm4u.md	content normalized
+move	projects/job-search-2026/Technical_Artist_Portfolio_3Year.md	projects/job-search-2026/topics/technical-artist-portfolio-3year.md	content normalized
+move	projects/job-search-2026/application-status.md	projects/job-search-2026/ops/missions/job-search/application-status.md	content normalized
+move	projects/job-search-2026/career-history.md	projects/job-search-2026/topics/career-history.md	content normalized
+move	projects/job-search-2026/career-insights-cross-analysis.md	projects/job-search-2026/topics/career-insights-cross-analysis.md	sha same
+move	projects/job-search-2026/cinev-role-summary.md	projects/job-search-2026/topics/cinev-role-summary.md	content normalized
+move	projects/job-search-2026/cinnamon-company-research.md	projects/job-search-2026/topics/cinnamon-company-research.md	content normalized
+move	projects/job-search-2026/flfi-role-summary.md	projects/job-search-2026/topics/flfi-role-summary.md	content normalized
+move	projects/job-search-2026/korean-ta-market-research.md	projects/job-search-2026/topics/korean-ta-market-research.md	content normalized
+move	projects/job-search-2026/portfolio-interview-2026-03-09.md	projects/job-search-2026/topics/portfolio-interview-2026-03-09.md	content normalized
+move	projects/job-search-2026/ta-portfolio-website-spec.md	projects/job-search-2026/specs/ta-portfolio-website-spec.md	content normalized
+move	projects/job-search-2026/varo-role-summary.md	projects/job-search-2026/topics/varo-role-summary.md	content normalized
+move	projects/krafton-hackathon/devlog.md	projects/krafton-hackathon/topics/legacy-devlog.md	content normalized
+move	projects/krafton-hackathon/learnings-index.md	projects/krafton-hackathon/learnings/legacy-index.md	content normalized
+move	projects/matcap-painter/record.md	projects/matcap-painter/topics/portfolio-record.md	content normalized
+move	projects/megamelange/record.md	projects/megamelange/topics/portfolio-record.md	content normalized
+move	projects/mmd-player-anju/devlog.md	projects/mmd-player-anju/topics/legacy-devlog.md	content normalized
+move	projects/mmd-player-anju/learnings-index.md	projects/mmd-player-anju/learnings/legacy-index.md	content normalized
+move	projects/mmd-player-anju/model-families.md	projects/mmd-player-anju/topics/model-families.md	sha same
+move	projects/project-weekend/devlog.md	projects/project-weekend/topics/project-history.md	content normalized
+move	projects/shotloom/devlog.md	projects/shotloom/topics/legacy-devlog.md	content normalized
+skip-delete-nonempty	projects/shotloom/learnings-index.md		empty placeholder; non-heading lines=3
+deleted	projects/shotloom/learnings-index.md		empty placeholder

@@ -160,7 +160,7 @@ fi
 Do NOT write the Obsidian day-log file directly. Delegate to `/learn-log-day shotloom devlog`; that skill owns frontmatter, tags, callouts, wikilinks, and path resolution.
 
 Pass a retrospective logging brief:
-- Use one header line with the PR link only.
+- Use one header line with `PR NNN` text only. Do not include GitHub PR URLs or markdown links in Obsidian logs; private repository UI links are NDA-ish and are not durable vault content.
 - Do not add Branch / Worktree / Commit-list metadata.
 - Do not summarize what the PR did.
 - Do not use celebratory framing.

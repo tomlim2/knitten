@@ -52,9 +52,12 @@ Usage: /dev-setup-project <project-name> [repo-path]
 
 1. `~/.claude/private/caol-config/repo-paths.json`에서 `obsidian` 경로 읽기
 2. `{obsidian}/agent/projects/{project-name}/` 디렉토리 생성
-3. 기본 파일 생성:
-   - `devlog.md` — 개발일지 (빈 템플릿)
-   - `learnings-index.md` — 러닝 인덱스 (빈 템플릿)
+3. `obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`를 따른 기본 구조 생성:
+   - `README.md` — project map, audience, folder routing
+   - `days/` — dated work records
+   - `learnings/` — reusable lessons
+   - `topics/` — references and analysis
+4. Do not create root `devlog.md` or `learnings-index.md`; those are legacy migration hubs.
 
 ### Step 6: 결과 요약
 
@@ -65,30 +68,43 @@ Usage: /dev-setup-project <project-name> [repo-path]
 - repo-paths: {등록됨 / 이미 존재}
 - 스킬 연동: {스킬명 / 없음}
 - Obsidian: agent/projects/{project-name}/
-  ├── devlog.md
-  └── learnings-index.md
+  ├── README.md
+  ├── days/
+  ├── learnings/
+  └── topics/
 ```
 
 ---
 
-## devlog.md 템플릿
+## README.md 템플릿
 
 ```markdown
-# {Project Name} 개발일지
+---
+title: "{Project Name} notes"
+tags:
+  - type/reference
+  - project/{project-name}
+date: YYYY-MM-DD
+source: agent
+---
+
+# {Project Name} notes
+
+- **Audience:** LLM + human
+- **Style:** strict LLM-first
+- **Mutability:** durable
+- **Naming:** root index only; role documents live in subfolders
 
 {한 줄 설명}
 
 ---
 
-```
+## Folder Map
 
-## learnings-index.md 템플릿
-
-```markdown
-# {Project Name} — Learnings Index
-
-{한 줄 설명}
-
----
+| Folder | Role | Naming |
+|--------|------|--------|
+| `days/` | work records | `YYYY-MM-DD.md` |
+| `learnings/` | reusable lessons | `<slug>.md` |
+| `topics/` | references and analysis | `<slug>.md` |
 
 ```

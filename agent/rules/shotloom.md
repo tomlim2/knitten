@@ -82,7 +82,7 @@ Author-side flow: `/shotloom-make-pr` Step 10c.
 | `ops/missions/` | LLM | Cross-session mission records (durable) |
 | `ops/runs/` | LLM | One-shot snapshots and tool outputs (ephemeral) |
 
-Each subfolder has a `README.md` declaring its audience, style, and mutability. Per-folder README wins over this table when they disagree. Style policy: `~/.claude/standards/obsidian/vault-audience.md`.
+Each subfolder has a `README.md` declaring its audience, style, and mutability. Per-folder README wins over this table when they disagree. Style policy: `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`; project role folders are defined by `~/.claude/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`.
 
 ## Worktree dir naming
 

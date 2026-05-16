@@ -9,6 +9,7 @@
 #   frontmatter-heading-glued  (auto-fixable) — `---#` etc on same line
 #   missing-h1                 (report only)  — no `# Title` in first 30 lines
 #   missing-readme             (report only)  — durable agent folders without README.md
+#   project-structure          (report only)  — project root files that should live in role folders
 #   obsidian-contract          (report only)  — frontmatter/tag/H1/link contract
 #   empty-dirs                 (auto-fixable) — empty directories under vault
 
@@ -111,6 +112,105 @@ if want missing-readme; then
   fi
 fi
 
+# --- project-structure (report only) ---
+if want project-structure; then
+  node - "$AGENT_ROOT" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const root = process.argv[2];
+const projects = path.join(root, 'projects');
+const issues = [];
+
+function rel(file) {
+  return path.relative(root, file) || '.';
+}
+
+function add(file, code, detail = '') {
+  issues.push({ file: rel(file), code, detail });
+}
+
+function parseFrontmatter(text) {
+  if (!text.startsWith('---\n')) return null;
+  const end = text.indexOf('\n---', 4);
+  if (end < 0) return null;
+  const raw = text.slice(4, end);
+  const obj = {};
+  let current = null;
+
+  for (const line of raw.split(/\r?\n/)) {
+    const kv = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+    if (kv) {
+      current = kv[1];
+      const value = kv[2].trim();
+      obj[current] = value === '' ? [] : value.replace(/^['"]|['"]$/g, '');
+      continue;
+    }
+
+    if (current && Array.isArray(obj[current])) {
+      const item = line.match(/^\s*-\s*(.+?)\s*$/);
+      if (item) obj[current].push(item[1].replace(/^['"]|['"]$/g, ''));
+    }
+  }
+
+  return obj;
+}
+
+const rootTypeDest = new Map([
+  ['type/devlog', 'days/'],
+  ['type/learning', 'learnings/'],
+  ['type/spec', 'specs/'],
+  ['type/plan', 'plans/'],
+  ['type/decision', 'decisions/'],
+  ['type/analysis', 'topics/'],
+  ['type/reference', 'topics/'],
+  ['type/glossary', 'topics/'],
+  ['type/topic', 'topics/'],
+]);
+
+if (fs.existsSync(projects)) {
+  for (const project of fs.readdirSync(projects, { withFileTypes: true }).filter((ent) => ent.isDirectory())) {
+    const projectRoot = path.join(projects, project.name);
+    for (const ent of fs.readdirSync(projectRoot, { withFileTypes: true })) {
+      const file = path.join(projectRoot, ent.name);
+
+      if (ent.isFile() && /\.(bak|tmp)$/.test(ent.name)) {
+        add(file, 'project.backup-file', 'backup/temp file inside project root');
+        continue;
+      }
+
+      if (!ent.isFile() || !ent.name.endsWith('.md') || ent.name === 'README.md') continue;
+
+      const fm = parseFrontmatter(fs.readFileSync(file, 'utf8'));
+      const tags = Array.isArray(fm?.tags) ? fm.tags : [];
+      const typeTag = tags.find((tag) => tag.startsWith('type/'));
+      const dest = rootTypeDest.get(typeTag);
+      if (dest) add(file, 'project.root-role-mismatch', `${typeTag} belongs in ${dest}`);
+      else add(file, 'project.root-legacy-hub', 'root file should be README.md or a temporary migration hub');
+    }
+  }
+}
+
+console.log(`[project-structure] offenders: ${issues.length}`);
+if (issues.length === 0) {
+  console.log('[project-structure] clean');
+  process.exit(0);
+}
+
+const byCode = new Map();
+for (const issue of issues) byCode.set(issue.code, (byCode.get(issue.code) || 0) + 1);
+for (const [code, count] of [...byCode.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))) {
+  console.log(`  ${String(count).padStart(4)} ${code}`);
+}
+console.log('[project-structure] samples:');
+for (const issue of issues.slice(0, 60)) {
+  const suffix = issue.detail ? ` | ${issue.detail}` : '';
+  console.log(`  ${issue.file} | ${issue.code}${suffix}`);
+}
+if (issues.length > 60) console.log(`  ... +${issues.length - 60} more`);
+NODE
+fi
+
 # --- obsidian-contract (report only) ---
 if want obsidian-contract; then
   if [[ ! -f "$TAXONOMY" ]]; then
@@ -176,6 +276,12 @@ function parseFrontmatter(text) {
   }
 
   return { raw, obj, body };
+}
+
+function stripCodeForProseChecks(text) {
+  return text
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`[^`\n]*`/g, '');
 }
 
 const files = walk(root);
@@ -269,11 +375,15 @@ for (const file of files) {
   if (firstBodyLine && !firstBodyLine.startsWith('# ')) add(file, 'h1.position', 'first body content is not H1');
 
   if (/!\[[^\]]*\]\([^)]+\)/.test(text)) add(file, 'links.markdown-image');
+  if (/github\.com\/CINEV\/shotloom\/pull\/\d+/i.test(text)) {
+    add(file, 'links.private-pr-url', 'replace private Shotloom PR URL with PR NNN text or internal wikilink');
+  }
   if (typeTags.includes('type/devlog') && /\[[^\]]+\]\(https?:\/\//.test(fm.body)) {
     add(file, 'links.external-in-devlog');
   }
 
-  const inlineTags = [...fm.body.matchAll(/(^|\s)#([A-Za-z0-9][A-Za-z0-9/_-]*)/gm)]
+  const proseBody = stripCodeForProseChecks(fm.body);
+  const inlineTags = [...proseBody.matchAll(/(^|\s)#([A-Za-z0-9][A-Za-z0-9/_-]*)/gm)]
     .map((m) => `#${m[2]}`)
     .filter((tag) => !['#rule', '#failed', '#gotcha'].includes(tag));
   if (inlineTags.length) {

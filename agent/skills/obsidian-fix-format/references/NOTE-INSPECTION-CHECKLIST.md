@@ -29,6 +29,8 @@ The 8 steps below are an inspection order, not a tree. Each step has: check cond
 | 7 | duplicate / link conflict | basename collision + concept duplication | partial |
 | 8 | violation action | what to do for each fail | — |
 
+Every note inspection also checks private PR URL and inline tag hygiene: no `github.com/CINEV/shotloom/pull/...`, no markdown-linked private PRs, and no bare numeric hash prose such as `#1`, `#2`, or `PR #309`.
+
 ---
 
 ## 1. Frontmatter (4 fields)
@@ -83,6 +85,7 @@ Document type is encoded as exactly one `type/...` tag inside `tags`, never as a
 ## 4. Filename
 
 **Check:**
+- Files under `agent/projects/<project>/` follow `PROJECT-DOCS-STRUCTURE.md`
 - `days/` uses `YYYY-MM-DD.md` for the canonical day file
 - Same-day split uses `days/YYYY-MM-DD/<slug>.md` only when merge would hide a distinct artifact
 - `learnings/` uses the local convention: `learning-<slug>.md` for cross-project, date file or slug under project learning folders
@@ -99,6 +102,7 @@ Document type is encoded as exactly one `type/...` tag inside `tags`, never as a
 - Same date already exists → merge unless the note is a distinct artifact; then move to `days/YYYY-MM-DD/<slug>.md`
 - Type-repeat → rename or move into named subfolder (`days/`, `learnings/`)
 - Project-root multi-file → keep one hub (`README.md`), move others to subfolder
+- Project-root role mismatch → move to the role folder named by `PROJECT-DOCS-STRUCTURE.md`
 - Basename collision globally → check `obsidian-fix-format --check collisions`, prefer disambiguation by path
 
 ---
@@ -199,5 +203,6 @@ The subagent proposes; the user (in main thread) approves or amends. Bulk write 
 - Tag taxonomy: `~/.claude/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md`
 - Folder audience: `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`
 - Format spec: `~/.claude/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md`
+- Project structure: `~/.claude/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`
 - Auto rules: `~/.claude/rules/obsidian.md`
 - Vault auditor: `~/.claude/skills/obsidian-fix-format/`

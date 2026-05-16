@@ -78,6 +78,8 @@ content
 
 Folder and frontmatter carry routing identity. Filename stays short and stable.
 
+Project-folder structure is owned by `PROJECT-DOCS-STRUCTURE.md`. Use that standard before creating or moving any file under `agent/projects/<project>/`.
+
 | Folder / note type | Pattern | Rule |
 |--------------------|---------|------|
 | project day log | `projects/<project>/days/YYYY-MM-DD.md` | One canonical day file per project per date |

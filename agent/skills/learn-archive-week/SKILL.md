@@ -133,7 +133,8 @@ source: agent
 ## Related
 
 - `learn-log-day` — 주중 일지 기록 (이 스킬이 주말에 sweep)
-- `~/.claude/standards/obsidian/obsidian-format.md` — frontmatter/wikilink 규격
+- `~/.claude/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md` — frontmatter/wikilink 규격
+- `~/.claude/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` — project role-folder structure
 - `~/.claude/rules/obsidian.md` — 적용 규칙
 
 ## Additional Resources

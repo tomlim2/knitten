@@ -1,0 +1,338 @@
+[
+  {
+    "oldRel": "projects/_cross-project/_glossary.md",
+    "newRel": "learnings/projects/graphics-glossary.md",
+    "oldNoExt": "projects/_cross-project/_glossary",
+    "newNoExt": "learnings/projects/graphics-glossary",
+    "oldBase": "_glossary",
+    "newBase": "graphics-glossary"
+  },
+  {
+    "oldRel": "projects/_cross-project/caol-ila.md",
+    "newRel": "learnings/projects/caol-ila.md",
+    "oldNoExt": "projects/_cross-project/caol-ila",
+    "newNoExt": "learnings/projects/caol-ila",
+    "oldBase": "caol-ila",
+    "newBase": "caol-ila"
+  },
+  {
+    "oldRel": "projects/_cross-project/general.md",
+    "newRel": "learnings/learning-general-agent-ops.md",
+    "oldNoExt": "projects/_cross-project/general",
+    "newNoExt": "learnings/learning-general-agent-ops",
+    "oldBase": "general",
+    "newBase": "learning-general-agent-ops"
+  },
+  {
+    "oldRel": "projects/_cross-project/graphics.md",
+    "newRel": "learnings/projects/graphics.md",
+    "oldNoExt": "projects/_cross-project/graphics",
+    "newNoExt": "learnings/projects/graphics",
+    "oldBase": "graphics",
+    "newBase": "graphics"
+  },
+  {
+    "oldRel": "projects/_cross-project/slack.md",
+    "newRel": "learnings/learning-slack-integration.md",
+    "oldNoExt": "projects/_cross-project/slack",
+    "newNoExt": "learnings/learning-slack-integration",
+    "oldBase": "slack",
+    "newBase": "learning-slack-integration"
+  },
+  {
+    "oldRel": "projects/_cross-project/unreal.md",
+    "newRel": "learnings/projects/unreal.md",
+    "oldNoExt": "projects/_cross-project/unreal",
+    "newNoExt": "learnings/projects/unreal",
+    "oldBase": "unreal",
+    "newBase": "unreal"
+  },
+  {
+    "oldRel": "projects/_cross-project/web3d.md",
+    "newRel": "learnings/projects/web3d.md",
+    "oldNoExt": "projects/_cross-project/web3d",
+    "newNoExt": "learnings/projects/web3d",
+    "oldBase": "web3d",
+    "newBase": "web3d"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/briefing.md",
+    "newRel": "projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/briefing.md",
+    "oldNoExt": "projects/bevy-vrm/briefing",
+    "newNoExt": "projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/briefing",
+    "oldBase": "briefing",
+    "newBase": "briefing"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/log.md",
+    "newRel": "projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/log.md",
+    "oldNoExt": "projects/bevy-vrm/log",
+    "newNoExt": "projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/log",
+    "oldBase": "log",
+    "newBase": "log"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/timeline.md",
+    "newRel": "projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/timeline.md",
+    "oldNoExt": "projects/bevy-vrm/timeline",
+    "newNoExt": "projects/bevy-vrm/ops/missions/vrm2u-retarget-metahuman/timeline",
+    "oldBase": "timeline",
+    "newBase": "timeline"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/devlog.md",
+    "newRel": "projects/bevy-vrm/topics/legacy-devlog.md",
+    "oldNoExt": "projects/bevy-vrm/devlog",
+    "newNoExt": "projects/bevy-vrm/topics/legacy-devlog",
+    "oldBase": "devlog",
+    "newBase": "legacy-devlog"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/experiments-log.md",
+    "newRel": "projects/bevy-vrm/topics/experiments-log.md",
+    "oldNoExt": "projects/bevy-vrm/experiments-log",
+    "newNoExt": "projects/bevy-vrm/topics/experiments-log",
+    "oldBase": "experiments-log",
+    "newBase": "experiments-log"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/learnings-index.md",
+    "newRel": "projects/bevy-vrm/learnings/legacy-index.md",
+    "oldNoExt": "projects/bevy-vrm/learnings-index",
+    "newNoExt": "projects/bevy-vrm/learnings/legacy-index",
+    "oldBase": "learnings-index",
+    "newBase": "legacy-index"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/todo-scoring.md",
+    "newRel": "projects/bevy-vrm/plans/scoring-system.md",
+    "oldNoExt": "projects/bevy-vrm/todo-scoring",
+    "newNoExt": "projects/bevy-vrm/plans/scoring-system",
+    "oldBase": "todo-scoring",
+    "newBase": "scoring-system"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/idea-portfolio-retarget-ai-dev.md",
+    "newRel": "projects/bevy-vrm/topics/portfolio-retarget-ai-dev.md",
+    "oldNoExt": "projects/bevy-vrm/idea-portfolio-retarget-ai-dev",
+    "newNoExt": "projects/bevy-vrm/topics/portfolio-retarget-ai-dev",
+    "oldBase": "idea-portfolio-retarget-ai-dev",
+    "newBase": "portfolio-retarget-ai-dev"
+  },
+  {
+    "oldRel": "projects/bevy-vrm/shoulder-slerp-experiment.md",
+    "newRel": "projects/bevy-vrm/topics/shoulder-slerp-experiment.md",
+    "oldNoExt": "projects/bevy-vrm/shoulder-slerp-experiment",
+    "newNoExt": "projects/bevy-vrm/topics/shoulder-slerp-experiment",
+    "oldBase": "shoulder-slerp-experiment",
+    "newBase": "shoulder-slerp-experiment"
+  },
+  {
+    "oldRel": "projects/cinev-studio/character-system-interview.md",
+    "newRel": "projects/cinev-studio/topics/character-system-interview.md",
+    "oldNoExt": "projects/cinev-studio/character-system-interview",
+    "newNoExt": "projects/cinev-studio/topics/character-system-interview",
+    "oldBase": "character-system-interview",
+    "newBase": "character-system-interview"
+  },
+  {
+    "oldRel": "projects/cinev-studio/learnings.md",
+    "newRel": "projects/cinev-studio/learnings/cinev-studio.md",
+    "oldNoExt": "projects/cinev-studio/learnings",
+    "newNoExt": "projects/cinev-studio/learnings/cinev-studio",
+    "oldBase": "learnings",
+    "newBase": "cinev-studio"
+  },
+  {
+    "oldRel": "projects/cinev-studio/pmx2vrm.md",
+    "newRel": "projects/cinev-studio/topics/pmx2vrm.md",
+    "oldNoExt": "projects/cinev-studio/pmx2vrm",
+    "newNoExt": "projects/cinev-studio/topics/pmx2vrm",
+    "oldBase": "pmx2vrm",
+    "newBase": "pmx2vrm"
+  },
+  {
+    "oldRel": "projects/cinev-studio/ta-154-capacity-reduction.md",
+    "newRel": "projects/cinev-studio/learnings/ta-154-capacity-reduction.md",
+    "oldNoExt": "projects/cinev-studio/ta-154-capacity-reduction",
+    "newNoExt": "projects/cinev-studio/learnings/ta-154-capacity-reduction",
+    "oldBase": "ta-154-capacity-reduction",
+    "newBase": "ta-154-capacity-reduction"
+  },
+  {
+    "oldRel": "projects/cinev-studio/vrm-duplicate-texture-name.md",
+    "newRel": "projects/cinev-studio/learnings/vrm-duplicate-texture-name.md",
+    "oldNoExt": "projects/cinev-studio/vrm-duplicate-texture-name",
+    "newNoExt": "projects/cinev-studio/learnings/vrm-duplicate-texture-name",
+    "oldBase": "vrm-duplicate-texture-name",
+    "newBase": "vrm-duplicate-texture-name"
+  },
+  {
+    "oldRel": "projects/cinev-studio/vrm4u.md",
+    "newRel": "projects/cinev-studio/topics/vrm4u.md",
+    "oldNoExt": "projects/cinev-studio/vrm4u",
+    "newNoExt": "projects/cinev-studio/topics/vrm4u",
+    "oldBase": "vrm4u",
+    "newBase": "vrm4u"
+  },
+  {
+    "oldRel": "projects/job-search-2026/Technical_Artist_Portfolio_3Year.md",
+    "newRel": "projects/job-search-2026/topics/technical-artist-portfolio-3year.md",
+    "oldNoExt": "projects/job-search-2026/Technical_Artist_Portfolio_3Year",
+    "newNoExt": "projects/job-search-2026/topics/technical-artist-portfolio-3year",
+    "oldBase": "Technical_Artist_Portfolio_3Year",
+    "newBase": "technical-artist-portfolio-3year"
+  },
+  {
+    "oldRel": "projects/job-search-2026/application-status.md",
+    "newRel": "projects/job-search-2026/ops/missions/job-search/application-status.md",
+    "oldNoExt": "projects/job-search-2026/application-status",
+    "newNoExt": "projects/job-search-2026/ops/missions/job-search/application-status",
+    "oldBase": "application-status",
+    "newBase": "application-status"
+  },
+  {
+    "oldRel": "projects/job-search-2026/career-history.md",
+    "newRel": "projects/job-search-2026/topics/career-history.md",
+    "oldNoExt": "projects/job-search-2026/career-history",
+    "newNoExt": "projects/job-search-2026/topics/career-history",
+    "oldBase": "career-history",
+    "newBase": "career-history"
+  },
+  {
+    "oldRel": "projects/job-search-2026/career-insights-cross-analysis.md",
+    "newRel": "projects/job-search-2026/topics/career-insights-cross-analysis.md",
+    "oldNoExt": "projects/job-search-2026/career-insights-cross-analysis",
+    "newNoExt": "projects/job-search-2026/topics/career-insights-cross-analysis",
+    "oldBase": "career-insights-cross-analysis",
+    "newBase": "career-insights-cross-analysis"
+  },
+  {
+    "oldRel": "projects/job-search-2026/cinev-role-summary.md",
+    "newRel": "projects/job-search-2026/topics/cinev-role-summary.md",
+    "oldNoExt": "projects/job-search-2026/cinev-role-summary",
+    "newNoExt": "projects/job-search-2026/topics/cinev-role-summary",
+    "oldBase": "cinev-role-summary",
+    "newBase": "cinev-role-summary"
+  },
+  {
+    "oldRel": "projects/job-search-2026/cinnamon-company-research.md",
+    "newRel": "projects/job-search-2026/topics/cinnamon-company-research.md",
+    "oldNoExt": "projects/job-search-2026/cinnamon-company-research",
+    "newNoExt": "projects/job-search-2026/topics/cinnamon-company-research",
+    "oldBase": "cinnamon-company-research",
+    "newBase": "cinnamon-company-research"
+  },
+  {
+    "oldRel": "projects/job-search-2026/flfi-role-summary.md",
+    "newRel": "projects/job-search-2026/topics/flfi-role-summary.md",
+    "oldNoExt": "projects/job-search-2026/flfi-role-summary",
+    "newNoExt": "projects/job-search-2026/topics/flfi-role-summary",
+    "oldBase": "flfi-role-summary",
+    "newBase": "flfi-role-summary"
+  },
+  {
+    "oldRel": "projects/job-search-2026/korean-ta-market-research.md",
+    "newRel": "projects/job-search-2026/topics/korean-ta-market-research.md",
+    "oldNoExt": "projects/job-search-2026/korean-ta-market-research",
+    "newNoExt": "projects/job-search-2026/topics/korean-ta-market-research",
+    "oldBase": "korean-ta-market-research",
+    "newBase": "korean-ta-market-research"
+  },
+  {
+    "oldRel": "projects/job-search-2026/portfolio-interview-2026-03-09.md",
+    "newRel": "projects/job-search-2026/topics/portfolio-interview-2026-03-09.md",
+    "oldNoExt": "projects/job-search-2026/portfolio-interview-2026-03-09",
+    "newNoExt": "projects/job-search-2026/topics/portfolio-interview-2026-03-09",
+    "oldBase": "portfolio-interview-2026-03-09",
+    "newBase": "portfolio-interview-2026-03-09"
+  },
+  {
+    "oldRel": "projects/job-search-2026/ta-portfolio-website-spec.md",
+    "newRel": "projects/job-search-2026/specs/ta-portfolio-website-spec.md",
+    "oldNoExt": "projects/job-search-2026/ta-portfolio-website-spec",
+    "newNoExt": "projects/job-search-2026/specs/ta-portfolio-website-spec",
+    "oldBase": "ta-portfolio-website-spec",
+    "newBase": "ta-portfolio-website-spec"
+  },
+  {
+    "oldRel": "projects/job-search-2026/varo-role-summary.md",
+    "newRel": "projects/job-search-2026/topics/varo-role-summary.md",
+    "oldNoExt": "projects/job-search-2026/varo-role-summary",
+    "newNoExt": "projects/job-search-2026/topics/varo-role-summary",
+    "oldBase": "varo-role-summary",
+    "newBase": "varo-role-summary"
+  },
+  {
+    "oldRel": "projects/krafton-hackathon/devlog.md",
+    "newRel": "projects/krafton-hackathon/topics/legacy-devlog.md",
+    "oldNoExt": "projects/krafton-hackathon/devlog",
+    "newNoExt": "projects/krafton-hackathon/topics/legacy-devlog",
+    "oldBase": "devlog",
+    "newBase": "legacy-devlog"
+  },
+  {
+    "oldRel": "projects/krafton-hackathon/learnings-index.md",
+    "newRel": "projects/krafton-hackathon/learnings/legacy-index.md",
+    "oldNoExt": "projects/krafton-hackathon/learnings-index",
+    "newNoExt": "projects/krafton-hackathon/learnings/legacy-index",
+    "oldBase": "learnings-index",
+    "newBase": "legacy-index"
+  },
+  {
+    "oldRel": "projects/matcap-painter/record.md",
+    "newRel": "projects/matcap-painter/topics/portfolio-record.md",
+    "oldNoExt": "projects/matcap-painter/record",
+    "newNoExt": "projects/matcap-painter/topics/portfolio-record",
+    "oldBase": "record",
+    "newBase": "portfolio-record"
+  },
+  {
+    "oldRel": "projects/megamelange/record.md",
+    "newRel": "projects/megamelange/topics/portfolio-record.md",
+    "oldNoExt": "projects/megamelange/record",
+    "newNoExt": "projects/megamelange/topics/portfolio-record",
+    "oldBase": "record",
+    "newBase": "portfolio-record"
+  },
+  {
+    "oldRel": "projects/mmd-player-anju/devlog.md",
+    "newRel": "projects/mmd-player-anju/topics/legacy-devlog.md",
+    "oldNoExt": "projects/mmd-player-anju/devlog",
+    "newNoExt": "projects/mmd-player-anju/topics/legacy-devlog",
+    "oldBase": "devlog",
+    "newBase": "legacy-devlog"
+  },
+  {
+    "oldRel": "projects/mmd-player-anju/learnings-index.md",
+    "newRel": "projects/mmd-player-anju/learnings/legacy-index.md",
+    "oldNoExt": "projects/mmd-player-anju/learnings-index",
+    "newNoExt": "projects/mmd-player-anju/learnings/legacy-index",
+    "oldBase": "learnings-index",
+    "newBase": "legacy-index"
+  },
+  {
+    "oldRel": "projects/mmd-player-anju/model-families.md",
+    "newRel": "projects/mmd-player-anju/topics/model-families.md",
+    "oldNoExt": "projects/mmd-player-anju/model-families",
+    "newNoExt": "projects/mmd-player-anju/topics/model-families",
+    "oldBase": "model-families",
+    "newBase": "model-families"
+  },
+  {
+    "oldRel": "projects/project-weekend/devlog.md",
+    "newRel": "projects/project-weekend/topics/project-history.md",
+    "oldNoExt": "projects/project-weekend/devlog",
+    "newNoExt": "projects/project-weekend/topics/project-history",
+    "oldBase": "devlog",
+    "newBase": "project-history"
+  },
+  {
+    "oldRel": "projects/shotloom/devlog.md",
+    "newRel": "projects/shotloom/topics/legacy-devlog.md",
+    "oldNoExt": "projects/shotloom/devlog",
+    "newNoExt": "projects/shotloom/topics/legacy-devlog",
+    "oldBase": "devlog",
+    "newBase": "legacy-devlog"
+  }
+]

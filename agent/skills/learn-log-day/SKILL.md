@@ -11,12 +11,14 @@ Three things go in the Obsidian vault every day: **devlog** (오늘 한 일), **
 
 ## Decision matrix
 
+Project role folders are owned by `obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`. This skill writes only the `days/`, `learnings/`, and `topics/` roles.
+
 | 쓰는 것 | sub-command | project arg | path |
 |---|---|---|---|
-| 오늘 프로젝트 작업 일지 | `devlog` (default) | real project | `projects/<P>/days/day-NN.md` + `devlog.md` hub |
-| 프로젝트 교훈 | `learning <worked\|failed\|gotcha>` | real project | `projects/<P>/learnings-index.md` (append) |
+| 오늘 프로젝트 작업 일지 | `devlog` (default) | real project | `projects/<P>/days/YYYY-MM-DD.md` |
+| 프로젝트 교훈 | `learning <worked\|failed\|gotcha>` | real project | `projects/<P>/learnings/<slug>.md` |
 | 횡단 교훈 (Claude Code, 언어, 도구) | `learning <slug>` | `_cross-project` | `agent/learnings/learning-<slug>.md` (flat) |
-| 리소스 / 토픽 (개념·API·결정·how-to) | `topic <name>` | real project or `_cross-project` | `projects/<P>/<name>.md` |
+| 리소스 / 토픽 (개념·API·결정·how-to) | `topic <name>` | real project or `_cross-project` | `projects/<P>/topics/<name>.md` |
 | 횡단 일지 | ❌ 없음 | — | 진짜 프로젝트 devlog 안에서 `[[_cross-project/...]]` 로 링크 |
 
 ## Args
@@ -58,15 +60,15 @@ Pick the section. Each one points at one template under `~/.claude/templates/dev
 
 ### `devlog` — project day log
 
-Hub (`devlog.md`) + per-day file (`days/day-NN.md`).
+Per-day file: `days/YYYY-MM-DD.md`.
 
 1. **Collect** (one question at a time):
    1. "What did you work on today?" → bullet list
    2. "Any learnings / struggles / discoveries?" → optional
    3. "Add commit log?" → if yes: `git log --oneline --since="today 00:00" --author="$(git config user.email)"`
-2. **Day number**: scan `days/day-*.md`, pick `max + 1`. Today's date: `date +%m-%d`.
-3. **Write** `days/day-NN.md` from `templates/devlog/day.md`. Replace every `{{ALL_CAPS}}` placeholder, drop sections that don't apply (don't leave placeholders behind).
-4. **Append hub** `devlog.md` from `templates/devlog/hub.md`'s day-section shape — 3-4 lines max + `[[<P>/days/day-NN|상세]]` wikilink. Hub is summary-only; detail lives in the day file.
+2. **Date file**: today's date is `date +%F`; write `days/YYYY-MM-DD.md`.
+3. **If the date file exists**: append a new section to that file unless the work is a distinct artifact; distinct artifacts use `days/YYYY-MM-DD/<slug>.md`.
+4. **Do not create or append root `devlog.md` hubs**. Existing hubs are legacy migration bridges.
 
 Frontmatter (must match template exactly):
 
@@ -80,7 +82,7 @@ Frontmatter (must match template exactly):
 
 ### `learning <worked\|failed\|gotcha>` — project learnings index
 
-Append a `### {{CONCEPT}}` block to the matching `## What Worked / What Failed / Gotcha` section in `learnings-index.md`. Template: `templates/devlog/learnings.md`.
+Write or update a concept-first note under `learnings/<slug>.md`. Template: `templates/devlog/learnings.md`.
 
 Ask in order: **Context · Problem · Solution** (worked / gotcha) **· Why it worked** (worked) **· Rule**. Every entry MUST end with `> [!abstract] Rule` callout + `#rule` inline tag — that's the takeaway anyone scanning the file reads first. Update top-level `updated:` field on every append.
 
@@ -96,7 +98,7 @@ Frontmatter: `type/learning` + `project/_cross-project` + (`tool/<T>` for Claude
 
 ### `topic <name>` — resource / reference (리소스)
 
-Self-contained one-concept file: `<base>/<name>.md` (kebab-case English). Template: `templates/devlog/topic.md` carries four shape options — pick one and delete the rest:
+Self-contained one-concept file: `topics/<name>.md` (kebab-case English). Template: `templates/devlog/topic.md` carries four shape options — pick one and delete the rest:
 
 | Shape | Default sections | Use for |
 |---|---|---|
@@ -115,7 +117,7 @@ Frontmatter: `type/topic` + `project/<P>` + `area/<A>` + (optional `lang/+lib/` 
 
 ### Frontmatter tag rules
 
-Canonical reference: `~/.claude/standards/obsidian/obsidian-tag-taxonomy.md`. Skill enforces:
+Canonical reference: `~/.claude/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md`. Skill enforces:
 
 - Exactly **1** `type/` tag. Exactly **1** `project/` tag. Both required.
 - Code-bearing devlog/topic → `lang/` + `lib/` mandatory (both or neither).
@@ -128,11 +130,17 @@ Inline tags (`#rule`, `#failed`, `#gotcha`) live in body callouts/footers ONLY �
 
 | From → To | Form |
 |---|---|
-| hub → day | `[[<P>/days/day-NN\|상세]]` |
-| day → learning entry | `[[<P>/learnings-index#<concept>]]` |
-| day → topic | `[[<P>/<topic>]]` |
+| day → learning entry | `[[<P>/learnings/<slug>]]` |
+| day → topic | `[[<P>/topics/<topic>]]` |
 | anywhere → cross-project topic | `[[_cross-project/graphics#term]]` |
-| cross-repo | `[[bevy-vrm/days/day-03]]` |
+| cross-repo | `[[bevy-vrm/days/2026-04-13/orchestrator]]` |
+
+### Private PRs and inline tags
+
+- Do not write private repository PR URLs in vault notes. For Shotloom, never include `github.com/CINEV/shotloom/pull/...`; write `PR 309` or a descriptive work title instead.
+- Do not use markdown links for private PRs. `[#309](https://github.com/CINEV/shotloom/pull/309)` leaks the private UI path and also encourages bare `#NNN` prose nearby.
+- Do not write bare numeric hash references in body prose. Use `Finding 1`, `case 2`, `item 3`, or `PR 309`; never `#1`, `#2`, or `PR #309`.
+- Before saving, scan for `github.com/CINEV/shotloom/pull/` and `(^|\s)#[A-Za-z0-9]`. Only intentional footer markers (`#rule`, `#failed`, `#gotcha`) may remain.
 
 ### Callouts
 
@@ -140,7 +148,7 @@ Inline tags (`#rule`, `#failed`, `#gotcha`) live in body callouts/footers ONLY �
 |---|---|---|
 | Key discovery | `> [!tip]` | day file |
 | Failure / caution | `> [!warning]` | day file |
-| Extracted rule | `> [!abstract] Rule` | learnings-index, cross-learning |
+| Extracted rule | `> [!abstract] Rule` | project learning, cross-learning |
 | Environment / version | `> [!info]` | topic |
 
 ---
@@ -149,10 +157,10 @@ Inline tags (`#rule`, `#failed`, `#gotcha`) live in body callouts/footers ONLY �
 
 For a real project whose folder doesn't exist yet:
 
-1. `mkdir -p {obsidian}/agent/projects/<P>/days`
-2. Write `devlog.md` hub from `templates/devlog/hub.md` (ask user for one-line description, tech stack, goal).
-3. Write `learnings-index.md` from `templates/devlog/learnings.md` — keep the three `##` headings, drop the example `###` entries.
-4. Start from `day-01`.
+1. `mkdir -p {obsidian}/agent/projects/<P>/{days,learnings,topics}`
+2. Write `README.md` with audience, style, mutability, and the active role folders.
+3. Add folder README files only for durable role folders when created (`topics/`, `specs/`, `plans/`, `decisions/`, `asks/`, `ops/missions/`).
+4. Start day logging with `days/YYYY-MM-DD.md`.
 
 For `_cross-project`: nothing to set up.
 
@@ -166,7 +174,7 @@ Don't bulk-migrate. Apply progressively when adding new entries:
 2. Convert key discoveries to `> [!tip]` callouts as you re-touch them.
 3. Move rules into `> [!abstract] Rule` blocks with `#rule` tag as the section is updated.
 4. Wire wikilinks between files when you next reference them.
-5. Splitting monolithic `devlog.md` → hub + day files: extract each dated entry into `days/day-NN.md`, then strip `devlog.md` down to summaries + wikilinks.
+5. Splitting monolithic `devlog.md` → date files: extract each dated entry into `days/YYYY-MM-DD.md` or `days/YYYY-MM-DD/<slug>.md`, then reduce `devlog.md` to a temporary migration hub or delete it.
 
 ---
 

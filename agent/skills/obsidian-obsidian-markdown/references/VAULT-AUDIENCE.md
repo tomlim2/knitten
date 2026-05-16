@@ -20,6 +20,8 @@ Every Obsidian vault file declares its primary audience. Audience determines sty
 
 Folder location declares audience. No frontmatter switch needed.
 
+Project folder roles are owned by `PROJECT-DOCS-STRUCTURE.md`. This file owns audience, style, mutability, and README requirements for those folders.
+
 | Folder | Primary audience | Style policy |
 |--------|------------------|--------------|
 | `days/` | Human (author's self-recall) | Structured-narrative (see below) |
