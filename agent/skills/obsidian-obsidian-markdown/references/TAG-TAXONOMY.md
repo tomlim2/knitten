@@ -62,6 +62,8 @@ Always required. Exactly one per note.
 | `project/caol-ila` | agent hub / skills repo |
 | `project/personal` | Personal notes, journal, passwords, hobby lists |
 | `project/graphics-study` | Standalone graphics/3D/shader study notes (Blender, GLSL, Three.js, rendering theory) |
+| `project/cross-project` | Cross-project agent learnings and conventions |
+| `project/project-weekend` | Weekend project and studio-weekend docs |
 
 Add new rows here as new projects appear. Do not invent a new tag mid-session without adding it to this table.
 
@@ -126,6 +128,7 @@ Use for standalone DCC tools and named engine subsystems that are proper nouns, 
 | `sys/niagara` | UE Niagara particle system |
 | `sys/vrm4u` | VRM4U UE plugin |
 | `sys/arp` | Auto-Rig Pro (Blender) |
+| `sys/claude-code` | Claude Code runtime/tooling |
 
 ---
 
@@ -170,6 +173,8 @@ Use only when the note is an active work item (experiment, decision, investigati
 | `status/active` | In-progress work item |
 | `status/blocked` | Waiting on something external |
 | `status/done` | Resolved / concluded |
+| `status/backlog` | Planned but not active |
+| `status/in-review` | Awaiting review |
 
 ---
 
@@ -317,6 +322,8 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/matcap-painter` | 1 | consolidate if no new docs |
 | `project/minecraft` | 1 | consolidate if no new docs |
 | `project/weekend-survivor` | 1 | consolidate if no new docs |
+| `project/cross-project` | 4 | Cross-project agent learnings and conventions |
+| `project/project-weekend` | 19 | Weekend project and studio-weekend docs |
 
 ### area/ (77 tags, 716 usages)
 
@@ -399,6 +406,21 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `area/video` | 1 | |
 | `area/weather` | 1 | |
 | `area/whisky` | 1 | |
+| `area/agent-system` | 1 | agent hub, harness, and shared agent system design |
+| `area/context` | 1 | context loading, routing, and budget design |
+| `area/deploy` | 1 | deployment docs and deployment workflows |
+| `area/docs` | 3 | documentation systems and doc maintenance |
+| `area/editor-shell` | 2 | editor-shell UX and command surfaces |
+| `area/harness` | 1 | agent runtime adapters and harness behavior |
+| `area/interview` | 2 | interview notes and interview preparation |
+| `area/learning` | 1 | learning workflows and learning-note organization |
+| `area/observability` | 2 | logs, hooks, traces, and operational visibility |
+| `area/obsidian` | 16 | Obsidian vault structure and note policy |
+| `area/ops` | 2 | operational runbooks and recurring ops |
+| `area/performance` | 1 | performance analysis and tuning |
+| `area/rendering` | 8 | rendering systems and rendering research |
+| `area/router` | 1 | route selection and routing registries |
+| `area/vocab` | 1 | vocabulary and language-learning notes |
 
 ### fmt/ (7 tags, 89 usages)
 
@@ -425,6 +447,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `lang/hlsl` | 3 | |
 | `lang/wasm` | 1 | |
 | `lang/webgl` | 1 | |
+| `lang/typescript` | 5 | |
 
 ### lib/ (5 tags, 21 usages)
 
@@ -436,6 +459,9 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `lib/mermaid` | 1 | |
 | `lib/react` | 1 | |
 | `lib/wgpu` | 1 | |
+| `lib/github-actions` | 2 | GitHub Actions workflow/runtime notes |
+| `lib/nginx` | 1 | Nginx server/runtime notes |
+| `lib/shotloom-gltf` | 1 | Shotloom glTF helper library |
 
 ### sys/ (5 tags, 29 usages)
 
@@ -446,6 +472,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `sys/nanite` | 2 | |
 | `sys/niagara` | 2 | |
 | `sys/arp` | 1 | |
+| `sys/claude-code` | 2 | Claude Code runtime/tooling notes |
 
 ### tech/ (10 tags, 15 usages)
 
@@ -461,6 +488,13 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `tech/ray-marching` | 1 | |
 | `tech/sdf` | 1 | |
 | `tech/world-generation` | 1 | |
+
+### hobby/ (2 tags, 3 usages)
+
+| Tag | Count | Notes |
+|-----|------:|-------|
+| `hobby/cocktail` | 2 | cocktail notes |
+| `hobby/tasting` | 1 | tasting notes |
 
 ### llm/ (7 tags, 9 usages)
 
