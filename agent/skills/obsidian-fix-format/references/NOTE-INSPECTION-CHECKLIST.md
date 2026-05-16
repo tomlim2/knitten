@@ -83,14 +83,20 @@ Document type is encoded as exactly one `type/...` tag inside `tags`, never as a
 ## 4. Filename
 
 **Check:**
-- Slug only (kebab-case, 2-5 words)
+- `days/` uses `YYYY-MM-DD.md` for the canonical day file
+- Same-day split uses `days/YYYY-MM-DD/<slug>.md` only when merge would hide a distinct artifact
+- `learnings/` uses the local convention: `learning-<slug>.md` for cross-project, date file or slug under project learning folders
+- Durable folders (`plans/`, `topics/`, `specs/`, `decisions/`) use slug only (kebab-case, 2-5 words)
 - No folder/project/type repeat (`mmd-player-anju/devlog.md` violates: `devlog` repeats `type/devlog`)
-- No date prefix outside `days/`
+- No date prefix outside `days/` and `ops/runs/`
+- No ticket / PR / issue IDs in `days/` filenames
 - No status suffix (`-draft` etc — use `status/` tag)
 
 **Why:** Filename appears in wikilinks, search results, file listings. Repetition wastes characters.
 
 **Violation action:**
+- `days/2026-04-21-pr-review.md` / `devlog-2026-04-21.md` / `2026-04-21-daily.md` → merge or rename to `days/2026-04-21.md`
+- Same date already exists → merge unless the note is a distinct artifact; then move to `days/YYYY-MM-DD/<slug>.md`
 - Type-repeat → rename or move into named subfolder (`days/`, `learnings/`)
 - Project-root multi-file → keep one hub (`README.md`), move others to subfolder
 - Basename collision globally → check `obsidian-fix-format --check collisions`, prefer disambiguation by path

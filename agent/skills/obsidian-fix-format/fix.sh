@@ -203,6 +203,18 @@ const knownFrontmatterKeys = new Set([
 ]);
 
 for (const file of files) {
+  const relativeFile = rel(file);
+  const pathParts = relativeFile.split(path.sep);
+  const daysIndex = pathParts.indexOf('days');
+  if (daysIndex >= 0 && path.basename(file) !== 'README.md') {
+    const afterDays = pathParts.slice(daysIndex + 1);
+    const directDayFile = afterDays.length === 1 && /^20\d{2}-\d{2}-\d{2}\.md$/.test(afterDays[0]);
+    const splitDayFile = afterDays.length >= 2 && /^20\d{2}-\d{2}-\d{2}$/.test(afterDays[0]);
+    if (!directDayFile && !splitDayFile) {
+      add(file, 'filename.days-convention', 'use days/YYYY-MM-DD.md or days/YYYY-MM-DD/<slug>.md');
+    }
+  }
+
   const text = fs.readFileSync(file, 'utf8');
   const fm = parseFrontmatter(text);
   if (!fm) {

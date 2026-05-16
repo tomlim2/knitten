@@ -32,7 +32,7 @@ jq -r '."obsidian"' ~/.claude/private/caol-config/machine-paths.json
 | `frontmatter-heading-glued` | auto-fix | Splits `---#+ Heading` into two lines |
 | `missing-h1` | report | Flags notes with no `# Title` in first 30 lines |
 | `missing-readme` | report | Flags project roots and durable folders without `README.md` |
-| `obsidian-contract` | report | Audits agent notes against frontmatter, tag, H1, link, source, and README policy |
+| `obsidian-contract` | report | Audits agent notes against frontmatter, tag, H1, link, source, filename, and README policy |
 | `empty-dirs` | auto-fix | Removes empty directories (skips `.trash`, `.obsidian`, `attachments`) |
 
 Add new checks by appending a `want <name>` block to `fix.sh` and a row here.

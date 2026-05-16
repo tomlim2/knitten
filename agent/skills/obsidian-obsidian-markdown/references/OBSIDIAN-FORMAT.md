@@ -74,6 +74,32 @@ content
 
 ---
 
+## Filename Convention
+
+Folder and frontmatter carry routing identity. Filename stays short and stable.
+
+| Folder / note type | Pattern | Rule |
+|--------------------|---------|------|
+| project day log | `projects/<project>/days/YYYY-MM-DD.md` | One canonical day file per project per date |
+| same-day split | `projects/<project>/days/YYYY-MM-DD/<slug>.md` | Use only when merge would hide a distinct artifact |
+| learning | `learnings/learning-<slug>.md` or `projects/<project>/learnings/YYYY-MM-DD.md` | Keep existing folder convention; do not add ticket IDs |
+| durable docs | `plans/<slug>.md`, `topics/<slug>.md`, `specs/<slug>.md`, `decisions/<slug>.md` | Slug names the concept, not the project/type |
+| ops run | `ops/runs/YYYY-MM-DD-HHMM-<slug>.md` | Timestamp allowed because run order matters |
+| folder scope | `README.md` | Only for folder audience/scope |
+
+Do not encode topic, ticket, PR, `daily`, `devlog`, project name, or document type in `days/` filenames. Put those details in `title`, H1, `tags`, and the first paragraph.
+
+Examples:
+
+| Prefer | Avoid |
+|--------|-------|
+| `days/2026-04-21.md` | `days/2026-04-21-pr-review.md` |
+| `days/2026-04-21.md` | `days/2026-04-21-daily.md` |
+| `days/2026-04-21.md` | `days/devlog-2026-04-21.md` |
+| `plans/obsidian-contract-cleanup.md` | `plans/caol-ila-plan-obsidian-contract-cleanup.md` |
+
+---
+
 ## Tag Convention
 
 **Full taxonomy (read before tagging): `~/.claude/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md`**
