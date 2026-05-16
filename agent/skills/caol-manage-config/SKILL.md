@@ -59,8 +59,6 @@ Read all four files and display:
 | Key                   | Path                                                |
 |-----------------------|-----------------------------------------------------|
 | obsidian              | ~/Library/Mobile Documents/.../MyNotes              |
-| obsidian-agent-root   | ~/Library/Mobile Documents/.../MyNotes/agent        |
-| obsidian-vault-claude | legacy alias to obsidian-agent-root                 |
 | obsidian-staging      | ~/Desktop/www/caol-ila/agent/temp-learnings        |
 | blender               | /Applications/Blender.app/Contents/MacOS/Blender    |
 
@@ -196,7 +194,7 @@ Interactive first-time setup for a new machine. Guides the user through filling 
    - Write completed `repo-paths.json`.
 
 4. **Fill machine-paths** — Same for `machine-paths.json`.
-   - Keys: `obsidian`, `obsidian-agent-root`, `obsidian-vault-claude` (legacy fallback), `obsidian-staging`, `blender`, `font-sarasa`, `font-sf-mono`
+   - Keys: `obsidian`, `obsidian-staging`, `blender`, `font-sarasa`, `font-sf-mono`
    - User may skip any key not applicable to this machine.
    - Write completed `machine-paths.json`.
 

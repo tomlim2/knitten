@@ -12,7 +12,7 @@ trigger: working in the Obsidian vault
 - **No private repository PR URLs in vault docs.** Do not write GitHub PR links for private/NDA-ish work, especially `github.com/CINEV/shotloom/pull/...`. Use durable prose such as `PR 309`, the task title, or a wikilink to an internal summary note. This applies even outside `type/devlog`.
 - **No external-tracker IDs in body prose of `type/devlog` and `type/learning` documents.** Linear (`STL-NN`), Jira, Asana, GitHub PR (`#NNN`), GitHub Issue numbers — all of these rot. Issues get renumbered, archived, deleted, repos move, projects migrate trackers — and the note loses its anchor. Vault notes are durable retrieval *without* depending on an external system. Replace with a descriptive title in the prose ("the thumb-chain naming canonicalization work" instead of `STL-263`; "the four-finger scalar curl PR" instead of `PR #220`). Commit SHAs and ADR-NNNN are OK because they live inside the repo's durable history; everything that points at an issue tracker or a hosting platform's UI is not.
 - **Filename convention** — Put routing identity in folders and frontmatter, not filenames. `days/` files use `YYYY-MM-DD.md`; do not add topic, ticket, PR, `daily`, or `devlog` suffixes. Same-day split is exceptional: prefer merging into the day file; if separation is required, use `days/YYYY-MM-DD/<slug>.md`. `learnings/` uses `learning-<slug>.md`; durable folders (`plans/`, `topics/`, `specs/`, `decisions/`) use `<slug>.md`; `ops/runs/` may use `YYYY-MM-DD-HHMM-<slug>.md`.
-- **Project docs structure** — `agent/projects/<project>/` root is an index, not a document bucket. Use `PROJECT-DOCS-STRUCTURE.md`: `type/devlog → days/`, `type/learning → learnings/`, `type/reference|analysis|glossary|topic → topics/`, `type/spec → specs/`, `type/plan → plans/`, `type/decision → decisions/`.
+- **Project docs structure** — the configured project root is an index, not a document bucket. Use `PROJECT-DOCS-STRUCTURE.md`: `type/devlog → days/`, `type/learning → learnings/`, `type/reference|analysis|glossary|topic → topics/`, `type/spec → specs/`, `type/plan → plans/`, `type/decision → decisions/`.
 - **Lists use `-`** — Ordered lists use `1.`.
 - **Tags in frontmatter — MANDATORY checklist before save.**
   - Exactly 1 `type/` tag. Exactly 1 `project/` tag. Both required, not optional.
@@ -30,7 +30,7 @@ trigger: working in the Obsidian vault
   - **Backslash escape** for plain prose: `\#154`.
   - **Drop the space**: `PR#154` (no space before `#`) is not interpreted as a tag.
   Verify before save: search the body for `(^|\s)#[A-Za-z0-9]` — any hit that isn't an intentional learnings marker (`#rule`/`#failed`/`#gotcha` at document footer) needs one of the fixes above.
-- **Location** — `{obsidian-vault}/agent/` for all agent-authored docs.
+- **Location** — resolve every write through `caol-resolve-doc-path`; root and role folders are owned by `doc-paths.json` and `vault-structure.json`.
 - **Audience declared by folder** — New project roots and durable folders have a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Repeated folders (`days/`, `learnings/`) inherit from parent. Default for unmarked folders: strict LLM-first. See `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
 
 ## Auto-commit + auto-push for Obsidian-only changes
@@ -39,7 +39,7 @@ Exception to `~/.claude/rules/git-defaults.md`. The diff must contain ONLY Obsid
 
 | Diff content | Auto-commit allowed? |
 |--------------|----------------------|
-| Files inside `machine-paths.json → obsidian` / `obsidian-agent-root` / legacy `obsidian-vault-claude` | **Yes** |
+| Files inside `machine-paths.json → obsidian` | **Yes** |
 | Files inside `obsidian-staging` (currently `caol-ila/agent/obsidian-staging/`) | **Yes** |
 | `.md` files with Obsidian frontmatter (`title`, `tags`, `date`, `source`) | **Yes** |
 | Mixed: any of the above + code/config | **No** — split the commit, or get explicit approval for the bundle |

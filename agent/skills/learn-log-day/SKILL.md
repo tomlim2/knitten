@@ -17,7 +17,7 @@ Project role folders are owned by `obsidian-obsidian-markdown/references/PROJECT
 |---|---|---|---|
 | 오늘 프로젝트 작업 일지 | `devlog` (default) | real project | `projects/<P>/days/YYYY-MM-DD.md` |
 | 프로젝트 교훈 | `learning <worked\|failed\|gotcha>` | real project | `projects/<P>/learnings/<slug>.md` |
-| 횡단 교훈 (Claude Code, 언어, 도구) | `learning <slug>` | `_cross-project` | `agent/learnings/learning-<slug>.md` (flat) |
+| 횡단 교훈 (언어, 도구) | `learning <slug>` | `_cross-project` | resolver-owned `cross-learning` destination |
 | 리소스 / 토픽 (개념·API·결정·how-to) | `topic <name>` | real project or `_cross-project` | `projects/<P>/topics/<name>.md` |
 | 횡단 일지 | ❌ 없음 | — | 진짜 프로젝트 devlog 안에서 `[[_cross-project/...]]` 로 링크 |
 
@@ -50,7 +50,7 @@ Project role folders are owned by `obsidian-obsidian-markdown/references/PROJECT
 | `topic <name>` | real | `resolve.sh topic <project>` |
 | `topic <name>` | `_cross-project` | `resolve.sh topic _cross-project` |
 
-Read `RESOLVED_PATH` from output. If real project's folder doesn't exist → run [Project initial setup](#project-initial-setup). `_cross-project` never needs setup — `agent/learnings/` and `agent/projects/_cross-project/` already exist.
+Read `RESOLVED_PATH` from output. If real project's folder doesn't exist → run [Project initial setup](#project-initial-setup). `_cross-project` uses resolver-owned destinations and does not need project setup.
 
 ---
 
@@ -90,11 +90,11 @@ Frontmatter: `type/learning` + `project/<P>` + `area/<A>`.
 
 ### `learning <slug>` — cross-project learning (only for `_cross-project`)
 
-One flat file per concept: `agent/learnings/learning-<slug>.md`. Existing convention: `learning-rust-traits.md`, `learning-claude-code-hooks.md`. Template: `templates/devlog/cross-learning.md`.
+One file per concept in the resolver-owned cross-learning destination. Existing convention: `learning-rust-traits.md`, `learning-claude-code-hooks.md`. Template: `templates/devlog/cross-learning.md`.
 
 If file exists → open for append/edit, don't overwrite. New file → write from template. Body shape: 증상 → 원인 → 검증 → 해결 (skip sections that don't apply for the kind of lesson). End with at least one `#rule` or `#gotcha` inline tag in the body.
 
-Frontmatter: `type/learning` + `project/_cross-project` + (`tool/<T>` for Claude Code / cmux / gh lessons, `lang/+lib/` when language-anchored, `area/<A>`).
+Frontmatter: `type/learning` + `project/_cross-project` + (`tool/<T>` for cmux / gh lessons, `lang/+lib/` when language-anchored, `area/<A>`).
 
 ### `topic <name>` — resource / reference (리소스)
 
@@ -157,7 +157,7 @@ Inline tags (`#rule`, `#failed`, `#gotcha`) live in body callouts/footers ONLY �
 
 For a real project whose folder doesn't exist yet:
 
-1. `mkdir -p {obsidian}/agent/projects/<P>/{days,learnings,topics}`
+1. Resolve `devlog`, `learning`, and `topic` destinations for `<P>`, then create the returned folders.
 2. Write `README.md` with audience, style, mutability, and the active role folders.
 3. Add folder README files only for durable role folders when created (`topics/`, `specs/`, `plans/`, `decisions/`, `asks/`, `ops/missions/`).
 4. Start day logging with `days/YYYY-MM-DD.md`.

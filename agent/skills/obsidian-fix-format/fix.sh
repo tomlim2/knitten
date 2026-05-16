@@ -10,6 +10,9 @@
 #   missing-h1                 (report only)  — no `# Title` in first 30 lines
 #   missing-readme             (report only)  — durable agent folders without README.md
 #   project-structure          (report only)  — project root files that should live in role folders
+#   root-structure             (report only)  — root folders follow vault-structure.json
+#   daily-structure            (report only)  — daily folder file names follow date contract
+#   path-config-drift          (report only)  — active repo files do not embed retired vault paths
 #   obsidian-contract          (report only)  — frontmatter/tag/H1/link contract
 #   empty-dirs                 (auto-fixable) — empty directories under vault
 
@@ -21,13 +24,20 @@ if [[ -z "$VAULT" || ! -d "$VAULT" ]]; then
   exit 1
 fi
 
-AGENT_ROOT="$(jq -r '."obsidian-agent-root" // ."obsidian-vault-claude" // empty' ~/.claude/private/caol-config/machine-paths.json)"
-if [[ -z "$AGENT_ROOT" || ! -d "$AGENT_ROOT" ]]; then
-  AGENT_ROOT="$VAULT/agent"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+CONFIG_DIR="$REPO_ROOT/agent/private/caol-config"
+VAULT_STRUCTURE="$CONFIG_DIR/vault-structure.json"
+TAXONOMY="$SCRIPT_DIR/../obsidian-obsidian-markdown/references/TAG-TAXONOMY.md"
+
+if [[ ! -f "$VAULT_STRUCTURE" ]]; then
+  echo "vault structure config not found: $VAULT_STRUCTURE" >&2
+  exit 1
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TAXONOMY="$SCRIPT_DIR/../obsidian-obsidian-markdown/references/TAG-TAXONOMY.md"
+PROJECTS_FOLDER="$(jq -r '.rootFolders.projects' "$VAULT_STRUCTURE")"
+DAILY_FOLDER="$(jq -r '.rootFolders.daily' "$VAULT_STRUCTURE")"
+ATTACHMENTS_FOLDER="$(jq -r '.rootFolders.attachments' "$VAULT_STRUCTURE")"
 
 APPLY=0
 ONLY=""
@@ -80,7 +90,7 @@ if want missing-h1; then
   fi
 fi
 
-# --- missing-readme under agent/projects/* ---
+# --- missing-readme under configured projects root ---
 # Policy: README required for project roots and durable folders only.
 # Repeated entry folders (`days/`, `learnings/`) inherit from parent.
 if want missing-readme; then
@@ -93,14 +103,10 @@ if want missing-readme; then
     count=$((count+1))
   done < <(
     {
-      find "$AGENT_ROOT/projects" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
-      find "$AGENT_ROOT/projects" -type d \( \
-        -path '*/specs' -o \
-        -path '*/plans' -o \
-        -path '*/topics' -o \
-        -path '*/decisions' -o \
-        -path '*/ops/missions' \
-      \) 2>/dev/null
+      find "$VAULT/$PROJECTS_FOLDER" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+      while IFS= read -r rel; do
+        find "$VAULT/$PROJECTS_FOLDER" -type d -path "*/$rel" 2>/dev/null
+      done < <(jq -r '.durableProjectFolders[]' "$VAULT_STRUCTURE")
     } | sort -u
   )
   if (( count == 0 )); then
@@ -114,12 +120,13 @@ fi
 
 # --- project-structure (report only) ---
 if want project-structure; then
-  node - "$AGENT_ROOT" <<'NODE'
+  node - "$VAULT" "$VAULT_STRUCTURE" <<'NODE'
 const fs = require('fs');
 const path = require('path');
 
 const root = process.argv[2];
-const projects = path.join(root, 'projects');
+const structure = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
+const projects = path.join(root, structure.rootFolders.projects);
 const issues = [];
 
 function rel(file) {
@@ -211,26 +218,128 @@ if (issues.length > 60) console.log(`  ... +${issues.length - 60} more`);
 NODE
 fi
 
+# --- root-structure (report only) ---
+if want root-structure; then
+  node - "$VAULT" "$VAULT_STRUCTURE" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const root = process.argv[2];
+const structure = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
+const allowedDirs = new Set([
+  structure.rootFolders.projects,
+  structure.rootFolders.daily,
+  ...structure.systemFolders,
+]);
+const allowedFiles = new Set(structure.allowedRootFiles || []);
+const legacy = new Set(structure.legacyVaultFolders || []);
+const issues = [];
+
+for (const ent of fs.readdirSync(root, { withFileTypes: true })) {
+  if (ent.name === '.DS_Store') continue;
+  if (ent.isDirectory()) {
+    if (legacy.has(ent.name)) issues.push({ name: ent.name, code: 'root.legacy-folder' });
+    else if (!allowedDirs.has(ent.name)) issues.push({ name: ent.name, code: 'root.unknown-folder' });
+  } else if (ent.isFile()) {
+    if (!allowedFiles.has(ent.name)) issues.push({ name: ent.name, code: 'root.loose-file' });
+  }
+}
+
+console.log(`[root-structure] offenders: ${issues.length}`);
+if (issues.length === 0) {
+  console.log('[root-structure] clean');
+  process.exit(0);
+}
+for (const issue of issues) console.log(`  ${issue.name} | ${issue.code}`);
+NODE
+fi
+
+# --- daily-structure (report only) ---
+if want daily-structure; then
+  node - "$VAULT" "$VAULT_STRUCTURE" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const root = process.argv[2];
+const structure = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
+const daily = path.join(root, structure.rootFolders.daily);
+const issues = [];
+
+function walk(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const file = path.join(dir, ent.name);
+    if (ent.isDirectory()) walk(file);
+    else if (ent.isFile() && ent.name.endsWith('.md')) {
+      const rel = path.relative(daily, file);
+      const parts = rel.split(path.sep);
+      const direct = parts.length === 1 && /^20\d{2}-\d{2}-\d{2}\.md$/.test(parts[0]);
+      const split = parts.length >= 2 && /^20\d{2}-\d{2}-\d{2}$/.test(parts[0]);
+      if (!direct && !split) issues.push(rel);
+    }
+  }
+}
+
+walk(daily);
+console.log(`[daily-structure] offenders: ${issues.length}`);
+if (issues.length === 0) {
+  console.log('[daily-structure] clean');
+  process.exit(0);
+}
+for (const issue of issues.slice(0, 60)) console.log(`  ${issue}`);
+if (issues.length > 60) console.log(`  ... +${issues.length - 60} more`);
+NODE
+fi
+
+# --- path-config-drift (report only) ---
+if want path-config-drift; then
+  if ! command -v rg >/dev/null 2>&1; then
+    echo "[path-config-drift] rg not found" >&2
+    exit 1
+  fi
+  pattern='agent/projects|agent/learnings|agent/research|agent/specs|daily-summaries|obsidian-agent-root|obsidian-vault-claude|obsidian:agent|staging:agent'
+  hits=$(
+    cd "$REPO_ROOT"
+    rg -n "$pattern" agent scripts AGENTS.md SYSTEM.md README.md AGENT-HUB.md \
+      --glob '!agent/projects/**' \
+      --glob '!agent/tasks/**' \
+      --glob '!agent/cache/**' \
+      --glob '!agent/file-history/**' \
+      --glob '!agent/history.jsonl' \
+      --glob '!agent/private/caol-config/vault-structure.json' \
+      --glob '!agent/skills/obsidian-fix-format/fix.sh' \
+      2>/dev/null || true
+  )
+  if [[ -z "$hits" ]]; then
+    echo "[path-config-drift] clean"
+  else
+    echo "[path-config-drift] offenders:"
+    echo "$hits" | sed 's/^/  /'
+    exit 1
+  fi
+fi
+
 # --- obsidian-contract (report only) ---
 if want obsidian-contract; then
   if [[ ! -f "$TAXONOMY" ]]; then
     echo "[obsidian-contract] taxonomy not found: $TAXONOMY" >&2
     exit 1
   fi
-  node - "$AGENT_ROOT" "$TAXONOMY" <<'NODE'
+  node - "$VAULT" "$TAXONOMY" "$VAULT_STRUCTURE" <<'NODE'
 const fs = require('fs');
 const path = require('path');
 
 const root = process.argv[2];
 const taxonomyPath = process.argv[3];
+const structure = JSON.parse(fs.readFileSync(process.argv[4], 'utf8'));
 const taxonomy = fs.readFileSync(taxonomyPath, 'utf8');
 const allowedTags = new Set([...taxonomy.matchAll(/`([a-z]+\/[a-z0-9-]+)`/g)].map((m) => m[1]));
 for (const tag of ['status/draft', 'status/active', 'status/blocked', 'status/done']) {
   allowedTags.add(tag);
 }
 
-const allowedSources = new Set(['agent', 'manual', 'notion-export', 'codex', 'claude-code']);
-const skipDirs = new Set(['.obsidian', '.trash', 'attachments']);
+const allowedSources = new Set(structure.sourceAllowlist || []);
+const skipDirs = new Set(structure.systemFolders || []);
 const issues = [];
 
 function walk(dir, out = []) {
@@ -284,7 +393,11 @@ function stripCodeForProseChecks(text) {
     .replace(/`[^`\n]*`/g, '');
 }
 
-const files = walk(root);
+const scanRoots = [
+  path.join(root, structure.rootFolders.projects),
+  path.join(root, structure.rootFolders.daily),
+].filter((dir) => fs.existsSync(dir) && fs.statSync(dir).isDirectory());
+const files = scanRoots.flatMap((dir) => walk(dir));
 const knownFrontmatterKeys = new Set([
   'aliases',
   'audience',
@@ -391,13 +504,13 @@ for (const file of files) {
   }
 }
 
-const projects = path.join(root, 'projects');
+const projects = path.join(root, structure.rootFolders.projects);
 const readmeRequired = [];
 if (fs.existsSync(projects)) {
   for (const ent of fs.readdirSync(projects, { withFileTypes: true }).filter((item) => item.isDirectory())) {
     const projectRoot = path.join(projects, ent.name);
     readmeRequired.push(projectRoot);
-    for (const durable of ['specs', 'plans', 'topics', 'decisions']) {
+    for (const durable of structure.durableProjectFolders || []) {
       const dir = path.join(projectRoot, durable);
       if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) readmeRequired.push(dir);
     }

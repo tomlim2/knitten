@@ -85,7 +85,7 @@ Document type is encoded as exactly one `type/...` tag inside `tags`, never as a
 ## 4. Filename
 
 **Check:**
-- Files under `agent/projects/<project>/` follow `PROJECT-DOCS-STRUCTURE.md`
+- Files under the configured project root follow `PROJECT-DOCS-STRUCTURE.md`
 - `days/` uses `YYYY-MM-DD.md` for the canonical day file
 - Same-day split uses `days/YYYY-MM-DD/<slug>.md` only when merge would hide a distinct artifact
 - `learnings/` uses the local convention: `learning-<slug>.md` for cross-project, date file or slug under project learning folders

@@ -129,7 +129,7 @@ Guidelines:
 
 After displaying the summary to the user, save it to:
 ```
-~/.claude/private/daily-summaries/YYYY-MM-DD.md
+resolver `daily` destination + `/YYYY-MM-DD.md`
 ```
 
 - If the file already exists, append the new summary with a separator

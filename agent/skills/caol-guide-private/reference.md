@@ -111,7 +111,7 @@ Obsidian/agent/tutoring/
 
 **Learning Skills (`learn-*`):**
 ```
-Obsidian/agent/learnings/
+Obsidian configured cross-learning destination
 └── projects/
     ├── project1.md
     └── project2.md

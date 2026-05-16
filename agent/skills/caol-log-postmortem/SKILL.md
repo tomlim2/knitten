@@ -46,7 +46,7 @@ Usage:
 | Purpose | Path |
 |---------|------|
 | **Postmortem (always)** | `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc postmortem`/{project-name}.md` |
-| **Portfolio (optional)** | `{obsidian}/agent/projects/ta-portfolio-content-design.md` |
+| **Portfolio (optional)** | configured project portfolio topic |
 
 ---
 

@@ -7,65 +7,70 @@
   },
   "purposes": {
     "devlog": {
-      "default": "obsidian:agent/projects/{project}",
+      "default": "obsidian:projects/{project}/days",
       "no-vault": "staging:projects/{project}"
     },
     "learning": {
-      "default": "obsidian:agent/projects/{project}",
-      "no-vault": "staging:projects/{project}"
+      "default": "obsidian:projects/{project}/learnings",
+      "no-vault": "staging:projects/{project}/learnings"
     },
     "learnings": {
-      "default": "obsidian:learnings/projects",
-      "no-vault": "staging:learnings/projects"
+      "default": "obsidian:projects/caol-ila/learnings",
+      "no-vault": "staging:projects/caol-ila/learnings"
     },
     "topic": {
-      "default": "obsidian:agent/projects/{project}/topics",
+      "default": "obsidian:projects/{project}/topics",
       "no-vault": "staging:projects/{project}/topics"
     },
     "consulting": {
-      "default": "obsidian:consulting",
-      "no-vault": "staging:consulting"
+      "default": "obsidian:projects/consulting/topics",
+      "no-vault": "staging:projects/consulting/topics"
     },
     "research": {
-      "default": "obsidian:agent/research",
-      "no-vault": "staging:agent/research"
+      "default": "obsidian:projects/caol-ila/topics",
+      "no-vault": "staging:projects/caol-ila/topics"
     },
     "notes": {
-      "default": "obsidian:agent/notes",
-      "no-vault": "staging:agent/notes"
+      "default": "obsidian:projects/personal/topics",
+      "no-vault": "staging:projects/personal/topics"
     },
     "ops": {
       "default": "ops:"
     },
     "tutoring": {
-      "default": "private:tutoring"
+      "default": "obsidian:projects/tutoring",
+      "no-vault": "staging:projects/tutoring"
     },
     "drinks": {
-      "default": "obsidian:drinks",
-      "no-vault": "staging:drinks"
+      "default": "obsidian:projects/drinks",
+      "no-vault": "staging:projects/drinks"
     },
     "private-data": {
       "default": "private:"
     },
     "postmortem": {
-      "default": "obsidian:agent/projects/records",
-      "no-vault": "staging:projects/records"
+      "default": "obsidian:projects/records/topics",
+      "no-vault": "staging:projects/records/topics"
     },
     "vocab": {
-      "default": "obsidian:30-resources/language",
-      "no-vault": "staging:30-resources/language"
+      "default": "obsidian:projects/language-learning/topics",
+      "no-vault": "staging:projects/language-learning/topics"
     },
     "experiment": {
-      "default": "obsidian:agent/projects/{project}",
-      "no-vault": "staging:projects/{project}"
+      "default": "obsidian:projects/{project}/learnings",
+      "no-vault": "staging:projects/{project}/learnings"
     },
     "spec": {
-      "default": "obsidian:agent/specs",
-      "no-vault": "staging:agent/specs"
+      "default": "obsidian:projects/caol-ila/specs",
+      "no-vault": "staging:projects/caol-ila/specs"
     },
     "cross-learning": {
-      "default": "obsidian:agent/learnings",
-      "no-vault": "staging:agent/learnings"
+      "default": "obsidian:projects/caol-ila/learnings",
+      "no-vault": "staging:projects/caol-ila/learnings"
+    },
+    "daily": {
+      "default": "obsidian:daily",
+      "no-vault": "staging:daily"
     }
   },
   "format": {

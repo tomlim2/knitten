@@ -78,7 +78,7 @@ content
 
 Folder and frontmatter carry routing identity. Filename stays short and stable.
 
-Project-folder structure is owned by `PROJECT-DOCS-STRUCTURE.md`. Use that standard before creating or moving any file under `agent/projects/<project>/`.
+Project-folder structure is owned by `PROJECT-DOCS-STRUCTURE.md`. Use that standard before creating or moving any file under the configured project root.
 
 | Folder / note type | Pattern | Rule |
 |--------------------|---------|------|

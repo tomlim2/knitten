@@ -10,14 +10,14 @@ exclude-when: rust,web,unreal
 
 # Project Docs Structure
 
-Project folders under `agent/projects/<project>/` use role folders. Root is an index, not a dumping ground.
+Project folders under the configured project root use role folders. Root is an index, not a dumping ground.
 
 ---
 
 ## Canonical Shape
 
 ```text
-agent/projects/<project>/
+projects/<project>/
   README.md
   days/
   learnings/

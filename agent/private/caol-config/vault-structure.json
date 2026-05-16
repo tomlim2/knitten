@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "rootFolders": {
+    "projects": "projects",
+    "daily": "daily",
+    "attachments": "attachments"
+  },
+  "projectRoleFolders": [
+    "days",
+    "learnings",
+    "topics",
+    "specs",
+    "plans",
+    "decisions",
+    "asks",
+    "ops/missions",
+    "ops/runs"
+  ],
+  "durableProjectFolders": [
+    "specs",
+    "plans",
+    "topics",
+    "decisions",
+    "ops/missions"
+  ],
+  "legacyVaultFolders": [
+    "agent",
+    "notes",
+    "daily-summaries",
+    "learnings",
+    "research",
+    "specs",
+    "drinks",
+    "tutoring",
+    "consulting",
+    "references"
+  ],
+  "systemFolders": [
+    ".obsidian",
+    ".trash",
+    "attachments"
+  ],
+  "allowedRootFiles": [
+    ".vault-catalog.json"
+  ],
+  "sourceAllowlist": [
+    "agent",
+    "manual",
+    "notion-export",
+    "codex",
+    "claude-code"
+  ]
+}

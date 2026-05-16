@@ -327,7 +327,7 @@ If `start_ts` is empty because Step 7 was skipped or failed, do **not** silently
 ### Step 10: Devlog append (Obsidian)
 
 ```bash
-base=$(jq -re '.["obsidian-vault-claude"] // .["obsidian-staging"]' \
+base=$(jq -re '.obsidian // .["obsidian-staging"]' \
   ~/.claude/private/caol-config/machine-paths.json)
 devlog="$base/projects/shotloom/days/$(date +%Y-%m-%d).md"
 ```

@@ -33,6 +33,9 @@ jq -r '."obsidian"' ~/.claude/private/caol-config/machine-paths.json
 | `missing-h1` | report | Flags notes with no `# Title` in first 30 lines |
 | `missing-readme` | report | Flags project roots and durable folders without `README.md` |
 | `project-structure` | report | Flags project root files that should live in role folders, legacy hubs, and backup files |
+| `root-structure` | report | Flags root folders outside configured vault structure |
+| `daily-structure` | report | Flags daily notes outside the configured date naming contract |
+| `path-config-drift` | report | Flags active repo files that still embed retired vault paths |
 | `obsidian-contract` | report | Audits agent notes against frontmatter, tag, H1, link, source, filename, and README policy |
 | `empty-dirs` | auto-fix | Removes empty directories (skips `.trash`, `.obsidian`, `attachments`) |
 

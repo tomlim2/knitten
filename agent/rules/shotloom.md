@@ -64,11 +64,11 @@ Author-side flow: `/shotloom-make-pr` Step 10c.
 
 ## Obsidian note structure
 
-- **Single project folder: `agent/projects/shotloom/`.** Never create sibling folders (`shotloom-rd/`, `shotloom-v2/`). If a folder like that exists, consolidate into `shotloom/`.
+- **Single project folder: configured `shotloom` project root.** Never create sibling folders (`shotloom-rd/`, `shotloom-v2/`). If a folder like that exists, consolidate into `shotloom/`.
 - **`days/` naming: `YYYY-MM-DD[-slug].md` only.** No prefixes — `devlog-`, `shotloom-`, `shotloom-daily-`, `shotloom-devlog-` are all forbidden. The folder name already provides context.
-- **Learnings go in `shotloom/learnings/`, never in `agent/learnings/`.** `agent/learnings/` is for cross-project learnings only.
-- **No files at `agent/` root.** Every shotloom note lives inside `agent/projects/shotloom/` or its subfolders. Never drop files at `agent/shotloom-*.md`.
-- **No loose files at the project root either.** `agent/projects/shotloom/*.md` is forbidden except for one index/hub file (e.g. `README.md`). All other notes belong in a named subfolder.
+- **Learnings go in the shotloom project `learnings/` folder.** Cross-project learnings use the resolver-owned cross-learning destination.
+- **No files at the vault root.** Every shotloom note lives inside the configured shotloom project root or its subfolders.
+- **No loose files at the project root either.** Direct Markdown files in the configured shotloom project root are forbidden except for one index/hub file (e.g. `README.md`). All other notes belong in a named subfolder.
 
 | Subfolder | Audience | Contents |
 |-----------|----------|----------|

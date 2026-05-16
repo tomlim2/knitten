@@ -54,7 +54,7 @@ Use Task(Explore) agent to analyze:
 
 **기록 저장:**
 ```
-{obsidian-vault}/agent/projects/records/{project-name}.md
+resolver `postmortem` destination + `/{project-name}.md`
 ```
 
 **포트폴리오 추가 (사용자가 요청한 경우):**
@@ -163,7 +163,7 @@ Use Task(Explore) agent to analyze:
 
 ## Related Files
 
-- Records: `{obsidian}/agent/projects/records/`
-- Portfolio: `{obsidian}/agent/projects/ta-portfolio-content-design.md`
-- Tech points: `{obsidian}/agent/projects/ta-portfolio-tech-points.md`
+- Records: resolver `postmortem` destination
+- Portfolio: configured project portfolio topic
+- Tech points: configured project portfolio topic
 - Repo paths: `~/.claude/private/caol-config/repo-paths.json`

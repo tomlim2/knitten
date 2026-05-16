@@ -13,13 +13,11 @@ except FileNotFoundError:
 except json.JSONDecodeError as e:
     sys.exit(f"tag_consolidate.py: invalid JSON in {_PATHS_FILE}: {e}")
 
-_VAULT = _PATHS.get("obsidian") or _PATHS.get("obsidian-agent-root") or _PATHS.get("obsidian-vault-claude")
+_VAULT = _PATHS.get("obsidian")
 if not _VAULT:
-    sys.exit("tag_consolidate.py: machine-paths.json missing 'obsidian' (fallbacks: 'obsidian-agent-root', 'obsidian-vault-claude').")
+    sys.exit("tag_consolidate.py: machine-paths.json missing 'obsidian'.")
 
 VAULT = Path(_VAULT)
-if VAULT.name in {"agent", "claude"}:
-    VAULT = VAULT.parent
 EXCLUDE_DIRS = {".trash", ".obsidian"}  # config only — all user docs included
 
 TAG_MAP = {

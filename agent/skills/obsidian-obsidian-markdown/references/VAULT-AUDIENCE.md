@@ -91,7 +91,7 @@ README required for:
 
 | Folder type | Required? |
 |-------------|-----------|
-| new project root under `agent/projects/<project>/` | yes |
+| new project root under configured project folder | yes |
 | durable folders: `specs/`, `plans/`, `topics/`, `decisions/`, `ops/missions/` | yes |
 | repeated entry folders: `days/`, `learnings/` | no, parent README covers them |
 | ephemeral folders: `ops/runs/` | no, unless promoted to durable |

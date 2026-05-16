@@ -20,21 +20,21 @@ def get_obsidian_vault_dir() -> Path:
     try:
         paths = json.loads(_MACHINE_PATHS.read_text(encoding="utf-8"))
     except FileNotFoundError:
-        sys.exit(f"tutoring/utils.py: missing {_MACHINE_PATHS} — populate obsidian-agent-root or obsidian-staging.")
-    target = paths.get("obsidian-agent-root") or paths.get("obsidian-vault-claude") or paths.get("obsidian-staging")
+        sys.exit(f"tutoring/utils.py: missing {_MACHINE_PATHS} — populate obsidian or obsidian-staging.")
+    target = paths.get("obsidian") or paths.get("obsidian-staging")
     if not target:
-        sys.exit("tutoring/utils.py: machine-paths.json has neither 'obsidian-agent-root' nor legacy fallback 'obsidian-vault-claude' nor 'obsidian-staging'.")
+        sys.exit("tutoring/utils.py: machine-paths.json has neither 'obsidian' nor 'obsidian-staging'.")
     return Path(target)
 
 
 def get_lessons_dir() -> Path:
     """Get the lessons directory path."""
-    return get_obsidian_vault_dir() / "tutoring" / "lessons"
+    return get_obsidian_vault_dir() / "projects" / "tutoring" / "lessons"
 
 
 def get_invoices_dir() -> Path:
     """Get the invoices directory path."""
-    return get_obsidian_vault_dir() / "tutoring" / "invoices"
+    return get_obsidian_vault_dir() / "projects" / "tutoring" / "invoices"
 
 
 def get_student_dir(student_name: str) -> Path:

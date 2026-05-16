@@ -8,14 +8,14 @@ Expanded detail for the learn-archive-week skill. SKILL.md holds the happy path 
 
 | 분류 | 목적지 |
 |------|--------|
-| devlog (프로젝트 + 날짜) | `agent/projects/{project}/days/devlog-YYYY-MM-DD[-slug].md` |
-| learning (범용 기술/개념) | `agent/learnings/{topic}.md` |
-| learning (프로젝트 특화) | `agent/learnings/projects/{project}.md` |
-| research/resource | `agent/research/{slug}.md` or `agent/references/{slug}.md` |
-| ops (dispatch/result, task 기록) | `agent/projects/{project}/ops/{task-id}-{kind}.md` |
-| stl-*-plan.md, shotloom-conventions | `agent/projects/shotloom-rd/` 아래 적절 위치 |
+| devlog (프로젝트 + 날짜) | configured project `days/` destination |
+| learning (범용 기술/개념) | configured cross-learning destination |
+| learning (프로젝트 특화) | configured project `learnings/` destination |
+| research/resource | configured project `topics/` destination |
+| ops (dispatch/result, task 기록) | configured project `ops/runs/` destination |
+| stl-*-plan.md, shotloom-conventions | configured shotloom project folder |
 | codex-base (memories/order/rules/AGENTS) | `agent/references/codex-base/{path-preserved}.md` |
-| word-of-the-day | `agent/learnings/word-of-the-day/YYYY-MM-DD.md` |
+| word-of-the-day | configured language-learning project folder |
 
 ---
 
@@ -83,7 +83,7 @@ Retained for historical context — the scripts now automate this flow.
 
 ### Step 1: 경로 + 주 범위 확정
 
-1. `~/.claude/private/caol-config/machine-paths.json` 읽어서 `obsidian-agent-root` 경로 추출 (`obsidian-vault-claude`는 legacy fallback)
+1. `~/.claude/private/caol-config/machine-paths.json` 읽어서 `obsidian` 경로 추출
 2. 오늘 날짜 기준 이번 주 월요일 00:00 계산 (`--week-start` 있으면 덮어씀)
 3. 주 범위 = `[monday 00:00, today 23:59]`
 
@@ -111,11 +111,11 @@ Retained for historical context — the scripts now automate this flow.
 Week: 2026-04-13 Mon ~ 2026-04-17 Fri
 Scanned: 56 files (obsidian-staging: 48, codex-base: 8)
 Archived: 54 files
-  devlog: 22 → agent/projects/{proj}/days/
-  learning: 11 → agent/learnings/
-  ops: 13 → agent/projects/{proj}/ops/
-  plan: 3 → agent/projects/shotloom-rd/
-  reference: 5 → agent/references/codex-base/
+  devlog: 22 → configured project days
+  learning: 11 → configured learning destinations
+  ops: 13 → configured project ops
+  plan: 3 → configured shotloom project
+  reference: 5 → configured reference destination
 Skipped: 2 files
   - {reason}
 Deleted originals: 46 files (obsidian-staging)

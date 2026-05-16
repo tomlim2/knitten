@@ -26,7 +26,7 @@ If the folder already supplies type or scope, do not repeat it in the filename.
 
 ## Scope
 
-This standard governs **`caol-ila` repository artifacts only** — files inside `agent/`, `docs/plans/`, and the Obsidian vault under `agent/projects/`.
+This standard governs **`caol-ila` repository artifacts only** — files inside `agent/`, `docs/plans/`, and configured Obsidian project note folders.
 
 **Out of scope:**
 
@@ -110,7 +110,7 @@ Mechanical pattern lives in `agent/config/taxonomy.json` key `planFilenamePatter
 | Migration / refactor | `migrate-to-{target}.md`, `split-{thing}.md` | `migrate-to-llm-first.md`, `split-vault-folders.md` |
 | Garden / review | `garden-{YYYY-MM-DD}.md` | `garden-2026-05-01.md` |
 
-### Vault notes (`{vault}/agent/projects/<project>/<folder>/*.md`)
+### Vault notes (configured project folder)
 
 Folder governs naming. See `agent/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
 

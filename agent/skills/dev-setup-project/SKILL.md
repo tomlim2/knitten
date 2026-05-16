@@ -50,8 +50,8 @@ Usage: /dev-setup-project <project-name> [repo-path]
 
 ### Step 5: Obsidian 문서 폴더 생성
 
-1. `~/.claude/private/caol-config/repo-paths.json`에서 `obsidian` 경로 읽기
-2. `{obsidian}/agent/projects/{project-name}/` 디렉토리 생성
+1. `caol-resolve-doc-path`로 `devlog`, `learning`, `topic` 목적지를 확인
+2. resolver가 반환한 프로젝트 문서 디렉토리 생성
 3. `obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`를 따른 기본 구조 생성:
    - `README.md` — project map, audience, folder routing
    - `days/` — dated work records
@@ -67,7 +67,7 @@ Usage: /dev-setup-project <project-name> [repo-path]
 - Git: {초기화됨 / 이미 존재}
 - repo-paths: {등록됨 / 이미 존재}
 - 스킬 연동: {스킬명 / 없음}
-- Obsidian: agent/projects/{project-name}/
+- Obsidian: configured project folder for `{project-name}`
   ├── README.md
   ├── days/
   ├── learnings/

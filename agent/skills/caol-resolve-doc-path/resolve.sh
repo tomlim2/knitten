@@ -5,6 +5,7 @@
 #   doc  <purpose> [project]  — document storage path (from doc-paths.json)
 #   repo <key>                — git repo path (from repo-paths.json)
 #   tool <key>                — machine tool/app path (from machine-paths.json)
+#   structure                 — vault folder constants (from vault-structure.json)
 #
 # Legacy: resolve.sh <purpose> [project] — treated as doc mode
 
@@ -14,24 +15,36 @@ PRIVATE="$HOME/.claude/private"
 REPO_PATHS="$PRIVATE/caol-config/repo-paths.json"
 MACHINE_PATHS="$PRIVATE/caol-config/machine-paths.json"
 DOC_PATHS="$PRIVATE/caol-config/doc-paths.json"
+VAULT_STRUCTURE="$PRIVATE/caol-config/vault-structure.json"
 
 MODE="${1:-}"
 ARG1="${2:-}"
 ARG2="${3:-}"
 
 # Legacy compat: if mode is not doc/repo/tool, treat as doc purpose
-if [[ "$MODE" != "doc" && "$MODE" != "repo" && "$MODE" != "tool" ]]; then
+if [[ "$MODE" != "doc" && "$MODE" != "repo" && "$MODE" != "tool" && "$MODE" != "structure" ]]; then
   ARG2="$ARG1"
   ARG1="$MODE"
   MODE="doc"
 fi
 
-if [[ -z "$ARG1" ]]; then
+if [[ "$MODE" != "structure" && -z "$ARG1" ]]; then
   echo "Usage:" >&2
   echo "  resolve.sh doc <purpose> [project]" >&2
   echo "  resolve.sh repo <key>" >&2
   echo "  resolve.sh tool <key>" >&2
+  echo "  resolve.sh structure [jq-filter]" >&2
   exit 1
+fi
+
+# ── structure mode ────────────────────────────────────────────────────────────
+if [[ "$MODE" == "structure" ]]; then
+  if [[ ! -f "$VAULT_STRUCTURE" ]]; then
+    echo "ERROR: vault-structure.json not found" >&2; exit 1
+  fi
+  FILTER="${ARG1:-.}"
+  jq -r "$FILTER" "$VAULT_STRUCTURE"
+  exit 0
 fi
 
 # ── repo mode ─────────────────────────────────────────────────────────────────

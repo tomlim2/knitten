@@ -116,7 +116,7 @@ find "{obsidianClaudeDir}/obsidian-staging" -type f -name "*.md" \
   -newermt "$(TZ=Asia/Seoul date +%Y-%m-%d)"
 ```
 
-각 파일: 첫 줄 H1 추출 + 프로젝트 추측 + 승격 경로 제안 `agent/projects/{project}/{filename}`.
+각 파일: 첫 줄 H1 추출 + 프로젝트 추측 + resolver 기반 승격 경로 제안.
 
 ### 3E.3 중복 감지
 
@@ -155,7 +155,7 @@ find "{obsidianClaudeDir}/obsidian-staging" -type f -name "*.md" -mtime +7
 
 📤 obsidian-staging 승격 후보 (오늘 추가)
   - shotloom-devlog-2026-04-20.md
-    → agent/projects/shotloom/shotloom-devlog-2026-04-20.md
+    → projects/shotloom/days/2026-04-20.md
 
 🪞 중복 후보
   - shotloom-devlog-2026-04-17.md ↔ shotloom-devlog-2026-04-20.md

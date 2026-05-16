@@ -5,9 +5,8 @@ Idempotent: skips files with existing valid frontmatter if already at destinatio
 See SKILL.md for full spec.
 
 Machine-specific absolute paths are loaded from
-``~/.claude/private/caol-config/machine-paths.json``. Writers use
-``obsidian-agent-root`` and fall back to the legacy ``obsidian-vault-claude``
-key only while older machines migrate.
+``~/.claude/private/caol-config/machine-paths.json``. Destination folder
+vocabulary is loaded from ``vault-structure.json``.
 """
 from __future__ import annotations
 import json
@@ -22,12 +21,20 @@ HOME = Path.home()
 
 # ---------- load machine-specific paths ----------
 _PATHS_FILE = HOME / ".claude" / "private" / "caol-config" / "machine-paths.json"
+_STRUCTURE_FILE = HOME / ".claude" / "private" / "caol-config" / "vault-structure.json"
 try:
     _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
 except FileNotFoundError:
-    sys.exit(f"archive.py: missing {_PATHS_FILE}. Populate it with obsidian-staging / codex-home / obsidian-agent-root keys.")
+    sys.exit(f"archive.py: missing {_PATHS_FILE}. Populate it with obsidian / obsidian-staging / codex-home keys.")
 except json.JSONDecodeError as e:
     sys.exit(f"archive.py: invalid JSON in {_PATHS_FILE}: {e}")
+
+try:
+    _STRUCTURE = json.loads(_STRUCTURE_FILE.read_text(encoding="utf-8"))
+except FileNotFoundError:
+    sys.exit(f"archive.py: missing {_STRUCTURE_FILE}.")
+except json.JSONDecodeError as e:
+    sys.exit(f"archive.py: invalid JSON in {_STRUCTURE_FILE}: {e}")
 
 
 def _require(key: str) -> Path:
@@ -37,16 +44,14 @@ def _require(key: str) -> Path:
     return Path(val)
 
 
-def _agent_root() -> Path:
-    val = _PATHS.get("obsidian-agent-root") or _PATHS.get("obsidian-vault-claude")
-    if not val:
-        sys.exit("archive.py: machine-paths.json missing 'obsidian-agent-root' (legacy fallback: 'obsidian-vault-claude').")
-    return Path(val)
+def _vault_root() -> Path:
+    return _require("obsidian")
 
 
 TEMP = _require("obsidian-staging")
 CODEX = _require("codex-home")
-VAULT = _agent_root()
+VAULT = _vault_root()
+PROJECTS = _STRUCTURE["rootFolders"]["projects"]
 
 DRY_RUN = "--dry-run" in sys.argv
 
@@ -74,15 +79,15 @@ def infer_destination(rel: Path) -> tuple[Path, list[str]]:
         return rel, [project, kind_by_bucket.get(bucket, "reference")]
 
     if len(parts) >= 2 and parts[0] == "agent" and parts[1] == "learnings":
-        return rel, ["_cross-project", "learning"]
+        return Path(PROJECTS) / "caol-ila" / "learnings" / name, ["_cross-project", "learning"]
 
     if parts and parts[0] == "private-learnings":
-        return Path("agent/learnings") / name, ["_cross-project", "learning"]
+        return Path(PROJECTS) / "caol-ila" / "learnings" / name, ["_cross-project", "learning"]
 
     if parts and parts[0] == "private-ops":
-        return Path("agent/ops") / name, ["_cross-project", "ops"]
+        return Path(PROJECTS) / "caol-ila" / "ops" / "runs" / name, ["_cross-project", "ops"]
 
-    return Path("agent/_inbox") / rel, ["_cross-project", "reference"]
+    return Path(PROJECTS) / "caol-ila" / "topics" / rel, ["_cross-project", "reference"]
 
 
 def build_mapping() -> list[tuple[Path, Path, Path, list[str], str, bool]]:

@@ -3,13 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import { discoverSkills } from '../lib/skill-discovery';
 import { walkMarkdown } from '../lib/doc-discovery';
-import { STANDARDS_DIR, obsidianAgentDir } from '../lib/paths';
+import { STANDARDS_DIR, obsidianVaultDir, vaultRootFolder } from '../lib/paths';
 import { join } from 'node:path';
 
 const skillCount = discoverSkills().length;
 const standardsCount = walkMarkdown(STANDARDS_DIR).length;
-const agentDir = obsidianAgentDir();
-const learningsCount = agentDir ? walkMarkdown(join(agentDir, 'learnings')).length : 0;
+const vaultDir = obsidianVaultDir();
+const learningsCount = vaultDir ? walkMarkdown(join(vaultDir, vaultRootFolder('projects'), 'caol-ila', 'learnings')).length : 0;
 ---
 
 <BaseLayout title="Browse" activeNav="/browse">
@@ -29,7 +29,7 @@ const learningsCount = agentDir ? walkMarkdown(join(agentDir, 'learnings')).leng
         <a href="/learnings" class="hq-browse-tile">
             <h2>Learnings</h2>
             <p class="hq-browse-count">{learningsCount}</p>
-            <p class="hq-browse-desc">Obsidian vault learnings/* recursive scan</p>
+            <p class="hq-browse-desc">Obsidian configured learnings recursive scan</p>
         </a>
     </div>
 </BaseLayout>

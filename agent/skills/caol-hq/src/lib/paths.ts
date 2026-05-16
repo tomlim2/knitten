@@ -12,6 +12,7 @@ export const CAOL_CONFIG_DIR = join(PRIVATE_DIR, 'caol-config');
 
 export const REPO_PATHS_FILE = join(CAOL_CONFIG_DIR, 'repo-paths.json');
 export const MACHINE_PATHS_FILE = join(CAOL_CONFIG_DIR, 'machine-paths.json');
+export const VAULT_STRUCTURE_FILE = join(CAOL_CONFIG_DIR, 'vault-structure.json');
 export const HARDWARE_FILE = join(CAOL_CONFIG_DIR, 'hardware.json');
 
 export type RepoEntry = string | { path: string; description?: string };
@@ -45,7 +46,21 @@ export function loadMachinePaths(): Record<string, string> {
     }
 }
 
-export function obsidianAgentDir(): string | null {
+export function loadVaultStructure(): Record<string, any> {
+    if (!existsSync(VAULT_STRUCTURE_FILE)) return {};
+    try {
+        return JSON.parse(readFileSync(VAULT_STRUCTURE_FILE, 'utf-8')) as Record<string, any>;
+    } catch {
+        return {};
+    }
+}
+
+export function obsidianVaultDir(): string | null {
     const machine = loadMachinePaths();
-    return machine['obsidian-agent-root'] ?? machine['obsidian-vault-claude'] ?? machine['obsidian-staging'] ?? null;
+    return machine.obsidian ?? machine['obsidian-staging'] ?? null;
+}
+
+export function vaultRootFolder(key: string): string {
+    const structure = loadVaultStructure();
+    return structure.rootFolders?.[key] ?? key;
 }

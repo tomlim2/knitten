@@ -20,7 +20,7 @@ Read these references only when the task needs them:
 - `references/VAULT-AUDIENCE.md` — choosing folder audience and style for vault notes
 - `references/OBSIDIAN-FORMAT.md` — creating or migrating vault Markdown
 - `references/TAG-TAXONOMY.md` — assigning, auditing, or adding tags
-- `references/PROJECT-DOCS-STRUCTURE.md` — creating, moving, or auditing files under `agent/projects/<project>/`
+- `references/PROJECT-DOCS-STRUCTURE.md` — creating, moving, or auditing files under the configured project root
 
 ## Workflow: Creating an Obsidian Note
 

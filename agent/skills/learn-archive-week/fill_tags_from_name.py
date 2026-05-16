@@ -14,14 +14,12 @@ except FileNotFoundError:
 except json.JSONDecodeError as e:
     sys.exit(f"fill_tags_from_name.py: invalid JSON in {_PATHS_FILE}: {e}")
 
-_VAULT = _PATHS.get("obsidian") or _PATHS.get("obsidian-agent-root") or _PATHS.get("obsidian-vault-claude")
+_VAULT = _PATHS.get("obsidian")
 if not _VAULT:
     print("obsidian not configured on this machine — nothing to do")
     sys.exit(0)
 
 VAULT = Path(_VAULT)
-if VAULT.name in {"agent", "claude"}:
-    VAULT = VAULT.parent
 EXCLUDE_DIRS = {".trash", ".obsidian"}  # config only — all user docs included
 DRY_RUN = False
 

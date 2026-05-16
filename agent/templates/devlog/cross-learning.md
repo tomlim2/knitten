@@ -45,8 +45,8 @@ source: agent
 #gotcha {{ONE_LINE_GOTCHA}}
 
 <!--
-Cross-project learning — one concept per file at agent/learnings/learning-{{SLUG}}.md
-(flat root, sibling to learning-rust-traits.md etc).
+Cross-project learning — one concept per file in the resolver-owned
+cross-learning destination, using `learning-{{SLUG}}.md`.
 
 Body shape: 증상 → 원인 → 검증 → 해결 (+ 부수 발견 when relevant).
 Skip sections that don't apply for the kind of lesson:

@@ -7,6 +7,7 @@ agent/private/*
 !agent/private/caol-config/
 agent/private/caol-config/*
 !agent/private/caol-config/doc-paths.json
+!agent/private/caol-config/vault-structure.json
 
 # Secrets
 *.env

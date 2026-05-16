@@ -17,7 +17,7 @@ Applies unless one of three switches fires (see below). Non-exhaustive list of L
 ## Switch to human-friendly only when
 
 1. **User explicitly asks.** "Make this README friendlier", "write as a story", "expand for humans". Without an explicit ask, stay LLM-first even on docs that traditionally feel human-facing.
-2. **Writing vault notes for the user's own recall** — `agent/projects/*/days/*.md`, `agent/projects/*/learnings/*.md`. Narrative and analogies welcome.
+2. **Writing vault notes for the user's own recall** — project `days/` and `learnings/` notes in the configured Obsidian project root. Narrative and analogies welcome.
 3. **Speaking in chat to the user.** The conversation itself uses natural prose.
 
 If unsure, default LLM-first.
