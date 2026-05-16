@@ -8,7 +8,8 @@
 # Checks:
 #   frontmatter-heading-glued  (auto-fixable) — `---#` etc on same line
 #   missing-h1                 (report only)  — no `# Title` in first 30 lines
-#   missing-readme             (report only)  — folders without README.md
+#   missing-readme             (report only)  — durable agent folders without README.md
+#   obsidian-contract          (report only)  — frontmatter/tag/H1/link contract
 #   empty-dirs                 (auto-fixable) — empty directories under vault
 
 set -euo pipefail
@@ -18,6 +19,14 @@ if [[ -z "$VAULT" || ! -d "$VAULT" ]]; then
   echo "vault path not found: $VAULT" >&2
   exit 1
 fi
+
+AGENT_ROOT="$(jq -r '."obsidian-agent-root" // ."obsidian-vault-claude" // empty' ~/.claude/private/caol-config/machine-paths.json)"
+if [[ -z "$AGENT_ROOT" || ! -d "$AGENT_ROOT" ]]; then
+  AGENT_ROOT="$VAULT/agent"
+fi
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TAXONOMY="$SCRIPT_DIR/../obsidian-obsidian-markdown/references/TAG-TAXONOMY.md"
 
 APPLY=0
 ONLY=""
@@ -71,28 +80,199 @@ if want missing-h1; then
 fi
 
 # --- missing-readme under agent/projects/* ---
-# Policy: README required only for project roots (depth=3) OR folders with 10+ notes.
-# Thin folders skip per note-inspection-checklist.md (maintenance cost > value).
+# Policy: README required for project roots and durable folders only.
+# Repeated entry folders (`days/`, `learnings/`) inherit from parent.
 if want missing-readme; then
   count=0
   declare -a missing=()
   while IFS= read -r d; do
+    [[ -d "$d" ]] || continue
     [[ -f "$d/README.md" ]] && continue
-    depth=$(awk -F/ '{print NF}' <<< "$d")
-    notes=$(find "$d" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
-    # Project root = depth 3 (agent/projects/<proj>)
-    if (( depth == 3 || notes >= 10 )); then
-      missing+=("$d ($notes notes)")
-      count=$((count+1))
-    fi
-  done < <(find agent/projects -mindepth 1 -maxdepth 2 -type d 2>/dev/null)
+    missing+=("$d")
+    count=$((count+1))
+  done < <(
+    {
+      find "$AGENT_ROOT/projects" -mindepth 1 -maxdepth 1 -type d 2>/dev/null
+      find "$AGENT_ROOT/projects" -type d \( \
+        -path '*/specs' -o \
+        -path '*/plans' -o \
+        -path '*/topics' -o \
+        -path '*/decisions' -o \
+        -path '*/ops/missions' \
+      \) 2>/dev/null
+    } | sort -u
+  )
   if (( count == 0 )); then
-    echo "[missing-readme] clean (per policy: project roots + 10+note folders only)"
+    echo "[missing-readme] clean (per policy: project roots + durable folders only)"
   else
     echo "[missing-readme] offenders ($count):"
-    printf '  %s\n' "${missing[@]}" | head -20
+    printf '  %s\n' "${missing[@]#$VAULT/}" | head -20
     (( count > 20 )) && echo "  ... +$((count-20)) more"
   fi
+fi
+
+# --- obsidian-contract (report only) ---
+if want obsidian-contract; then
+  if [[ ! -f "$TAXONOMY" ]]; then
+    echo "[obsidian-contract] taxonomy not found: $TAXONOMY" >&2
+    exit 1
+  fi
+  node - "$AGENT_ROOT" "$TAXONOMY" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const root = process.argv[2];
+const taxonomyPath = process.argv[3];
+const taxonomy = fs.readFileSync(taxonomyPath, 'utf8');
+const allowedTags = new Set([...taxonomy.matchAll(/`([a-z]+\/[a-z0-9-]+)`/g)].map((m) => m[1]));
+for (const tag of ['status/draft', 'status/active', 'status/blocked', 'status/done']) {
+  allowedTags.add(tag);
+}
+
+const allowedSources = new Set(['agent', 'manual', 'notion-export', 'codex', 'claude-code']);
+const skipDirs = new Set(['.obsidian', '.trash', 'attachments']);
+const issues = [];
+
+function walk(dir, out = []) {
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (skipDirs.has(ent.name)) continue;
+    const file = path.join(dir, ent.name);
+    if (ent.isDirectory()) walk(file, out);
+    else if (ent.isFile() && ent.name.endsWith('.md')) out.push(file);
+  }
+  return out;
+}
+
+function rel(file) {
+  return path.relative(root, file) || '.';
+}
+
+function add(file, code, detail = '') {
+  issues.push({ file: rel(file), code, detail });
+}
+
+function parseFrontmatter(text) {
+  if (!text.startsWith('---\n')) return null;
+  const end = text.indexOf('\n---', 4);
+  if (end < 0) return null;
+  const raw = text.slice(4, end);
+  const body = text.slice(end + 5);
+  const obj = {};
+  let current = null;
+
+  for (const line of raw.split(/\r?\n/)) {
+    const kv = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+    if (kv) {
+      current = kv[1];
+      const value = kv[2].trim();
+      obj[current] = value === '' ? [] : value.replace(/^['"]|['"]$/g, '');
+      continue;
+    }
+
+    if (current && Array.isArray(obj[current])) {
+      const item = line.match(/^\s*-\s*(.+?)\s*$/);
+      if (item) obj[current].push(item[1].replace(/^['"]|['"]$/g, ''));
+    }
+  }
+
+  return { obj, body };
+}
+
+const files = walk(root);
+for (const file of files) {
+  const text = fs.readFileSync(file, 'utf8');
+  const fm = parseFrontmatter(text);
+  if (!fm) {
+    add(file, 'frontmatter.missing', 'no leading YAML frontmatter');
+    continue;
+  }
+
+  for (const key of ['title', 'tags', 'date', 'source']) {
+    if (fm.obj[key] == null || fm.obj[key] === '') add(file, `frontmatter.${key}.missing`);
+  }
+
+  if (fm.obj.type != null) add(file, 'frontmatter.type.present', String(fm.obj.type));
+  if (fm.obj.source && !allowedSources.has(String(fm.obj.source))) {
+    add(file, 'frontmatter.source.invalid', String(fm.obj.source));
+  }
+
+  const tags = Array.isArray(fm.obj.tags) ? fm.obj.tags : (fm.obj.tags ? [String(fm.obj.tags)] : []);
+  if (!Array.isArray(fm.obj.tags)) add(file, 'tags.not-list');
+
+  const typeTags = tags.filter((tag) => tag.startsWith('type/'));
+  const projectTags = tags.filter((tag) => tag.startsWith('project/'));
+  if (typeTags.length !== 1) add(file, 'tags.type.count', `${typeTags.length}: ${typeTags.join(', ')}`);
+  if (projectTags.length !== 1) add(file, 'tags.project.count', `${projectTags.length}: ${projectTags.join(', ')}`);
+  if (tags.length > 5) add(file, 'tags.too-many', `${tags.length} tags`);
+
+  for (const tag of tags) {
+    if (!/^[a-z]+\/[a-z0-9-]+$/.test(tag)) add(file, 'tags.shape.invalid', tag);
+    else if (!allowedTags.has(tag)) add(file, 'tags.taxonomy.unknown', tag);
+  }
+
+  const h1s = [...fm.body.matchAll(/^#\s+(.+)$/gm)].map((m) => m[1].trim());
+  if (h1s.length !== 1) add(file, 'h1.count', `${h1s.length} H1s`);
+  else if (fm.obj.title && h1s[0] !== fm.obj.title) {
+    add(file, 'h1.title.mismatch', `H1="${h1s[0]}" title="${fm.obj.title}"`);
+  }
+
+  const firstBodyLine = fm.body.split(/\r?\n/).find((line) => line.trim());
+  if (firstBodyLine && !firstBodyLine.startsWith('# ')) add(file, 'h1.position', 'first body content is not H1');
+
+  if (/!\[[^\]]*\]\([^)]+\)/.test(text)) add(file, 'links.markdown-image');
+  if (typeTags.includes('type/devlog') && /\[[^\]]+\]\(https?:\/\//.test(fm.body)) {
+    add(file, 'links.external-in-devlog');
+  }
+
+  const inlineTags = [...fm.body.matchAll(/(^|\s)#([A-Za-z0-9][A-Za-z0-9/_-]*)/gm)]
+    .map((m) => `#${m[2]}`)
+    .filter((tag) => !['#rule', '#failed', '#gotcha'].includes(tag));
+  if (inlineTags.length) {
+    add(file, 'tags.inline.body', [...new Set(inlineTags)].slice(0, 5).join(', '));
+  }
+}
+
+const projects = path.join(root, 'projects');
+const readmeRequired = [];
+if (fs.existsSync(projects)) {
+  for (const ent of fs.readdirSync(projects, { withFileTypes: true }).filter((item) => item.isDirectory())) {
+    const projectRoot = path.join(projects, ent.name);
+    readmeRequired.push(projectRoot);
+    for (const durable of ['specs', 'plans', 'topics', 'decisions']) {
+      const dir = path.join(projectRoot, durable);
+      if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) readmeRequired.push(dir);
+    }
+    const missions = path.join(projectRoot, 'ops', 'missions');
+    if (fs.existsSync(missions) && fs.statSync(missions).isDirectory()) readmeRequired.push(missions);
+  }
+}
+
+for (const dir of readmeRequired) {
+  if (!fs.existsSync(path.join(dir, 'README.md'))) add(dir, 'readme.required.missing', 'project root or durable folder');
+}
+
+const byCode = new Map();
+for (const issue of issues) byCode.set(issue.code, (byCode.get(issue.code) || 0) + 1);
+const sorted = [...byCode.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+console.log(`[obsidian-contract] files: ${files.length}`);
+if (issues.length === 0) {
+  console.log('[obsidian-contract] clean');
+  process.exit(0);
+}
+
+console.log(`[obsidian-contract] offenders: ${issues.length}`);
+for (const [code, count] of sorted) {
+  console.log(`  ${String(count).padStart(4)} ${code}`);
+}
+
+console.log('[obsidian-contract] samples:');
+for (const issue of issues.slice(0, 40)) {
+  const suffix = issue.detail ? ` | ${issue.detail}` : '';
+  console.log(`  ${issue.file} | ${issue.code}${suffix}`);
+}
+if (issues.length > 40) console.log(`  ... +${issues.length - 40} more`);
+NODE
 fi
 
 # --- empty-dirs (auto-fix) ---

@@ -31,7 +31,8 @@ jq -r '."obsidian"' ~/.claude/private/caol-config/machine-paths.json
 |----|------|--------------|
 | `frontmatter-heading-glued` | auto-fix | Splits `---#+ Heading` into two lines |
 | `missing-h1` | report | Flags notes with no `# Title` in first 30 lines |
-| `missing-readme` | report | Flags `agent/projects/*` folders without `README.md` |
+| `missing-readme` | report | Flags project roots and durable folders without `README.md` |
+| `obsidian-contract` | report | Audits agent notes against frontmatter, tag, H1, link, source, and README policy |
 | `empty-dirs` | auto-fix | Removes empty directories (skips `.trash`, `.obsidian`, `attachments`) |
 
 Add new checks by appending a `want <name>` block to `fix.sh` and a row here.
@@ -42,9 +43,10 @@ Add new checks by appending a `want <name>` block to `fix.sh` and a row here.
 bash ~/.claude/skills/obsidian-fix-format/fix.sh                        # full audit, dry run
 bash ~/.claude/skills/obsidian-fix-format/fix.sh --apply                # apply auto-fix checks
 bash ~/.claude/skills/obsidian-fix-format/fix.sh --check missing-h1     # single check
+bash ~/.claude/skills/obsidian-fix-format/fix.sh --check obsidian-contract
 ```
 
-Report-only checks (`missing-h1`, `missing-readme`) never auto-rewrite — they need human review.
+Report-only checks (`missing-h1`, `missing-readme`, `obsidian-contract`) never auto-rewrite — they need human review or a separate approved migration pass.
 
 ## When to invoke
 
