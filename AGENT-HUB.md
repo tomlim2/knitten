@@ -15,7 +15,7 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | Shared layers | 6 | `agent/config/agent-hub.json` `sharedLayers` |
 | Registries | 9 | `agent/config/agent-hub.json` `registries` |
 | Generated documents | 5 | `agent/config/agent-hub.json` `generatedDocuments` |
-| Runtime path policies | 7 | `agent/config/agent-hub.json` `runtimePathPolicies` |
+| Runtime path policies | 8 | `agent/config/agent-hub.json` `runtimePathPolicies` |
 | Validators | 17 | `agent/config/agent-hub.json` `validators` |
 
 ## Harnesses

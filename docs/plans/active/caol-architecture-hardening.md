@@ -24,7 +24,7 @@ This spec is intentionally conservative. It records the current scan, separates 
 | Validation | `scripts/validate-llm-first.mjs` passes; path and tool-space hardening checks remain future work | medium |
 | Context routing | `caol-authoring` profile exists with spec, milestone, and implementation-review pilots | low |
 | Standards layer | many standards are redirect stubs with `superseded-by:` | medium |
-| Skill root | `agent/skills/caol-hq/` exists without `SKILL.md`; decision: move to `tools/caol-hq` | high |
+| Skill root | `caol-hq` moved to `tools/caol-hq`; skill root no longer contains the tool app | low |
 | Path indirection | Obsidian paths mostly route through config/resolver | medium |
 | Plan lifecycle | `docs/plans/` has active, completed, report, and historical files in one flat bucket | medium |
 
@@ -37,8 +37,8 @@ This spec is intentionally conservative. It records the current scan, separates 
 | Spec CRUD | `agent/skills/caol-manage-spec/SKILL.md` exists |
 | Milestone CRUD | `agent/skills/caol-manage-milestone/SKILL.md` exists |
 | Implementation review | `agent/skills/caol-review-implementation/SKILL.md` exists |
-| `caol-hq` location | `agent/skills/caol-hq` present; `tools/caol-hq` absent |
-| `caol-hq` manifest | `agent/skills/caol-hq/SKILL.md` absent |
+| `caol-hq` location | `tools/caol-hq` present; `agent/skills/caol-hq` absent |
+| `caol-hq` manifest | not applicable; `caol-hq` is a tool app, not a skill |
 | Hardcoded scan | Batch B patched active executable path candidates; remaining hits are this spec, historical specs, or explicit migration notes |
 
 ## Hardcoded Path Scan
@@ -73,8 +73,8 @@ git ls-files -z -- \
 | P1 | `agent/settings.json` | tracks `/Users/deemooooooooo/.claude/ops/**` permissions | replace with home-relative permission pattern or documented adapter-safe permission template |
 | P1 | `agent/hooks/shotloom-session-start.sh` | hardcodes `/Users/deemooooooooo/Desktop/www/shotloom-github` | resolve through `~/.claude/private/caol-config/repo-paths.json` or `caol-resolve-doc-path repo shotloom` |
 | P1 | `agent/hooks/shotloom-stop-reminder.sh` | hardcodes `/Users/deemooooooooo/Desktop/www/shotloom-github` | same resolver-based fix |
-| P1 | `agent/skills/caol-hq/` | app directory lives under `agent/skills/` but has no `SKILL.md` | move to `tools/caol-hq` |
-| P2 | `agent/commands/caol-open-dashboard.md` | assumes `~/.claude/skills/caol-hq` as dashboard app path | update to `tools/caol-hq` after move |
+| P1 | `tools/caol-hq/` | app directory previously lived under `agent/skills/` without `SKILL.md` | moved to tool space |
+| P2 | `agent/commands/caol-open-dashboard.md` | previously assumed the dashboard app lived under the skills deploy target | updated to resolve `repo caol-ila` and launch `tools/caol-hq` |
 | P2 | `agent/commands/caol-switch-context.md` | uses stale `{obsidianClaudeDir}` placeholders | rewrite around current doc path resolver |
 | P2 | `agent/skills/shotloom-deploy-web/SKILL.md` | hardcoded Shotloom checkout with resolver hint | use resolver command directly |
 | P2 | `docs/import-add-prop-gltf-codex.md` | historical absolute `/Users/younsoolim/Desktop/www/shotloom` command | convert to `<shotloom-root>` or resolver instruction |
@@ -82,7 +82,7 @@ git ls-files -z -- \
 | P2 | `docs/plans/stage-*`, `docs/plans/engine-*`, and similar historical specs | local POC roots and worktree paths remain as exact machine evidence | decide archive allowlist vs placeholder rewrite before validator hard failure |
 | P2 | `docs/plans/completed/workspace-unify-thiserror-deps.md` | historical absolute `/Users/deemooooooooo/...` worktree path | convert to placeholder or archive with explicit historical-path exception |
 | P2 | `agent/private/learnings/git-subtree-split.md` | tracked learning contains absolute `/Users/deemooooooooo/...` path | convert to repo key/path placeholder unless historical exact path is intentionally preserved |
-| P3 | `agent/skills/caol-hq/src/config/runtimes.json` | local PATH extension includes `/Users/younsoolim/.cargo/bin` | if `caol-hq` survives, derive from `$HOME`, `PATH`, or machine config |
+| P3 | `tools/caol-hq/src/config/runtimes.json` | local PATH extension previously included a user-specific cargo path | derives from `$HOME` at runtime |
 | P3 | `agent/skills/caol-log-postmortem/SKILL.md` | example uses `/Users/younsoolim/Desktop/www/some-project` | replace with `<repo-root>` example |
 | P3 | `agent/skills/caol-manage-config/SKILL.md` | setup output examples include user-specific paths | replace with placeholder examples |
 | P3 | `agent/skills/caol-show-patterns/reference.md` | example `/Users/john/projects/data.json` | leave as example or replace with `<repo>/data.json` for consistency |
@@ -96,7 +96,7 @@ git ls-files -z -- \
 | `agent/hooks/shotloom-stop-reminder.sh` | Shotloom repo resolves through `caol-resolve-doc-path repo shotloom` |
 | `agent/commands/caol-switch-context.md` | stale Obsidian context placeholder replaced with private config and doc resolvers |
 | `agent/skills/shotloom-deploy-web/SKILL.md` | deploy preflight uses the Shotloom repo resolver |
-| `agent/skills/caol-hq/src/config/runtimes.json` | local cargo path changed to `$HOME`; runtime launcher expands `$HOME` and `~` |
+| `tools/caol-hq/src/config/runtimes.json` | local cargo path changed to `$HOME`; runtime launcher expands `$HOME` and `~` |
 | `agent/skills/caol-log-postmortem/SKILL.md` | user-specific example path replaced |
 | `agent/skills/caol-manage-config/SKILL.md` | validation example paths replaced with repo-key placeholders |
 | `agent/skills/caol-show-patterns/reference.md` | hardcoded example path generalized |
@@ -106,6 +106,19 @@ git ls-files -z -- \
 Validation for this batch passed: hook shell syntax, `caol-hq` build, Obsidian
 structure checks, LLM-first validator, `git diff --check`, and deploy-target
 diffs for affected shared layers.
+
+### Batch C Patch Status
+
+| Path | Status |
+|------|--------|
+| `tools/caol-hq/` | dashboard app moved from `agent/skills/caol-hq/` |
+| `agent/commands/caol-open-dashboard.md` | launch path now resolves `repo caol-ila` and enters `tools/caol-hq` |
+| `agent/config/agent-hub.json` | tool apps registered as durable mixed git-policy runtime paths |
+| `README.md`, `AGENT-HUB.md` | generated inventory counts updated |
+
+Validation for this batch passed: `pnpm --dir tools/caol-hq build`, stale path
+scan, first-level skill directory shape check, deploy-target diffs, LLM-first
+validator, and `git diff --check`.
 
 ### Stale Path Patterns To Keep At Zero
 
@@ -130,11 +143,11 @@ first-level skill directories without `SKILL.md` are not all hard failures yet.
 
 ### Finding 2: Skill Inventory Has A Shape Blind Spot
 
-`agent/skills/caol-hq/` is a directory under the skills root without `SKILL.md`. The tracked skill count and generated inventory can diverge because one side may count directories while another counts actual skill manifests.
+`caol-hq` was a directory under the skills root without `SKILL.md`. The tracked skill count and generated inventory could diverge because one side may count directories while another counts actual skill manifests.
 
 The validator should fail any first-level `agent/skills/<name>/` directory that lacks `SKILL.md`, unless the directory is explicitly allowlisted as generated/runtime.
 
-Decision: `caol-hq` is a tool app, not a skill. Move it to `tools/caol-hq` and update dashboard commands to launch from that path.
+Decision: `caol-hq` is a tool app, not a skill. It now lives at `tools/caol-hq`, and dashboard commands launch from that path.
 
 ### Finding 3: Standards Redirects Need A Clear Contract
 

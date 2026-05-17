@@ -255,6 +255,14 @@
       "durability": "durable"
     },
     {
+      "id": "tool-apps",
+      "pathPattern": "tools/*",
+      "owner": "caol-ila",
+      "gitPolicy": "mixed",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
       "id": "shared-deploy-tree",
       "pathPattern": "~/.claude/{rules,standards,skills,commands,lib,config}",
       "owner": "caol-ila",

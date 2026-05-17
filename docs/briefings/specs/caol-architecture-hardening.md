@@ -34,13 +34,12 @@ milestone, and post-implementation review skills landed.
 | skill | `agent/skills/caol-review-implementation/SKILL.md` | post-update review |
 | command | `node scripts/validate-llm-first.mjs` | current validator state |
 | command | `git ls-files ... \| rg ...` | tracked hardcoded path scan |
-| directory | `agent/skills/caol-hq` | tool-space migration target |
-| directory | `tools/caol-hq` | expected post-move location |
+| directory | `tools/caol-hq` | dashboard tool app location |
 
 ## Known Decisions
 
 - `caol-hq` is a tool app, not a skill.
-- Preferred future path for the app is `tools/caol-hq`.
+- Dashboard app path is `tools/caol-hq`.
 - Runtime/session artifacts must be excluded from hardcoded path scans.
 - Full validator is currently green.
 
@@ -53,8 +52,8 @@ milestone, and post-implementation review skills landed.
 
 ## Exclusions
 
-- Do not move `caol-hq` in this pilot.
-- Do not patch hooks, settings, commands, or validators in this pilot.
+- Do not move `caol-hq` back under `agent/skills/`.
+- Do not patch validators in this pilot.
 - Do not migrate `docs/plans/` in this pilot.
 
 ## Validation Expected
