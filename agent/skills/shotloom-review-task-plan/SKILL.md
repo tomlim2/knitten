@@ -139,13 +139,21 @@ Before landing, verify:
 - The spec has `## Spec Contract` or equivalent summary of briefing basis,
   current truth, required change, locked boundary, and proof method.
 - The spec has a current-state evidence table with concrete paths.
+- If the spec has `linear:` frontmatter or cites a Linear issue, it has
+  `## Linear Briefing` with issue state, AC summary, blockers, related PRs,
+  current review state, and planning consequence.
 - It has numbered requirements that trace to Linear AC, ADR, repo precedent, or
   user clarification.
+- It has `## Risk Map` with rows for error source chain, schema compatibility,
+  ownership/API boundary, partial mutation/rollback, diagnostic ownership, test
+  oracle strength, scope creep, and reviewer objection.
+- Every applicable Risk Map row has evidence, plan response, and test proof.
+  Any `N/A` must include a concrete rationale.
 - It has an explicit one-PR suitability judgment, either in summary, decisions,
   non-goals, or implementation stages.
 - `## Implementation Spec` starts with baseline re-check or includes one.
 - Every implementation stage maps to at least one requirement and verification
-  item.
+  item. High-risk stages map to a Risk Map row.
 - Every `Locked Decisions` item has `Rationale:` and
   `Rejected alternatives:`.
 - Non-goals list at least five adjacent exclusions.

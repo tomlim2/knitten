@@ -42,8 +42,10 @@ briefing: ../briefings/shotloom/<slug>.md
 | `# <Title>` | Action title derived from live remaining work. |
 | `## Spec Contract` | Five bullets: briefing basis, current truth, required change, locked boundary, proof method. |
 | `## Current State` | Evidence table with paths, symbols, classification, and what each surface proves. |
+| `## Linear Briefing` | Required when frontmatter has `linear:` or the briefing cites a Linear issue. |
 | `## Problem` | Concrete remaining gap after audit, tied to Linear/user intent. |
 | `## Requirements` | Numbered implementation requirements. Each requirement maps to AC, ADR, repo precedent, or user clarification. |
+| `## Risk Map` | Defect-class table with evidence, plan response, and test proof for each applicable risk. |
 | `## Locked Decisions` | Numbered decisions with `Rationale:` and `Rejected alternatives:`. |
 | `## Non-Goals` | Explicit adjacent exclusions. |
 | `## Implementation Spec` | Ordered implementation stages from smallest proof to broader updates. First stage is S0 baseline re-check. |
@@ -68,6 +70,12 @@ briefing: ../briefings/shotloom/<slug>.md
   clarification.
 - Every implementation stage maps to at least one requirement and one
   verification item.
+- Linear-backed specs include `## Linear Briefing` before `## Problem`.
+- Every direct spec includes `## Risk Map` before `## Locked Decisions`.
+- Every applicable Risk Map row has concrete `Evidence`, `Plan response`, and
+  `Test proof`. Use `N/A: <reason>` only when the evidence proves the risk does
+  not apply.
+- High-risk implementation stages cite the Risk Map row they satisfy.
 - Every user-facing string defaults to split diagnostics or labels. Collapse
   only when `Rationale:` cites source evidence.
 - If one operation mutates more than one representation of the same artifact
@@ -85,6 +93,55 @@ briefing: ../briefings/shotloom/<slug>.md
   `std::error::Error::source()` is present or intentionally absent. Do not
   accept `external_error.to_string()` stored in a `String` field unless the spec
   explains why no source chain can exist.
+
+## Step 4 - Linear Briefing Template
+
+Use when a Linear issue id is known:
+
+```md
+## Linear Briefing
+
+| Field | Value |
+|---|---|
+| Issue | `STL-NN` |
+| State | `<current state>` |
+| Owner | `<name or me>` |
+| Goal | `<one sentence from current issue truth>` |
+| Acceptance criteria | `<short AC bullets or N/A>` |
+| Latest relevant comment | `<date + summary or N/A>` |
+| Blockers / dependencies | `<issue ids or N/A>` |
+| Related PRs | `<PR ids or N/A>` |
+| Current review state | `<none/approved/changes requested/checks failing>` |
+| Planning consequence | `<scope, risk, or verification impact>` |
+```
+
+Rules:
+
+- Summarize Linear. Do not paste the full issue body.
+- If Linear conflicts with live code, state the conflict in `## Problem` or
+  `## Locked Decisions`.
+- Update this section when review discovers newer Linear or PR context.
+
+## Step 4 - Risk Map Template
+
+Every direct Shotloom spec includes:
+
+```md
+## Risk Map
+
+| Risk | Applies? | Evidence | Plan response | Test proof |
+|---|---|---|---|---|
+| Error source chain | yes/no | `<path>:<symbol>` | Preserve `#[source]` or state no wrapped source exists. | Assert `Error::source()` or `N/A: internal validator only`. |
+| Schema / serialization compatibility | yes/no | `<contract or serde type>` | Preserve wire shape or name protocol scope. | Round-trip, rejection, or fixture test. |
+| Ownership / API boundary | yes/no | `<crate/module boundary>` | Keep responsibility in owner layer. | Compile/API test or `N/A: no public API change`. |
+| Partial mutation / rollback | yes/no | `<state/cache/persistence path>` | Pre-validate, rollback, or prove no persistence. | Failure-path test proving final state. |
+| Diagnostic ownership | yes/no | `<diagnostic code/source>` | Single owner for code, severity, and recoverability. | Negative test or manual repro. |
+| Test oracle strength | yes | `<planned test>` | Say why it fails before implementation. | Failing-before/passing-after assertion target. |
+| Scope creep | yes | `<adjacent feature>` | Put in Non-Goals or Follow-Up Candidates. | `N/A: plan-boundary proof`. |
+| Reviewer objection | yes | `<likely blocking comment>` | Pre-answer with code/test/doc plan. | Covered by mapped proof row. |
+```
+
+If a row is `no`, the Evidence cell must prove why it does not apply.
 
 ## Step 5 - Cold-Start Spec Validation Loop
 

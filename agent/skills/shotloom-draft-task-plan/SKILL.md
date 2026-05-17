@@ -132,7 +132,12 @@ The spec must answer four questions before any implementation stage appears:
 | How is it proven? | Verification gates, manual repro, and failure-path evidence. |
 
 Apply the specialized clauses in [reference.md](reference.md) for coupled
-artifact atomicity, Rust fixture shape, and error-source-chain proof.
+artifact atomicity, Rust fixture shape, error-source-chain proof, Linear
+Briefing, and Risk Map.
+
+Every direct Shotloom spec must include `## Risk Map`. If a Linear issue id is
+known, the spec must also include `## Linear Briefing`. High-risk
+implementation stages must cite the Risk Map row they satisfy.
 
 If any answer depends on user intent rather than live code or written Linear
 scope, stop and ask the user before writing the direct spec. Do not bury the

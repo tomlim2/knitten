@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-15
 updated: 2026-05-17
 load: triggered
@@ -91,14 +91,13 @@ superseded, and completed plans do not become an undifferentiated pile.
    Rejected alternatives: leaving Linear data only in chat history or Ready
    briefings makes plans less self-contained and harder to review cold.
 
-6. **Add a lightweight `docs/plans/README.md` registry as a separate managed
-   artifact.**
+6. **Use `docs/plans/index.md` as the lifecycle router.**
 
-   Rationale: A single table with status, repo, Linear id, branch/PR, and next
-   action lets agents choose the right plan without scanning dozens of files.
+   Rationale: lifecycle folders plus `spec-lifecycle` validation keep agents
+   from scanning unrelated completed or draft specs.
 
-   Rejected alternatives: renaming every existing plan or moving files into
-   folders is too much churn for this change and risks breaking links.
+   Rejected alternatives: a separate flat registry row duplicates lifecycle
+   state and creates another drift surface.
 
 ## Required Linear Briefing Template
 
@@ -131,7 +130,8 @@ Rules:
 
 ## Plan Directory Management
 
-Add `docs/plans/README.md` with:
+Use `docs/plans/index.md` and lifecycle folders. Do not add a separate flat
+plan registry.
 
 | Column | Meaning |
 |---|---|
@@ -144,10 +144,10 @@ Add `docs/plans/README.md` with:
 
 Management rules:
 
-- New direct plans add one README row in the same change that creates the plan.
-- Plan review updates the row when status, PR, or next action changes.
+- New direct plans use the lifecycle folder selected by `caol-manage-spec`.
+- Plan review updates status by moving the spec when lifecycle state changes.
 - Superseded plans point to the replacement plan.
-- Do not archive by moving files until a separate archive policy exists.
+- Do not create spec files directly under `docs/plans/`.
 
 ## Required Risk Map Template
 
@@ -205,11 +205,11 @@ Plans must include:
    `## Linear Briefing` section. Make review treat stale or missing Linear
    briefing evidence as `P2` when the plan references a Linear issue.
 
-7. **S6: Plan registry changes.**
+7. **S6: Plan lifecycle alignment.**
 
-   Add `docs/plans/README.md` with the registry table and management rules.
-   Update the two skills so creating or reviewing a direct plan maintains the
-   registry row without touching unrelated rows.
+   Use `docs/plans/index.md` and lifecycle folders instead of a separate plan
+   registry row. Creation and review skills write to lifecycle paths and rely
+   on `spec-lifecycle` for path/status validation.
 
 8. **S7: Validation.**
 
@@ -227,10 +227,9 @@ Plans must include:
 - Plans with Linear ids include `## Linear Briefing` with issue state, AC,
   latest relevant comment, blockers, related PRs, current review state, and
   planning consequence.
-- `docs/plans/README.md` exists and defines a plan registry table plus minimal
-  status/update rules.
-- Plan creation and plan review skills update the registry row for direct plans
-  without rewriting unrelated rows.
+- `docs/plans/index.md` exists and defines lifecycle folders.
+- Plan creation and plan review skills use lifecycle paths without writing flat
+  `docs/plans/<slug>.md` specs.
 - The skills describe cold-start review as orientation plus contradiction
   detection, not as the sole review method.
 - `node scripts/validate-llm-first.mjs` passes.
@@ -242,8 +241,8 @@ Plans must include:
   high-risk implementation stage maps back to a Risk Map row.
 - Manual check: inspect one Linear-backed plan and confirm the Linear briefing
   explains how issue context changes scope, risk, or verification.
-- Manual check: inspect `docs/plans/README.md` and confirm the new plan has one
-  row with a concrete next action.
+- Manual check: inspect `docs/plans/index.md` and confirm lifecycle folders are
+  explicit.
 
 ## Traps
 
@@ -257,10 +256,17 @@ Plans must include:
 - Do not make plan registry maintenance a broad gardening task; update only the
   row for the plan being created or reviewed.
 
+## Execution Notes
+
+| Date | Action | Result |
+|------|--------|--------|
+| 2026-05-17 | Added Risk Map contract | `shotloom-draft-task-plan` requires `## Risk Map`; review floor checks treat missing proof as `P2` |
+| 2026-05-17 | Added Linear Briefing contract | draft and review flows require `## Linear Briefing` for Linear-backed specs |
+| 2026-05-17 | Aligned directory management | plan registry requirement replaced by lifecycle folders and `docs/plans/index.md` |
+
 ## Follow-Up Candidates
 
 - Add a validator for plan section presence if plan formats stabilize.
 - Create a small library of task-type-specific risk rows for Rust parser,
   bridge protocol, editor UI, cache, and deployment plans.
-- Add an archive policy after the README registry has enough status history to
-  show which files should move.
+- Add a validator for Shotloom spec section presence if plan formats stabilize.
