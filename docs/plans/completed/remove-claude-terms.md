@@ -1,7 +1,7 @@
 ---
-status: implemented-validation-blocked
+status: completed
 created: 2026-05-16
-updated: 2026-05-16
+updated: 2026-05-17
 owner: caol-ila
 ---
 
@@ -232,9 +232,13 @@ Validator status:
 
 | Check | Result |
 |-------|--------|
-| `node scripts/validate-llm-first.mjs` | blocked by unrelated untracked `agent/skills/caol-serve-skills/`, which makes README inventory count `137` vs actual `138` |
+| `node scripts/validate-llm-first.mjs` | pass |
+| targeted generic wording search | only this completed spec and external/plugin/file-history references hit generic Claude wording |
 
-Do not update README inventory for this task unless `agent/skills/caol-serve-skills/` is intentionally added or removed.
+Residual active-source hits are allowed when they refer to `CLAUDE.md`, the
+Claude Code harness, the `~/.claude/` deploy target, runtime variables,
+adapter metadata, third-party plugin content, or historical file-history
+snapshots.
 
 ## Non-Goals
 
