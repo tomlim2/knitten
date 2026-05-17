@@ -1,9 +1,10 @@
 ---
-status: proposed
+status: active
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
 milestone: spec-lifecycle-system
+briefing: ../briefings/specs/caol-architecture-hardening.md
 ---
 
 # Caol Architecture Hardening
@@ -20,31 +21,40 @@ This spec is intentionally conservative. It records the current scan, separates 
 |------|---------------|------|
 | Shared policy entry | `SYSTEM.md`, `AGENTS.md`, `CLAUDE.md`, and `AGENT-HUB.md` form a clear adapter stack | low |
 | Agent root | `agent/` is the shared artifact root; runtime/cache paths are not tracked | low |
-| Validation | `scripts/validate-llm-first.mjs` runs broad policy checks | medium |
-| Context routing | `agent/config/context-routing.json` has core profiles only | medium |
+| Validation | `scripts/validate-llm-first.mjs` passes; path and tool-space hardening checks remain future work | medium |
+| Context routing | `caol-authoring` profile exists with spec, milestone, and implementation-review pilots | low |
 | Standards layer | many standards are redirect stubs with `superseded-by:` | medium |
 | Skill root | `agent/skills/caol-hq/` exists without `SKILL.md`; decision: move to `tools/caol-hq` | high |
 | Path indirection | Obsidian paths mostly route through config/resolver | medium |
 | Plan lifecycle | `docs/plans/` has active, completed, report, and historical files in one flat bucket | medium |
 
+## Pilot Update 2026-05-17
+
+| Check | Result |
+|-------|--------|
+| Full validator | `node scripts/validate-llm-first.mjs` passes |
+| `caol-authoring` | profile and route fixtures exist |
+| Spec CRUD | `agent/skills/caol-manage-spec/SKILL.md` exists |
+| Milestone CRUD | `agent/skills/caol-manage-milestone/SKILL.md` exists |
+| Implementation review | `agent/skills/caol-review-implementation/SKILL.md` exists |
+| `caol-hq` location | `agent/skills/caol-hq` present; `tools/caol-hq` absent |
+| `caol-hq` manifest | `agent/skills/caol-hq/SKILL.md` absent |
+| Hardcoded scan | tracked-source scan finds active path and stale-name cleanup candidates |
+
 ## Hardcoded Path Scan
 
-Command shape used for this pass:
+Command shape used for this pass. Use tracked files only so runtime/session
+logs do not dominate the result:
 
 ```bash
-rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|~/\.claude|~/\.codex|agent/skills/caol-hq|obsidianClaudeDir|repo-paths\.json.*obsidian|notes/INDEX)" \
+git ls-files -z -- \
   SYSTEM.md AGENTS.md CLAUDE.md AGENT-HUB.md agent docs scripts \
-  -g '!agent/skills/**/node_modules/**' \
-  -g '!agent/skills/**/dist/**' \
-  -g '!docs/plans/*-reports/**' \
-  -g '!agent/telemetry/**' \
-  -g '!agent/todos/**' \
-  -g '!agent/cache/**' \
-  -g '!agent/backups/**' \
-  -g '!agent/paste-cache/**' \
-  -g '!agent/statsig/**' \
-  -g '!agent/ide/**' \
-  -g '!docs/plans/caol-architecture-hardening.md'
+  ':(exclude)agent/skills/**/node_modules/**' \
+  ':(exclude)agent/skills/**/dist/**' \
+  ':(exclude)agent/skills/**/.astro/**' \
+  ':(exclude)docs/plans/*-reports/**' \
+  ':(exclude)docs/plans/caol-architecture-hardening.md' |
+  xargs -0 rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)"
 ```
 
 ### Allowed Patterns
@@ -65,10 +75,16 @@ rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|~/\.claude|~/\.codex|
 | P1 | `agent/hooks/shotloom-stop-reminder.sh` | hardcodes `/Users/deemooooooooo/Desktop/www/shotloom-github` | same resolver-based fix |
 | P1 | `agent/skills/caol-hq/` | app directory lives under `agent/skills/` but has no `SKILL.md` | move to `tools/caol-hq` |
 | P2 | `agent/commands/caol-open-dashboard.md` | assumes `~/.claude/skills/caol-hq` as dashboard app path | update to `tools/caol-hq` after move |
+| P2 | `agent/commands/caol-switch-context.md` | uses stale `{obsidianClaudeDir}` placeholders | rewrite around current doc path resolver |
+| P2 | `agent/skills/shotloom-deploy-web/SKILL.md` | hardcoded Shotloom checkout with resolver hint | use resolver command directly |
 | P2 | `docs/import-add-prop-gltf-codex.md` | historical absolute `/Users/younsoolim/Desktop/www/shotloom` command | convert to `<shotloom-root>` or resolver instruction |
+| P2 | `docs/plans/import-add-prop-gltf.md` | historical absolute `/Users/younsoolim/Desktop/www/shotloom` command | convert to `<shotloom-root>` or mark historical exact path |
+| P2 | `docs/plans/stage-*`, `docs/plans/engine-*`, and similar historical specs | local POC roots and worktree paths remain as exact machine evidence | decide archive allowlist vs placeholder rewrite before validator hard failure |
 | P2 | `docs/plans/workspace-unify-thiserror-deps.md` | historical absolute `/Users/deemooooooooo/...` worktree path | convert to placeholder or archive with explicit historical-path exception |
 | P2 | `agent/private/learnings/git-subtree-split.md` | tracked learning contains absolute `/Users/deemooooooooo/...` path | convert to repo key/path placeholder unless historical exact path is intentionally preserved |
 | P3 | `agent/skills/caol-hq/src/config/runtimes.json` | local PATH extension includes `/Users/younsoolim/.cargo/bin` | if `caol-hq` survives, derive from `$HOME`, `PATH`, or machine config |
+| P3 | `agent/skills/caol-log-postmortem/SKILL.md` | example uses `/Users/younsoolim/Desktop/www/some-project` | replace with `<repo-root>` example |
+| P3 | `agent/skills/caol-manage-config/SKILL.md` | setup output examples include user-specific paths | replace with placeholder examples |
 | P3 | `agent/skills/caol-show-patterns/reference.md` | example `/Users/john/projects/data.json` | leave as example or replace with `<repo>/data.json` for consistency |
 
 ### Stale Path Patterns To Keep At Zero
@@ -86,15 +102,11 @@ notes/INDEX as a live catalog destination
 
 ## Architecture Findings
 
-### Finding 1: Validator Is Currently Red
+### Finding 1: Validator Is Green But Hardening Gaps Remain
 
-`node scripts/validate-llm-first.mjs` fails on terminology:
-
-```text
-docs/plans/obsidian-root-projects-daily-migration.md:194 asks for the glossary term "agent root"
-```
-
-The line should be reworded away from the older root wording because the glossary reserves "agent root" and "deploy target" for specific meanings.
+`node scripts/validate-llm-first.mjs` passes. The remaining risk is coverage:
+tracked user-specific absolute paths, stale Obsidian placeholders, and
+first-level skill directories without `SKILL.md` are not all hard failures yet.
 
 ### Finding 2: Skill Inventory Has A Shape Blind Spot
 
@@ -118,14 +130,15 @@ Without this distinction, agents can over-load stale standard files or treat ski
 
 ### Finding 4: Context Routing Profiles Are Incomplete
 
-Current routing profiles cover core Shotloom, Unreal, web, and Obsidian work. Missing candidate profiles from prior refactors should be reviewed before broad cleanup:
+Current routing profiles cover core Shotloom, Unreal, web, Obsidian, and caol
+authoring work. Missing candidate profiles from prior refactors should be
+reviewed before broad cleanup:
 
 ```text
 shotloom-ops
 cinev-art
 3d-vrm
 video-hyperframes
-caol-authoring
 ```
 
 These profiles should be added only when they reduce default context loading. A profile is not useful if it just duplicates existing route metadata.
@@ -148,11 +161,14 @@ This should be a separate migration because many docs and validators may link to
 
 ## Execution Plan
 
-### Batch A: Make Current Validation Green
+### Batch A: Current Validation Baseline
 
-1. Reword the terminology violation in `docs/plans/obsidian-root-projects-daily-migration.md`.
-2. Run `node scripts/validate-llm-first.mjs`.
-3. Do not widen scope in this batch.
+Status: completed before this pilot.
+
+1. `node scripts/validate-llm-first.mjs` passes.
+2. `caol-authoring` routing exists.
+3. This spec update records the current scan and leaves execution batches
+   focused.
 
 ### Batch B: Remove User-Specific Absolute Paths
 
@@ -206,12 +222,14 @@ git status --short --branch
 For path cleanup batches, also run:
 
 ```bash
-rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)" \
+git ls-files -z -- \
   SYSTEM.md AGENTS.md CLAUDE.md AGENT-HUB.md agent docs scripts \
-  -g '!agent/skills/**/node_modules/**' \
-  -g '!agent/skills/**/dist/**' \
-  -g '!docs/plans/*-reports/**' \
-  -g '!docs/plans/caol-architecture-hardening.md'
+  ':(exclude)agent/skills/**/node_modules/**' \
+  ':(exclude)agent/skills/**/dist/**' \
+  ':(exclude)agent/skills/**/.astro/**' \
+  ':(exclude)docs/plans/*-reports/**' \
+  ':(exclude)docs/plans/caol-architecture-hardening.md' |
+  xargs -0 rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)"
 ```
 
 For shared artifact edits, verify deploy-target sync where the edited subtree is deployed:

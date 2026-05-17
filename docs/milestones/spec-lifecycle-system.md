@@ -27,7 +27,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | [caol-manage-spec.md](../plans/caol-manage-spec.md) | implemented | define the spec intake, routing, CRUD, review, and lifecycle manager |
 | [caol-review-implementation.md](../plans/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
 | [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
-| [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | proposed | adjacent architecture hardening work that supplies validator and path-cleanup context |
+| [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
 | `docs-plans-lifecycle-migration.md` | todo | future migration for plan/spec folder lifecycle and renames |
 | `spec-validator-hardening.md` | todo | future validator checks for milestones, spec links, and lifecycle drift |
 
@@ -42,7 +42,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | Implementation review skill | done | `agent/skills/caol-review-implementation/SKILL.md` exists |
 | Milestone skill implementation | done | `agent/skills/caol-manage-milestone/SKILL.md` exists with reference files |
 | Milestone attach pilot | done | `caol-manage-milestone.md` status and milestone row are updated through the new rules |
-| Spec manager pilot | todo | first pilot should update `caol-architecture-hardening.md` through `caol-manage-spec` |
+| Spec manager pilot | done | `caol-architecture-hardening.md` updated through `caol-manage-spec` with persisted intake |
 | Lifecycle migration | deferred | rename/move work is explicitly deferred until after the pilot |
 | Validator hardening | todo | taxonomy registers milestone filenames; deeper link/status checks are future work |
 
