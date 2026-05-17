@@ -22,10 +22,10 @@ After Step 1 resolves `$spec_path`, every stop writes one `.md` artifact:
 
 | Result | Artifact | Commit |
 |---|---|---|
-| Clean converged spec | `$caol_ila/docs/plans/<slug>.md` + `$caol_ila/docs/briefings/shotloom/<slug>.md` | Yes |
-| Step 2 factual stop | `$caol_ila/docs/plans/<slug>.draft.md` | No |
-| Unconverged draft | `$caol_ila/docs/plans/<slug>.partial.md` | No |
-| Parallel or staged-delete spec | `$caol_ila/docs/plans/<slug>.claude.md` | No |
+| Clean converged spec | `$caol_ila/docs/plans/proposed/<slug>.md` + `$caol_ila/docs/briefings/shotloom/<slug>.md` | Yes |
+| Step 2 factual stop | `$caol_ila/docs/plans/drafts/<slug>.md` | No |
+| Unconverged draft | `$caol_ila/docs/plans/drafts/<slug>-partial.md` | No |
+| Parallel or staged-delete spec | `$caol_ila/docs/plans/drafts/<slug>-claude.md` | No |
 
 Pre-Step-1 failures stop without writing because no target path exists.
 
@@ -75,11 +75,11 @@ fi
 Verify:
 - `/shotloom-start-task` has run and the user accepted the Ready briefing.
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
-- `$caol_ila/docs/plans/` exists.
+- `$caol_ila/docs/plans/proposed/` and `$caol_ila/docs/plans/drafts/` exist.
 - `$caol_ila/docs/briefings/shotloom/$slug.md` exists.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Set `spec_path="$caol_ila/docs/plans/$slug.md"`. Surface spec slug, target,
+Set `spec_path="$caol_ila/docs/plans/proposed/$slug.md"`. Surface spec slug, target,
 briefing path, and Shotloom root.
 
 ### Step 2: Run Current-State Audit
@@ -104,7 +104,7 @@ skip commit, then ask for the split or scope decision.
 
 ### Step 3: Detect Create vs Update Mode
 
-Inspect `$spec_path`, `git status`, and `git show HEAD:docs/plans/<slug>.md`.
+Inspect `$spec_path`, `git status`, and `git show HEAD:docs/plans/proposed/<slug>.md`.
 Use Read for files present on disk. Use `git show HEAD:<path>` only for
 HEAD-only or deleted-at-HEAD content.
 
@@ -170,7 +170,7 @@ From `caol-ila`:
 git config user.name
 git config user.email
 git add docs/briefings/shotloom/<slug>.md
-git add docs/plans/<slug>.md
+git add docs/plans/proposed/<slug>.md
 git commit -m "docs(shotloom): spec <slug>"
 git push
 ```
@@ -178,8 +178,9 @@ git push
 Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. If hooks
 fail, fix the cause and retry. Never use `--no-verify`.
 
-Commit only `docs/briefings/shotloom/<slug>.md` and `docs/plans/<slug>.md`
-unless the user explicitly requested skill or doc edits in the same turn.
+Commit only `docs/briefings/shotloom/<slug>.md` and
+`docs/plans/proposed/<slug>.md` unless the user explicitly requested skill or
+doc edits in the same turn.
 
 ### Step 7: Chain to Review or Stop
 

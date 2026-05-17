@@ -2185,19 +2185,57 @@ async function checkSpecLifecycle() {
   const planRoot = path.join(REPO_ROOT, "docs", "plans");
   const milestoneRoot = path.join(REPO_ROOT, "docs", "milestones");
   const specIntakeRoot = path.join(REPO_ROOT, "docs", "briefings", "specs");
+  const allowedPlanDirs = new Set(["active", "archive", "completed", "drafts", "parked", "proposed", "reports"]);
+  const allowedStatusesByDir = new Map([
+    ["active", new Set(["active", "implemented-validation-blocked", "open"])],
+    ["archive", new Set(["archived", "superseded"])],
+    ["completed", new Set(["completed", "done", "implemented"])],
+    ["drafts", new Set(["draft", "draft-conflict"])],
+    ["parked", new Set(["blocked", "parked"])],
+    ["proposed", new Set(["proposed"])],
+  ]);
   const specFiles = (await walk(planRoot, (f) => f.endsWith(".md"))).filter(isSpecPlanFile);
   const specByRel = new Map();
   const specsBySlug = new Map();
   const specsByMilestone = new Map();
 
+  const planRootEntries = await listDirOnce(planRoot);
+  for (const entry of planRootEntries) {
+    if (entry.isDirectory() && !allowedPlanDirs.has(entry.name)) {
+      violations.push({
+        file: `docs/plans/${entry.name}`,
+        line: 0,
+        message: "unexpected first-level docs/plans directory",
+      });
+    }
+    if (entry.isFile() && entry.name.endsWith(".md") && !["README.md", "index.md"].includes(entry.name)) {
+      violations.push({
+        file: `docs/plans/${entry.name}`,
+        line: 0,
+        message: "spec markdown must live under a lifecycle folder",
+      });
+    }
+  }
+
   for (const f of specFiles) {
     const relativePath = repoRelPath(f);
+    const planRel = path.relative(planRoot, f).split(path.sep);
+    const lifecycleDir = planRel[0];
     const slug = markdownSlug(f);
     const text = await readFile(f, "utf8");
     const fm = parseFrontmatter(text);
     specByRel.set(relativePath, { file: f, relativePath, slug, fm });
     if (!specsBySlug.has(slug)) specsBySlug.set(slug, []);
     specsBySlug.get(slug).push(relativePath);
+
+    const allowedStatuses = allowedStatusesByDir.get(lifecycleDir);
+    if (allowedStatuses && fm?.status && !allowedStatuses.has(fm.status)) {
+      violations.push({
+        file: relativePath,
+        line: 1,
+        message: `status ${JSON.stringify(fm.status)} does not match lifecycle folder ${JSON.stringify(lifecycleDir)}`,
+      });
+    }
 
     if (fm?.briefing) {
       const target = resolveRepoMarkdownPath(f, fm.briefing);

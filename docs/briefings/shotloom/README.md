@@ -12,7 +12,7 @@ docs/briefings/shotloom/<slug>.md
 The matching spec lives at:
 
 ```text
-docs/plans/<slug>.md
+docs/plans/proposed/<slug>.md
 ```
 
 Commit both files together when `/shotloom-draft-spec` lands a clean direct

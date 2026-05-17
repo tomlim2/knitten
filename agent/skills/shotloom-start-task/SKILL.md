@@ -218,11 +218,11 @@ Tell the user explicitly what comes next:
 
 **Spec ↔ implementation are two distinct gates.** Task-spec authoring is
 delegated to [`/shotloom-draft-spec`](../shotloom-draft-spec/SKILL.md), which
-writes `caol-ila/docs/plans/<slug>.md`, runs the review loop, commits/pushes
-from caol-ila, shares the final spec path, then asks whether to implement. It
-reads `caol-ila/docs/briefings/shotloom/<slug>.md` first and commits that
-briefing with the spec. Implementation begins only after a separate user
-message such as "구현 시작", "implement", or "go".
+writes `caol-ila/docs/plans/proposed/<slug>.md`, runs the review loop,
+commits/pushes from caol-ila, shares the final spec path, then asks whether to
+implement. It reads `caol-ila/docs/briefings/shotloom/<slug>.md` first and
+commits that briefing with the spec. Implementation begins only after a
+separate user message such as "구현 시작", "implement", or "go".
 
 This skill (`/shotloom-start-task`) NEVER:
 - Writes the task spec doc itself.

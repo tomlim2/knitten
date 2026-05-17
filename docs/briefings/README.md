@@ -13,5 +13,5 @@ Persistent task briefings live here.
 Rules:
 
 - Write a briefing before writing the matching spec.
-- Use `docs/plans/<slug>.md` for the matching spec until the legacy spec path changes by decision record.
+- Use the lifecycle spec path under `docs/plans/` for the matching spec.
 - Commit the briefing with the matching spec when the direct spec lands.

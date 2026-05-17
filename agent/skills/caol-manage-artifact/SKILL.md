@@ -20,7 +20,7 @@ This skill prevents CRUD drift across skills, rules, standards, commands, plans,
 | command | `agent/commands/<name>.md` |
 | rule | `agent/rules/<name>.md` |
 | standard | `agent/standards/<group>/<name>.md` |
-| plan | `docs/plans/<name>.md` |
+| plan | `docs/plans/<lifecycle>/<name>.md` |
 | decision | `docs/decisions/<id>-<name>.md` |
 | entry document | `SYSTEM.md`, `AGENTS.md`, `CLAUDE.md` |
 | manifest / registry | `agent/config/*.json`, `README.md`, `AGENT-HUB.md`, `LOOKUP.md` |

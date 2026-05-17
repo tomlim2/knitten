@@ -15,7 +15,6 @@ docs/plans/drafts/<slug>.md
 docs/plans/parked/<slug>.md
 docs/plans/completed/<slug>.md
 docs/plans/archive/<slug>.md
-docs/plans/<slug>.md
 ```
 
 If more than one path exists for the same slug, stop and report duplicate
@@ -36,9 +35,8 @@ Default create target:
 | start implementation now | `docs/plans/active/<slug>.md` |
 | conflict or unresolved facts | `docs/plans/drafts/<slug>.md` |
 
-During the transition, existing flat paths under `docs/plans/<slug>.md` remain
-valid. New code and skills should use the resolver instead of assuming the flat
-path.
+Flat paths under `docs/plans/<slug>.md` are invalid for specs. Move or create
+specs under one lifecycle folder.
 
 ## Preferred Status Values
 

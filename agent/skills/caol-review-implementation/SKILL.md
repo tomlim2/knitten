@@ -84,7 +84,6 @@ docs/plans/drafts/<slug>.md
 docs/plans/parked/<slug>.md
 docs/plans/completed/<slug>.md
 docs/plans/archive/<slug>.md
-docs/plans/<slug>.md
 ```
 
 If multiple paths exist, stop and report duplicate lifecycle state.

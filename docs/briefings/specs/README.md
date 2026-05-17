@@ -25,6 +25,5 @@ management, or multi-repo behavior.
 Briefings record inputs. Specs record the executable work contract. Do not
 duplicate the whole spec body here.
 
-The intake frontmatter `spec:` field must point to the actual spec path. Legacy
-flat paths such as `docs/plans/<slug>.md` remain valid until the lifecycle
-migration moves them.
+The intake frontmatter `spec:` field must point to the actual lifecycle spec
+path. Flat spec paths under `docs/plans/<slug>.md` are invalid.

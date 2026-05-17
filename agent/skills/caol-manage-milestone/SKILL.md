@@ -60,7 +60,6 @@ docs/plans/drafts/<spec>.md
 docs/plans/parked/<spec>.md
 docs/plans/completed/<spec>.md
 docs/plans/archive/<spec>.md
-docs/plans/<spec>.md
 ```
 
 If more than one path exists, stop and report duplicate lifecycle state.

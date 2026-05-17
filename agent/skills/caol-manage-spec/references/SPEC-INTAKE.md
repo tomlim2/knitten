@@ -86,9 +86,8 @@ spec: docs/plans/<lifecycle>/<slug>.md
 1. Intake records inputs; it does not duplicate the final spec body.
 2. Facts need evidence: file, command result, existing doc, issue, or user
    statement.
-3. Decisions may cite the current chat as source when the user decided it.
+3. Decisions can cite the current chat as source when the user decided it.
 4. If evidence conflicts, write `.draft.md` or ask one short question.
 5. Do not invent paths. Resolve repo and vault paths through config or resolver
    skills.
-6. If the matching spec still lives at the legacy flat path, `spec:` may use
-   `docs/plans/<slug>.md` until the lifecycle migration moves it.
+6. Set `spec:` to the actual lifecycle spec path under `docs/plans/`.

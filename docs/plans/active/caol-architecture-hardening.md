@@ -149,6 +149,16 @@ changed UE/CCI scripts, active hardcoded path scan, LLM-first validator, and
 Validation for this batch passed: `context-routing`, `generated-blocks`,
 LLM-first validator, and `git diff --check`.
 
+### Batch F Patch Status
+
+| Area | Status |
+|------|--------|
+| Spec lifecycle contract | flat `docs/plans/<slug>.md` paths removed from CRUD and review resolvers |
+| Shotloom spec wrappers | direct specs now target `docs/plans/proposed/<slug>.md`; conflict drafts target `docs/plans/drafts/` |
+| Briefing docs | matching spec language now points to lifecycle paths |
+| Garden review output | follow-up plans target `docs/plans/proposed/` |
+| Validator | `spec-lifecycle` now rejects top-level spec markdown, unexpected lifecycle dirs, and status/folder mismatches |
+
 ### Stale Path Patterns To Keep At Zero
 
 These should remain absent from active executable docs:
@@ -214,12 +224,15 @@ Possible structure:
 ```text
 docs/plans/
   active/
+  proposed/
+  drafts/
+  parked/
   completed/
   archive/
   reports/
 ```
 
-This should be a separate migration because many docs and validators may link to current flat paths.
+This migration is complete. New specs must use lifecycle folders.
 
 ## Execution Plan
 
@@ -270,6 +283,8 @@ Status: completed.
 4. Prefer skill-owned references for domain-specific rubrics.
 
 ### Batch F: Plan Lifecycle Migration
+
+Status: completed.
 
 1. Add a plan lifecycle spec.
 2. Move completed/historical specs in one batch with link updates.

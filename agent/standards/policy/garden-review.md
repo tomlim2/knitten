@@ -6,7 +6,7 @@ status: accepted
 
 Periodic structural audit of the repository against `llm-first-policy.md`. Run every minor version (v3.x → v3.x+1) or whenever the validator stays clean for 30 days but the layer model has drifted in ways the validator cannot see.
 
-**Output:** a follow-up plan in `docs/plans/garden-<date>.md` if any P0/P1 finding is filed. No finding → record the date in this file's "Last clean run" line and skip.
+**Output:** a follow-up plan in `docs/plans/proposed/garden-<date>.md` if any P0/P1 finding is filed. No finding → record the date in this file's "Last clean run" line and skip.
 
 ---
 
@@ -73,7 +73,7 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 For each failing checkbox:
 
 1. Decide severity: **P0** (cold-start LLM is misled), **P1** (structural inconsistency, no immediate harm), **P2** (cosmetic).
-2. Write a one-line entry in the new `docs/plans/garden-<YYYY-MM-DD>.md` file: `[P_] <one-line description> — fix: <one-line action>`.
+2. Write a one-line entry in the new `docs/plans/proposed/garden-<YYYY-MM-DD>.md` file: `[P_] <one-line description> — fix: <one-line action>`.
 3. Group entries by section (1–6) and severity.
 4. If 0 findings: append `- <YYYY-MM-DD>: clean` to the "Last clean runs" list at the bottom of this file. Do NOT create the plan file.
 

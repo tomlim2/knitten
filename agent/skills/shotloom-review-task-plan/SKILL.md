@@ -19,7 +19,7 @@ the task spec artifact only. Do not edit Shotloom source files.
 
 ## Purpose
 
-Take an existing `caol-ila/docs/plans/*.md` spec and validate it as a
+Take an existing lifecycle spec under `caol-ila/docs/plans/` and validate it as a
 requirements/decisions/verification contract. Run cold-start rounds until no
 unhandled `P1`/`P2` findings remain. Patch the spec after each serious finding.
 When only `P3`/nit findings remain, land the spec and stop.
@@ -31,8 +31,7 @@ When only `P3`/nit findings remain, land the spec and stop.
   `<type>/`.
 - If cwd is `caol-ila`, an omitted input is a hard stop. Pass a slug or path.
 - If the input is a path, use it directly.
-- Otherwise resolve to
-  `$caol_ila/docs/plans/<slug-or-derived-branch-body>.md`.
+- Otherwise resolve the slug through the spec lifecycle search order.
 
 ## Preconditions
 
@@ -173,7 +172,7 @@ If the spec has no unhandled `P1`/`P2`, commit only that spec file from
 ```bash
 git -C "$caol_ila" config user.name
 git -C "$caol_ila" config user.email
-git -C "$caol_ila" add "docs/plans/<slug>.md"
+git -C "$caol_ila" add "$spec_path"
 git -C "$caol_ila" commit -m "docs(shotloom): review spec <slug>"
 git -C "$caol_ila" push
 ```
