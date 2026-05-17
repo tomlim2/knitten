@@ -44,6 +44,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | Milestone attach pilot | done | `caol-manage-milestone.md` status and milestone row are updated through the new rules |
 | Spec manager pilot | done | `caol-architecture-hardening.md` updated through `caol-manage-spec` with persisted intake |
 | Lifecycle migration spec | done | `docs/plans/docs-plans-lifecycle-migration.md` exists before any physical move |
+| Lifecycle migration manifest | done | `docs/plans/reports/docs-plans-lifecycle-migration/move-manifest.tsv` maps 90 rows |
 | Validator hardening implementation | done | `spec-lifecycle` validates milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Acceptance Criteria

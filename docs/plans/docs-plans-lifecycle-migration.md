@@ -22,7 +22,7 @@ whole folder.
 
 | Current surface | Evidence | Risk |
 |-----------------|----------|------|
-| top-level specs | 51 tracked top-level Markdown files | cold-start review has to inspect too much |
+| top-level specs | 53 tracked top-level Markdown files | cold-start review has to inspect too much |
 | statuses | `open`, `active`, `proposed`, `draft`, `draft-conflict`, `implemented`, `implemented-validation-blocked`, `done`, `parked` | old and new lifecycle terms are mixed |
 | report artifacts | 37 tracked nested files under `*-reports/` directories | report data looks like executable plan input |
 | consumers | skills, milestones, briefings, taxonomy, naming standards, and validators hardcode `docs/plans/<slug>.md` | physical moves can break CRUD and review flows |
@@ -55,26 +55,26 @@ Top-level status count, from `awk 'FNR==2 && /^status:/' docs/plans/*.md`:
 | Status | Count | Initial lifecycle bucket |
 |--------|-------|--------------------------|
 | `open` | 26 | manifest review required |
-| `implemented` | 7 | `completed/` unless validation-blocked |
+| `implemented` | 8 | `completed/` unless validation-blocked |
 | `done` | 7 | `completed/` |
-| `active` | 4 | `active/` |
+| `active` | 5 | `active/` |
 | `proposed` | 3 | `proposed/` |
 | `draft` | 1 | `drafts/` |
 | `draft-conflict` | 1 | `drafts/` |
 | `implemented-validation-blocked` | 1 | `active/` unless blocker is closed |
 | `parked` | 1 | `parked/` |
 
-Current direct consumers include:
+Direct consumers after Batch A include:
 
-| Consumer | Current assumption |
+| Consumer | Current contract |
 |----------|--------------------|
-| `agent/skills/caol-manage-spec/SKILL.md` | create and resolve `docs/plans/<slug>.md` |
-| `agent/skills/caol-manage-milestone/SKILL.md` | link specs as `../plans/<slug>.md` |
-| `agent/skills/caol-review-implementation/SKILL.md` | infer changed specs from `docs/plans/*.md` |
-| `docs/briefings/specs/README.md` | briefing maps to `docs/plans/<slug>.md` |
-| `agent/config/taxonomy.json` | registers `docs/plans` |
-| `agent/standards/policy/naming.md` | describes `docs/plans/*.md` |
-| `scripts/validate-llm-first.mjs` | scans `docs/plans` as a docs root |
+| `agent/skills/caol-manage-spec/SKILL.md` | create and resolve lifecycle paths under `docs/plans/` |
+| `agent/skills/caol-manage-milestone/SKILL.md` | link resolved spec paths from milestone tables |
+| `agent/skills/caol-review-implementation/SKILL.md` | infer changed specs from `docs/plans/**/*.md` with report exclusions |
+| `docs/briefings/specs/README.md` | briefing frontmatter points to the actual spec path |
+| `agent/config/taxonomy.json` | validates `docs/plans` recursively |
+| `agent/standards/policy/naming.md` | describes `docs/plans/**/*.md` |
+| `scripts/validate-llm-first.mjs` | validates spec lifecycle relationships |
 
 ## Proposed Structure
 
@@ -171,12 +171,29 @@ Batch A implementation summary:
 
 ### Batch B: Generate Manifest
 
+Status: completed on 2026-05-17.
+
 1. Inventory all tracked `docs/plans` files.
 2. Classify top-level Markdown files by status.
 3. Mark every `open` file as `needs-review` unless an owner rule maps it to a
    bucket.
 4. Map `*-reports/` folders to `docs/plans/reports/<spec-slug>/`.
 5. Review the manifest before any file move.
+
+Batch B output:
+
+| File | Result |
+|------|--------|
+| [move-manifest.tsv](reports/docs-plans-lifecycle-migration/move-manifest.tsv) | 90 source-to-target rows |
+| [manifest-summary.md](reports/docs-plans-lifecycle-migration/manifest-summary.md) | review summary with counts and `open` list |
+
+Manifest counts:
+
+| Category | Count |
+|----------|------:|
+| top-level tracked specs | 53 |
+| tracked report artifacts | 37 |
+| legacy `open` specs requiring review | 26 |
 
 ### Batch C: Move And Repair Links
 
