@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -53,7 +53,7 @@ git ls-files -z -- \
   ':(exclude)agent/skills/**/dist/**' \
   ':(exclude)agent/skills/**/.astro/**' \
   ':(exclude)docs/plans/reports/**' \
-  ':(exclude)docs/plans/active/caol-architecture-hardening.md' |
+  ':(exclude)docs/plans/completed/caol-architecture-hardening.md' |
   xargs -0 rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)"
 ```
 
@@ -309,7 +309,7 @@ git ls-files -z -- \
   ':(exclude)agent/skills/**/dist/**' \
   ':(exclude)agent/skills/**/.astro/**' \
   ':(exclude)docs/plans/reports/**' \
-  ':(exclude)docs/plans/active/caol-architecture-hardening.md' |
+  ':(exclude)docs/plans/completed/caol-architecture-hardening.md' |
   xargs -0 rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)"
 ```
 
@@ -325,8 +325,8 @@ diff -rq ~/.claude/config agent/config
 
 ## Open Decisions
 
-| Decision | Needed before |
-|----------|---------------|
-| Should redirect standards remain in `standards/index.md` as compatibility entries? | Batch E |
-| Should historical docs be sanitized or allowlisted when they contain exact old machine paths? | Batch B validator |
-| Should `docs/plans/` be migrated physically or only indexed by status first? | Batch F |
+| Decision | Result |
+|----------|--------|
+| Should redirect standards remain in `standards/index.md` as compatibility entries? | yes; redirect stubs are separated from active standards |
+| Should historical docs be sanitized or allowlisted when they contain exact old machine paths? | active tracked source fails on user-specific paths; completed history and reports remain historical evidence |
+| Should `docs/plans/` be migrated physically or only indexed by status first? | physically migrated into lifecycle folders |

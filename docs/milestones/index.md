@@ -71,7 +71,7 @@ Milestone filenames must be kebab-case Markdown files:
 
 | Milestone | Status | Role |
 |-----------|--------|------|
-| [spec-lifecycle-system.md](spec-lifecycle-system.md) | active | spec, milestone, and lifecycle-management system |
+| [spec-lifecycle-system.md](spec-lifecycle-system.md) | completed | spec, milestone, and lifecycle-management system |
 | [knitten-rename.md](knitten-rename.md) | active | rename internal identity from `caol-ila` to `Knitten` |
 
 ## Template

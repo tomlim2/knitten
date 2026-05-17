@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -27,7 +27,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | [caol-manage-spec.md](../plans/completed/caol-manage-spec.md) | implemented | define the spec intake, routing, CRUD, review, and lifecycle manager |
 | [caol-review-implementation.md](../plans/completed/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
 | [caol-manage-milestone.md](../plans/completed/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
-| [caol-architecture-hardening.md](../plans/active/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
+| [caol-architecture-hardening.md](../plans/completed/caol-architecture-hardening.md) | completed | adjacent architecture hardening work that supplies validator and path-cleanup context |
 | [docs-plans-lifecycle-migration.md](../plans/completed/docs-plans-lifecycle-migration.md) | completed | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
 | [spec-validator-hardening.md](../plans/completed/spec-validator-hardening.md) | implemented | add validator checks for milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
@@ -48,6 +48,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | Lifecycle migration approved moves | done | 64 approved rows moved into lifecycle folders before legacy `open` review |
 | Lifecycle migration legacy open review | done | 26 legacy `open` specs reviewed; 25 moved to `completed/`, 1 moved to `active/`, 0 deleted |
 | Validator hardening implementation | done | `spec-lifecycle` validates milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
+| Architecture hardening | done | `docs/plans/completed/caol-architecture-hardening.md` records Batch A-F completion |
 
 ## Acceptance Criteria
 
@@ -67,12 +68,12 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 9. Validator support covers milestone file naming, milestone link consistency,
    spec back-links, duplicate spec slugs, and caol spec intake paths.
 
-## Open Decisions
+## Decisions
 
-| Decision | Default |
-|----------|---------|
+| Decision | Result |
+|----------|--------|
 | Should milestones be mirrored to Linear or GitHub? | no; Markdown is primary, mirrors are optional |
-| Should `docs/plans/` be physically split by lifecycle state? | decide after `caol-manage-spec` pilot |
+| Should `docs/plans/` be physically split by lifecycle state? | yes; lifecycle folders are current |
 | Should every spec require a milestone? | no; only large or multi-spec efforts |
 
 ## Blockers
