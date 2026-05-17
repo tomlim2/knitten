@@ -78,7 +78,7 @@ If unsure, default LLM-first. Full applies-to list: `agent/standards/policy/llm-
 
 ## Private folder
 
-`~/.claude/private/` is gitignored. Never commit. Guide: `agent/skills/caol-guide-private/SKILL.md`.
+`~/.claude/private/` is gitignored. Never commit. Guide: `agent/skills/ah-guide-private/SKILL.md`.
 
 ---
 
@@ -88,13 +88,13 @@ All durable shared agent state has its canonical home in the agent-hub checkout'
 `agent/` directory and is git-tracked there. `~/.claude/` is the deploy target
 the Claude Code harness reads from at runtime.
 
-Current legacy compatibility identifiers:
+Current identifiers:
 
-| Identifier | Status | Use |
-|------------|--------|-----|
-| `caol-ila` | legacy compatibility repo key/path | path lookup and old checkout links only |
-| `caol-*` | legacy command and skill namespace | keep callable until wrapper migration |
-| `caol-config` | legacy private config directory | keep until resolver/config migration |
+| Identifier | Use |
+|------------|-----|
+| `agent-hub` | repository key, route domain, and system identity |
+| `ah-*` | agent-hub-owned command and skill namespace |
+| `agent-hub-config` | private machine config directory |
 
 When editing shared artifacts, land the change in `<agent-hub-checkout>/agent/<area>/`,
 then verify the sync reflects it in `~/.claude/<area>/`. Editing directly in
@@ -113,8 +113,8 @@ The intentional asymmetry:
 | `agent/CLAUDE.md`, `repo-registry.json` | agent-hub | `agent/CLAUDE.md` is the `~/.claude` deploy shim; edit root `CLAUDE.md` for entry-document changes |
 | `hooks/` | agent-hub must hold these | durable harness scripts deployed to `~/.claude/hooks/` |
 | `settings.json` | agent-hub must hold this | per-machine secrets stay in `settings.local.json` |
-| `private/caol-config/doc-paths.json` and similar non-machine config | agent-hub | `caol-config` is a legacy directory name; machine-specific entries below stay `~/.claude`-only |
-| `private/caol-config/{hardware,machine-paths,repo-paths}.json` | `~/.claude/` only | per-machine paths and specs, gitignored on purpose |
+| `private/agent-hub-config/doc-paths.json` and similar non-machine config | agent-hub | shared config files that belong in source |
+| `private/agent-hub-config/{hardware,machine-paths,repo-paths}.json` | `~/.claude/` only | per-machine paths and specs, gitignored on purpose |
 | `templates/`, `scheduled-tasks/`, `obsidian-staging/` | agent-hub only | not loaded by the harness at runtime |
 | `cache/`, `backups/`, `sessions/`, `tasks/`, `telemetry/`, `projects/`, `shell-snapshots/`, `paste-cache/`, `file-history/`, `ops/`, `plans/`, `downloads/`, `history.jsonl` | `~/.claude/` only | runtime/cache, not durable |
 

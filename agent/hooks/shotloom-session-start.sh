@@ -14,7 +14,7 @@ case "$cwd" in
   *) exit 0 ;;
 esac
 
-repo=$("$HOME/.claude/skills/caol-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
+repo=$("$HOME/.claude/skills/ah-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
   | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
 [ -d "$repo" ] || exit 0
 

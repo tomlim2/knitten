@@ -30,7 +30,7 @@ trigger: working in the Obsidian vault
   - **Backslash escape** for plain prose: `\#154`.
   - **Drop the space**: `PR#154` (no space before `#`) is not interpreted as a tag.
   Verify before save: search the body for `(^|\s)#[A-Za-z0-9]` — any hit that isn't an intentional learnings marker (`#rule`/`#failed`/`#gotcha` at document footer) needs one of the fixes above.
-- **Location** — resolve every write through `caol-resolve-doc-path`; root and role folders are owned by `doc-paths.json` and `vault-structure.json`.
+- **Location** — resolve every write through `ah-resolve-doc-path`; root and role folders are owned by `doc-paths.json` and `vault-structure.json`.
 - **Audience declared by folder** — New project roots and durable folders have a `README.md` declaring audience (LLM | human | both), style (strict LLM-first | structured-narrative), and mutability. Repeated folders (`days/`, `learnings/`) inherit from parent. Default for unmarked folders: strict LLM-first. See `~/.claude/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md`.
 
 ## Auto-commit + auto-push for Obsidian-only changes

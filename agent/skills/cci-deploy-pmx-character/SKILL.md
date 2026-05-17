@@ -35,7 +35,7 @@ If no arguments or no `--name` provided, show usage and stop.
 
 ## Paths
 
-Read `~/.claude/private/caol-config/repo-paths.json` to resolve:
+Read `~/.claude/private/agent-hub-config/repo-paths.json` to resolve:
 - `anju` → converter root (`<path>/module/pmx2vrm`) and register script (`<path>/python/user_character_manager/register_vrm.py`)
 - `cinev-engine` → UE engine root
 - `cinev-studio` → UE project root

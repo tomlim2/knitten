@@ -5,10 +5,10 @@ spec	docs/plans/agent-root-rename.md	docs/plans/completed/agent-root-rename.md	a
 spec	docs/plans/agent-symlink-followup.md	docs/plans/active/agent-symlink-followup.md	agent-symlink-followup	open	active	legacy open status; review before move	true
 spec	docs/plans/bridge-add-background-prop-batch-spawn.md	docs/plans/active/bridge-add-background-prop-batch-spawn.md	bridge-add-background-prop-batch-spawn	open	active	legacy open status; review before move	true
 spec	docs/plans/bridge-clear-background-props.md	docs/plans/active/bridge-clear-background-props.md	bridge-clear-background-props	open	active	legacy open status; review before move	true
-spec	docs/plans/caol-architecture-hardening.md	docs/plans/active/caol-architecture-hardening.md	caol-architecture-hardening	active	active	frontmatter status active	false
-spec	docs/plans/caol-manage-milestone.md	docs/plans/completed/caol-manage-milestone.md	caol-manage-milestone	implemented	completed	frontmatter status implemented	false
-spec	docs/plans/caol-manage-spec.md	docs/plans/completed/caol-manage-spec.md	caol-manage-spec	implemented	completed	frontmatter status implemented	false
-spec	docs/plans/caol-review-implementation.md	docs/plans/completed/caol-review-implementation.md	caol-review-implementation	implemented	completed	frontmatter status implemented	false
+spec	docs/plans/ah-architecture-hardening.md	docs/plans/active/ah-architecture-hardening.md	ah-architecture-hardening	active	active	frontmatter status active	false
+spec	docs/plans/ah-manage-milestone.md	docs/plans/completed/ah-manage-milestone.md	ah-manage-milestone	implemented	completed	frontmatter status implemented	false
+spec	docs/plans/ah-manage-spec.md	docs/plans/completed/ah-manage-spec.md	ah-manage-spec	implemented	completed	frontmatter status implemented	false
+spec	docs/plans/ah-review-implementation.md	docs/plans/completed/ah-review-implementation.md	ah-review-implementation	implemented	completed	frontmatter status implemented	false
 spec	docs/plans/ci-add-containerfile-smoke.md	docs/plans/active/ci-add-containerfile-smoke.md	ci-add-containerfile-smoke	open	active	legacy open status; review before move	true
 spec	docs/plans/docs-add-toast-modal-guidelines.md	docs/plans/active/docs-add-toast-modal-guidelines.md	docs-add-toast-modal-guidelines	open	active	legacy open status; review before move	true
 spec	docs/plans/docs-plans-lifecycle-migration.md	docs/plans/active/docs-plans-lifecycle-migration.md	docs-plans-lifecycle-migration	active	active	frontmatter status active	false
@@ -73,7 +73,7 @@ report	docs/plans/obsidian-root-projects-daily-migration-reports/post-migration-
 spec	docs/plans/obsidian-root-projects-daily-migration.md	docs/plans/proposed/obsidian-root-projects-daily-migration.md	obsidian-root-projects-daily-migration	proposed	proposed	frontmatter status proposed	false
 spec	docs/plans/placeholder-material-checker-sampler.md	docs/plans/active/placeholder-material-checker-sampler.md	placeholder-material-checker-sampler	open	active	legacy open status; review before move	true
 spec	docs/plans/remove-claude-terms.md	docs/plans/active/remove-claude-terms.md	remove-claude-terms	implemented-validation-blocked	active	validation-blocked implementation remains active until blocker closes	false
-spec	docs/plans/rename-caol-ila-to-knitten.md	docs/plans/proposed/rename-caol-ila-to-knitten.md	rename-caol-ila-to-knitten	proposed	proposed	frontmatter status proposed	false
+spec	docs/plans/rename-agent-hub-to-agent-hub.md	docs/plans/proposed/rename-agent-hub-to-agent-hub.md	rename-agent-hub-to-agent-hub	proposed	proposed	frontmatter status proposed	false
 spec	docs/plans/rename-obsidian-claude-path.md	docs/plans/completed/rename-obsidian-claude-path.md	rename-obsidian-claude-path	implemented	completed	frontmatter status implemented	false
 spec	docs/plans/retarget-cleanup-rig-branches.md	docs/plans/active/retarget-cleanup-rig-branches.md	retarget-cleanup-rig-branches	open	active	legacy open status; review before move	true
 spec	docs/plans/retarget-recalibrate-default-pose.md	docs/plans/active/retarget-recalibrate-default-pose.md	retarget-recalibrate-default-pose	open	active	legacy open status; review before move	true

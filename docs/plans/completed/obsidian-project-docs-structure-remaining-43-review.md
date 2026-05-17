@@ -2,7 +2,7 @@
 status: implemented
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Obsidian Remaining 43 Review
@@ -58,7 +58,7 @@ Delete only after inbound links are repaired.
 | File | Proposed destination | Tag change |
 |------|----------------------|------------|
 | `projects/_cross-project/_glossary.md` | `learnings/projects/graphics-glossary.md` | keep `type/learning`; optionally change to `type/glossary` in later taxonomy pass |
-| `projects/_cross-project/caol-ila.md` | `learnings/projects/caol-ila.md` | keep `type/learning` |
+| `projects/_cross-project/agent-hub.md` | `learnings/projects/agent-hub.md` | keep `type/learning` |
 | `projects/_cross-project/general.md` | `learnings/learning-general-agent-ops.md` | keep `type/learning` |
 | `projects/_cross-project/graphics.md` | `learnings/projects/graphics.md` | keep `type/learning` |
 | `projects/_cross-project/slack.md` | `learnings/learning-slack-integration.md` | keep `type/learning` |

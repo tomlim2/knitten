@@ -33,7 +33,7 @@ linear: STL-422
 | Stage DTO ADR | `docs/adr/adr-0012-generated-stage-contract.md` | Codifies engine-mediated stage data flow and keeps `shotloom-stage` runtime-agnostic. |
 | Stage-map contract in base | `contracts/stage-map/stage-map-document.schema.json` | Missing in current branch base. |
 | Stage-map spec in base | `docs/specs/stage-map-document.md` | Missing in current branch base. |
-| Sibling plan | `caol-ila/docs/plans/completed/stage-define-map-document-bundle-layout.md` | Agrees: STL-422 should implement against the STL-421 contract and must not guess fields before the contract lands. |
+| Sibling plan | `agent-hub/docs/plans/completed/stage-define-map-document-bundle-layout.md` | Agrees: STL-422 should implement against the STL-421 contract and must not guess fields before the contract lands. |
 
 ## Proposed Narrow Scope
 

@@ -1,6 +1,6 @@
 action	old_path	new_path	detail
 move	projects/_cross-project/_glossary.md	learnings/projects/graphics-glossary.md	content normalized
-move	projects/_cross-project/caol-ila.md	learnings/projects/caol-ila.md	content normalized
+move	projects/_cross-project/agent-hub.md	learnings/projects/agent-hub.md	content normalized
 move	projects/_cross-project/general.md	learnings/learning-general-agent-ops.md	content normalized
 move	projects/_cross-project/graphics.md	learnings/projects/graphics.md	content normalized
 move	projects/_cross-project/slack.md	learnings/learning-slack-integration.md	content normalized

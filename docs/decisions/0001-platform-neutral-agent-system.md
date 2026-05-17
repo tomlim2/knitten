@@ -7,7 +7,7 @@ partially_superseded_by: docs/decisions/0003-agent-root-directory.md
 
 ## Decision
 
-`caol-ila` uses one canonical policy document with harness-specific entry documents.
+`agent-hub` uses one canonical policy document with harness-specific entry documents.
 
 | Layer | Role |
 |-------|------|

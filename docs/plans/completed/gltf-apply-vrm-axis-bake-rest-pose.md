@@ -35,8 +35,8 @@ inverseBindMatrix rebake.
 | GLB normalization mutation precedent | Out of scope | `crates/shotloom-gltf/src/vrm_normalization.rs` has parse/rebuild helpers and 180Y mutation logic, but STL-409 says not to wire production `normalize_vrm`. |
 | Cache version | Already Done for prior phase | `crates/shotloom-import/src/lib.rs` keeps `NORMALIZED_VRM_CACHE_VERSION = "v3"`; STL-409 does not change normalized artifacts. |
 | T-pose appearance validation | Out of scope | `docs/specs/vrm-character-validation.md` and `docs/tech-debt/vrm-tpose-appearance-validation.md` place mesh-skinning appearance validation outside local rotation-only checks. |
-| Plan sibling Phase 2a | Already Done | `caol-ila/docs/plans/completed/gltf-add-axis-primary-child-picker.md` locks private module, no byte mutation, no cache bump, synthetic JSON tests. |
-| Plan sibling Phase 2b | Already Done | `caol-ila/docs/plans/completed/gltf-add-axis-correction-calculator.md` locks right-multiply local correction, invalid-input `None`, no rest-pose mutation. |
+| Plan sibling Phase 2a | Already Done | `agent-hub/docs/plans/completed/gltf-add-axis-primary-child-picker.md` locks private module, no byte mutation, no cache bump, synthetic JSON tests. |
+| Plan sibling Phase 2b | Already Done | `agent-hub/docs/plans/completed/gltf-add-axis-correction-calculator.md` locks right-multiply local correction, invalid-input `None`, no rest-pose mutation. |
 
 ## Problem
 

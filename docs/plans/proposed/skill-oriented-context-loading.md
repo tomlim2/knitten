@@ -3,8 +3,8 @@ status: proposed
 created: 2026-05-14
 updated: 2026-05-14
 load: triggered
-trigger: migrating caol-ila to skill-oriented context loading
-repo: caol-ila
+trigger: migrating agent-hub to skill-oriented context loading
+repo: agent-hub
 standard: agent/standards/policy/llm-first-docs.md
 depends_on: docs/plans/completed/task-context-routing.md
 ---
@@ -31,7 +31,7 @@ that uses it.
 
 ## Current State
 
-Verified in the configured `caol-ila` repo on 2026-05-14.
+Verified in the configured `agent-hub` repo on 2026-05-14.
 
 | Surface | Current state | Evidence |
 |---|---|---|

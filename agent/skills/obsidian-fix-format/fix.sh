@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-VAULT="$(jq -r '."obsidian"' ~/.claude/private/caol-config/machine-paths.json)"
+VAULT="$(jq -r '."obsidian"' ~/.claude/private/agent-hub-config/machine-paths.json)"
 if [[ -z "$VAULT" || ! -d "$VAULT" ]]; then
   echo "vault path not found: $VAULT" >&2
   exit 1
@@ -26,7 +26,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
-CONFIG_DIR="$REPO_ROOT/agent/private/caol-config"
+CONFIG_DIR="$REPO_ROOT/agent/private/agent-hub-config"
 VAULT_STRUCTURE="$CONFIG_DIR/vault-structure.json"
 TAXONOMY="$SCRIPT_DIR/../obsidian-obsidian-markdown/references/TAG-TAXONOMY.md"
 
@@ -306,7 +306,7 @@ if want path-config-drift; then
       --glob '!agent/cache/**' \
       --glob '!agent/file-history/**' \
       --glob '!agent/history.jsonl' \
-      --glob '!agent/private/caol-config/vault-structure.json' \
+      --glob '!agent/private/agent-hub-config/vault-structure.json' \
       --glob '!agent/skills/obsidian-fix-format/fix.sh' \
       2>/dev/null || true
   )

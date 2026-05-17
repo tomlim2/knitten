@@ -12,15 +12,15 @@ This skill is the **prompt builder**. It does NOT call the Gemini API itself —
 
 ## Arguments
 
-- `<drink_name>` — Required. Brand + name (e.g., `"Knitten Sauvignon Blanc"`, `"Lagavulin 16"`, `"Aperol Spritz"`)
+- `<drink_name>` — Required. Brand + name (e.g., `"Agent Hub Sauvignon Blanc"`, `"Lagavulin 16"`, `"Aperol Spritz"`)
 - `[variant]` — Optional. `iso-city` (default) — reserved for future style variants
 - `[--prompt-only]` — Optional. If present, **stop after Step 4** (print the final prompt and exit). If absent (default), dispatch to `dev-run-t2i` and generate the image.
 
 **If no argument is provided, show usage and ask the user. NEVER auto-execute.**
 
 Usage:
-- `/image-make-drink-iso "Knitten Sauvignon Blanc"` — research label, build prompt, generate image
-- `/image-make-drink-iso "Knitten Sauvignon Blanc" --prompt-only` — research label, build prompt, print it, stop
+- `/image-make-drink-iso "Agent Hub Sauvignon Blanc"` — research label, build prompt, generate image
+- `/image-make-drink-iso "Agent Hub Sauvignon Blanc" --prompt-only` — research label, build prompt, print it, stop
 
 When to use `--prompt-only`:
 - You want to copy the prompt into a different image generator (Midjourney, DALL-E, Imagen Ultra)
@@ -148,7 +148,7 @@ Once the user confirms, invoke the `dev-run-t2i` skill via the **Skill tool** wi
 **Slug rules:** lowercase the drink name, hyphenate, append `-iso-city`. For follow-ups, increment: `<slug>-v2.png`, `-v3.png`. Never overwrite previous versions — the user wants to compare.
 
 Examples:
-- `"Knitten Sauvignon Blanc"` → `knitten-sauv-blanc-iso-city.png`
+- `"Agent Hub Sauvignon Blanc"` → `agent-hub-sauv-blanc-iso-city.png`
 - `"Lagavulin 16"` → `lagavulin-16-iso-city.png`
 
 If you can't invoke `dev-run-t2i` automatically (e.g., Skill tool unavailable in this context), print the exact slash command for the user to copy:

@@ -1,0 +1,64 @@
+---
+import WidgetFrame from '../WidgetFrame.astro';
+import EmptyState from '../EmptyState.astro';
+import { join } from 'node:path';
+import { loadRepoPaths, getRepoPath } from '../../lib/paths';
+import { parseBuildStages } from '../../lib/concept-parser';
+
+const repos = loadRepoPaths();
+const pwPath = getRepoPath(repos['project-weekend']);
+const subpath = 'prototypes/weekend-subang';
+const projectName = 'Weekend Subang (Bevy 0.18 탄막)';
+
+let report = null;
+let error: string | null = null;
+if (!pwPath) {
+    error = 'project-weekend 미등록 (agent-hub-config/repo-paths.json)';
+} else {
+    try {
+        report = parseBuildStages(join(pwPath, subpath, 'CONCEPT.md'));
+        if (!report) error = `CONCEPT.md 또는 Build Stages 섹션 없음: ${subpath}`;
+    } catch (e) {
+        error = `read failed: ${(e as Error).message}`;
+    }
+}
+---
+
+<WidgetFrame title={`Active Project — ${projectName}`} id="weekend-progress">
+    <Fragment slot="meta">{report ? `${report.completed} / ${report.total} stages` : ''}</Fragment>
+    {error || !report ? (
+        <EmptyState tone="error">{error ?? '스테이지 없음'}</EmptyState>
+    ) : (
+        <ul class="hq-doc-list hq-progress-list">
+            {report.stages.map(s => (
+                <li class="hq-doc-row hq-progress-row">
+                    <span class:list={['hq-progress-mark', { done: s.done }]}>{s.done ? '●' : '○'}</span>
+                    <span class="hq-doc-name"><strong>{s.stage}</strong> {s.goal}</span>
+                    <span class="hq-doc-date">{s.hash ? <code>{s.hash}</code> : s.status}</span>
+                </li>
+            ))}
+        </ul>
+    )}
+    <Fragment slot="foot">
+        <span>{subpath}</span>
+    </Fragment>
+</WidgetFrame>
+
+<style is:global>
+    .hq-progress-row {
+        align-items: baseline;
+    }
+    .hq-progress-mark {
+        display: inline-block;
+        width: 16px;
+        text-align: center;
+        color: var(--hq-fg-mute, #888);
+        font-size: 12px;
+    }
+    .hq-progress-mark.done {
+        color: var(--hq-accent, #2a8a4a);
+    }
+    .hq-progress-row .hq-doc-name strong {
+        margin-right: 4px;
+    }
+</style>

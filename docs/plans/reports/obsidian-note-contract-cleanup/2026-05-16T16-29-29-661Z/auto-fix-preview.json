@@ -756,187 +756,187 @@
     ]
   },
   {
-    "file": "projects/caol-ila/README.md",
+    "file": "projects/agent-hub/README.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/codex-base/README.md",
+    "file": "projects/agent-hub/codex-base/README.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/codex-base/memories/README.md",
+    "file": "projects/agent-hub/codex-base/memories/README.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/days/2026-04-23.md",
+    "file": "projects/agent-hub/days/2026-04-23.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/days/2026-04-29.md",
+    "file": "projects/agent-hub/days/2026-04-29.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/days/2026-05-05.md",
+    "file": "projects/agent-hub/days/2026-05-05.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/days/2026-05-10.md",
+    "file": "projects/agent-hub/days/2026-05-10.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/2026-04-13.md",
+    "file": "projects/agent-hub/learnings/2026-04-13.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/_template.md",
+    "file": "projects/agent-hub/learnings/_template.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/agent-system-lessons.md",
+    "file": "projects/agent-hub/learnings/agent-system-lessons.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+    "file": "projects/agent-hub/learnings/learning-claude-code-hooks.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-minecraft-server-infra.md",
+    "file": "projects/agent-hub/learnings/learning-minecraft-server-infra.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-rust-bin-vs-lib.md",
+    "file": "projects/agent-hub/learnings/learning-rust-bin-vs-lib.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-rust-crates.md",
+    "file": "projects/agent-hub/learnings/learning-rust-crates.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-rust-traits.md",
+    "file": "projects/agent-hub/learnings/learning-rust-traits.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-telemetry.md",
+    "file": "projects/agent-hub/learnings/learning-telemetry.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/learnings/learning-upstream-contribution.md",
+    "file": "projects/agent-hub/learnings/learning-upstream-contribution.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/plans/todo-at-home-2026-04-21.md",
+    "file": "projects/agent-hub/plans/todo-at-home-2026-04-21.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/specs/vault-cleanup-analysis.md",
+    "file": "projects/agent-hub/specs/vault-cleanup-analysis.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/specs/vault-cleanup-plan.md",
+    "file": "projects/agent-hub/specs/vault-cleanup-plan.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/css-code-review-criteria.md",
+    "file": "projects/agent-hub/topics/css-code-review-criteria.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/hyperframes-reference.md",
+    "file": "projects/agent-hub/topics/hyperframes-reference.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/javascript-code-review-criteria.md",
+    "file": "projects/agent-hub/topics/javascript-code-review-criteria.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/mmd-vrm-spring-bone-parameters.md",
+    "file": "projects/agent-hub/topics/mmd-vrm-spring-bone-parameters.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/motion-driven-effects-auto-trigger.md",
+    "file": "projects/agent-hub/topics/motion-driven-effects-auto-trigger.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/multi-pass-agent-pipeline-design.md",
+    "file": "projects/agent-hub/topics/multi-pass-agent-pipeline-design.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/notion-portfolio-best-practices.md",
+    "file": "projects/agent-hub/topics/notion-portfolio-best-practices.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/project-overview.md",
+    "file": "projects/agent-hub/topics/project-overview.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/threejs-tsl.md",
+    "file": "projects/agent-hub/topics/threejs-tsl.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/vrm-0x-vs-1.0-spec-comparison.md",
+    "file": "projects/agent-hub/topics/vrm-0x-vs-1.0-spec-comparison.md",
     "changes": [
       "source.normalize"
     ]
   },
   {
-    "file": "projects/caol-ila/topics/website-spec-review-tools.md",
+    "file": "projects/agent-hub/topics/website-spec-review-tools.md",
     "changes": [
       "source.normalize"
     ]

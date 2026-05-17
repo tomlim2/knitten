@@ -49,7 +49,7 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | `audit-policy` | `agent/config/audit-policy.json` | audit thresholds and severity tiers |
 | `exceptions` | `agent/config/exceptions.json` | grandfathered exceptions |
 | `slack` | `agent/config/slack.json` | non-secret Slack channel IDs and message templates |
-| `doc-paths` | `agent/private/caol-config/doc-paths.json` | shared document routing |
+| `doc-paths` | `agent/private/agent-hub-config/doc-paths.json` | shared document routing |
 <!-- /generated:agent-hub-inventory -->
 
 <!-- routing:start -->
@@ -59,7 +59,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |
 |---------|---------------|-----------|------------|------------|----------:|
-| `caol-authoring` | `caol` | `agent-hub` | - | `authoring`, `review` | 25000 |
+| `ah-authoring` | `agent-hub` | `agent-hub` | - | `authoring`, `review` | 25000 |
 | `shotloom-ops` | `shotloom` | `shotloom` | `bevy`, `wgpu` | `authoring`, `git`, `ops` | 25000 |
 | `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
 | `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
@@ -76,9 +76,9 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | File | Profile | Cost |
 |------|---------|------|
-| `agent/skills/caol-manage-spec/SKILL.md` | `caol-authoring` | `medium` |
-| `agent/skills/caol-manage-milestone/SKILL.md` | `caol-authoring` | `medium` |
-| `agent/skills/caol-review-implementation/SKILL.md` | `caol-authoring` | `medium` |
+| `agent/skills/ah-manage-spec/SKILL.md` | `ah-authoring` | `medium` |
+| `agent/skills/ah-manage-milestone/SKILL.md` | `ah-authoring` | `medium` |
+| `agent/skills/ah-review-implementation/SKILL.md` | `ah-authoring` | `medium` |
 | `agent/skills/obsidian-defuddle/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-fix-format/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-json-canvas/SKILL.md` | `obsidian-vault` | `medium` |
@@ -130,10 +130,10 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | Task | Must load | Must not load | Max bytes |
 |------|-----------|---------------|----------:|
-| Author caol spec lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
-| Author agent-hub spec lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
-| Manage caol milestone lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
-| Review caol implementation after spec | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Author agent-hub spec lifecycle | `ah-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Author agent-hub spec lifecycle | `ah-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Manage agent-hub milestone lifecycle | `ah-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Review agent-hub implementation after spec | `ah-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Implement Rust Bevy ECS in shotloom | `rust-bevy` | `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Review Shotloom Rust PR before opening | `shotloom-review` | `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Deploy Shotloom web image | `shotloom-deploy` | `rust-bevy`, `shotloom-review`, `unreal-engine`, `obsidian-vault` | 25000 |
@@ -141,8 +141,8 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | Review Astro island hydration bug | `web-review` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `obsidian-vault` | 25000 |
 | Implement Three.js shader | `web-frontend` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `obsidian-vault` | 25000 |
 | Obsidian note cleanup | `obsidian-vault` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review` | 25000 |
-| Shotloom worktree status ops | `shotloom-ops` | `caol-authoring`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
-| CINEV art branch ops | `cinev-art` | `caol-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
-| VRM PMX retarget review | `3d-vrm` | `caol-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
-| Implement HyperFrames video composition | `video-hyperframes` | `caol-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Shotloom worktree status ops | `shotloom-ops` | `ah-authoring`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| CINEV art branch ops | `cinev-art` | `ah-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| VRM PMX retarget review | `3d-vrm` | `ah-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Implement HyperFrames video composition | `video-hyperframes` | `ah-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 <!-- routing:end -->

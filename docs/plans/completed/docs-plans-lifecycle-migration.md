@@ -2,7 +2,7 @@
 status: completed
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 milestone: spec-lifecycle-system
 briefing: ../../briefings/specs/docs-plans-lifecycle-migration.md
 ---
@@ -33,7 +33,7 @@ first, then files can move with a manifest and link repair.
 ## Goals
 
 1. Define the target lifecycle folder structure.
-2. Update caol/Knitten spec tooling to resolve specs by slug across lifecycle
+2. Update agent-hub spec tooling to resolve specs by slug across lifecycle
    folders.
 3. Preserve milestone links, briefing links, and review inference.
 4. Generate a move manifest before `git mv`.
@@ -68,9 +68,9 @@ Direct consumers after Batch A include:
 
 | Consumer | Current contract |
 |----------|--------------------|
-| `agent/skills/caol-manage-spec/SKILL.md` | create and resolve lifecycle paths under `docs/plans/` |
-| `agent/skills/caol-manage-milestone/SKILL.md` | link resolved spec paths from milestone tables |
-| `agent/skills/caol-review-implementation/SKILL.md` | infer changed specs from `docs/plans/**/*.md` with report exclusions |
+| `agent/skills/ah-manage-spec/SKILL.md` | create and resolve lifecycle paths under `docs/plans/` |
+| `agent/skills/ah-manage-milestone/SKILL.md` | link resolved spec paths from milestone tables |
+| `agent/skills/ah-review-implementation/SKILL.md` | infer changed specs from `docs/plans/**/*.md` with report exclusions |
 | `docs/briefings/specs/README.md` | briefing frontmatter points to the actual spec path |
 | `agent/config/taxonomy.json` | validates `docs/plans` recursively |
 | `agent/standards/policy/naming.md` | describes `docs/plans/**/*.md` |
@@ -150,11 +150,11 @@ the move batch.
 
 Status: implemented on 2026-05-17.
 
-1. Update `caol-manage-spec` to create under lifecycle folders and resolve slug
+1. Update `ah-manage-spec` to create under lifecycle folders and resolve slug
    paths across all buckets.
-2. Update `caol-review-implementation` changed-file inference from
+2. Update `ah-review-implementation` changed-file inference from
    `docs/plans/*.md` to `docs/plans/**/*.md` with report exclusions.
-3. Update `caol-manage-milestone` link rules to accept nested lifecycle paths.
+3. Update `ah-manage-milestone` link rules to accept nested lifecycle paths.
 4. Update `docs/briefings/specs/README.md`, `agent/config/taxonomy.json`,
    `agent/standards/policy/naming.md`, and `README.md`.
 5. Add duplicate slug validation for `docs/plans/**/*.md`.
@@ -163,9 +163,9 @@ Batch A implementation summary:
 
 | Surface | Result |
 |---------|--------|
-| `caol-manage-spec` | resolves lifecycle paths and defaults new specs to `proposed/` |
-| `caol-review-implementation` | infers changed specs from `docs/plans/**/*.md` with report exclusions |
-| `caol-manage-milestone` | links resolved spec paths instead of assuming flat paths |
+| `ah-manage-spec` | resolves lifecycle paths and defaults new specs to `proposed/` |
+| `ah-review-implementation` | infers changed specs from `docs/plans/**/*.md` with report exclusions |
+| `ah-manage-milestone` | links resolved spec paths instead of assuming flat paths |
 | `taxonomy` | validates `docs/plans` recursively |
 | `spec-lifecycle` | already validates duplicate slugs, milestone links, and intake paths |
 
@@ -222,7 +222,7 @@ manifest summary; they need a separate review/classification pass before moving.
 ### Batch D: Validate And Review
 
 1. Run full validators and link checks.
-2. Run `caol-review-implementation` against this spec.
+2. Run `ah-review-implementation` against this spec.
 3. If a temporary redirect stub was used, add a follow-up row with removal
    criteria.
 

@@ -1,7 +1,7 @@
 | path | reason | next_action |
 |------|--------|-------------|
 | projects/_cross-project/_glossary.md | cross-project-excluded | separate migration to top-level learnings route |
-| projects/_cross-project/caol-ila.md | cross-project-excluded | separate migration to top-level learnings route |
+| projects/_cross-project/agent-hub.md | cross-project-excluded | separate migration to top-level learnings route |
 | projects/_cross-project/general.md | cross-project-excluded | separate migration to top-level learnings route |
 | projects/_cross-project/graphics.md | cross-project-excluded | separate migration to top-level learnings route |
 | projects/_cross-project/slack.md | cross-project-excluded | separate migration to top-level learnings route |

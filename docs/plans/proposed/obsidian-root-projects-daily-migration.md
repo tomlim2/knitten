@@ -2,7 +2,7 @@
 status: proposed
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Obsidian Root Projects Daily Migration
@@ -27,7 +27,7 @@ System folders stay outside this contract:
 
 ## Current Root Shape
 
-Vault root: resolve `obsidian` through `~/.claude/private/caol-config/machine-paths.json`.
+Vault root: resolve `obsidian` through `~/.claude/private/agent-hub-config/machine-paths.json`.
 
 | Root entry | Markdown files | Current role |
 |------------|----------------|--------------|
@@ -46,9 +46,9 @@ Inside `agent/`:
 |--------|----------------|--------|
 | `agent/projects/` | 405 | `projects/` |
 | `agent/daily-summaries/` | 6 | `daily/` |
-| `agent/learnings/` | 25 | `projects/<project>/learnings/` or `projects/caol-ila/learnings/` |
+| `agent/learnings/` | 25 | `projects/<project>/learnings/` or `projects/agent-hub/learnings/` |
 | `agent/research/` | 9 | `projects/<project>/topics/` |
-| `agent/specs/` | 9 | `projects/<project>/specs/` or `projects/caol-ila/specs/` |
+| `agent/specs/` | 9 | `projects/<project>/specs/` or `projects/agent-hub/specs/` |
 
 ## Target Shape
 
@@ -99,7 +99,7 @@ Do not keep root note categories such as `notes/`, `research/`, `specs/`, `learn
 |--------|-------------|
 | `agent/projects/<project>/...` | `projects/<project>/...` |
 | `agent/daily-summaries/YYYY-MM-DD.md` | `daily/YYYY-MM-DD.md` |
-| `agent/learnings/learning-<slug>.md` | `projects/caol-ila/learnings/<slug>.md` unless project tag says otherwise |
+| `agent/learnings/learning-<slug>.md` | `projects/agent-hub/learnings/<slug>.md` unless project tag says otherwise |
 | `agent/learnings/projects/<name>.md` | `projects/<mapped-project>/learnings/<name>.md` |
 | `agent/research/<slug>.md` | `projects/<project-from-tag>/topics/<slug>.md` |
 | `agent/specs/<slug>.md` | `projects/<project-from-tag>/specs/<slug>.md` |
@@ -126,9 +126,9 @@ Do not keep root note categories such as `notes/`, `research/`, `specs/`, `learn
 | Source | Destination |
 |--------|-------------|
 | `LOOKUP.md` | `projects/personal/topics/vault-lookup.md` or regenerate after migration |
-| `CLAUDE.md` | delete if obsolete; else `projects/caol-ila/topics/legacy-claude-entry.md` |
+| `CLAUDE.md` | delete if obsolete; else `projects/agent-hub/topics/legacy-claude-entry.md` |
 | `.vault-catalog.json` | regenerate after migration or delete if stale |
-| `contexts.json` | `projects/caol-ila/topics/legacy-contexts.json` only if still used; else delete |
+| `contexts.json` | `projects/agent-hub/topics/legacy-contexts.json` only if still used; else delete |
 
 ## Config Changes
 
@@ -138,10 +138,10 @@ Do not let skills, validators, rules, or standards own literal vault paths after
 
 | Owner | Role |
 |-------|------|
-| `agent/private/caol-config/machine-paths.json` | machine-local absolute roots only |
-| `agent/private/caol-config/doc-paths.json` | purpose-to-destination routing templates |
-| `agent/private/caol-config/vault-structure.json` | vault folder constants, allowed project role folders, legacy-folder denylist |
-| `agent/skills/caol-resolve-doc-path/resolve.sh` | only supported resolver for write destinations |
+| `agent/private/agent-hub-config/machine-paths.json` | machine-local absolute roots only |
+| `agent/private/agent-hub-config/doc-paths.json` | purpose-to-destination routing templates |
+| `agent/private/agent-hub-config/vault-structure.json` | vault folder constants, allowed project role folders, legacy-folder denylist |
+| `agent/skills/ah-resolve-doc-path/resolve.sh` | only supported resolver for write destinations |
 | `agent/skills/obsidian-fix-format/fix.sh` | validation consumer of `vault-structure.json`; no embedded project-root path literals |
 
 Proposed `vault-structure.json`:
@@ -189,10 +189,10 @@ Proposed `vault-structure.json`:
 
 | File | Change |
 |------|--------|
-| `agent/private/caol-config/machine-paths.json` | keep `obsidian` as vault root; remove runtime reliance on `obsidian-agent-root` and `obsidian-vault-claude` |
-| `agent/private/caol-config/doc-paths.json` | remove `agent/` prefix from all Obsidian destinations; route purpose templates to `projects/`, `daily/`, or `projects/<project>/<role>` |
-| `agent/private/caol-config/vault-structure.json` | add vault root/role/legacy folder constants |
-| `agent/skills/caol-resolve-doc-path/resolve.sh` | keep resolving through `obsidian`; add `structure` mode for config consumers |
+| `agent/private/agent-hub-config/machine-paths.json` | keep `obsidian` as vault root; remove runtime reliance on `obsidian-agent-root` and `obsidian-vault-claude` |
+| `agent/private/agent-hub-config/doc-paths.json` | remove `agent/` prefix from all Obsidian destinations; route purpose templates to `projects/`, `daily/`, or `projects/<project>/<role>` |
+| `agent/private/agent-hub-config/vault-structure.json` | add vault root/role/legacy folder constants |
+| `agent/skills/ah-resolve-doc-path/resolve.sh` | keep resolving through `obsidian`; add `structure` mode for config consumers |
 | `agent/skills/obsidian-fix-format/fix.sh` | read `vault-structure.json`; scan root-level `projects/` and `daily/` |
 | `agent/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` | replace `agent/projects/<project>/` with `projects/<project>/` |
 | `agent/rules/obsidian.md` | replace agent-root wording with vault-root `projects/` and `daily/` wording |
@@ -210,9 +210,9 @@ Current active scan found these cleanup families:
 | validators | `obsidian-fix-format/fix.sh` | derive root folders and role folders from `vault-structure.json` |
 | Obsidian policy docs | `agent/rules/obsidian.md`, `agent/standards/policy/naming.md`, `llm-first-docs.md` | update examples and binding rules to root `projects/` and `daily/` |
 | Obsidian markdown references | `PROJECT-DOCS-STRUCTURE.md`, `OBSIDIAN-FORMAT.md`, `VAULT-AUDIENCE.md`, inspection checklist | replace path contract wording |
-| logging/archive skills | `learn-log-day`, `learn-archive-week`, `learn-log-vocab`, `caol-log-postmortem` | call resolver or read config instead of embedding vault folders |
+| logging/archive skills | `learn-log-day`, `learn-archive-week`, `learn-log-vocab`, `ah-log-postmortem` | call resolver or read config instead of embedding vault folders |
 | domain log skills | `tutoring-log-*`, `consulting-log-session`, `drink-log-entry` | route through project purposes such as `projects/tutoring`, `projects/consulting`, `projects/drinks` |
-| dashboard/tools | `caol-hq` path helpers and widgets | prefer `obsidian` plus config; remove `obsidian-agent-root` UI assumptions |
+| dashboard/tools | `ah-hq` path helpers and widgets | prefer `obsidian` plus config; remove `obsidian-agent-root` UI assumptions |
 | Shotloom/deploy references | `shotloom-*` skills that read `obsidian-vault-claude` | use resolver or `obsidian` root fallback |
 | historical plans/reports | old `docs/plans/**` | leave as history unless they are active execution specs |
 
@@ -231,7 +231,7 @@ The validator allows:
 
 | Allowed location | Reason |
 |------------------|--------|
-| `agent/private/caol-config/vault-structure.json` | owns legacy denylist values until migration completes |
+| `agent/private/agent-hub-config/vault-structure.json` | owns legacy denylist values until migration completes |
 | `docs/plans/**` historical plans | immutable migration history |
 | `agent/history.jsonl` | runtime history |
 | comments marked `legacy compatibility` | temporary bridge until all callers are patched |
@@ -245,7 +245,7 @@ The validator fails for active skills, rules, standards, scripts, and config aft
 | `devlog` | `obsidian:projects/{project}/days` |
 | `learning` | `obsidian:projects/{project}/learnings` |
 | `topic` | `obsidian:projects/{project}/topics` |
-| `research` | `obsidian:projects/caol-ila/topics` until project tag routing exists |
+| `research` | `obsidian:projects/agent-hub/topics` until project tag routing exists |
 | `notes` | `obsidian:projects/personal/topics` |
 | `consulting` | `obsidian:projects/consulting/topics` |
 | `tutoring` | `obsidian:projects/tutoring` |
@@ -253,8 +253,8 @@ The validator fails for active skills, rules, standards, scripts, and config aft
 | `postmortem` | `obsidian:projects/records/topics` |
 | `vocab` | `obsidian:projects/language-learning/topics` |
 | `experiment` | `obsidian:projects/{project}/learnings` or `obsidian:projects/{project}/days` by caller type |
-| `spec` | `obsidian:projects/caol-ila/specs` |
-| `cross-learning` | `obsidian:projects/caol-ila/learnings` |
+| `spec` | `obsidian:projects/agent-hub/specs` |
+| `cross-learning` | `obsidian:projects/agent-hub/learnings` |
 | `daily` | `obsidian:daily` |
 
 ## Migration Batches
@@ -280,7 +280,7 @@ Create reports before moving:
 
 ### Batch 1.5 — Centralize Path Constants
 
-1. Add `agent/private/caol-config/vault-structure.json`.
+1. Add `agent/private/agent-hub-config/vault-structure.json`.
 2. Patch `doc-paths.json` to root-level destinations.
 3. Patch resolver and validators to consume config-owned paths.
 4. Patch active skills/rules/standards that embed old vault folders.
@@ -356,7 +356,7 @@ Delete only when all conditions pass:
 | duplicate destination | never overwrite; report conflict |
 | broken wikilinks | repair from manifest; run link inventory after repair |
 | stale generated catalog | regenerate `.vault-catalog.json` or delete if owner is unknown |
-| config drift | patch config in repo and deployed `~/.claude/private/caol-config/` together |
+| config drift | patch config in repo and deployed `~/.claude/private/agent-hub-config/` together |
 | attachment breakage | do not move `attachments/` in this spec |
 | hidden Obsidian state | do not edit `.obsidian/` in this spec |
 
@@ -396,7 +396,7 @@ git diff --check
 | path constants | active code reads `doc-paths.json` or `vault-structure.json` instead of embedding old vault folders |
 | validators | `root-structure`, `project-structure`, `daily-structure`, `missing-readme`, `obsidian-contract` pass |
 | reports | manifest, conflicts, link repair, config patch report exist |
-| git | caol-ila config/spec/validator changes committed after vault migration validates |
+| git | agent-hub config/spec/validator changes committed after vault migration validates |
 
 ## Open Decisions
 
@@ -404,9 +404,9 @@ git diff --check
 |----------|---------|-------------|
 | `attachments/` | keep root support folder vs move under `projects/_assets/` | keep root support folder |
 | `daily` vs project day logs | global `daily/` only vs both global and project `days/` | keep both: global daily for whole-day summaries, project days for project-bound logs |
-| `CLAUDE.md` root note | delete vs archive under `projects/caol-ila/topics/` | inspect before deciding |
+| `CLAUDE.md` root note | delete vs archive under `projects/agent-hub/topics/` | inspect before deciding |
 | `.vault-catalog.json` | regenerate vs delete | regenerate only if owner script exists; else delete stale catalog after backup |
-| `contexts.json` | migrate vs delete | inspect owner; migrate to `projects/caol-ila/topics/` only if used |
+| `contexts.json` | migrate vs delete | inspect owner; migrate to `projects/agent-hub/topics/` only if used |
 
 ## Execution Log
 

@@ -2,14 +2,14 @@
 status: completed
 created: 2026-05-16
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Remove Claude Terms From Shared Layers
 
 ## Purpose
 
-Remove Claude-specific wording from caol-ila shared layers now that caol-ila is an agent hub.
+Remove Claude-specific wording from agent-hub shared layers now that agent-hub is an agent hub.
 
 Keep Claude-specific terms only when the file describes the Claude Code harness, the `CLAUDE.md` entry document, or the `~/.claude/` deploy target.
 
@@ -29,7 +29,7 @@ Do not edit archival, generated, or code-only hits unless they control current r
 
 ## Problem
 
-caol-ila currently contains shared rules, standards, skills, commands, plans, and lookup docs that still describe themselves as Claude-specific.
+agent-hub currently contains shared rules, standards, skills, commands, plans, and lookup docs that still describe themselves as Claude-specific.
 
 That wording is wrong when Codex, Claude Code, and future harnesses read the same shared layer.
 
@@ -38,7 +38,7 @@ That wording is wrong when Codex, Claude Code, and future harnesses read the sam
 | Surface | Target wording |
 |---------|----------------|
 | Shared policy | `agent`, `harness`, `entry document`, `shared layer`, `deploy target` |
-| Shared skills | `skill`, `agent skill`, or `caol-ila skill` |
+| Shared skills | `skill`, `agent skill`, or `agent-hub skill` |
 | Shared commands | `command` or `slash command`; use `Claude Code command` only for Claude runtime mechanics |
 | Runtime path | `~/.claude/` only when the runtime path is literally the Claude deploy target |
 | Entry file | `CLAUDE.md` only when referring to that filename or Claude Code adapter behavior |
@@ -52,7 +52,7 @@ Do not remove `Claude` from these cases:
 |------|---------|
 | Filename | `CLAUDE.md`, `agent/CLAUDE.md` |
 | Harness name | `Claude Code` |
-| Runtime path | `~/.claude/skills/`, `~/.claude/private/caol-config/` |
+| Runtime path | `~/.claude/skills/`, `~/.claude/private/agent-hub-config/` |
 | Adapter behavior | Claude `@` imports, Claude slash command details |
 | Third-party docs | Links to Claude Code skill docs |
 | Historical issue names | Existing issue titles or references that explicitly name Claude |
@@ -130,7 +130,7 @@ Patch root and policy documents first:
 | `SYSTEM.md` | Keep explicit Claude Code harness rows; neutralize shared-layer prose. |
 | `AGENTS.md` | Keep Codex adapter wording. |
 | `CLAUDE.md` | Keep Claude Code adapter wording. |
-| `README.md` | Describe caol-ila as agent hub, not Claude-only repository. |
+| `README.md` | Describe agent-hub as agent hub, not Claude-only repository. |
 | `LOOKUP.md` | Use neutral goal-to-doc labels. |
 | `AGENT-HUB.md` | Keep harness names in manifest views; neutralize shared-layer summaries. |
 
@@ -210,7 +210,7 @@ Residual hits must be classified in one of:
 
 ## Completion Criteria
 
-- Shared-layer docs no longer describe caol-ila as Claude-only.
+- Shared-layer docs no longer describe agent-hub as Claude-only.
 - Claude-specific terms remain only where they identify Claude Code, `CLAUDE.md`, or `~/.claude/`.
 - Canonical source paths prefer `agent/...` in repo-owned docs.
 - Deploy target paths keep `~/.claude/...` only when runtime behavior requires them.

@@ -2,7 +2,7 @@
 status: implemented
 created: 2026-05-16
 updated: 2026-05-16
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Obsidian Contract Cleanup
@@ -71,7 +71,7 @@ The vault also contains legacy notes that predate the current taxonomy. They sho
 title: "Document title"
 tags:
   - type/reference
-  - project/caol-ila
+  - project/agent-hub
 date: YYYY-MM-DD
 source: agent
 ---

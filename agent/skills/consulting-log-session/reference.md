@@ -32,7 +32,7 @@ Company file format template, full workflow details for all 3 actions, and notes
 
 ### Action: `list`
 
-1. Resolve `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc consulting`, then glob `*.md` below it
+1. Resolve `bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc consulting`, then glob `*.md` below it
 2. For each file, read total sessions count
 3. Display table:
 

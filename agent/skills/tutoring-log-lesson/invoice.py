@@ -91,11 +91,11 @@ def open_invoice_generator(summary: dict) -> None:
     }
     query = urllib.parse.urlencode(params)
 
-    # /invoice was hosted by caol-serve-skills (port 972), now removed.
-    # Until caol-hq (port 9720) provides a replacement route, --open is a no-op
+    # /invoice was hosted by ah-hq (port 972), now removed.
+    # Until ah-hq (port 9720) provides a replacement route, --open is a no-op
     # and we just print the query string the future endpoint would consume.
     query_str = "&".join(f"{k}={v}" for k, v in params.items())
-    print("[--open disabled] caol-hq /invoice route not yet implemented.")
+    print("[--open disabled] ah-hq /invoice route not yet implemented.")
     print(f"Query (for future endpoint): {query_str}")
     _ = webbrowser  # silence unused-import lint until route returns
 

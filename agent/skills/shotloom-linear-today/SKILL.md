@@ -18,7 +18,7 @@ Compact list of what you should work on today: Linear issues assigned to you in 
    ```
    Call with: `team: "Shotloom"`, `assignee: me`, `state: ["Todo", "In Progress", "In Review", "Backlog"]`, sort by priority/updatedAt.
 
-2. Worktrees: `git -C "$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)" worktree list --porcelain`
+2. Worktrees: `git -C "$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/agent-hub-config/repo-paths.json)" worktree list --porcelain`
 
 3. Open PRs: `gh pr list --repo CINEV/shotloom --author @me --state open --json number,title,headRefName,statusCheckRollup,reviewDecision`
 

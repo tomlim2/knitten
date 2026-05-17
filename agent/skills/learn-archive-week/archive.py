@@ -5,7 +5,7 @@ Idempotent: skips files with existing valid frontmatter if already at destinatio
 See SKILL.md for full spec.
 
 Machine-specific absolute paths are loaded from
-``~/.claude/private/caol-config/machine-paths.json``. Destination folder
+``~/.claude/private/agent-hub-config/machine-paths.json``. Destination folder
 vocabulary is loaded from ``vault-structure.json``.
 """
 from __future__ import annotations
@@ -20,8 +20,8 @@ from datetime import datetime, date
 HOME = Path.home()
 
 # ---------- load machine-specific paths ----------
-_PATHS_FILE = HOME / ".claude" / "private" / "caol-config" / "machine-paths.json"
-_STRUCTURE_FILE = HOME / ".claude" / "private" / "caol-config" / "vault-structure.json"
+_PATHS_FILE = HOME / ".claude" / "private" / "agent-hub-config" / "machine-paths.json"
+_STRUCTURE_FILE = HOME / ".claude" / "private" / "agent-hub-config" / "vault-structure.json"
 try:
     _PATHS = json.loads(_PATHS_FILE.read_text(encoding="utf-8"))
 except FileNotFoundError:
@@ -79,15 +79,15 @@ def infer_destination(rel: Path) -> tuple[Path, list[str]]:
         return rel, [project, kind_by_bucket.get(bucket, "reference")]
 
     if len(parts) >= 2 and parts[0] == "agent" and parts[1] == "learnings":
-        return Path(PROJECTS) / "caol-ila" / "learnings" / name, ["_cross-project", "learning"]
+        return Path(PROJECTS) / "agent-hub" / "learnings" / name, ["_cross-project", "learning"]
 
     if parts and parts[0] == "private-learnings":
-        return Path(PROJECTS) / "caol-ila" / "learnings" / name, ["_cross-project", "learning"]
+        return Path(PROJECTS) / "agent-hub" / "learnings" / name, ["_cross-project", "learning"]
 
     if parts and parts[0] == "private-ops":
-        return Path(PROJECTS) / "caol-ila" / "ops" / "runs" / name, ["_cross-project", "ops"]
+        return Path(PROJECTS) / "agent-hub" / "ops" / "runs" / name, ["_cross-project", "ops"]
 
-    return Path(PROJECTS) / "caol-ila" / "topics" / rel, ["_cross-project", "reference"]
+    return Path(PROJECTS) / "agent-hub" / "topics" / rel, ["_cross-project", "reference"]
 
 
 def build_mapping() -> list[tuple[Path, Path, Path, list[str], str, bool]]:

@@ -61,7 +61,7 @@ Always required. Exactly one per note.
 | `project/bevy-vrm` | bevy-vrm renderer |
 | `project/mmd-anju` | MMD Anju player |
 | `project/codex-base` | Codex base workspace |
-| `project/caol-ila` | agent hub / skills repo |
+| `project/agent-hub` | agent hub / skills repo |
 | `project/personal` | Personal notes, journal, passwords, hobby lists |
 | `project/graphics-study` | Standalone graphics/3D/shader study notes (Blender, GLSL, Three.js, rendering theory) |
 | `project/cross-project` | Cross-project agent learnings and conventions |
@@ -323,7 +323,7 @@ Update counts when adding or retiring a tag. Count=1 tags are candidates for con
 | `project/ue-live-scene-bridge` | 31 | |
 | `project/graphics-study` | 25 | Blender·GLSL·Three.js·rendering theory |
 | `project/personal` | 24 | personal notes, journal, hobby lists |
-| `project/caol-ila` | 21 | |
+| `project/agent-hub` | 21 | |
 | `project/mmd-anju` | 15 | |
 | `project/studio-weekend` | 14 | |
 | `project/tutoring` | 12 | |

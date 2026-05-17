@@ -10,7 +10,7 @@ Summarize local commits from today (or a specified date) across
 CINEVStudio repositories, providing a clear overview of the day's work.
 ## Repositories
 
-Read paths from `~/.claude/private/caol-config/repo-paths.json` (use `entry.path`):
+Read paths from `~/.claude/private/agent-hub-config/repo-paths.json` (use `entry.path`):
 
 - `cinev-studio` (main)
 - `cinev-engine` (second)

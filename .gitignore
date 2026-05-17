@@ -4,10 +4,10 @@ agent/private/*
 !agent/private/specs/
 !agent/private/skill-usage/
 # Shared cross-machine doc routing registry (per-purpose subpaths)
-!agent/private/caol-config/
-agent/private/caol-config/*
-!agent/private/caol-config/doc-paths.json
-!agent/private/caol-config/vault-structure.json
+!agent/private/agent-hub-config/
+agent/private/agent-hub-config/*
+!agent/private/agent-hub-config/doc-paths.json
+!agent/private/agent-hub-config/vault-structure.json
 
 # Secrets
 *.env

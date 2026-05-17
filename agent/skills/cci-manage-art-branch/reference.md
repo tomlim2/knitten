@@ -9,7 +9,7 @@ Detailed procedures for each sub-command. The orchestrator (SKILL.md) routes her
 ### Resolve Repo Path
 
 1. Read `config.json` → get `repo_key`
-2. Read `~/.claude/private/caol-config/repo-paths.json` → look up path by key
+2. Read `~/.claude/private/agent-hub-config/repo-paths.json` → look up path by key
 3. All git commands use `git -C <repo_path>`
 
 ### Read State
@@ -364,7 +364,7 @@ If any WARN, ask user whether to proceed or abort.
 
 ```
 # 1. cci-make-mr 최신화 (회사 스킬 → 로컬 스킬에 반영)
-/caol-update-skills cci-make-mr
+/ah-update-skills cci-make-mr
 
 # 2. MR 생성
 /mr develop
@@ -407,7 +407,7 @@ Validation:
   [PASS/WARN] Redirectors
 
 MR:
-  [ ] /caol-update-skills cci-make-mr → /mr develop 실행 (없으면 /cci-make-mr develop)
+  [ ] /ah-update-skills cci-make-mr → /mr develop 실행 (없으면 /cci-make-mr develop)
   [ ] MR title convention 적용
   [ ] GitLab MR 생성 링크 제공
 ```

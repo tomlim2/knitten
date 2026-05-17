@@ -51,7 +51,7 @@ Replaces 5+ separate commands with one entry point. Old commands (`/cci-art-crea
 
 ## Configuration
 
-Read repo path via `config.json` → `repo_key`, look up actual path from `~/.claude/private/caol-config/repo-paths.json`. All git commands run against that path.
+Read repo path via `config.json` → `repo_key`, look up actual path from `~/.claude/private/agent-hub-config/repo-paths.json`. All git commands run against that path.
 
 ---
 

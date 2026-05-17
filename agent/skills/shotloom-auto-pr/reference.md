@@ -137,7 +137,7 @@ Unresolved out-of-scope and ambiguous items do **not** stop the loop — they ac
 Resolve via `machine-paths.json`:
 
 ```bash
-base=$(jq -re '.obsidian // .["obsidian-staging"]' ~/.claude/private/caol-config/machine-paths.json)
+base=$(jq -re '.obsidian // .["obsidian-staging"]' ~/.claude/private/agent-hub-config/machine-paths.json)
 journal="$base/projects/shotloom/ops/runs/shotloom-pr-journal.md"
 ```
 

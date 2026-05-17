@@ -19,7 +19,7 @@ ES modules require an HTTP server (file:// blocked by CORS).
 ## Workflow
 
 ### Step 1: Resolve Path
-- Read `~/.claude/private/caol-config/repo-paths.json` to get the `mmd-anju` repo path
+- Read `~/.claude/private/agent-hub-config/repo-paths.json` to get the `mmd-anju` repo path
 - Player path: `<mmd-anju>/`
 
 ### Step 2: Start Server

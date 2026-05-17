@@ -2,7 +2,7 @@
 status: implemented
 created: 2026-05-16
 updated: 2026-05-16
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Rename Obsidian Claude Path
@@ -27,7 +27,7 @@ Machine config also exposes that path as:
 obsidian-vault-claude
 ```
 
-That name makes the vault look Claude-owned even though caol-ila now acts as an agent hub for Codex, Claude Code, and future harnesses.
+That name makes the vault look Claude-owned even though agent-hub now acts as an agent hub for Codex, Claude Code, and future harnesses.
 
 ## Target State
 
@@ -43,8 +43,8 @@ That name makes the vault look Claude-owned even though caol-ila now acts as an 
 
 | In scope | Examples |
 |----------|----------|
-| machine path config | `agent/private/caol-config/machine-paths.json`, templates |
-| config CRUD surface | `caol-manage-config` show/setup/add/remove docs |
+| machine path config | `agent/private/agent-hub-config/machine-paths.json`, templates |
+| config CRUD surface | `ah-manage-config` show/setup/add/remove docs |
 | doc routing scripts | `learn-archive-week`, `tutoring-log-lesson`, doc-path resolver users |
 | Obsidian rules | location wording and auto-commit path table |
 | actual vault folder migration | move `MyNotes/claude` to `MyNotes/agent` when safe |
@@ -94,7 +94,7 @@ Do not delete the legacy key in the first implementation. Keep it as an alias fo
 
 ### S1.5 — Config CRUD Surface
 
-1. Update `caol-manage-config show` examples to display `obsidian-agent-root`.
+1. Update `ah-manage-config show` examples to display `obsidian-agent-root`.
 2. Update setup key list so new machines ask for `obsidian-agent-root`.
 3. Mark `obsidian-vault-claude` as legacy fallback, not the primary Obsidian docs key.
 4. Leave add/remove mechanics unchanged; they already accept arbitrary machine keys.

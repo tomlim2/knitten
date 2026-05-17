@@ -142,7 +142,7 @@ diagnostics.
 Before editing, verify the current state:
 
 ```bash
-cd "$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+cd "$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 git status --short
 rg -n "AssetImportKind::Prop|handle_import_prop_asset|pickAndStageProp|createWebPropBinding|tauri_stage_prop_from_dialog" crates apps
 ```

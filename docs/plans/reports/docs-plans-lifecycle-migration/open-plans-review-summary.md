@@ -2,7 +2,7 @@
 status: report
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 spec: ../../completed/docs-plans-lifecycle-migration.md
 ---
 
@@ -27,7 +27,7 @@ No file was deleted in this pass. Every reviewed file still carries useful imple
 | Spec | Target | Evidence |
 |---|---|---|
 | `adr-0030-clarify-extension-boundary` | `docs/plans/completed/adr-0030-clarify-extension-boundary.md` | Shotloom history contains ADR-0030 clarification work (`438222bb docs(adr): tighten ADR-0030 dependency invariant and fix crate attribution`). |
-| `agent-symlink-followup` | `docs/plans/completed/agent-symlink-followup.md` | `~/.claude` now resolves as a symlink to `caol-ila/agent`; no local `caol-ila/claude/` stub was found during review. |
+| `agent-symlink-followup` | `docs/plans/completed/agent-symlink-followup.md` | `~/.claude` now resolves as a symlink to `agent-hub/agent`; no local `agent-hub/claude/` stub was found during review. |
 | `bridge-add-background-prop-batch-spawn` | `docs/plans/completed/bridge-add-background-prop-batch-spawn.md` | Shotloom history contains `03eb9aa9 feat(bridge): add background prop batch spawn (#342)`. |
 | `bridge-clear-background-props` | `docs/plans/completed/bridge-clear-background-props.md` | Shotloom history contains `de948e44 feat(bridge): clear background props` plus follow-up clear-background docs/tests. |
 | `ci-add-containerfile-smoke` | `docs/plans/completed/ci-add-containerfile-smoke.md` | Shotloom history contains `46f97aec chore(ci): add Containerfile build smoke workflow (#280)`. |
@@ -43,7 +43,7 @@ No file was deleted in this pass. Every reviewed file still carries useful imple
 | `gltf-repair-vrm1-thumb-slots` | `docs/plans/completed/gltf-repair-vrm1-thumb-slots.md` | Shotloom history contains `2cd3f8f4 feat(gltf): warn on noncanonical VRM thumb slots (#312)`. |
 | `gltf-wire-axis-bake-normalize-vrm` | `docs/plans/completed/gltf-wire-axis-bake-normalize-vrm.md` | Shotloom history contains `29fff5a9 feat(gltf): wire axis bake into vrm normalization (#335)`. |
 | `import-add-prop-gltf` | `docs/plans/completed/import-add-prop-gltf.md` | Shotloom history contains `af076083 feat(gltf): add prop GLB preflight (#326)`. |
-| `link-codex-context` | `docs/plans/completed/link-codex-context.md` | `~/.codex/SYSTEM.md`, `AGENT-HUB.md`, `agent`, `docs`, `rules`, `standards`, and `commands` all resolve to `caol-ila`; `~/.codex/skills/.system` remains real. |
+| `link-codex-context` | `docs/plans/completed/link-codex-context.md` | `~/.codex/SYSTEM.md`, `AGENT-HUB.md`, `agent`, `docs`, `rules`, `standards`, and `commands` all resolve to `agent-hub`; `~/.codex/skills/.system` remains real. |
 | `placeholder-material-checker-sampler` | `docs/plans/completed/placeholder-material-checker-sampler.md` | Shotloom history contains `da05071f fix(placeholder-material): load checker with Repeat+Nearest sampler (#296)`. |
 | `retarget-cleanup-rig-branches` | `docs/plans/completed/retarget-cleanup-rig-branches.md` | Shotloom history contains `90933ee9 refactor(retarget): remove default rig thumb overrides`. |
 | `retarget-recalibrate-default-pose` | `docs/plans/completed/retarget-recalibrate-default-pose.md` | Shotloom history contains `9ed656db test(retarget): pin default pose recalibration (#340)`. |

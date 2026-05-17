@@ -2,7 +2,7 @@
 status: implemented
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 milestone: spec-lifecycle-system
 briefing: ../../briefings/specs/spec-validator-hardening.md
 ---
@@ -11,7 +11,7 @@ briefing: ../../briefings/specs/spec-validator-hardening.md
 
 ## Purpose
 
-Harden `scripts/validate-llm-first.mjs` so caol/Knitten specs, milestones, and
+Harden `scripts/validate-llm-first.mjs` so agent-hub specs, milestones, and
 spec intake files stay linked after the spec lifecycle system grows beyond a
 flat `docs/plans/` folder.
 
@@ -48,7 +48,7 @@ without opening chat history or external trackers.
 1. Do not move or rename any specs.
 2. Do not enforce lifecycle folders before the migration runs.
 3. Do not require every spec to have a milestone.
-4. Do not validate Shotloom briefings in this caol-specific batch.
+4. Do not validate Shotloom briefings in this agent-hub-specific batch.
 5. Do not require full YAML parsing beyond the existing simple frontmatter
    parser.
 
@@ -68,7 +68,7 @@ Existing milestone corpus:
 | Milestone | Linked spec count |
 |-----------|------------------:|
 | `spec-lifecycle-system` | 6 planned after this spec is attached |
-| `knitten-rename` | 1 |
+| `agent-hub-rename` | 1 |
 
 ## Proposed Design
 

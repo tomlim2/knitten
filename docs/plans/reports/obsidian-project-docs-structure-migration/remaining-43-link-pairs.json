@@ -8,12 +8,12 @@
     "newBase": "graphics-glossary"
   },
   {
-    "oldRel": "projects/_cross-project/caol-ila.md",
-    "newRel": "learnings/projects/caol-ila.md",
-    "oldNoExt": "projects/_cross-project/caol-ila",
-    "newNoExt": "learnings/projects/caol-ila",
-    "oldBase": "caol-ila",
-    "newBase": "caol-ila"
+    "oldRel": "projects/_cross-project/agent-hub.md",
+    "newRel": "learnings/projects/agent-hub.md",
+    "oldNoExt": "projects/_cross-project/agent-hub",
+    "newNoExt": "learnings/projects/agent-hub",
+    "oldBase": "agent-hub",
+    "newBase": "agent-hub"
   },
   {
     "oldRel": "projects/_cross-project/general.md",

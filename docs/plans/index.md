@@ -21,5 +21,5 @@ status: accepted
 1. Create new specs in `proposed/` unless the user asks to begin active implementation now.
 2. Create active implementation specs in `active/`.
 3. Do not create spec files directly under `docs/plans/`.
-4. Use `agent/skills/caol-manage-spec/SKILL.md` for spec CRUD.
-5. Use `agent/skills/caol-manage-milestone/SKILL.md` when a spec belongs to a milestone.
+4. Use `agent/skills/ah-manage-spec/SKILL.md` for spec CRUD.
+5. Use `agent/skills/ah-manage-milestone/SKILL.md` when a spec belongs to a milestone.

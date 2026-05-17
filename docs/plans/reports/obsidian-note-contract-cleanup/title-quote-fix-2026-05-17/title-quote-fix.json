@@ -222,47 +222,47 @@
       "new": "\"FBX Arm/Hand Bone Scan: 25_06672_F_DNTSuperSukiShukiRush\""
     },
     {
-      "file": "projects/caol-ila/days/2026-04-23.md",
+      "file": "projects/agent-hub/days/2026-04-23.md",
       "old": "2026-04-23: Hyperframes 셋업 + video-* 스킬 래퍼",
       "new": "\"2026-04-23: Hyperframes 셋업 + video-* 스킬 래퍼\""
     },
     {
-      "file": "projects/caol-ila/days/2026-04-29.md",
+      "file": "projects/agent-hub/days/2026-04-29.md",
       "old": "Day 01 (04-29): 스킬 목록 토큰 다이어트",
       "new": "\"Day 01 (04-29): 스킬 목록 토큰 다이어트\""
     },
     {
-      "file": "projects/caol-ila/days/2026-05-05.md",
+      "file": "projects/agent-hub/days/2026-05-05.md",
       "old": "Day 02 (05-05): 스킬 사용량 추적 + 데일리 라이트 트라이어드 LLM-first 재정비",
       "new": "\"Day 02 (05-05): 스킬 사용량 추적 + 데일리 라이트 트라이어드 LLM-first 재정비\""
     },
     {
-      "file": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+      "file": "projects/agent-hub/learnings/learning-claude-code-hooks.md",
       "old": "Claude Code 훅: 사용자-슬래시는 PreToolUse 발화 안 함",
       "new": "\"Claude Code 훅: 사용자-슬래시는 PreToolUse 발화 안 함\""
     },
     {
-      "file": "projects/caol-ila/learnings/learning-rust-bin-vs-lib.md",
+      "file": "projects/agent-hub/learnings/learning-rust-bin-vs-lib.md",
       "old": "Rust: bin vs lib",
       "new": "\"Rust: bin vs lib\""
     },
     {
-      "file": "projects/caol-ila/learnings/learning-rust-crates.md",
+      "file": "projects/agent-hub/learnings/learning-rust-crates.md",
       "old": "Rust: crate란?",
       "new": "\"Rust: crate란?\""
     },
     {
-      "file": "projects/caol-ila/learnings/learning-rust-traits.md",
+      "file": "projects/agent-hub/learnings/learning-rust-traits.md",
       "old": "Rust: Traits (트레이트)",
       "new": "\"Rust: Traits (트레이트)\""
     },
     {
-      "file": "projects/caol-ila/plans/todo-at-home-2026-04-21.md",
+      "file": "projects/agent-hub/plans/todo-at-home-2026-04-21.md",
       "old": "2026-04-21: 집 맥에서 할 일 — Claude 설정 중앙화 후속",
       "new": "\"2026-04-21: 집 맥에서 할 일 — Claude 설정 중앙화 후속\""
     },
     {
-      "file": "projects/caol-ila/topics/javascript-code-review-criteria.md",
+      "file": "projects/agent-hub/topics/javascript-code-review-criteria.md",
       "old": "JavaScript/Node.js Code Review Criteria: Research Findings",
       "new": "\"JavaScript/Node.js Code Review Criteria: Research Findings\""
     },

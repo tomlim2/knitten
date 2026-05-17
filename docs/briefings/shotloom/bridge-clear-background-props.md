@@ -48,7 +48,7 @@ spec: ../../plans/completed/bridge-clear-background-props.md
 - P2: POC salvage boundary - local `feat/stage-import-bridge-poc` contains useful `clear_background_props` sketches, but it also mixes debug cube cache, fixture UI, and old spawn-background shapes. Reuse only the clear-command idea and tests, not unrelated cube/cache/UI changes - evidence: dirty POC diff includes `StageDebugCubeAssets`, debug panel, asset files, and broad changes - AC-trace: user asked to make 424 cleanly.
 - P3: Error wording - use bounded display for unexpected IDs if any rejection path names a prop id; no raw control characters in messages - evidence: existing `despawn_prop_rejection_bounds_and_escapes_unknown_prop_id` - AC-trace: review-rust/error-handling.
 
-**Sibling specs (caol-ila/docs/plans/):**
+**Sibling specs (agent-hub/docs/plans/):**
 - `bridge-add-background-prop-batch-spawn.md` - HEAD - stance: STL-423 adds `spawn_background_props`, writes deterministic ownership tags, and explicitly leaves clear-all to STL-424 - agrees.
 - `stage-define-map-document-bundle-layout.md` - HEAD - stance: contract defines `background_owner` and says clear-all must filter by ownership, not asset/display name - agrees.
 - `stage-add-map-document-parser.md` - HEAD - stance: parser/resolver owns stage-map input and keeps bridge/editor/clear out of scope - agrees.
@@ -63,6 +63,6 @@ spec: ../../plans/completed/bridge-clear-background-props.md
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (caol-ila/docs/plans/ and briefings, full body via Read tool for every match)
+- [x] sibling-spec scan run (agent-hub/docs/plans/ and briefings, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.

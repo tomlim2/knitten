@@ -7,7 +7,7 @@ supersedes: docs/decisions/0001-platform-neutral-agent-system.md
 
 ## Decision
 
-`caol-ila` uses `agent/` as the canonical repository root for shared agent artifacts.
+`agent-hub` uses `agent/` as the canonical repository root for shared agent artifacts.
 
 | Path | Role |
 |------|------|
@@ -48,7 +48,7 @@ When this decision changes:
 2. Edit `AGENT-HUB.md`, `README.md`, `LOOKUP.md`, and entry documents.
 3. Edit `agent/config/agent-hub.json` and `agent/config/context-routing.json`.
 4. Edit `scripts/validate-llm-first.mjs` path constants and generated block output.
-5. Verify `~/.claude` points at `caol-ila/agent`.
+5. Verify `~/.claude` points at `agent-hub/agent`.
 
 ## Consequences
 

@@ -20,7 +20,7 @@ When the user asks "what did I learn this week", it reads the log and shows a su
 
 ## Storage
 
-**Path:** !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc vocab`
+**Path:** !`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc vocab`
 
 **File structure:**
 ```

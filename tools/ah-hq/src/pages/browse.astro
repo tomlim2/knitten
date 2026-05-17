@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { discoverSkills } from '../lib/skill-discovery';
+import { walkMarkdown } from '../lib/doc-discovery';
+import { STANDARDS_DIR, vaultProjectDir } from '../lib/paths';
+import { join } from 'node:path';
+
+const skillCount = discoverSkills().length;
+const standardsCount = walkMarkdown(STANDARDS_DIR).length;
+const projectDir = vaultProjectDir('agent-hub');
+const learningsCount = projectDir ? walkMarkdown(join(projectDir, 'learnings')).length : 0;
+---
+
+<BaseLayout title="Browse" activeNav="/browse">
+    <PageHero title="Browse" sub="꺼내 보는 저장소" />
+
+    <div class="hq-browse-grid">
+        <a href="/skills" class="hq-browse-tile">
+            <h2>Skills</h2>
+            <p class="hq-browse-count">{skillCount}</p>
+            <p class="hq-browse-desc">~/.claude/skills/* 자동 디스커버리</p>
+        </a>
+        <a href="/standards" class="hq-browse-tile">
+            <h2>Standards</h2>
+            <p class="hq-browse-count">{standardsCount}</p>
+            <p class="hq-browse-desc">~/.claude/standards/* recursive scan</p>
+        </a>
+        <a href="/learnings" class="hq-browse-tile">
+            <h2>Learnings</h2>
+            <p class="hq-browse-count">{learningsCount}</p>
+            <p class="hq-browse-desc">Obsidian configured learnings recursive scan</p>
+        </a>
+    </div>
+</BaseLayout>

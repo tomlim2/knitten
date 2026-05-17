@@ -39,8 +39,8 @@ thumb CMC work, and editor UI changes stay out of scope.
 | Native normalized VRM cache | Partial | `crates/shotloom-import/src/lib.rs` uses `NORMALIZED_VRM_CACHE_VERSION = "v3"`, previously bumped for normalized-byte changes from VRM1 180Y correction. |
 | Fixture precedent | Already Done | `assets/README.md` defines VRM fixture naming and `_backward`; `crates/shotloom-gltf/tests/vrm1_backward_fixture.rs` covers yoya/minjoon backward normalization and idempotence; `crates/shotloom-gltf/tests/vrm_thumb_slot_quality.rs` covers fixture diagnostics on yoya/minjoon. |
 | Diagnostics spec | Partial | `docs/specs/vrm-character-validation.md` documents 180Y normalization and the `VrmDiagnostic` boundary, but has no axis-bake diagnostic row yet. |
-| Sibling Phase 2d plan | Consumed | `caol-ila/docs/plans/completed/gltf-rebake-axis-bind-matrices.md` explicitly excluded `normalize_vrm` wiring, diagnostics, and cache bump, and names them as Phase 2e follow-up. |
-| Sibling thumb-slot plan | Consumed | `caol-ila/docs/plans/completed/gltf-repair-vrm1-thumb-slots.md` uses the same `finalize_normalized_vrm` tail, parse/rebuild, no-op byte-stability, and cache-version reasoning; its planned v4 cache note is stale relative to current live code still being v3. |
+| Sibling Phase 2d plan | Consumed | `agent-hub/docs/plans/completed/gltf-rebake-axis-bind-matrices.md` explicitly excluded `normalize_vrm` wiring, diagnostics, and cache bump, and names them as Phase 2e follow-up. |
+| Sibling thumb-slot plan | Consumed | `agent-hub/docs/plans/completed/gltf-repair-vrm1-thumb-slots.md` uses the same `finalize_normalized_vrm` tail, parse/rebuild, no-op byte-stability, and cache-version reasoning; its planned v4 cache note is stale relative to current live code still being v3. |
 
 ## Problem
 

@@ -58,7 +58,7 @@ If no argument: dry-run, no smoke, suggest next patch.
 ### Step 1: Preflight (cwd, account, branch, sync, tree, baselines)
 
 ```bash
-cd "$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+cd "$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 toplevel=$(git rev-parse --show-toplevel)
 remote=$(git -C "$toplevel" remote get-url origin)
 case "$remote" in *CINEV/shotloom*|*CINEV/shotloom.git) ;; *) abort ;; esac
@@ -328,7 +328,7 @@ If `start_ts` is empty because Step 7 was skipped or failed, do **not** silently
 
 ```bash
 base=$(jq -re '.obsidian // .["obsidian-staging"]' \
-  ~/.claude/private/caol-config/machine-paths.json)
+  ~/.claude/private/agent-hub-config/machine-paths.json)
 devlog="$base/projects/shotloom/days/$(date +%Y-%m-%d).md"
 ```
 

@@ -672,7 +672,7 @@ async function checkRepoPathReads() {
         file: rel(f),
         line: i + 1,
         message:
-          "repo-paths.json entries may be objects; use '.key.path // .key // empty' or caol-resolve-doc-path repo mode",
+          "repo-paths.json entries may be objects; use '.key.path // .key // empty' or ah-resolve-doc-path repo mode",
       });
     }
   }
@@ -966,13 +966,13 @@ function shouldSkipAbsolutePathAudit(file) {
   return (
     file.startsWith("docs/plans/completed/") ||
     file.startsWith("docs/plans/reports/") ||
-    file === "docs/plans/active/caol-architecture-hardening.md" ||
+    file === "docs/plans/active/ah-architecture-hardening.md" ||
     file === "docs/plans/active/skill-path-hardcoding-cleanup.md" ||
     file.startsWith("agent/private/") ||
     file.startsWith("agent/plugins/") ||
-    file.startsWith("tools/caol-hq/node_modules/") ||
-    file.startsWith("tools/caol-hq/dist/") ||
-    file.startsWith("tools/caol-hq/.astro/")
+    file.startsWith("tools/ah-hq/node_modules/") ||
+    file.startsWith("tools/ah-hq/dist/") ||
+    file.startsWith("tools/ah-hq/.astro/")
   );
 }
 
@@ -985,7 +985,7 @@ async function checkTrackedUserAbsolutePaths() {
   const patterns = [
     /\/Users\/(younsoolim|deemooooooooo|john)\b/,
     /[A-Za-z]:\\Users\\[^\\\s]+/,
-    /D:\\\\vs\\\\caol-ila\\\\claude\\\\skills\\\\/,
+    /D:\\\\vs\\\\agent-hub\\\\claude\\\\skills\\\\/,
     new RegExp("obsidian" + "ClaudeDir"),
     new RegExp("MyNotes" + "\\/agent"),
     new RegExp("Obsidian" + "\\/agent"),
@@ -1547,9 +1547,7 @@ const ROUTE_VALUE_EVIDENCE = {
   anju: ["anju"],
   astro: ["astro"],
   bevy: ["bevy", "ecs"],
-  caol: ["agent hub", "caol", "agent-hub"],
   "agent-hub": ["agent hub", "agent-hub"],
-  "caol-ila": ["caol ila", "caol-ila"],
   cinev: ["cci", "cinev"],
   "cinev-git": ["cinev git"],
   "cinev-studio": ["cinevstudio", "cinev studio"],
@@ -1576,9 +1574,9 @@ const ROUTE_VALUE_EVIDENCE = {
 };
 
 const AUTHORING_ROUTING_FILES = [
-  "agent/skills/caol-make-command/SKILL.md",
-  "agent/skills/caol-make-skill/SKILL.md",
-  "agent/skills/caol-make-standard/SKILL.md",
+  "agent/skills/ah-make-command/SKILL.md",
+  "agent/skills/ah-make-skill/SKILL.md",
+  "agent/skills/ah-make-standard/SKILL.md",
   "agent/rules/author.md",
 ];
 
@@ -1677,13 +1675,6 @@ async function checkContextRouting() {
     violations.push({ file, line: 1, message: `cannot read repoKeysSource: ${err.message}` });
   }
   const repoKeys = new Set(Object.keys(repoPaths));
-  if (repoKeys.has("caol-ila") && !repoKeys.has("agent-hub")) {
-    violations.push({
-      file: routing.repoKeysSource || file,
-      line: 1,
-      message: "repoKeysSource must define agent-hub while caol-ila compatibility key remains",
-    });
-  }
 
   for (const axis of ["domains", "languages", "frameworks", "taskTypes"]) {
     pushStringArrayViolations(violations, file, `axes.${axis}`, routing.axes?.[axis], { sorted: true });

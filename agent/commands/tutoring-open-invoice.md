@@ -7,7 +7,7 @@ allowed-tools: Bash(python3:*)
 
 Generate the monthly tuition invoice using the CLI generator.
 
-> **Note:** The previous web UI (`localhost:972/invoice`) was hosted by `caol-serve-skills`, which has been removed. Web invoice rendering needs to be reimplemented in `caol-hq` (Astro, port 9720) before this command can launch a browser again. Until then, use the CLI mode below — it prints the invoice to stdout and supports the same student/rate/lessons arguments.
+> **Note:** The previous web UI (`localhost:972/invoice`) was hosted by `ah-hq`, which has been removed. Web invoice rendering needs to be reimplemented in `ah-hq` (Astro, port 9720) before this command can launch a browser again. Until then, use the CLI mode below — it prints the invoice to stdout and supports the same student/rate/lessons arguments.
 
 ## Usage
 

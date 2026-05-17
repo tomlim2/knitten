@@ -7,7 +7,7 @@ user-invocable: true
 
 # IMPORTANT: Permission gotcha
 
-Sub-agents spawned via the `Agent` tool may not have write access to the iCloud Obsidian vault path (resolved via `obsidian` in `~/.claude/private/caol-config/machine-paths.json`). Run vault writes in the main session.
+Sub-agents spawned via the `Agent` tool may not have write access to the iCloud Obsidian vault path (resolved via `obsidian` in `~/.claude/private/agent-hub-config/machine-paths.json`). Run vault writes in the main session.
 
 **Therefore: run `archive.py` directly in the main session — do NOT delegate to subagents.**
 
@@ -25,7 +25,7 @@ Sub-agents spawned via the `Agent` tool may not have write access to the iCloud 
 
 각 단계는 **idempotent** — 중복 실행해도 문제 없음. `.obsidian/`, `.trash/`만 제외하고 vault 전체가 관리 대상.
 
-> 머신 한정 절대경로(`obsidian`, `obsidian-staging`, `codex-home`)는 `~/.claude/private/caol-config/machine-paths.json`에서 읽어온다. vault folder vocabulary는 `vault-structure.json`에서 읽는다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
+> 머신 한정 절대경로(`obsidian`, `obsidian-staging`, `codex-home`)는 `~/.claude/private/agent-hub-config/machine-paths.json`에서 읽어온다. vault folder vocabulary는 `vault-structure.json`에서 읽는다. `repo-paths.json`은 기존 git 레포 경로 전용이라 건드리지 않는다.
 
 ---
 

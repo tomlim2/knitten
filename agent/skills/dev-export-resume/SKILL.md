@@ -25,7 +25,7 @@ No arguments needed.
 
 ### Step 1: Resolve paths
 
-Read `~/.claude/private/caol-config/repo-paths.json` and get the `ta-portfolio` path.
+Read `~/.claude/private/agent-hub-config/repo-paths.json` and get the `ta-portfolio` path.
 
 - Source: `{ta-portfolio}/resume.html`
 - Output: `{ta-portfolio}/assets/resume.pdf`

@@ -8,7 +8,7 @@ Persistent task briefings live here.
 | Path | Use |
 |---|---|
 | `shotloom/<slug>.md` | Shotloom Linear briefing written by `/shotloom-start-task` before `/shotloom-draft-spec` authors and reviews the spec. |
-| `specs/<slug>.md` | High-risk caol spec intake: user request, route, evidence, decisions, exclusions, and validation expectations before `caol-manage-spec` authors the direct spec. |
+| `specs/<slug>.md` | High-risk caol spec intake: user request, route, evidence, decisions, exclusions, and validation expectations before `ah-manage-spec` authors the direct spec. |
 
 Rules:
 

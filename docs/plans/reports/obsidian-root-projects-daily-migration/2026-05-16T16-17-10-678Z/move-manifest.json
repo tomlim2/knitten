@@ -1,7 +1,7 @@
 [
   {
     "source": "CLAUDE.md",
-    "destination": "projects/caol-ila/topics/legacy-claude-entry.md",
+    "destination": "projects/agent-hub/topics/legacy-claude-entry.md",
     "sourceSha256": "be3495dc0afe12f3159c170982550cfb88e08db143f6a2610db01c6b0c979045",
     "reason": "CLAUDE.md"
   },
@@ -49,73 +49,73 @@
   },
   {
     "source": "agent/learnings/_template.md",
-    "destination": "projects/caol-ila/learnings/_template.md",
+    "destination": "projects/agent-hub/learnings/_template.md",
     "sourceSha256": "36ae7e7c25c4d9340297b148931d54409a398c7777b6464534c79325405205f7",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-claude-code-hooks.md",
-    "destination": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+    "destination": "projects/agent-hub/learnings/learning-claude-code-hooks.md",
     "sourceSha256": "af24eecebe98ef3c242ec0187b145923f82853cdfd47498c101728f63fd6de7d",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-general-agent-ops.md",
-    "destination": "projects/caol-ila/learnings/learning-general-agent-ops.md",
+    "destination": "projects/agent-hub/learnings/learning-general-agent-ops.md",
     "sourceSha256": "c4e5fd3158df00a929ccae3c14e3287ae77ddf8418ef6edb0b111aa0e5030de7",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-minecraft-server-infra.md",
-    "destination": "projects/caol-ila/learnings/learning-minecraft-server-infra.md",
+    "destination": "projects/agent-hub/learnings/learning-minecraft-server-infra.md",
     "sourceSha256": "3ace0ff68378e130d6db4c0921497655650081e32f9f0fc1c076ae223bf718fa",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-pi-tree-workflow.md",
-    "destination": "projects/caol-ila/learnings/learning-pi-tree-workflow.md",
+    "destination": "projects/agent-hub/learnings/learning-pi-tree-workflow.md",
     "sourceSha256": "93ac38260a46f1230fbadebeabfa428552291b339c8a07aa1c6558ac2ba2e8b7",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-pi-web-search.md",
-    "destination": "projects/caol-ila/learnings/learning-pi-web-search.md",
+    "destination": "projects/agent-hub/learnings/learning-pi-web-search.md",
     "sourceSha256": "f5b7fa88b8875fac68547ed35b957c86be49ef6ed12fddd42fea0a970c49c939",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-rust-bin-vs-lib.md",
-    "destination": "projects/caol-ila/learnings/learning-rust-bin-vs-lib.md",
+    "destination": "projects/agent-hub/learnings/learning-rust-bin-vs-lib.md",
     "sourceSha256": "ecb2fdab9687804b1e1b061ec448313645837dd440120ebd757303fbb335334a",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-rust-crates.md",
-    "destination": "projects/caol-ila/learnings/learning-rust-crates.md",
+    "destination": "projects/agent-hub/learnings/learning-rust-crates.md",
     "sourceSha256": "e626db1e83be4e730422c13558267b6fb9eebe5395b095459319b1e933da5275",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-rust-traits.md",
-    "destination": "projects/caol-ila/learnings/learning-rust-traits.md",
+    "destination": "projects/agent-hub/learnings/learning-rust-traits.md",
     "sourceSha256": "1e8077d2a22495b2f93e6616639b1ea913c73c26c6e25f1a9dcb900fbcd4795f",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-slack-integration.md",
-    "destination": "projects/caol-ila/learnings/learning-slack-integration.md",
+    "destination": "projects/agent-hub/learnings/learning-slack-integration.md",
     "sourceSha256": "301bf4a538c80a51193cfd64b30a676b544e2dd5f1bdad8ff0f79e9d6c1584e3",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-telemetry.md",
-    "destination": "projects/caol-ila/learnings/learning-telemetry.md",
+    "destination": "projects/agent-hub/learnings/learning-telemetry.md",
     "sourceSha256": "93883931e71cf4c630f505073b7a7fc1866d29280f83d062ef9276771bb9d4a7",
     "reason": "agent"
   },
   {
     "source": "agent/learnings/learning-upstream-contribution.md",
-    "destination": "projects/caol-ila/learnings/learning-upstream-contribution.md",
+    "destination": "projects/agent-hub/learnings/learning-upstream-contribution.md",
     "sourceSha256": "9263cc61e9766bd77f42e3d258b23e67e0ef0e57be6397071e3f8aedd4e4a3c8",
     "reason": "agent"
   },
@@ -138,8 +138,8 @@
     "reason": "agent"
   },
   {
-    "source": "agent/learnings/projects/caol-ila.md",
-    "destination": "projects/caol-ila/learnings/caol-ila.md",
+    "source": "agent/learnings/projects/agent-hub.md",
+    "destination": "projects/agent-hub/learnings/agent-hub.md",
     "sourceSha256": "4a5b6253129d7ba8b2fec61449ad6ac72b7359419de28d8fe4cf0d2d4f7fc4e7",
     "reason": "agent"
   },
@@ -199,7 +199,7 @@
   },
   {
     "source": "agent/learnings/word-of-the-day/2026-04-13.md",
-    "destination": "projects/caol-ila/learnings/2026-04-13.md",
+    "destination": "projects/agent-hub/learnings/2026-04-13.md",
     "sourceSha256": "95ef509b17c187b02bf7a37e0f54635660dd112c2cbae98dc454802d2ffdc10f",
     "reason": "agent"
   },
@@ -936,158 +936,158 @@
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/README.md",
-    "destination": "projects/caol-ila/README.md",
+    "source": "agent/projects/agent-hub/README.md",
+    "destination": "projects/agent-hub/README.md",
     "sourceSha256": "d19d9eea38f3fda4c134216665e4a4d29d216db71ebd3a7fb29b1058176d0796",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/AGENTS.md",
-    "destination": "projects/caol-ila/codex-base/AGENTS.md",
+    "source": "agent/projects/agent-hub/codex-base/AGENTS.md",
+    "destination": "projects/agent-hub/codex-base/AGENTS.md",
     "sourceSha256": "26cfdbeff3d5351a42f25ce877944209bb326026e42a451bc2b1558c02df18e2",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/README.md",
-    "destination": "projects/caol-ila/codex-base/README.md",
+    "source": "agent/projects/agent-hub/codex-base/README.md",
+    "destination": "projects/agent-hub/codex-base/README.md",
     "sourceSha256": "ae575e79359fa6ed6e093312cd6b5103a87978386903dd4423ee38610e84e503",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/memories/README.md",
-    "destination": "projects/caol-ila/codex-base/memories/README.md",
+    "source": "agent/projects/agent-hub/codex-base/memories/README.md",
+    "destination": "projects/agent-hub/codex-base/memories/README.md",
     "sourceSha256": "8c2a7e92b8ebc2615aba4f6aa859cabd45c2339dd52d39ae6d545b1b9e5f84af",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/memories/order-priority-preference.md",
-    "destination": "projects/caol-ila/codex-base/memories/order-priority-preference.md",
+    "source": "agent/projects/agent-hub/codex-base/memories/order-priority-preference.md",
+    "destination": "projects/agent-hub/codex-base/memories/order-priority-preference.md",
     "sourceSha256": "2a781915820be56f492704b392216736fa662415b3e679bc9a6d515f99cf3241",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/order/README.md",
-    "destination": "projects/caol-ila/codex-base/order/README.md",
+    "source": "agent/projects/agent-hub/codex-base/order/README.md",
+    "destination": "projects/agent-hub/codex-base/order/README.md",
     "sourceSha256": "8f46c99641821e66c740fd7a91a400534ca1c952aef63126bd437d227e6aa5ab",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/order/stl-89-next-steps.md",
-    "destination": "projects/caol-ila/codex-base/order/stl-89-next-steps.md",
+    "source": "agent/projects/agent-hub/codex-base/order/stl-89-next-steps.md",
+    "destination": "projects/agent-hub/codex-base/order/stl-89-next-steps.md",
     "sourceSha256": "846281f96aa96cb5b0b6c12a7d3f9401454aaa651496c2b88d6c26e943fa1931",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/order/stl-89-retarget-arp-to-vrm-wiring.md",
-    "destination": "projects/caol-ila/codex-base/order/stl-89-retarget-arp-to-vrm-wiring.md",
+    "source": "agent/projects/agent-hub/codex-base/order/stl-89-retarget-arp-to-vrm-wiring.md",
+    "destination": "projects/agent-hub/codex-base/order/stl-89-retarget-arp-to-vrm-wiring.md",
     "sourceSha256": "96d8ea55ff2ea8f93a0999253b8389670b16a3e0187009de16444b11bdf2be4e",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/rules/README.md",
-    "destination": "projects/caol-ila/codex-base/rules/README.md",
+    "source": "agent/projects/agent-hub/codex-base/rules/README.md",
+    "destination": "projects/agent-hub/codex-base/rules/README.md",
     "sourceSha256": "1b7711f7095c38ccf52b87e9095c8cdd07212bc26823c223d9fbe22250fe126a",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/rules/shotloom/README.md",
-    "destination": "projects/caol-ila/codex-base/rules/shotloom/README.md",
+    "source": "agent/projects/agent-hub/codex-base/rules/shotloom/README.md",
+    "destination": "projects/agent-hub/codex-base/rules/shotloom/README.md",
     "sourceSha256": "b77f5a4980c1c88e86fb75d042d5673f5bb6aef86e6afcc4cd2ad6ff25a76da2",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/codex-base/rules/shotloom/engineering-guide.md",
-    "destination": "projects/caol-ila/codex-base/rules/shotloom/engineering-guide.md",
+    "source": "agent/projects/agent-hub/codex-base/rules/shotloom/engineering-guide.md",
+    "destination": "projects/agent-hub/codex-base/rules/shotloom/engineering-guide.md",
     "sourceSha256": "91b5923d24372203b411e51b8ef3d9e7c8881e62fd759badc77139ab90b7ec30",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/days/2026-04-23.md",
-    "destination": "projects/caol-ila/days/2026-04-23.md",
+    "source": "agent/projects/agent-hub/days/2026-04-23.md",
+    "destination": "projects/agent-hub/days/2026-04-23.md",
     "sourceSha256": "6210ffeab9187ec6d91e457702329a889ab7b4ff99f009f989d4c06c11179bee",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/days/2026-04-29.md",
-    "destination": "projects/caol-ila/days/2026-04-29.md",
+    "source": "agent/projects/agent-hub/days/2026-04-29.md",
+    "destination": "projects/agent-hub/days/2026-04-29.md",
     "sourceSha256": "fb93a3e54f48f7df5dcd986eac4afa0042184f61b72bbecae54279ad29dfa2fe",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/days/2026-05-05.md",
-    "destination": "projects/caol-ila/days/2026-05-05.md",
+    "source": "agent/projects/agent-hub/days/2026-05-05.md",
+    "destination": "projects/agent-hub/days/2026-05-05.md",
     "sourceSha256": "d929c95ac86242641e7b5fb6baeec91dfdadef63914ca3de084be5981d118e24",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/days/2026-05-10.md",
-    "destination": "projects/caol-ila/days/2026-05-10.md",
+    "source": "agent/projects/agent-hub/days/2026-05-10.md",
+    "destination": "projects/agent-hub/days/2026-05-10.md",
     "sourceSha256": "eb4a86990b7d7e9545632c8c86a3b043f04627bcc63fda943c799d86534a85a1",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/days/README.md",
-    "destination": "projects/caol-ila/days/README.md",
+    "source": "agent/projects/agent-hub/days/README.md",
+    "destination": "projects/agent-hub/days/README.md",
     "sourceSha256": "43d084260f0cd7bfaa2f3279b5b3da58401a94a018a8533a7ae5acd5eb1ebf8b",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/learnings/README.md",
-    "destination": "projects/caol-ila/learnings/README.md",
+    "source": "agent/projects/agent-hub/learnings/README.md",
+    "destination": "projects/agent-hub/learnings/README.md",
     "sourceSha256": "552ebf94ef8427d32c01c847f6f995ad413410db7a9ad15d191458620245f83c",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/learnings/agent-system-lessons.md",
-    "destination": "projects/caol-ila/learnings/agent-system-lessons.md",
+    "source": "agent/projects/agent-hub/learnings/agent-system-lessons.md",
+    "destination": "projects/agent-hub/learnings/agent-system-lessons.md",
     "sourceSha256": "b2b7376d172c62c9b2c7e406ae550695032f0f23ce8a577eca3916100e9017e3",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/plans/README.md",
-    "destination": "projects/caol-ila/plans/README.md",
+    "source": "agent/projects/agent-hub/plans/README.md",
+    "destination": "projects/agent-hub/plans/README.md",
     "sourceSha256": "fb54ed9fd73bf6f7a5f230d32666d909fe274f76d0eee965f28b2a5b5612ff29",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/plans/todo-at-home-2026-04-21.md",
-    "destination": "projects/caol-ila/plans/todo-at-home-2026-04-21.md",
+    "source": "agent/projects/agent-hub/plans/todo-at-home-2026-04-21.md",
+    "destination": "projects/agent-hub/plans/todo-at-home-2026-04-21.md",
     "sourceSha256": "b80b19c5682dbc7f2f13d27868525c8fc1af91da3406f47d3011d67feca8b271",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/specs/README.md",
-    "destination": "projects/caol-ila/specs/README.md",
+    "source": "agent/projects/agent-hub/specs/README.md",
+    "destination": "projects/agent-hub/specs/README.md",
     "sourceSha256": "ebbb487d9eb66b62126aedcf1edafa3c7b663360be4ee19e0457672bfcf5aa69",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/specs/private-folder.md",
-    "destination": "projects/caol-ila/specs/private-folder.md",
+    "source": "agent/projects/agent-hub/specs/private-folder.md",
+    "destination": "projects/agent-hub/specs/private-folder.md",
     "sourceSha256": "9c3ac233ddd1ce9b6bb88fbf75e964c329fc3aa900fb738048341018ac9dca76",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/specs/project-folder-contract.md",
-    "destination": "projects/caol-ila/specs/project-folder-contract.md",
+    "source": "agent/projects/agent-hub/specs/project-folder-contract.md",
+    "destination": "projects/agent-hub/specs/project-folder-contract.md",
     "sourceSha256": "0b2df68290e3047a619a84337d22a03abdf377d870b8f0721195e7c36b24a63f",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/topics/README.md",
-    "destination": "projects/caol-ila/topics/README.md",
+    "source": "agent/projects/agent-hub/topics/README.md",
+    "destination": "projects/agent-hub/topics/README.md",
     "sourceSha256": "d53ed677fc5018feec57134820a7936daa71adb18c8d5886f95b334243d4ee9e",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/topics/hyperframes-reference.md",
-    "destination": "projects/caol-ila/topics/hyperframes-reference.md",
+    "source": "agent/projects/agent-hub/topics/hyperframes-reference.md",
+    "destination": "projects/agent-hub/topics/hyperframes-reference.md",
     "sourceSha256": "1875afbb8ddd8d1d99b33913a6c747b0ed1e6b1d95283a684b894f78617bef7c",
     "reason": "agent"
   },
   {
-    "source": "agent/projects/caol-ila/topics/project-overview.md",
-    "destination": "projects/caol-ila/topics/project-overview.md",
+    "source": "agent/projects/agent-hub/topics/project-overview.md",
+    "destination": "projects/agent-hub/topics/project-overview.md",
     "sourceSha256": "cf120ad7b25f1c1318e957485356fcc058d541c2ff0f05acd0b89617ff409a6c",
     "reason": "agent"
   },
@@ -1770,8 +1770,8 @@
     "reason": "agent"
   },
   {
-    "source": "agent/projects/shotloom/days/2026-04-17/caol-ila-settings-skills.md",
-    "destination": "projects/shotloom/days/2026-04-17/caol-ila-settings-skills.md",
+    "source": "agent/projects/shotloom/days/2026-04-17/agent-hub-settings-skills.md",
+    "destination": "projects/shotloom/days/2026-04-17/agent-hub-settings-skills.md",
     "sourceSha256": "64f9df34511abce38cd3db8d274c3b99fb81ce15dfd4ccc8040fcc2f359fa842",
     "reason": "agent"
   },
@@ -1812,8 +1812,8 @@
     "reason": "agent"
   },
   {
-    "source": "agent/projects/shotloom/days/2026-04-20/caol-skill-category-rename.md",
-    "destination": "projects/shotloom/days/2026-04-20/caol-skill-category-rename.md",
+    "source": "agent/projects/shotloom/days/2026-04-20/ah-skill-category-rename.md",
+    "destination": "projects/shotloom/days/2026-04-20/ah-skill-category-rename.md",
     "sourceSha256": "2cf1dda61e854c7508250bfcc22b51febd957713a75992a7ec064356b14b965c",
     "reason": "agent"
   },
@@ -2665,109 +2665,109 @@
   },
   {
     "source": "agent/research/css-code-review-criteria.md",
-    "destination": "projects/caol-ila/topics/css-code-review-criteria.md",
+    "destination": "projects/agent-hub/topics/css-code-review-criteria.md",
     "sourceSha256": "67cb60a6b06243ca666f8581a7ceadf1f479c88bd9a63f5baeb1dbb8a956ede0",
     "reason": "agent"
   },
   {
     "source": "agent/research/javascript-code-review-criteria.md",
-    "destination": "projects/caol-ila/topics/javascript-code-review-criteria.md",
+    "destination": "projects/agent-hub/topics/javascript-code-review-criteria.md",
     "sourceSha256": "035d98e958cc0a19ee9c185c5f27102aa8de02a910d84cb452678dff3dd0b2a1",
     "reason": "agent"
   },
   {
     "source": "agent/research/mmd-vrm-spring-bone-parameters.md",
-    "destination": "projects/caol-ila/topics/mmd-vrm-spring-bone-parameters.md",
+    "destination": "projects/agent-hub/topics/mmd-vrm-spring-bone-parameters.md",
     "sourceSha256": "7953fedca933d64acaa8649741eedd2f33917e87eac53346bf7b93705426e695",
     "reason": "agent"
   },
   {
     "source": "agent/research/motion-driven-effects-auto-trigger.md",
-    "destination": "projects/caol-ila/topics/motion-driven-effects-auto-trigger.md",
+    "destination": "projects/agent-hub/topics/motion-driven-effects-auto-trigger.md",
     "sourceSha256": "f1816f465dae4920aaec7ac72c96bce25116c40cf44bc2277f789adf620fd94e",
     "reason": "agent"
   },
   {
     "source": "agent/research/multi-pass-agent-pipeline-design.md",
-    "destination": "projects/caol-ila/topics/multi-pass-agent-pipeline-design.md",
+    "destination": "projects/agent-hub/topics/multi-pass-agent-pipeline-design.md",
     "sourceSha256": "fb338be04391e63beb6c87efd0219916cc8ecef44102eccbdd71e79a79c3cf3b",
     "reason": "agent"
   },
   {
     "source": "agent/research/notion-portfolio-best-practices.md",
-    "destination": "projects/caol-ila/topics/notion-portfolio-best-practices.md",
+    "destination": "projects/agent-hub/topics/notion-portfolio-best-practices.md",
     "sourceSha256": "37e4d367f3302b98cea9da626a5f6f56030e52d2b55a0003f538acdd8b133d81",
     "reason": "agent"
   },
   {
     "source": "agent/research/threejs-tsl.md",
-    "destination": "projects/caol-ila/topics/threejs-tsl.md",
+    "destination": "projects/agent-hub/topics/threejs-tsl.md",
     "sourceSha256": "252409d80a096d9ff6811871d788128ddeaaf7a2aa34c2744e4765da39c11598",
     "reason": "agent"
   },
   {
     "source": "agent/research/vrm-0x-vs-1.0-spec-comparison.md",
-    "destination": "projects/caol-ila/topics/vrm-0x-vs-1.0-spec-comparison.md",
+    "destination": "projects/agent-hub/topics/vrm-0x-vs-1.0-spec-comparison.md",
     "sourceSha256": "c55a1059b01ab9d204fc5ca1da5eae274ff75df61c5ab05219d2b1b7db3ade59",
     "reason": "agent"
   },
   {
     "source": "agent/research/website-spec-review-tools.md",
-    "destination": "projects/caol-ila/topics/website-spec-review-tools.md",
+    "destination": "projects/agent-hub/topics/website-spec-review-tools.md",
     "sourceSha256": "7e43e5460efac57256a578f0d374acc763d67137db0efe511323b9145a0afb3e",
     "reason": "agent"
   },
   {
     "source": "agent/specs/2026-02-06.md",
-    "destination": "projects/caol-ila/specs/2026-02-06.md",
+    "destination": "projects/agent-hub/specs/2026-02-06.md",
     "sourceSha256": "27baf3fa24ce868ad274ba3330027b04d0d275a59b4f4591e5c28805936cf15c",
     "reason": "agent"
   },
   {
     "source": "agent/specs/2026-02-08.md",
-    "destination": "projects/caol-ila/specs/2026-02-08.md",
+    "destination": "projects/agent-hub/specs/2026-02-08.md",
     "sourceSha256": "a3bf6a0901b655446f2d917017a1cad3172367bb731e9cddfd10e4d4420c32f8",
     "reason": "agent"
   },
   {
     "source": "agent/specs/bevy-npr-shader-viewer.md",
-    "destination": "projects/caol-ila/specs/bevy-npr-shader-viewer.md",
+    "destination": "projects/agent-hub/specs/bevy-npr-shader-viewer.md",
     "sourceSha256": "7386d66e7db7bb14ed14e879827c3fad46bb7ee5589f9f8886dde31b42ed6b09",
     "reason": "agent"
   },
   {
     "source": "agent/specs/cinev-npr-character-manager.md",
-    "destination": "projects/caol-ila/specs/cinev-npr-character-manager.md",
+    "destination": "projects/agent-hub/specs/cinev-npr-character-manager.md",
     "sourceSha256": "7d868bca2cb21d74c0f11863daecd50631ae35e8a6fc448823f8dc4af8043e0d",
     "reason": "agent"
   },
   {
     "source": "agent/specs/mmd-formats/pmx-format.md",
-    "destination": "projects/caol-ila/specs/mmd-formats/pmx-format.md",
+    "destination": "projects/agent-hub/specs/mmd-formats/pmx-format.md",
     "sourceSha256": "423e7769c073b4b2869e3e7125d1797a49b85f718e64bb09e2f54b784227f103",
     "reason": "agent"
   },
   {
     "source": "agent/specs/mmd-formats/vmd-format.md",
-    "destination": "projects/caol-ila/specs/mmd-formats/vmd-format.md",
+    "destination": "projects/agent-hub/specs/mmd-formats/vmd-format.md",
     "sourceSha256": "976b5017fac5553f0c3982e9cd9faf4e071ee108e6aa9f1ce53287a5da799d43",
     "reason": "agent"
   },
   {
     "source": "agent/specs/refactor-vrm-reference-points.md",
-    "destination": "projects/caol-ila/specs/refactor-vrm-reference-points.md",
+    "destination": "projects/agent-hub/specs/refactor-vrm-reference-points.md",
     "sourceSha256": "9596ddea6539bf8ded14112de073f02f1fe1b787561a3ebb1b1f186a3e5a9133",
     "reason": "agent"
   },
   {
     "source": "agent/specs/vault-cleanup-analysis.md",
-    "destination": "projects/caol-ila/specs/vault-cleanup-analysis.md",
+    "destination": "projects/agent-hub/specs/vault-cleanup-analysis.md",
     "sourceSha256": "049fee0557cf35e8a923db73267b304ec5435472ef1a76b4215c393c625a6145",
     "reason": "agent"
   },
   {
     "source": "agent/specs/vault-cleanup-plan.md",
-    "destination": "projects/caol-ila/specs/vault-cleanup-plan.md",
+    "destination": "projects/agent-hub/specs/vault-cleanup-plan.md",
     "sourceSha256": "7016bedfd6924be6ab103bf3d099a0a44cb9465247e9d13114782bda60369a9a",
     "reason": "agent"
   },

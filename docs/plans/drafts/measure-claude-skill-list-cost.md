@@ -16,7 +16,7 @@ revisit-when: Claude Code harness changes skill-loading behavior; baseline token
 
 ## Problem
 
-Claude Code harness injects every `~/.claude/skills/*/SKILL.md`'s `description` (and `when_to_use` per `caol-make-skill`) into cold-start context. Cost is unmeasured. Without a baseline number any optimization plan is speculation.
+Claude Code harness injects every `~/.claude/skills/*/SKILL.md`'s `description` (and `when_to_use` per `ah-make-skill`) into cold-start context. Cost is unmeasured. Without a baseline number any optimization plan is speculation.
 
 ## Phase 0 — Baseline (only phase in this plan)
 
@@ -32,9 +32,9 @@ for f in ~/.claude/skills/*/SKILL.md; do
 done | sort -rn > /tmp/skill-listing-bytes.txt
 ```
 
-Captures both `description:` AND `when_to_use:` (caol-make-skill states both fields enter the listing).
+Captures both `description:` AND `when_to_use:` (ah-make-skill states both fields enter the listing).
 
-Tokenize the concatenated block via `tiktoken cl100k_base` (or Claude API). Persist to `private/caol-config/cold-start-baselines.json`:
+Tokenize the concatenated block via `tiktoken cl100k_base` (or Claude API). Persist to `private/agent-hub-config/cold-start-baselines.json`:
 
 ```json
 {
@@ -65,13 +65,13 @@ The 7,000 floor reflects the cost of audit work plus picker-recall risk vs. expe
 - Description shrinking, dead-skill removal, mount strategy — all live in *future* plan only opened if Phase 0 ≥ 7,000.
 - Codex cold-start — separate adapter, separate plan.
 - Tool schema, auto-loaded rules, MCP deferred-tools — separate concerns.
-- `caol-make-skill` modification — not touched. Adapter rules belong in adapter docs (path TBD when needed; `~/.claude/standards/adapters/` is not a registered group, would need taxonomy amendment first).
+- `ah-make-skill` modification — not touched. Adapter rules belong in adapter docs (path TBD when needed; `~/.claude/standards/adapters/` is not a registered group, would need taxonomy amendment first).
 
 ## Risks
 
 | Risk | Mitigation |
 |------|------------|
-| Measurement script misses a listing field that harness actually uses | Verify against `caol-make-skill` SKILL.md spec; sample 3 skills' raw cold-start output if available |
+| Measurement script misses a listing field that harness actually uses | Verify against `ah-make-skill` SKILL.md spec; sample 3 skills' raw cold-start output if available |
 | Tokenizer choice (cl100k_base) diverges from harness internal | Same family, close enough for ROI gate decisions |
 | Re-measurement cadence not enforced | `garden-review.md` registration when this plan closes |
 

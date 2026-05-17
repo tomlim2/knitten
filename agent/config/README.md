@@ -24,7 +24,7 @@ Shared JSON registries and public service configuration.
 - **Tokens go ONLY in `.env`.** Never embed tokens in skill bodies, JSON files, or `private/`.
 - **Per-service env key convention:** `{SERVICE}_{KEY}` — e.g. `SLACK_BOT_TOKEN`, `SHOTLOOM_SLACK_BOT_TOKEN`, `GEMINI_API_KEY`.
 - **Service-specific config** (channels, bot names, endpoints) goes in its own JSON file such as `slack.json` or `gemini.json`. These may contain non-secret IDs.
-- **Machine-specific paths and specs stay gitignored under `agent/private/caol-config/` and deploy through `~/.claude/private/caol-config/`.** Use that folder for repo paths, machine paths, and hardware specs.
+- **Machine-specific paths and specs stay gitignored under `agent/private/agent-hub-config/` and deploy through `~/.claude/private/agent-hub-config/`.** Use that folder for repo paths, machine paths, and hardware specs.
 
 ## Skills that read from here
 

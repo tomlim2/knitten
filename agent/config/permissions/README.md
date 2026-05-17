@@ -8,7 +8,7 @@ Personal `settings.json` / `settings.local.json` templates for each Claude Code 
 |----------|---------|
 | `shotloom.settings.json` | `shotloom-github/.claude/settings.json` |
 | `www.settings.json` | `~/Desktop/www/.claude/settings.local.json` |
-| `caol-ila.settings.json` | legacy checkout `.claude/settings.local.json` |
+| `agent-hub.settings.json` | `<agent-hub-checkout>/.claude/settings.local.json` |
 
 > **Global** (`~/.claude/settings.json`) is already tracked as `<agent-hub-checkout>/agent/settings.json` via symlink — no template needed.
 
@@ -24,7 +24,7 @@ cp agent/config/permissions/shotloom.settings.json \
 cp agent/config/permissions/www.settings.json \
    ~/Desktop/www/.claude/settings.local.json
 
-cp agent/config/permissions/caol-ila.settings.json \
+cp agent/config/permissions/agent-hub.settings.json \
    <agent-hub-checkout>/.claude/settings.local.json
 
 # 3. Sed-replace USERNAME placeholder

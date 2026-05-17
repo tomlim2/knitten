@@ -45,7 +45,7 @@ Or visit: http://localhost:9720/skills/drink-log-entry
 
 ## Data Source
 
-Reads from: `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc drinks`/drinks.json`
+Reads from: `!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc drinks`/drinks.json`
 
 ## Files
 
@@ -54,4 +54,4 @@ Reads from: `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc drinks
 ## Related Files
 
 - Command: `~/.claude/commands/drink-log-entry.md`
-- Data: `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc drinks`/drinks.json`
+- Data: `!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc drinks`/drinks.json`

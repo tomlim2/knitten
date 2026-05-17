@@ -41,12 +41,12 @@ case "$remote" in
   *)
     # Not inside a shotloom worktree — fall back to the main checkout
     # (only valid if user passed STL-NN explicitly so we know what to close)
-    worktree=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-config/repo-paths.json)
+    worktree=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/agent-hub-config/repo-paths.json)
     current_branch=""  # branch cleanup is disabled until explicitly resolved
     ;;
 esac
 
-shotloom_root=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/caol-config/repo-paths.json)
+shotloom_root=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/agent-hub-config/repo-paths.json)
 if [ -z "$shotloom_root" ] || [ "$shotloom_root" = "null" ]; then
   echo "ERROR: repo-paths.json has no shotloom path"
   exit 1

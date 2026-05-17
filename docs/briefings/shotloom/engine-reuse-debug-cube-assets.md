@@ -42,7 +42,7 @@ spec: ../../plans/completed/engine-reuse-debug-cube-assets.md
 - P2: Test must assert render asset counts and shared `SceneRoot`, not only entity counts. Evidence: existing GLB spawn attaches `SceneRoot`. AC-trace: leak-prevention intent.
 - P3: Spec should state that production handler changes are not required if tests already prove the existing path. Evidence: dirty worktree contains test-only diff.
 
-**Sibling specs (caol-ila/docs/plans/):**
+**Sibling specs (agent-hub/docs/plans/):**
 - `bridge-add-background-prop-batch-spawn.md` - HEAD - stance: current bridge command shape, diagnostics, ownership tags, event order - agrees with this briefing.
 - `stage-add-map-document-parser.md` - HEAD - stance: parser/resolver work stays in `crates/shotloom-stage` - agrees with this briefing.
 - `stage-define-map-document-bundle-layout.md` - HEAD - stance: stage-map document semantics remain separate from engine spawn proof - agrees with this briefing.

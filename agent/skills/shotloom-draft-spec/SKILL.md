@@ -44,8 +44,8 @@ rules on top:
 
 ## Output Contract
 
-- `caol-ila/docs/briefings/shotloom/<slug>.md`
-- `caol-ila/docs/plans/proposed/<slug>.md`
+- `agent-hub/docs/briefings/shotloom/<slug>.md`
+- `agent-hub/docs/plans/proposed/<slug>.md`
 - one direct-spec commit and push when the spec converges
 - optional review-spec commit and push when review patches the spec
 - final user prompt: "이 스펙으로 구현 시작할까요?"

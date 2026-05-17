@@ -10,7 +10,7 @@
 
 set -u
 
-REPO_PATHS="${REPO_PATHS_JSON:-$HOME/.claude/private/caol-config/repo-paths.json}"
+REPO_PATHS="${REPO_PATHS_JSON:-$HOME/.claude/private/agent-hub-config/repo-paths.json}"
 GIT_BIN="${GIT_BIN:-/usr/bin/git}"
 GREP=/usr/bin/grep
 HEAD=/usr/bin/head

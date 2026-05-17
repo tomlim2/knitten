@@ -18,7 +18,7 @@ Create `AGENT-HUB.md` as a thin root hub document.
 
 ## Context
 
-`caol-ila` now has `agent/config/agent-hub.json`. Agents need a cold-start-readable hub overview without treating the manifest JSON as prose policy.
+`agent-hub` now has `agent/config/agent-hub.json`. Agents need a cold-start-readable hub overview without treating the manifest JSON as prose policy.
 
 `README.md` answers "what exists in the repo". `LOOKUP.md` answers "where is X". `AGENT-HUB.md` answers "how do harnesses, registries, generated documents, runtime paths, and validators connect".
 

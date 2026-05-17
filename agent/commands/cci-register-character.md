@@ -31,7 +31,7 @@ If no arguments provided, show usage and stop.
 
 ## Execution
 
-1. Read `~/.claude/private/caol-config/repo-paths.json` → key `anju` → `.path`
+1. Read `~/.claude/private/agent-hub-config/repo-paths.json` → key `anju` → `.path`
 2. Verify VRM files exist
 3. Run:
 

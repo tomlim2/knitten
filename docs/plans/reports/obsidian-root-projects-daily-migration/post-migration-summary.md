@@ -2,7 +2,7 @@
 status: done
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Obsidian Root Migration Summary

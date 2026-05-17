@@ -44,7 +44,7 @@ spec: ../../plans/editor-wire-stage-import-commands.md
 - P2: Coupled UI state atomicity - dispatch, pending status, command id, and later event/error state are coupled; spec should prevent stuck pending state on dispatch failure, component unmount, or bridge state change - evidence: `BridgeClient.dispatch` returns command id even when not started and emits a local runtime error event - AC-trace: AC3/AC4.
 - P3: Preserve debug panel compact styling and route registration - keep existing `DebugButton`, route registry, and test harness patterns rather than introducing a new UI surface - evidence: `debugPanels.tsx`, `debugNavConfig.ts`, `StageImportDebugPanel.test.tsx` - AC-trace: STL-425 parent scope.
 
-**Sibling specs (caol-ila/docs/plans/):**
+**Sibling specs (agent-hub/docs/plans/):**
 - `bridge-add-background-prop-batch-spawn.md` - HEAD - stance: STL-423 added `spawn_background_props` and explicitly left parser, clear-all, and editor dispatch wiring to siblings - agrees.
 - `stage-add-map-document-parser.md` - HEAD - stance: STL-422 owns Rust parser/resolver output and keeps bridge/editor wiring out of scope - agrees.
 - `stage-add-map-document-parser-conflict.md` - HEAD historical conflict note - stance: parser was blocked before the contract landed; superseded by current parser/spec state - no active disagreement.
@@ -60,6 +60,6 @@ spec: ../../plans/editor-wire-stage-import-commands.md
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (caol-ila/docs/plans/, full body via Read tool for every match)
+- [x] sibling-spec scan run (agent-hub/docs/plans/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.

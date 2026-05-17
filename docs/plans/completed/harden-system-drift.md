@@ -23,7 +23,7 @@ System docs contain repeated counts, thresholds, enums, category lists, and exce
 | P1 | done | Add purpose-split registries under `agent/config/` | JSON files exist with schema comments avoided |
 | P1.5 | done | Make validator read registries and fail on drift | Registry values become executable checks |
 | P2 | done | Add generated blocks for README inventory and validator check count | Marker blocks delimit generated text |
-| P2.5 | done | Update authoring skills to patch registries when adding new values | `caol-make-skill` owns category registration |
+| P2.5 | done | Update authoring skills to patch registries when adding new values | `ah-make-skill` owns category registration |
 | P3 | done | Harden LLM-friendly document naming | Naming standard and taxonomy prevent vague file names |
 
 ## P0 Fixes

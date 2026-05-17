@@ -5,7 +5,7 @@ allowed-tools: Bash(bash:*)
 
 # Git Pull Repos
 
-Pull every git repository registered in `~/.claude/private/caol-config/repo-paths.json` that exists on this machine.
+Pull every git repository registered in `~/.claude/private/agent-hub-config/repo-paths.json` that exists on this machine.
 
 ## Execution
 
@@ -32,7 +32,7 @@ Render results as a markdown table. **Token-saving rule**: only `error` / `skipp
 | Repo           | Status   | Details                                     |
 |----------------|----------|---------------------------------------------|
 | anju           | ok       | up-to-date                                  |
-| caol-ila       | ok       | updated                                     |
+| agent-hub       | ok       | updated                                     |
 | ta-portfolio   | error    | no tracking for branch `try/tegaki-hero`    |
 | codex-base     | skipped  | path not found                              |
 ```

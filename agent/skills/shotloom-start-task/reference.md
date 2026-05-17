@@ -23,7 +23,7 @@ Claude sessions the MCP server prefix can differ.
 ## Step 2.5 — worktree base detection (full script)
 
 ```bash
-repo_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom)"
+repo_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
 repo_root="${repo_root#RESOLVED_PATH=}"
 if grep -qE '^\.worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
   worktree_base="$repo_root/.worktrees"
@@ -134,11 +134,11 @@ read the full body and record: slug, status, stance summary, and disagreement
 signal.
 
 ```bash
-caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
-caol_ila="${caol_ila#RESOLVED_PATH=}"
-ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-ls "$caol_ila/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
+agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
+agent_hub="${agent_hub#RESOLVED_PATH=}"
+ls "$agent_hub/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+ls "$agent_hub/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$agent_hub" log --diff-filter=D --name-only --pretty=format: -- \
   "docs/plans/" | rg -i "<scope>|<subject>" | head -5
 ```
 
@@ -183,7 +183,7 @@ spec: ../../plans/<slug>.md
 - P2: <ambiguity/test/doc gap to resolve in the spec> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
 - P3: <cheap nit or precedent to review> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent, or related-follow-up>
 
-**Sibling specs (caol-ila/docs/plans/):**
+**Sibling specs (agent-hub/docs/plans/):**
 - <slug>.md - <working-tree | staged | HEAD | deleted> - stance: <one-line scope summary> - <agrees | disagrees> with this briefing
 - (or: "none found" if Step 5d scan returned empty)
 
@@ -195,7 +195,7 @@ spec: ../../plans/<slug>.md
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (caol-ila/docs/plans/, full body via Read tool for every match)
+- [x] sibling-spec scan run (agent-hub/docs/plans/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.
 ```

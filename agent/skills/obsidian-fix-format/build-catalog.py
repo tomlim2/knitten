@@ -13,7 +13,7 @@ from pathlib import Path
 from collections import defaultdict
 
 VAULT = Path(subprocess.check_output(
-    ['jq', '-r', '."obsidian"', f"{Path.home()}/.claude/private/caol-config/machine-paths.json"]
+    ['jq', '-r', '."obsidian"', f"{Path.home()}/.claude/private/agent-hub-config/machine-paths.json"]
 ).decode().strip())
 
 if not VAULT.is_dir():

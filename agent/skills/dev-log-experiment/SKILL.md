@@ -26,7 +26,7 @@ When debugging complex systems (retargeting, rendering, animation), ad-hoc trial
 ```
 Example: `/dev-log-experiment start bevy-vrm/retarget-shoulder`
 
-Creates `experiments-<topic>.md` in the resolved path for `experiment` purpose (`caol-resolve-doc-path experiment <project>`).
+Creates `experiments-<topic>.md` in the resolved path for `experiment` purpose (`ah-resolve-doc-path experiment <project>`).
 
 ### Add an experiment
 ```
@@ -128,7 +128,7 @@ Dead ends: EXP-002 (Z-offset > 12° causes unnatural arm angle)
 
 ## File Structure
 
-Path resolved via `caol-resolve-doc-path experiment <project>`:
+Path resolved via `ah-resolve-doc-path experiment <project>`:
 
 ```
 {RESOLVED_PATH}/

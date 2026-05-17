@@ -40,12 +40,12 @@ Usage:
 Consultation logs are stored in **Obsidian vault** (not `private/`):
 
 ```
-!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`/consultations/
+!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc tutoring`/consultations/
 ├── 이석민.md
 └── {other students}.md
 ```
 
-**Obsidian path:** Resolve with `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`, then append `/consultations/`.
+**Obsidian path:** Resolve with `bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc tutoring`, then append `/consultations/`.
 
 Each student gets ONE file. Consultations accumulate in reverse chronological order (newest first).
 

@@ -2,7 +2,7 @@
 status: implemented
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Obsidian Contract Cleanup Batch
@@ -67,9 +67,9 @@ Do not replace an existing single valid `type/...` or `project/...` tag.
 | Path pattern | Project tag |
 |--------------|-------------|
 | `projects/<project>/**` | `project/<project>` except known alias table below |
-| `learnings/projects/<name>.md` | derive from `<name>` if it matches a project; else `project/caol-ila` |
-| `learnings/learning-*.md` | keep existing single project; if missing use `project/caol-ila` |
-| `daily-summaries/**` | keep existing single project; if missing use `project/caol-ila` |
+| `learnings/projects/<name>.md` | derive from `<name>` if it matches a project; else `project/agent-hub` |
+| `learnings/learning-*.md` | keep existing single project; if missing use `project/agent-hub` |
+| `daily-summaries/**` | keep existing single project; if missing use `project/agent-hub` |
 
 Project alias table:
 

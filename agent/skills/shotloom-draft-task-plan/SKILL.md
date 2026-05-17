@@ -22,10 +22,10 @@ After Step 1 resolves `$spec_path`, every stop writes one `.md` artifact:
 
 | Result | Artifact | Commit |
 |---|---|---|
-| Clean converged spec | `$caol_ila/docs/plans/proposed/<slug>.md` + `$caol_ila/docs/briefings/shotloom/<slug>.md` | Yes |
-| Step 2 factual stop | `$caol_ila/docs/plans/drafts/<slug>.md` | No |
-| Unconverged draft | `$caol_ila/docs/plans/drafts/<slug>-partial.md` | No |
-| Parallel or staged-delete spec | `$caol_ila/docs/plans/drafts/<slug>-claude.md` | No |
+| Clean converged spec | `$agent_hub/docs/plans/proposed/<slug>.md` + `$agent_hub/docs/briefings/shotloom/<slug>.md` | Yes |
+| Step 2 factual stop | `$agent_hub/docs/plans/drafts/<slug>.md` | No |
+| Unconverged draft | `$agent_hub/docs/plans/drafts/<slug>-partial.md` | No |
+| Parallel or staged-delete spec | `$agent_hub/docs/plans/drafts/<slug>-claude.md` | No |
 
 Pre-Step-1 failures stop without writing because no target path exists.
 
@@ -54,10 +54,10 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 repo_root="$(git rev-parse --show-toplevel)"
 git_common="$(git rev-parse --git-common-dir)"
 origin="$(git remote get-url origin)"
-shotloom_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom)"
+shotloom_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
 shotloom_root="${shotloom_root#RESOLVED_PATH=}"
-caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
-caol_ila="${caol_ila#RESOLVED_PATH=}"
+agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
+agent_hub="${agent_hub#RESOLVED_PATH=}"
 ```
 
 ```bash
@@ -75,16 +75,16 @@ fi
 Verify:
 - `/shotloom-start-task` has run and the user accepted the Ready briefing.
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
-- `$caol_ila/docs/plans/proposed/` and `$caol_ila/docs/plans/drafts/` exist.
-- `$caol_ila/docs/briefings/shotloom/$slug.md` exists.
+- `$agent_hub/docs/plans/proposed/` and `$agent_hub/docs/plans/drafts/` exist.
+- `$agent_hub/docs/briefings/shotloom/$slug.md` exists.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Set `spec_path="$caol_ila/docs/plans/proposed/$slug.md"`. Surface spec slug, target,
+Set `spec_path="$agent_hub/docs/plans/proposed/$slug.md"`. Surface spec slug, target,
 briefing path, and Shotloom root.
 
 ### Step 2: Run Current-State Audit
 
-Read `briefing_path="$caol_ila/docs/briefings/shotloom/$slug.md"` first. Before
+Read `briefing_path="$agent_hub/docs/briefings/shotloom/$slug.md"` first. Before
 authoring, search the live Shotloom tree. Choose terms from the briefing,
 Linear, branch, AC, ADR, and affected modules. Search examples:
 [reference.md](reference.md).
@@ -169,7 +169,7 @@ and report the blocker.
 
 Continue only when Step 6a wrote directly to `$spec_path`.
 
-From `caol-ila`:
+From `agent-hub`:
 
 ```bash
 git config user.name

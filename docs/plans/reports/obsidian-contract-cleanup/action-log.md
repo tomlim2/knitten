@@ -65,11 +65,11 @@
 | projects/bevy-vrm/topics/hand-twist-problem.md | demote-h1:2 |
 | projects/bevy-vrm/topics/portfolio-retarget-ai-dev.md | title:포폴 아이디어: 리타겟 파이프라인 + AI 개발 환경->포폴 아이디어: 리타겟 파이프라인 + AI 활용 개발 환경 |
 | projects/bevy-vrm/topics/retarget-quality-rubric.md | title:Retarget Quality Rubric->Retarget Quality Rubric v0.1.0 |
-| projects/caol-ila/codex-base/README.md | project-slot->project/caol-ila |
-| projects/caol-ila/codex-base/order/stl-89-next-steps.md | project-slot->project/caol-ila |
-| projects/caol-ila/codex-base/order/stl-89-retarget-arp-to-vrm-wiring.md | project-slot->project/caol-ila |
-| projects/caol-ila/codex-base/rules/shotloom/README.md | project-slot->project/caol-ila |
-| projects/caol-ila/codex-base/rules/shotloom/engineering-guide.md | project-slot->project/caol-ila |
+| projects/agent-hub/codex-base/README.md | project-slot->project/agent-hub |
+| projects/agent-hub/codex-base/order/stl-89-next-steps.md | project-slot->project/agent-hub |
+| projects/agent-hub/codex-base/order/stl-89-retarget-arp-to-vrm-wiring.md | project-slot->project/agent-hub |
+| projects/agent-hub/codex-base/rules/shotloom/README.md | project-slot->project/agent-hub |
+| projects/agent-hub/codex-base/rules/shotloom/engineering-guide.md | project-slot->project/agent-hub |
 | projects/cinev-studio/records/bp-basemodel-tf.md | tags:area/animation, project/cinev, type/learning, area/shader, area/unreal-engine, fmt/vrm->type/learning, project/cinev, area/animation, area/shader, area/unreal-engine |
 | projects/cinev-studio/topics/external-contractor-build-pipeline.md | project-slot->project/cinev |
 | projects/cinev-studio/topics/pmx2vrm.md | demote-h1:2 |

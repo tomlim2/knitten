@@ -2,7 +2,7 @@
 status: intake
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 spec: docs/plans/completed/spec-validator-hardening.md
 ---
 
@@ -20,11 +20,11 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 
 ## Route
 
-- selected route: caol/Knitten validator hardening
+- selected route: agent-hub validator hardening
 - candidate routes: spec lifecycle migration, milestone management,
   architecture hardening
-- delegated or referenced skills: `caol-manage-spec`,
-  `caol-manage-milestone`, `caol-review-implementation`
+- delegated or referenced skills: `ah-manage-spec`,
+  `ah-manage-milestone`, `ah-review-implementation`
 
 ## Evidence To Read
 
@@ -33,7 +33,7 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 | script | `scripts/validate-llm-first.mjs` | validator implementation target |
 | milestone | `docs/milestones/spec-lifecycle-system.md` | owning milestone |
 | spec | `docs/plans/completed/docs-plans-lifecycle-migration.md` | duplicate slug and link requirements |
-| spec | `docs/plans/completed/caol-manage-milestone.md` | milestone attachment contract |
+| spec | `docs/plans/completed/ah-manage-milestone.md` | milestone attachment contract |
 | directory | `docs/milestones/` | current milestone corpus |
 | directory | `docs/briefings/specs/` | caol spec intake corpus |
 | generated doc | `agent/standards/policy/principles.md` | validator check list block |
@@ -43,7 +43,7 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 
 - Markdown remains the primary contract for specs and milestones.
 - The first implementation batch should be small and green on current files.
-- Shotloom briefings are out of scope for this caol-specific spec intake check.
+- Shotloom briefings are out of scope for this agent-hub-specific spec intake check.
 - Report folders under `docs/plans/reports/` are evidence, not executable
   specs.
 

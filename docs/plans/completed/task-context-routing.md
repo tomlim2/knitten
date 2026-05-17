@@ -106,7 +106,7 @@ Routing is justified only when the avoided route-domain context is larger than t
 |------|---------|
 | task route | A metadata-backed decision that a task belongs to one or more route domains |
 | route domain | Technical or knowledge area such as `unreal`, `rust`, `web`, or `obsidian` |
-| repo key | Repository key from `repo-paths.json`, such as `shotloom`, `cinev-studio`, or `caol-ila` |
+| repo key | Repository key from `repo-paths.json`, such as `shotloom`, `cinev-studio`, or `agent-hub` |
 | task type | Work mode such as `review`, `git`, `authoring`, or `implementation` |
 | context profile | Named set of route domains, repo keys, task types, languages, and artifacts allowed for a task |
 | exclusion | Route domain or artifact that must not load unless explicitly requested |
@@ -148,7 +148,7 @@ Omit optional axes when absent. Example: a general Rust skill may omit `framewor
 | Axis | Values | Positive evidence |
 |------|--------|-------------------|
 | `domains` | `unreal`, `rust`, `web`, `obsidian` | technology, file extension, toolchain, domain terms |
-| `repo-keys` | `shotloom`, `cinev-studio`, `caol-ila` | repo path, issue prefix, `repo-paths.json` key |
+| `repo-keys` | `shotloom`, `cinev-studio`, `agent-hub` | repo path, issue prefix, `repo-paths.json` key |
 | `languages` | `cpp`, `python`, `rust`, `typescript`, `css` | file extension, compiler, framework |
 | `frameworks` | `bevy`, `wgpu`, `astro`, `three` | framework imports, build files, repo terms |
 | `task-types` | `implementation`, `review`, `git`, `authoring`, `research` | user verb, command, PR context |
@@ -178,7 +178,7 @@ Negative evidence belongs in `exclude-when` only for high-cost or high-risk arti
 | P2 | done | Validate metadata on pilot files | Missing or unknown axis values fail validation |
 | P2.5 | done | Add generated routing inventory | `AGENT-HUB.md` routing block shows profiles and pilot coverage from registry |
 | P3 | done | Expand metadata to high-cost or routing-sensitive shared-layer artifacts | New high-cost skills/standards must declare routing metadata or an explicit exemption |
-| P4 | done | Add authoring flow | `caol-make-skill`, `caol-make-standard`, and command authoring prompt for routing metadata |
+| P4 | done | Add authoring flow | `ah-make-skill`, `ah-make-standard`, and command authoring prompt for routing metadata |
 
 ## P3 Expansion
 

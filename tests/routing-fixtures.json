@@ -1,8 +1,8 @@
 [
   {
-    "task": "Author caol spec lifecycle",
+    "task": "Author agent-hub spec lifecycle",
     "mustLoad": [
-      "caol-authoring"
+      "ah-authoring"
     ],
     "mustNotLoad": [
       "rust-bevy",
@@ -18,7 +18,7 @@
   {
     "task": "Author agent-hub spec lifecycle",
     "mustLoad": [
-      "caol-authoring"
+      "ah-authoring"
     ],
     "mustNotLoad": [
       "rust-bevy",
@@ -32,9 +32,9 @@
     "maxBytes": 25000
   },
   {
-    "task": "Manage caol milestone lifecycle",
+    "task": "Manage agent-hub milestone lifecycle",
     "mustLoad": [
-      "caol-authoring"
+      "ah-authoring"
     ],
     "mustNotLoad": [
       "rust-bevy",
@@ -48,9 +48,9 @@
     "maxBytes": 25000
   },
   {
-    "task": "Review caol implementation after spec",
+    "task": "Review agent-hub implementation after spec",
     "mustLoad": [
-      "caol-authoring"
+      "ah-authoring"
     ],
     "mustNotLoad": [
       "rust-bevy",
@@ -169,7 +169,7 @@
       "shotloom-ops"
     ],
     "mustNotLoad": [
-      "caol-authoring",
+      "ah-authoring",
       "rust-bevy",
       "shotloom-review",
       "shotloom-deploy",
@@ -189,7 +189,7 @@
       "cinev-art"
     ],
     "mustNotLoad": [
-      "caol-authoring",
+      "ah-authoring",
       "shotloom-ops",
       "rust-bevy",
       "shotloom-review",
@@ -209,7 +209,7 @@
       "3d-vrm"
     ],
     "mustNotLoad": [
-      "caol-authoring",
+      "ah-authoring",
       "shotloom-ops",
       "rust-bevy",
       "shotloom-review",
@@ -229,7 +229,7 @@
       "video-hyperframes"
     ],
     "mustNotLoad": [
-      "caol-authoring",
+      "ah-authoring",
       "shotloom-ops",
       "rust-bevy",
       "shotloom-review",

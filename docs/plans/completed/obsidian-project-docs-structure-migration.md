@@ -2,7 +2,7 @@
 status: completed
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Obsidian Project Docs Structure Migration
@@ -17,8 +17,8 @@ Canonical structure owner: `agent/skills/obsidian-obsidian-markdown/references/P
 
 | Path token | Meaning |
 |------------|---------|
-| `{repo}` | configured `caol-ila` repo path |
-| `{obsidian-root}` | value of `obsidian` in `~/.claude/private/caol-config/machine-paths.json` |
+| `{repo}` | configured `agent-hub` repo path |
+| `{obsidian-root}` | value of `obsidian` in `~/.claude/private/agent-hub-config/machine-paths.json` |
 | project note root | `{obsidian-root}/projects/<project>/` |
 | structure spec | `{repo}/agent/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` |
 | validator | `{repo}/agent/skills/obsidian-fix-format/fix.sh` |
@@ -26,7 +26,7 @@ Canonical structure owner: `agent/skills/obsidian-obsidian-markdown/references/P
 Resolve `{obsidian-agent-root}` before moving files:
 
 ```bash
-jq -r '."obsidian-agent-root"' ~/.claude/private/caol-config/machine-paths.json
+jq -r '."obsidian-agent-root"' ~/.claude/private/agent-hub-config/machine-paths.json
 ```
 
 Abort if the resolved value is empty, `null`, or outside an Obsidian vault.

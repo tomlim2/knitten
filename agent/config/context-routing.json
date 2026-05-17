@@ -5,7 +5,7 @@
     "listStyle": "comma-separated scalars",
     "optionalAxes": "omit-when-absent"
   },
-  "repoKeysSource": "agent/skills/caol-manage-config/repo-paths.template.json",
+  "repoKeysSource": "agent/skills/ah-manage-config/repo-paths.template.json",
   "routingBlock": {
     "path": "AGENT-HUB.md",
     "startMarker": "<!-- routing:start -->",
@@ -17,7 +17,7 @@
   "axes": {
     "domains": [
       "3d",
-      "caol",
+      "agent-hub",
       "cinev",
       "obsidian",
       "rust",
@@ -56,9 +56,9 @@
   },
   "profiles": [
     {
-      "id": "caol-authoring",
+      "id": "ah-authoring",
       "domains": [
-        "caol"
+        "agent-hub"
       ],
       "repoKeys": [
         "agent-hub"
@@ -330,18 +330,18 @@
   ],
   "pilotFiles": [
     {
-      "path": "agent/skills/caol-manage-spec/SKILL.md",
-      "profile": "caol-authoring",
+      "path": "agent/skills/ah-manage-spec/SKILL.md",
+      "profile": "ah-authoring",
       "contextCost": "medium"
     },
     {
-      "path": "agent/skills/caol-manage-milestone/SKILL.md",
-      "profile": "caol-authoring",
+      "path": "agent/skills/ah-manage-milestone/SKILL.md",
+      "profile": "ah-authoring",
       "contextCost": "medium"
     },
     {
-      "path": "agent/skills/caol-review-implementation/SKILL.md",
-      "profile": "caol-authoring",
+      "path": "agent/skills/ah-review-implementation/SKILL.md",
+      "profile": "ah-authoring",
       "contextCost": "medium"
     },
     {

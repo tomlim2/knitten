@@ -77,8 +77,8 @@
       "Skill(shotloom-check-gates:*)",
       "Skill(dev-open-vrm-bevy)",
       "Skill(dev-open-vrm-bevy:*)",
-      "Skill(caol-brief-today)",
-      "Skill(caol-brief-today:*)",
+      "Skill(ah-brief-today)",
+      "Skill(ah-brief-today:*)",
       "Skill(learn-add-log)",
       "Skill(learn-add-log:*)",
       "Skill(dev-decision-start)",
@@ -104,8 +104,6 @@
 
       "Read(//Users/{USERNAME}/.claude/private/**)",
       "Read(//Users/{USERNAME}/Desktop/www/agent-hub/**)",
-      "Read(//Users/{USERNAME}/Desktop/www/knitten/**)",
-      "Read(//Users/{USERNAME}/Desktop/www/caol-ila/**)",
       "Read(//tmp/**)"
     ]
   }

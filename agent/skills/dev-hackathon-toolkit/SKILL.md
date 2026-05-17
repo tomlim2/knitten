@@ -60,17 +60,17 @@ Experiment freeze: {deadline - 60min}
 |-----------|-------|
 | Unsure about approach | `/dev-decision-start` (3-model parallel) |
 | Quick technical question | `/dev-ask-gemini` |
-| Deep research needed | `/caol-research-web` |
-| Light research | `/caol-research-light` |
+| Deep research needed | `/ah-research-web` |
+| Light research | `/ah-research-light` |
 
 ### Step 4: Implementation
 
 | Situation | Skill |
 |-----------|-------|
-| Full power mode | `/caol-work-ultra` |
+| Full power mode | `/ah-work-ultra` |
 | Bug found | `/dev-fix-bug` |
 | Experiment tracking | `/dev-log-experiment` |
-| Codebase analysis | `/caol-consult-codebase` |
+| Codebase analysis | `/ah-consult-codebase` |
 
 ### Step 5: Pre-submit Verification (last 30 minutes)
 
@@ -109,7 +109,7 @@ Experiment freeze: {deadline - 60min}
 
 ## Project Repo
 
-Before starting, read `~/.claude/private/caol-config/repo-paths.json` for `krafton-hackathon` path. Work in that directory.
+Before starting, read `~/.claude/private/agent-hub-config/repo-paths.json` for `krafton-hackathon` path. Work in that directory.
 
 ---
 

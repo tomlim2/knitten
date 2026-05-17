@@ -12,7 +12,7 @@ import { basename, dirname, join, relative, sep } from 'node:path';
 
 const apply = process.argv.includes('--apply');
 const repoRoot = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
-const machinePaths = JSON.parse(readFileSync(join(repoRoot, 'agent/private/caol-config/machine-paths.json'), 'utf8'));
+const machinePaths = JSON.parse(readFileSync(join(repoRoot, 'agent/private/agent-hub-config/machine-paths.json'), 'utf8'));
 const vault = machinePaths.obsidian;
 if (!vault || !existsSync(vault)) throw new Error(`Obsidian vault not found: ${vault}`);
 

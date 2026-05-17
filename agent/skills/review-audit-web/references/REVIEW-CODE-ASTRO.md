@@ -14,7 +14,7 @@ exclude-when: unreal,obsidian
 
 ## Changelog
 
-- **0.1.0** — Initial release. Astro 4–6 SSR/SSG hybrid model, islands hydration, content collections, endpoints. Sourced from Astro official docs (docs.astro.build), MDN, OWASP front-end guidance, and the caol-hq dashboard postmortem (`OpenPRsWidget` 7.2s → 0.22s perf fix).
+- **0.1.0** — Initial release. Astro 4–6 SSR/SSG hybrid model, islands hydration, content collections, endpoints. Sourced from Astro official docs (docs.astro.build), MDN, OWASP front-end guidance, and the ah-hq dashboard postmortem (`OpenPRsWidget` 7.2s → 0.22s perf fix).
 
 ---
 

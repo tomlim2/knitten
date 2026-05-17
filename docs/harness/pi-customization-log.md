@@ -1,11 +1,11 @@
 # Pi Customization Log
 
-This document tracks all machine-local or harness-specific customizations applied to the `pi` coding agent. These are settings, skills, and extensions installed directly into `~/.pi/agent/`, intentionally kept out of the `caol-ila` shared durable source because they are specific to the `pi` harness execution environment.
+This document tracks all machine-local or harness-specific customizations applied to the `pi` coding agent. These are settings, skills, and extensions installed directly into `~/.pi/agent/`, intentionally kept out of the `agent-hub` shared durable source because they are specific to the `pi` harness execution environment.
 
 ## Settings Injection
 **Date:** 2026-05-11
 **File:** `~/.pi/agent/settings.json`
-**Action:** Configured `pi` to load the `caol-ila` Agent Hub globally.
+**Action:** Configured `pi` to load the `agent-hub` Agent Hub globally.
 **Details:** 
 - `skills` array points to `$CAOL_ILA_ROOT/agent/skills`.
 - `prompts` array points to `$CAOL_ILA_ROOT/agent/commands`.
@@ -18,7 +18,7 @@ This document tracks all machine-local or harness-specific customizations applie
 **Details:** 
 - Cloned `https://github.com/badlogic/pi-skills` directly into the `pi` global path.
 - Provides capabilities like `brave-search`, `browser-tools`, `gccli`, `vscode`, etc.
-- **Why here instead of `caol-ila`?** These skills rely on `pi`-specific tool execution or assume the `pi` CLI environment, violating the platform-neutral requirement of `caol-ila/agent/skills`.
+- **Why here instead of `agent-hub`?** These skills rely on `pi`-specific tool execution or assume the `pi` CLI environment, violating the platform-neutral requirement of `agent-hub/agent/skills`.
 
 ---
-*Note: Any further `pi`-specific extensions (like the OS-level sandbox) or tools should be documented here and installed in `~/.pi/agent/` to keep `caol-ila` pure.*
+*Note: Any further `pi`-specific extensions (like the OS-level sandbox) or tools should be documented here and installed in `~/.pi/agent/` to keep `agent-hub` pure.*

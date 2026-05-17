@@ -1,7 +1,7 @@
 ---
 status: done
 load: triggered
-trigger: designing caol-ila as an agent hub
+trigger: designing agent-hub as an agent hub
 created: 2026-05-09
 standard: agent/standards/policy/llm-first-docs.md
 decision: docs/decisions/0001-platform-neutral-agent-system.md
@@ -9,7 +9,7 @@ decision: docs/decisions/0001-platform-neutral-agent-system.md
 
 # Agent Hub Plan
 
-**status:** done. This plan turned `caol-ila` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
+**status:** done. This plan turned `agent-hub` from a Claude-shaped deploy repo into an agent hub with canonical policy, platform adapters, capability inventory, and validator-backed drift control.
 
 ## Definition
 
@@ -117,8 +117,8 @@ Required gap table columns:
 | Runtime path policy table | `SYSTEM.md` prose table and `.gitignore` | `agent-hub.json` `runtimePathPolicies` | `~/.claude/*` | none | Runtime path ownership is readable, but not machine-readable or checked against git policy | no |
 | `agent/settings.json` | tracked global settings file | `agent-hub.json` `runtimePathPolicies` plus settings policy | `~/.claude/settings.json` | none | Tracked settings can contain machine-specific absolute paths; no validator forbids them | yes: decide portable global settings contract |
 | `agent/hooks/` | tracked hook scripts referenced by settings | `agent-hub.json` `runtimePathPolicies` | `~/.claude/hooks/` | none | Hook script existence is not checked against settings hook references | no |
-| `agent/private/caol-config/doc-paths.json` | `.gitignore` exception and `SYSTEM.md` table | `agent-hub.json` `registries` | `~/.claude/private/caol-config/doc-paths.json` | none | Shared non-machine config lives under `private/`, so manifest must classify it as a committed registry | no |
-| Machine-local caol config | `.gitignore` and `SYSTEM.md` table | `agent-hub.json` `runtimePathPolicies` | `~/.claude/private/caol-config/{hardware,machine-paths,repo-paths}.json` | none | Ignored files exist in the deploy tree; manifest must classify paths without storing values | no |
+| `agent/private/agent-hub-config/doc-paths.json` | `.gitignore` exception and `SYSTEM.md` table | `agent-hub.json` `registries` | `~/.claude/private/agent-hub-config/doc-paths.json` | none | Shared non-machine config lives under `private/`, so manifest must classify it as a committed registry | no |
+| Machine-local caol config | `.gitignore` and `SYSTEM.md` table | `agent-hub.json` `runtimePathPolicies` | `~/.claude/private/agent-hub-config/{hardware,machine-paths,repo-paths}.json` | none | Ignored files exist in the deploy tree; manifest must classify paths without storing values | no |
 | `agent/config/slack.json` | tracked non-secret service config | `agent-hub.json` `registries` | `~/.claude/config/slack.json` | none | Service config is tracked, but not listed in a hub manifest yet | no |
 | Permission templates | `agent/config/permissions/README.md` | `agent-hub.json` `runtimePathPolicies` or `registries` | project `.claude/settings*.json` files | none | Template target paths and `{USERNAME}` replacement are not validator-checked | no |
 
@@ -134,7 +134,7 @@ Ownership decisions:
 | Policy owner | `SYSTEM.md` remains the canonical policy owner; manifest must not duplicate policy prose |
 | Shared layer owner | `agent-hub.json` lists shared layer paths and load modes; each layer still owns its content |
 | Registry owner | Purpose-specific JSON files own their domains; `agent-hub.json` only points to them |
-| Private-path registry owner | `agent/private/caol-config/doc-paths.json` is a committed registry because it contains shared non-machine routing |
+| Private-path registry owner | `agent/private/agent-hub-config/doc-paths.json` is a committed registry because it contains shared non-machine routing |
 | Service config owner | Committed non-secret service configs such as `agent/config/slack.json` are registries; tokens stay in `.env` |
 | Runtime owner | Runtime-only paths are classified by `runtimePathPolicies`, not stored as managed artifacts |
 
@@ -156,7 +156,7 @@ Allowed values:
 | `registries[].format` | `json` |
 | `registries[].secretPolicy` | `no-secrets`, `template-only`, `private-values` |
 | `generatedDocuments[].mode` | `generated-block`, `validated-manual`, `thin-wrapper` |
-| `runtimePathPolicies[].owner` | `caol-ila`, `runtime`, `machine-local`, `project-local` |
+| `runtimePathPolicies[].owner` | `agent-hub`, `runtime`, `machine-local`, `project-local` |
 | `runtimePathPolicies[].gitPolicy` | `tracked`, `ignored`, `template-tracked`, `mixed` |
 | `runtimePathPolicies[].secretPolicy` | `no-secrets`, `may-contain-secrets`, `must-not-commit` |
 | `runtimePathPolicies[].durability` | `durable`, `runtime`, `cache`, `session`, `backup`, `private` |
@@ -166,7 +166,7 @@ Forbidden in `agent-hub.json`:
 | Forbidden value | Reason |
 |-----------------|--------|
 | Secret values | secrets stay in gitignored `.env` or private config |
-| Machine-specific absolute paths | machine paths stay in `~/.claude/private/caol-config/` |
+| Machine-specific absolute paths | machine paths stay in `~/.claude/private/agent-hub-config/` |
 | Cache/session/history paths as managed artifacts | runtime data is not durable policy |
 | Freeform prose fields that duplicate `SYSTEM.md` policy | prose policy remains in `SYSTEM.md` |
 
@@ -214,6 +214,6 @@ Validated view rules:
 | Rename agent root now? | done by `docs/decisions/0003-agent-root-directory.md` |
 | Runtime constraint | Claude Code still reads `~/.claude/` as the deploy target |
 | Current neutrality mechanism | `agent/` canonical repo source, `SYSTEM.md`, entry documents, `agent-hub.json`, platform metadata, and adapter boundaries |
-| Compatibility shim | `~/.claude` points at `caol-ila/agent` |
+| Compatibility shim | `~/.claude` points at `agent-hub/agent` |
 
 Decision `0001` remains in force for platform-neutral policy. Decision `0003` supersedes the old directory-rename block.

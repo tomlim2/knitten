@@ -54,7 +54,7 @@ Create a machine-readable source of truth for all known agents and their global 
 ## Phase 3: Build the Automation Skill & Script
 An agent should be able to instantly connect a new machine or a newly installed harness to agent-hub.
 - **Target Script:** `scripts/link-harnesses.mjs` (reads registry, resolves `$AGENT_HUB_ROOT`, applies links/configs safely).
-- **Target Skill:** `agent/skills/caol-setup-harness/SKILL.md` (executes the script, backs up existing configs, handles errors).
+- **Target Skill:** `agent/skills/ah-setup-harness/SKILL.md` (executes the script, backs up existing configs, handles errors).
 
 ## Phase 4: Validation
 Ensure the local machine's state matches the deployment standard.

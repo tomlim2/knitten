@@ -68,13 +68,13 @@
       ]
     },
     {
-      "file": "projects/caol-ila/learnings/learning-claude-code-hooks.md",
+      "file": "projects/agent-hub/learnings/learning-claude-code-hooks.md",
       "changes": [
         "inline-tags.escape"
       ]
     },
     {
-      "file": "projects/caol-ila/topics/legacy-claude-entry.md",
+      "file": "projects/agent-hub/topics/legacy-claude-entry.md",
       "changes": [
         "frontmatter.insert"
       ]

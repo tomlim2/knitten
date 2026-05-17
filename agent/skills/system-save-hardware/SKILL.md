@@ -1,11 +1,11 @@
 ---
-description: "Collect and save macOS hardware specs (GPU, RAM, chip) to private/caol-config/hardware.json for capability checks."
+description: "Collect and save macOS hardware specs (GPU, RAM, chip) to private/agent-hub-config/hardware.json for capability checks."
 allowed-tools: Bash(system_profiler:*), Bash(sw_vers:*), Write, Read
 ---
 
 # system-save-hardware
 
-Collect macOS hardware specs and save to `~/.claude/private/caol-config/hardware.json`.
+Collect macOS hardware specs and save to `~/.claude/private/agent-hub-config/hardware.json`.
 ---
 
 ## Workflow
@@ -50,7 +50,7 @@ From the `system_profiler` and `sw_vers` output, extract:
 
 ### Step 4: Preserve non-hardware fields (merge, not clobber)
 
-Before writing, read the existing `~/.claude/private/caol-config/hardware.json` if it exists. Other skills may have added non-hardware machine-local keys (e.g. `aliases`, future policy blocks) that must survive a hardware refresh.
+Before writing, read the existing `~/.claude/private/agent-hub-config/hardware.json` if it exists. Other skills may have added non-hardware machine-local keys (e.g. `aliases`, future policy blocks) that must survive a hardware refresh.
 
 **Hardware-owned keys** (this skill rewrites these, overriding prior values):
 `name`, `description`, `model`, `model_id`, `chip`, `cores`, `memory_gb`, `gpu`, `os`, `storage_gb`, `updated`
@@ -64,7 +64,7 @@ Merge rule: start from the existing JSON object, overwrite the hardware-owned ke
 
 ### Step 5: Save JSON
 
-Write the merged JSON to `~/.claude/private/caol-config/hardware.json`:
+Write the merged JSON to `~/.claude/private/agent-hub-config/hardware.json`:
 
 ```json
 {
@@ -94,7 +94,7 @@ Display the saved JSON content to the user.
 
 ## Output
 
-- **File:** `~/.claude/private/caol-config/hardware.json`
+- **File:** `~/.claude/private/agent-hub-config/hardware.json`
 - **Format:** Flat JSON, no subdirectories
 - **Pattern:** Same level as `repo-paths.json`
 
@@ -105,7 +105,7 @@ Display the saved JSON content to the user.
 Other skills can read hardware info:
 
 ```markdown
-Read `~/.claude/private/caol-config/hardware.json` to check machine specs.
+Read `~/.claude/private/agent-hub-config/hardware.json` to check machine specs.
 ```
 
 Common use cases:

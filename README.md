@@ -1,10 +1,9 @@
-# Knitten, the agent-hub
+# Agent Hub
 
-**LLM-first agent hub.** `Knitten` is the README-facing name; internal system
-docs, config, routing, skills, rules, and standards use `agent-hub`.
-`caol-ila` remains a legacy compatibility path/key only. Agent configuration — commands,
-skills, standards, rules, and machine config — is optimized for LLM efficiency,
-accuracy, and clarity. `agent/` is symlinked to `~/.claude`.
+**LLM-first agent hub.** System docs, config, routing, skills, rules, and
+standards use `agent-hub`. Agent configuration — commands, skills, standards,
+rules, and machine config — is optimized for LLM efficiency, accuracy, and
+clarity. `agent/` is symlinked to `~/.claude`.
 
 Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
@@ -32,7 +31,7 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 │   ├── skills/               # Skill directories with SKILL.md
 │   ├── config/               # Shared registries and service config
 │   └── private/              # Gitignored — machine config, secrets
-│       └── caol-config/      # Per-machine paths and specs (JSON)
+│       └── agent-hub-config/      # Per-machine paths and specs (JSON)
 └── README.md
 ```
 
@@ -53,10 +52,10 @@ New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\
 After symlinking, initialize machine config:
 
 ```
-/caol-manage-config setup
+/ah-manage-config setup
 ```
 
-This populates `~/.claude/private/caol-config/` from templates in `agent/skills/caol-manage-config/*.template.json`.
+This populates `~/.claude/private/agent-hub-config/` from templates in `agent/skills/ah-manage-config/*.template.json`.
 
 ---
 
@@ -66,7 +65,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 | Category | Count | Examples |
 |----------|------:|----------|
 | `cci-*` | 18 | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch` |
-| `caol-*` | 15 | `caol-check-status`, `caol-check-updates`, `caol-consult-codebase` |
+| `ah-*` | 15 | `ah-check-status`, `ah-check-updates`, `ah-consult-codebase` |
 | `dev-*` | 3 | `dev-fix-bug`, `dev-open-pmx2vrm`, `dev-sync-design` |
 | `ue-*` | 3 | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` |
 | `tutoring-*` | 2 | `tutoring-mark-paid`, `tutoring-open-invoice` |
@@ -83,7 +82,7 @@ This populates `~/.claude/private/caol-config/` from templates in `agent/skills/
 |----------|------:|
 | `shotloom-*` | 27 |
 | `dev-*` | 24 |
-| `caol-*` | 23 |
+| `ah-*` | 23 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
 | `ue-*` | 7 |
@@ -142,7 +141,7 @@ Rules in `agent/rules/`. Auto rules load every session via entry documents; trig
 
 ---
 
-## Machine config (`private/caol-config/`)
+## Machine config (`private/agent-hub-config/`)
 
 Gitignored. Per-machine paths and specs.
 
@@ -153,7 +152,7 @@ Gitignored. Per-machine paths and specs.
 | `doc-paths.json` | Document routing (Obsidian vault → purpose mapping) |
 | `hardware.json` | Hardware specs — populated by `/system-save-hardware` |
 
-Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remove`, `setup`).
+Manage with `/ah-manage-config` (subcommands: `show`, `validate`, `add`, `remove`, `setup`).
 
 ## Shared registries (`agent/config/`)
 
@@ -169,4 +168,4 @@ Manage with `/caol-manage-config` (subcommands: `show`, `validate`, `add`, `remo
 
 ---
 
-For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/caol-make-command/SKILL.md` or `agent/skills/caol-make-skill/SKILL.md`.
+For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/ah-make-command/SKILL.md` or `agent/skills/ah-make-skill/SKILL.md`.

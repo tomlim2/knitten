@@ -1,4 +1,4 @@
-# LOOKUP — caol-ila goal-to-doc
+# LOOKUP — agent-hub goal-to-doc
 
 Goal-to-doc lookup. Read this when the question is **"where is X?"** — start here, not by scanning the tree.
 
@@ -14,20 +14,20 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Edit any LLM-read doc (rule, standard, skill, command, README) | [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
 | Design a new layer (rule / standard / skill category / validator) | [`agent/standards/policy/llm-first-policy.md`](agent/standards/policy/llm-first-policy.md) |
 | Explain why platform-neutral entry documents use canonical policy | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
-| Design caol-ila as an agent hub | [`docs/plans/completed/agent-hub.md`](docs/plans/completed/agent-hub.md) |
-| Install caol-ila as Codex global context | [`docs/plans/completed/link-codex-context.md`](docs/plans/completed/link-codex-context.md) |
+| Design the agent-hub | [`docs/plans/completed/agent-hub.md`](docs/plans/completed/agent-hub.md) |
+| Install the agent-hub as Codex global context | [`docs/plans/completed/link-codex-context.md`](docs/plans/completed/link-codex-context.md) |
 | Inspect current agent hub manifest | [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/agent-hub.json`](agent/config/agent-hub.json) |
 | Route context for domain-specific tasks | [`agent/rules/task-context-routing.md`](agent/rules/task-context-routing.md) → [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/context-routing.json`](agent/config/context-routing.json) |
 | Run a structural / garden review | [`agent/standards/policy/garden-review.md`](agent/standards/policy/garden-review.md) |
 | Recall why a principle exists | [`agent/standards/policy/principles.md`](agent/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`agent/standards/policy/naming.md`](agent/standards/policy/naming.md) |
 | Change a managed value, enum, category, or audit threshold | [`docs/plans/completed/harden-system-drift.md`](docs/plans/completed/harden-system-drift.md) → [`agent/config/README.md`](agent/config/README.md) |
-| Route CRUD for skill / rule / standard / command / plan artifacts | [`agent/skills/caol-manage-artifact/SKILL.md`](agent/skills/caol-manage-artifact/SKILL.md) |
-| Create a new slash command | [`agent/skills/caol-make-command/SKILL.md`](agent/skills/caol-make-command/SKILL.md) → `references/SLASH-COMMANDS.md` |
-| Create a new skill | [`agent/skills/caol-make-skill/SKILL.md`](agent/skills/caol-make-skill/SKILL.md) |
-| Edit an existing skill | [`agent/skills/caol-edit-skill/SKILL.md`](agent/skills/caol-edit-skill/SKILL.md) |
-| Update an existing skill | [`agent/skills/caol-update-skill/SKILL.md`](agent/skills/caol-update-skill/SKILL.md) |
-| Delete an existing skill | [`agent/skills/caol-delete-skill/SKILL.md`](agent/skills/caol-delete-skill/SKILL.md) |
+| Route CRUD for skill / rule / standard / command / plan artifacts | [`agent/skills/ah-manage-artifact/SKILL.md`](agent/skills/ah-manage-artifact/SKILL.md) |
+| Create a new slash command | [`agent/skills/ah-make-command/SKILL.md`](agent/skills/ah-make-command/SKILL.md) → `references/SLASH-COMMANDS.md` |
+| Create a new skill | [`agent/skills/ah-make-skill/SKILL.md`](agent/skills/ah-make-skill/SKILL.md) |
+| Edit an existing skill | [`agent/skills/ah-edit-skill/SKILL.md`](agent/skills/ah-edit-skill/SKILL.md) |
+| Update an existing skill | [`agent/skills/ah-update-skill/SKILL.md`](agent/skills/ah-update-skill/SKILL.md) |
+| Delete an existing skill | [`agent/skills/ah-delete-skill/SKILL.md`](agent/skills/ah-delete-skill/SKILL.md) |
 | Create a new rule | [`agent/rules/index.md`](agent/rules/index.md) (frontmatter pattern) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
 | Create a new standard | [`agent/standards/index.md`](agent/standards/index.md) → [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
 | Tag an Obsidian note | [`agent/skills/obsidian-obsidian-markdown/SKILL.md`](agent/skills/obsidian-obsidian-markdown/SKILL.md) → `references/TAG-TAXONOMY.md` |
@@ -44,7 +44,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Git op in a CINEV repo | [`agent/rules/cinev-git.md`](agent/rules/cinev-git.md) → [`agent/skills/cci-manage-art-branch/SKILL.md`](agent/skills/cci-manage-art-branch/SKILL.md) → `references/CINEV-GIT-WORKFLOW.md` |
 | Validate UE asset names | [`agent/skills/ue-validate-asset-name/SKILL.md`](agent/skills/ue-validate-asset-name/SKILL.md) → `references/UNREAL-ENGINE-ASSET.md` |
 | Set up a new machine | [`README.md`](README.md) "Setup" section |
-| Resolve a doc storage path | `agent/skills/caol-resolve-doc-path/SKILL.md` |
+| Resolve a doc storage path | `agent/skills/ah-resolve-doc-path/SKILL.md` |
 
 ---
 

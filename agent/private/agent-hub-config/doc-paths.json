@@ -1,0 +1,82 @@
+{
+  "roots": {
+    "obsidian": "machine-paths:obsidian",
+    "staging": "machine-paths:obsidian-staging",
+    "ops": "~/.claude/ops",
+    "private": "~/.claude/private"
+  },
+  "purposes": {
+    "devlog": {
+      "default": "obsidian:projects/{project}/days",
+      "no-vault": "staging:projects/{project}"
+    },
+    "learning": {
+      "default": "obsidian:projects/{project}/learnings",
+      "no-vault": "staging:projects/{project}/learnings"
+    },
+    "learnings": {
+      "default": "obsidian:projects/agent-hub/learnings",
+      "no-vault": "staging:projects/agent-hub/learnings"
+    },
+    "topic": {
+      "default": "obsidian:projects/{project}/topics",
+      "no-vault": "staging:projects/{project}/topics"
+    },
+    "consulting": {
+      "default": "obsidian:projects/consulting/topics",
+      "no-vault": "staging:projects/consulting/topics"
+    },
+    "research": {
+      "default": "obsidian:projects/agent-hub/topics",
+      "no-vault": "staging:projects/agent-hub/topics"
+    },
+    "notes": {
+      "default": "obsidian:projects/personal/topics",
+      "no-vault": "staging:projects/personal/topics"
+    },
+    "ops": {
+      "default": "ops:"
+    },
+    "tutoring": {
+      "default": "obsidian:projects/tutoring",
+      "no-vault": "staging:projects/tutoring"
+    },
+    "drinks": {
+      "default": "obsidian:projects/drinks",
+      "no-vault": "staging:projects/drinks"
+    },
+    "private-data": {
+      "default": "private:"
+    },
+    "postmortem": {
+      "default": "obsidian:projects/records/topics",
+      "no-vault": "staging:projects/records/topics"
+    },
+    "vocab": {
+      "default": "obsidian:projects/language-learning/topics",
+      "no-vault": "staging:projects/language-learning/topics"
+    },
+    "experiment": {
+      "default": "obsidian:projects/{project}/learnings",
+      "no-vault": "staging:projects/{project}/learnings"
+    },
+    "spec": {
+      "default": "obsidian:projects/agent-hub/specs",
+      "no-vault": "staging:projects/agent-hub/specs"
+    },
+    "cross-learning": {
+      "default": "obsidian:projects/agent-hub/learnings",
+      "no-vault": "staging:projects/agent-hub/learnings"
+    },
+    "daily": {
+      "default": "obsidian:daily",
+      "no-vault": "staging:daily"
+    }
+  },
+  "format": {
+    "obsidian": "obsidian-md",
+    "staging": "obsidian-md",
+    "ops": "free",
+    "private": "free"
+  }
+}

@@ -328,7 +328,7 @@ Codebase exploration only. Does NOT do web research.
 
 ## Related Files
 
-- Command: `~/.claude/commands/caol-research-web.md`
+- Command: `~/.claude/commands/ah-research-web.md`
 - Output: `~/.claude/private/research/`
 
 ---

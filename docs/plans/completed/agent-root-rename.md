@@ -34,7 +34,7 @@ Rename the canonical repo source folder from `claude/` to `agent/` while preserv
 | Docs | Rewrite canonical repo references to `agent/...` |
 | Validator | Read `agent/` as agent root and map `@~/.claude/...` imports to `agent/...` |
 | Generated blocks | Regenerate README and AGENT-HUB path inventory |
-| Runtime symlink | Point `~/.claude` to `caol-ila/agent` |
+| Runtime symlink | Point `~/.claude` to `agent-hub/agent` |
 
 ## Non-Goals
 
@@ -52,14 +52,14 @@ Rename the canonical repo source folder from `claude/` to `agent/` while preserv
 | `rg -n '\bclaude/'` | only runtime, historical, or vendor references remain |
 | `rg -n '~/.claude'` | Claude deploy/runtime references remain intentional |
 | `git status --short` | rename-heavy but no untracked runtime cache flood |
-| `ls -ld ~/.claude` | symlink points to `caol-ila/agent` |
+| `ls -ld ~/.claude` | symlink points to `agent-hub/agent` |
 
 ## Result
 
 | Item | Result |
 |------|--------|
 | Agent root | `agent/` |
-| Claude deploy target | `~/.claude -> caol-ila/agent` |
+| Claude deploy target | `~/.claude -> agent-hub/agent` |
 | Validator | `node scripts/validate-llm-first.mjs` passed |
 | Local machine config | `obsidian-staging` path updated to `agent/obsidian-staging` |
 | Remaining `claude/` text | Historical, runtime, or vendor references only |

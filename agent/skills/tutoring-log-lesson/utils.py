@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-_MACHINE_PATHS = Path.home() / ".claude" / "private" / "caol-config" / "machine-paths.json"
-_RESOLVER = Path.home() / ".claude" / "skills" / "caol-resolve-doc-path" / "resolve.sh"
+_MACHINE_PATHS = Path.home() / ".claude" / "private" / "agent-hub-config" / "machine-paths.json"
+_RESOLVER = Path.home() / ".claude" / "skills" / "ah-resolve-doc-path" / "resolve.sh"
 
 
 def get_obsidian_vault_dir() -> Path:

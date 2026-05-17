@@ -178,10 +178,10 @@
     },
     {
       "id": "doc-paths",
-      "path": "agent/private/caol-config/doc-paths.json",
+      "path": "agent/private/agent-hub-config/doc-paths.json",
       "domain": "shared document routing",
       "format": "json",
-      "deployTarget": "~/.claude/private/caol-config/doc-paths.json",
+      "deployTarget": "~/.claude/private/agent-hub-config/doc-paths.json",
       "secretPolicy": "no-secrets"
     }
   ],
@@ -272,7 +272,7 @@
     },
     {
       "id": "machine-private-config",
-      "pathPattern": "agent/private/caol-config/{hardware,machine-paths,repo-paths}.json",
+      "pathPattern": "agent/private/agent-hub-config/{hardware,machine-paths,repo-paths}.json",
       "owner": "machine-local",
       "gitPolicy": "ignored",
       "secretPolicy": "may-contain-secrets",

@@ -29,9 +29,9 @@ Categories:
 
 ## Execution
 
-**Path resolution — go through `caol-resolve-doc-path` with the `learnings` purpose. Never read `machine-paths.json` directly. Never use `tool` mode + manual subpath as a workaround — if a destination isn't in `doc-paths.json` yet, ADD the purpose first.**
+**Path resolution — go through `ah-resolve-doc-path` with the `learnings` purpose. Never read `machine-paths.json` directly. Never use `tool` mode + manual subpath as a workaround — if a destination isn't in `doc-paths.json` yet, ADD the purpose first.**
 
-Projects dir: !`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc learnings`
+Projects dir: !`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc learnings`
 
 The output's `RESOLVED_PATH` is the learnings projects directory (`<vault>/learnings/projects/`). The parent (`<vault>/learnings/`) holds shared files like `_template.md` and `_glossary.md`.
 If the resolver errors, propagate up and stop.

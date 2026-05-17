@@ -4,7 +4,7 @@ created: 2026-05-15
 updated: 2026-05-17
 load: triggered
 trigger: strengthening Shotloom plan creation and plan review skills
-repo: caol-ila
+repo: agent-hub
 ---
 
 # Strengthen Shotloom Plan Skills With Risk Maps
@@ -144,7 +144,7 @@ plan registry.
 
 Management rules:
 
-- New direct plans use the lifecycle folder selected by `caol-manage-spec`.
+- New direct plans use the lifecycle folder selected by `ah-manage-spec`.
 - Plan review updates status by moving the spec when lifecycle state changes.
 - Superseded plans point to the replacement plan.
 - Do not create spec files directly under `docs/plans/`.

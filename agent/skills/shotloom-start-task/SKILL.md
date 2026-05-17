@@ -34,7 +34,7 @@ git rev-parse --abbrev-ref HEAD
 git log -1 --format="%an <%ae>"
 git status --short
 git remote get-url origin
-bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom
+bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom
 ```
 
 Verify:
@@ -180,7 +180,7 @@ rolls back on partial failure, or proves partial persistence impossible.
 
 ### Step 5d: Sibling spec scan (mandatory)
 
-Before the Ready briefing, scan `caol-ila/docs/plans/` and `caol-ila/docs/`
+Before the Ready briefing, scan `agent-hub/docs/plans/` and `agent-hub/docs/`
 for sibling spec artifacts whose slug overlaps the work at hand. Commands:
 `reference.md`.
 
@@ -192,7 +192,7 @@ found`.
 
 Resolve the task slug from the created/current branch body after `<type>/`.
 Write the compact briefing to
-`$caol_ila/docs/briefings/shotloom/<slug>.md` using the template in
+`$agent_hub/docs/briefings/shotloom/<slug>.md` using the template in
 `reference.md`. Create the directory if absent.
 
 The briefing must show issue, branch, standards loaded, ADRs, ask-first
@@ -218,9 +218,9 @@ Tell the user explicitly what comes next:
 
 **Spec ↔ implementation are two distinct gates.** Task-spec authoring is
 delegated to [`/shotloom-draft-spec`](../shotloom-draft-spec/SKILL.md), which
-writes `caol-ila/docs/plans/proposed/<slug>.md`, runs the review loop,
-commits/pushes from caol-ila, shares the final spec path, then asks whether to
-implement. It reads `caol-ila/docs/briefings/shotloom/<slug>.md` first and
+writes `agent-hub/docs/plans/proposed/<slug>.md`, runs the review loop,
+commits/pushes from agent-hub, shares the final spec path, then asks whether to
+implement. It reads `agent-hub/docs/briefings/shotloom/<slug>.md` first and
 commits that briefing with the spec. Implementation begins only after a
 separate user message such as "구현 시작", "implement", or "go".
 

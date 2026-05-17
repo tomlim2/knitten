@@ -182,4 +182,4 @@ Don't bulk-migrate. Apply progressively when adding new entries:
 
 - `obsidian-obsidian-markdown` — Obsidian markdown syntax reference (frontmatter / wikilinks / callouts spec)
 - `dev-log-experiment` — experiment log (hypothesis → measure → conclude cycle, distinct from daily devlog)
-- `caol-resolve-doc-path` — the path resolver this skill wraps. Drop to it directly only for purposes this skill doesn't cover (`notes`, `research`, ad-hoc).
+- `ah-resolve-doc-path` — the path resolver this skill wraps. Drop to it directly only for purposes this skill doesn't cover (`notes`, `research`, ad-hoc).

@@ -17,7 +17,7 @@ esac
 
 # Collect dirty worktrees under shotloom
 dirty=""
-main=$("$HOME/.claude/skills/caol-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
+main=$("$HOME/.claude/skills/ah-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
   | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
 [ -d "$main" ] || exit 0
 

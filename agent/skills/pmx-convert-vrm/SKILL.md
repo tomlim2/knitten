@@ -48,7 +48,7 @@ Examples:
 
 ## Script Location
 
-Read `~/.claude/private/caol-config/repo-paths.json` to find the `anju` repo path, then use:
+Read `~/.claude/private/agent-hub-config/repo-paths.json` to find the `anju` repo path, then use:
 ```
 <anju_path>/module/pmx2vrm
 ```

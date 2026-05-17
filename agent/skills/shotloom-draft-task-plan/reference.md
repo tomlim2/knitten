@@ -158,7 +158,7 @@ Gather context as if starting cold:
 git status --short
 rg -n "<linear id>|<title keywords>|<primary symbols>" crates apps docs contracts assets MAP.md
 rg -n "<diagnostic/code/cache/bridge/test keywords>" crates apps docs contracts
-ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+ls "$agent_hub/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 ```
 
 Also inspect:
@@ -257,11 +257,11 @@ The Ready briefing includes a sibling inventory. If the inventory is absent,
 run this scan from any cwd:
 
 ```bash
-caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
-caol_ila="${caol_ila#RESOLVED_PATH=}"
-ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-ls "$caol_ila/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- \
+agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
+agent_hub="${agent_hub#RESOLVED_PATH=}"
+ls "$agent_hub/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+ls "$agent_hub/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$agent_hub" log --diff-filter=D --name-only --pretty=format: -- \
   "docs/plans/" | rg -i "<scope>|<subject>"
 ```
 

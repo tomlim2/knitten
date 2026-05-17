@@ -22,7 +22,7 @@ Scripts live under `~/.claude/skills/shotloom-analyze-rig/scripts/`. Each is a s
 ### Step 1: Resolve the shotloom worktree
 
 ```bash
-shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/caol-config/repo-paths.json)
+shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/agent-hub-config/repo-paths.json)
 # Scripts go into a worktree, not the main checkout. Either pass an explicit
 # worktree path or use the worktree the conversation is currently in
 # (`git rev-parse --show-toplevel`).

@@ -17,7 +17,7 @@ import argparse
 # Add UE's Python plugin to path so we can import remote_execution
 def _get_ue_plugin_path():
     import json
-    config = os.path.join(os.path.expanduser("~"), ".claude", "private", "caol-config", "machine-paths.json")
+    config = os.path.join(os.path.expanduser("~"), ".claude", "private", "agent-hub-config", "machine-paths.json")
     try:
         with open(config) as _f:
             _ue_root = json.load(_f).get("unreal-editor", "")

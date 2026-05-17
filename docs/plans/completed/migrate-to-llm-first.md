@@ -11,7 +11,7 @@ tag: v3.1.0
 
 # LLM-First Migration Plan
 
-This migration is complete. It moved `caol-ila` from a Claude-only instruction folder toward an LLM-first policy system with a canonical policy document, explicit entry documents, grouped standards, frontmatter metadata, and validator-backed anti-rot checks.
+This migration is complete. It moved `agent-hub` from a Claude-only instruction folder toward an LLM-first policy system with a canonical policy document, explicit entry documents, grouped standards, frontmatter metadata, and validator-backed anti-rot checks.
 
 ## Closeout
 

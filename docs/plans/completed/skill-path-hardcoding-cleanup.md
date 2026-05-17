@@ -2,7 +2,7 @@
 status: completed
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Skill Path Hardcoding Cleanup
@@ -29,11 +29,11 @@ Manual scan found legacy path references in skill docs, references, and helper s
 
 | Concern | Canonical owner |
 |---------|-----------------|
-| Vault root | `agent/private/caol-config/machine-paths.json` key `obsidian` |
-| Staging root | `agent/private/caol-config/machine-paths.json` key `obsidian-staging` |
-| Purpose destinations | `agent/private/caol-config/doc-paths.json` |
-| Root folder vocabulary | `agent/private/caol-config/vault-structure.json` |
-| Runtime resolver | `agent/skills/caol-resolve-doc-path/resolve.sh` |
+| Vault root | `agent/private/agent-hub-config/machine-paths.json` key `obsidian` |
+| Staging root | `agent/private/agent-hub-config/machine-paths.json` key `obsidian-staging` |
+| Purpose destinations | `agent/private/agent-hub-config/doc-paths.json` |
+| Root folder vocabulary | `agent/private/agent-hub-config/vault-structure.json` |
+| Runtime resolver | `agent/skills/ah-resolve-doc-path/resolve.sh` |
 | Project folder contract | `agent/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` |
 
 ## Target Contract
@@ -43,7 +43,7 @@ Manual scan found legacy path references in skill docs, references, and helper s
 | `{obsidian_vault}/agent/tutoring/...` | `resolve.sh doc tutoring` + subpath |
 | `{obsidian_vault}/agent/consulting/...` | `resolve.sh doc consulting` + subpath |
 | `{obsidian}/claude/...` | purpose-specific resolver output, or `obsidian-staging` for staging |
-| `repo-paths.json` for Obsidian | `machine-paths.json` or `caol-resolve-doc-path` |
+| `repo-paths.json` for Obsidian | `machine-paths.json` or `ah-resolve-doc-path` |
 | root `notes/` | `projects/personal/topics` via `resolve.sh doc notes` |
 | root `drinks/` | `projects/drinks` via `resolve.sh doc drinks` |
 | hardcoded project day path in writer skills | `resolve.sh doc devlog <project>` |
@@ -66,10 +66,10 @@ Literal examples of valid current vault paths may remain only in:
 | `agent/skills/tutoring-log-lesson/SKILL.md` | `agent/tutoring/presets.json`, `agent/tutoring/invoices` | `resolve.sh doc tutoring` |
 | `agent/skills/consulting-log-session/SKILL.md` | `{obsidian_vault}/agent/consulting` | `resolve.sh doc consulting` |
 | `agent/skills/consulting-log-session/reference.md` | glob and storage text use `agent/consulting` | `projects/consulting/topics` via resolver |
-| `agent/skills/caol-brief-today/SKILL.md` | `repo-paths.json` Obsidian lookup, `{obsidian}/claude` | `machine-paths.json` + resolver/staging |
-| `agent/skills/caol-brief-today/reference.md` | `{obsidianClaudeDir}` and legacy staging path | `obsidian-staging` / `daily` / `projects` |
-| `agent/skills/caol-guide-private/reference.md` | `Obsidian/agent/tutoring`, `Obsidian/agent/drinks`, absolute MyNotes example | resolver-based examples |
-| `agent/skills/learn-archive-week/reference.md` | `agent/references/codex-base` | configured purpose only: prefer `resolve.sh doc research` or `resolve.sh doc topic caol-ila`; do not invent a new durable folder |
+| `agent/skills/ah-brief-today/SKILL.md` | `repo-paths.json` Obsidian lookup, `{obsidian}/claude` | `machine-paths.json` + resolver/staging |
+| `agent/skills/ah-brief-today/reference.md` | `{obsidianClaudeDir}` and legacy staging path | `obsidian-staging` / `daily` / `projects` |
+| `agent/skills/ah-guide-private/reference.md` | `Obsidian/agent/tutoring`, `Obsidian/agent/drinks`, absolute MyNotes example | resolver-based examples |
+| `agent/skills/learn-archive-week/reference.md` | `agent/references/codex-base` | configured purpose only: prefer `resolve.sh doc research` or `resolve.sh doc topic agent-hub`; do not invent a new durable folder |
 | `agent/skills/obsidian-fix-format/build-catalog.py` | writes `notes/INDEX.md` | remove if obsolete; if retained, use current project README/topic conventions instead of `INDEX.md` |
 | `agent/skills/drink-log-entry/index.html` | fetches `drinks/drinks.json` | resolver/API path for `projects/drinks/drinks.json` |
 
@@ -95,7 +95,7 @@ Literal examples of valid current vault paths may remain only in:
 
 1. Do not hardcode the absolute vault path.
 2. Do not read `repo-paths.json` for Obsidian.
-3. Prefer `bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc <purpose> [project]`.
+3. Prefer `bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc <purpose> [project]`.
 4. Use `machine-paths.json` directly only for tool roots such as `obsidian-staging`, and only when no document purpose exists.
 5. Do not create new `doc-paths.json` purposes unless an existing purpose cannot express the destination.
 6. If a skill needs a subpath below a purpose, append it to the resolver output and keep the appended subpath purpose-local.
@@ -144,4 +144,4 @@ Expected:
 |----------|--------|
 | Should tutoring invoices live under `projects/tutoring` or `attachments/tutoring`? | Keep under `projects/tutoring/invoices` unless user chooses attachment-only storage |
 | Should drink data remain `drinks.json` under `projects/drinks`? | Keep as purpose-local data file |
-| Should briefings be appended to `daily/` or stored as separate project records? | Append human-facing today briefings to `daily/`; store separate operational run records under the configured `caol-ila` project purpose, not an ad-hoc `{obsidian}/claude` folder |
+| Should briefings be appended to `daily/` or stored as separate project records? | Append human-facing today briefings to `daily/`; store separate operational run records under the configured `agent-hub` project purpose, not an ad-hoc `{obsidian}/claude` folder |

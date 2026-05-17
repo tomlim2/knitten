@@ -19,7 +19,7 @@ the task spec artifact only. Do not edit Shotloom source files.
 
 ## Purpose
 
-Take an existing lifecycle spec under `caol-ila/docs/plans/` and validate it as a
+Take an existing lifecycle spec under `agent-hub/docs/plans/` and validate it as a
 requirements/decisions/verification contract. Run cold-start rounds until no
 unhandled `P1`/`P2` findings remain. Patch the spec after each serious finding.
 When only `P3`/nit findings remain, land the spec and stop.
@@ -29,14 +29,14 @@ When only `P3`/nit findings remain, land the spec and stop.
 - `[slug-or-path]` optional.
 - If omitted, derive the slug from the current Shotloom branch body after
   `<type>/`.
-- If cwd is `caol-ila`, an omitted input is a hard stop. Pass a slug or path.
+- If cwd is `agent-hub`, an omitted input is a hard stop. Pass a slug or path.
 - If the input is a path, use it directly.
 - Otherwise resolve the slug through the spec lifecycle search order.
 
 ## Preconditions
 
-- cwd is inside Shotloom or `caol-ila`.
-- `caol-resolve-doc-path` resolves both `shotloom` and `caol-ila`.
+- cwd is inside Shotloom or `agent-hub`.
+- `ah-resolve-doc-path` resolves both `shotloom` and `agent-hub`.
 - The spec file exists.
 - If spec frontmatter has `briefing:`, read that briefing before validation.
 - If a Linear id appears in spec frontmatter, title, or body, fetch the current
@@ -51,21 +51,21 @@ Run:
 ```bash
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
-shotloom_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom)"
+shotloom_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
 shotloom_root="${shotloom_root#RESOLVED_PATH=}"
-caol_ila="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila)"
-caol_ila="${caol_ila#RESOLVED_PATH=}"
+agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
+agent_hub="${agent_hub#RESOLVED_PATH=}"
 ```
 
 Resolve the spec path. Surface:
 
 - spec path
 - Shotloom root
-- caol-ila root
+- agent-hub root
 - current branches and dirty files for both repos
 
 If the spec path cannot be resolved, stop without writing. If `repo_root` is
-`caol-ila` and no input was provided, stop and ask for `[slug-or-path]`.
+`agent-hub` and no input was provided, stop and ask for `[slug-or-path]`.
 
 ### Step 2: Round 1 - Cold-Start Context Gather
 
@@ -75,8 +75,8 @@ Read the whole spec. Then gather current context as if the spec were untrusted:
 git -C "$shotloom_root" status --short
 rg -n "<linear id>|<title keywords>|<primary symbols>" "$shotloom_root"/crates "$shotloom_root"/apps "$shotloom_root"/docs "$shotloom_root"/contracts "$shotloom_root"/assets "$shotloom_root"/MAP.md
 rg -n "<diagnostic/cache/bridge/test/doc keywords>" "$shotloom_root"/crates "$shotloom_root"/apps "$shotloom_root"/docs "$shotloom_root"/contracts
-ls "$caol_ila/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-git -C "$caol_ila" log --diff-filter=D --name-only --pretty=format: -- docs/plans/ | rg -i "<scope>|<subject>"
+ls "$agent_hub/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$agent_hub" log --diff-filter=D --name-only --pretty=format: -- docs/plans/ | rg -i "<scope>|<subject>"
 ```
 
 Also inspect:
@@ -175,14 +175,14 @@ does not choose one, stop and ask the user which direction to lock.
 ### Step 6: Commit Spec-Only Changes
 
 If the spec has no unhandled `P1`/`P2`, commit only that spec file from
-`caol-ila`:
+`agent-hub`:
 
 ```bash
-git -C "$caol_ila" config user.name
-git -C "$caol_ila" config user.email
-git -C "$caol_ila" add "$spec_path"
-git -C "$caol_ila" commit -m "docs(shotloom): review spec <slug>"
-git -C "$caol_ila" push
+git -C "$agent_hub" config user.name
+git -C "$agent_hub" config user.email
+git -C "$agent_hub" add "$spec_path"
+git -C "$agent_hub" commit -m "docs(shotloom): review spec <slug>"
+git -C "$agent_hub" push
 ```
 
 Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. Never use

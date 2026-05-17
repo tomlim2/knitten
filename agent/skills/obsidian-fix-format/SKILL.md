@@ -22,7 +22,7 @@ Read `references/NOTE-INSPECTION-CHECKLIST.md` only when inspecting one note, pl
 Resolve with:
 
 ```bash
-jq -r '."obsidian"' ~/.claude/private/caol-config/machine-paths.json
+jq -r '."obsidian"' ~/.claude/private/agent-hub-config/machine-paths.json
 ```
 
 ## Checks

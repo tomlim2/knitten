@@ -55,7 +55,7 @@ spec: ../../plans/completed/workspace-unify-thiserror-deps.md
 - P2: Verification should include a manifest-level assertion, not only compile gates. Candidate proof: `cargo metadata --no-deps` shows the selected workspace packages depend on `thiserror` with inherited workspace req after the edit, and `git diff -- Cargo.lock` is empty. Evidence: current metadata reports direct req `^2` for eight packages. AC-trace: AC2, AC5.
 - P3: Choose root dependency placement. Existing `[workspace.dependencies]` is not strictly alphabetical; `thiserror` likely belongs near `serde_json`, `strum`, and other shared Rust library dependencies. Evidence: root `Cargo.toml` dependency ordering. AC-trace: AC1.
 
-**Sibling specs (caol-ila/docs/plans/):**
+**Sibling specs (agent-hub/docs/plans/):**
 - none found
 
 **Pre-write checklist passed:**
@@ -66,6 +66,6 @@ spec: ../../plans/completed/workspace-unify-thiserror-deps.md
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (caol-ila/docs/plans/, full body via Read tool for every match)
+- [x] sibling-spec scan run (agent-hub/docs/plans/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.

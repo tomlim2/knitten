@@ -16,7 +16,7 @@ Track tutoring lessons with billing status:
 ## File Structure
 
 ```
-!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`/lessons/<student>/
+!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc tutoring`/lessons/<student>/
 ├── 2026-02-02_BlenderRigging.md        # Pending
 ├── 2026-02-09_WalkAnimation.md         # Pending
 └── 2026-01-15_ModelingBasics_done.md   # Paid
@@ -51,7 +51,7 @@ python invoice.py "StudentName" --rate 150000 --open
 
 **Options:**
 - `--rate, -r` - Hourly rate (default: 150000)
-- `--open, -o` - **Disabled** (legacy `localhost:972/invoice` removed with `caol-serve-skills`; caol-hq replacement route TBD). Currently prints the query string the future endpoint would consume.
+- `--open, -o` - **Disabled** (legacy `localhost:972/invoice` removed with `ah-hq`; ah-hq replacement route TBD). Currently prints the query string the future endpoint would consume.
 
 ### `/tutoring-open-invoice`
 
@@ -96,13 +96,13 @@ python paid.py "StudentName" --list     # List pending only
 - `paid.py` - Payment marking script (renames lesson files with `_done` suffix)
 - `utils.py` - Shared utilities
 - `web/` - Invoice generator web UI (served at `/invoice` by skill server)
-- `presets.json.example` - Template for student/teacher info (copy to `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`/presets.json`)
+- `presets.json.example` - Template for student/teacher info (copy to `!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc tutoring`/presets.json`)
 
 ## Workflow
 
 1. Log lesson → `log.py`
 2. Generate invoice → `invoice.py --open` (browser opens with auto-filled lessons)
-3. PDF saved → moved to `!`bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring`/invoices/`
+3. PDF saved → moved to `!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc tutoring`/invoices/`
 4. After payment received → `paid.py` (renames lesson files with `_done` suffix to drop from pending)
 
 ## Operator mode

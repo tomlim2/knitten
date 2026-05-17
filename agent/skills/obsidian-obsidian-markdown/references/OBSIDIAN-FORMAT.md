@@ -98,7 +98,7 @@ Examples:
 | `days/2026-04-21.md` | `days/2026-04-21-pr-review.md` |
 | `days/2026-04-21.md` | `days/2026-04-21-daily.md` |
 | `days/2026-04-21.md` | `days/devlog-2026-04-21.md` |
-| `plans/obsidian-contract-cleanup.md` | `plans/caol-ila-plan-obsidian-contract-cleanup.md` |
+| `plans/obsidian-contract-cleanup.md` | `plans/agent-hub-plan-obsidian-contract-cleanup.md` |
 
 ---
 

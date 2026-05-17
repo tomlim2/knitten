@@ -31,7 +31,7 @@ Applies to any new slash command or skill. Three concerns, single trigger.
 
 When multiple similar skills exist (e.g. many `design-*`), every `description` must carry a unique keyword. Wrappers should include a `when_to_use:` frontmatter field with `NO when:` negative conditions pointing to sibling skills.
 
-Full rationale + examples: `~/.claude/skills/caol-make-command/SKILL.md`.
+Full rationale + examples: `~/.claude/skills/ah-make-command/SKILL.md`.
 
 Naming for **rules / standards / plans / vault notes** (not commands/skills): `~/.claude/standards/policy/naming.md`.
 
@@ -44,7 +44,7 @@ Naming for **rules / standards / plans / vault notes** (not commands/skills): `~
 - **Argument validation** — if the command accepts arguments, it MUST validate them. If no argument is given, show usage and ask. **NEVER auto-execute.**
 - **Required sections:** frontmatter, H1 title, Arguments (if applicable), Workflow.
 
-Full authoring guide: `~/.claude/skills/caol-make-command/references/SLASH-COMMANDS.md`.
+Full authoring guide: `~/.claude/skills/ah-make-command/references/SLASH-COMMANDS.md`.
 
 ## Permissions
 
@@ -52,4 +52,4 @@ Full authoring guide: `~/.claude/skills/caol-make-command/references/SLASH-COMMA
 - **Pattern examples:** `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, `Bash(mv:*), Bash(ls:*)`.
 - **Principle:** grant the minimum permission that lets the command work.
 
-Full frontmatter reference: `~/.claude/skills/caol-make-command/references/SLASH-COMMANDS.md`.
+Full frontmatter reference: `~/.claude/skills/ah-make-command/references/SLASH-COMMANDS.md`.

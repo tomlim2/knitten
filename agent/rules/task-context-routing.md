@@ -22,7 +22,7 @@ Use this rule before loading a high-cost route-domain body.
 | Input | Owner |
 |-------|-------|
 | Routing axes and profiles | `agent/config/context-routing.json` |
-| Repo keys | `agent/private/caol-config/repo-paths.json` |
+| Repo keys | `agent/private/agent-hub-config/repo-paths.json` |
 | Compact route index | `AGENT-HUB.md` between `<!-- routing:start -->` and `<!-- routing:end -->` |
 | Regression fixtures | `tests/routing-fixtures.json` |
 

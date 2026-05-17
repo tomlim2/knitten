@@ -2,7 +2,7 @@
 status: intake
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 spec: docs/plans/completed/docs-plans-lifecycle-migration.md
 ---
 
@@ -21,11 +21,11 @@ briefings, validators, or generated indexes.
 
 ## Route
 
-- selected route: caol/Knitten spec lifecycle migration
+- selected route: agent-hub spec lifecycle migration
 - candidate routes: caol architecture hardening, milestone management,
   validator hardening
-- delegated or referenced skills: `caol-manage-spec`,
-  `caol-manage-milestone`, `caol-review-implementation`
+- delegated or referenced skills: `ah-manage-spec`,
+  `ah-manage-milestone`, `ah-review-implementation`
 
 ## Evidence To Read
 
@@ -33,9 +33,9 @@ briefings, validators, or generated indexes.
 |------|----------------|--------|
 | directory | `docs/plans/` | migration source |
 | milestone | `docs/milestones/spec-lifecycle-system.md` | owning milestone |
-| skill | `agent/skills/caol-manage-spec/SKILL.md` | current flat spec path contract |
-| skill | `agent/skills/caol-manage-milestone/SKILL.md` | current `../plans/<slug>.md` link contract |
-| skill | `agent/skills/caol-review-implementation/SKILL.md` | changed-spec resolution contract |
+| skill | `agent/skills/ah-manage-spec/SKILL.md` | current flat spec path contract |
+| skill | `agent/skills/ah-manage-milestone/SKILL.md` | current `../plans/<slug>.md` link contract |
+| skill | `agent/skills/ah-review-implementation/SKILL.md` | changed-spec resolution contract |
 | config | `agent/config/taxonomy.json` | registered docs path |
 | standard | `agent/standards/policy/naming.md` | current naming rule for plans |
 | script | `scripts/validate-llm-first.mjs` | validator path assumptions |

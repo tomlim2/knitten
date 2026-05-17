@@ -8,7 +8,7 @@ allowed-tools: Bash(python:*)
 Launch the CINEV Creator Shipping Manager GUI for packaging and deploying builds.
 ## Execution
 
-1. Read `~/.claude/private/caol-config/repo-paths.json` → key `anju` → `.path`
+1. Read `~/.claude/private/agent-hub-config/repo-paths.json` → key `anju` → `.path`
 2. Run:
 
 ```bash

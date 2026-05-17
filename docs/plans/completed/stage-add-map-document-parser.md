@@ -33,8 +33,8 @@ spawn, editor debug UI, clear-all, and production asset catalog decisions.
 | Diagnostic primitive | `crates/shotloom-common/src/diagnostic.rs` | Already Done | `Diagnostic` is the shared observation type; diagnostics are not parser exceptions. |
 | Diagnostic ADR | `docs/adr/adr-0021-cross-crate-diagnostic-type.md` | Already Done | Diagnostic codes stay crate-local and scoped by `source`. |
 | Stage ADRs | `docs/adr/adr-0009-void-stage-and-coordinate-system.md`, `docs/adr/adr-0012-generated-stage-contract.md` | Already Done | Stage stays runtime-agnostic; engine mediates between core model and stage crate. |
-| Prior sibling draft | `caol-ila/docs/plans/stage-add-map-document-parser.draft.md` | Stale | Correctly blocked before STL-421 landed; now superseded by the contract being present on `origin/main`. |
-| Contract sibling plan | `caol-ila/docs/plans/completed/stage-define-map-document-bundle-layout.md` | Consumed | Agrees that parser/resolver belongs to STL-422 and bridge/editor/clear-all stay follow-ups. |
+| Prior sibling draft | `agent-hub/docs/plans/stage-add-map-document-parser.draft.md` | Stale | Correctly blocked before STL-421 landed; now superseded by the contract being present on `origin/main`. |
+| Contract sibling plan | `agent-hub/docs/plans/completed/stage-define-map-document-bundle-layout.md` | Consumed | Agrees that parser/resolver belongs to STL-422 and bridge/editor/clear-all stay follow-ups. |
 
 ## Problem
 

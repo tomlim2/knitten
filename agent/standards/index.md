@@ -32,8 +32,8 @@ Use active standards as policy. Use redirect stubs only to find the skill-owned 
 
 | Stub | Replacement |
 |------|-------------|
-| [`authoring/command-skill-reference.md`](authoring/command-skill-reference.md) | `agent/skills/caol-make-command/references/COMMAND-SKILL-REFERENCE.md` |
-| [`authoring/slash-commands.md`](authoring/slash-commands.md) | `agent/skills/caol-make-command/references/SLASH-COMMANDS.md` |
+| [`authoring/command-skill-reference.md`](authoring/command-skill-reference.md) | `agent/skills/ah-make-command/references/COMMAND-SKILL-REFERENCE.md` |
+| [`authoring/slash-commands.md`](authoring/slash-commands.md) | `agent/skills/ah-make-command/references/SLASH-COMMANDS.md` |
 | [`cinev/cci-slack.md`](cinev/cci-slack.md) | `agent/skills/cci-serve-mcp/references/CCI-SLACK.md` |
 | [`cinev/cinev-character-asset-naming.md`](cinev/cinev-character-asset-naming.md) | `agent/skills/cci-validate-character-mat-slot-names/references/CINEV-CHARACTER-ASSET-NAMING.md` |
 | [`cinev/cinev-git-workflow.md`](cinev/cinev-git-workflow.md) | `agent/skills/cci-manage-art-branch/references/CINEV-GIT-WORKFLOW.md` |
