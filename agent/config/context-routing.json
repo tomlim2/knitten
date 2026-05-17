@@ -229,6 +229,11 @@
       "contextCost": "medium"
     },
     {
+      "path": "agent/skills/caol-review-implementation/SKILL.md",
+      "profile": "caol-authoring",
+      "contextCost": "medium"
+    },
+    {
       "path": "agent/skills/obsidian-defuddle/SKILL.md",
       "profile": "obsidian-vault",
       "contextCost": "low"
