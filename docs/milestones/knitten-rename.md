@@ -28,7 +28,7 @@ skill invocation.
 
 | Spec | Status | Role |
 |------|--------|------|
-| [rename-caol-ila-to-knitten.md](../plans/proposed/rename-caol-ila-to-knitten.md) | proposed | define rename scope, compatibility rules, execution batches, and validation |
+| [rename-caol-ila-to-knitten.md](../plans/active/rename-caol-ila-to-knitten.md) | active | define rename scope, compatibility rules, execution batches, and validation |
 
 ## Progress
 
@@ -36,8 +36,8 @@ skill invocation.
 |-------|-------|----------|
 | Name decision | accepted | user stated the internal name is now `knitten` |
 | Legacy Discord bridge | retired | user confirmed any old `knitten` Discord bridge no longer needs preservation |
-| Rename contract | in-progress | `docs/plans/proposed/rename-caol-ila-to-knitten.md` records the staged plan |
-| Inventory | todo | classify every `caol-ila`, `caol`, and `caol-config` reference |
+| Rename contract | done | `docs/plans/active/rename-caol-ila-to-knitten.md` records the staged plan |
+| Inventory | done | `docs/plans/reports/rename-caol-ila-to-knitten/inventory-2026-05-17.md` classifies active-source references |
 | Compatibility layer | todo | decide repo key, config key, command prefix, and path aliases |
 | Implementation | todo | rename approved surfaces only after inventory review |
 | Validator support | todo | add checks for unclassified legacy names and required aliases |
@@ -69,7 +69,7 @@ skill invocation.
 
 | Blocker | Impact |
 |---------|--------|
-| Existing validator terminology failure in `obsidian-root-projects-daily-migration.md` | full validator remains red until fixed |
+None.
 
 ## External Mirrors
 

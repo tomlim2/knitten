@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: active
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -156,12 +156,18 @@ Classify each hit:
 
 ### Batch A: Contract And Inventory
 
+Status: completed.
+
 1. Land this spec and the `Knitten Rename` milestone.
 2. Add `Knitten` to the system glossary.
 3. Run the inventory command.
 4. Produce an inventory table or report grouped by class.
 5. Confirm whether any old Discord bridge files remain.
 6. Do not rename runtime paths in this batch.
+
+Result: inventory report exists at
+`docs/plans/reports/rename-caol-ila-to-knitten/inventory-2026-05-17.md`.
+No active old Discord bridge references were found.
 
 ### Batch B: Human-Facing Identity
 
