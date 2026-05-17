@@ -353,6 +353,14 @@
       ]
     },
     {
+      "id": "standards-redirects",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "standards-redirects",
+      "covers": [
+        "superseded standard redirect targets"
+      ]
+    },
+    {
       "id": "platform-metadata",
       "script": "scripts/validate-llm-first.mjs",
       "listedCheck": "platform-metadata",
@@ -367,6 +375,30 @@
       "covers": [
         "skill and command categories",
         "managed document naming"
+      ]
+    },
+    {
+      "id": "skill-root-shape",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "skill-root-shape",
+      "covers": [
+        "first-level skill directory shape"
+      ]
+    },
+    {
+      "id": "tracked-runtime-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "tracked-runtime-paths",
+      "covers": [
+        "runtime/cache paths stay untracked"
+      ]
+    },
+    {
+      "id": "tracked-user-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "tracked-user-paths",
+      "covers": [
+        "user-specific absolute path drift"
       ]
     },
     {

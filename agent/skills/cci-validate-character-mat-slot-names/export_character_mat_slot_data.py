@@ -2,7 +2,7 @@
 Export character DataTable material slot data for validation.
 
 Run inside UE Editor Python console:
-    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\cci-validate-character-mat-slot-names\\export_character_mat_slot_data.py").read())
+    exec(open(__import__("os").path.expanduser(r"~\\.claude\\skills\\cci-validate-character-mat-slot-names\\export_character_mat_slot_data.py")).read())
 
 Selects a DataTable in Content Browser, extracts SkeletalMesh references,
 loads each mesh to get material slot names, and validates against required slots.
@@ -143,7 +143,7 @@ def get_material_slots(mesh_path):
 def load_required_slots():
     """Load required slot names from config file."""
     config_dir = os.path.join(
-        os.path.expanduser("~"), ".claude", "skills",
+        __import__("os").path.expanduser("~"), ".claude", "skills",
         "cci-validate-character-mat-slot-names"
     )
     config_path = os.path.join(config_dir, "required_slots.json")
@@ -173,7 +173,7 @@ def validate_slots(slot_names, required_slots):
 def save_json(data, name):
     """Save result JSON to output directory."""
     output_dir = os.path.join(
-        os.path.expanduser("~"), ".claude", "private", "unreal",
+        __import__("os").path.expanduser("~"), ".claude", "private", "unreal",
         "character-mat-slot-validate"
     )
     os.makedirs(output_dir, exist_ok=True)

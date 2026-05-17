@@ -1,6 +1,11 @@
 ---
 description: "Unified art branch manager. Auto-suggests next action based on day-of-week and branch state."
 argument-hint: "[create|merge-prep|merge-notice|merge-result|cleanup|status]"
+domains: cinev
+repo-keys: cinev-studio-git
+languages: python
+task-types: git,ops
+context-profile: cinev-art
 ---
 
 # cci-manage-art-branch

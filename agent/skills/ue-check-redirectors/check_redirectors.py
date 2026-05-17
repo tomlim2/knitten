@@ -2,7 +2,7 @@
 Check for ObjectRedirectors in the UE project Content folder.
 
 Run inside UE Editor Python console:
-    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\ue-check-redirectors\\check_redirectors.py").read())
+    exec(open(__import__("os").path.expanduser(r"~\\.claude\\skills\\ue-check-redirectors\\check_redirectors.py")).read())
 
 Scans /Game/ for all ObjectRedirector assets, checks if destinations exist,
 groups by folder, and saves results as JSON.
@@ -111,7 +111,7 @@ def get_folder_path(asset_path):
 def save_json(data):
     """Save result JSON to output directory."""
     output_dir = os.path.join(
-        os.path.expanduser("~"), ".claude", "private", "unreal",
+        __import__("os").path.expanduser("~"), ".claude", "private", "unreal",
         "check-redirectors"
     )
     os.makedirs(output_dir, exist_ok=True)

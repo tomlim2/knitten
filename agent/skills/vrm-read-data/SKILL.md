@@ -5,6 +5,11 @@ allowed-tools:
   - Read
   - Glob
   - Bash(node:*)
+domains: 3d
+repo-keys: vrm2u-bevy
+languages: javascript,json
+task-types: research
+context-profile: 3d-vrm
 ---
 
 # vrm-read-data

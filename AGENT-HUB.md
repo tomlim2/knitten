@@ -16,7 +16,7 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | Registries | 9 | `agent/config/agent-hub.json` `registries` |
 | Generated documents | 5 | `agent/config/agent-hub.json` `generatedDocuments` |
 | Runtime path policies | 8 | `agent/config/agent-hub.json` `runtimePathPolicies` |
-| Validators | 17 | `agent/config/agent-hub.json` `validators` |
+| Validators | 21 | `agent/config/agent-hub.json` `validators` |
 
 ## Harnesses
 
@@ -60,9 +60,13 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |
 |---------|---------------|-----------|------------|------------|----------:|
 | `caol-authoring` | `caol` | `caol-ila` | - | `authoring`, `review` | 25000 |
+| `shotloom-ops` | `shotloom` | `shotloom` | `bevy`, `wgpu` | `authoring`, `git`, `ops` | 25000 |
 | `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
 | `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
 | `shotloom-deploy` | `rust`, `web` | `shotloom` | `bevy`, `wgpu` | `deploy` | 25000 |
+| `cinev-art` | `cinev` | `anju`, `cinev`, `cinev-git`, `cinev-studio`, `cinev-studio-git`, `mega-melange` | - | `deploy`, `git`, `implementation`, `ops` | 25000 |
+| `3d-vrm` | `3d` | `anju`, `cinev`, `mega-melange`, `mmd-anju`, `mmd-archive`, `vrm2u-bevy` | `bevy`, `three` | `implementation`, `research`, `review` | 25000 |
+| `video-hyperframes` | `video` | `caol-ila` | `hyperframes` | `implementation` | 25000 |
 | `unreal-engine` | `unreal` | `anju`, `mega-melange` | - | `implementation`, `review` | 25000 |
 | `web-frontend` | `web` | `caol-ila`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `implementation` | 25000 |
 | `web-review` | `web` | `caol-ila`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `review` | 25000 |
@@ -117,6 +121,10 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | `agent/skills/review-audit-ux/SKILL.md` | `web-review` | `medium` |
 | `agent/skills/review-audit-web-spec/SKILL.md` | `web-review` | `medium` |
 | `agent/skills/review-audit-web/SKILL.md` | `web-review` | `low` |
+| `agent/skills/shotloom-status/SKILL.md` | `shotloom-ops` | `medium` |
+| `agent/skills/cci-manage-art-branch/SKILL.md` | `cinev-art` | `medium` |
+| `agent/skills/vrm-read-data/SKILL.md` | `3d-vrm` | `medium` |
+| `agent/skills/video-hyperframes-run-cli/SKILL.md` | `video-hyperframes` | `low` |
 
 ## Route Fixtures
 
@@ -132,4 +140,8 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | Review Astro island hydration bug | `web-review` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `obsidian-vault` | 25000 |
 | Implement Three.js shader | `web-frontend` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `obsidian-vault` | 25000 |
 | Obsidian note cleanup | `obsidian-vault` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review` | 25000 |
+| Shotloom worktree status ops | `shotloom-ops` | `caol-authoring`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| CINEV art branch ops | `cinev-art` | `caol-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| VRM PMX retarget review | `3d-vrm` | `caol-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Implement HyperFrames video composition | `video-hyperframes` | `caol-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 <!-- routing:end -->

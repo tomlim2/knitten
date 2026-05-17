@@ -16,10 +16,14 @@
   },
   "axes": {
     "domains": [
+      "3d",
       "caol",
+      "cinev",
       "obsidian",
       "rust",
+      "shotloom",
       "unreal",
+      "video",
       "web"
     ],
     "languages": [
@@ -36,6 +40,7 @@
     "frameworks": [
       "astro",
       "bevy",
+      "hyperframes",
       "three",
       "wgpu"
     ],
@@ -44,6 +49,7 @@
       "deploy",
       "git",
       "implementation",
+      "ops",
       "research",
       "review"
     ]
@@ -65,6 +71,30 @@
       "taskTypes": [
         "authoring",
         "review"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "shotloom-ops",
+      "domains": [
+        "shotloom"
+      ],
+      "repoKeys": [
+        "shotloom"
+      ],
+      "languages": [
+        "markdown",
+        "rust",
+        "typescript"
+      ],
+      "frameworks": [
+        "bevy",
+        "wgpu"
+      ],
+      "taskTypes": [
+        "authoring",
+        "git",
+        "ops"
       ],
       "maxBytes": 25000
     },
@@ -131,6 +161,82 @@
       ],
       "taskTypes": [
         "deploy"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "cinev-art",
+      "domains": [
+        "cinev"
+      ],
+      "repoKeys": [
+        "anju",
+        "cinev",
+        "cinev-git",
+        "cinev-studio",
+        "cinev-studio-git",
+        "mega-melange"
+      ],
+      "languages": [
+        "python"
+      ],
+      "taskTypes": [
+        "deploy",
+        "git",
+        "implementation",
+        "ops"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "3d-vrm",
+      "domains": [
+        "3d"
+      ],
+      "repoKeys": [
+        "anju",
+        "cinev",
+        "mega-melange",
+        "mmd-anju",
+        "mmd-archive",
+        "vrm2u-bevy"
+      ],
+      "languages": [
+        "javascript",
+        "json",
+        "python",
+        "rust",
+        "typescript"
+      ],
+      "frameworks": [
+        "bevy",
+        "three"
+      ],
+      "taskTypes": [
+        "implementation",
+        "research",
+        "review"
+      ],
+      "maxBytes": 25000
+    },
+    {
+      "id": "video-hyperframes",
+      "domains": [
+        "video"
+      ],
+      "repoKeys": [
+        "caol-ila"
+      ],
+      "languages": [
+        "css",
+        "javascript",
+        "typescript"
+      ],
+      "frameworks": [
+        "hyperframes"
+      ],
+      "taskTypes": [
+        "implementation"
       ],
       "maxBytes": 25000
     },
@@ -447,6 +553,26 @@
       "path": "agent/skills/review-audit-web/SKILL.md",
       "profile": "web-review",
       "contextCost": "low"
+    },
+    {
+      "path": "agent/skills/shotloom-status/SKILL.md",
+      "profile": "shotloom-ops",
+      "contextCost": "medium"
+    },
+    {
+      "path": "agent/skills/cci-manage-art-branch/SKILL.md",
+      "profile": "cinev-art",
+      "contextCost": "medium"
+    },
+    {
+      "path": "agent/skills/vrm-read-data/SKILL.md",
+      "profile": "3d-vrm",
+      "contextCost": "medium"
+    },
+    {
+      "path": "agent/skills/video-hyperframes-run-cli/SKILL.md",
+      "profile": "video-hyperframes",
+      "contextCost": "low"
     }
   ],
   "enforcement": {
@@ -475,224 +601,5 @@
       "reviewAfter": "2026-06-15"
     }
   ],
-  "profileCandidates": [
-    {
-      "id": "shotloom-ops",
-      "status": "candidate",
-      "purpose": "Shotloom task lifecycle, Linear, git gates, local web launch, and worktree operations that are not PR review or deploy rollout.",
-      "candidateAxes": {
-        "domains": [
-          "rust"
-        ],
-        "repoKeys": [
-          "shotloom"
-        ],
-        "languages": [
-          "rust",
-          "typescript",
-          "markdown"
-        ],
-        "frameworks": [
-          "bevy",
-          "wgpu"
-        ],
-        "taskTypes": [
-          "authoring",
-          "git",
-          "implementation",
-          "review"
-        ]
-      },
-      "candidateFiles": [
-        "agent/skills/shotloom-analyze-rig/SKILL.md",
-        "agent/skills/shotloom-blocker-to-linear/SKILL.md",
-        "agent/skills/shotloom-check-gates/SKILL.md",
-        "agent/skills/shotloom-commit/SKILL.md",
-        "agent/skills/shotloom-draft-adr/SKILL.md",
-        "agent/skills/shotloom-draft-spec/SKILL.md",
-        "agent/skills/shotloom-draft-task-plan/SKILL.md",
-        "agent/skills/shotloom-linear-move/SKILL.md",
-        "agent/skills/shotloom-linear-stale/SKILL.md",
-        "agent/skills/shotloom-linear-today/SKILL.md",
-        "agent/skills/shotloom-open-web/SKILL.md",
-        "agent/skills/shotloom-start-task/SKILL.md",
-        "agent/skills/shotloom-status/SKILL.md",
-        "agent/skills/shotloom-wrapup-task/SKILL.md"
-      ]
-    },
-    {
-      "id": "cinev-art",
-      "status": "candidate",
-      "purpose": "CINEV art branch, Slack art notices, PMX/VRM character pipeline, and UE character material-slot operations.",
-      "proposedAxisAdds": {
-        "domains": [
-          "cinev"
-        ],
-        "taskTypes": [
-          "ops"
-        ]
-      },
-      "candidateAxes": {
-        "domains": [
-          "cinev",
-          "unreal"
-        ],
-        "repoKeys": [
-          "anju",
-          "cinev",
-          "cinev-studio",
-          "cinev-studio-git",
-          "mega-melange"
-        ],
-        "languages": [
-          "python"
-        ],
-        "taskTypes": [
-          "deploy",
-          "git",
-          "implementation",
-          "ops"
-        ]
-      },
-      "candidateFiles": [
-        "agent/skills/cci-art-send-notice/SKILL.md",
-        "agent/skills/cci-deploy-pmx-character/SKILL.md",
-        "agent/skills/cci-download-vrm-z/SKILL.md",
-        "agent/skills/cci-manage-art-branch/SKILL.md",
-        "agent/skills/cci-rename-mat-slot/SKILL.md",
-        "agent/skills/cci-send-alert/SKILL.md",
-        "agent/skills/cci-serve-mcp/SKILL.md",
-        "agent/skills/cci-sync-ta-tools/SKILL.md",
-        "agent/skills/cci-validate-character-mat-slot-names/SKILL.md"
-      ]
-    },
-    {
-      "id": "3d-vrm",
-      "status": "candidate",
-      "purpose": "VRM, PMX, retargeting, MMD, axis correction, and model inspection workflows across Rust, Python, and viewer tools.",
-      "proposedAxisAdds": {
-        "domains": [
-          "3d"
-        ]
-      },
-      "candidateAxes": {
-        "domains": [
-          "3d",
-          "rust",
-          "unreal",
-          "web"
-        ],
-        "repoKeys": [
-          "anju",
-          "cinev",
-          "mega-melange",
-          "mmd-anju",
-          "mmd-archive",
-          "vrm2u-bevy"
-        ],
-        "languages": [
-          "python",
-          "rust",
-          "typescript"
-        ],
-        "frameworks": [
-          "bevy",
-          "three"
-        ],
-        "taskTypes": [
-          "implementation",
-          "research",
-          "review"
-        ]
-      },
-      "candidateFiles": [
-        "agent/skills/cci-validate-vrm/SKILL.md",
-        "agent/skills/pmx-convert-vrm/SKILL.md",
-        "agent/skills/pmx-read-data/SKILL.md",
-        "agent/skills/vrm-debug-screenshot/SKILL.md",
-        "agent/skills/vrm-derive-axis-correction/SKILL.md",
-        "agent/skills/vrm-read-data/SKILL.md"
-      ]
-    },
-    {
-      "id": "video-hyperframes",
-      "status": "candidate",
-      "purpose": "HyperFrames video composition, capture, CLI, animation, and block authoring wrappers.",
-      "proposedAxisAdds": {
-        "domains": [
-          "video"
-        ],
-        "frameworks": [
-          "hyperframes"
-        ]
-      },
-      "candidateAxes": {
-        "domains": [
-          "video",
-          "web"
-        ],
-        "repoKeys": [
-          "caol-ila"
-        ],
-        "languages": [
-          "css",
-          "javascript",
-          "typescript"
-        ],
-        "frameworks": [
-          "hyperframes"
-        ],
-        "taskTypes": [
-          "implementation"
-        ]
-      },
-      "candidateFiles": [
-        "agent/skills/video-hyperframes-add-block/SKILL.md",
-        "agent/skills/video-hyperframes-animate-gsap/SKILL.md",
-        "agent/skills/video-hyperframes-capture-website/SKILL.md",
-        "agent/skills/video-hyperframes-make-composition/SKILL.md",
-        "agent/skills/video-hyperframes-run-cli/SKILL.md"
-      ]
-    },
-    {
-      "id": "caol-authoring",
-      "status": "candidate",
-      "purpose": "caol-ila authoring, harness setup, command/skill/standard/rule creation, and local capability browsers.",
-      "proposedAxisAdds": {
-        "domains": [
-          "caol"
-        ]
-      },
-      "candidateAxes": {
-        "domains": [
-          "caol"
-        ],
-        "repoKeys": [
-          "caol-ila",
-          "codex-base"
-        ],
-        "languages": [
-          "json",
-          "markdown",
-          "yaml"
-        ],
-        "taskTypes": [
-          "authoring",
-          "implementation"
-        ]
-      },
-      "candidateFiles": [
-        "agent/skills/caol-browse-commands/SKILL.md",
-        "agent/skills/caol-browse-standards/SKILL.md",
-        "agent/skills/caol-delete-skill/SKILL.md",
-        "agent/skills/caol-edit-skill/SKILL.md",
-        "agent/skills/caol-make-command/SKILL.md",
-        "agent/skills/caol-make-rule/SKILL.md",
-        "agent/skills/caol-make-skill/SKILL.md",
-        "agent/skills/caol-make-standard/SKILL.md",
-        "agent/skills/caol-update-skill/SKILL.md",
-        "agent/skills/caol-setup-harness/SKILL.md"
-      ]
-    }
-  ]
+  "profileCandidates": []
 }

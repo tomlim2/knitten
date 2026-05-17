@@ -3,8 +3,10 @@
 // Run from repo root: node scripts/validate-llm-first.mjs
 import { readdir, readFile, stat, access } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { execFile } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 
 const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
@@ -12,6 +14,7 @@ const AGENT_ROOT_NAME = "agent";
 const AGENT_ROOT = path.join(REPO_ROOT, AGENT_ROOT_NAME);
 const CONFIG_DIR = path.join(AGENT_ROOT, "config");
 const CONFIG_CACHE = new Map();
+const execFileAsync = promisify(execFile);
 
 // ---------- helpers ----------
 
@@ -100,6 +103,15 @@ function hasDuplicates(values) {
 
 function isSorted(values) {
   return values.join("\n") === [...values].sort().join("\n");
+}
+
+async function trackedFiles() {
+  const { stdout } = await execFileAsync("git", ["ls-files", "-z"], {
+    cwd: REPO_ROOT,
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024,
+  });
+  return stdout.split("\0").filter(Boolean);
 }
 
 function pushArrayViolations(violations, file, key, values, options = {}) {
@@ -879,6 +891,127 @@ async function checkStandardsStatus() {
   return { name: "standards-status", violations };
 }
 
+async function checkStandardsRedirects() {
+  const violations = [];
+  const dir = path.join(AGENT_ROOT, "standards");
+  const files = await walk(dir, (f) => f.endsWith(".md"));
+  for (const f of files) {
+    if (path.basename(f) === "index.md") continue;
+    const text = await readFile(f, "utf8");
+    const fm = parseFrontmatter(text);
+    if (!fm) continue;
+    const target = fm["superseded-by"]?.trim();
+    if (target && fm.status !== "superseded") {
+      violations.push({
+        file: rel(f),
+        line: 1,
+        message: "'superseded-by' requires status=superseded",
+      });
+      continue;
+    }
+    if (!target) continue;
+    const targetPath = target.startsWith("agent/") || target.startsWith("docs/") || target.startsWith("tools/")
+      ? path.join(REPO_ROOT, target)
+      : path.resolve(path.dirname(f), target);
+    if (!existsSync(targetPath)) {
+      violations.push({
+        file: rel(f),
+        line: 1,
+        message: `superseded-by target does not exist: ${target}`,
+      });
+    }
+  }
+  return { name: "standards-redirects", violations };
+}
+
+async function checkSkillRootShape() {
+  const violations = [];
+  const entries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
+  for (const entry of entries) {
+    if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+    const skillFile = path.join(AGENT_ROOT, "skills", entry.name, "SKILL.md");
+    if (!existsSync(skillFile)) {
+      violations.push({
+        file: `agent/skills/${entry.name}/`,
+        line: 0,
+        message: "first-level skill directory must contain SKILL.md; move tool apps to tools/",
+      });
+    }
+  }
+  return { name: "skill-root-shape", violations };
+}
+
+function isTrackedRuntimePath(file) {
+  return (
+    file === "agent/history.jsonl" ||
+    /^agent\/(cache|backups|sessions|tasks|telemetry|projects|shell-snapshots|paste-cache|file-history|plans|session-env|downloads|ide|statsig)\//.test(file) ||
+    /^agent\/hooks\/.*\.err$/.test(file)
+  );
+}
+
+async function checkTrackedRuntimePaths() {
+  const violations = [];
+  for (const file of await trackedFiles()) {
+    if (!isTrackedRuntimePath(file)) continue;
+    violations.push({
+      file,
+      line: 0,
+      message: "runtime/cache path must not be git-tracked",
+    });
+  }
+  return { name: "tracked-runtime-paths", violations };
+}
+
+function shouldSkipAbsolutePathAudit(file) {
+  return (
+    file.startsWith("docs/plans/completed/") ||
+    file.startsWith("docs/plans/reports/") ||
+    file === "docs/plans/active/caol-architecture-hardening.md" ||
+    file === "docs/plans/active/skill-path-hardcoding-cleanup.md" ||
+    file.startsWith("agent/private/") ||
+    file.startsWith("agent/plugins/") ||
+    file.startsWith("tools/caol-hq/node_modules/") ||
+    file.startsWith("tools/caol-hq/dist/") ||
+    file.startsWith("tools/caol-hq/.astro/")
+  );
+}
+
+function isTextAuditTarget(file) {
+  return /\.(md|mdx|json|jsonc|js|mjs|cjs|ts|tsx|astro|py|sh|toml|yaml|yml|txt|html|css)$/.test(file);
+}
+
+async function checkTrackedUserAbsolutePaths() {
+  const violations = [];
+  const patterns = [
+    /\/Users\/(younsoolim|deemooooooooo|john)\b/,
+    /[A-Za-z]:\\Users\\[^\\\s]+/,
+    /D:\\\\vs\\\\caol-ila\\\\claude\\\\skills\\\\/,
+    new RegExp("obsidian" + "ClaudeDir"),
+    new RegExp("MyNotes" + "\\/agent"),
+    new RegExp("Obsidian" + "\\/agent"),
+  ];
+  for (const file of await trackedFiles()) {
+    if (shouldSkipAbsolutePathAudit(file) || !isTextAuditTarget(file)) continue;
+    const fullPath = path.join(REPO_ROOT, file);
+    let text;
+    try {
+      text = await readFile(fullPath, "utf8");
+    } catch {
+      continue;
+    }
+    const lines = text.split("\n");
+    lines.forEach((line, idx) => {
+      if (!patterns.some((pattern) => pattern.test(line))) return;
+      violations.push({
+        file,
+        line: idx + 1,
+        message: "tracked source must not contain user-specific absolute paths or retired Obsidian placeholders",
+      });
+    });
+  }
+  return { name: "tracked-user-paths", violations };
+}
+
 function parsePlatformList(value) {
   return value
     .split(",")
@@ -1404,16 +1537,23 @@ const TASK_TYPE_EVIDENCE = {
   deploy: ["deploy", "rollout", "ship"],
   git: ["branch", "commit", "merge", "pull", "push", "rebase"],
   implementation: ["build", "code", "ecs", "fix", "implement", "material"],
+  ops: ["alert", "linear", "notice", "ops", "slack", "status", "worktree"],
   research: ["find", "lookup", "research", "search"],
   review: ["audit", "pr", "review"],
 };
 
 const ROUTE_VALUE_EVIDENCE = {
+  "3d": ["3d", "mmd", "pmx", "retarget", "vrm"],
   anju: ["anju"],
   astro: ["astro"],
   bevy: ["bevy", "ecs"],
+  cinev: ["cci", "cinev"],
+  "cinev-git": ["cinev git"],
+  "cinev-studio": ["cinevstudio", "cinev studio"],
+  "cinev-studio-git": ["cinevstudio git", "cinev studio git"],
   cpp: ["c++", "cpp"],
   css: ["css"],
+  hyperframes: ["hyperframes"],
   javascript: ["javascript", "js"],
   json: ["json"],
   markdown: ["markdown", "md"],
@@ -1425,6 +1565,7 @@ const ROUTE_VALUE_EVIDENCE = {
   three: ["three", "three.js"],
   typescript: ["ts", "typescript"],
   unreal: ["ue", "unreal"],
+  video: ["hyperframes", "video"],
   "vrm2u-bevy": ["bevy-vrm", "vrm2u"],
   web: ["frontend", "web"],
   wgpu: ["webgpu", "wgpu"],
@@ -1470,11 +1611,16 @@ function selectProfilesForTask(task, profiles) {
   const text = task.toLowerCase();
   const taskTypes = taskTypeEvidence(text);
   const selected = [];
+  const domainRequired = new Set(["3d", "cinev", "shotloom", "video"]);
   for (const profile of profiles) {
     if (taskTypes.size > 0 && !profile.taskTypes.some((value) => taskTypes.has(value))) {
       continue;
     }
     if (profile.taskTypes.length === 1 && profile.taskTypes[0] === "review" && !taskTypes.has("review")) {
+      continue;
+    }
+    const requiredDomains = (profile.domains || []).filter((value) => domainRequired.has(value));
+    if (requiredDomains.length > 0 && !requiredDomains.some((value) => hasTextEvidence(text, value))) {
       continue;
     }
     let score = 0;
@@ -2243,8 +2389,12 @@ const CHECKS = [
   { name: "rules-index-no-links", fn: checkRulesIndexNoLinks },
   { name: "repo-path-reads", fn: checkRepoPathReads },
   { name: "standards-status", fn: checkStandardsStatus },
+  { name: "standards-redirects", fn: checkStandardsRedirects },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
+  { name: "skill-root-shape", fn: checkSkillRootShape },
+  { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },
+  { name: "tracked-user-paths", fn: checkTrackedUserAbsolutePaths },
   { name: "entry-documents", fn: checkEntryDocuments },
   { name: "generated-blocks", fn: checkGeneratedBlocks },
   { name: "markdown-links", fn: checkMarkdownLinks },

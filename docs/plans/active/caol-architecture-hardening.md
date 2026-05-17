@@ -120,6 +120,35 @@ Validation for this batch passed: `pnpm --dir tools/caol-hq build`, stale path
 scan, first-level skill directory shape check, deploy-target diffs, LLM-first
 validator, and `git diff --check`.
 
+### Batch D Patch Status
+
+| Check | Status |
+|-------|--------|
+| `skill-root-shape` | added; every first-level `agent/skills/<name>/` directory must contain `SKILL.md` |
+| `tracked-runtime-paths` | added; runtime/cache paths under `agent/` fail if git-tracked |
+| `tracked-user-paths` | added; active tracked source fails on user-specific absolute paths and retired Obsidian placeholders |
+| `standards-redirects` | added; `superseded-by` requires `status: superseded` and an existing target |
+| UE/CCI script examples | changed from machine-specific Windows paths to home-relative deploy-target examples |
+| Generated inventories | updated validator check count and hub validator count |
+
+Validation for this batch passed: targeted new checks, Python compile for
+changed UE/CCI scripts, active hardcoded path scan, LLM-first validator, and
+`git diff --check`.
+
+### Batch E Patch Status
+
+| Area | Status |
+|------|--------|
+| Context profiles | promoted `shotloom-ops`, `cinev-art`, `3d-vrm`, and `video-hyperframes` from candidates to active profiles |
+| Routing axes | added `3d`, `cinev`, `shotloom`, `video`, `hyperframes`, and `ops` axis values |
+| Pilot files | added one representative pilot file for each promoted profile |
+| Route fixtures | added regression fixtures for Shotloom ops, CINEV art ops, VRM/PMX review, and HyperFrames composition |
+| Standards index | split active standards from redirect stubs; superseded standards now point to skill-owned references |
+| Route selector | added evidence terms for new route values and required explicit domain evidence for non-core domains |
+
+Validation for this batch passed: `context-routing`, `generated-blocks`,
+LLM-first validator, and `git diff --check`.
+
 ### Stale Path Patterns To Keep At Zero
 
 These should remain absent from active executable docs:
@@ -224,12 +253,16 @@ Do not assume Claude settings permission strings expand `~` or `$HOME`. If a mac
 
 Add or extend checks for:
 
+Status: completed.
+
 1. first-level skill directories without `SKILL.md`;
 2. tracked user-specific absolute paths outside documented exceptions;
 3. runtime/cache paths accidentally tracked under `agent/`;
 4. standards redirect stubs listed as active standards without a compatibility marker.
 
 ### Batch E: Routing And Standards Cleanup
+
+Status: completed.
 
 1. Review `context-routing.json` against actual skill frontmatter and current work domains.
 2. Add only profiles that reduce context loading.

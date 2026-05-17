@@ -2,7 +2,7 @@
 Export selected material data to JSON for Claude Code analysis.
 
 Run inside UE Editor Python console:
-    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\ue-analyze-material\\export_material_data.py").read())
+    exec(open(__import__("os").path.expanduser(r"~\\.claude\\skills\\ue-analyze-material\\export_material_data.py")).read())
 
 Supports Material, MaterialInstanceConstant, and MaterialFunction assets.
 Output: ~/.claude/private/unreal/material-analyze/{name}.json
@@ -478,7 +478,7 @@ def _make_base_dict(asset, asset_type):
 def save_json(data, name):
     """Save extracted data to the output directory."""
     output_dir = os.path.join(
-        os.path.expanduser("~"), ".claude", "private", "unreal", "material-analyze"
+        __import__("os").path.expanduser("~"), ".claude", "private", "unreal", "material-analyze"
     )
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, f"{name}.json")

@@ -146,5 +146,85 @@
       "web-review"
     ],
     "maxBytes": 25000
+  },
+  {
+    "task": "Shotloom worktree status ops",
+    "mustLoad": [
+      "shotloom-ops"
+    ],
+    "mustNotLoad": [
+      "caol-authoring",
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "cinev-art",
+      "3d-vrm",
+      "video-hyperframes",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "CINEV art branch ops",
+    "mustLoad": [
+      "cinev-art"
+    ],
+    "mustNotLoad": [
+      "caol-authoring",
+      "shotloom-ops",
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "3d-vrm",
+      "video-hyperframes",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "VRM PMX retarget review",
+    "mustLoad": [
+      "3d-vrm"
+    ],
+    "mustNotLoad": [
+      "caol-authoring",
+      "shotloom-ops",
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "cinev-art",
+      "video-hyperframes",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
+    "task": "Implement HyperFrames video composition",
+    "mustLoad": [
+      "video-hyperframes"
+    ],
+    "mustNotLoad": [
+      "caol-authoring",
+      "shotloom-ops",
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "cinev-art",
+      "3d-vrm",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
   }
 ]

@@ -2,7 +2,7 @@
 Rename material slots on character SkeletalMesh assets based on validation results.
 
 Run inside UE Editor Python console:
-    exec(open(r"D:\\vs\\caol-ila\\claude\\skills\\cci-rename-mat-slot\\rename_mat_slots.py").read())
+    exec(open(__import__("os").path.expanduser(r"~\\.claude\\skills\\cci-rename-mat-slot\\rename_mat_slots.py")).read())
 
 Reads the most recent validation JSON, finds meshes with invalid slot names,
 and renames slots to match expected names (e.g., Body_MTL1 -> Body_MTL).
@@ -27,7 +27,7 @@ LOG_TAG = "CharMatSlotRename"
 def get_latest_validation_json():
     """Find the most recent validation JSON file."""
     validate_dir = os.path.join(
-        os.path.expanduser("~"), ".claude", "private", "unreal",
+        __import__("os").path.expanduser("~"), ".claude", "private", "unreal",
         "character-mat-slot-validate"
     )
 
@@ -200,7 +200,7 @@ def rename_slots_on_mesh(mesh_path, missing_slots, existing_slots):
 def save_json(data, name):
     """Save result JSON to output directory."""
     output_dir = os.path.join(
-        os.path.expanduser("~"), ".claude", "private", "unreal",
+        __import__("os").path.expanduser("~"), ".claude", "private", "unreal",
         "mat-slot-rename"
     )
     os.makedirs(output_dir, exist_ok=True)

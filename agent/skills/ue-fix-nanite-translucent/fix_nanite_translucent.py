@@ -3,7 +3,7 @@ Find selected Translucent materials, trace their Static Mesh referencers,
 and disable Nanite on any that have it enabled.
 
 Run inside UE Editor Python console:
-    exec(open(r"C:\\Users\\TA_yeonsu\\.claude\\skills\\ue-fix-nanite-translucent\\fix_nanite_translucent.py").read())
+    exec(open(__import__("os").path.expanduser(r"~\\.claude\\skills\\ue-fix-nanite-translucent\\fix_nanite_translucent.py")).read())
 
 Supports Material and MaterialInstanceConstant assets.
 """
