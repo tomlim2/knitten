@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-05-17
 load: triggered
 trigger: working STL-365 — placeholder checker sampler (Repeat + Nearest)
 repo: shotloom

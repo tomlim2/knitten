@@ -1,13 +1,12 @@
 ---
-status: open
+status: completed
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-17
 load: triggered
 trigger: working STL-433 — DEFAULT_POSE recalibration after VRM axis-bake
 repo: shotloom
 linear: STL-433
 ---
-
 <!-- markdownlint-disable MD013 -->
 
 # Recalibrate DEFAULT_POSE After VRM Axis-Bake
@@ -37,7 +36,7 @@ calibration documentation; it does not change the axis-bake algorithm,
 | Fixture registry | Already Done | `crates/shotloom-retarget/examples/fixtures.json` includes xiao, c-normal, zepeto, yoya, minjoon backward, and VRM0x A/B; `tests/fixture_presets.rs` checks presence, asset existence, and FBX parse/mode validation. |
 | Visual comparison tool | Already Done | `crates/shotloom-retarget/examples/finger_compare.rs` visualizes xiao, yoya, and VRM0x A, but does not cover c-normal, zepeto, or minjoon. |
 | Current worktree patch | Partial | `git status` shows staged edits to `crates/shotloom-character-model-normalizer/README.md` and `tests/rest_align_invariant.rs` from an interrupted pre-plan attempt. Implementation must re-read and either reuse or adjust them; do not assume they are complete. |
-| Sibling Phase 2e plan | Consumed | `caol-ila/docs/plans/gltf-wire-axis-bake-normalize-vrm.md` names Phase 2f as the follow-up for `DEFAULT_POSE` recalibration after production axis-bake wiring. |
+| Sibling Phase 2e plan | Consumed | `caol-ila/docs/plans/completed/gltf-wire-axis-bake-normalize-vrm.md` names Phase 2f as the follow-up for `DEFAULT_POSE` recalibration after production axis-bake wiring. |
 
 ## Problem
 

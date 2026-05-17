@@ -78,9 +78,9 @@ git ls-files -z -- \
 | P2 | `agent/commands/caol-switch-context.md` | uses stale `{obsidianClaudeDir}` placeholders | rewrite around current doc path resolver |
 | P2 | `agent/skills/shotloom-deploy-web/SKILL.md` | hardcoded Shotloom checkout with resolver hint | use resolver command directly |
 | P2 | `docs/import-add-prop-gltf-codex.md` | historical absolute `/Users/younsoolim/Desktop/www/shotloom` command | convert to `<shotloom-root>` or resolver instruction |
-| P2 | `docs/plans/import-add-prop-gltf.md` | historical absolute `/Users/younsoolim/Desktop/www/shotloom` command | convert to `<shotloom-root>` or mark historical exact path |
+| P2 | `docs/plans/completed/import-add-prop-gltf.md` | historical absolute `/Users/younsoolim/Desktop/www/shotloom` command | convert to `<shotloom-root>` or mark historical exact path |
 | P2 | `docs/plans/stage-*`, `docs/plans/engine-*`, and similar historical specs | local POC roots and worktree paths remain as exact machine evidence | decide archive allowlist vs placeholder rewrite before validator hard failure |
-| P2 | `docs/plans/workspace-unify-thiserror-deps.md` | historical absolute `/Users/deemooooooooo/...` worktree path | convert to placeholder or archive with explicit historical-path exception |
+| P2 | `docs/plans/completed/workspace-unify-thiserror-deps.md` | historical absolute `/Users/deemooooooooo/...` worktree path | convert to placeholder or archive with explicit historical-path exception |
 | P2 | `agent/private/learnings/git-subtree-split.md` | tracked learning contains absolute `/Users/deemooooooooo/...` path | convert to repo key/path placeholder unless historical exact path is intentionally preserved |
 | P3 | `agent/skills/caol-hq/src/config/runtimes.json` | local PATH extension includes `/Users/younsoolim/.cargo/bin` | if `caol-hq` survives, derive from `$HOME`, `PATH`, or machine config |
 | P3 | `agent/skills/caol-log-postmortem/SKILL.md` | example uses `/Users/younsoolim/Desktop/www/some-project` | replace with `<repo-root>` example |

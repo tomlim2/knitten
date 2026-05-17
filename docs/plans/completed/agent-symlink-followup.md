@@ -1,6 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-11
+updated: 2026-05-17
 load: triggered
 trigger: stale ~/.claude symlinks discovered after agent root rename
 followup_to: docs/plans/completed/agent-root-rename.md
@@ -9,7 +10,7 @@ decision: docs/decisions/0003-agent-root-directory.md
 
 # Agent Symlink Followup
 
-**status:** partially remediated on 2026-05-11. Broken per-child symlinks under `~/.claude/` were repointed to `agent/` so a Claude Code session can load global context again. Final alignment with the accepted ADR (`~/.claude -> caol-ila/agent`) is still open.
+**status:** completed by lifecycle review on 2026-05-17. Broken per-child symlinks under `~/.claude/` were repointed to `agent/` so a Claude Code session can load global context again; later review confirmed `~/.claude` resolves to `caol-ila/agent`.
 
 ## Discovery
 

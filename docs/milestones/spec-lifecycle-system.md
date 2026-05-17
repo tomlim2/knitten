@@ -28,7 +28,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | [caol-review-implementation.md](../plans/completed/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
 | [caol-manage-milestone.md](../plans/completed/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
 | [caol-architecture-hardening.md](../plans/active/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
-| [docs-plans-lifecycle-migration.md](../plans/active/docs-plans-lifecycle-migration.md) | active | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
+| [docs-plans-lifecycle-migration.md](../plans/completed/docs-plans-lifecycle-migration.md) | completed | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
 | [spec-validator-hardening.md](../plans/completed/spec-validator-hardening.md) | implemented | add validator checks for milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Progress
@@ -43,9 +43,10 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | Milestone skill implementation | done | `agent/skills/caol-manage-milestone/SKILL.md` exists with reference files |
 | Milestone attach pilot | done | `caol-manage-milestone.md` status and milestone row are updated through the new rules |
 | Spec manager pilot | done | `caol-architecture-hardening.md` updated through `caol-manage-spec` with persisted intake |
-| Lifecycle migration spec | done | `docs/plans/active/docs-plans-lifecycle-migration.md` exists before any physical move |
+| Lifecycle migration spec | done | `docs/plans/completed/docs-plans-lifecycle-migration.md` exists before any physical move |
 | Lifecycle migration manifest | done | `docs/plans/reports/docs-plans-lifecycle-migration/move-manifest.tsv` maps 90 rows |
-| Lifecycle migration approved moves | partial | 64 approved rows moved into lifecycle folders; 26 legacy `open` specs remain at top-level for review |
+| Lifecycle migration approved moves | done | 64 approved rows moved into lifecycle folders before legacy `open` review |
+| Lifecycle migration legacy open review | done | 26 legacy `open` specs reviewed; 25 moved to `completed/`, 1 moved to `active/`, 0 deleted |
 | Validator hardening implementation | done | `spec-lifecycle` validates milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Acceptance Criteria

@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-17
 load: triggered
 trigger: working STL-423 - background prop batch spawn bridge command
 repo: shotloom

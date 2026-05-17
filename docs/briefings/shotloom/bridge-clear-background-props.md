@@ -6,7 +6,7 @@ load: triggered
 trigger: STL-424
 repo: shotloom
 linear: STL-424
-spec: ../../plans/bridge-clear-background-props.md
+spec: ../../plans/completed/bridge-clear-background-props.md
 ---
 
 ### Shotloom coding mode - bridge

@@ -1,6 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-12
+updated: 2026-05-17
 load: triggered
 trigger: "before editing /debug route layout, debug nav config, or debug panel registry display metadata"
 repo: shotloom

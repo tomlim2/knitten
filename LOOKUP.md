@@ -15,7 +15,7 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Design a new layer (rule / standard / skill category / validator) | [`agent/standards/policy/llm-first-policy.md`](agent/standards/policy/llm-first-policy.md) |
 | Explain why platform-neutral entry documents use canonical policy | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
 | Design caol-ila as an agent hub | [`docs/plans/completed/agent-hub.md`](docs/plans/completed/agent-hub.md) |
-| Install caol-ila as Codex global context | [`docs/plans/link-codex-context.md`](docs/plans/link-codex-context.md) |
+| Install caol-ila as Codex global context | [`docs/plans/completed/link-codex-context.md`](docs/plans/completed/link-codex-context.md) |
 | Inspect current agent hub manifest | [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/agent-hub.json`](agent/config/agent-hub.json) |
 | Route context for domain-specific tasks | [`agent/rules/task-context-routing.md`](agent/rules/task-context-routing.md) → [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/context-routing.json`](agent/config/context-routing.json) |
 | Run a structural / garden review | [`agent/standards/policy/garden-review.md`](agent/standards/policy/garden-review.md) |

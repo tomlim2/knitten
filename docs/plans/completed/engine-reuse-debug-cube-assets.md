@@ -1,12 +1,12 @@
 ---
-status: open
+status: completed
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-17
 load: triggered
 trigger: STL-437
 repo: shotloom
 linear: STL-437
-briefing: ../briefings/shotloom/engine-reuse-debug-cube-assets.md
+briefing: ../../briefings/shotloom/engine-reuse-debug-cube-assets.md
 ---
 
 # Reuse stage debug cube render assets

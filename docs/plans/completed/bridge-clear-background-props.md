@@ -1,12 +1,12 @@
 ---
-status: open
+status: completed
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-17
 load: triggered
 trigger: working STL-424 - background prop clear bridge command
 repo: shotloom
 linear: STL-424
-briefing: ../briefings/shotloom/bridge-clear-background-props.md
+briefing: ../../briefings/shotloom/bridge-clear-background-props.md
 ---
 
 # Clear Background Props Bridge Command

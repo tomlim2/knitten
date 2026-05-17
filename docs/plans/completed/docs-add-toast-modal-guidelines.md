@@ -1,6 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-13
+updated: 2026-05-17
 load: triggered
 trigger: working STL-403 - Shotloom toast and modal usage guidelines
 repo: shotloom

@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-17
 load: triggered
 trigger: working STL-422 - stage map document parser and GLB resolver
 repo: shotloom
@@ -34,7 +34,7 @@ spawn, editor debug UI, clear-all, and production asset catalog decisions.
 | Diagnostic ADR | `docs/adr/adr-0021-cross-crate-diagnostic-type.md` | Already Done | Diagnostic codes stay crate-local and scoped by `source`. |
 | Stage ADRs | `docs/adr/adr-0009-void-stage-and-coordinate-system.md`, `docs/adr/adr-0012-generated-stage-contract.md` | Already Done | Stage stays runtime-agnostic; engine mediates between core model and stage crate. |
 | Prior sibling draft | `caol-ila/docs/plans/stage-add-map-document-parser.draft.md` | Stale | Correctly blocked before STL-421 landed; now superseded by the contract being present on `origin/main`. |
-| Contract sibling plan | `caol-ila/docs/plans/stage-define-map-document-bundle-layout.md` | Consumed | Agrees that parser/resolver belongs to STL-422 and bridge/editor/clear-all stay follow-ups. |
+| Contract sibling plan | `caol-ila/docs/plans/completed/stage-define-map-document-bundle-layout.md` | Consumed | Agrees that parser/resolver belongs to STL-422 and bridge/editor/clear-all stay follow-ups. |
 
 ## Problem
 

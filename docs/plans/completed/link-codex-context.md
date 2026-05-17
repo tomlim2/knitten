@@ -1,15 +1,16 @@
 ---
-status: open
+status: completed
 created: 2026-05-11
+updated: 2026-05-17
 load: triggered
 trigger: installing caol-ila as Codex global context
 standard: agent/standards/policy/llm-first-docs.md
-related: docs/plans/agent-symlink-followup.md
+related: docs/plans/completed/agent-symlink-followup.md
 ---
 
 # Link Codex Context Plan
 
-**status:** open. This plan connects Codex global startup context to `caol-ila` while preserving the current Codex personal queue behavior.
+**status:** completed by lifecycle review on 2026-05-17. This plan connects Codex global startup context to `caol-ila` while preserving the current Codex personal queue behavior.
 
 ## Goal
 

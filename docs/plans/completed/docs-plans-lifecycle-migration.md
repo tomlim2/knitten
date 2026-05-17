@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -225,6 +225,27 @@ manifest summary; they need a separate review/classification pass before moving.
 2. Run `caol-review-implementation` against this spec.
 3. If a temporary redirect stub was used, add a follow-up row with removal
    criteria.
+
+### Batch E: Review Legacy Open Specs
+
+Status: completed on 2026-05-17.
+
+1. Review the 26 legacy top-level `open` specs that Batch C intentionally held.
+2. Move specs with implementation evidence to `docs/plans/completed/`.
+3. Keep still-actionable work in `docs/plans/active/`.
+4. Delete only docs with no useful history or follow-up value.
+
+Batch E output:
+
+| Result | Count |
+|--------|------:|
+| moved to `completed/` | 25 |
+| moved to `active/` | 1 |
+| deleted | 0 |
+| remaining top-level Markdown specs | 0 |
+
+Review evidence is recorded in
+[open-plans-review-summary.md](../reports/docs-plans-lifecycle-migration/open-plans-review-summary.md).
 
 ## Validation
 

@@ -1,6 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-12
+updated: 2026-05-17
 load: triggered
 trigger: "before splitting Shotloom debug router / retargeter / env work into PRs"
 repo: shotloom

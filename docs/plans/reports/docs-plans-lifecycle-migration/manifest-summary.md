@@ -3,14 +3,14 @@ status: report
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
-spec: ../../active/docs-plans-lifecycle-migration.md
+spec: ../../completed/docs-plans-lifecycle-migration.md
 ---
 
 # Docs Plans Lifecycle Migration Manifest Summary
 
 ## Purpose
 
-This report records the generated Batch B move manifest for [docs-plans-lifecycle-migration.md](../../active/docs-plans-lifecycle-migration.md). It maps tracked flat specs and report artifacts to lifecycle destinations. Batch C moved only rows whose `needs-review` value was `false`.
+This report records the generated Batch B move manifest for [docs-plans-lifecycle-migration.md](../../completed/docs-plans-lifecycle-migration.md). It maps tracked flat specs and report artifacts to lifecycle destinations. Batch C moved only rows whose `needs-review` value was `false`.
 
 ## Files
 
@@ -77,37 +77,23 @@ spec sibling links. Report-producing scripts now write under
 | `obsidian-project-docs-structure-migration` | 9 |
 | `obsidian-root-projects-daily-migration` | 5 |
 
-## Needs Review Before Move
+## Legacy Open Review
 
-These specs have legacy `open` status. The candidate target bucket is `active`, but Batch C should review them before running `git mv`.
+The 26 legacy `open` specs were reviewed on 2026-05-17 after Batch C. See
+[open-plans-review-summary.md](open-plans-review-summary.md) for the
+classification evidence.
 
-- `docs/plans/adr-0030-clarify-extension-boundary.md`
-- `docs/plans/agent-symlink-followup.md`
-- `docs/plans/bridge-add-background-prop-batch-spawn.md`
-- `docs/plans/bridge-clear-background-props.md`
-- `docs/plans/ci-add-containerfile-smoke.md`
-- `docs/plans/docs-add-toast-modal-guidelines.md`
-- `docs/plans/editor-add-debug-sidebar-nav.md`
-- `docs/plans/editor-add-debug-surface-layout.md`
-- `docs/plans/engine-reuse-debug-cube-assets.md`
-- `docs/plans/gltf-add-axis-correction-calculator.md`
-- `docs/plans/gltf-add-axis-primary-child-picker.md`
-- `docs/plans/gltf-apply-vrm-axis-bake-rest-pose.md`
-- `docs/plans/gltf-normalize-extended-collider.md`
-- `docs/plans/gltf-rebake-axis-bind-matrices.md`
-- `docs/plans/gltf-repair-vrm1-thumb-slots.md`
-- `docs/plans/gltf-wire-axis-bake-normalize-vrm.md`
-- `docs/plans/import-add-prop-gltf.md`
-- `docs/plans/link-codex-context.md`
-- `docs/plans/placeholder-material-checker-sampler.md`
-- `docs/plans/retarget-cleanup-rig-branches.md`
-- `docs/plans/retarget-recalibrate-default-pose.md`
-- `docs/plans/shotloom-debug-router-pr-split.md`
-- `docs/plans/shotloom-plan-skills-risk-map.md`
-- `docs/plans/stage-add-map-document-parser.md`
-- `docs/plans/stage-define-map-document-bundle-layout.md`
-- `docs/plans/workspace-unify-thiserror-deps.md`
+| Result | Count |
+|------|------:|
+| moved to `completed/` | 25 |
+| moved to `active/` | 1 |
+| deleted | 0 |
+
+The `source` column in [move-manifest.tsv](move-manifest.tsv) remains the
+pre-migration path for auditability. The final `docs/plans/` root has no
+top-level Markdown specs.
 
 ## Next Gate
 
-Batch C may move only rows whose `needs-review` value is `false` or has been explicitly approved. The move must use `git mv`, then repair links and run the full validator.
+Future lifecycle work should operate through the resolver paths and avoid
+creating new flat `docs/plans/<slug>.md` specs.

@@ -6,7 +6,7 @@ load: triggered
 trigger: STL-440
 repo: shotloom
 linear: STL-440
-spec: ../../plans/workspace-unify-thiserror-deps.md
+spec: ../../plans/completed/workspace-unify-thiserror-deps.md
 ---
 
 ### Shotloom coding mode — rust

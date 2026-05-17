@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-12
-updated: 2026-05-12
+updated: 2026-05-17
 load: triggered
 trigger: working STL-369 — ADR-0030 VRM extension JSON repair boundary
 repo: shotloom

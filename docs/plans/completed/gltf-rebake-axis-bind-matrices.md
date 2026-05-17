@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-14
-updated: 2026-05-14
+updated: 2026-05-17
 load: triggered
 trigger: working STL-417 — VRM axis-bake inverse bind rebake
 repo: shotloom
@@ -36,7 +36,7 @@ production import path, emit diagnostics, or bump the import cache version.
 | Byte IO precedent | Already Done | `vrm_normalization.rs:1080` writes MAT4 floats with `to_le_bytes`; tests read MAT4 with `f32::from_le_bytes` at `vrm_normalization.rs:4161`. |
 | Production pipeline wiring | Missing by design | No call to axis-bake apply exists in `normalize_vrm`; STL-417 leaves Phase 2e wiring and diagnostics out of scope. |
 | Dependencies | Already Done | `crates/shotloom-gltf/Cargo.toml` already depends on `glam`; no new math dependency is needed. |
-| Sibling Phase 2c plan | Consumed | `caol-ila/docs/plans/gltf-apply-vrm-axis-bake-rest-pose.md` explicitly excludes mesh, skin, inverseBindMatrix, accessor, bufferView, and BIN mutation. |
+| Sibling Phase 2c plan | Consumed | `caol-ila/docs/plans/completed/gltf-apply-vrm-axis-bake-rest-pose.md` explicitly excludes mesh, skin, inverseBindMatrix, accessor, bufferView, and BIN mutation. |
 
 ## Problem
 

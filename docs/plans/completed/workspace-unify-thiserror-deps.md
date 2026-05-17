@@ -1,12 +1,12 @@
 ---
-status: open
+status: completed
 created: 2026-05-16
-updated: 2026-05-16
+updated: 2026-05-17
 load: triggered
 trigger: STL-440
 repo: shotloom
 linear: STL-440
-briefing: ../briefings/shotloom/workspace-unify-thiserror-deps.md
+briefing: ../../briefings/shotloom/workspace-unify-thiserror-deps.md
 ---
 
 # Unify thiserror Workspace Dependency

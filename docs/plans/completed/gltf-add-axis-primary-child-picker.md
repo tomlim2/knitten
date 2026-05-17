@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-13
-updated: 2026-05-13
+updated: 2026-05-17
 load: triggered
 trigger: working STL-402 — VRM axis-bake primary-child picker
 repo: shotloom

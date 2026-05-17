@@ -1,6 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-12
+updated: 2026-05-17
 load: triggered
 trigger: working STL-291 Phase 1 — VRM1 thumb humanoid slot repair in shotloom-gltf
 repo: shotloom

@@ -1,6 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-11
+updated: 2026-05-17
 load: triggered
 trigger: implementing STL-358 Containerfile build smoke CI
 repo: shotloom

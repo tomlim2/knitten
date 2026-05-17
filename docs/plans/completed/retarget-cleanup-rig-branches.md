@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-17
 load: triggered
 trigger: working STL-438 - retarget canonical rig branch cleanup after axis-bake
 repo: shotloom

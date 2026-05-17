@@ -32,7 +32,7 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 |------|----------------|--------|
 | script | `scripts/validate-llm-first.mjs` | validator implementation target |
 | milestone | `docs/milestones/spec-lifecycle-system.md` | owning milestone |
-| spec | `docs/plans/active/docs-plans-lifecycle-migration.md` | duplicate slug and link requirements |
+| spec | `docs/plans/completed/docs-plans-lifecycle-migration.md` | duplicate slug and link requirements |
 | spec | `docs/plans/completed/caol-manage-milestone.md` | milestone attachment contract |
 | directory | `docs/milestones/` | current milestone corpus |
 | directory | `docs/briefings/specs/` | caol spec intake corpus |

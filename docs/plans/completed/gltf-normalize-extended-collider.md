@@ -1,7 +1,7 @@
 ---
-status: open
+status: completed
 created: 2026-05-11
-updated: 2026-05-11
+updated: 2026-05-17
 load: triggered
 trigger: working STL-227 — VRMC_springBone_extended_collider 180Y normalization
 repo: shotloom

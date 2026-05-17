@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
-spec: docs/plans/active/docs-plans-lifecycle-migration.md
+spec: docs/plans/completed/docs-plans-lifecycle-migration.md
 ---
 
 # Spec Intake: docs-plans-lifecycle-migration

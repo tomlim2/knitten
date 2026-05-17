@@ -6,7 +6,7 @@ load: triggered
 trigger: STL-437
 repo: shotloom
 linear: STL-437
-spec: ../../plans/engine-reuse-debug-cube-assets.md
+spec: ../../plans/completed/engine-reuse-debug-cube-assets.md
 ---
 
 # Shotloom coding mode - rust
