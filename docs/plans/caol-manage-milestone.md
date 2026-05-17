@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: implemented
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -53,7 +53,7 @@ Milestone management needs a different shape from spec management:
 
 ## Skill Shape
 
-Planned path:
+Path:
 
 ```text
 agent/skills/caol-manage-milestone/
@@ -67,7 +67,7 @@ agent/skills/caol-manage-milestone/
 `SKILL.md` should stay concise. Template detail, status rules, and validator
 details belong in references.
 
-Planned frontmatter:
+Frontmatter:
 
 ```yaml
 ---
@@ -82,8 +82,7 @@ context-profile: caol-authoring
 ---
 ```
 
-This depends on the same future `caol` route domain and `caol-authoring` context
-profile proposed by `caol-manage-spec`.
+This uses the `caol` route domain and `caol-authoring` context profile.
 
 ## Command Surface
 
@@ -347,17 +346,11 @@ The implementation is complete when:
 
 ### Batch B: Skill Skeleton
 
-1. Create `agent/skills/caol-manage-milestone/SKILL.md`.
-2. Add reference files for lifecycle, template, and validation.
-3. Add routing metadata using the same `caol-authoring` profile.
-4. Run validators.
+Status: implemented in `agent/skills/caol-manage-milestone/`.
 
 ### Batch C: Pilot
 
-1. Use the new skill to attach `caol-manage-milestone.md` to
-   `spec-lifecycle-system`.
-2. Review `docs/milestones/spec-lifecycle-system.md` against linked specs.
-3. Patch milestone progress rows.
+Status: implemented for the current milestone row and spec frontmatter.
 
 ## Risks
 

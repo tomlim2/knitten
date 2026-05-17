@@ -26,7 +26,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 |------|--------|------|
 | [caol-manage-spec.md](../plans/caol-manage-spec.md) | implemented | define the spec intake, routing, CRUD, review, and lifecycle manager |
 | [caol-review-implementation.md](../plans/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
-| [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | proposed | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
+| [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
 | [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | proposed | adjacent architecture hardening work that supplies validator and path-cleanup context |
 | `docs-plans-lifecycle-migration.md` | todo | future migration for plan/spec folder lifecycle and renames |
 | `spec-validator-hardening.md` | todo | future validator checks for milestones, spec links, and lifecycle drift |
@@ -35,13 +35,14 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 
 | Phase | State | Evidence |
 |-------|-------|----------|
-| Milestone format | in-progress | `docs/milestones/index.md` defines the Markdown contract |
+| Milestone format | done | `docs/milestones/index.md` defines the Markdown contract |
 | Spec manager design | done | `docs/plans/caol-manage-spec.md` defines the skill contract |
-| Milestone manager design | in-progress | `docs/plans/caol-manage-milestone.md` defines CRUD and attachment rules |
+| Milestone manager design | done | `docs/plans/caol-manage-milestone.md` defines CRUD and attachment rules |
 | Skill implementation | done | `agent/skills/caol-manage-spec/SKILL.md` exists with reference files |
 | Implementation review skill | done | `agent/skills/caol-review-implementation/SKILL.md` exists |
-| Milestone skill implementation | todo | `agent/skills/caol-manage-milestone/SKILL.md` does not exist yet |
-| Pilot | todo | first pilot should update `caol-architecture-hardening.md` through the new skill |
+| Milestone skill implementation | done | `agent/skills/caol-manage-milestone/SKILL.md` exists with reference files |
+| Milestone attach pilot | done | `caol-manage-milestone.md` status and milestone row are updated through the new rules |
+| Spec manager pilot | todo | first pilot should update `caol-architecture-hardening.md` through `caol-manage-spec` |
 | Lifecycle migration | deferred | rename/move work is explicitly deferred until after the pilot |
 | Validator hardening | todo | taxonomy registers milestone filenames; deeper link/status checks are future work |
 
@@ -73,9 +74,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 
 ## Blockers
 
-| Blocker | Impact |
-|---------|--------|
-| Existing validator terminology failure in `obsidian-root-projects-daily-migration.md` | full validator remains red until fixed |
+None.
 
 ## External Mirrors
 
