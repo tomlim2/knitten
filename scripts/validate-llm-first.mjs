@@ -2137,6 +2137,16 @@ async function checkEntryDocuments() {
     { file: "CLAUDE.md", marker: "@SYSTEM.md" },
     { file: "AGENTS.md", marker: "[`SYSTEM.md`](SYSTEM.md)" },
   ];
+  const allowedClaudeRuleImports = new Set([
+    "rules/index.md",
+    "rules/ambiguity-scoring.md",
+    "rules/behavior.md",
+    "rules/canonical-first.md",
+    "rules/git-defaults.md",
+    "rules/security.md",
+    "rules/session-start.md",
+    "rules/verify-before-report.md",
+  ]);
   for (const entry of entries) {
     const f = path.join(REPO_ROOT, entry.file);
     let text;
@@ -2162,6 +2172,20 @@ async function checkEntryDocuments() {
         line: 1,
         message: "entry document references shared layers before SYSTEM.md",
       });
+    }
+    if (entry.file === "CLAUDE.md") {
+      const importRe = /^@~\/\.claude\/(rules|standards|skills|commands)\/(.+)$/gm;
+      let m;
+      while ((m = importRe.exec(text)) !== null) {
+        const importPath = `${m[1]}/${m[2].trim()}`;
+        const line = text.slice(0, m.index).split("\n").length;
+        if (m[1] === "rules" && allowedClaudeRuleImports.has(importPath)) continue;
+        violations.push({
+          file: entry.file,
+          line,
+          message: `entry document may import bootstrap rules only, not ${importPath}`,
+        });
+      }
     }
   }
   return { name: "entry-documents", violations };

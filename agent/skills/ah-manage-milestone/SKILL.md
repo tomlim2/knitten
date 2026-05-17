@@ -7,6 +7,8 @@ repo-keys: agent-hub
 languages: markdown,yaml,json
 task-types: authoring,review
 context-profile: ah-authoring
+context-standards: standards/policy/llm-first-docs.md
+context-references: references/MILESTONE-LIFECYCLE.md,references/MILESTONE-TEMPLATE.md,references/MILESTONE-VALIDATION.md
 ---
 
 # ah-manage-milestone

@@ -7,6 +7,8 @@ repo-keys: agent-hub
 languages: markdown,yaml,json
 task-types: authoring,review
 context-profile: ah-authoring
+context-standards: standards/policy/llm-first-docs.md
+context-references: references/SPEC-INTAKE.md,references/SPEC-LIFECYCLE.md,references/SPEC-ROUTING.md,references/SPEC-TEMPLATES.md
 ---
 
 # ah-manage-spec

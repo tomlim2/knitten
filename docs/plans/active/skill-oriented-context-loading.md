@@ -12,8 +12,8 @@ depends_on: docs/plans/completed/task-context-routing.md
 # Skill-Oriented Context Loading
 
 **status:** partially implemented. Routing metadata exists, context manifest
-schema is documented, and validator enforcement covers pilot skills. Entry
-document trimming and full high-cost rollout remain open.
+schema is documented, validator enforcement covers pilot skills, and entry
+documents now import bootstrap rules only. Full high-cost rollout remains open.
 
 ## Cold-Start Summary
 
@@ -37,7 +37,7 @@ Verified in the configured `agent-hub` repo on 2026-05-14.
 |---|---|---|
 | Shared load model | `SYSTEM.md` defines auto rules, triggered rules, standards, and skills as separate layers | `SYSTEM.md` |
 | Codex entry | `AGENTS.md` tells Codex to read `SYSTEM.md`, then `agent/rules/index.md`, then every auto rule | `AGENTS.md` |
-| Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `rules/index.md`, seven auto rules, and `standards/index.md` | `CLAUDE.md` |
+| Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `rules/index.md`, and seven bootstrap auto rules; standards are read on demand | `CLAUDE.md` |
 | Rules index | `agent/rules/index.md` separates auto rules from triggered rules | `agent/rules/index.md` |
 | Standards index | `agent/standards/index.md` is a discoverable index for on-demand standards | `agent/standards/index.md` |
 | Routing plan | `docs/plans/completed/task-context-routing.md` already defines route-domain metadata and high-cost artifact routing | `docs/plans/completed/task-context-routing.md` |
@@ -119,7 +119,7 @@ Skill execution contract:
 | S1 Schema | Define the context manifest schema in the skill authoring standard | done: `ah-make-skill` documents flat `context-*` fields |
 | S2 Validator | Add validator checks for missing context paths, undeclared rule references, undeclared standard references, and invalid `repo:` paths | done for pilot skills in `context-routing.json` |
 | S3 Shotloom Pilot | Add context manifests to `shotloom-*` skills and route Shotloom PR, review, docs, code, and test rules through those manifests | Shotloom skills load required context from frontmatter, not workflow prose |
-| S4 Bootstrap Trim | Remove direct imports from entry documents after Shotloom pilot validation passes | Entry documents load bootstrap only; skill manifests load task detail |
+| S4 Bootstrap Trim | Remove direct imports from entry documents after Shotloom pilot validation passes | done: entry documents load bootstrap rules only; skill manifests load task detail |
 | S5 Rollout | Convert remaining high-cost skill families by domain: UE, CCI, web review, Obsidian, documents, presentations | High-cost skills have context manifests or explicit validator exemptions |
 | S6 Cleanup | Delete obsolete prose-only dependency instructions after manifest enforcement passes | No skill body contains an undeclared `rules/` or `standards/` path |
 
@@ -131,7 +131,7 @@ Skill execution contract:
 | Undeclared rule reference | Fail when a pilot `SKILL.md` body mentions `rules/` and the path is absent from `context-rules` |
 | Undeclared standard reference | Fail when a pilot `SKILL.md` body mentions `standards/` and the path is absent from `context-standards` |
 | Bad repo path | Fail when `repo:` path does not exist in the active repo during repo-scoped validation |
-| Entry budget | Fail when entry documents import non-bootstrap rule bodies or standards bodies |
+| Entry budget | done: fail when entry documents import non-bootstrap rule bodies or standards bodies |
 | Exemption | Allow a high-cost skill without context only when `agent/config/context-routing.json` names the exemption, reason, and review date |
 
 ## Validation Commands
@@ -174,6 +174,8 @@ Add a validator command in S2, then make it part of the standard validation set.
 | 2026-05-17 | Added flat `context-rules`, `context-standards`, `context-repo-docs`, and `context-references` manifest contract | `agent/skills/ah-make-skill/SKILL.md` |
 | 2026-05-17 | Added pilot-skill validator checks for missing manifest paths and undeclared rule/standard body references | `scripts/validate-llm-first.mjs` |
 | 2026-05-17 | Added manifests to pilot skills that already mention shared rules or standards | `agent/config/context-routing.json` pilot files |
+| 2026-05-17 | Trimmed Claude entry standards import and added entry-budget enforcement | `CLAUDE.md`, `scripts/validate-llm-first.mjs` |
+| 2026-05-17 | Added authoring CRUD manifests for spec and milestone management | `agent/skills/ah-manage-spec/SKILL.md`, `agent/skills/ah-manage-milestone/SKILL.md` |
 
 ## Open Questions
 
