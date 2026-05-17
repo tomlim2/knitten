@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -138,10 +138,10 @@ Expected:
 | 2026-05-17 | Ran validators | `path-config-drift`, `root-structure`, `project-structure`, Python compile, and `git diff --check` passed |
 | 2026-05-17 | Extended cleanup to command, hook, settings, and example docs | Active executable docs now use repo/doc resolvers or placeholders; validation passed after the extended batch |
 
-## Open Questions
+## Decisions
 
-| Question | Default |
-|----------|---------|
+| Question | Result |
+|----------|--------|
 | Should tutoring invoices live under `projects/tutoring` or `attachments/tutoring`? | Keep under `projects/tutoring/invoices` unless user chooses attachment-only storage |
 | Should drink data remain `drinks.json` under `projects/drinks`? | Keep as purpose-local data file |
 | Should briefings be appended to `daily/` or stored as separate project records? | Append human-facing today briefings to `daily/`; store separate operational run records under the configured `caol-ila` project purpose, not an ad-hoc `{obsidian}/claude` folder |
