@@ -6,6 +6,7 @@ languages: css,javascript,typescript
 frameworks: astro,three
 task-types: review
 context-profile: web-review
+context-standards: standards/review/review-template.md
 exclude-when: rust,unreal,obsidian
 ---
 

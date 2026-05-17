@@ -8,6 +8,7 @@ languages: css,rust,typescript
 frameworks: bevy,wgpu
 task-types: deploy
 context-profile: shotloom-deploy
+context-rules: rules/git-defaults.md,rules/shotloom.md,rules/slack.md
 exclude-when: unreal,obsidian
 ---
 

@@ -7,6 +7,7 @@ repo-keys: shotloom
 languages: markdown
 task-types: ops
 context-profile: shotloom-ops
+context-rules: rules/git-defaults.md,rules/shotloom.md
 ---
 
 # shotloom-status

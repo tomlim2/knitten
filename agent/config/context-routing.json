@@ -597,7 +597,7 @@
     {
       "path": "agent/skills/hatch-pet/SKILL.md",
       "reason": "Large image-generation workflow skill; route-domain taxonomy for creative pet generation is not defined yet.",
-      "decision": "docs/plans/proposed/skill-oriented-context-loading.md#open-questions",
+      "decision": "docs/plans/active/skill-oriented-context-loading.md#open-questions",
       "reviewAfter": "2026-06-15"
     }
   ],

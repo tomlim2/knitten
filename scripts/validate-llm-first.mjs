@@ -1608,6 +1608,71 @@ function taskTypeEvidence(text) {
   return out;
 }
 
+function contextManifestValues(fm, field) {
+  if (!fm || !Object.prototype.hasOwnProperty.call(fm, field)) return [];
+  return parsePlatformList(fm[field]);
+}
+
+function normalizeSharedContextRef(raw) {
+  const match = String(raw).match(/(?:~\/\.claude\/|agent\/)?(rules|standards)\/[-A-Za-z0-9_./]+\.md/);
+  if (!match) return null;
+  const prefix = `${match[1]}/`;
+  const tail = String(raw).slice(String(raw).lastIndexOf(prefix) + prefix.length);
+  return `${match[1]}/${tail}`;
+}
+
+function sharedContextRefsFromBody(body) {
+  const refs = new Set();
+  const re = /(?:~\/\.claude\/|agent\/)?(?:rules|standards)\/[-A-Za-z0-9_./]+\.md/g;
+  for (const match of body.matchAll(re)) {
+    const ref = normalizeSharedContextRef(match[0]);
+    if (ref) refs.add(ref);
+  }
+  return refs;
+}
+
+function validateContextManifestPaths(violations, skillPath, fm) {
+  const groups = [
+    { field: "context-rules", root: "agent", prefix: "rules/" },
+    { field: "context-standards", root: "agent", prefix: "standards/" },
+  ];
+  for (const group of groups) {
+    for (const value of contextManifestValues(fm, group.field)) {
+      if (!value.startsWith(group.prefix)) {
+        violations.push({
+          file: skillPath,
+          line: 1,
+          message: `${group.field} entry must start with ${group.prefix}: ${value}`,
+        });
+        continue;
+      }
+      if (!existsSync(path.join(REPO_ROOT, group.root, value))) {
+        violations.push({ file: skillPath, line: 1, message: `${group.field} path does not exist: ${value}` });
+      }
+    }
+  }
+  for (const value of contextManifestValues(fm, "context-repo-docs")) {
+    if (!value.startsWith("repo:")) {
+      violations.push({ file: skillPath, line: 1, message: `context-repo-docs entry must start with repo:: ${value}` });
+      continue;
+    }
+    const repoPath = value.slice("repo:".length);
+    if (!repoPath || !existsSync(path.join(REPO_ROOT, repoPath))) {
+      violations.push({ file: skillPath, line: 1, message: `context-repo-docs path does not exist: ${value}` });
+    }
+  }
+  for (const value of contextManifestValues(fm, "context-references")) {
+    const skillDir = path.dirname(path.join(REPO_ROOT, skillPath));
+    if (!value || path.isAbsolute(value) || value.includes("..")) {
+      violations.push({ file: skillPath, line: 1, message: `context-references entry must be skill-local: ${value}` });
+      continue;
+    }
+    if (!existsSync(path.join(skillDir, value))) {
+      violations.push({ file: skillPath, line: 1, message: `context-references path does not exist: ${value}` });
+    }
+  }
+}
+
 function selectProfilesForTask(task, profiles) {
   const text = task.toLowerCase();
   const taskTypes = taskTypeEvidence(text);
@@ -1792,6 +1857,41 @@ async function checkContextRouting() {
           line: 1,
           message: `frontmatter 'exclude-when' repeats active domain ${JSON.stringify(value)}`,
         });
+      }
+    }
+    if (pilot.path.endsWith("/SKILL.md")) {
+      validateContextManifestPaths(violations, pilot.path, fm);
+      const hasContextManifest = [
+        "context-rules",
+        "context-standards",
+        "context-repo-docs",
+        "context-references",
+      ].some((field) => contextManifestValues(fm, field).length > 0);
+      if (String(pilot.profile || "").startsWith("shotloom") && !hasContextManifest) {
+        violations.push({
+          file: pilot.path,
+          line: 1,
+          message: "shotloom pilot skill must declare at least one context-* manifest field",
+        });
+      }
+      const declaredRules = new Set(contextManifestValues(fm, "context-rules"));
+      const declaredStandards = new Set(contextManifestValues(fm, "context-standards"));
+      const { body } = stripFrontmatter(text);
+      for (const ref of sharedContextRefsFromBody(body)) {
+        if (ref.startsWith("rules/") && !declaredRules.has(ref)) {
+          violations.push({
+            file: pilot.path,
+            line: 1,
+            message: `undeclared rule context reference: ${ref}`,
+          });
+        }
+        if (ref.startsWith("standards/") && !declaredStandards.has(ref)) {
+          violations.push({
+            file: pilot.path,
+            line: 1,
+            message: `undeclared standard context reference: ${ref}`,
+          });
+        }
       }
     }
   }

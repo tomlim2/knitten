@@ -93,6 +93,31 @@ exclude-when: unreal,obsidian
 
 If no existing context profile fits, add one to `context-routing.json` or add a `metadataExemptions` entry with reason, decision, and review date. Then run `node scripts/validate-llm-first.mjs --check context-routing`.
 
+## Context Manifest
+
+When a skill body requires shared rules, standards, repo docs, or skill-local
+references before workflow step 1, declare them in frontmatter. Use
+comma-separated scalar fields so the lightweight frontmatter parser can validate
+them without loading a YAML library:
+
+```yaml
+context-rules: rules/shotloom.md,rules/test-write.md
+context-standards: standards/review/review-template.md
+context-repo-docs: repo:docs/guidelines/review-rust.md
+context-references: reference.md,references/CHECKLIST.md
+```
+
+| Field | Paths |
+|-------|-------|
+| `context-rules` | `rules/<name>.md` under `agent/` |
+| `context-standards` | `standards/<group>/<name>.md` under `agent/` |
+| `context-repo-docs` | `repo:<path>` in the active repository |
+| `context-references` | skill-local paths relative to the skill directory |
+
+Do not use a nested `context:` block; Claude skill frontmatter already uses
+`context: fork` for subagent execution. The validator checks pilot skills for
+missing context paths and undeclared `rules/` or `standards/` references.
+
 ---
 
 ## UE skills — use the dedicated template

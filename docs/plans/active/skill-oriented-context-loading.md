@@ -1,7 +1,7 @@
 ---
-status: proposed
+status: active
 created: 2026-05-14
-updated: 2026-05-14
+updated: 2026-05-17
 load: triggered
 trigger: migrating agent-hub to skill-oriented context loading
 repo: agent-hub
@@ -11,9 +11,9 @@ depends_on: docs/plans/completed/task-context-routing.md
 
 # Skill-Oriented Context Loading
 
-**status:** not implemented. This document records an execution plan only.
-It changes no runtime behavior, entry-document import, rule body, standard body,
-skill body, command body, or validator.
+**status:** partially implemented. Routing metadata exists, context manifest
+schema is documented, and validator enforcement covers pilot skills. Entry
+document trimming and full high-cost rollout remain open.
 
 ## Cold-Start Summary
 
@@ -85,43 +85,39 @@ Verified in the configured `agent-hub` repo on 2026-05-14.
 
 ## Skill Context Frontmatter
 
-Add a `context` block to task-owning skills:
+Add context manifest fields to task-owning skills. Use flat comma-separated
+fields because Claude skill frontmatter already reserves `context: fork` for
+subagent execution:
 
 ```yaml
-context:
-  rules:
-    - rules/shotloom.md
-    - rules/pr-create.md
-  standards:
-    - standards/policy/llm-first-docs.md
-  repo_docs:
-    - repo:docs/guidelines/pr-guideline.md
-  references:
-    - references/review-checklist.md
+context-rules: rules/shotloom.md,rules/pr-create.md
+context-standards: standards/policy/llm-first-docs.md
+context-repo-docs: repo:docs/guidelines/pr-guideline.md
+context-references: references/review-checklist.md
 ```
 
 | Field | Meaning |
 |---|---|
-| `context.rules` | Rule paths under `agent/rules/` |
-| `context.standards` | Standard paths under `agent/standards/` |
-| `context.repo_docs` | Current-repo paths with `repo:` prefix |
-| `context.references` | Skill-local reference paths relative to the skill directory |
+| `context-rules` | Rule paths under `agent/rules/` |
+| `context-standards` | Standard paths under `agent/standards/` |
+| `context-repo-docs` | Current-repo paths with `repo:` prefix |
+| `context-references` | Skill-local reference paths relative to the skill directory |
 
 Skill execution contract:
 
 1. Read the skill body.
-2. Read every declared `context` path before workflow step 1.
+2. Read every declared `context-*` path before workflow step 1.
 3. If a declared path is missing, stop and report the missing path.
 4. If the skill body names a `rules/` or `standards/` path not declared in
-   `context`, fix the manifest before using the skill.
+   `context-rules` or `context-standards`, fix the manifest before using the skill.
 
 ## Implementation Plan
 
 | Phase | Work | Acceptance |
 |---|---|---|
 | S0 Baseline | Record current `CLAUDE.md` imports, entry-document line counts, auto-rule line counts, and skill references to `rules/` or `standards/` | Baseline file lists imports, counts, and undeclared references |
-| S1 Schema | Define the `context` manifest schema in the skill authoring standard and review standard | New skills have a required manifest shape |
-| S2 Validator | Add validator checks for missing context paths, undeclared rule references, undeclared standard references, and invalid `repo:` paths | Validation fails on a synthetic bad skill and passes on a corrected fixture |
+| S1 Schema | Define the context manifest schema in the skill authoring standard | done: `ah-make-skill` documents flat `context-*` fields |
+| S2 Validator | Add validator checks for missing context paths, undeclared rule references, undeclared standard references, and invalid `repo:` paths | done for pilot skills in `context-routing.json` |
 | S3 Shotloom Pilot | Add context manifests to `shotloom-*` skills and route Shotloom PR, review, docs, code, and test rules through those manifests | Shotloom skills load required context from frontmatter, not workflow prose |
 | S4 Bootstrap Trim | Remove direct imports from entry documents after Shotloom pilot validation passes | Entry documents load bootstrap only; skill manifests load task detail |
 | S5 Rollout | Convert remaining high-cost skill families by domain: UE, CCI, web review, Obsidian, documents, presentations | High-cost skills have context manifests or explicit validator exemptions |
@@ -131,9 +127,9 @@ Skill execution contract:
 
 | Check | Behavior |
 |---|---|
-| Missing path | Fail when any `context` path does not exist |
-| Undeclared rule reference | Fail when `SKILL.md` body mentions `rules/` and the path is absent from `context.rules` |
-| Undeclared standard reference | Fail when `SKILL.md` body mentions `standards/` and the path is absent from `context.standards` |
+| Missing path | Fail when any `context-*` path does not exist |
+| Undeclared rule reference | Fail when a pilot `SKILL.md` body mentions `rules/` and the path is absent from `context-rules` |
+| Undeclared standard reference | Fail when a pilot `SKILL.md` body mentions `standards/` and the path is absent from `context-standards` |
 | Bad repo path | Fail when `repo:` path does not exist in the active repo during repo-scoped validation |
 | Entry budget | Fail when entry documents import non-bootstrap rule bodies or standards bodies |
 | Exemption | Allow a high-cost skill without context only when `agent/config/context-routing.json` names the exemption, reason, and review date |
@@ -145,7 +141,7 @@ Run these during S0 and after each phase:
 ```bash
 rg -n "@~/.claude/rules|@~/.claude/standards" CLAUDE.md
 rg -n "rules/|standards/" agent/skills/*/SKILL.md
-rg -n "^context:" agent/skills/*/SKILL.md
+rg -n "^context-(rules|standards|repo-docs|references):" agent/skills/*/SKILL.md
 git diff --check
 ```
 
@@ -168,8 +164,16 @@ Add a validator command in S2, then make it part of the standard validation set.
 | Entry documents load bootstrap only | `CLAUDE.md` and `AGENTS.md` contain no direct standards-body imports |
 | Auto rules stay minimal | Auto-rule list contains only bootstrap safety, discovery, routing, and verification rules |
 | Shotloom pilot converted | Every `shotloom-*` skill has a `context` manifest or explicit exemption |
-| Validator enforces manifests | Bad fixtures fail; corrected fixtures pass |
+| Validator enforces manifests | Pilot missing-path and undeclared-reference cases fail |
 | Skill bodies stop owning dependency prose | `rg` finds no undeclared `rules/` or `standards/` references in skill bodies |
+
+## Implementation Notes
+
+| Date | Change | Evidence |
+|---|---|---|
+| 2026-05-17 | Added flat `context-rules`, `context-standards`, `context-repo-docs`, and `context-references` manifest contract | `agent/skills/ah-make-skill/SKILL.md` |
+| 2026-05-17 | Added pilot-skill validator checks for missing manifest paths and undeclared rule/standard body references | `scripts/validate-llm-first.mjs` |
+| 2026-05-17 | Added manifests to pilot skills that already mention shared rules or standards | `agent/config/context-routing.json` pilot files |
 
 ## Open Questions
 

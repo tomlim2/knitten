@@ -7,6 +7,8 @@ repo-keys: agent-hub
 languages: markdown,yaml,json
 task-types: review
 context-profile: ah-authoring
+context-rules: rules/index.md
+context-standards: standards/index.md
 ---
 
 # ah-review-implementation

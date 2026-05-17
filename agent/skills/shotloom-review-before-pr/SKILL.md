@@ -7,6 +7,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
+context-rules: rules/shotloom.md,rules/test-write.md
 exclude-when: unreal,obsidian
 ---
 
