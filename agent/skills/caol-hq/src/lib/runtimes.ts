@@ -18,6 +18,11 @@ export type RuntimeStatus = { running: boolean; pid: number | null };
 
 const RUNTIMES = runtimesConfig as Record<string, RuntimeConfig>;
 
+function expandPath(path: string): string {
+    const home = process.env.HOME ?? '';
+    return path.replace(/^\$HOME(?=\/|$)|^~(?=\/|$)/, home);
+}
+
 export function listRuntimes(): Array<{ name: string; cfg: RuntimeConfig; repoPath: string }> {
     const repos = loadRepoPaths();
     return Object.entries(RUNTIMES).map(([name, cfg]) => ({
@@ -79,7 +84,7 @@ export function startRuntime(name: string): { ok: boolean; reason?: string; pid?
     const [cmd, ...args] = cfg.launch;
     const out = openSync(cfg.logFile, 'a');
     const err = openSync(cfg.logFile, 'a');
-    const extraPath = (cfg.extraPath ?? []).join(':');
+    const extraPath = (cfg.extraPath ?? []).map(expandPath).join(':');
     const child = spawn(cmd, args, {
         cwd: repoPath,
         detached: true,

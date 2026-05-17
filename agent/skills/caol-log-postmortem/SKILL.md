@@ -24,7 +24,7 @@ Used after completing a project or task to create a record for future reference.
 Usage:
 ```
 /caol-log-postmortem anju web/matcap-painter
-/caol-log-postmortem /Users/younsoolim/Desktop/www/some-project
+/caol-log-postmortem <repo-root>
 /caol-log-postmortem mega-melange
 ```
 

@@ -10,11 +10,13 @@ input=$(cat)
 cwd=$(printf '%s' "$input" | /usr/bin/python3 -c 'import json,sys;print(json.load(sys.stdin).get("cwd",""))' 2>/dev/null || echo "")
 
 case "$cwd" in
-  */shotloom-github*) ;;
+  */shotloom|*/shotloom-github|*/shotloom-github/*|*/shotloom/*) ;;
   *) exit 0 ;;
 esac
 
-repo=/Users/deemooooooooo/Desktop/www/shotloom-github
+repo=$("$HOME/.claude/skills/caol-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
+  | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
+[ -d "$repo" ] || exit 0
 
 # Pull a few quick reads. Errors go silent — this is advisory, not a gate.
 wt_count=$(git -C "$repo" worktree list 2>/dev/null | wc -l | tr -d ' ')

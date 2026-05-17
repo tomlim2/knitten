@@ -19,12 +19,17 @@ Context briefing and switcher. Shows where you left off across 회사/개인/부
 Read these files first:
 
 1. `~/.claude/private/caol-config/repo-paths.json` — repo paths (each entry: `{ path, description }` or plain string)
-2. `{obsidianClaudeDir}/contexts.json` — personal projects (fallback to defaults below if missing)
+2. `~/.claude/private/caol-config/contexts.json` — personal projects (fallback to defaults below if missing)
 3. `~/.claude/private/art-branches.json` — CINEV art branch state
 
 Helper: to get the repo path from an entry, use `typeof entry === 'string' ? entry : entry.path`.
 
-Obsidian claude dir: resolve `obsidian` key from repo-paths.json, then append `/claude`.
+Document roots:
+
+```bash
+tutoring_root=$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc tutoring | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
+consulting_root=$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh doc consulting | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
+```
 
 ### Default Project Data (used if contexts.json is missing)
 
@@ -77,8 +82,8 @@ If `$ARGUMENTS` is empty:
 - Get last commit date from first active project with a repo
 
 **부업 (Side Work):**
-- Scan `{obsidianClaudeDir}/tutoring/lessons/` — find most recent lesson file date
-- Scan `{obsidianClaudeDir}/consulting/` — find most recent session date
+- Resolve `doc tutoring`; scan `lessons/` below that root for the most recent lesson file date
+- Resolve `doc consulting`; scan that root for the most recent session date
 
 ### 2. Display compact overview
 
@@ -156,13 +161,13 @@ For active projects that have a `repo` key:
 ### 부업 (Side Work) Briefing
 
 **Tutoring (recent lessons):**
-- Scan `{obsidianClaudeDir}/tutoring/lessons/` subdirectories (each subdir = student name)
+- Resolve `doc tutoring`; scan `lessons/` subdirectories below that root (each subdir = student name)
 - In each student dir, find .md files matching `YYYY-MM-DD_topic(_done)?.md`
 - Collect up to 3 most recent across all students, sorted by date desc
 - Display: `{date} {student} — {topic}`
 
 **Consulting (recent sessions):**
-- Scan `{obsidianClaudeDir}/consulting/*.md` files
+- Resolve `doc consulting`; scan `*.md` files below that root
 - In each file, extract company name from `# Company - Consulting History` heading
 - Extract sessions from `### YYYY-MM-DD | topic` pattern
 - Collect up to 3 most recent across all companies, sorted by date desc

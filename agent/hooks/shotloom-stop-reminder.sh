@@ -11,13 +11,15 @@ input=$(cat)
 cwd=$(printf '%s' "$input" | /usr/bin/python3 -c 'import json,sys;print(json.load(sys.stdin).get("cwd",""))' 2>/dev/null || echo "")
 
 case "$cwd" in
-  */shotloom-github*) ;;
+  */shotloom|*/shotloom-github|*/shotloom-github/*|*/shotloom/*) ;;
   *) exit 0 ;;
 esac
 
 # Collect dirty worktrees under shotloom
 dirty=""
-main=/Users/deemooooooooo/Desktop/www/shotloom-github
+main=$("$HOME/.claude/skills/caol-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
+  | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
+[ -d "$main" ] || exit 0
 
 while IFS= read -r wt; do
   [ -d "$wt" ] || continue

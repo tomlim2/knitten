@@ -31,7 +31,7 @@ that uses it.
 
 ## Current State
 
-Verified in `/Users/deemooooooooo/Desktop/www/caol-ila` on 2026-05-14.
+Verified in the configured `caol-ila` repo on 2026-05-14.
 
 | Surface | Current state | Evidence |
 |---|---|---|

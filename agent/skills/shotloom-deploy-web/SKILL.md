@@ -58,7 +58,7 @@ If no argument: dry-run, no smoke, suggest next patch.
 ### Step 1: Preflight (cwd, account, branch, sync, tree, baselines)
 
 ```bash
-cd /Users/deemooooooooo/Desktop/www/shotloom-github   # or via repo-paths.json
+cd "$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 toplevel=$(git rev-parse --show-toplevel)
 remote=$(git -C "$toplevel" remote get-url origin)
 case "$remote" in *CINEV/shotloom*|*CINEV/shotloom.git) ;; *) abort ;; esac

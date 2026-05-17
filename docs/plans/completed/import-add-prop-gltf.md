@@ -24,7 +24,7 @@ boundary. Keep this PR GLB-only. Do not add `.gltf` support in this pass.
 
 ## Current State
 
-Verified against `/Users/younsoolim/Desktop/www/shotloom` on 2026-05-13.
+Verified against the configured `shotloom` repo on 2026-05-13.
 
 | Surface | Current state | Evidence |
 |---|---|---|
@@ -142,7 +142,7 @@ diagnostics.
 Before editing, verify the current state:
 
 ```bash
-cd /Users/younsoolim/Desktop/www/shotloom
+cd "$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 git status --short
 rg -n "AssetImportKind::Prop|handle_import_prop_asset|pickAndStageProp|createWebPropBinding|tauri_stage_prop_from_dialog" crates apps
 ```

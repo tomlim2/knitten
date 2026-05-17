@@ -4,6 +4,6 @@
     "psPattern": "claude_discord.main",
     "launch": ["uv", "run", "python", "-m", "claude_discord.main"],
     "logFile": "/tmp/ccdb.log",
-    "extraPath": ["/Users/younsoolim/.cargo/bin", "/usr/local/bin", "/opt/homebrew/bin"]
+    "extraPath": ["$HOME/.cargo/bin", "/usr/local/bin", "/opt/homebrew/bin"]
   }
 }

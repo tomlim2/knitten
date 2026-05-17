@@ -381,7 +381,7 @@ Run processor: !`python skill.py $ARGUMENTS`
 ### Don't: Hard-Code Paths
 ```markdown
 # Bad: Specific to one machine
-Read: /Users/john/projects/data.json
+Read: /absolute/user/path/projects/data.json
 ```
 
 **Do:** Use dynamic paths

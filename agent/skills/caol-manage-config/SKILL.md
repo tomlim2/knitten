@@ -78,8 +78,8 @@ For each entry in `repo-paths.json` and `machine-paths.json`, check if path exis
 ```
 ## Validation Results
 
-✓ anju           /Users/younsoolim/Desktop/www/anju
-✓ shotloom       /Users/younsoolim/Desktop/www/shotloom
+✓ anju           <repo-path:anju>
+✓ shotloom       <repo-path:shotloom>
 ✗ cinev-studio   E:\CINEVStudio  (not found — Windows path)
 ✓ blender        /Applications/Blender.app/Contents/MacOS/Blender
 

@@ -1,9 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "Write(/Users/deemooooooooo/.claude/ops/**)",
-      "Edit(/Users/deemooooooooo/.claude/ops/**)"
-    ]
+    "allow": []
   },
   "hooks": {
     "SessionStart": [

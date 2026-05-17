@@ -39,7 +39,7 @@ This spec is intentionally conservative. It records the current scan, separates 
 | Implementation review | `agent/skills/caol-review-implementation/SKILL.md` exists |
 | `caol-hq` location | `agent/skills/caol-hq` present; `tools/caol-hq` absent |
 | `caol-hq` manifest | `agent/skills/caol-hq/SKILL.md` absent |
-| Hardcoded scan | tracked-source scan finds active path and stale-name cleanup candidates |
+| Hardcoded scan | Batch B patched active executable path candidates; remaining hits are this spec, historical specs, or explicit migration notes |
 
 ## Hardcoded Path Scan
 
@@ -86,6 +86,26 @@ git ls-files -z -- \
 | P3 | `agent/skills/caol-log-postmortem/SKILL.md` | example uses `/Users/younsoolim/Desktop/www/some-project` | replace with `<repo-root>` example |
 | P3 | `agent/skills/caol-manage-config/SKILL.md` | setup output examples include user-specific paths | replace with placeholder examples |
 | P3 | `agent/skills/caol-show-patterns/reference.md` | example `/Users/john/projects/data.json` | leave as example or replace with `<repo>/data.json` for consistency |
+
+### Batch B Patch Status
+
+| Path | Status |
+|------|--------|
+| `agent/settings.json` | user-specific ops permissions removed from tracked settings |
+| `agent/hooks/shotloom-session-start.sh` | Shotloom repo resolves through `caol-resolve-doc-path repo shotloom` |
+| `agent/hooks/shotloom-stop-reminder.sh` | Shotloom repo resolves through `caol-resolve-doc-path repo shotloom` |
+| `agent/commands/caol-switch-context.md` | stale Obsidian context placeholder replaced with private config and doc resolvers |
+| `agent/skills/shotloom-deploy-web/SKILL.md` | deploy preflight uses the Shotloom repo resolver |
+| `agent/skills/caol-hq/src/config/runtimes.json` | local cargo path changed to `$HOME`; runtime launcher expands `$HOME` and `~` |
+| `agent/skills/caol-log-postmortem/SKILL.md` | user-specific example path replaced |
+| `agent/skills/caol-manage-config/SKILL.md` | validation example paths replaced with repo-key placeholders |
+| `agent/skills/caol-show-patterns/reference.md` | hardcoded example path generalized |
+| `docs/import-add-prop-gltf-codex.md` | Shotloom command path changed to resolver |
+| `docs/plans/completed/import-add-prop-gltf.md` | Shotloom command path changed to resolver |
+
+Validation for this batch passed: hook shell syntax, `caol-hq` build, Obsidian
+structure checks, LLM-first validator, `git diff --check`, and deploy-target
+diffs for affected shared layers.
 
 ### Stale Path Patterns To Keep At Zero
 

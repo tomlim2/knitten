@@ -84,8 +84,8 @@ or secret template is found during inventory:
 3. delete or archive it instead of aliasing it;
 4. do not let it block reuse of the `Knitten` name for the agent hub.
 
-Current local check: `/Users/younsoolim/Desktop/www/knitten` was not present
-when this spec was written.
+Current local check: the configured `knitten` repo key was not present when
+this spec was written.
 
 ## Rename Policy
 

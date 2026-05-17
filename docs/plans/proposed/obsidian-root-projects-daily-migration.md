@@ -27,7 +27,7 @@ System folders stay outside this contract:
 
 ## Current Root Shape
 
-Vault root: `/Users/younsoolim/Library/Mobile Documents/iCloud~md~obsidian/Documents/MyNotes`
+Vault root: resolve `obsidian` through `~/.claude/private/caol-config/machine-paths.json`.
 
 | Root entry | Markdown files | Current role |
 |------------|----------------|--------------|

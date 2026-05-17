@@ -17,9 +17,9 @@ Canonical structure owner: `agent/skills/obsidian-obsidian-markdown/references/P
 
 | Path token | Meaning |
 |------------|---------|
-| `{repo}` | `/Users/younsoolim/Desktop/www/caol-ila` during this execution |
-| `{obsidian-agent-root}` | value of `obsidian-agent-root` in `~/.claude/private/caol-config/machine-paths.json` |
-| project note root | `{obsidian-agent-root}/projects/<project>/` |
+| `{repo}` | configured `caol-ila` repo path |
+| `{obsidian-root}` | value of `obsidian` in `~/.claude/private/caol-config/machine-paths.json` |
+| project note root | `{obsidian-root}/projects/<project>/` |
 | structure spec | `{repo}/agent/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` |
 | validator | `{repo}/agent/skills/obsidian-fix-format/fix.sh` |
 

@@ -136,6 +136,7 @@ Expected:
 | 2026-05-17 | Patched active skill path producers | Legacy `agent/<domain>` vault path grep returned 0 active matches |
 | 2026-05-17 | Classified remaining broad drift matches | Remaining matches are validator deny-list patterns plus an explicit `notes/INDEX.md` retirement note |
 | 2026-05-17 | Ran validators | `path-config-drift`, `root-structure`, `project-structure`, Python compile, and `git diff --check` passed |
+| 2026-05-17 | Extended cleanup to command, hook, settings, and example docs | Active executable docs now use repo/doc resolvers or placeholders; validation passed after the extended batch |
 
 ## Open Questions
 
