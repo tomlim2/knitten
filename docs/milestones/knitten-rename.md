@@ -70,7 +70,7 @@ skill invocation.
 
 | Blocker | Impact |
 |---------|--------|
-None.
+| None | N/A |
 
 ## External Mirrors
 

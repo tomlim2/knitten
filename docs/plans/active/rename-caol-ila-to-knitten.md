@@ -84,8 +84,8 @@ or secret template is found during inventory:
 3. delete or archive it instead of aliasing it;
 4. do not let it block reuse of the `Knitten` name for the agent hub.
 
-Current local check: the configured `knitten` repo key was not present when
-this spec was written.
+Batch A check found no active old Discord bridge references. The only active
+source hit is this decision text.
 
 ## Rename Policy
 
@@ -105,7 +105,7 @@ this spec was written.
 | Repo key | add `knitten` alias while preserving `caol-ila` |
 | Machine config | preserve `caol-config`; optionally add `knitten-config` alias later |
 | Obsidian project path | migrate through resolver-backed plan, not raw rename |
-| Dashboard app | decide `caol-hq` to `knitten-hq` after moving to `tools/caol-hq` or `tools/knitten-hq` |
+| Dashboard app | decide whether `tools/caol-hq` becomes `tools/knitten-hq` |
 | Frontmatter owner | keep `owner: caol-ila` until validator/schema and docs agree on `knitten` |
 
 ### Defer
@@ -185,18 +185,33 @@ Result: `README.md`, `SYSTEM.md`, `AGENT-HUB.md`, and
 
 ### Batch C: Config Aliases
 
-1. Add `knitten` as a repo alias where repo keys are resolved.
-2. Keep `caol-ila` as the primary compatibility key until all skills resolve the
+1. Add `knitten` as a repo alias without removing `caol-ila`.
+2. Patch `agent/skills/caol-manage-config/repo-paths.template.json` so new
+   machine setup can create both keys.
+3. Patch the local deployed `repo-paths.json` only when it is symlinked or
+   otherwise intentionally shared with `agent/private/caol-config/`.
+4. Decide the resolver behavior explicitly:
+   - If `knitten` is a real key in `repo-paths.json`, no resolver alias table is
+     needed.
+   - If `knitten` is not a real key, add resolver alias logic and validator
+     coverage in the same batch.
+5. Add a validator or fixture that proves both commands resolve:
+
+```bash
+bash agent/skills/caol-resolve-doc-path/resolve.sh repo caol-ila
+bash agent/skills/caol-resolve-doc-path/resolve.sh repo knitten
+```
+
+6. Keep `caol-ila` as the primary compatibility key until all skills resolve the
    alias.
-3. Add tests or validator checks for both keys.
-4. Do not rename `caol-config` yet.
+7. Do not rename `caol-config` yet.
 
 ### Batch D: Tool And Dashboard Naming
 
 1. Decide whether `caol-hq` becomes `knitten-hq`.
-2. If yes, combine with the existing plan to move dashboard code from
-   `agent/skills/caol-hq` into tool space.
-3. Keep launcher compatibility for the old name during transition.
+2. If yes, rename `tools/caol-hq` to `tools/knitten-hq` and keep launcher
+   compatibility for the old command/path during transition.
+3. If no, document `caol-hq` as a legacy tool name.
 
 ### Batch E: Obsidian Migration
 
