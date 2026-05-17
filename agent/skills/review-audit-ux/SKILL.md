@@ -1,7 +1,7 @@
 ---
 description: "Audit HTML/CSS/JS for UX/UI — layout, interaction, accessibility, and visual consistency via 70+ item checklist."
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: astro,three
 task-types: review

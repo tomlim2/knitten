@@ -2,14 +2,14 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import { readDoc } from '../../lib/doc-discovery';
-import { obsidianVaultDir, vaultRootFolder } from '../../lib/paths';
+import { vaultProjectDir } from '../../lib/paths';
 import { renderMarkdown } from '../../lib/markdown';
 import { join } from 'node:path';
 
 const slug = Astro.params.slug;
 if (!slug) return Astro.redirect('/learnings');
-const vaultDir = obsidianVaultDir();
-const root = vaultDir ? join(vaultDir, vaultRootFolder('projects'), 'caol-ila', 'learnings') : null;
+const projectDir = vaultProjectDir('agent-hub', ['knitten', 'caol-ila']);
+const root = projectDir ? join(projectDir, 'learnings') : null;
 // readDoc applies safeResolveUnder internally — null on traversal attempts.
 const doc = root ? readDoc(root, slug) : null;
 if (!doc) return Astro.redirect('/learnings');

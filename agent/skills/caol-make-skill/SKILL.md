@@ -1,5 +1,5 @@
 ---
-description: "Structure rules and templates for creating caol-ila skills. Use when creating new skills."
+description: "Structure rules and templates for creating agent-hub skills. Use when creating new skills."
 platforms: claude
 portability: harness-specific
 ---
@@ -71,7 +71,7 @@ When creating a skill:
 1. Extract the category prefix before the first hyphen.
 2. Reuse an existing prefix from `skillCommandCategories`.
 3. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
-4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the caol-ila repo root.
+4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the agent-hub repo root.
 
 ---
 

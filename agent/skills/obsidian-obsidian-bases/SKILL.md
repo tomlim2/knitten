@@ -2,7 +2,7 @@
 name: obsidian-obsidian-bases
 description: Create and edit Obsidian Bases (.base files) — table/card views, filters, formulas, database-like note views.
 domains: obsidian
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: yaml
 task-types: authoring,implementation
 context-profile: obsidian-vault

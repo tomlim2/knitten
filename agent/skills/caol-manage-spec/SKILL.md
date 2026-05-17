@@ -1,9 +1,9 @@
 ---
-description: Manage caol-ila specs across intake, create, update, review, archive, and delete flows; route to domain-specific spec skills when they fit.
+description: Manage agent-hub specs across intake, create, update, review, archive, and delete flows; route to domain-specific spec skills when they fit.
 argument-hint: "<create|update|review|archive|delete|route> [slug-or-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(test:*), Bash(node:*), Bash(mkdir:*)
 domains: caol
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: markdown,yaml,json
 task-types: authoring,review
 context-profile: caol-authoring
@@ -11,7 +11,7 @@ context-profile: caol-authoring
 
 # caol-manage-spec
 
-Manage caol-ila specs as durable work contracts: intake, routing, create,
+Manage agent-hub specs as durable work contracts: intake, routing, create,
 update, review, archive, and delete.
 
 ## Purpose
@@ -47,7 +47,7 @@ work and `review` for "review/check" wording.
 | Shotloom task implementation spec | use `shotloom-draft-spec` |
 | Code, directory, or branch diff needs a technical spec | use `dev-generate-spec` concepts and template |
 | Web/product/PRD spec review | use `review-audit-web-spec` checklist |
-| caol/Knitten policy, architecture, path, validator, skill/rule/standard work | use this skill |
+| agent-hub policy, architecture, path, validator, skill/rule/standard work | use this skill |
 | Obsidian vault structure or note contracts | read Obsidian rules/skills only as needed |
 | Unknown route | intake-only first; ask one short question if needed |
 

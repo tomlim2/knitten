@@ -10,7 +10,7 @@ Start the Caol HQ Astro dashboard (port 9720) and open it in browser.
 ## Execution
 
 ```bash
-caol_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo caol-ila | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+caol_root="$(bash ~/.claude/skills/caol-resolve-doc-path/resolve.sh repo agent-hub | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 cd "$caol_root/tools/caol-hq"
 
 # Install if needed

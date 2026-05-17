@@ -8,14 +8,14 @@ Personal `settings.json` / `settings.local.json` templates for each Claude Code 
 |----------|---------|
 | `shotloom.settings.json` | `shotloom-github/.claude/settings.json` |
 | `www.settings.json` | `~/Desktop/www/.claude/settings.local.json` |
-| `caol-ila.settings.json` | `caol-ila/.claude/settings.local.json` |
+| `caol-ila.settings.json` | legacy checkout `.claude/settings.local.json` |
 
-> **Global** (`~/.claude/settings.json`) is already tracked as `caol-ila/agent/settings.json` via symlink — no template needed.
+> **Global** (`~/.claude/settings.json`) is already tracked as `<agent-hub-checkout>/agent/settings.json` via symlink — no template needed.
 
 ## New machine setup
 
 ```bash
-# 1. Clone caol-ila and run symlink setup (see caol-ila README)
+# 1. Clone agent-hub and run symlink setup (see README)
 
 # 2. Copy project templates (update USERNAME where shown)
 cp agent/config/permissions/shotloom.settings.json \
@@ -25,13 +25,13 @@ cp agent/config/permissions/www.settings.json \
    ~/Desktop/www/.claude/settings.local.json
 
 cp agent/config/permissions/caol-ila.settings.json \
-   ~/Desktop/www/caol-ila/.claude/settings.local.json
+   <agent-hub-checkout>/.claude/settings.local.json
 
 # 3. Sed-replace USERNAME placeholder
 sed -i '' "s/{USERNAME}/$(whoami)/g" \
   ~/Desktop/www/shotloom-github/.claude/settings.json \
   ~/Desktop/www/.claude/settings.local.json \
-  ~/Desktop/www/caol-ila/.claude/settings.local.json
+  <agent-hub-checkout>/.claude/settings.local.json
 ```
 
 ## Notes

@@ -1,7 +1,7 @@
 ---
 description: Universal SEO Analysis Skill for technical audits, content quality, and AI search optimization.
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: astro,three
 task-types: implementation

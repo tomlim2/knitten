@@ -1,5 +1,5 @@
 ---
-description: "Structure and template for creating caol-ila standards (long reference docs). Use when creating a new standard."
+description: "Structure and template for creating agent-hub standards (long reference docs). Use when creating a new standard."
 ---
 
 # caol-make-standard

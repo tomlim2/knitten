@@ -1,5 +1,5 @@
 ---
-description: "Naming rules and templates for creating caol-ila commands and skills. Use when creating new commands or skills."
+description: "Naming rules and templates for creating agent-hub commands and skills. Use when creating new commands or skills."
 ---
 
 # caol-make-command
@@ -15,7 +15,7 @@ Read these references only when needed:
 
 ## Purpose
 
-This skill helps create new caol-ila commands and skills following the standardized naming convention and structure. It serves as the authoritative rulebook for command/skill creation.
+This skill helps create new agent-hub commands and skills following the standardized naming convention and structure. It serves as the authoritative rulebook for command/skill creation.
 
 ---
 
@@ -69,7 +69,7 @@ When authoring a command or skill:
 1. Extract the category prefix before the first hyphen.
 2. Reuse an existing prefix from `skillCommandCategories`.
 3. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
-4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the caol-ila repo root.
+4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the agent-hub repo root.
 
 ---
 
@@ -123,7 +123,7 @@ For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the s
 1. Read `agent/config/context-routing.json`.
 2. If the artifact matches an existing context profile, add the routing frontmatter fields.
 3. If no profile fits but the artifact is high-cost or domain-specific, stop and add the profile or an explicit `metadataExemptions` entry in the same change.
-4. Run `node scripts/validate-llm-first.mjs --check context-routing` from the caol-ila repo root.
+4. Run `node scripts/validate-llm-first.mjs --check context-routing` from the agent-hub repo root.
 
 ---
 

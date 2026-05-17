@@ -1,7 +1,8 @@
-# Knitten
+# Knitten, the agent-hub
 
-**LLM-first agent hub.** Repository path and compatibility key remain
-`caol-ila`; internal identity is `Knitten`. Agent configuration — commands,
+**LLM-first agent hub.** `Knitten` is the README-facing name; internal system
+docs, config, routing, skills, rules, and standards use `agent-hub`.
+`caol-ila` remains a legacy compatibility path/key only. Agent configuration — commands,
 skills, standards, rules, and machine config — is optimized for LLM efficiency,
 accuracy, and clarity. `agent/` is symlinked to `~/.claude`.
 
@@ -14,7 +15,7 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 ## Layout
 
 ```
-caol-ila/
+<agent-hub-checkout>/
 ├── SYSTEM.md                 # Shared agent-agnostic policy
 ├── AGENT-HUB.md              # Generated hub overview
 ├── CLAUDE.md                 # Claude Code entry document
@@ -43,10 +44,10 @@ Counts are validated by `scripts/validate-llm-first.mjs`.
 
 ```bash
 # macOS / Linux
-ln -s /path/to/caol-ila/agent ~/.claude
+ln -s /path/to/agent-hub/agent ~/.claude
 
 # Windows (admin PowerShell)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\caol-ila\agent"
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\agent-hub\agent"
 ```
 
 After symlinking, initialize machine config:

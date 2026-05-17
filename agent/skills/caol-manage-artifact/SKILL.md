@@ -1,10 +1,10 @@
 ---
-description: "Route create/read/update/delete work for caol-ila shared artifacts: skills, rules, standards, commands, plans, and entry docs."
+description: "Route create/read/update/delete work for agent-hub shared artifacts: skills, rules, standards, commands, plans, and entry docs."
 ---
 
 # caol-manage-artifact
 
-Lifecycle router for caol-ila shared artifacts.
+Lifecycle router for agent-hub shared artifacts.
 
 ## Purpose
 

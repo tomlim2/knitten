@@ -3,7 +3,7 @@ status: accepted
 ---
 # LLM-First Document Standard
 
-Operational standard implementing the `caol-ila` LLM-first charter (see `SYSTEM.md` → "Repository charter"). Default for every artifact an agent writes. Token-efficient, structured, no rhetoric.
+Operational standard implementing the agent-hub LLM-first charter (see `SYSTEM.md` → "Repository charter"). Default for every artifact an agent writes. Token-efficient, structured, no rhetoric.
 
 ## When this standard applies
 

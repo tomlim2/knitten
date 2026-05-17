@@ -6,10 +6,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx:*)
 
 # video-hyperframes-make-composition
 
-caol-ila wrapper for the upstream HyperFrames authoring skill (heygen-com/hyperframes).
+agent-hub wrapper for the upstream HyperFrames authoring skill (heygen-com/hyperframes).
 
 Follow the upstream SKILL as the canonical reference — it is imported below.
 
 ## Upstream skill
 
-@~/Desktop/www/knitten/vendor/hyperframes/skills/hyperframes/SKILL.md
+@~/.claude/vendor/hyperframes/skills/hyperframes/SKILL.md

@@ -5,24 +5,24 @@ portability: shared
 ---
 # Harness Deployment Standard
 
-Defines how external LLM agents and harnesses, including Claude Code, Pi, Codex, Cursor, and future adapters, connect to the durable configuration source in `caol-ila/agent/`.
+Defines how external LLM agents and harnesses, including Claude Code, Pi, Codex, Cursor, and future adapters, connect to the durable agent-hub configuration source.
 
 ## Core Contract
 
 | Term | Rule |
 |------|------|
-| Durable Source | `caol-ila/agent/` is the single source of truth. Configurations live here. |
+| Durable Source | `agent/` in the agent-hub checkout is the single source of truth. Configurations live here. |
 | Deploy Target | The global path a harness reads from (e.g., `~/.claude`, `~/.pi`). |
 | Deployment Method | The mechanism that connects the deploy target to the durable source. |
 
 ## Deployment Methods
 
-Never manually copy files from the durable source to a deploy target. Always link or configure the harness to read directly from `caol-ila`.
+Never manually copy files from the durable source to a deploy target. Always link or configure the harness to read directly from the agent-hub checkout.
 
 | Harness Type | Deployment Method | Example |
 |--------------|-------------------|---------|
-| Native Config | JSON configuration pointing to absolute paths | `~/.pi/settings.json` pointing to `/path/to/caol-ila/agent/skills` |
-| Link-based | File system symlinks or hardlinks | `~/.claude/skills` symlinked to `/path/to/caol-ila/agent/skills` |
+| Native Config | JSON configuration pointing to absolute paths | `~/.pi/settings.json` pointing to `<agent-hub-checkout>/agent/skills` |
+| Link-based | File system symlinks or hardlinks | `~/.claude/skills` symlinked to `<agent-hub-checkout>/agent/skills` |
 
 When a harness natively supports reading external paths via configuration (like `pi` via `settings.json`), **Native Config** is preferred over symlinking. 
 
@@ -35,4 +35,4 @@ All supported harnesses must be registered in `agent/config/agent-hub.json` unde
 
 ## Validation
 
-The local machine's deployment state is validated by `scripts/validate-harness-links.mjs`. If a harness is listed in `agent-hub.json`, the deployment script ensures its deploy target exists and correctly points to the `caol-ila` root. Broken links or mismatched configurations will trigger a validation error.
+The local machine's deployment state is validated by `scripts/validate-harness-links.mjs`. If a harness is listed in `agent-hub.json`, the deployment script ensures its deploy target exists and correctly points to the agent-hub root. Broken links or mismatched configurations will trigger a validation error.

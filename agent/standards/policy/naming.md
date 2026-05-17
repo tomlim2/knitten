@@ -4,7 +4,7 @@ status: accepted
 
 # Naming Conventions
 
-Filename patterns for every artifact type in `caol-ila`. Read before creating any new rule, standard, command, skill, or plan file.
+Filename patterns for every agent-hub artifact type. Read before creating any new rule, standard, command, skill, or plan file.
 
 For the underlying rationale (verb-form trio, family prefix, scope match, lifecycle phase, default-counter hint) see `principles.md` → "Naming patterns".
 
@@ -26,7 +26,7 @@ If the folder already supplies type or scope, do not repeat it in the filename.
 
 ## Scope
 
-This standard governs **`caol-ila` repository artifacts only** — files inside `agent/`, `docs/plans/`, and configured Obsidian project note folders.
+This standard governs **agent-hub repository artifacts only** — files inside `agent/`, `docs/plans/`, and configured Obsidian project note folders.
 
 **Out of scope:**
 

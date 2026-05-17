@@ -2,7 +2,7 @@
 status: completed
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 target-date:
 ---
 
@@ -10,7 +10,7 @@ target-date:
 
 ## Purpose
 
-Build a repo-native spec document lifecycle for caol-ila: intake, routing,
+Build a repo-native spec document lifecycle for agent-hub: intake, routing,
 create, update, review, archive, delete, milestone grouping, and validator
 support.
 
@@ -66,7 +66,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
    GitLab, Linear, or another tracker.
 8. `docs/plans/` rename/move work has a separate migration spec before it runs.
 9. Validator support covers milestone file naming, milestone link consistency,
-   spec back-links, duplicate spec slugs, and caol spec intake paths.
+   spec back-links, duplicate spec slugs, and agent-hub spec intake paths.
 
 ## Decisions
 

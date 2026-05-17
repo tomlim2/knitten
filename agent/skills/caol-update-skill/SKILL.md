@@ -1,10 +1,10 @@
 ---
-description: "Refresh an existing caol-ila skill against current policy, routing, and validator expectations. Use when updating a skill beyond a small edit."
+description: "Refresh an existing agent-hub skill against current policy, routing, and validator expectations. Use when updating a skill beyond a small edit."
 ---
 
 # caol-update-skill
 
-Policy refresh workflow for existing caol-ila skills.
+Policy refresh workflow for existing agent-hub skills.
 
 ## Purpose
 
@@ -50,7 +50,7 @@ For one small requested change, use `caol-edit-skill`.
 
 ## Validation
 
-Run from the caol-ila repo root:
+Run from the agent-hub repo root:
 
 ```bash
 node scripts/validate-llm-first.mjs

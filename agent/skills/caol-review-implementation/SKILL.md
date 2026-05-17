@@ -1,9 +1,9 @@
 ---
-description: Review completed caol-ila implementations against the owning spec, diff, validators, generated indexes, routing metadata, and deploy-target sync before commit or handoff.
+description: Review completed agent-hub implementations against the owning spec, diff, validators, generated indexes, routing metadata, and deploy-target sync before commit or handoff.
 argument-hint: "[spec-slug-or-path] [--staged|--working|--base <rev>]"
 allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(node:*), Bash(test:*), Bash(wc:*), Bash(diff:*)
 domains: caol
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: markdown,yaml,json
 task-types: review
 context-profile: caol-authoring
@@ -11,7 +11,7 @@ context-profile: caol-authoring
 
 # caol-review-implementation
 
-Review a completed caol-ila implementation before commit or handoff.
+Review a completed agent-hub implementation before commit or handoff.
 
 ## Purpose
 

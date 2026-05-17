@@ -1,7 +1,7 @@
 ---
 description: Style slides, docs, or HTML landing pages with a theme — 10 pre-set color/font themes or generate a custom one.
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: astro,three
 task-types: implementation

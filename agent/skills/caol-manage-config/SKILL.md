@@ -59,7 +59,7 @@ Read all four files and display:
 | Key                   | Path                                                |
 |-----------------------|-----------------------------------------------------|
 | obsidian              | ~/Library/Mobile Documents/.../MyNotes              |
-| obsidian-staging      | ~/Desktop/www/caol-ila/agent/temp-learnings        |
+| obsidian-staging      | <agent-hub-checkout>/agent/temp-learnings           |
 | blender               | /Applications/Blender.app/Contents/MacOS/Blender    |
 
 ## Doc Routing (doc-paths.json)
@@ -198,25 +198,25 @@ Interactive first-time setup for a new machine. Guides the user through filling 
    - User may skip any key not applicable to this machine.
    - Write completed `machine-paths.json`.
 
-5. **doc-paths** — `doc-paths.json` is the only file under `caol-config/` that is tracked in the repo (gitignore exception). If `~/.claude` symlinks into `caol-ila/agent` (author's setup), the file is automatically present after clone. Otherwise copy once:
+5. **doc-paths** — `doc-paths.json` is the only file under `caol-config/` that is tracked in the repo (gitignore exception). If `~/.claude` symlinks into `<agent-hub-checkout>/agent`, the file is automatically present after clone. Otherwise copy once:
 
    ```bash
-   caol_root=$(jq -r '.["caol-ila"].path' ~/.claude/private/caol-config/repo-paths.json 2>/dev/null)
+   caol_root=$(jq -r '.["agent-hub"].path // .["agent-hub"] // .knitten.path // .knitten // .["caol-ila"].path // .["caol-ila"] // empty' ~/.claude/private/caol-config/repo-paths.json 2>/dev/null)
    caol_root="${caol_root/#\~/$HOME}"
    src="$caol_root/agent/private/caol-config/doc-paths.json"
    dst=~/.claude/private/caol-config/doc-paths.json
    [ -f "$dst" ] || cp "$src" "$dst"
    ```
 
-   Skip if `caol-ila` was not registered in step 3.
+   Skip if none of `agent-hub`, `knitten`, or `caol-ila` was registered in step 3.
 
 6. **hardware.json** — Run `/system-save-hardware` (do NOT just prompt — actually invoke the skill) to populate hardware specs. Step 7 requires this file to exist.
 
 7. **skill-usage tracking** — Gate-check first, then run installer:
 
    ```bash
-   # Gate: caol-ila registered?
-   caol_root=$(jq -re '.["caol-ila"].path // empty' ~/.claude/private/caol-config/repo-paths.json) || { echo "skip: caol-ila not registered"; }
+   # Gate: agent-hub repo registered?
+   caol_root=$(jq -re '.["agent-hub"].path // .["agent-hub"] // .knitten.path // .knitten // .["caol-ila"].path // .["caol-ila"] // empty' ~/.claude/private/caol-config/repo-paths.json) || { echo "skip: agent-hub/knitten/caol-ila not registered"; }
    caol_root="${caol_root/#\~/$HOME}"
 
    # Gate: hardware.json exists?
@@ -234,6 +234,6 @@ Interactive first-time setup for a new machine. Guides the user through filling 
 
    After install, tell the user:
    - Open `/hooks` once or restart Claude Code so the hook activates.
-   - **Verify git push works for caol-ila as `tomlim2`** — sync agent silent-fails on auth errors. Test with `cd $caol_root && git push --dry-run origin main`. If this fails on company PC, fix ssh key / gh auth before relying on auto-sync.
+   - **Verify git push works for agent-hub as `tomlim2`** — sync agent silent-fails on auth errors. Test with `cd $caol_root && git push --dry-run origin main`. If this fails on company PC, fix ssh key / gh auth before relying on auto-sync.
 
 8. **Summary** — Show all four files in the same format as the `show` action.

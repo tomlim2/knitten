@@ -1268,7 +1268,7 @@ const AGENT_HUB_ALLOWED = {
   registryFormats: new Set(["json"]),
   registrySecretPolicies: new Set(["no-secrets", "template-only", "private-values"]),
   generatedDocumentModes: new Set(["generated-block", "validated-manual", "thin-wrapper"]),
-  runtimeOwners: new Set(["caol-ila", "runtime", "machine-local", "project-local"]),
+  runtimeOwners: new Set(["agent-hub", "runtime", "machine-local", "project-local"]),
   gitPolicies: new Set(["tracked", "ignored", "template-tracked", "mixed"]),
   runtimeSecretPolicies: new Set(["no-secrets", "may-contain-secrets", "must-not-commit"]),
   durability: new Set(["durable", "runtime", "cache", "session", "backup", "private"]),
@@ -1547,7 +1547,8 @@ const ROUTE_VALUE_EVIDENCE = {
   anju: ["anju"],
   astro: ["astro"],
   bevy: ["bevy", "ecs"],
-  caol: ["agent hub", "caol", "knitten"],
+  caol: ["agent hub", "caol", "agent-hub"],
+  "agent-hub": ["agent hub", "agent-hub"],
   "caol-ila": ["caol ila", "caol-ila"],
   cinev: ["cci", "cinev"],
   "cinev-git": ["cinev git"],
@@ -1558,7 +1559,6 @@ const ROUTE_VALUE_EVIDENCE = {
   hyperframes: ["hyperframes"],
   javascript: ["javascript", "js"],
   json: ["json"],
-  knitten: ["knitten"],
   markdown: ["markdown", "md"],
   "mega-melange": ["mega melange", "mega-melange"],
   obsidian: ["note", "obsidian", "vault"],
@@ -1677,11 +1677,11 @@ async function checkContextRouting() {
     violations.push({ file, line: 1, message: `cannot read repoKeysSource: ${err.message}` });
   }
   const repoKeys = new Set(Object.keys(repoPaths));
-  if (repoKeys.has("caol-ila") && !repoKeys.has("knitten")) {
+  if (repoKeys.has("caol-ila") && !repoKeys.has("agent-hub")) {
     violations.push({
       file: routing.repoKeysSource || file,
       line: 1,
-      message: "repoKeysSource must define knitten while caol-ila compatibility key remains",
+      message: "repoKeysSource must define agent-hub while caol-ila compatibility key remains",
     });
   }
 

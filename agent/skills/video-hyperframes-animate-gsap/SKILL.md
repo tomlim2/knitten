@@ -6,8 +6,8 @@ allowed-tools: Read, Edit
 
 # video-hyperframes-animate-gsap
 
-caol-ila wrapper for the upstream GSAP skill (heygen-com/hyperframes).
+agent-hub wrapper for the upstream GSAP skill (heygen-com/hyperframes).
 
 ## Upstream skill
 
-@~/Desktop/www/knitten/vendor/hyperframes/skills/gsap/SKILL.md
+@~/.claude/vendor/hyperframes/skills/gsap/SKILL.md

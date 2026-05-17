@@ -61,8 +61,7 @@
         "caol"
       ],
       "repoKeys": [
-        "caol-ila",
-        "knitten"
+        "agent-hub"
       ],
       "languages": [
         "json",
@@ -226,8 +225,7 @@
         "video"
       ],
       "repoKeys": [
-        "caol-ila",
-        "knitten"
+        "agent-hub"
       ],
       "languages": [
         "css",
@@ -267,8 +265,7 @@
         "web"
       ],
       "repoKeys": [
-        "caol-ila",
-        "knitten",
+        "agent-hub",
         "mmd-anju",
         "ta-portfolio"
       ],
@@ -292,8 +289,7 @@
         "web"
       ],
       "repoKeys": [
-        "caol-ila",
-        "knitten",
+        "agent-hub",
         "mmd-anju",
         "ta-portfolio"
       ],
@@ -317,8 +313,7 @@
         "obsidian"
       ],
       "repoKeys": [
-        "caol-ila",
-        "knitten"
+        "agent-hub"
       ],
       "languages": [
         "json",

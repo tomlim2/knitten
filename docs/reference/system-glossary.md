@@ -6,7 +6,7 @@ standard: ../../agent/standards/policy/llm-first-docs.md
 
 # System Glossary
 
-Reserved system terms for `caol-ila`. Use this file when editing `SYSTEM.md`, entry documents, platform adapter docs, agent hub plans, manifests, or validators.
+Reserved system terms for agent-hub. Use this file when editing `SYSTEM.md`, entry documents, platform adapter docs, agent hub plans, manifests, or validators.
 
 Do not introduce a synonym for a term in this table unless the glossary changes in the same commit.
 
@@ -19,7 +19,7 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 | harness | Agent runtime that reads and executes repo instructions | Claude Code, Codex, or another agent runtime | A single file, command, or adapter |
 | adapter | Translation from shared intent to harness mechanics | Tool syntax, imports, approval flow, slash-command behavior | New policy |
 | platform mechanic | Runtime-specific behavior exposed by one harness | Claude `@` imports, Codex approval flow, tool names | Shared meaning |
-| agent hub | Repo shape that routes multiple harnesses through one canonical policy system | caol-ila's multi-agent operating model | A marketing README or generic index |
+| agent hub | Repo shape that routes multiple harnesses through one canonical policy system | agent-hub's multi-agent operating model | A marketing README or generic index |
 | manifest | Machine-readable registry that connects hub parts | `agent/config/agent-hub.json` | Prose explanation |
 | registry | Machine-readable JSON that owns managed values | Config enums, budgets, taxonomy, audit policy | Narrative docs |
 | validator | Script that enforces contracts and catches drift | `scripts/validate-llm-first.mjs` checks | Human-only review |
@@ -30,7 +30,7 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 | canonical owner | File or registry that owns the editable value | Where an agent must edit first | Mirrors, shims, or generated views |
 | managed artifact | File, folder, registry, generated document, or runtime path governed by the hub | Inventory and drift checks | Arbitrary repo content |
 | milestone | Durable umbrella record for a multi-spec outcome | `docs/milestones/` and progress grouping across specs | A single implementation contract |
-| Knitten | Internal name for the agent hub identity | New prose identity and future slugs/aliases after the rename plan | Legacy path/config compatibility that still uses `caol-ila` or `caol-*` |
+| agent-hub | Internal name for the agent hub identity | New prose identity and future slugs/aliases after the rename plan | Legacy path/config compatibility that still uses `caol-ila` or `caol-*` |
 | task route | Metadata-backed decision that a task belongs to one or more route domains | Selecting task-specific context | Loading broad catalogs before classification |
 | route domain | Technical or knowledge area used for context routing | `unreal`, `rust`, `web`, or `obsidian` routing | Registry `domain` prose in `agent-hub.json` |
 | repo key | Repository identifier from `repo-paths.json` | Routing and machine-local path lookup | Human project names outside the registry |

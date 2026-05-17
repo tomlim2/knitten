@@ -64,3 +64,19 @@ export function vaultRootFolder(key: string): string {
     const structure = loadVaultStructure();
     return structure.rootFolders?.[key] ?? key;
 }
+
+export function vaultProjectDir(projectKey: string, legacyKeys: string | string[] = []): string | null {
+    const vaultDir = obsidianVaultDir();
+    if (!vaultDir) return null;
+
+    const projectsRoot = join(vaultDir, vaultRootFolder('projects'));
+    const primary = join(projectsRoot, projectKey);
+    if (existsSync(primary)) return primary;
+
+    for (const legacyKey of Array.isArray(legacyKeys) ? legacyKeys : [legacyKeys]) {
+        const legacy = join(projectsRoot, legacyKey);
+        if (existsSync(legacy)) return legacy;
+    }
+
+    return primary;
+}

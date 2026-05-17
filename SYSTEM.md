@@ -39,7 +39,7 @@ Decision rationale lives in `docs/decisions/`. A decision record explains why a 
 
 ## Repository charter
 
-Knitten is an LLM-first agent hub in the `caol-ila` compatibility repository.
+agent-hub is an LLM-first agent hub.
 The primary operator is an autonomous agent, not a human reader. Every process,
 artifact, and decision optimizes for the LLM that reads, executes, and edits it:
 
@@ -84,25 +84,45 @@ If unsure, default LLM-first. Full applies-to list: `agent/standards/policy/llm-
 
 ## Durable source and deploy target
 
-All durable shared agent state has its canonical home in `caol-ila/agent/` and is git-tracked there. `~/.claude/` is the deploy target the Claude Code harness reads from at runtime. The current machine points `~/.claude` at `caol-ila/agent`.
+All durable shared agent state has its canonical home in the agent-hub checkout's
+`agent/` directory and is git-tracked there. `~/.claude/` is the deploy target
+the Claude Code harness reads from at runtime.
 
-When editing shared artifacts, land the change in `caol-ila/agent/<area>/`, then verify the sync reflects it in `~/.claude/<area>/`. Editing directly in `~/.claude/<area>/` is acceptable only when the inode is shared and the change is visible to both sides; verify with `stat -f "ino=%i" ~/.claude/<area>/<file> caol-ila/agent/<area>/<file>`. Never leave a change in `~/.claude/` that has not also reached `caol-ila/agent/`.
+Current legacy compatibility identifiers:
+
+| Identifier | Status | Use |
+|------------|--------|-----|
+| `caol-ila` | legacy compatibility repo key/path | path lookup and old checkout links only |
+| `caol-*` | legacy command and skill namespace | keep callable until wrapper migration |
+| `caol-config` | legacy private config directory | keep until resolver/config migration |
+
+When editing shared artifacts, land the change in `<agent-hub-checkout>/agent/<area>/`,
+then verify the sync reflects it in `~/.claude/<area>/`. Editing directly in
+`~/.claude/<area>/` is acceptable only when the inode is shared and the change
+is visible to both sides; verify with
+`stat -f "ino=%i" ~/.claude/<area>/<file> <agent-hub-checkout>/agent/<area>/<file>`.
+Never leave a change in `~/.claude/` that has not also reached
+`<agent-hub-checkout>/agent/`.
 
 The intentional asymmetry:
 
 | Path | Canonical | Notes |
 |------|-----------|-------|
-| `skills/`, `rules/`, `standards/`, `commands/`, `lib/`, `config/` | caol-ila | shared via APFS clone or hard-link; edits propagate |
-| `CLAUDE.md`, `AGENTS.md` | caol-ila root | canonical entry documents |
-| `agent/CLAUDE.md`, `repo-registry.json` | caol-ila | `agent/CLAUDE.md` is the `~/.claude` deploy shim; edit root `CLAUDE.md` for entry-document changes |
-| `hooks/` | caol-ila must hold these | durable harness scripts deployed to `~/.claude/hooks/` |
-| `settings.json` | caol-ila must hold this | per-machine secrets stay in `settings.local.json` |
-| `private/caol-config/doc-paths.json` and similar non-machine config | caol-ila | machine-specific entries below stay `~/.claude`-only |
+| `skills/`, `rules/`, `standards/`, `commands/`, `lib/`, `config/` | agent-hub | shared via APFS clone or hard-link; edits propagate |
+| `CLAUDE.md`, `AGENTS.md` | agent-hub root | canonical entry documents |
+| `agent/CLAUDE.md`, `repo-registry.json` | agent-hub | `agent/CLAUDE.md` is the `~/.claude` deploy shim; edit root `CLAUDE.md` for entry-document changes |
+| `hooks/` | agent-hub must hold these | durable harness scripts deployed to `~/.claude/hooks/` |
+| `settings.json` | agent-hub must hold this | per-machine secrets stay in `settings.local.json` |
+| `private/caol-config/doc-paths.json` and similar non-machine config | agent-hub | `caol-config` is a legacy directory name; machine-specific entries below stay `~/.claude`-only |
 | `private/caol-config/{hardware,machine-paths,repo-paths}.json` | `~/.claude/` only | per-machine paths and specs, gitignored on purpose |
-| `templates/`, `scheduled-tasks/`, `obsidian-staging/` | caol-ila only | not loaded by the harness at runtime |
+| `templates/`, `scheduled-tasks/`, `obsidian-staging/` | agent-hub only | not loaded by the harness at runtime |
 | `cache/`, `backups/`, `sessions/`, `tasks/`, `telemetry/`, `projects/`, `shell-snapshots/`, `paste-cache/`, `file-history/`, `ops/`, `plans/`, `downloads/`, `history.jsonl` | `~/.claude/` only | runtime/cache, not durable |
 
-Before declaring any rename, move, or new artifact done, verify both sides match with `diff -rq ~/.claude/<area>/ caol-ila/agent/<area>/` for the affected sub-tree. Renames executed only against `~/.claude/` rely on inode-sharing to propagate. That propagation does not extend to adding a brand-new top-level entry; create those entries under `caol-ila/agent/`.
+Before declaring any rename, move, or new artifact done, verify both sides match
+with `diff -rq ~/.claude/<area>/ <agent-hub-checkout>/agent/<area>/` for the
+affected sub-tree. Renames executed only against `~/.claude/` rely on
+inode-sharing to propagate. That propagation does not extend to adding a
+brand-new top-level entry; create those entries under `<agent-hub-checkout>/agent/`.
 
 ---
 

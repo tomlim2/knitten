@@ -11,7 +11,7 @@ status: accepted
 | Shotloom task implementation spec | Shotloom | `shotloom-draft-spec` |
 | Code, directory, or branch diff technical spec | code-derived | `dev-generate-spec` template and analysis order |
 | Web/product/PRD spec review | web spec review | `review-audit-web-spec` checklist |
-| caol/Knitten policy, architecture, validator, path, skill/rule/standard work | caol operational spec | `caol-manage-spec` |
+| caol/agent-hub policy, architecture, validator, path, skill/rule/standard work | caol operational spec | `caol-manage-spec` |
 | Obsidian vault structure or note contracts | Obsidian docs | Obsidian rules/skills on demand |
 | Unknown or mixed | intake-only | ask one short question or write draft |
 

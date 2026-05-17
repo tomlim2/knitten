@@ -20,7 +20,7 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/caol-resolve-doc-path
 
 ## Approval-gate exceptions
 
-Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). Other repos (CINEV, caol-ila, personal) follow the strict approval flow in `~/.claude/rules/git-defaults.md`.
+Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). Other repos (CINEV, agent-hub, personal) follow the strict approval flow in `~/.claude/rules/git-defaults.md`.
 
 **Pre-commit gates (NEVER skip):** `cargo fmt --check`, `cargo clippy`, `cargo check`, `cargo test`, `node scripts/validate-doc-paths.mjs`, `node scripts/validate-ci-rust-coverage.mjs`.
 

@@ -16,7 +16,7 @@
     "maxBytes": 25000
   },
   {
-    "task": "Author Knitten spec lifecycle",
+    "task": "Author agent-hub spec lifecycle",
     "mustLoad": [
       "caol-authoring"
     ],

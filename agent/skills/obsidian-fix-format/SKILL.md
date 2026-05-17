@@ -1,7 +1,7 @@
 ---
 description: Scan and fix common Obsidian markdown formatting glitches in the vault — frontmatter glued to headings (`---#`), missing blank lines, etc.
 domains: obsidian
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: markdown,yaml
 task-types: authoring,implementation
 context-profile: obsidian-vault

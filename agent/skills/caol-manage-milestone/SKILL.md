@@ -1,9 +1,9 @@
 ---
-description: Manage caol-ila milestones across create, update, attach, detach, review, archive, and delete flows for docs/milestones.
+description: Manage agent-hub milestones across create, update, attach, detach, review, archive, and delete flows for docs/milestones.
 argument-hint: "<create|update|attach|detach|review|archive|delete> [milestone] [spec]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(test:*), Bash(node:*), Bash(mkdir:*)
 domains: caol
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: markdown,yaml,json
 task-types: authoring,review
 context-profile: caol-authoring

@@ -6,7 +6,7 @@ allowed-tools: Bash(git:*), Read, Glob, Grep
 
 # Check Updates
 
-Show skills, commands, and standards changed in caol-ila on a given date (defaults to today).
+Show agent-hub skills, commands, and standards changed on a given date (defaults to today).
 ## Arguments
 
 - `[YYYY-MM-DD]` - Date to check (optional, defaults to today)
@@ -26,10 +26,10 @@ Usage:
 
 ### Step 2: Get changed files from git
 
-Read `~/.claude/private/caol-config/repo-paths.json` → key `caol-ila` → `.path` to get the repo path. Then run:
+Read `~/.claude/private/caol-config/repo-paths.json` → key `agent-hub` or compatibility key `knitten` / `caol-ila` → `.path` to get the repo path. Then run:
 
 ```bash
-git -C <caol-ila-path> log \
+git -C <agent-hub-path> log \
   --after="YYYY-MM-DD 00:00" --before="YYYY-MM-DDT23:59:59" \
   --name-only --format="" -- agent/commands/ agent/skills/ agent/standards/
 ```
@@ -49,7 +49,7 @@ Group deduplicated files by type:
 For each file, determine if it was **new** or **modified** on that date:
 
 ```bash
-git -C <caol-ila-path> log \
+git -C <agent-hub-path> log \
   --diff-filter=A --after="YYYY-MM-DD 00:00" --before="YYYY-MM-DDT23:59:59" \
   --name-only --format="" -- <file>
 ```

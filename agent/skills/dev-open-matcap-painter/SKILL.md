@@ -2,7 +2,7 @@
 description: Open Matcap Painter web app. Use when opening or launching the matcap-painter tool.
 allowed-tools: Bash(npx:*), Bash(open:*), Bash(lsof:*), Read
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: three
 task-types: implementation

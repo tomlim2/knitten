@@ -2,7 +2,7 @@
 status: accepted
 created: 2026-05-17
 updated: 2026-05-17
-owner: caol-ila
+owner: agent-hub
 ---
 
 # Milestone Index
@@ -21,7 +21,7 @@ Milestones are not implementation specs. Keep implementation contracts in
 This format follows the common shape used by issue trackers while keeping the
 repo Markdown as the canonical owner for agent work:
 
-| Source | Useful idea for caol-ila |
+| Source | Useful idea for agent-hub |
 |--------|--------------------------|
 | [GitHub milestones](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/creating-and-editing-milestones-for-issues-and-pull-requests) | milestones group issues and pull requests in a repository; descriptions render Markdown |
 | [Linear project milestones](https://linear.app/docs/project-milestones) | milestones divide a project lifecycle into stages and show progress from assigned issues |
@@ -72,7 +72,7 @@ Milestone filenames must be kebab-case Markdown files:
 | Milestone | Status | Role |
 |-----------|--------|------|
 | [spec-lifecycle-system.md](spec-lifecycle-system.md) | completed | spec, milestone, and lifecycle-management system |
-| [knitten-rename.md](knitten-rename.md) | active | rename internal identity from `caol-ila` to `Knitten` |
+| [knitten-rename.md](knitten-rename.md) | active | rename internal identity from `caol-ila` to `agent-hub` |
 
 ## Template
 
@@ -81,7 +81,7 @@ Milestone filenames must be kebab-case Markdown files:
 status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-owner: caol-ila
+owner: agent-hub
 target-date:
 ---
 

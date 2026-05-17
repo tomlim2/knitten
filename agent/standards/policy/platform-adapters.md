@@ -5,7 +5,7 @@ portability: shared
 ---
 # Platform Adapter Standard
 
-Defines how shared `caol-ila` rules, standards, skills, and commands are consumed by multiple agent harnesses.
+Defines how shared agent-hub rules, standards, skills, and commands are consumed by multiple agent harnesses.
 
 Reserved system terms live in `../../../docs/reference/system-glossary.md`.
 

@@ -6,8 +6,8 @@ allowed-tools: Bash(npx:*), Read, Edit
 
 # video-hyperframes-add-block
 
-caol-ila wrapper for the upstream HyperFrames registry skill (heygen-com/hyperframes).
+agent-hub wrapper for the upstream HyperFrames registry skill (heygen-com/hyperframes).
 
 ## Upstream skill
 
-@~/Desktop/www/knitten/vendor/hyperframes/skills/hyperframes-registry/SKILL.md
+@~/.claude/vendor/hyperframes/skills/hyperframes-registry/SKILL.md

@@ -2,11 +2,11 @@
 import WidgetFrame from '../WidgetFrame.astro';
 import EmptyState from '../EmptyState.astro';
 import { walkMarkdown } from '../../lib/doc-discovery';
-import { obsidianVaultDir, vaultRootFolder } from '../../lib/paths';
+import { vaultProjectDir } from '../../lib/paths';
 import { join } from 'node:path';
 
-const vaultDir = obsidianVaultDir();
-const root = vaultDir ? join(vaultDir, vaultRootFolder('projects'), 'caol-ila', 'learnings') : null;
+const projectDir = vaultProjectDir('agent-hub', ['knitten', 'caol-ila']);
+const root = projectDir ? join(projectDir, 'learnings') : null;
 
 let items: Array<{ slug: string; name: string; mtime: Date }> = [];
 let error: string | null = null;

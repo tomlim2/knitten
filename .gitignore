@@ -42,6 +42,13 @@ agent/paste-cache/
 agent/mcp-needs-auth-cache.json
 agent/image-cache/
 
+# External upstream skill vendors.
+# Registry and sync script are tracked; cloned vendor repos are local runtime.
+agent/vendor/*
+!agent/vendor/README.md
+!agent/vendor/skills.json
+!agent/vendor/sync.sh
+
 # Future-proof: catch any new runtime files
 agent/*.log
 agent/logs/

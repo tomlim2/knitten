@@ -1,7 +1,7 @@
 ---
 description: "Live Design System component showcase with copyable HTML examples."
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: astro,three
 task-types: implementation

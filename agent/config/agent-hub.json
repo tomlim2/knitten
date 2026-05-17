@@ -50,13 +50,13 @@
       "linkMethod": "json-config",
       "configFormat": {
         "skills": [
-          "$CAOL_ILA_ROOT/agent/skills"
+          "$AGENT_HUB_ROOT/agent/skills"
         ],
         "prompts": [
-          "$CAOL_ILA_ROOT/agent/commands"
+          "$AGENT_HUB_ROOT/agent/commands"
         ],
         "instructions": [
-          "$CAOL_ILA_ROOT/SYSTEM.md"
+          "$AGENT_HUB_ROOT/SYSTEM.md"
         ]
       }
     }
@@ -233,7 +233,7 @@
     {
       "id": "claude-settings",
       "pathPattern": "agent/settings.json",
-      "owner": "caol-ila",
+      "owner": "agent-hub",
       "gitPolicy": "tracked",
       "secretPolicy": "no-secrets",
       "durability": "durable"
@@ -241,7 +241,7 @@
     {
       "id": "project-settings-templates",
       "pathPattern": "agent/config/permissions/*.json",
-      "owner": "caol-ila",
+      "owner": "agent-hub",
       "gitPolicy": "template-tracked",
       "secretPolicy": "no-secrets",
       "durability": "durable"
@@ -249,7 +249,7 @@
     {
       "id": "hooks",
       "pathPattern": "agent/hooks/*.sh",
-      "owner": "caol-ila",
+      "owner": "agent-hub",
       "gitPolicy": "tracked",
       "secretPolicy": "no-secrets",
       "durability": "durable"
@@ -257,7 +257,7 @@
     {
       "id": "tool-apps",
       "pathPattern": "tools/*",
-      "owner": "caol-ila",
+      "owner": "agent-hub",
       "gitPolicy": "mixed",
       "secretPolicy": "no-secrets",
       "durability": "durable"
@@ -265,7 +265,7 @@
     {
       "id": "shared-deploy-tree",
       "pathPattern": "~/.claude/{rules,standards,skills,commands,lib,config}",
-      "owner": "caol-ila",
+      "owner": "agent-hub",
       "gitPolicy": "tracked",
       "secretPolicy": "no-secrets",
       "durability": "durable"

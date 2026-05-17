@@ -1,10 +1,10 @@
 ---
-description: "Targeted maintenance for an existing caol-ila skill. Use when making a small, requested edit to one SKILL.md or its local support files."
+description: "Targeted maintenance for an existing agent-hub skill. Use when making a small, requested edit to one SKILL.md or its local support files."
 ---
 
 # caol-edit-skill
 
-Targeted maintenance workflow for existing caol-ila skills.
+Targeted maintenance workflow for existing agent-hub skills.
 
 ## Purpose
 
@@ -50,7 +50,7 @@ When changing routing metadata:
 
 ## Validation
 
-Run from the caol-ila repo root:
+Run from the agent-hub repo root:
 
 ```bash
 node scripts/validate-llm-first.mjs

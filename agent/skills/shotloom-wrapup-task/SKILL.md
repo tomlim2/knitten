@@ -172,7 +172,7 @@ Pass a retrospective logging brief:
 
 If the Obsidian vault is writable (`obsidian` on home Mac) the entry lands there; otherwise learn-log-day falls back to `obsidian-staging` and `/learn-archive-week` consolidates later.
 
-**After learn-log-day writes the file**, commit and push it from the caol-ila repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
+**After learn-log-day writes the file**, commit and push it from the agent-hub repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
 
 ### Step 6: Report
 

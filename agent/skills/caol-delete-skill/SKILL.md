@@ -1,14 +1,14 @@
 ---
-description: "Safely remove a caol-ila skill and its registry references. Use when deleting an existing skill directory."
+description: "Safely remove an agent-hub skill and its registry references. Use when deleting an existing skill directory."
 ---
 
 # caol-delete-skill
 
-Safe deletion workflow for caol-ila skills.
+Safe deletion workflow for agent-hub skills.
 
 ## Purpose
 
-Use this when removing an existing skill from caol-ila. The workflow checks references, routing, generated inventory, and installed symlinks before deleting files.
+Use this when removing an existing skill from agent-hub. The workflow checks references, routing, generated inventory, and installed symlinks before deleting files.
 
 Deletion is destructive. Confirm the exact skill name and blocker list before removing tracked files unless the user has already given explicit deletion approval for that skill.
 
@@ -50,7 +50,7 @@ rg -n "<skill-name>|agent/skills/<skill-name>|/<skill-name>" AGENT-HUB.md README
 
 ## Validation
 
-Run from the caol-ila repo root:
+Run from the agent-hub repo root:
 
 ```bash
 node scripts/validate-llm-first.mjs

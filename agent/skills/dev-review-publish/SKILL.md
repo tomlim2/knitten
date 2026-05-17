@@ -3,7 +3,7 @@ description: "Final publish review — parallel code quality, UX/UI, UX writing,
 argument-hint: "[directory or file]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(npx:*)
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: astro,three
 task-types: review

@@ -2,13 +2,15 @@
 description: HTML-native prototypes, slide decks, infographics, and motion (MP4/GIF) via Huashu Design — no Figma or AE needed.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx:*)
 domains: web
-repo-keys: caol-ila,mmd-anju,ta-portfolio
+repo-keys: agent-hub,mmd-anju,ta-portfolio
 languages: css,javascript,typescript
 frameworks: astro,three
 task-types: implementation
 context-profile: web-frontend
 exclude-when: rust,unreal,obsidian
-
+name: design-huashu-make-prototype
+when_to_use: |
+  YES when the user asks for any of:
     - 5-axis design critique / radar-chart review
     - Applying Anthropic brand colors/type — use brand-guidelines
     - Clickable interactive prototype (phone frame, screen transitions)
@@ -22,15 +24,12 @@ exclude-when: rust,unreal,obsidian
     - Static PNG / PDF art (algorithmic or print) — use canvas-design
     - Timeline-based video or narrative — use video-hyperframes-make-composition
   NO when:
-  YES when the user asks for any of:
-name: design-huashu-make-prototype
-when_to_use: |
 ---
 
 # design-huashu-make-prototype
 
-caol-ila wrapper for the upstream Huashu Design skill (alchaincyf/huashu-design).
+agent-hub wrapper for the upstream Huashu Design skill (alchaincyf/huashu-design).
 
 ## Upstream skill
 
-@~/Desktop/www/knitten/vendor/huashu-design/SKILL.md
+@~/.claude/vendor/huashu-design/SKILL.md

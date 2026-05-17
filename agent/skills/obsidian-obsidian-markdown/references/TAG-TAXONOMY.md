@@ -1,7 +1,7 @@
 ---
 status: accepted
 domains: obsidian
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: markdown,yaml
 task-types: authoring,implementation,review
 context-profile: obsidian-vault

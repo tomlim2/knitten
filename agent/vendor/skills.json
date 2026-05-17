@@ -1,0 +1,14 @@
+{
+  "vendors": [
+    {
+      "name": "hyperframes",
+      "repo": "https://github.com/heygen-com/hyperframes.git",
+      "branch": "main"
+    },
+    {
+      "name": "huashu-design",
+      "repo": "https://github.com/alchaincyf/huashu-design.git",
+      "branch": "master"
+    }
+  ]
+}

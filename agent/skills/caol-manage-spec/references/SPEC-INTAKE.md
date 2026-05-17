@@ -6,7 +6,7 @@ status: accepted
 
 ## Purpose
 
-Capture the inputs used to make or update a high-risk caol/Knitten spec before
+Capture the inputs used to make or update a high-risk caol/agent-hub spec before
 the direct spec is written.
 
 ## When To Persist
@@ -33,7 +33,7 @@ Small, low-risk specs may use chat-only intake.
 status: intake
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-owner: caol-ila
+owner: agent-hub
 spec: docs/plans/<lifecycle>/<slug>.md
 ---
 

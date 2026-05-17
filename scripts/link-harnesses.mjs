@@ -5,9 +5,9 @@ import os from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const CAOL_ILA_ROOT = path.resolve(__dirname, '..');
+const AGENT_HUB_ROOT = path.resolve(__dirname, '..');
 
-const agentHubPath = path.join(CAOL_ILA_ROOT, 'agent', 'config', 'agent-hub.json');
+const agentHubPath = path.join(AGENT_HUB_ROOT, 'agent', 'config', 'agent-hub.json');
 const isDryRun = process.argv.includes('--dry-run');
 
 function resolveHome(filepath) {
@@ -19,7 +19,7 @@ function resolveHome(filepath) {
 
 async function linkHarnesses() {
   if (isDryRun) console.log('\n=== DRY RUN MODE: No changes will be made ===\n');
-  console.log(`[link-harnesses] CAOL_ILA_ROOT: ${CAOL_ILA_ROOT}`);
+  console.log(`[link-harnesses] AGENT_HUB_ROOT: ${AGENT_HUB_ROOT}`);
   
   const hubData = JSON.parse(await fs.readFile(agentHubPath, 'utf8'));
 
@@ -55,7 +55,9 @@ async function handleJsonConfig(harness, targetPath) {
 
   let modified = false;
   for (const [key, paths] of Object.entries(harness.configFormat || {})) {
-    const resolvedPaths = paths.map(p => p.replace('$CAOL_ILA_ROOT', CAOL_ILA_ROOT));
+    const resolvedPaths = paths.map((p) =>
+      p.replace('$AGENT_HUB_ROOT', AGENT_HUB_ROOT).replace('$CAOL_ILA_ROOT', AGENT_HUB_ROOT)
+    );
     
     config[key] = config[key] || [];
     for (const p of resolvedPaths) {
@@ -86,7 +88,7 @@ async function handleSymlinks(harness, deployTarget) {
   if (!isDryRun) await fs.mkdir(deployTarget, { recursive: true });
 
   for (const [targetName, relativeSourcePath] of Object.entries(harness.mappings)) {
-    const sourcePath = path.join(CAOL_ILA_ROOT, relativeSourcePath);
+    const sourcePath = path.join(AGENT_HUB_ROOT, relativeSourcePath);
     const targetPath = path.join(deployTarget, targetName);
 
     try {

@@ -40,7 +40,7 @@ Exception to `~/.claude/rules/git-defaults.md`. The diff must contain ONLY Obsid
 | Diff content | Auto-commit allowed? |
 |--------------|----------------------|
 | Files inside `machine-paths.json → obsidian` | **Yes** |
-| Files inside `obsidian-staging` (currently `caol-ila/agent/obsidian-staging/`) | **Yes** |
+| Files inside `obsidian-staging` (currently `<agent-hub-checkout>/agent/obsidian-staging/`) | **Yes** |
 | `.md` files with Obsidian frontmatter (`title`, `tags`, `date`, `source`) | **Yes** |
 | Mixed: any of the above + code/config | **No** — split the commit, or get explicit approval for the bundle |
 

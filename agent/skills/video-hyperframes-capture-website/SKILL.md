@@ -6,8 +6,8 @@ allowed-tools: Bash(npx:*), Read, Write, Edit, WebFetch
 
 # video-hyperframes-capture-website
 
-caol-ila wrapper for the upstream website-to-hyperframes skill (heygen-com/hyperframes).
+agent-hub wrapper for the upstream website-to-hyperframes skill (heygen-com/hyperframes).
 
 ## Upstream skill
 
-@~/Desktop/www/knitten/vendor/hyperframes/skills/website-to-hyperframes/SKILL.md
+@~/.claude/vendor/hyperframes/skills/website-to-hyperframes/SKILL.md

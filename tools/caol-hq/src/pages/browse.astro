@@ -3,13 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import { discoverSkills } from '../lib/skill-discovery';
 import { walkMarkdown } from '../lib/doc-discovery';
-import { STANDARDS_DIR, obsidianVaultDir, vaultRootFolder } from '../lib/paths';
+import { STANDARDS_DIR, vaultProjectDir } from '../lib/paths';
 import { join } from 'node:path';
 
 const skillCount = discoverSkills().length;
 const standardsCount = walkMarkdown(STANDARDS_DIR).length;
-const vaultDir = obsidianVaultDir();
-const learningsCount = vaultDir ? walkMarkdown(join(vaultDir, vaultRootFolder('projects'), 'caol-ila', 'learnings')).length : 0;
+const projectDir = vaultProjectDir('agent-hub', ['knitten', 'caol-ila']);
+const learningsCount = projectDir ? walkMarkdown(join(projectDir, 'learnings')).length : 0;
 ---
 
 <BaseLayout title="Browse" activeNav="/browse">

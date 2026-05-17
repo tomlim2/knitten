@@ -103,6 +103,8 @@
       "Bash(open *)",
 
       "Read(//Users/{USERNAME}/.claude/private/**)",
+      "Read(//Users/{USERNAME}/Desktop/www/agent-hub/**)",
+      "Read(//Users/{USERNAME}/Desktop/www/knitten/**)",
       "Read(//Users/{USERNAME}/Desktop/www/caol-ila/**)",
       "Read(//tmp/**)"
     ]

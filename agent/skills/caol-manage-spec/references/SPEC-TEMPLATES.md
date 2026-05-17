@@ -4,14 +4,14 @@ status: accepted
 
 # Spec Templates
 
-## General Caol/Knitten Spec
+## General Caol/agent-hub Spec
 
 ```markdown
 ---
 status: proposed
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-owner: caol-ila
+owner: agent-hub
 milestone:
 ---
 

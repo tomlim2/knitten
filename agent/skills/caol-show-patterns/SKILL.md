@@ -4,11 +4,11 @@ description: "Common design patterns for commands and skills with detailed examp
 
 # caol-show-patterns
 
-Common design patterns for caol-ila commands and skills with detailed examples.
+Common design patterns for agent-hub commands and skills with detailed examples.
 
 ## Purpose
 
-This guide documents common design patterns used in caol-ila commands and skills. Each pattern includes a detailed explanation, code examples, and use cases to help you structure your own commands and skills effectively.
+This guide documents common design patterns used in agent-hub commands and skills. Each pattern includes a detailed explanation, code examples, and use cases to help you structure your own commands and skills effectively.
 
 ---
 

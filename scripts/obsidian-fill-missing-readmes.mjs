@@ -38,7 +38,7 @@ function dirsToCheck() {
 
 function projectFor(dir) {
   const rel = relative(projectsRoot, dir).split(sep);
-  return rel[0] || 'caol-ila';
+  return rel[0] || 'agent-hub';
 }
 
 function readmeFor(dir) {

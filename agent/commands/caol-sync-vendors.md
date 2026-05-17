@@ -1,19 +1,23 @@
 ---
-description: Sync knitten vendor skills to upstream latest
+description: Sync agent-hub vendor skills to upstream latest
 allowed-tools: Read, Bash(git:*), Bash(jq:*), Bash(bash:*), Bash(ls:*)
 ---
 
 # caol-sync-vendors
 
-Pull every external vendor in [knitten](https://github.com/tomlim2/knitten) to its upstream latest commit.
+Pull every external vendor registered in agent-hub to its upstream latest commit.
 
-Scope: this command only touches `knitten/vendor/*` (git pull via `knitten/scripts/sync.sh`). It does NOT audit internal caol-ila skills, does NOT update descriptions or frontmatter, and does NOT write to the caol-ila repo. For anything else (per-skill drift audit, wrapper review, skill-level metadata updates), that's a different command's job.
+Scope: this command only touches `~/.claude/vendor/*` local upstream checkouts
+(git pull via `~/.claude/vendor/sync.sh`). It does NOT audit internal agent-hub
+skills, does NOT update descriptions or frontmatter, and does NOT write to the
+tracked repo except through the tracked vendor registry/script.
 
-knitten holds third-party vendor skills (`vendor/` folder, gitignored). caol-ila wrappers `@import` from knitten's vendor paths. This command:
+agent-hub holds third-party vendor skills in `~/.claude/vendor/`. Wrapper skills
+`@import` from that vendor root. This command:
 
 1. Shows how far each vendor is behind its upstream
 2. Asks for confirmation
-3. Runs `knitten/scripts/sync.sh` to pull latest
+3. Runs `~/.claude/vendor/sync.sh` to pull latest
 4. Verifies each wrapper's `@import` target still exists
 
 ## Usage
@@ -26,23 +30,28 @@ No arguments.
 
 ## Workflow
 
-### Step 1: Locate knitten
+### Step 1: Locate vendor root
 
-Resolve knitten path from config:
+Resolve the vendor root through the harness path:
 
 ```bash
-knitten=$(jq -re '.knitten.path // .knitten // empty' ~/.claude/private/caol-config/repo-paths.json) || { echo "repo-paths key 'knitten' not found"; exit 1; }
-[ -d "$knitten" ] || { echo "knitten not found — clone: git clone https://github.com/tomlim2/knitten.git $knitten"; exit 1; }
+vendor_root="$HOME/.claude/vendor"
+registry="$vendor_root/skills.json"
+sync_script="$vendor_root/sync.sh"
+[ -f "$registry" ] || { echo "vendor registry not found: $registry"; exit 1; }
+[ -x "$sync_script" ] || { echo "vendor sync script not executable: $sync_script"; exit 1; }
 ```
 
-If knitten is missing, tell the user to clone it and stop.
+If the vendor registry or sync script is missing, stop and fix the agent-hub
+install before pulling upstreams.
 
 ### Step 2: Report per-vendor drift
 
-Read `$knitten/skills.json`, and for each vendor under `vendor/<name>`:
+Read `$vendor_root/skills.json`, and for each vendor under
+`$vendor_root/<name>`:
 
 ```bash
-cd "$knitten/vendor/<name>"
+cd "$vendor_root/<name>"
 git fetch --depth 1 origin "$branch" 2>/dev/null
 local=$(git rev-parse HEAD)
 remote=$(git rev-parse "origin/$branch")
@@ -71,11 +80,10 @@ Do NOT pull without explicit approval. The user may want to inspect upstream cha
 If approved:
 
 ```bash
-cd "$knitten"
-./scripts/sync.sh
+bash "$sync_script"
 ```
 
-`sync.sh` iterates `skills.json` and does `git fetch --depth 1 + git reset --hard origin/<branch>` per vendor. Local changes in `vendor/*` are lost — that's intentional (vendor folders are gitignored, not a working copy).
+`sync.sh` iterates `skills.json` and does `git fetch --depth 1 + git reset --hard origin/<branch>` per vendor. Local changes in `~/.claude/vendor/<name>` are lost — that's intentional (vendor folders are gitignored, not a working copy).
 
 ### Step 5: Verify wrapper @import targets
 
@@ -104,12 +112,13 @@ Broken wrappers: (none) | <list>
 
 ## Notes
 
-- This command does NOT commit anything. `knitten/vendor/` is gitignored.
+- This command does NOT commit anything. `~/.claude/vendor/<name>/` checkouts
+  are gitignored.
 - If `skills.json` changed (new vendor added, entry removed), that's a separate edit flow — covered by the CRUD process, not this command.
-- For a full wipe + reinstall: `cd $knitten && ./scripts/sync.sh --fresh`
+- For a full wipe + reinstall: delete the vendor checkout folder and run
+  `bash ~/.claude/vendor/sync.sh`.
 
 ## Related
 
-- knitten repo: https://github.com/tomlim2/knitten
 - Wrapper naming: `~/.claude/rules/author.md` — external wrapper pattern
-- Vendor layout: `~/Desktop/www/knitten/README.md`
+- Vendor layout: `~/.claude/vendor/README.md`

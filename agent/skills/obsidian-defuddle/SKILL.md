@@ -1,7 +1,7 @@
 ---
 description: Extract clean markdown from web pages via Defuddle CLI — use instead of WebFetch for URLs, docs, articles, blog posts.
 domains: obsidian
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: markdown
 task-types: authoring,implementation
 context-profile: obsidian-vault

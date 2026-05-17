@@ -10,7 +10,7 @@ Applies to any new slash command or skill. Three concerns, single trigger.
 ## Naming
 
 - **Internal skills/commands** — `{category}-{verb}-{subject}` (MANDATORY).
-- **External wrappers** — `{category}-{repo}-{verb}-{subject}`; the `{repo}` token marks an upstream source hosted in `knitten/vendor/`.
+- **External wrappers** — `{category}-{repo}-{verb}-{subject}`; the `{repo}` token marks an upstream source hosted in `~/.claude/vendor/`.
 - **Lowercase only** — no capitals, no camelCase, no underscores, no spaces.
 - **Hyphens** as separators; multi-word subjects use hyphens (`creator-launcher`).
 - **Max length** — see `~/.claude/config/taxonomy.json` key `maxArtifactNameChars`.
@@ -24,7 +24,7 @@ Applies to any new slash command or skill. Three concerns, single trigger.
 - Repo token = upstream repo/package name, lowercase, hyphens preserved (`hyperframes`, `huashu-design`).
 - **Abbreviation allowed when category and repo share a word** — `design` + `huashu-design` → `design-huashu-make-prototype` (drop trailing `-design`).
 - Scoped packages drop the scope (`@heygen/hyperframes` → `hyperframes`).
-- Wrapper body = frontmatter + single `@import <knitten-vendor-path>` + optional `when_to_use` block. No local logic in a wrapper — if logic is needed, make a separate non-wrapper skill.
+- Wrapper body = frontmatter + single `@import <agent-hub-vendor-path>` + optional `when_to_use` block. No local logic in a wrapper — if logic is needed, make a separate non-wrapper skill.
 - One wrapper per user-facing role, not one per vendor sub-skill. Exception: vendor ships orthogonal sub-skills with distinct roles (e.g. CLI vs authoring).
 
 ### Disambiguation

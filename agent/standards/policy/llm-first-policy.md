@@ -5,13 +5,13 @@ portability: shared
 ---
 # Agent-First Policy
 
-The meta-policy that governs every other document, rule, skill, and command in `caol-ila`. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
+The meta-policy that governs every other agent-hub document, rule, skill, and command. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
 
 For the vocabulary used here (`charter`, `default-counter`, `lifecycle phase`, `audience`, `mutability`, layer numbers) and the rationale behind each principle below — see `principles.md`.
 
 ## Two files, two concerns
 
-`caol-ila` is **LLM-first** (single term, see `SYSTEM.md` charter). The policy is split across two files because they answer different questions:
+agent-hub is **LLM-first** (single term, see `SYSTEM.md` charter). The policy is split across two files because they answer different questions:
 
 | File | Question | Read when |
 |------|----------|-----------|

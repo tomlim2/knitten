@@ -1,7 +1,7 @@
 ---
 description: Interact with Obsidian vaults via the obsidian CLI — read/create/search notes, manage tasks, develop plugins.
 domains: obsidian
-repo-keys: caol-ila
+repo-keys: agent-hub
 languages: json,markdown,yaml
 task-types: authoring,implementation
 context-profile: obsidian-vault
