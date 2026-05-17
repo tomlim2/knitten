@@ -136,7 +136,7 @@ rg -n "\b(caol-ila|caol ila|Caol Ila|caol-config|caol-hq|caol-[a-z0-9-]+)\b|Knit
   -g '!agent/skills/**/node_modules/**' \
   -g '!agent/skills/**/dist/**' \
   -g '!agent/skills/**/.astro/**' \
-  -g '!docs/plans/*-reports/**'
+  -g '!docs/plans/reports/**'
 ```
 
 Classify each hit:
@@ -227,7 +227,7 @@ rg -n "\b(caol-ila|caol ila|Caol Ila|caol-config|caol-hq|caol-[a-z0-9-]+)\b|Knit
   -g '!agent/skills/**/node_modules/**' \
   -g '!agent/skills/**/dist/**' \
   -g '!agent/skills/**/.astro/**' \
-  -g '!docs/plans/*-reports/**'
+  -g '!docs/plans/reports/**'
 ```
 
 Deploy sync validation for shared artifacts:

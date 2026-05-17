@@ -4,7 +4,7 @@ created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
 milestone: spec-lifecycle-system
-briefing: ../briefings/specs/docs-plans-lifecycle-migration.md
+briefing: ../../briefings/specs/docs-plans-lifecycle-migration.md
 ---
 
 # Docs Plans Lifecycle Migration
@@ -184,8 +184,8 @@ Batch B output:
 
 | File | Result |
 |------|--------|
-| [move-manifest.tsv](reports/docs-plans-lifecycle-migration/move-manifest.tsv) | 90 source-to-target rows |
-| [manifest-summary.md](reports/docs-plans-lifecycle-migration/manifest-summary.md) | review summary with counts and `open` list |
+| [move-manifest.tsv](../reports/docs-plans-lifecycle-migration/move-manifest.tsv) | 90 source-to-target rows |
+| [manifest-summary.md](../reports/docs-plans-lifecycle-migration/manifest-summary.md) | review summary with counts and `open` list |
 
 Manifest counts:
 
@@ -197,11 +197,27 @@ Manifest counts:
 
 ### Batch C: Move And Repair Links
 
+Status: partially implemented on 2026-05-17.
+
 1. Use `git mv` for approved files and report folders.
 2. Rewrite milestone links, briefing `spec:` links, skill references, standards,
    README entries, and sibling-spec references.
 3. Keep the move batch mechanical and generated from the manifest.
 4. Do not delete old specs unless a separate delete gate is satisfied.
+
+Batch C output:
+
+| Result | Count |
+|--------|------:|
+| approved rows moved | 64 |
+| spec files moved | 27 |
+| report artifacts moved | 37 |
+| legacy `open` specs intentionally held | 26 |
+| redirect stubs created | 0 |
+
+Batch C moved only manifest rows whose `needs-review` value was `false`. The
+remaining top-level Markdown files are the 26 legacy `open` specs listed in the
+manifest summary; they need a separate review/classification pass before moving.
 
 ### Batch D: Validate And Review
 

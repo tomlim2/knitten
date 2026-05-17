@@ -24,8 +24,8 @@ This migration is complete. It moved `caol-ila` from a Claude-only instruction f
 | Standards | standards are grouped by topic under `agent/standards/` |
 | Standard status | every standard has `status:` frontmatter |
 | Validator | `scripts/validate-llm-first.mjs` enforces anti-rot checks |
-| Drift hardening | completed in `docs/plans/harden-system-drift.md` |
-| Vault split | completed in `docs/plans/split-vault-folders.md` |
+| Drift hardening | completed in `docs/plans/completed/harden-system-drift.md` |
+| Vault split | completed in `docs/plans/completed/split-vault-folders.md` |
 | Tag | `v3.1.0` exists |
 
 ## Definition Of Done
@@ -44,15 +44,15 @@ This migration is complete. It moved `caol-ila` from a Claude-only instruction f
 | Original plan text | Closeout decision |
 |--------------------|-------------------|
 | Validator runs in CI | No CI config exists in this repo. Current enforcement is the local validator plus authoring docs. Future CI belongs in an infrastructure plan if needed. |
-| P1.3 vault split tracked in `vault-policy-split.md` | Actual file is `docs/plans/split-vault-folders.md`; it is done. |
+| P1.3 vault split tracked in `vault-policy-split.md` | Actual file is `docs/plans/completed/split-vault-folders.md`; it is done. |
 | Old flat `standards/` inventory | Replaced by grouped `agent/standards/<group>/` folders and README generated inventory. |
 
 ## Follow-Up
 
 | Follow-up | Plan |
 |-----------|------|
-| Agent hub manifest and hub-level validation | `docs/plans/agent-hub.md` |
-| Additional registry drift prevention | `docs/plans/harden-system-drift.md` is complete; add new work to `agent-hub.md` or a new focused plan |
+| Agent hub manifest and hub-level validation | `docs/plans/completed/agent-hub.md` |
+| Additional registry drift prevention | `docs/plans/completed/harden-system-drift.md` is complete; add new work to `agent-hub.md` or a new focused plan |
 
 ## Historical Baseline
 

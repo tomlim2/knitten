@@ -24,27 +24,28 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 
 | Spec | Status | Role |
 |------|--------|------|
-| [caol-manage-spec.md](../plans/caol-manage-spec.md) | implemented | define the spec intake, routing, CRUD, review, and lifecycle manager |
-| [caol-review-implementation.md](../plans/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
-| [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
-| [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
-| [docs-plans-lifecycle-migration.md](../plans/docs-plans-lifecycle-migration.md) | active | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
-| [spec-validator-hardening.md](../plans/spec-validator-hardening.md) | implemented | add validator checks for milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
+| [caol-manage-spec.md](../plans/completed/caol-manage-spec.md) | implemented | define the spec intake, routing, CRUD, review, and lifecycle manager |
+| [caol-review-implementation.md](../plans/completed/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
+| [caol-manage-milestone.md](../plans/completed/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
+| [caol-architecture-hardening.md](../plans/active/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
+| [docs-plans-lifecycle-migration.md](../plans/active/docs-plans-lifecycle-migration.md) | active | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
+| [spec-validator-hardening.md](../plans/completed/spec-validator-hardening.md) | implemented | add validator checks for milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Progress
 
 | Phase | State | Evidence |
 |-------|-------|----------|
 | Milestone format | done | `docs/milestones/index.md` defines the Markdown contract |
-| Spec manager design | done | `docs/plans/caol-manage-spec.md` defines the skill contract |
-| Milestone manager design | done | `docs/plans/caol-manage-milestone.md` defines CRUD and attachment rules |
+| Spec manager design | done | `docs/plans/completed/caol-manage-spec.md` defines the skill contract |
+| Milestone manager design | done | `docs/plans/completed/caol-manage-milestone.md` defines CRUD and attachment rules |
 | Skill implementation | done | `agent/skills/caol-manage-spec/SKILL.md` exists with reference files |
 | Implementation review skill | done | `agent/skills/caol-review-implementation/SKILL.md` exists |
 | Milestone skill implementation | done | `agent/skills/caol-manage-milestone/SKILL.md` exists with reference files |
 | Milestone attach pilot | done | `caol-manage-milestone.md` status and milestone row are updated through the new rules |
 | Spec manager pilot | done | `caol-architecture-hardening.md` updated through `caol-manage-spec` with persisted intake |
-| Lifecycle migration spec | done | `docs/plans/docs-plans-lifecycle-migration.md` exists before any physical move |
+| Lifecycle migration spec | done | `docs/plans/active/docs-plans-lifecycle-migration.md` exists before any physical move |
 | Lifecycle migration manifest | done | `docs/plans/reports/docs-plans-lifecycle-migration/move-manifest.tsv` maps 90 rows |
+| Lifecycle migration approved moves | partial | 64 approved rows moved into lifecycle folders; 26 legacy `open` specs remain at top-level for review |
 | Validator hardening implementation | done | `spec-lifecycle` validates milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Acceptance Criteria

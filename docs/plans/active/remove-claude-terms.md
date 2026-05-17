@@ -225,7 +225,7 @@ Targeted residual search now returns only:
 
 | Bucket | Residual |
 |--------|----------|
-| historical | `docs/plans/migrate-to-llm-first.md` describes the completed move away from a Claude-only instruction folder |
+| historical | `docs/plans/completed/migrate-to-llm-first.md` describes the completed move away from a Claude-only instruction folder |
 | this spec | replacement table and completion criteria intentionally contain stale terms |
 
 Validator status:

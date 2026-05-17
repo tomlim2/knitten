@@ -4,7 +4,7 @@ created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
 milestone: spec-lifecycle-system
-briefing: ../briefings/specs/caol-architecture-hardening.md
+briefing: ../../briefings/specs/caol-architecture-hardening.md
 ---
 
 # Caol Architecture Hardening
@@ -52,8 +52,8 @@ git ls-files -z -- \
   ':(exclude)agent/skills/**/node_modules/**' \
   ':(exclude)agent/skills/**/dist/**' \
   ':(exclude)agent/skills/**/.astro/**' \
-  ':(exclude)docs/plans/*-reports/**' \
-  ':(exclude)docs/plans/caol-architecture-hardening.md' |
+  ':(exclude)docs/plans/reports/**' \
+  ':(exclude)docs/plans/active/caol-architecture-hardening.md' |
   xargs -0 rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)"
 ```
 
@@ -227,8 +227,8 @@ git ls-files -z -- \
   ':(exclude)agent/skills/**/node_modules/**' \
   ':(exclude)agent/skills/**/dist/**' \
   ':(exclude)agent/skills/**/.astro/**' \
-  ':(exclude)docs/plans/*-reports/**' \
-  ':(exclude)docs/plans/caol-architecture-hardening.md' |
+  ':(exclude)docs/plans/reports/**' \
+  ':(exclude)docs/plans/active/caol-architecture-hardening.md' |
   xargs -0 rg -n "(/Users/younsoolim|/Users/deemooooooooo|/Users/john|obsidianClaudeDir|repo-paths\.json.*obsidian|MyNotes/agent|Obsidian/agent|notes/INDEX)"
 ```
 

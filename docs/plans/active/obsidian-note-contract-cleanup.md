@@ -97,7 +97,7 @@ These should be reported and not silently changed in the first auto-fix batch:
 Create reports under:
 
 ```text
-docs/plans/obsidian-note-contract-cleanup-reports/<timestamp>/
+docs/plans/reports/obsidian-note-contract-cleanup/<timestamp>/
 ```
 
 Reports:

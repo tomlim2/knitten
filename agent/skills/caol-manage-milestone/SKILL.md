@@ -179,7 +179,7 @@ For attach or detach, also run checks from
 
 ## Related
 
-- `docs/plans/caol-manage-milestone.md`
+- `docs/plans/completed/caol-manage-milestone.md`
 - `docs/milestones/index.md`
 - `docs/milestones/spec-lifecycle-system.md`
 - `agent/skills/caol-manage-spec/SKILL.md`

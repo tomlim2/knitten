@@ -291,11 +291,11 @@ Reports:
 
 | Report | Path |
 |--------|------|
-| move manifest | `docs/plans/obsidian-project-docs-structure-migration-reports/move-manifest.tsv` |
-| skipped files | `docs/plans/obsidian-project-docs-structure-migration-reports/skipped-files.md` |
-| legacy hub decisions | `docs/plans/obsidian-project-docs-structure-migration-reports/legacy-hub-decisions.md` |
-| move verification | `docs/plans/obsidian-project-docs-structure-migration-reports/move-verification.md` |
-| README repair | `docs/plans/obsidian-project-docs-structure-migration-reports/readme-repair.md` |
-| link repair | `docs/plans/obsidian-project-docs-structure-migration-reports/link-repair.md` |
-| remaining 43 actions | `docs/plans/obsidian-project-docs-structure-migration-reports/remaining-43-actions.tsv` |
-| remaining 43 link repair | `docs/plans/obsidian-project-docs-structure-migration-reports/remaining-43-link-repair.md` |
+| move manifest | `docs/plans/reports/obsidian-project-docs-structure-migration/move-manifest.tsv` |
+| skipped files | `docs/plans/reports/obsidian-project-docs-structure-migration/skipped-files.md` |
+| legacy hub decisions | `docs/plans/reports/obsidian-project-docs-structure-migration/legacy-hub-decisions.md` |
+| move verification | `docs/plans/reports/obsidian-project-docs-structure-migration/move-verification.md` |
+| README repair | `docs/plans/reports/obsidian-project-docs-structure-migration/readme-repair.md` |
+| link repair | `docs/plans/reports/obsidian-project-docs-structure-migration/link-repair.md` |
+| remaining 43 actions | `docs/plans/reports/obsidian-project-docs-structure-migration/remaining-43-actions.tsv` |
+| remaining 43 link repair | `docs/plans/reports/obsidian-project-docs-structure-migration/remaining-43-link-repair.md` |

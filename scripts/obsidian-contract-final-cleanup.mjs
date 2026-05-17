@@ -11,7 +11,7 @@ if (!vault || !existsSync(vault)) throw new Error(`Obsidian vault not found: ${v
 
 const reportDir = join(
   repoRoot,
-  'docs/plans/obsidian-note-contract-cleanup-reports/final-contract-cleanup-2026-05-17',
+  'docs/plans/reports/obsidian-note-contract-cleanup/final-contract-cleanup-2026-05-17',
 );
 mkdirSync(reportDir, { recursive: true });
 

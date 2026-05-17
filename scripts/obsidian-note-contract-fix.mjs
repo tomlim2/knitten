@@ -10,7 +10,7 @@ const vault = machinePaths.obsidian;
 if (!vault || !existsSync(vault)) throw new Error(`Obsidian vault not found: ${vault}`);
 
 const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-const reportDir = join(repoRoot, 'docs/plans/obsidian-note-contract-cleanup-reports', stamp);
+const reportDir = join(repoRoot, 'docs/plans/reports/obsidian-note-contract-cleanup', stamp);
 mkdirSync(reportDir, { recursive: true });
 
 const projectRoot = structure.rootFolders.projects;

@@ -11,7 +11,7 @@ owner: caol-ila
 
 Reduce `obsidian-contract` offenders after project-root structure cleanup.
 
-Input snapshot: `docs/plans/obsidian-contract-cleanup-reports/snapshot.md`.
+Input snapshot: `docs/plans/reports/obsidian-contract-cleanup/snapshot.md`.
 
 ## Current State
 
@@ -187,8 +187,8 @@ Reports:
 
 | Report | Path |
 |--------|------|
-| snapshot | `docs/plans/obsidian-contract-cleanup-reports/snapshot.md` |
-| action log | `docs/plans/obsidian-contract-cleanup-reports/action-log.md` |
-| deferred | `docs/plans/obsidian-contract-cleanup-reports/deferred.md` |
-| second pass | `docs/plans/obsidian-contract-cleanup-reports/second-pass-action-log.md` |
-| external devlog links | `docs/plans/obsidian-contract-cleanup-reports/external-devlog-link-repair.md` |
+| snapshot | `docs/plans/reports/obsidian-contract-cleanup/snapshot.md` |
+| action log | `docs/plans/reports/obsidian-contract-cleanup/action-log.md` |
+| deferred | `docs/plans/reports/obsidian-contract-cleanup/deferred.md` |
+| second pass | `docs/plans/reports/obsidian-contract-cleanup/second-pass-action-log.md` |
+| external devlog links | `docs/plans/reports/obsidian-contract-cleanup/external-devlog-link-repair.md` |

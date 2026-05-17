@@ -21,7 +21,7 @@ const targetIndex = join(vault, 'projects/cinev-studio/topics/cinev/legacy-workl
 const targetDir = join(vault, 'projects/cinev-studio/topics/cinev/legacy-worklog');
 const reportDir = join(
   repoRoot,
-  'docs/plans/obsidian-note-contract-cleanup-reports/notion-archive-migration-2026-05-17',
+  'docs/plans/reports/obsidian-note-contract-cleanup/notion-archive-migration-2026-05-17',
 );
 mkdirSync(reportDir, { recursive: true });
 

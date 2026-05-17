@@ -3,14 +3,14 @@ status: report
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
-spec: ../../docs-plans-lifecycle-migration.md
+spec: ../../active/docs-plans-lifecycle-migration.md
 ---
 
 # Docs Plans Lifecycle Migration Manifest Summary
 
 ## Purpose
 
-This report records the generated Batch B move manifest for [docs-plans-lifecycle-migration.md](../../docs-plans-lifecycle-migration.md). It maps tracked flat specs and report artifacts to lifecycle destinations. No files have been moved in this batch.
+This report records the generated Batch B move manifest for [docs-plans-lifecycle-migration.md](../../active/docs-plans-lifecycle-migration.md). It maps tracked flat specs and report artifacts to lifecycle destinations. Batch C moved only rows whose `needs-review` value was `false`.
 
 ## Files
 
@@ -51,6 +51,22 @@ This report records the generated Batch B move manifest for [docs-plans-lifecycl
 | `parked` | 1 |
 | `proposed` | 3 |
 | `reports` | 37 |
+
+## Batch C Execution
+
+| Result | Count |
+|------|------:|
+| approved rows moved | 64 |
+| spec files moved | 27 |
+| report artifacts moved | 37 |
+| legacy `open` specs held | 26 |
+| redirect stubs created | 0 |
+
+The `source` column in [move-manifest.tsv](move-manifest.tsv) remains the
+pre-migration path for auditability. Post-move references were repaired in
+milestones, briefings, skill related links, standards, lookup docs, and moved
+spec sibling links. Report-producing scripts now write under
+`docs/plans/reports/<spec-slug>/`.
 
 ## Report Directory Mapping
 

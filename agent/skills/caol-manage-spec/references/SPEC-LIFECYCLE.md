@@ -25,7 +25,6 @@ For direct path input, accept only paths under `docs/plans/` and reject report
 or evidence paths:
 
 ```text
-docs/plans/*-reports/**
 docs/plans/reports/**
 ```
 

@@ -459,19 +459,19 @@
     {
       "path": "agent/standards/multi-agent/agent-workflow.md",
       "reason": "Shared multi-agent process standard; route domain split needs a separate multi-agent profile decision.",
-      "decision": "docs/plans/task-context-routing.md#execution-order",
+      "decision": "docs/plans/completed/task-context-routing.md#execution-order",
       "reviewAfter": "2026-06-10"
     },
     {
       "path": "agent/standards/policy/principles.md",
       "reason": "Core policy glossary and validator summary; intentionally shared across route domains.",
-      "decision": "docs/plans/task-context-routing.md#execution-order",
+      "decision": "docs/plans/completed/task-context-routing.md#execution-order",
       "reviewAfter": "2026-06-10"
     },
     {
       "path": "agent/skills/hatch-pet/SKILL.md",
       "reason": "Large image-generation workflow skill; route-domain taxonomy for creative pet generation is not defined yet.",
-      "decision": "docs/plans/skill-oriented-context-loading.md#open-questions",
+      "decision": "docs/plans/proposed/skill-oriented-context-loading.md#open-questions",
       "reviewAfter": "2026-06-15"
     }
   ],

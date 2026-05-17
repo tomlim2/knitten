@@ -14,14 +14,14 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 | Edit any LLM-read doc (rule, standard, skill, command, README) | [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md) |
 | Design a new layer (rule / standard / skill category / validator) | [`agent/standards/policy/llm-first-policy.md`](agent/standards/policy/llm-first-policy.md) |
 | Explain why platform-neutral entry documents use canonical policy | [`docs/decisions/0001-platform-neutral-agent-system.md`](docs/decisions/0001-platform-neutral-agent-system.md) |
-| Design caol-ila as an agent hub | [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md) |
+| Design caol-ila as an agent hub | [`docs/plans/completed/agent-hub.md`](docs/plans/completed/agent-hub.md) |
 | Install caol-ila as Codex global context | [`docs/plans/link-codex-context.md`](docs/plans/link-codex-context.md) |
 | Inspect current agent hub manifest | [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/agent-hub.json`](agent/config/agent-hub.json) |
 | Route context for domain-specific tasks | [`agent/rules/task-context-routing.md`](agent/rules/task-context-routing.md) → [`AGENT-HUB.md`](AGENT-HUB.md) → [`agent/config/context-routing.json`](agent/config/context-routing.json) |
 | Run a structural / garden review | [`agent/standards/policy/garden-review.md`](agent/standards/policy/garden-review.md) |
 | Recall why a principle exists | [`agent/standards/policy/principles.md`](agent/standards/policy/principles.md) |
 | Name a new rule / standard / command / skill / plan | [`agent/standards/policy/naming.md`](agent/standards/policy/naming.md) |
-| Change a managed value, enum, category, or audit threshold | [`docs/plans/harden-system-drift.md`](docs/plans/harden-system-drift.md) → [`agent/config/README.md`](agent/config/README.md) |
+| Change a managed value, enum, category, or audit threshold | [`docs/plans/completed/harden-system-drift.md`](docs/plans/completed/harden-system-drift.md) → [`agent/config/README.md`](agent/config/README.md) |
 | Route CRUD for skill / rule / standard / command / plan artifacts | [`agent/skills/caol-manage-artifact/SKILL.md`](agent/skills/caol-manage-artifact/SKILL.md) |
 | Create a new slash command | [`agent/skills/caol-make-command/SKILL.md`](agent/skills/caol-make-command/SKILL.md) → `references/SLASH-COMMANDS.md` |
 | Create a new skill | [`agent/skills/caol-make-skill/SKILL.md`](agent/skills/caol-make-skill/SKILL.md) |
@@ -64,14 +64,14 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 
 ## Reference (raw lookup)
 
-- All commands: [`agent/commands/`](agent/commands/)
-- All skills: [`agent/skills/`](agent/skills/)
+- All commands: [`agent/commands/`](agent/commands)
+- All skills: [`agent/skills/`](agent/skills)
 - All standards: [`agent/standards/index.md`](agent/standards/index.md)
 - All rules: [`agent/rules/index.md`](agent/rules/index.md)
 - System glossary: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md)
 - Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md)
 - Task context routing rule: [`agent/rules/task-context-routing.md`](agent/rules/task-context-routing.md)
-- Task context routing plan: [`docs/plans/task-context-routing.md`](docs/plans/task-context-routing.md)
-- Completed LLM-first migration plan: [`docs/plans/migrate-to-llm-first.md`](docs/plans/migrate-to-llm-first.md)
-- Agent hub plan: [`docs/plans/agent-hub.md`](docs/plans/agent-hub.md)
-- Vault folder split plan: [`docs/plans/split-vault-folders.md`](docs/plans/split-vault-folders.md)
+- Task context routing plan: [`docs/plans/completed/task-context-routing.md`](docs/plans/completed/task-context-routing.md)
+- Completed LLM-first migration plan: [`docs/plans/completed/migrate-to-llm-first.md`](docs/plans/completed/migrate-to-llm-first.md)
+- Agent hub plan: [`docs/plans/completed/agent-hub.md`](docs/plans/completed/agent-hub.md)
+- Vault folder split plan: [`docs/plans/completed/split-vault-folders.md`](docs/plans/completed/split-vault-folders.md)

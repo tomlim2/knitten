@@ -28,7 +28,7 @@ skill invocation.
 
 | Spec | Status | Role |
 |------|--------|------|
-| [rename-caol-ila-to-knitten.md](../plans/rename-caol-ila-to-knitten.md) | proposed | define rename scope, compatibility rules, execution batches, and validation |
+| [rename-caol-ila-to-knitten.md](../plans/proposed/rename-caol-ila-to-knitten.md) | proposed | define rename scope, compatibility rules, execution batches, and validation |
 
 ## Progress
 
@@ -36,7 +36,7 @@ skill invocation.
 |-------|-------|----------|
 | Name decision | accepted | user stated the internal name is now `knitten` |
 | Legacy Discord bridge | retired | user confirmed any old `knitten` Discord bridge no longer needs preservation |
-| Rename contract | in-progress | `docs/plans/rename-caol-ila-to-knitten.md` records the staged plan |
+| Rename contract | in-progress | `docs/plans/proposed/rename-caol-ila-to-knitten.md` records the staged plan |
 | Inventory | todo | classify every `caol-ila`, `caol`, and `caol-config` reference |
 | Compatibility layer | todo | decide repo key, config key, command prefix, and path aliases |
 | Implementation | todo | rename approved surfaces only after inventory review |

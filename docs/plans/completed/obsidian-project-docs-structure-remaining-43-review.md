@@ -144,8 +144,8 @@ Reports:
 
 | Report | Path |
 |--------|------|
-| actions | `docs/plans/obsidian-project-docs-structure-migration-reports/remaining-43-actions.tsv` |
-| link repair | `docs/plans/obsidian-project-docs-structure-migration-reports/remaining-43-link-repair.md` |
+| actions | `docs/plans/reports/obsidian-project-docs-structure-migration/remaining-43-actions.tsv` |
+| link repair | `docs/plans/reports/obsidian-project-docs-structure-migration/remaining-43-link-repair.md` |
 
 ## Open Decisions
 

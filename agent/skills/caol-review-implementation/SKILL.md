@@ -94,7 +94,7 @@ If the input is a path, read that path.
 If no input:
 
 1. list changed `docs/plans/**/*.md`;
-2. exclude `docs/plans/*-reports/**`, `docs/plans/reports/**`, `index.md`,
+2. exclude `docs/plans/reports/**`, `index.md`,
    and `README.md`;
 3. if exactly one spec exists, read it;
 4. if none exists, run diff-only review;
@@ -207,7 +207,7 @@ If review ran without a spec, include `Spec: not resolved; diff-only review`.
 
 ## Related
 
-- `docs/plans/caol-review-implementation.md`
+- `docs/plans/completed/caol-review-implementation.md`
 - `agent/skills/caol-manage-spec/SKILL.md`
 - `agent/skills/caol-audit-skill/SKILL.md`
 - `agent/skills/review-audit-docs/SKILL.md`

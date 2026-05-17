@@ -534,7 +534,7 @@ Status: implemented in `agent/skills/caol-manage-spec/`.
 
 ### Batch C: Pilot The Skill
 
-1. Use the new skill to update `docs/plans/caol-architecture-hardening.md`.
+1. Use the new skill to update `docs/plans/active/caol-architecture-hardening.md`.
 2. Persist an intake artifact under `docs/briefings/specs/`.
 3. Review whether the workflow avoided unnecessary context loading.
 

@@ -6,7 +6,7 @@ load: triggered
 trigger: migrating caol-ila to skill-oriented context loading
 repo: caol-ila
 standard: agent/standards/policy/llm-first-docs.md
-depends_on: docs/plans/task-context-routing.md
+depends_on: docs/plans/completed/task-context-routing.md
 ---
 
 # Skill-Oriented Context Loading
@@ -40,7 +40,7 @@ Verified in `/Users/deemooooooooo/Desktop/www/caol-ila` on 2026-05-14.
 | Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `rules/index.md`, seven auto rules, and `standards/index.md` | `CLAUDE.md` |
 | Rules index | `agent/rules/index.md` separates auto rules from triggered rules | `agent/rules/index.md` |
 | Standards index | `agent/standards/index.md` is a discoverable index for on-demand standards | `agent/standards/index.md` |
-| Routing plan | `docs/plans/task-context-routing.md` already defines route-domain metadata and high-cost artifact routing | `docs/plans/task-context-routing.md` |
+| Routing plan | `docs/plans/completed/task-context-routing.md` already defines route-domain metadata and high-cost artifact routing | `docs/plans/completed/task-context-routing.md` |
 | Skill dependency style | Skills reference rules and standards in workflow prose, not a uniform machine-readable context manifest | `agent/skills/*/SKILL.md` |
 
 ## Problem

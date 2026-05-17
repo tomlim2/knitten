@@ -3,7 +3,7 @@
     {
       "path": "agent/standards/unreal/unreal-engine-asset.md",
       "reason": "Unreal Engine asset naming catalog predates the standard body cap.",
-      "decision": "docs/plans/harden-system-drift.md",
+      "decision": "docs/plans/completed/harden-system-drift.md",
       "reviewAfter": "2026-08-09"
     }
   ]

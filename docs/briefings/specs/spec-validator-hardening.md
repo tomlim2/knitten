@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
-spec: docs/plans/spec-validator-hardening.md
+spec: docs/plans/completed/spec-validator-hardening.md
 ---
 
 # Spec Intake: spec-validator-hardening
@@ -32,8 +32,8 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 |------|----------------|--------|
 | script | `scripts/validate-llm-first.mjs` | validator implementation target |
 | milestone | `docs/milestones/spec-lifecycle-system.md` | owning milestone |
-| spec | `docs/plans/docs-plans-lifecycle-migration.md` | duplicate slug and link requirements |
-| spec | `docs/plans/caol-manage-milestone.md` | milestone attachment contract |
+| spec | `docs/plans/active/docs-plans-lifecycle-migration.md` | duplicate slug and link requirements |
+| spec | `docs/plans/completed/caol-manage-milestone.md` | milestone attachment contract |
 | directory | `docs/milestones/` | current milestone corpus |
 | directory | `docs/briefings/specs/` | caol spec intake corpus |
 | generated doc | `agent/standards/policy/principles.md` | validator check list block |
@@ -44,7 +44,7 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 - Markdown remains the primary contract for specs and milestones.
 - The first implementation batch should be small and green on current files.
 - Shotloom briefings are out of scope for this caol-specific spec intake check.
-- Report folders under `docs/plans/*-reports/` are evidence, not executable
+- Report folders under `docs/plans/reports/` are evidence, not executable
   specs.
 
 ## Open Questions

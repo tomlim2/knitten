@@ -100,7 +100,7 @@ Required gap table columns:
 | Entry document | Harness | First shared-policy read | Deploy target | Current validator |
 |----------------|---------|--------------------------|---------------|-------------------|
 | `CLAUDE.md` | Claude Code | `@SYSTEM.md` | Root file; imported by `~/.claude/CLAUDE.md` deploy shim | `entry-documents`, `import-targets` |
-| `AGENTS.md` | Codex | [`SYSTEM.md`](../../SYSTEM.md) | Root file read when Codex starts in this repo | `entry-documents`, `markdown-links` |
+| `AGENTS.md` | Codex | [`SYSTEM.md`](../../../SYSTEM.md) | Root file read when Codex starts in this repo | `entry-documents`, `markdown-links` |
 | `agent/CLAUDE.md` | Claude Code deploy shim | `@../CLAUDE.md` | `~/.claude/CLAUDE.md` through symlink | `import-targets` |
 
 ## P0.5 Migration Gap Table
@@ -200,7 +200,7 @@ Validated view rules:
 
 | Concept | Name |
 |---------|------|
-| Plan | `docs/plans/agent-hub.md` |
+| Plan | `docs/plans/completed/agent-hub.md` |
 | Manifest | `agent/config/agent-hub.json` |
 | Root hub doc | `AGENT-HUB.md` |
 | Validator check | `agent-hub` |

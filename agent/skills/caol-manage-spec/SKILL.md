@@ -164,7 +164,7 @@ report the exact blocker and still run `git diff --check`.
 
 ## Related
 
-- `docs/plans/caol-manage-spec.md`
+- `docs/plans/completed/caol-manage-spec.md`
 - `docs/milestones/spec-lifecycle-system.md`
 - `agent/skills/dev-generate-spec/SKILL.md`
 - `agent/skills/shotloom-draft-spec/SKILL.md`

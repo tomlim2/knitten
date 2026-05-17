@@ -5,7 +5,7 @@ load: triggered
 trigger: reducing unnecessary context for routed tasks
 created: 2026-05-10
 standard: agent/standards/policy/llm-first-docs.md
-depends_on: docs/plans/agent-hub.md
+depends_on: docs/plans/completed/agent-hub.md
 ---
 
 # Task Context Routing Plan

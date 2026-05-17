@@ -3,7 +3,7 @@ status: open
 created: 2026-05-11
 load: triggered
 trigger: stale ~/.claude symlinks discovered after agent root rename
-followup_to: docs/plans/agent-root-rename.md
+followup_to: docs/plans/completed/agent-root-rename.md
 decision: docs/decisions/0003-agent-root-directory.md
 ---
 
@@ -17,7 +17,7 @@ A Claude Code session opened in `shotloom-github` on 2026-05-11 had no user-leve
 
 ## Architectural discrepancy
 
-ADR 0003 (`docs/decisions/0003-agent-root-directory.md`) and the rename plan (`docs/plans/agent-root-rename.md`) both assume:
+ADR 0003 (`docs/decisions/0003-agent-root-directory.md`) and the rename plan (`docs/plans/completed/agent-root-rename.md`) both assume:
 
 ```
 ~/.claude -> caol-ila/agent

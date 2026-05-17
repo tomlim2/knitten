@@ -4,7 +4,7 @@ created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
 milestone: spec-lifecycle-system
-briefing: ../briefings/specs/spec-validator-hardening.md
+briefing: ../../briefings/specs/spec-validator-hardening.md
 ---
 
 # Spec Validator Hardening
@@ -85,7 +85,7 @@ docs/plans/**/*.md
 Exclude:
 
 ```text
-docs/plans/*-reports/**
+docs/plans/reports/**
 docs/plans/reports/**
 docs/plans/index.md
 docs/plans/README.md

@@ -4,7 +4,7 @@ completed: 2026-05-01
 load: triggered
 trigger: splitting Obsidian vault folders by mutation policy
 created: 2026-05-01
-parent: docs/plans/migrate-to-llm-first.md
+parent: docs/plans/completed/migrate-to-llm-first.md
 ---
 
 # Vault policy split — execution plan (done)

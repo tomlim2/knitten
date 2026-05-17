@@ -41,7 +41,7 @@ repo Markdown as the canonical owner for agent work:
 ## CRUD Contract
 
 Milestone CRUD is specified in
-[caol-manage-milestone.md](../plans/caol-manage-milestone.md).
+[caol-manage-milestone.md](../plans/completed/caol-manage-milestone.md).
 
 | Operation | Default behavior |
 |-----------|------------------|
@@ -128,5 +128,5 @@ Prefer:
 
 | Spec | Role |
 |------|------|
-| [caol-manage-spec.md](../plans/caol-manage-spec.md) | individual spec lifecycle |
-| [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | milestone lifecycle and spec attachment |
+| [caol-manage-spec.md](../plans/completed/caol-manage-spec.md) | individual spec lifecycle |
+| [caol-manage-milestone.md](../plans/completed/caol-manage-milestone.md) | milestone lifecycle and spec attachment |

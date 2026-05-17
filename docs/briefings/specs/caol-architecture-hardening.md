@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
-spec: docs/plans/caol-architecture-hardening.md
+spec: docs/plans/active/caol-architecture-hardening.md
 ---
 
 # Spec Intake: caol-architecture-hardening
@@ -28,7 +28,7 @@ milestone, and post-implementation review skills landed.
 
 | Type | Path or source | Reason |
 |------|----------------|--------|
-| spec | `docs/plans/caol-architecture-hardening.md` | target spec |
+| spec | `docs/plans/active/caol-architecture-hardening.md` | target spec |
 | milestone | `docs/milestones/spec-lifecycle-system.md` | pilot progress owner |
 | skill | `agent/skills/caol-manage-spec/SKILL.md` | update workflow |
 | skill | `agent/skills/caol-review-implementation/SKILL.md` | post-update review |

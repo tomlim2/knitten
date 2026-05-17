@@ -87,7 +87,7 @@ Literal examples of valid current vault paths may remain only in:
 | Pattern | Reason |
 |---------|--------|
 | `agent/skills/obsidian-fix-format/fix.sh` deny-list for `agent/projects` | validator intentionally detects retired paths |
-| migration report files under `docs/plans/*-reports/` | historical records |
+| migration report files under `docs/plans/reports/` | historical records |
 | relative `references/...` inside a skill directory | skill-local reference path, not vault path |
 | current `projects/<project>/...` examples | current vault shape |
 

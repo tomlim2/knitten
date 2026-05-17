@@ -86,7 +86,7 @@ File names are routing metadata. A cold-start agent must infer artifact type, sc
 | Use decision ids for accepted rationale | `0001-platform-neutral-agent-system.md` | `agent-system-notes.md` |
 | Keep status out of filenames | `harden-system-drift.md` with `status: active` | `harden-system-drift-active.md` |
 | Keep date out except dated records | `garden-2026-05-09.md` | `policy-2026-05-09.md` |
-| Keep folder context out of filename | `docs/plans/harden-system-drift.md` | `docs/plans/plan-harden-system-drift.md` |
+| Keep folder context out of filename | `docs/plans/completed/harden-system-drift.md` | `docs/plans/plan-harden-system-drift.md` |
 | Use family prefixes for lifecycle siblings | `pr-create.md`, `pr-comment.md`, `pr-mutate.md` | `create.md`, `comment.md`, `mutate.md` |
 
 Naming validation belongs in three places:
