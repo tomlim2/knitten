@@ -1,6 +1,9 @@
-# caol-ila
+# Knitten
 
-**LLM-first repository.** Agent configuration — commands, skills, standards, rules, and machine config, all optimized for LLM efficiency, accuracy, and clarity. `agent/` is symlinked to `~/.claude`.
+**LLM-first agent hub.** Repository path and compatibility key remain
+`caol-ila`; internal identity is `Knitten`. Agent configuration — commands,
+skills, standards, rules, and machine config — is optimized for LLM efficiency,
+accuracy, and clarity. `agent/` is symlinked to `~/.claude`.
 
 Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 

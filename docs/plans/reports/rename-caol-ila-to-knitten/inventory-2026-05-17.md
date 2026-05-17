@@ -40,11 +40,11 @@ dist/
 | Class | Hits | Files | Action |
 |-------|-----:|------:|--------|
 | `command-api` | 389 | 107 | preserve until command/skill prefix migration |
-| `config-path` | 151 | 86 | preserve until `caol-config` alias exists |
+| `config-path` | 150 | 86 | preserve until `caol-config` alias exists |
 | `historical` | 299 | 31 | leave unless active behavior depends on it |
-| `identity` | 6 | 2 | rename in Batch B |
-| `new-identity` | 110 | 19 | keep |
-| `slug-id` | 283 | 107 | alias before rename |
+| `identity` | 4 | 1 | scan pattern in active rename spec; keep until validator hardening |
+| `new-identity` | 120 | 23 | keep |
+| `slug-id` | 281 | 106 | alias before rename |
 | `tool-name` | 24 | 11 | decide in dashboard naming batch |
 
 ## Discord Bridge Check

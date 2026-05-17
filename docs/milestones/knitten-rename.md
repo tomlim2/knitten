@@ -38,6 +38,7 @@ skill invocation.
 | Legacy Discord bridge | retired | user confirmed any old `knitten` Discord bridge no longer needs preservation |
 | Rename contract | done | `docs/plans/active/rename-caol-ila-to-knitten.md` records the staged plan |
 | Inventory | done | `docs/plans/reports/rename-caol-ila-to-knitten/inventory-2026-05-17.md` classifies active-source references |
+| Human-facing identity | done | README, SYSTEM, AGENT-HUB, and setup harness introduce Knitten with `caol-ila` compatibility |
 | Compatibility layer | todo | decide repo key, config key, command prefix, and path aliases |
 | Implementation | todo | rename approved surfaces only after inventory review |
 | Validator support | todo | add checks for unclassified legacy names and required aliases |

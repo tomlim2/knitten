@@ -39,7 +39,9 @@ Decision rationale lives in `docs/decisions/`. A decision record explains why a 
 
 ## Repository charter
 
-`caol-ila` is an LLM-first repository. The primary operator is an autonomous agent, not a human reader. Every process, artifact, and decision optimizes for the LLM that reads, executes, and edits it:
+Knitten is an LLM-first agent hub in the `caol-ila` compatibility repository.
+The primary operator is an autonomous agent, not a human reader. Every process,
+artifact, and decision optimizes for the LLM that reads, executes, and edits it:
 
 1. Efficiency: minimum tokens for maximum signal.
 2. Accuracy: explicit, unambiguous, no hidden assumptions.

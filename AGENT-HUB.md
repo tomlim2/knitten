@@ -1,4 +1,4 @@
-# AGENT-HUB.md
+# Knitten Agent Hub
 
 Thin root hub overview.
 

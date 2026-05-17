@@ -1,21 +1,21 @@
 ---
 name: caol-setup-harness
-description: Connects external agent harnesses (Pi, Claude Code, Codex, Cursor) to the caol-ila Agent Hub. Enforces user consent.
+description: Connects external agent harnesses (Pi, Claude Code, Codex, Cursor) to the Knitten Agent Hub. Enforces user consent.
 ---
 
 # caol-setup-harness
 
-Use this skill when installing a new AI coding agent on the machine, or when configuring an agent to access the `caol-ila` Agent Hub globally.
+Use this skill when installing a new AI coding agent on the machine, or when configuring an agent to access the Knitten Agent Hub globally.
 
 ## Purpose
-`caol-ila` is the durable source of truth (the "Agent Hub") for rules, standards, skills, and commands. This skill maps those durable folders to local deploy targets (like `~/.pi/settings.json` or `~/.claude/skills`).
+Knitten is the durable source of truth for rules, standards, skills, and commands. This skill maps those durable folders to local deploy targets (like `~/.pi/settings.json` or `~/.claude/skills`).
 
 ## Execution Flow (MANDATORY)
 
 You **must** follow these three steps in order. Do not execute the final script without user approval.
 
 ### 1. Explain the Action
-Tell the user: "To use the full capabilities of the Caol Ila Agent Hub, I need to link it to your current harness configuration (via symlinks or JSON config edits). I will run a dry run first to show you exactly what will change."
+Tell the user: "To use the full capabilities of the Knitten Agent Hub, I need to link it to your current harness configuration (via symlinks or JSON config edits). I will run a dry run first to show you exactly what will change."
 
 ### 2. Run the Dry Run
 Execute the script in dry-run mode to see the proposed changes without altering the filesystem:

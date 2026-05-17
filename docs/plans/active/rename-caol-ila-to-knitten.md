@@ -6,7 +6,7 @@ owner: caol-ila
 milestone: knitten-rename
 ---
 
-# Rename Caol Ila To Knitten
+# Rename Legacy Identity To Knitten
 
 ## Purpose
 
@@ -171,11 +171,17 @@ No active old Discord bridge references were found.
 
 ### Batch B: Human-Facing Identity
 
+Status: completed for root identity surfaces.
+
 1. Update README, milestone docs, and active architecture docs to introduce
    `Knitten` as the internal hub name.
 2. Keep compatibility notes where `caol-ila` remains.
 3. Avoid touching historical report directories.
 4. Run validator and path inventory.
+
+Result: `README.md`, `SYSTEM.md`, `AGENT-HUB.md`, and
+`caol-setup-harness` now introduce Knitten as the hub identity while preserving
+`caol-ila` as the compatibility repo/path key.
 
 ### Batch C: Config Aliases
 
