@@ -23,7 +23,7 @@ Edit current shared-layer documentation and metadata:
 | shared-layer docs | `agent/rules/*.md`, `agent/standards/**/*.md`, `agent/skills/*/SKILL.md`, `agent/commands/*.md` |
 | skill references | `agent/skills/*/references/*.md`, `reference.md` when current and not archival |
 | manifests / validators | `agent/config/*.json`, `scripts/validate-llm-first.mjs` only when they enforce stale wording |
-| active plans | `docs/plans/*.md` when the plan describes current agent-hub behavior |
+| active plans | `docs/plans/active/*.md` when the plan describes current agent-hub behavior |
 
 Do not edit archival, generated, or code-only hits unless they control current routing or validation.
 
