@@ -191,7 +191,7 @@ Proposed `vault-structure.json`:
 |------|--------|
 | `agent/private/caol-config/machine-paths.json` | keep `obsidian` as vault root; remove runtime reliance on `obsidian-agent-root` and `obsidian-vault-claude` |
 | `agent/private/caol-config/doc-paths.json` | remove `agent/` prefix from all Obsidian destinations; route purpose templates to `projects/`, `daily/`, or `projects/<project>/<role>` |
-| `agent/private/caol-config/vault-structure.json` | add canonical root/role/legacy folder constants |
+| `agent/private/caol-config/vault-structure.json` | add vault root/role/legacy folder constants |
 | `agent/skills/caol-resolve-doc-path/resolve.sh` | keep resolving through `obsidian`; add `structure` mode for config consumers |
 | `agent/skills/obsidian-fix-format/fix.sh` | read `vault-structure.json`; scan root-level `projects/` and `daily/` |
 | `agent/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` | replace `agent/projects/<project>/` with `projects/<project>/` |
