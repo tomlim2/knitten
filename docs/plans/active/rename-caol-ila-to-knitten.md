@@ -185,26 +185,43 @@ Result: `README.md`, `SYSTEM.md`, `AGENT-HUB.md`, and
 
 ### Batch C: Config Aliases
 
+Status: completed for repo key aliasing.
+
 1. Add `knitten` as a repo alias without removing `caol-ila`.
 2. Patch `agent/skills/caol-manage-config/repo-paths.template.json` so new
    machine setup can create both keys.
 3. Patch the local deployed `repo-paths.json` only when it is symlinked or
    otherwise intentionally shared with `agent/private/caol-config/`.
+   - Back up the file before editing.
+   - Do not stage or commit `agent/private/caol-config/repo-paths.json`;
+     it is machine-local by policy.
+   - Run `git status --short` after editing and confirm the local config stays
+     untracked or ignored.
 4. Decide the resolver behavior explicitly:
    - If `knitten` is a real key in `repo-paths.json`, no resolver alias table is
      needed.
    - If `knitten` is not a real key, add resolver alias logic and validator
      coverage in the same batch.
-5. Add a validator or fixture that proves both commands resolve:
+5. Add tracked template or fixture validation that proves new machine setup
+   supports both keys without requiring machine-local config.
+6. Run local smoke validation only when `~/.claude/private/caol-config/repo-paths.json`
+   exists on the machine:
 
 ```bash
 bash agent/skills/caol-resolve-doc-path/resolve.sh repo caol-ila
 bash agent/skills/caol-resolve-doc-path/resolve.sh repo knitten
 ```
 
-6. Keep `caol-ila` as the primary compatibility key until all skills resolve the
+7. Keep `caol-ila` as the primary compatibility key until all skills resolve the
    alias.
-7. Do not rename `caol-config` yet.
+8. Do not rename `caol-config` yet.
+
+Result: `knitten` is now a tracked repo-key alias in the setup template and
+context routing profiles while `caol-ila` remains compatible. The validator
+requires the alias when the compatibility key exists, and a routing fixture
+proves Knitten authoring selects the `caol-authoring` context. This machine's
+ignored `repo-paths.json` was backed up before adding the local alias; resolver
+smoke returned the same checkout path for both keys.
 
 ### Batch D: Tool And Dashboard Naming
 

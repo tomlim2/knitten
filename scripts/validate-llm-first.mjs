@@ -1547,6 +1547,8 @@ const ROUTE_VALUE_EVIDENCE = {
   anju: ["anju"],
   astro: ["astro"],
   bevy: ["bevy", "ecs"],
+  caol: ["agent hub", "caol", "knitten"],
+  "caol-ila": ["caol ila", "caol-ila"],
   cinev: ["cci", "cinev"],
   "cinev-git": ["cinev git"],
   "cinev-studio": ["cinevstudio", "cinev studio"],
@@ -1556,6 +1558,7 @@ const ROUTE_VALUE_EVIDENCE = {
   hyperframes: ["hyperframes"],
   javascript: ["javascript", "js"],
   json: ["json"],
+  knitten: ["knitten"],
   markdown: ["markdown", "md"],
   "mega-melange": ["mega melange", "mega-melange"],
   obsidian: ["note", "obsidian", "vault"],
@@ -1674,6 +1677,13 @@ async function checkContextRouting() {
     violations.push({ file, line: 1, message: `cannot read repoKeysSource: ${err.message}` });
   }
   const repoKeys = new Set(Object.keys(repoPaths));
+  if (repoKeys.has("caol-ila") && !repoKeys.has("knitten")) {
+    violations.push({
+      file: routing.repoKeysSource || file,
+      line: 1,
+      message: "repoKeysSource must define knitten while caol-ila compatibility key remains",
+    });
+  }
 
   for (const axis of ["domains", "languages", "frameworks", "taskTypes"]) {
     pushStringArrayViolations(violations, file, `axes.${axis}`, routing.axes?.[axis], { sorted: true });

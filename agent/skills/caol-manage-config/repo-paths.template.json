@@ -1,7 +1,8 @@
 {
   "_comment": "Git repo locations. Copy to ~/.claude/private/caol-config/repo-paths.json and fill in paths for this machine.",
   "anju":             { "path": "", "description": "UE Python 자동화 도구 모음 + shader/web 실험" },
-  "caol-ila":         { "path": "", "description": "Agent hub config repository — deployed to ~/.claude for Claude Code" },
+  "caol-ila":         { "path": "", "description": "Compatibility repo key for Knitten agent hub config repository" },
+  "knitten":          { "path": "", "description": "Knitten agent hub config repository alias; same checkout as caol-ila during compatibility period" },
   "shotloom":         { "path": "", "description": "CINEV Shotloom — Rust workspace, LFS required (clone with GIT_LFS_SKIP_SMUDGE=1)" },
   "ta-portfolio":     { "path": "", "description": "TA portfolio site" },
   "mega-melange":     { "path": "", "description": "UE MCP tools collection (MegaMelange / cinev-ta-tools)" },

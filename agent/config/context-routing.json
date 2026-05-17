@@ -61,7 +61,8 @@
         "caol"
       ],
       "repoKeys": [
-        "caol-ila"
+        "caol-ila",
+        "knitten"
       ],
       "languages": [
         "json",
@@ -225,7 +226,8 @@
         "video"
       ],
       "repoKeys": [
-        "caol-ila"
+        "caol-ila",
+        "knitten"
       ],
       "languages": [
         "css",
@@ -266,6 +268,7 @@
       ],
       "repoKeys": [
         "caol-ila",
+        "knitten",
         "mmd-anju",
         "ta-portfolio"
       ],
@@ -290,6 +293,7 @@
       ],
       "repoKeys": [
         "caol-ila",
+        "knitten",
         "mmd-anju",
         "ta-portfolio"
       ],
@@ -313,7 +317,8 @@
         "obsidian"
       ],
       "repoKeys": [
-        "caol-ila"
+        "caol-ila",
+        "knitten"
       ],
       "languages": [
         "json",

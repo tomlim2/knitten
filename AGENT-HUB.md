@@ -59,18 +59,18 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |
 |---------|---------------|-----------|------------|------------|----------:|
-| `caol-authoring` | `caol` | `caol-ila` | - | `authoring`, `review` | 25000 |
+| `caol-authoring` | `caol` | `caol-ila`, `knitten` | - | `authoring`, `review` | 25000 |
 | `shotloom-ops` | `shotloom` | `shotloom` | `bevy`, `wgpu` | `authoring`, `git`, `ops` | 25000 |
 | `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
 | `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
 | `shotloom-deploy` | `rust`, `web` | `shotloom` | `bevy`, `wgpu` | `deploy` | 25000 |
 | `cinev-art` | `cinev` | `anju`, `cinev`, `cinev-git`, `cinev-studio`, `cinev-studio-git`, `mega-melange` | - | `deploy`, `git`, `implementation`, `ops` | 25000 |
 | `3d-vrm` | `3d` | `anju`, `cinev`, `mega-melange`, `mmd-anju`, `mmd-archive`, `vrm2u-bevy` | `bevy`, `three` | `implementation`, `research`, `review` | 25000 |
-| `video-hyperframes` | `video` | `caol-ila` | `hyperframes` | `implementation` | 25000 |
+| `video-hyperframes` | `video` | `caol-ila`, `knitten` | `hyperframes` | `implementation` | 25000 |
 | `unreal-engine` | `unreal` | `anju`, `mega-melange` | - | `implementation`, `review` | 25000 |
-| `web-frontend` | `web` | `caol-ila`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `implementation` | 25000 |
-| `web-review` | `web` | `caol-ila`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `review` | 25000 |
-| `obsidian-vault` | `obsidian` | `caol-ila` | - | `authoring`, `implementation`, `review` | 25000 |
+| `web-frontend` | `web` | `caol-ila`, `knitten`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `implementation` | 25000 |
+| `web-review` | `web` | `caol-ila`, `knitten`, `mmd-anju`, `ta-portfolio` | `astro`, `three` | `review` | 25000 |
+| `obsidian-vault` | `obsidian` | `caol-ila`, `knitten` | - | `authoring`, `implementation`, `review` | 25000 |
 
 ## Pilot Files
 
@@ -131,6 +131,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | Task | Must load | Must not load | Max bytes |
 |------|-----------|---------------|----------:|
 | Author caol spec lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Author Knitten spec lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Manage caol milestone lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Review caol implementation after spec | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Implement Rust Bevy ECS in shotloom | `rust-bevy` | `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
