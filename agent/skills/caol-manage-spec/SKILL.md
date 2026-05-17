@@ -30,7 +30,7 @@ decisions.
 
 | Mode | Use when | Writes |
 |------|----------|--------|
-| `create <slug>` | user asks for a new spec, plan doc, or "spec first" | `docs/plans/<slug>.md`; optional intake |
+| `create <slug>` | user asks for a new spec, plan doc, or "spec first" | lifecycle spec path; optional intake |
 | `update <slug>` | existing spec needs changes | focused patch to the spec |
 | `review <slug-or-path>` | user asks to review/check a spec | findings first; patch only if asked |
 | `archive <slug>` | spec is done, parked, superseded, or inactive | status/frontmatter update |
@@ -64,27 +64,30 @@ Use [SPEC-INTAKE.md](references/SPEC-INTAKE.md) for the intake template.
 ## Create Workflow
 
 1. Resolve slug: `^[a-z0-9]+(-[a-z0-9]+)*$`.
-2. Check for an existing `docs/plans/<slug>.md`.
-3. Gather intake and classify route.
-4. Search related specs:
+2. Resolve existing spec paths across lifecycle folders using
+   [SPEC-LIFECYCLE.md](references/SPEC-LIFECYCLE.md).
+3. If no spec exists, default new specs to `docs/plans/proposed/<slug>.md`
+   unless the user explicitly asks to begin active implementation now.
+4. Gather intake and classify route.
+5. Search related specs:
 
 ```bash
 rg -n "<slug>|<main-term>" docs/plans docs/milestones docs/briefings
 ```
 
-5. Read only required evidence and selected route references.
-6. Draft using [SPEC-TEMPLATES.md](references/SPEC-TEMPLATES.md).
-7. Review the draft for missing evidence, unclear decisions, impossible
+6. Read only required evidence and selected route references.
+7. Draft using [SPEC-TEMPLATES.md](references/SPEC-TEMPLATES.md).
+8. Review the draft for missing evidence, unclear decisions, impossible
    validation, and unsafe operations.
-8. Write the spec; write intake if required.
-9. Run validation.
+9. Write the spec; write intake if required.
+10. Run validation.
 
 If the slug collides with an existing spec, read it first. Switch to update mode
 only when the request clearly matches the existing spec.
 
 ## Update Workflow
 
-1. Read the existing spec before editing.
+1. Resolve and read the existing spec before editing.
 2. Preserve accepted decisions unless the user explicitly changes them.
 3. Update `updated: YYYY-MM-DD`.
 4. Patch narrowly when possible.

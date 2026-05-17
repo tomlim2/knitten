@@ -26,8 +26,8 @@ or mutate external services inside this review pass.
 
 | Input | Meaning |
 |-------|---------|
-| no argument | infer from one changed `docs/plans/*.md`; otherwise run diff-only review |
-| `<slug>` | resolve to `docs/plans/<slug>.md` |
+| no argument | infer from one changed `docs/plans/**/*.md` spec; otherwise run diff-only review |
+| `<slug>` | resolve through the spec lifecycle search order |
 | `<path>` | use that spec path |
 | `--staged` | review staged diff |
 | `--working` | review unstaged working tree diff |
@@ -75,16 +75,30 @@ Record changed files and dirty state before reading bodies.
 
 ### Step 2: Resolve Spec
 
-If the input is a slug, read `docs/plans/<slug>.md`.
+If the input is a slug, search:
+
+```text
+docs/plans/active/<slug>.md
+docs/plans/proposed/<slug>.md
+docs/plans/drafts/<slug>.md
+docs/plans/parked/<slug>.md
+docs/plans/completed/<slug>.md
+docs/plans/archive/<slug>.md
+docs/plans/<slug>.md
+```
+
+If multiple paths exist, stop and report duplicate lifecycle state.
 
 If the input is a path, read that path.
 
 If no input:
 
-1. list changed `docs/plans/*.md`;
-2. if exactly one exists, read it;
-3. if none exists, run diff-only review;
-4. if more than one exists, stop and ask for the owning spec.
+1. list changed `docs/plans/**/*.md`;
+2. exclude `docs/plans/*-reports/**`, `docs/plans/reports/**`, `index.md`,
+   and `README.md`;
+3. if exactly one spec exists, read it;
+4. if none exists, run diff-only review;
+5. if more than one exists, stop and ask for the owning spec.
 
 When a spec resolves, extract goals, non-goals, validation, risks, and
 acceptance criteria. Treat the spec as the contract, not as proof.
@@ -102,7 +116,7 @@ Read only files needed to answer the review contract:
 | `agent/config/taxonomy.json` | category and naming registry |
 | `README.md` or `AGENT-HUB.md` | generated block freshness |
 | `scripts/validate-llm-first.mjs` | validator behavior touched by the diff |
-| `docs/plans/*` or `docs/milestones/*` | lifecycle status and links |
+| `docs/plans/**` or `docs/milestones/*` | lifecycle status and links |
 
 Do not scan broad sibling domains when the changed files do not touch them.
 
@@ -123,6 +137,7 @@ Run focused checks when relevant:
 | generated views changed | `node scripts/validate-llm-first.mjs --check generated-blocks` |
 | skill/rule/standard changed | `node scripts/validate-llm-first.mjs --check length-caps` |
 | taxonomy changed | `node scripts/validate-llm-first.mjs --check taxonomy` |
+| spec or milestone links changed | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 
 For shared-layer edits under `agent/skills`, `agent/rules`, `agent/standards`,
 or `agent/commands`, verify the affected deploy target exists and matches when

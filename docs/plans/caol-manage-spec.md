@@ -40,7 +40,8 @@ The missing layer is a general spec intake, routing, and lifecycle manager.
    known decisions, open questions, and exclusions before drafting.
 3. Reuse existing spec-related skills when they fit instead of duplicating
    their logic.
-4. Keep caol-ila operational specs in `docs/plans/<slug>.md`.
+4. Keep caol-ila operational specs under `docs/plans/`, using lifecycle
+   subfolders when available and legacy flat paths during migration.
 5. Store optional intake/briefing artifacts under `docs/briefings/specs/`.
 6. Make cold-start review possible from disk without relying on chat memory.
 7. Keep destructive operations gated behind explicit user approval.
@@ -82,7 +83,7 @@ domain-specific skills.
 | Evidence | Files, commands, docs, skill references, links, or user decisions used by the spec. |
 | Route | The chosen workflow for the spec, such as Shotloom, code-derived, web review, or caol policy. |
 | Lifecycle | The frontmatter status and follow-up movement of a spec. |
-| Direct spec | The main `docs/plans/<slug>.md` artifact. |
+| Direct spec | The main lifecycle path under `docs/plans/`. |
 | Intake artifact | Optional `docs/briefings/specs/<slug>.md` record of inputs and routing decisions. |
 
 ## Skill Shape
@@ -147,7 +148,7 @@ asks to delete the file.
 
 | Artifact | Path | Required |
 |----------|------|----------|
-| Direct caol spec | `docs/plans/<slug>.md` | yes |
+| Direct caol spec | lifecycle path under `docs/plans/` | yes |
 | Spec intake | `docs/briefings/specs/<slug>.md` | optional by default, required for high-risk specs |
 | Shotloom briefing | `docs/briefings/shotloom/<slug>.md` | owned by Shotloom flow |
 | Review report | `docs/plans/<slug>-review.md` or chat-only | optional, prefer chat unless asked to persist |
@@ -181,7 +182,7 @@ status: intake
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 owner: caol-ila
-spec: docs/plans/<slug>.md
+spec: docs/plans/<lifecycle>/<slug>.md
 ---
 
 # Spec Intake: <slug>
@@ -319,7 +320,7 @@ sections.
 Create mode should:
 
 1. Resolve the slug.
-2. Check whether `docs/plans/<slug>.md` already exists.
+2. Resolve existing lifecycle or legacy flat paths for the slug.
 3. Gather intake.
 4. Route to a domain-specific flow when it clearly fits.
 5. Search existing specs for related work.
@@ -480,8 +481,7 @@ node scripts/validate-llm-first.mjs --check context-routing
 Spec artifact validation:
 
 ```bash
-test -f docs/plans/<slug>.md
-rg -n "^status:|^created:|^updated:|^owner:" docs/plans/<slug>.md
+node scripts/validate-llm-first.mjs --check spec-lifecycle
 ```
 
 Intake validation for high-risk specs:
@@ -502,7 +502,7 @@ The implementation is complete when:
    body size target from `caol-make-skill`.
 2. Long templates live in `references/`.
 3. The skill can create a caol operational spec with intake.
-4. The skill can update an existing `docs/plans/<slug>.md` without rewriting
+4. The skill can update an existing lifecycle or legacy flat spec without rewriting
    unrelated sections.
 5. The skill can review a spec and lead with findings.
 6. The skill can archive a spec without deleting it.

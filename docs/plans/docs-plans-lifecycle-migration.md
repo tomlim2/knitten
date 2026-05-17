@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: active
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -148,6 +148,8 @@ the move batch.
 
 ### Batch A: Prepare Resolvers
 
+Status: implemented on 2026-05-17.
+
 1. Update `caol-manage-spec` to create under lifecycle folders and resolve slug
    paths across all buckets.
 2. Update `caol-review-implementation` changed-file inference from
@@ -156,6 +158,16 @@ the move batch.
 4. Update `docs/briefings/specs/README.md`, `agent/config/taxonomy.json`,
    `agent/standards/policy/naming.md`, and `README.md`.
 5. Add duplicate slug validation for `docs/plans/**/*.md`.
+
+Batch A implementation summary:
+
+| Surface | Result |
+|---------|--------|
+| `caol-manage-spec` | resolves lifecycle paths and defaults new specs to `proposed/` |
+| `caol-review-implementation` | infers changed specs from `docs/plans/**/*.md` with report exclusions |
+| `caol-manage-milestone` | links resolved spec paths instead of assuming flat paths |
+| `taxonomy` | validates `docs/plans` recursively |
+| `spec-lifecycle` | already validates duplicate slugs, milestone links, and intake paths |
 
 ### Batch B: Generate Manifest
 

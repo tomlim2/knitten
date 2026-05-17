@@ -35,7 +35,8 @@ Milestone management needs a different shape from spec management:
    delete flows.
 2. Support attaching and detaching specs from milestones.
 3. Keep milestone docs in `docs/milestones/<slug>.md`.
-4. Keep specs as the executable contracts in `docs/plans/<slug>.md`.
+4. Keep specs as the executable contracts under `docs/plans/`, including
+   lifecycle subfolders after migration.
 5. Make milestone progress readable from Markdown without opening external
    trackers.
 6. Keep external mirrors optional and clearly secondary.
@@ -110,7 +111,7 @@ use archive mode rather than delete.
 |----------|------|----------|
 | Milestone | `docs/milestones/<slug>.md` | yes |
 | Milestone index | `docs/milestones/index.md` | yes |
-| Linked specs | `docs/plans/<slug>.md` | optional but recommended |
+| Linked specs | lifecycle path under `docs/plans/` | optional but recommended |
 | External mirrors | URLs in `## External Mirrors` | optional |
 
 Milestone filenames must match:
@@ -309,17 +310,14 @@ rg -n "^status:|^created:|^updated:|^owner:" docs/milestones/<slug>.md
 Attach validation:
 
 ```bash
-rg -n "^milestone: <slug>$" docs/plans/<spec>.md
-rg -n "../plans/<spec>.md|docs/plans/<spec>.md" docs/milestones/<slug>.md
+node scripts/validate-llm-first.mjs --check spec-lifecycle
 ```
 
 Future validator checks:
 
-1. every `docs/plans/*.md` `milestone:` value maps to a file in
-   `docs/milestones/`;
-2. every milestone `## Specs` row links to an existing spec or is marked `todo`;
-3. linked spec status and milestone row status either match or document the
-   reason for mismatch;
+1. completed milestones have no unresolved blockers;
+2. lifecycle folder root shape matches `docs/plans/` migration rules;
+3. Shotloom briefing/spec consistency is covered by a domain-specific check;
 4. completed milestones have no unresolved blockers.
 
 ## Acceptance Criteria

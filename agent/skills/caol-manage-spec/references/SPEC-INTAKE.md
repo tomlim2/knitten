@@ -34,7 +34,7 @@ status: intake
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 owner: caol-ila
-spec: docs/plans/<slug>.md
+spec: docs/plans/<lifecycle>/<slug>.md
 ---
 
 # Spec Intake: <slug>
@@ -90,3 +90,5 @@ spec: docs/plans/<slug>.md
 4. If evidence conflicts, write `.draft.md` or ask one short question.
 5. Do not invent paths. Resolve repo and vault paths through config or resolver
    skills.
+6. If the matching spec still lives at the legacy flat path, `spec:` may use
+   `docs/plans/<slug>.md` until the lifecycle migration moves it.

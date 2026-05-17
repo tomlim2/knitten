@@ -99,11 +99,13 @@ Pattern: `{noun-phrase}.md` describing the subject — no verbs.
 
 Subgroup folder declares the topical area. Canonical subgroup names live in `agent/config/taxonomy.json` key `standardGroups`; never repeat the subgroup in the filename.
 
-### Plans (`docs/plans/*.md`)
+### Plans (`docs/plans/**/*.md`)
 
 Pattern: verb-first when the plan is an execution doc; noun otherwise.
 
 Mechanical pattern lives in `agent/config/taxonomy.json` key `planFilenamePattern`.
+The filename rule applies across lifecycle folders such as `active/`,
+`proposed/`, `drafts/`, `completed/`, `parked/`, and `archive/`.
 
 | Plan kind | Naming pattern | Examples |
 |-----------|----------------|----------|

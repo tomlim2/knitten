@@ -18,7 +18,7 @@ caol-ila/
 ├── AGENTS.md                 # Codex entry document
 ├── docs/
 │   ├── decisions/            # Accepted policy decisions and rationale
-│   ├── plans/                # Migration and follow-up plans
+│   ├── plans/                # Lifecycle-managed specs, plans, and reports
 │   └── reference/            # Lookup docs such as system glossary
 ├── agent/                    # Symlinked to ~/.claude
 │   ├── CLAUDE.md             # Claude Code deploy shim

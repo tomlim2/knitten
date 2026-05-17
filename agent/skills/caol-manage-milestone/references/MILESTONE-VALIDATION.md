@@ -24,27 +24,24 @@ rg -n "^status:|^created:|^updated:|^owner:" docs/milestones/<slug>.md
 ## Attach Checks
 
 ```bash
-rg -n "^milestone: <slug>$" docs/plans/<spec>.md
-rg -n "\\.\\./plans/<spec>\\.md|docs/plans/<spec>\\.md" docs/milestones/<slug>.md
+node scripts/validate-llm-first.mjs --check spec-lifecycle
 ```
 
 ## Detach Checks
 
 ```bash
-! rg -n "\\.\\./plans/<spec>\\.md|docs/plans/<spec>\\.md" docs/milestones/<slug>.md
-! rg -n "^milestone: <slug>$" docs/plans/<spec>.md
+node scripts/validate-llm-first.mjs --check spec-lifecycle
 ```
 
-If a shell does not support leading `!` in a copied command, run the `rg`
-command and require zero matches.
+The validator checks resolved spec paths, milestone backlinks, and row status.
 
 ## Review Checks
 
 | Area | Command or inspection |
 |------|-----------------------|
-| milestone links | read every `../plans/*.md` link in the `## Specs` table |
-| spec existence | `test -f docs/plans/<spec>.md` |
-| backlink | `rg -n "^milestone: <slug>$" docs/plans/<spec>.md` |
+| milestone links | read every Markdown link in the `## Specs` table |
+| spec existence | resolved spec path exists under `docs/plans/` |
+| backlink | spec frontmatter has `milestone: <slug>` |
 | status | compare spec frontmatter `status:` with milestone row status |
 | progress evidence | each progress row has a concrete file, command, or status phrase |
 | blocker currency | each blocker names the dependency or decision |
@@ -53,7 +50,6 @@ command and require zero matches.
 
 Add script checks after the pilot proves the format:
 
-1. every `docs/plans/*.md` `milestone:` maps to `docs/milestones/<slug>.md`;
-2. every milestone `## Specs` link resolves or is marked `todo`;
-3. linked spec status and milestone row status match or document a reason;
-4. completed milestones have no unresolved blockers.
+1. completed milestones have no unresolved blockers;
+2. lifecycle folder root shape matches `docs/plans/` migration rules;
+3. Shotloom briefing/spec consistency is covered by a domain-specific check.

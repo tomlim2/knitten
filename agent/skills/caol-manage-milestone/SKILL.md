@@ -46,10 +46,24 @@ Resolve milestone slugs with `^[a-z0-9]+(-[a-z0-9]+)*$`.
 | Value | Path |
 |-------|------|
 | `<milestone>` | `docs/milestones/<milestone>.md` |
-| `<spec>` | `docs/plans/<spec>.md` |
+| `<spec>` | resolved lifecycle spec path |
 
 If the user passes a path, use that path after verifying it stays under the
 expected folder.
+
+Resolve spec slugs in this order:
+
+```text
+docs/plans/active/<spec>.md
+docs/plans/proposed/<spec>.md
+docs/plans/drafts/<spec>.md
+docs/plans/parked/<spec>.md
+docs/plans/completed/<spec>.md
+docs/plans/archive/<spec>.md
+docs/plans/<spec>.md
+```
+
+If more than one path exists, stop and report duplicate lifecycle state.
 
 ## Create Workflow
 
@@ -80,10 +94,11 @@ rules.
    and attach.
 3. If the spec has a different non-empty `milestone:`, stop and ask.
 4. Set spec frontmatter `milestone: <milestone>`.
-5. Add or update the milestone `## Specs` row:
+5. Add or update the milestone `## Specs` row with a relative link to the
+   resolved spec path:
 
 ```markdown
-| [<spec>.md](../plans/<spec>.md) | <spec-status> | <role> |
+| [<spec>.md](<relative-path-from-milestone>) | <spec-status> | <role> |
 ```
 
 6. Use the spec frontmatter `status:` for `<spec-status>`.

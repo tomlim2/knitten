@@ -76,7 +76,7 @@
     {
       "path": "docs/plans",
       "patternKey": "planFilenamePattern",
-      "recursive": false
+      "recursive": true
     }
   ]
 }

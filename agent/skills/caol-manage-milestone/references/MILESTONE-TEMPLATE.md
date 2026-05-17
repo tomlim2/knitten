@@ -59,8 +59,11 @@ None.
 Use a relative Markdown link from milestone to spec:
 
 ```markdown
-| [<spec>.md](../plans/<spec>.md) | <status> | <role> |
+| [<spec>.md](../plans/<bucket>/<spec>.md) | <status> | <role> |
 ```
+
+During the flat-path transition, `../plans/<spec>.md` remains valid. Use the
+actual resolved spec path; do not hardcode a bucket that does not exist.
 
 If the spec is planned but does not exist yet, use a code span and mark status
 as `todo`:

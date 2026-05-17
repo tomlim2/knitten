@@ -28,7 +28,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | [caol-review-implementation.md](../plans/caol-review-implementation.md) | implemented | define the post-implementation spec/diff/validator review gate |
 | [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
 | [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
-| [docs-plans-lifecycle-migration.md](../plans/docs-plans-lifecycle-migration.md) | proposed | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
+| [docs-plans-lifecycle-migration.md](../plans/docs-plans-lifecycle-migration.md) | active | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
 | [spec-validator-hardening.md](../plans/spec-validator-hardening.md) | implemented | add validator checks for milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Progress

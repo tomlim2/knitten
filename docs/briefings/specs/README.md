@@ -20,7 +20,11 @@ management, or multi-repo behavior.
 
 | File | Matching spec |
 |------|---------------|
-| `docs/briefings/specs/<slug>.md` | `docs/plans/<slug>.md` |
+| `docs/briefings/specs/<slug>.md` | lifecycle spec path under `docs/plans/` |
 
 Briefings record inputs. Specs record the executable work contract. Do not
 duplicate the whole spec body here.
+
+The intake frontmatter `spec:` field must point to the actual spec path. Legacy
+flat paths such as `docs/plans/<slug>.md` remain valid until the lifecycle
+migration moves them.
