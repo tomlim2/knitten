@@ -29,7 +29,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | implemented | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
 | [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | active | adjacent architecture hardening work that supplies validator and path-cleanup context |
 | [docs-plans-lifecycle-migration.md](../plans/docs-plans-lifecycle-migration.md) | proposed | define `docs/plans/` lifecycle folders, resolver updates, manifest generation, and move validation |
-| `spec-validator-hardening.md` | todo | future validator checks for milestones, spec links, and lifecycle drift |
+| [spec-validator-hardening.md](../plans/spec-validator-hardening.md) | implemented | add validator checks for milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Progress
 
@@ -44,7 +44,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | Milestone attach pilot | done | `caol-manage-milestone.md` status and milestone row are updated through the new rules |
 | Spec manager pilot | done | `caol-architecture-hardening.md` updated through `caol-manage-spec` with persisted intake |
 | Lifecycle migration spec | done | `docs/plans/docs-plans-lifecycle-migration.md` exists before any physical move |
-| Validator hardening | todo | taxonomy registers milestone filenames; deeper link/status checks are future work |
+| Validator hardening implementation | done | `spec-lifecycle` validates milestone links, spec back-links, status sync, duplicate slugs, and spec intake paths |
 
 ## Acceptance Criteria
 
@@ -61,8 +61,8 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 7. Milestone progress can be reviewed from Markdown without opening GitHub,
    GitLab, Linear, or another tracker.
 8. `docs/plans/` rename/move work has a separate migration spec before it runs.
-9. Validator support covers milestone file naming and later covers milestone
-   link consistency.
+9. Validator support covers milestone file naming, milestone link consistency,
+   spec back-links, duplicate spec slugs, and caol spec intake paths.
 
 ## Open Decisions
 

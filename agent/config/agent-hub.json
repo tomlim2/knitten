@@ -386,6 +386,14 @@
       ]
     },
     {
+      "id": "spec-lifecycle",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "spec-lifecycle",
+      "covers": [
+        "spec, milestone, and intake link consistency"
+      ]
+    },
+    {
       "id": "length-caps",
       "script": "scripts/validate-llm-first.mjs",
       "listedCheck": "length-caps",

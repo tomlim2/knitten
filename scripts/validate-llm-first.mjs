@@ -1966,6 +1966,213 @@ async function checkMarkdownLinks() {
   return { name: "markdown-links", violations };
 }
 
+function repoRelPath(p) {
+  return rel(path.resolve(p)).split(path.sep).join("/");
+}
+
+function isPlanReportPath(relativePath) {
+  return relativePath.includes("-reports/") || relativePath.startsWith("docs/plans/reports/");
+}
+
+function isSpecPlanFile(f) {
+  const relativePath = repoRelPath(f);
+  if (!relativePath.startsWith("docs/plans/") || !relativePath.endsWith(".md")) return false;
+  if (isPlanReportPath(relativePath)) return false;
+  return !["index.md", "README.md"].includes(path.basename(f));
+}
+
+function markdownSlug(f) {
+  return path.basename(f, ".md");
+}
+
+function resolveRepoMarkdownPath(fromFile, rawValue) {
+  if (!rawValue || typeof rawValue !== "string") return null;
+  const withoutAnchor = rawValue.trim().split("#")[0];
+  if (!withoutAnchor || withoutAnchor.startsWith("http://") || withoutAnchor.startsWith("https://")) {
+    return null;
+  }
+  if (withoutAnchor.startsWith("docs/") || withoutAnchor.startsWith("agent/")) {
+    return path.join(REPO_ROOT, withoutAnchor);
+  }
+  return path.resolve(path.dirname(fromFile), withoutAnchor);
+}
+
+function markdownLinkTargets(line) {
+  const targets = [];
+  const linkRe = /\[[^\]]+\]\(([^)]+)\)/g;
+  let match;
+  while ((match = linkRe.exec(line)) !== null) {
+    targets.push(match[1].trim());
+  }
+  return targets;
+}
+
+function markdownTableCells(line) {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith("|") || !trimmed.endsWith("|")) return null;
+  const cells = trimmed
+    .split("|")
+    .slice(1, -1)
+    .map((cell) => cell.trim());
+  if (cells.every((cell) => /^:?-+:?$/.test(cell))) return null;
+  return cells;
+}
+
+function specsSectionRows(text) {
+  const rows = [];
+  const lines = text.split("\n");
+  let inSpecs = false;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^##\s+Specs\b/.test(line)) {
+      inSpecs = true;
+      continue;
+    }
+    if (inSpecs && /^##\s+/.test(line)) break;
+    if (inSpecs) rows.push({ line: i + 1, text: line });
+  }
+  return rows;
+}
+
+async function checkSpecLifecycle() {
+  const violations = [];
+  const planRoot = path.join(REPO_ROOT, "docs", "plans");
+  const milestoneRoot = path.join(REPO_ROOT, "docs", "milestones");
+  const specIntakeRoot = path.join(REPO_ROOT, "docs", "briefings", "specs");
+  const specFiles = (await walk(planRoot, (f) => f.endsWith(".md"))).filter(isSpecPlanFile);
+  const specByRel = new Map();
+  const specsBySlug = new Map();
+  const specsByMilestone = new Map();
+
+  for (const f of specFiles) {
+    const relativePath = repoRelPath(f);
+    const slug = markdownSlug(f);
+    const text = await readFile(f, "utf8");
+    const fm = parseFrontmatter(text);
+    specByRel.set(relativePath, { file: f, relativePath, slug, fm });
+    if (!specsBySlug.has(slug)) specsBySlug.set(slug, []);
+    specsBySlug.get(slug).push(relativePath);
+
+    if (fm?.briefing) {
+      const target = resolveRepoMarkdownPath(f, fm.briefing);
+      if (!target || !existsSync(target)) {
+        violations.push({
+          file: relativePath,
+          line: 1,
+          message: `briefing target does not exist: ${fm.briefing}`,
+        });
+      }
+    }
+
+    if (fm?.milestone) {
+      const milestone = fm.milestone.trim();
+      if (!specsByMilestone.has(milestone)) specsByMilestone.set(milestone, []);
+      specsByMilestone.get(milestone).push(relativePath);
+      const milestonePath = path.join(milestoneRoot, `${milestone}.md`);
+      if (!existsSync(milestonePath)) {
+        violations.push({
+          file: relativePath,
+          line: 1,
+          message: `milestone target does not exist: docs/milestones/${milestone}.md`,
+        });
+      }
+    }
+  }
+
+  for (const [slug, paths] of specsBySlug.entries()) {
+    if (paths.length <= 1) continue;
+    violations.push({
+      file: paths[0],
+      line: 0,
+      message: `duplicate spec slug ${JSON.stringify(slug)} appears at ${paths.join(", ")}`,
+    });
+  }
+
+  const milestoneEntries = await listDirOnce(milestoneRoot);
+  const linkedSpecsByMilestone = new Map();
+  for (const entry of milestoneEntries) {
+    if (!entry.isFile() || !entry.name.endsWith(".md") || entry.name === "index.md") continue;
+    const milestonePath = path.join(milestoneRoot, entry.name);
+    const milestoneSlug = path.basename(entry.name, ".md");
+    const text = await readFile(milestonePath, "utf8");
+    const linkedSpecs = new Set();
+
+    for (const row of specsSectionRows(text)) {
+      const cells = markdownTableCells(row.text);
+      if (!cells || cells.length < 2) continue;
+      const targets = markdownLinkTargets(cells[0]);
+      if (targets.length === 0) continue;
+      const targetPath = resolveRepoMarkdownPath(milestonePath, targets[0]);
+      if (!targetPath) continue;
+      const targetRel = repoRelPath(targetPath);
+      if (!targetRel.startsWith("docs/plans/") || isPlanReportPath(targetRel)) continue;
+      linkedSpecs.add(targetRel);
+
+      const spec = specByRel.get(targetRel);
+      if (!spec) {
+        violations.push({
+          file: repoRelPath(milestonePath),
+          line: row.line,
+          message: `milestone links missing spec: ${targets[0]}`,
+        });
+        continue;
+      }
+      if (spec.fm?.milestone !== milestoneSlug) {
+        violations.push({
+          file: spec.relativePath,
+          line: 1,
+          message: `milestone backlink must be ${JSON.stringify(milestoneSlug)} for ${repoRelPath(milestonePath)}`,
+        });
+      }
+      const rowStatus = cells[1].replace(/`/g, "").trim();
+      if (spec.fm?.status && rowStatus && rowStatus !== spec.fm.status) {
+        violations.push({
+          file: repoRelPath(milestonePath),
+          line: row.line,
+          message: `milestone row status ${JSON.stringify(rowStatus)} does not match ${spec.relativePath} status ${JSON.stringify(spec.fm.status)}`,
+        });
+      }
+    }
+
+    linkedSpecsByMilestone.set(milestoneSlug, linkedSpecs);
+  }
+
+  for (const [milestone, specs] of specsByMilestone.entries()) {
+    const linkedSpecs = linkedSpecsByMilestone.get(milestone) || new Set();
+    for (const specPath of specs) {
+      if (linkedSpecs.has(specPath)) continue;
+      violations.push({
+        file: specPath,
+        line: 1,
+        message: `spec declares milestone ${JSON.stringify(milestone)} but milestone ## Specs does not link it`,
+      });
+    }
+  }
+
+  const intakeFiles = await walk(specIntakeRoot, (f) => f.endsWith(".md"));
+  for (const f of intakeFiles) {
+    const relativePath = repoRelPath(f);
+    if (path.basename(f) === "README.md") continue;
+    const text = await readFile(f, "utf8");
+    const fm = parseFrontmatter(text);
+    if (!fm?.spec) {
+      violations.push({ file: relativePath, line: 1, message: "spec intake missing frontmatter 'spec'" });
+      continue;
+    }
+    const target = resolveRepoMarkdownPath(f, fm.spec);
+    const targetRel = target ? repoRelPath(target) : "";
+    if (!target || !existsSync(target) || !specByRel.has(targetRel)) {
+      violations.push({
+        file: relativePath,
+        line: 1,
+        message: `spec intake target does not exist or is not a spec: ${fm.spec}`,
+      });
+    }
+  }
+
+  return { name: "spec-lifecycle", violations };
+}
+
 async function checkGeneratedBlocks() {
   const violations = [];
   const blocks = [
@@ -2041,6 +2248,7 @@ const CHECKS = [
   { name: "entry-documents", fn: checkEntryDocuments },
   { name: "generated-blocks", fn: checkGeneratedBlocks },
   { name: "markdown-links", fn: checkMarkdownLinks },
+  { name: "spec-lifecycle", fn: checkSpecLifecycle },
   { name: "length-caps", fn: checkLengthCaps },
   { name: "import-targets", fn: checkImportTargets },
   { name: "inventory-counts", fn: checkInventoryCounts },
