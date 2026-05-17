@@ -1,5 +1,21 @@
 [
   {
+    "task": "Author caol spec lifecycle",
+    "mustLoad": [
+      "caol-authoring"
+    ],
+    "mustNotLoad": [
+      "rust-bevy",
+      "shotloom-review",
+      "shotloom-deploy",
+      "unreal-engine",
+      "web-frontend",
+      "web-review",
+      "obsidian-vault"
+    ],
+    "maxBytes": 25000
+  },
+  {
     "task": "Implement Rust Bevy ECS in shotloom",
     "mustLoad": [
       "rust-bevy"

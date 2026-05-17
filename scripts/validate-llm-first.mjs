@@ -1416,7 +1416,7 @@ const ROUTE_VALUE_EVIDENCE = {
   css: ["css"],
   javascript: ["javascript", "js"],
   json: ["json"],
-  markdown: ["markdown", "md", "note"],
+  markdown: ["markdown", "md"],
   "mega-melange": ["mega melange", "mega-melange"],
   obsidian: ["note", "obsidian", "vault"],
   python: ["python", "py"],

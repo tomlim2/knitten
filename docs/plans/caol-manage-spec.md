@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: implemented
 created: 2026-05-17
 updated: 2026-05-17
 owner: caol-ila
@@ -529,6 +529,8 @@ The implementation is complete when:
 3. Keep `SKILL.md` concise and link to references.
 4. Add routing metadata or exemption.
 5. Run validators.
+
+Status: implemented in `agent/skills/caol-manage-spec/`.
 
 ### Batch C: Pilot The Skill
 

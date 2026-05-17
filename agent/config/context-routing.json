@@ -16,6 +16,7 @@
   },
   "axes": {
     "domains": [
+      "caol",
       "obsidian",
       "rust",
       "unreal",
@@ -48,6 +49,25 @@
     ]
   },
   "profiles": [
+    {
+      "id": "caol-authoring",
+      "domains": [
+        "caol"
+      ],
+      "repoKeys": [
+        "caol-ila"
+      ],
+      "languages": [
+        "json",
+        "markdown",
+        "yaml"
+      ],
+      "taskTypes": [
+        "authoring",
+        "review"
+      ],
+      "maxBytes": 25000
+    },
     {
       "id": "rust-bevy",
       "domains": [
@@ -203,6 +223,11 @@
     }
   ],
   "pilotFiles": [
+    {
+      "path": "agent/skills/caol-manage-spec/SKILL.md",
+      "profile": "caol-authoring",
+      "contextCost": "medium"
+    },
     {
       "path": "agent/skills/obsidian-defuddle/SKILL.md",
       "profile": "obsidian-vault",

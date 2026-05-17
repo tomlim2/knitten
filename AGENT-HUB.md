@@ -59,6 +59,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |
 |---------|---------------|-----------|------------|------------|----------:|
+| `caol-authoring` | `caol` | `caol-ila` | - | `authoring`, `review` | 25000 |
 | `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
 | `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
 | `shotloom-deploy` | `rust`, `web` | `shotloom` | `bevy`, `wgpu` | `deploy` | 25000 |
@@ -71,6 +72,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | File | Profile | Cost |
 |------|---------|------|
+| `agent/skills/caol-manage-spec/SKILL.md` | `caol-authoring` | `medium` |
 | `agent/skills/obsidian-defuddle/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-fix-format/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-json-canvas/SKILL.md` | `obsidian-vault` | `medium` |
@@ -118,6 +120,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | Task | Must load | Must not load | Max bytes |
 |------|-----------|---------------|----------:|
+| Author caol spec lifecycle | `caol-authoring` | `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Implement Rust Bevy ECS in shotloom | `rust-bevy` | `shotloom-review`, `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Review Shotloom Rust PR before opening | `shotloom-review` | `shotloom-deploy`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Deploy Shotloom web image | `shotloom-deploy` | `rust-bevy`, `shotloom-review`, `unreal-engine`, `obsidian-vault` | 25000 |

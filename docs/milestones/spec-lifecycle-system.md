@@ -24,7 +24,7 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 
 | Spec | Status | Role |
 |------|--------|------|
-| [caol-manage-spec.md](../plans/caol-manage-spec.md) | proposed | define the spec intake, routing, CRUD, review, and lifecycle manager |
+| [caol-manage-spec.md](../plans/caol-manage-spec.md) | implemented | define the spec intake, routing, CRUD, review, and lifecycle manager |
 | [caol-manage-milestone.md](../plans/caol-manage-milestone.md) | proposed | define milestone CRUD, spec attachment, progress review, and archive/delete behavior |
 | [caol-architecture-hardening.md](../plans/caol-architecture-hardening.md) | proposed | adjacent architecture hardening work that supplies validator and path-cleanup context |
 | `docs-plans-lifecycle-migration.md` | todo | future migration for plan/spec folder lifecycle and renames |
@@ -35,9 +35,9 @@ format, later `docs/plans/` lifecycle cleanup, and validator hardening.
 | Phase | State | Evidence |
 |-------|-------|----------|
 | Milestone format | in-progress | `docs/milestones/index.md` defines the Markdown contract |
-| Spec manager design | in-progress | `docs/plans/caol-manage-spec.md` defines the skill contract |
+| Spec manager design | done | `docs/plans/caol-manage-spec.md` defines the skill contract |
 | Milestone manager design | in-progress | `docs/plans/caol-manage-milestone.md` defines CRUD and attachment rules |
-| Skill implementation | todo | `agent/skills/caol-manage-spec/SKILL.md` does not exist yet |
+| Skill implementation | done | `agent/skills/caol-manage-spec/SKILL.md` exists with reference files |
 | Milestone skill implementation | todo | `agent/skills/caol-manage-milestone/SKILL.md` does not exist yet |
 | Pilot | todo | first pilot should update `caol-architecture-hardening.md` through the new skill |
 | Lifecycle migration | deferred | rename/move work is explicitly deferred until after the pilot |
