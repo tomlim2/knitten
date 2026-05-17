@@ -49,6 +49,7 @@
   "maxArtifactNameChars": 64,
   "ruleFilenamePattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$",
   "standardFilenamePattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$",
+  "milestoneFilenamePattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$",
   "planFilenamePattern": "^[a-z0-9]+(?:-[a-z0-9]+)*\\.md$",
   "decisionFilenamePattern": "^\\d{4}-[a-z0-9]+(?:-[a-z0-9]+)*\\.md$",
   "managedDocumentFolders": [
@@ -65,6 +66,11 @@
     {
       "path": "docs/decisions",
       "patternKey": "decisionFilenamePattern",
+      "recursive": false
+    },
+    {
+      "path": "docs/milestones",
+      "patternKey": "milestoneFilenamePattern",
       "recursive": false
     },
     {

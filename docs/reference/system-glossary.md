@@ -29,6 +29,8 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 | runtime path policy | Rule for classifying a runtime path's ownership and git policy | Durable, private, cache, session, or generated runtime paths | The path contents themselves |
 | canonical owner | File or registry that owns the editable value | Where an agent must edit first | Mirrors, shims, or generated views |
 | managed artifact | File, folder, registry, generated document, or runtime path governed by the hub | Inventory and drift checks | Arbitrary repo content |
+| milestone | Durable umbrella record for a multi-spec outcome | `docs/milestones/` and progress grouping across specs | A single implementation contract |
+| Knitten | Internal name for the agent hub identity | New prose identity and future slugs/aliases after the rename plan | Legacy path/config compatibility that still uses `caol-ila` or `caol-*` |
 | task route | Metadata-backed decision that a task belongs to one or more route domains | Selecting task-specific context | Loading broad catalogs before classification |
 | route domain | Technical or knowledge area used for context routing | `unreal`, `rust`, `web`, or `obsidian` routing | Registry `domain` prose in `agent-hub.json` |
 | repo key | Repository identifier from `repo-paths.json` | Routing and machine-local path lookup | Human project names outside the registry |
