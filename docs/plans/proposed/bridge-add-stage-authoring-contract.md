@@ -86,8 +86,10 @@ Stage-owned environment content and shot-owned editable props.
    members for the Stage authoring command set: create, duplicate, delete, set
    active, update stage metadata/transform, update element visibility/lock,
    replace renderable, promote stage-owned content to `PropModel`, and demote
-   eligible `PropModel` to Stage-owned `set_dressing`. Trace: STL-451 scope and
-   AC1.
+   eligible `PropModel` to Stage-owned `set_dressing`. Every authored Stage
+   command targets an explicit `shot_id`; it must not silently target whichever
+   shot happens to be current in UI state. Trace: STL-451 scope, shot-local
+   Stage ownership, and AC1.
 2. Add bridge DTOs for Stage command payloads and success echoes using
    bridge-owned `*Dto` types where read-model data crosses the command/event
    boundary. Trace: bridge-contract §7A and AC1.
@@ -129,6 +131,12 @@ Stage-owned environment content and shot-owned editable props.
 12. Keep command/event names in snake_case and avoid the terms "stage prop" or
     "dressing" in DTO names; use `set_dressing` where the Stage role is meant.
     Trace: `docs/specs/stage-entity-model.md` terminology.
+13. Lock active-stage selection semantics: creating the first Stage in a shot
+    sets `active_stage_id` to the new Stage; duplicating a Stage does not change
+    the active Stage; deleting the active Stage sets `active_stage_id` to the
+    next remaining Stage in shot order, or `null` when none remain; deleting a
+    non-active Stage preserves `active_stage_id`. Trace: `ShotModel.active_stage_id`
+    optionality, Stage delete AC, and deterministic editor reconciliation.
 
 ## Risk Map
 
@@ -220,6 +228,30 @@ Stage-owned environment content and shot-owned editable props.
    Rejected alternatives: implementing runtime entities would pull Bevy ECS
    ordering and asset loading into the command-contract PR.
 
+8. **Every Stage authoring command carries `shot_id`.**
+
+   Rationale: Stage is shot-local, and several bridge families already use
+   explicit shot ids for timeline mutations. Making `shot_id` part of every
+   Stage command prevents UI-only current-shot state from becoming an implicit
+   protocol parameter and gives missing-shot rejection a stable test target.
+
+   Rejected alternatives: using only the current authoring shot would mirror
+   prop spawn behavior but make cross-shot editor flows ambiguous; embedding
+   shot identity only in event payloads would be too late to validate command
+   intent.
+
+9. **Deleting the active Stage chooses the next remaining Stage, then `null`.**
+
+   Rationale: `active_stage_id` is optional, so an empty Stage list can be
+   represented without a sentinel. When other stages remain, choosing the next
+   Stage in shot order keeps editor state deterministic without requiring a
+   second command.
+
+   Rejected alternatives: always setting `active_stage_id` to `null` would
+   leave a shot with usable Stages but no active Stage; preserving a dangling
+   deleted id would violate `validate_stage_refs`; asking the UI to send a
+   follow-up `set_active_stage` would create a partial-state window.
+
 ## Non-Goals
 
 - No Stage outliner, inspector, edit-mode, toolbar, or button implementation.
@@ -250,7 +282,7 @@ Stage-owned environment content and shot-owned editable props.
 
 ### S1 - Add Core Bridge DTOs and Commands
 
-Requirements: R1, R2, R4, R12. Risk rows: Schema / serialization
+Requirements: R1, R2, R4, R12, R13. Risk rows: Schema / serialization
 compatibility, Ownership / API boundary.
 
 1. Add Stage bridge DTOs under `crates/shotloom-core/src/bridge/` or the
@@ -282,6 +314,8 @@ compatibility, Ownership / API boundary.
 4. Mark all nine commands as `TransactionClass::DurableMutation`.
 5. Add Rust serde tests for command payload round trips, optional additive
    fields, and transaction classification.
+6. Assert every command payload carries `shot_id`, plus the command-specific
+   Stage, element, renderable, or prop target ids.
 
 ### S2 - Add Rejection Codes and Success Events
 
@@ -314,7 +348,7 @@ serialization compatibility.
 
 ### S3 - Add Engine Bridge Handlers
 
-Requirements: R3, R4, R7, R8, R11. Risk rows: Ownership / API boundary,
+Requirements: R3, R4, R7, R8, R11, R13. Risk rows: Ownership / API boundary,
 Partial mutation / rollback, Reviewer objection.
 
 1. Add a focused Stage authoring handler module under
@@ -322,7 +356,7 @@ Partial mutation / rollback, Reviewer objection.
 2. Route the new `BridgeCommand` variants from
    `crates/shotloom-engine/src/bridge/mod.rs`.
 3. Keep handlers model-focused:
-   - locate current authoring bundle and shot,
+   - locate the requested `shot_id` inside the loaded bundle,
    - validate Stage/element/renderable/prop/asset ids,
    - mutate `ShotModel.stages`, `active_stage_id`, and `props` only through
      prevalidated or rollback-safe steps,
@@ -336,6 +370,8 @@ Partial mutation / rollback, Reviewer objection.
      with `BUNDLE_VALIDATION_FAILED`.
 5. Do not spawn, despawn, or hydrate Bevy Stage renderable entities in these
    handlers.
+6. For `delete_stage`, update `active_stage_id` according to R13 before bundle
+   validation and event emission.
 
 ### S4 - Add TypeScript Bridge Mirrors
 
@@ -344,6 +380,8 @@ compatibility, Test oracle strength.
 
 1. Add Stage DTO/read-model types to `apps/editor/src/bridge/shot.ts` or
    `apps/editor/src/bridge/types.ts`, following existing bridge organization.
+   The `Shot` read model must gain optional `stages` and `active_stage_id`
+   fields so event payloads and `shot_loaded`-style mirrors can be typed.
 2. Add the nine command types and union entries to
    `apps/editor/src/bridge/types.ts`.
 3. Add Stage event types and union entries.
@@ -425,6 +463,19 @@ Manual / failure-path repro targets:
   `command_rejected` with `STAGE_NOT_FOUND` and unchanged `active_stage_id`.
 - Dispatch `update_stage_element` for a missing element id; observe
   `STAGE_ELEMENT_NOT_FOUND` and unchanged Stage data.
+- Dispatch `replace_stage_renderable` for a missing renderable id; observe
+  `STAGE_RENDERABLE_NOT_FOUND` and unchanged Stage data.
+- Dispatch `create_stage` with a caller-supplied id that already exists in the
+  target shot; observe `DUPLICATE_STAGE_ID` and unchanged Stage order.
+- Dispatch `update_stage_element` against a locked or non-editable target;
+  observe `STAGE_TARGET_NOT_EDITABLE` and unchanged element fields.
+- Dispatch a Stage command with internally inconsistent ids, such as a
+  renderable replacement payload whose nested renderable id disagrees with the
+  URL target; observe `INVALID_STAGE_PAYLOAD` and unchanged Stage data.
+- Dispatch `update_stage` with an empty or oversized display name; observe
+  `INVALID_DISPLAY_NAME` and unchanged Stage metadata.
+- Dispatch `update_stage` with NaN or Inf in `base_transform`; observe
+  `NON_FINITE_TRANSFORM` and unchanged Stage transform.
 - Dispatch `replace_stage_renderable` for a missing asset id; observe
   `ASSET_NOT_FOUND` and unchanged renderable refs.
 - Dispatch `promote_stage_content_to_prop` for non-`set_dressing` content;
@@ -433,11 +484,14 @@ Manual / failure-path repro targets:
   a shot-owned `PropModel`, removal of the Stage-owned element/renderable
   ownership, and no duplicate logical owner.
 - Dispatch `demote_prop_to_stage_content` for an unknown prop id; observe
-  `ENTITY_NOT_FOUND` or the chosen documented existing code and unchanged
-  Stage/prop collections.
+  `ENTITY_NOT_FOUND` and unchanged Stage/prop collections.
 - Dispatch `delete_stage` for the active stage; observe documented
-  `active_stage_id` fallback or `null` behavior and no removal of shot-owned
-  props.
+  next-stage or `null` behavior and no removal of shot-owned props.
+- Dispatch a Stage command with an unknown `shot_id`; observe `SHOT_NOT_FOUND`
+  and no Stage mutation in any shot.
+- Force a post-mutation `BundleModel` validation failure in a test-only harness;
+  observe `BUNDLE_VALIDATION_FAILED`, restored pre-command Stage/prop state, and
+  no Stage success event.
 
 Broad pre-commit gates:
 
