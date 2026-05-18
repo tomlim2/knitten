@@ -96,7 +96,7 @@ Dispatch one read-only Explore subagent.
 
 | Field | Value |
 |---|---|
-| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + U` |
+| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + U + J + review axes + deep adjacency` |
 | `prompt` | Read `~/.claude/skills/shotloom-review-code/SKILL.md` Step 3 and pass it verbatim with `<worktree>` and `<branch>` substituted. |
 
 Render the report verbatim under:
@@ -130,6 +130,22 @@ Lens before applying the rest of the supplementary patterns.
 Review from a different angle than all earlier passes in this phase: confirm
 previously reported P0-P2 issues are fixed, look for regressions introduced by
 fixes, and report any pre-existing defect still visible in the current diff.
+Re-run Review Axes Triage on current HEAD. Use the axes as a compact checklist:
+correctness, regression risk, test coverage, data/state consistency, error
+handling, API/contract consistency, security/safety, performance,
+maintainability, and scope control. Report only axes that add a finding beyond
+the section and pattern findings. The Shotloom in-repo review guidelines remain
+the authority; the axes only reveal missed applications of those guidelines,
+directly related ADRs, specs, bridge contracts, task issue acceptance criteria,
+or skill-side patterns. Do not scan every Shotloom ADR, spec, bridge contract,
+or issue for this verification pass. Default evidence depth is 2: inspect
+direct evidence, then only the artifacts directly referenced by that evidence.
+Escalate to Depth 3 only for protocol/schema/serialization/persistence
+compatibility risk or a concrete contradiction found at Depth 2.
+Re-run the Deep Adjacency pass on current HEAD: re-check two-depth
+load/save/import paths, direct consumers, bridge mirrors, fixtures, diagnostic
+wording, public helper exposure, and migration/compatibility decisions for any
+changed validation rejection.
 Do not rely on the authoring session or on earlier pass conclusions; check
 directly.
 ```
@@ -191,11 +207,20 @@ Related issue and decision context:
 - Detect a Linear issue from `$ARGUMENTS`, PR body, or recent commit footers
   like `Related to STL-NN`. If a Linear connector is visible, fetch the issue
   and use its title, problem statement, acceptance criteria, affected modules,
-  linked ADRs, and linked specs as context. If Linear is unavailable, say so
-  and continue from local branch/commit hints.
-- Check related ADRs deliberately. Start from ADRs linked by Linear, then
-  `docs/adr/README.md`, then exact keyword matches in `docs/adr/`. Do not scan
-  unrelated ADRs just to fill the report.
+  linked ADRs, linked specs, and linked bridge contracts as context. If Linear
+  is unavailable, say so and continue from local branch/commit hints.
+- Check related ADRs/specs/bridge contracts deliberately. Start from artifacts
+  linked by Linear, PR/branch text, changed docs, changed code comments, or
+  directly referenced specs/contracts. If no direct link exists, use exact
+  implementation-zone keyword matches in the smallest relevant root
+  (`docs/adr/`, `docs/specs/`, or `docs/ipc/`). Do not scan every ADR, spec,
+  bridge contract, or unrelated issue just to fill the report.
+- Default evidence depth is 2: Depth 0 is the changed prose/comment surface,
+  Depth 1 is directly linked or exact-match evidence, and Depth 2 is artifacts
+  directly referenced by Depth 1 evidence. Stop after Depth 2 unless a concrete
+  contradiction is visible in the changed implementation zone. Escalate to
+  Depth 3 only for protocol/schema/serialization/persistence compatibility risk
+  or a concrete contradiction found at Depth 2.
 - Treat code comments and rustdoc in changed or nearby implementation files as
   docs. Review them with the same previous-vs-current behavior standard as
   markdown docs.
@@ -207,10 +232,10 @@ Scope:
    behavior words. Examples: `normalize_vrm`, `axis-bake`, `humanoid`,
    `inverseBindMatrices`, `skin`, `cache`, `VRM 0.x`, `VRM 1.x`,
    `normalized_vrm_axis_bake`.
-3. Search only nearby related docs/comments/ADRs for those terms. Prefer
-   changed files first, then directly related ADRs, specs, guidelines, and
-   architecture pages. Do not run a repository-wide prose audit except for
-   exact diagnostic/code/path references introduced by the diff.
+3. Search only nearby related docs/comments/evidence for those terms. Prefer
+   changed files first, then directly related ADRs, specs, bridge contracts,
+   guidelines, and architecture pages. Do not run a repository-wide prose audit
+   except for exact diagnostic/code/path references introduced by the diff.
 4. Compare previous wording against current wording:
    - What did the pre-branch text imply before?
    - What does the branch now claim?
@@ -229,8 +254,9 @@ Output:
 
 ### Applicability
 - Targeted terms searched: ...
-- Context sources checked: Linear issue/ACs, ADRs, changed comments/rustdoc,
-  related docs, with unavailable sources called out.
+- Context sources checked: Linear issue/ACs, directly related ADRs/specs/bridge
+  contracts, changed comments/rustdoc, related docs, with unavailable sources
+  called out.
 - Files checked: ...
 
 ### Findings

@@ -1,5 +1,5 @@
 ---
-description: Cold-start Rust/TS code-quality review via Explore subagent — review-rust.md, test-code lens, Patterns A–F + T + U + J. Pair skill of shotloom-review-docs
+description: Cold-start Rust/TS code-quality review via Explore subagent — review-rust.md, test-code lens, Patterns A–F + T + U + J, review axes, deep adjacency. Pair skill of shotloom-review-docs
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(pwd), Bash(cd:*)
 domains: rust
 repo-keys: shotloom
@@ -13,7 +13,7 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-code
 
-Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs Patterns A–F + T against the current diff and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
+Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs Patterns A–F + T, Review Axes Triage, and Deep Adjacency against the current diff and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
 
 Pair skill: `shotloom-review-docs` covers docs/wording discipline.
 Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reuses this catalog with a verification preamble.
@@ -80,7 +80,7 @@ Re-read every invocation. The standards are amended as new defect classes are fo
 - File list: `git diff --name-only origin/main...HEAD`
 - Content: `git diff origin/main...HEAD` (full hunks)
 
-## Two-phase execution (strict order)
+## Four-phase execution (strict order)
 
 ### Phase 1 — In-repo canonical walk (FIRST)
 
@@ -116,8 +116,77 @@ Only after Phase 1 is fully reported, run the patterns in `reference.md`. These 
 
 For each pattern: run the sweep command from reference.md, triage hits, report.
 
+### Phase 3 — Review Axes Triage (AFTER Phase 2)
+
+Run `reference.md` "Review Axes Triage". This is a mandatory mental checklist,
+not a request for a long report. Use it to catch missing defect classes after
+the mechanical sweeps. The Shotloom in-repo review guidelines remain the
+authority: the axes cannot invent a conflicting rule, priority, or merge gate.
+When an axis finds a defect, cite the closest Shotloom guideline, directly
+related ADR, spec, or skill-side pattern that makes the defect actionable.
+
+Required axes:
+
+1. Correctness — requirements, edge cases, and intentional rejection behavior.
+2. Regression Risk — existing behavior, shared contracts, serialization,
+   protocol, schema, and backward compatibility.
+3. Test Coverage — changed behavior, failure paths, fallback branches, and
+   tests that fail for the real bug.
+4. Data / State Consistency — partial mutation, reference integrity,
+   duplicate/missing/stale references, caches, mirrors, and derived state.
+5. Error Handling — swallowed errors, actionable caller errors, accurate codes,
+   messages, and related ids.
+6. API / Contract Consistency — docs, types, implementation, tests, naming,
+   payload shape, required/optional fields, and versioning.
+7. Security / Safety — input validation, ownership boundaries, locks,
+   sensitive information, panic, unsafe, races, and invalid state access.
+8. Performance — hot-path complexity, clone/allocation/serialization cost,
+   async, lock, render-loop, WASM bridge, and frame-budget impact.
+9. Maintainability — unit size, duplication drift, useful abstraction, and
+   speculative public helper/export surface.
+10. Scope Control — PR goal fit, mixed refactor/feature/contract changes,
+   reviewable size, and follow-up issue boundaries.
+
+Report axes compactly. List only triggered axes with findings. If no axis adds
+a finding beyond Phases 1-2, report one line: `Review axes triage: clean`.
+Never let this phase outrank `review-rust.md`, `code-review-guideline.md`,
+`error-handling.md`, directly related bridge contracts, directly related ADRs,
+directly related Shotloom specs, or task-specific acceptance criteria. Do not
+scan every ADR, spec, bridge contract, or issue. Use only evidence linked from
+the Linear issue, branch/PR text, changed files, comments, directly referenced
+specs/contracts, or exact implementation-zone keyword matches.
+Default evidence depth is 2: first inspect directly linked or exact-match
+evidence; then inspect only the artifacts directly referenced by that evidence.
+Stop there unless the second-depth artifact reveals a concrete contradiction in
+the changed implementation zone. Escalate to Depth 3 only for
+protocol/schema/serialization/persistence compatibility risk or a concrete
+contradiction found at Depth 2.
+
+### Phase 4 — Deep Adjacency pass (AFTER Phase 3)
+
+Run `reference.md` "Deep Adjacency Pass". This pass follows two bounded hops
+past the diff instead of broad-scanning the repo.
+
+Required checks:
+
+1. For each new or changed public type, enum variant, validation function, or
+   serde field, inspect direct callers/consumers and direct load/save/import
+   paths, then inspect those callers' direct contract/evidence references when
+   they exist.
+2. For each new validation rejection, identify whether existing persisted data
+   can now fail. If yes, require an explicit migration/compatibility decision
+   in the PR body or a linked follow-up issue.
+3. For each new serde enum variant or bridge-visible type, check Rust serde
+   tests, TypeScript mirrors, directly related docs/specs, fixtures, and
+   diagnostic wording.
+4. For each new public helper, decide whether it has a current production
+   consumer. If not, prefer private/crate-private surface or require a named
+   follow-up issue.
+5. Report this pass separately as `Deep adjacency findings`, even when clean.
+   Include `Depth checked: 2` unless the diff has no contract-shaped items.
+
 Triage taxonomy (both phases):
-- **defect** — cite the rule (in-repo §-section, ADR, or skill-side pattern) it violates.
+- **defect** — cite the rule (in-repo §-section, directly related ADR, or skill-side pattern) it violates.
 - **false-positive** — cite the line of reasoning that exempts it.
 - **needs-design-judgment** — describe the tradeoff and propose a default.
 
@@ -130,7 +199,7 @@ Do NOT skip a section / pattern silently. If a check produces zero hits, report 
 
 ### Applicability — rust:N ts:N
 
-Ran: Phase 1 (review-rust.md §1-11), Phase 2 (Test Code Review Lens + Patterns <list>). N/A: <list with reason, e.g. "no Rust diff" or "no Cargo.toml change">.
+Ran: Phase 1 (review-rust.md §1-11), Phase 2 (Test Code Review Lens + Patterns <list>), Phase 3 (Review Axes Triage), Phase 4 (Deep Adjacency). N/A: <list with reason, e.g. "no Rust diff" or "no Cargo.toml change">.
 
 ### Phase 1 — In-repo review-rust.md checks (canonical)
 
@@ -152,9 +221,18 @@ Continue for every §-section through §11.
 
 Continue for every pattern A-F + T + U + J that applies.
 
+### Phase 3 — Review axes triage
+
+- clean — OR — `Triggered axes: <axis list>` followed by findings not already
+  captured above.
+
+### Phase 4 — Deep adjacency findings
+
+- clean — OR — `<path>:<line>` — <two-depth caller/path/compatibility/public-surface defect and source rule>
+
 ### Recommendation
 
-All Phase 1 + Phase 2 clean → ready for the docs review. OR specific findings to address — priority labels per code-review-guideline.md (P0 blocker / P1 critical / P2 should-fix / P3 nit). Phase 1 findings always carry the §-section's source priority; Phase 2 findings default to P3 unless the violated standard escalates them.
+All Phase 1 + Phase 2 + Phase 3 + Phase 4 clean → ready for the docs review. OR specific findings to address — priority labels per code-review-guideline.md (P0 blocker / P1 critical / P2 should-fix / P3 nit). Phase 1 findings always carry the §-section's source priority; Phase 2, Phase 3, and Phase 4 findings default to P3 unless the violated standard escalates them.
 ```
 
 ## Constraints (absolute)
@@ -163,7 +241,7 @@ All Phase 1 + Phase 2 clean → ready for the docs review. OR specific findings 
 - Do NOT push, do NOT call `gh pr create`, do NOT post PR comments.
 - Do NOT skip a pattern silently. Empty-result patterns report as `clean`.
 - Do NOT charity-read the author's intent — if the comment claims a fact, verify it against the code; do not assume it is true because the author wrote it.
-- Findings cite a rule / ADR / guideline section, not "I prefer".
+- Findings cite a rule / directly related ADR / guideline section, not "I prefer".
 
 When finished, return only the Markdown report. The orchestrator surfaces it to the user.
 ```

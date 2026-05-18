@@ -1,6 +1,6 @@
 # shotloom-review-code reference
 
-**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The test-code review lens and patterns below catch additional defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage).
+**Supplementary catalog — runs in Phases 2-4 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The test-code review lens and patterns below catch additional defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage). Review Axes Triage runs after those sweeps as a compact mandatory checklist. The Deep Adjacency pass then follows two bounded hops past the diff to direct consumers, persistence paths, bridge mirrors, and compatibility decisions.
 
 If a Pattern below already overlaps an in-repo §-section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Keep sweeps grep-catchable; semantic-judgment hits move to the subagent's triage column, not into the sweep itself.
 
@@ -436,11 +436,177 @@ Findings escalate per the rule's source — all three default to P2 (maintainabi
 
 ---
 
+## Review Axes Triage — compact defect-class checklist
+
+Run after the mechanical sweeps. This checklist prevents blind spots; it must
+not inflate the report. If an axis is clean or already covered by a Phase 1/2
+finding, record it only in the compact triage line. Add detail only when the
+axis produces a new finding.
+
+Authority order:
+
+1. Shotloom in-repo guidelines, especially `docs/guidelines/review-rust.md`,
+   `docs/guidelines/code-review-guideline.md`, and
+   `docs/guidelines/error-handling.md`.
+2. Directly related Shotloom ADRs, specs, bridge contracts, and task-specific
+   issue acceptance criteria.
+3. Skill-side patterns and this Review Axes Triage checklist.
+
+The axes do not define independent merge policy. They organize inspection and
+surface missed applications of the authorities above. Every axis finding must
+cite the closest guideline, directly related ADR, spec, contract, or skill-side
+pattern that makes it actionable.
+
+Related evidence boundary:
+
+- Use ADRs, specs, bridge contracts, and issue acceptance criteria explicitly
+  linked by the Linear issue, PR body, commit text, changed docs, changed code
+  comments, or directly referenced specs/contracts.
+- Use exact implementation-zone keyword matches when no direct link exists.
+  Search the smallest relevant root first, such as `docs/adr/`, `docs/specs/`,
+  `docs/ipc/`, or the fetched Linear issue text.
+- Do not read every Shotloom ADR, spec, bridge contract, or issue. If no
+  related evidence is found through those routes, report
+  `Related evidence: none found` instead of broadening the review.
+
+Depth rule:
+
+- Default depth is 2.
+- Depth 0 is the changed diff surface.
+- Depth 1 is directly linked or exact-match evidence from the changed diff,
+  Linear issue, PR body, commit text, changed docs, changed comments, or
+  referenced specs/contracts.
+- Depth 2 is the artifacts directly referenced by Depth 1 evidence.
+- Stop after Depth 2 unless the Depth 2 artifact exposes a concrete
+  contradiction in the changed implementation zone. Do not follow general
+  "related reading" links, navigation indexes, or broad roadmap references.
+- Escalate to Depth 3 only for protocol/schema/serialization/persistence
+  compatibility risk or a concrete contradiction found at Depth 2. Report the
+  reason as `Depth escalation: <reason>`.
+
+Axes:
+
+1. **Correctness.** Verify the diff satisfies the stated requirement or
+   acceptance criteria, handles edge cases, rejects invalid inputs, and
+   preserves domain invariants.
+2. **Regression Risk.** Identify changed existing behavior, shared types,
+   public API, serialization, protocol, schema, persistence shape, and backward
+   compatibility needs.
+3. **Test Coverage.** Verify changed behavior has direct tests for happy path,
+   failure path, edge case, fallback branch, and observable contract.
+4. **Data / State Consistency.** Check partial mutation, create/update/delete
+   reference integrity, duplicate/missing/stale references, caches, mirrors,
+   indexes, and derived state.
+5. **Error Handling.** Check swallowed errors, silent fallback, actionable
+   caller errors, accurate codes/messages, related ids, and recovery-vs-bug
+   separation.
+6. **API / Contract Consistency.** Check docs, types, implementation, tests,
+   naming, payload shape, required/optional fields, defaults, mirrors, and
+   versioning notes.
+7. **Security / Safety.** Check input validation, permission/ownership/lock
+   boundaries, sensitive data in logs/responses, panic, unsafe, races, and
+   invalid state access.
+8. **Performance.** Check hot-path complexity, clone/allocation/serialization
+   cost, large-data behavior, async/lock/render-loop/WASM bridge impact, and
+   frame-budget risk.
+9. **Maintainability.** Check unit size, duplication drift, abstraction value,
+   speculative public surface, naming, and comments for non-obvious invariants.
+10. **Scope Control.** Check PR goal fit, mixed refactor/feature/contract
+   changes, reviewable size, and follow-up issue boundaries.
+
+Output rule:
+
+```markdown
+### Phase 3 — Review axes triage
+
+- clean
+```
+
+or:
+
+```markdown
+### Phase 3 — Review axes triage
+
+- Triggered axes: Regression Risk, API / Contract Consistency.
+- `<path>:<line>` — <new finding from an axis not already captured above>.
+```
+
+---
+
+## Deep Adjacency Pass — two-depth boundary review
+
+Run after Review Axes Triage. This is not a broad fresh review. Follow two
+bounded hops past each changed contract-shaped item and verify that the
+surrounding boundary still matches the diff.
+
+Contract-shaped items:
+
+- new or changed public Rust types, enum variants, validation functions, serde
+  fields, bridge-visible DTOs, TS exported types, route parsers, and diagnostic
+  strings;
+- new rejection paths, fallback paths, or defaulting behavior in validators,
+  importers, loaders, savers, bridge handlers, or bundle serializers;
+- new public helpers, `pub use` entries, barrel exports, or crate/module
+  boundary widenings.
+
+For each item, inspect:
+
+1. **Depth 1 direct callers and consumers.** Use `rg` on the symbol or
+   diagnostic code, then open the immediate caller, not the whole repository.
+   Confirm the caller handles the new shape without silent fallback or
+   unreachable branch drift.
+2. **Depth 1 direct load/save/import paths.** Trace bundle load, bundle save,
+   import, bridge ingestion, fixture construction, and test data paths that
+   touch the changed shape.
+3. **Depth 2 direct references from Depth 1 artifacts.** From each relevant
+   caller, path, fixture, doc, spec, or contract found at Depth 1, inspect only
+   the artifacts it directly references. Stop after those references unless a
+   concrete contradiction is visible in the changed implementation zone.
+4. **Validation compatibility.** For each new rejection, decide whether existing
+   persisted bundles or fixtures can now fail. Require one of: explicit
+   migration/compatibility note in the PR body, linked follow-up issue, or a
+   local test proving the old shape still loads.
+5. **Mirror surfaces.** For new serde enum variants or bridge-visible types,
+   check Rust serde tests, TypeScript mirrors, directly related docs/specs,
+   fixtures, and diagnostic wording.
+6. **Public helper exposure.** For each new helper or export, find the current
+   production consumer. If none exists, require private/crate-private surface or
+   a named follow-up issue that explains the widened contract.
+
+Useful commands:
+
+```bash
+# Contract-shaped Rust additions
+git diff origin/main..HEAD --unified=0 -- '*.rs' \
+  | rg '^\+\s*(pub\s+)?(struct|enum|fn|type)\s+|^\+\s*#\[serde|^\+\s*pub\s+use'
+
+# Bridge/serde/diagnostic additions
+git diff origin/main..HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' \
+  | rg '^\+' \
+  | rg 'serde|Serialize|Deserialize|diagnostic|error|warning|bridge|Dto|DTO|Bundle|import|load|save|validate'
+
+# For each symbol or diagnostic code, inspect Depth 1 consumers.
+ident="StageRenderableState"
+rg -n "\b${ident}\b" crates apps docs contracts
+```
+
+Report under `Deep adjacency findings` separately and include
+`Depth checked: 2` when contract-shaped items exist. Use `clean` only after
+checking every contract-shaped item produced by the diff. Findings default to
+P3 unless the violated in-repo rule, directly related evidence, compatibility
+break, or missing test raises the priority.
+If the pass escalates to Depth 3, include `Depth escalation: <reason>`.
+
+---
+
 ## Sweep order
 
 1. **A–F** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
 2. **T** — test coverage on changed behavior (`rules/test-write.md` enforcement).
 3. **U** — speculative public API surface (barrel widening without consumer).
 4. **J** — TypeScript defensive-shape patterns (fires only when `ts_changed > 0`).
+5. **Review Axes Triage** — compact defect-class checklist.
+6. **Deep Adjacency** — two-depth consumers, persistence paths, mirrors,
+   diagnostics, public exposure, and validation compatibility.
 
 Findings in T are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.
