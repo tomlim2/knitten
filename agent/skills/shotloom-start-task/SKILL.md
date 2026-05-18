@@ -2,6 +2,7 @@
 description: Pre-write gate for Shotloom coding - Linear fetch, worktree setup, convention re-read, persisted briefing, spec-risk handoff
 argument-hint: "[STL-NN | linear-url | category]"
 allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
+context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
 ---
 
 # shotloom-start-task
@@ -191,6 +192,21 @@ found`.
 ### Step 6: Write Ready Briefing — END OF THIS SKILL
 
 Resolve the task slug from the created/current branch body after `<type>/`.
+Before writing, switch agent-hub/Knitten to the daily Shotloom docs lane
+defined in `agent/rules/shotloom-docs-lane.md`:
+
+```text
+codex/YYYYMMDD-shotloom-docs
+```
+
+Use an existing local branch or remote branch for the current KST date. Create
+the branch from `origin/main` only when no branch exists. If the primary
+Knitten checkout is busy, use the matching worktree:
+
+```text
+../knitten-worktrees/YYYYMMDD-shotloom-docs
+```
+
 Write the compact briefing to
 `$agent_hub/docs/briefings/shotloom/<slug>.md` using the template in
 `reference.md`. Create the directory if absent.
@@ -219,9 +235,10 @@ Tell the user explicitly what comes next:
 **Spec ↔ implementation are two distinct gates.** Task-spec authoring is
 delegated to [`/shotloom-draft-spec`](../shotloom-draft-spec/SKILL.md), which
 writes `agent-hub/docs/plans/proposed/<slug>.md`, runs the review loop,
-commits/pushes from agent-hub, shares the final spec path, then asks whether to
-implement. It reads `agent-hub/docs/briefings/shotloom/<slug>.md` first and
-commits that briefing with the spec. Implementation begins only after a
+commits/pushes from the daily Shotloom docs branch in agent-hub, shares the
+final spec path, then asks whether to implement. It reads
+`agent-hub/docs/briefings/shotloom/<slug>.md` first and commits that briefing
+with the spec. Implementation begins only after a
 separate user message such as "구현 시작", "implement", or "go".
 
 This skill (`/shotloom-start-task`) NEVER:
@@ -242,6 +259,8 @@ This skill (`/shotloom-start-task`) NEVER:
 - If Linear MCP fetch fails, report the error but continue — use branch/commit hints.
 - The Ready briefing markdown file and matching chat briefing are the **only**
   outputs at Step 6. No code, no spec, no extra prose until user confirms.
+- Every Ready briefing written to Knitten uses the daily Shotloom docs branch;
+  do not create a per-STL Knitten branch for the briefing.
 - If user says "skip pre-flight" / "already did this", log the decision and skip Step 3 only — never skip Step 1.
 
 ## Additional Resources

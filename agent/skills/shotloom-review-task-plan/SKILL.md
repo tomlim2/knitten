@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/shotloom.md
+context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
 exclude-when: unreal,obsidian
 ---
 
@@ -67,6 +67,12 @@ Resolve the spec path. Surface:
 
 If the spec path cannot be resolved, stop without writing. If `repo_root` is
 `agent-hub` and no input was provided, stop and ask for `[slug-or-path]`.
+
+If the spec belongs to Shotloom and the review patches Knitten docs, verify
+agent-hub/Knitten is on the daily Shotloom docs branch from
+`agent/rules/shotloom-docs-lane.md`: `codex/YYYYMMDD-shotloom-docs`. If it is
+not, switch to that branch or use the matching Knitten docs worktree before
+editing.
 
 ### Step 2: Round 1 - Cold-Start Context Gather
 
@@ -188,6 +194,7 @@ git -C "$agent_hub" push
 
 Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. Never use
 `--no-verify`. Do not stage unrelated dirty files.
+The commit lands on the daily Shotloom docs branch.
 
 If no edits were needed, do not create an empty commit.
 

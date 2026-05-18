@@ -8,6 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: authoring,review
 context-profile: shotloom-review
+context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
 exclude-when: unreal,obsidian
 ---
 
@@ -49,3 +50,16 @@ rules on top:
 - one direct-spec commit and push when the spec converges
 - optional review-spec commit and push when review patches the spec
 - final user prompt: "이 스펙으로 구현 시작할까요?"
+
+## Branch Contract
+
+All Knitten docs written by this skill use the daily Shotloom docs lane from
+`agent/rules/shotloom-docs-lane.md`:
+
+```text
+codex/YYYYMMDD-shotloom-docs
+```
+
+Use the existing KST-date branch when it exists. Create it from `origin/main`
+only when neither the local nor remote branch exists. Do not create a per-STL
+Knitten branch for Shotloom specs.

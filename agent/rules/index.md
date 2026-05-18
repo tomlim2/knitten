@@ -24,6 +24,7 @@ This table is inventory only. Rule cells MUST use code spans, not Markdown links
 | `obsidian.md` | triggered | working in the Obsidian vault |
 | `cinev-git.md` | triggered | git op in a CINEV repo |
 | `shotloom.md` | triggered | working in the shotloom repo |
+| `shotloom-docs-lane.md` | triggered | writing Shotloom docs to Knitten |
 | `task-context-routing.md` | triggered | selecting task-specific context or loading route-domain artifacts |
 | `slack.md` | triggered | sending any Slack message |
 | `writing-external.md` | triggered | writing external-facing prose |

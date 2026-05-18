@@ -2,6 +2,7 @@
 description: Compatibility entry for Shotloom task specs; prefer shotloom-draft-spec for user-facing flows
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
 ---
 
 # shotloom-draft-task-plan
@@ -75,6 +76,8 @@ fi
 Verify:
 - `/shotloom-start-task` has run and the user accepted the Ready briefing.
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
+- agent-hub/Knitten is on the daily Shotloom docs branch from
+  `agent/rules/shotloom-docs-lane.md`: `codex/YYYYMMDD-shotloom-docs`.
 - `$agent_hub/docs/plans/proposed/` and `$agent_hub/docs/plans/drafts/` exist.
 - `$agent_hub/docs/briefings/shotloom/$slug.md` exists.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
@@ -182,6 +185,8 @@ git push
 
 Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. If hooks
 fail, fix the cause and retry. Never use `--no-verify`.
+The commit lands on the daily Shotloom docs branch, not a per-STL Knitten
+branch.
 
 Commit only `docs/briefings/shotloom/<slug>.md` and
 `docs/plans/proposed/<slug>.md` unless the user explicitly requested skill or

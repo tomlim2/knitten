@@ -1,65 +1,110 @@
 ---
 status: ready
 created: 2026-05-15
-updated: 2026-05-15
+updated: 2026-05-18
 load: triggered
 trigger: STL-431
 repo: shotloom
 linear: STL-431
-spec: ../../plans/editor-wire-stage-import-commands.md
+spec: ../../plans/proposed/editor-wire-stage-import-commands.md
 ---
 
-### Shotloom coding mode - bridge
+### Shotloom coding mode - mixed bridge + TypeScript
 
-**Issue:** STL-431 "feat(editor): stage import panel에서 spawn/clear bridge command 연결"  
-  Problem: `/debug/stage-import` must stop being a disabled placeholder and dispatch stage-import bridge commands for the local POC.  
-  Acceptance:
-  - three map buttons send the correct map-id payload
-  - clear button calls the background-imported-props clear command
-  - bridge or bundle-not-ready states do not crash
-  - command failure leaves a visible error state in the panel
-  Affected: `apps/editor/src/components/debug/StageImportDebugPanel.tsx`, `apps/editor/src/components/debug/__tests__/StageImportDebugPanel.test.tsx`, `apps/editor/src/bridge/types.ts`, `crates/shotloom-stage/src/map_document.rs`, `docs/ipc/bridge-contract.md`  
-  Linked: STL-423, STL-424, STL-425, STL-437; ADR-0003, ADR-0018, ADR-0021, ADR-0047
+**Issue:** STL-431 "feat(editor): stage import panel에서 spawn/clear bridge command 연결"
+Problem: `/debug/stage-import` must move from disabled placeholder controls to local POC command dispatch for fixture-backed stage map import.
+Parent: STL-420. Related: STL-423, STL-424, STL-437.
 
-**Branch:** `feat/editor-wire-stage-import-commands`  (base: `origin/main` `03eb9aa9`)  0 commits ahead, clean
+**Acceptance:**
+- Three map buttons send the correct map id payload.
+- Clear button calls the background-imported-only clear command.
+- Bridge or bundle-not-ready states do not crash.
+- Command failures leave a visible panel error state.
 
-**Standards loaded:** AGENTS.md, CONTRIBUTING.md, CLAUDE.md, docs/adr/README.md, docs/guidelines/error-handling.md, docs/guidelines/review-rust.md, docs/guidelines/review-typescript.md, docs/guidelines/commit-guideline.md, docs/guidelines/pr-guideline.md, docs/ipc/bridge-contract.md  
-**ADRs to honor:** ADR-0003 wasm-bindgen bridge, ADR-0018 runtime telemetry and error boundaries, ADR-0021 cross-crate diagnostic type, ADR-0047 Tailwind as editor styling default  
-**Ask-first triggers for this task:** bridge protocol or contract changes; new bridge command/event; parser output shape changes; clear-all bridge implementation; Bevy ECS ordering/plugin-registration changes; new dependencies; CI/hook changes  
-**Intent lens:** Wire the existing local stage-import debug panel to the already-landed spawn background prop path without leaking ownership boundaries. User clarification: treat this as the stage wiring issue; STL-437 should stay a small engine regression/safety proof rather than production wiring.
+**Scope notes from Linear:**
+- Map button click dispatches fixture-based `spawn_background_props`.
+- Clear button dispatches `clear_background_props`.
+- Panel disables safely for bridge readiness and bundle state.
+- Panel shows command success/failure status.
+- Panel displays loaded prop/cube count state.
 
-**AC primitive cross-check:**
-- AC1 "three map buttons send correct map id payload": codified - `StageImportDebugPanel.tsx` already defines `Map_1004__Stage1`, `Map_1006__Stage1`, `Map_1038__Stage1`; `docs/specs/stage-map-document.md` maps these document IDs to normalized `Map_1004:Stage1`, `Map_1006:Stage1`, `Map_1038:Stage1`; `apps/editor/src/bridge/types.ts` has `SpawnBackgroundPropsCommand`.
-- AC2 "clear button calls background-imported props clear command": sibling-owned - `rg` finds no `clear_background_props` command in core, TS, engine, or bridge contract; STL-424 owns the clear command and is Backlog. Do not implement it inside STL-431 unless the user explicitly broadens scope or STL-424 lands first.
-- AC3 "bridge or bundle not ready does not crash": codified - `StageImportDebugPanel.tsx` already reads `useBridge().state` and `useBundleStore().bundleLoaded` and disables placeholder actions; sibling panel tests cover not-ready and no-bundle states.
-- AC4 "command failure leaves visible error state": codified for bridge events, missing for panel - `BridgeContext` exposes `recentEvents` and bridge `error`; bridge contract/error guideline define `command_rejected` and `runtime_error`. The spec must choose the panel status source and correlation policy before implementation.
-
-**Spec-risk handoff for `/shotloom-draft-task-plan`:**
-- P1: Scope split for clear button - should STL-431 leave clear disabled/marked unavailable until STL-424 lands, or may this PR stack on/implement STL-424? - evidence: `rg "clear_background"` returns no command; Linear STL-424 owns background clear-all and blocks STL-420 - AC-trace: STL-431 AC2.
-- P1: Payload source of truth - should the panel dispatch hard-coded fixture placements, parse local map documents in the editor, or call a Rust/native resolver path before `spawn_background_props`? - evidence: `spawn_background_props` accepts resolved placements; `shotloom-stage` parser is Rust-side and `load_stage_map_document` is `not(target_arch = "wasm32")`; current editor has only map IDs/count labels - AC-trace: STL-431 scope "fixture 기반 command dispatch" and STL-423 command boundary.
-- P1: Map ID normalization - button `data-map-id` currently uses document IDs, while bridge payload requires normalized `map_id` plus `document_id`; the spec must lock the exact mapping table and test all three buttons - evidence: `StageImportDebugPanel.tsx`; `docs/specs/stage-map-document.md`; `apps/editor/src/bridge/__tests__/__snapshots__/spawn_background_props_batch.expected.json` - AC-trace: AC1.
-- P2: Readiness semantics - define whether action disabled requires both `bridgeState === "ready"` and `bundleLoaded`, or whether `client.dispatch` runtime errors are allowed to surface for unstarted bridge cases - evidence: `BridgeClient.dispatch` emits `BRIDGE_NOT_STARTED`; current panel disables on bridge/bundle not ready - AC-trace: AC3.
-- P2: Command status model - define pending/success/error strings and whether status is per action, per command id, or latest panel event; include `command_rejected` and `runtime_error` filtering by `caused_by_command_id` - evidence: `BridgeContext.recentEvents`, `CommandRejectedPayload`, `RuntimeErrorPayload` - AC-trace: AC4.
-- P2: Loaded prop/cube counts - define count source: optimistic dispatch payload count, `PropAdded` events, or bundle store/outliner state. Avoid counting fixture `Cube.glb` by display name only because STL-437 is about safe reuse, not UI counting policy - evidence: `PropAdded` events and `StageImportDebugPanel` current static prop counts - AC-trace: Linear scope "loaded prop/cube count state".
-- P2: Coupled UI state atomicity - dispatch, pending status, command id, and later event/error state are coupled; spec should prevent stuck pending state on dispatch failure, component unmount, or bridge state change - evidence: `BridgeClient.dispatch` returns command id even when not started and emits a local runtime error event - AC-trace: AC3/AC4.
-- P3: Preserve debug panel compact styling and route registration - keep existing `DebugButton`, route registry, and test harness patterns rather than introducing a new UI surface - evidence: `debugPanels.tsx`, `debugNavConfig.ts`, `StageImportDebugPanel.test.tsx` - AC-trace: STL-425 parent scope.
-
-**Sibling specs (agent-hub/docs/plans/):**
-- `bridge-add-background-prop-batch-spawn.md` - HEAD - stance: STL-423 added `spawn_background_props` and explicitly left parser, clear-all, and editor dispatch wiring to siblings - agrees.
-- `stage-add-map-document-parser.md` - HEAD - stance: STL-422 owns Rust parser/resolver output and keeps bridge/editor wiring out of scope - agrees.
-- `stage-add-map-document-parser-conflict.md` - HEAD historical conflict note - stance: parser was blocked before the contract landed; superseded by current parser/spec state - no active disagreement.
-- `stage-define-map-document-bundle-layout.md` - HEAD - stance: STL-421 contract defined selected map docs, ownership, diagnostics, and left parser/spawn/clear/editor to follow-ups - agrees.
-- `import-add-prop-gltf.md` - HEAD - stance: prop GLB import/preflight owns generic GLB acceptance and not stage map wiring - related only.
-- `docs/import-add-prop-gltf-codex.md` - HEAD - stance: same STL-406 GLB prop import preflight scope - related only.
+**Branch:** `feat/editor-wire-stage-import-commands`
+Worktree: `shotloom-github/.worktrees/editor-wire-stage-import-commands`
+Base: `origin/main` at `9a319cd2`; branch is clean and 0 commits ahead.
 
 **Pre-write checklist passed:**
-- [x] gh auth: tomlim2 active; stale inactive `deemotl` credential warning ignored
-- [x] commit identity set for worktree: tomlim2 <deemo@vonvon.me>
-- [x] conventions re-read: AGENTS, CONTRIBUTING, CLAUDE, ADR index
-- [x] category: bridge
-- [x] targeted sections loaded
-- [x] AC primitive cross-check recorded
-- [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (agent-hub/docs/plans/, full body via Read tool for every match)
+- gh auth: active account is `tomlim2`; stale inactive `deemotl` credential warning is non-blocking.
+- Worktree identity set to `tomlim2 <deemo@vonvon.me>`.
+- Worktree fast-forwarded to `origin/main` before starting.
+- Conventions re-read: AGENTS.md, CONTRIBUTING.md, CLAUDE.md, docs/adr/README.md.
+- Category selected: mixed bridge + TypeScript.
+- Targeted standards loaded.
+- AC primitive cross-check recorded.
+- Sibling-spec scan completed.
 
-Ready. If this briefing is OK, next step is `/shotloom-draft-task-plan`.
+**Standards loaded:**
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- `CLAUDE.md`
+- `docs/guidelines/error-handling.md`
+- `docs/guidelines/review-rust.md`
+- `docs/guidelines/review-typescript.md`
+- `docs/guidelines/commit-guideline.md`
+- `docs/guidelines/pr-guideline.md`
+- `docs/ipc/bridge-contract.md`
+
+**ADRs to honor / watch:**
+- ADR-0002 React + TypeScript editor shell.
+- ADR-0003 wasm-bindgen bridge.
+- ADR-0005 bundle schema.
+- ADR-0009 void stage and coordinate convention.
+- ADR-0010 UI-independent functionality.
+- ADR-0018 runtime telemetry and error boundaries.
+- ADR-0021 cross-crate diagnostic type.
+- ADR-0042 canonical timeline shape across bridge.
+- ADR-0045 bundle editor mutation facade.
+- Proposed ADR-0026 / ADR-0027 / ADR-0046 only as context if touched.
+
+**Ask-first triggers for this task:**
+- Bridge protocol or contract shape changes.
+- New bridge command/event, or changed `spawn_background_props` / `clear_background_props` payloads.
+- Core domain model, validation-rule, parser output, or asset-pipeline contract changes.
+- New dependencies, file moves, CI/hook behavior changes.
+- Adding large/ignored asset files. Do not use `git add -f`.
+
+**Intent lens:**
+Wire the editor debug panel to already-landed bridge primitives. Avoid changing the bridge contract, parser, or engine handler unless the spec explicitly finds an unavoidable gap and the user approves it.
+
+**Current implementation evidence:**
+- `apps/editor/src/components/debug/StageImportDebugPanel.tsx` renders fixed map buttons but currently keeps actions disabled with stale "waiting for STL-423/STL-424" copy.
+- `apps/editor/src/components/debug/__tests__/StageImportDebugPanel.test.tsx` already mocks `useBridge().client.dispatch`, route rendering, no-bundle, and not-ready states.
+- `apps/editor/src/bridge/types.ts` defines `SpawnBackgroundPropsCommand`, `ClearBackgroundPropsCommand`, and background prop DTOs.
+- `apps/editor/src/bridge/__tests__/types.test.ts` covers wire shape for both commands.
+- `docs/ipc/bridge-contract.md` documents `spawn_background_props` and `clear_background_props`.
+- `docs/specs/stage-map-document.md` defines selected local map documents and exact `background_map` ownership tag semantics.
+- `crates/shotloom-core/src/bridge/mod.rs` and `crates/shotloom-engine/src/bridge/handlers/props.rs` contain command DTOs/handlers/tests.
+
+**AC primitive cross-check:**
+- AC1 "three map buttons send correct map id payload": partially codified. Panel currently uses document-style IDs such as `Map_1004__Stage1`; bridge payload requires normalized `map_id` such as `Map_1004:Stage1`, plus `document_id`, `source`, and resolved `placements`.
+- AC2 "clear button calls background-imported-only clear command": codified. `clear_background_props` exists and removes props tagged exactly `background_map`; no-op clear may be accepted without an event.
+- AC3 "bridge/bundle not ready no crash": codified by existing panel readiness state and tests, but implementation must keep dispatch gated or surface local dispatch errors cleanly.
+- AC4 "command failure visible panel error": bridge vocab exists (`command_rejected`, `runtime_error`, `validation_diagnostics`), but the panel status source and command correlation policy still need to be specified.
+- Scope line "loaded prop/cube count state": not fully codified. Spawn events count props; cube count source is unclear and may belong to fixture/STL-430 or STL-437 semantics.
+
+**Spec-risk handoff for `/shotloom-draft-spec`:**
+- P1 fixture/source-of-placements boundary: `spawn_background_props` consumes already-resolved placements and explicitly does not parse raw map JSON or resolve local GLBs. STL-430 appears to own fixture JSON. Decide whether STL-431 includes minimal fixture payloads itself, stacks on STL-430, or waits for STL-430.
+- P1 acknowledgement/error state: `clear_background_props` no-op can be eventless, while spawn may emit diagnostics and then reject if zero valid placements remain. Decide whether panel success/failure follows `dispatch` result, bridge events, command ids, or a hybrid.
+- P1 command id correlation: `useBridge().recentEvents` exposes bridge events with command correlation data. Decide whether the panel generates command IDs and filters by `caused_by_command_id`, so repeated clicks do not race stale status.
+- P2 map id conversion: lock the exact table from document id (`Map_1004__Stage1`) to normalized map id (`Map_1004:Stage1`) and test all three buttons.
+- P2 loaded prop/cube counts: define whether counts come from fixture payload, `prop_added` events, bundle store, or current shot state. Avoid display-name-only counting for cube assets.
+- P3 UI copy cleanup: remove stale issue-ID/blocker copy from the panel now that STL-423/STL-424 commands have landed.
+
+**Sibling specs scanned:**
+- `bridge-add-background-prop-batch-spawn.md` - completed STL-423. Stance: spawn command consumes pre-resolved DTOs and leaves parser, clear-all, and editor dispatch to siblings. Agrees.
+- `bridge-clear-background-props.md` - completed STL-424. Stance: clear command exists; editor wiring is still sibling scope. Agrees.
+- `stage-add-map-document-parser.md` - completed STL-422. Stance: parser/resolver is runtime-agnostic Rust-side work; no bridge/editor wiring. Agrees.
+- `stage-define-map-document-bundle-layout.md` - completed STL-421. Stance: contract/doc only; parser/bridge/editor work belongs to follow-ups. Agrees.
+- `stage-add-map-document-parser-conflict.md` - stale draft conflict note before parser/contract landed. Superseded by completed plans.
+- `routing-fixture-validation.md` - unrelated despite fixture keyword. Ignore.
+
+Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.

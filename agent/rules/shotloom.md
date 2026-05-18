@@ -49,6 +49,11 @@ Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). 
 - Skip only when the user explicitly says `skip review` for that specific PR.
 - Doc-only and workflow-only branches still run the review skill; it marks Rust/TS checks N/A and runs the applicable repo/docs passes.
 
+## Knitten Shotloom docs lane
+
+When a Shotloom flow writes docs to Knitten, load
+`agent/rules/shotloom-docs-lane.md` and use the daily Shotloom docs branch.
+
 ## `/claude-review` is a CI trigger, not a Claude Code skill
 
 Posting the literal text `/claude-review` as a **top-level PR comment** fires the Claude review GitHub App on the CI side.

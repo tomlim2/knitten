@@ -24,14 +24,14 @@ fixtures, tests, and docs. Classify each surface as `Already Done`, `Partial`,
 
 ```yaml
 ---
-status: open
+status: proposed
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 load: triggered
 trigger: <when to re-read this spec>
 repo: shotloom
 linear: STL-NN
-briefing: ../briefings/shotloom/<slug>.md
+briefing: ../../briefings/shotloom/<slug>.md
 ---
 ```
 
