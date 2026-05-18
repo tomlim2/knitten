@@ -207,7 +207,9 @@ End of react cycle, after any push lands + CI green:
 - The user reads `log.md` (or the watcher's terminal handler when `state==MERGED` later observes the merge from a manual `gh pr merge`) and decides when to merge.
 - Do not include `--delete-branch` in the suggested merge command. Task
   branches can be checked out by a worktree, so branch deletion belongs to the
-  post-merge worktree cleanup step after the worktree is removed.
+  post-merge worktree cleanup step after the worktree is removed. `gh pr merge
+  --delete-branch` can report a local main-worktree checkout conflict after the
+  GitHub merge already succeeded; keep merge and cleanup as separate operations.
 
 This is the architectural decision recorded as P0 from the 2026-04-25 skill audit: the prior auto-merge step exceeded the documented exemption.
 
