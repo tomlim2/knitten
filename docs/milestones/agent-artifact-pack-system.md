@@ -34,7 +34,7 @@ copying everything into the core repository.
 
 | Spec | Status | Role |
 |------|--------|------|
-| `artifact-pack-vocabulary` | proposed | Define shared terms for artifacts, packs, manifests, and resolvers. |
+| [artifact-pack-vocabulary.md](../plans/completed/artifact-pack-vocabulary.md) | completed | Define shared terms for artifacts, packs, manifests, and resolvers. |
 | `artifact-inventory-classification` | proposed | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
 | `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
@@ -54,8 +54,8 @@ copying everything into the core repository.
 | Phase | State | Evidence |
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
-| Vocabulary | not started | Needs first executable spec. |
-| Inventory and classification | not started | Must produce the source-of-truth artifact inventory before any move. |
+| Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
+| Inventory and classification | not started | Must produce the canonical artifact inventory before any move. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
@@ -91,7 +91,7 @@ starts before this inventory is generated and reviewed.
 | Field | Meaning |
 |-------|---------|
 | Artifact path | Current tracked path. |
-| Artifact type | `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, or `fixture`. |
+| Artifact type | `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim`. |
 | Owner domain | Core, repo, company, personal, domain, or experiment owner. |
 | Privacy risk | `public-safe`, `needs-scrub`, `private-only`, or `unknown`. |
 | Dependencies | Other artifacts, scripts, config files, or harness assumptions. |
