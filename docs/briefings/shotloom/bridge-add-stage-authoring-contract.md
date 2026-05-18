@@ -53,7 +53,7 @@ spec: ../../plans/bridge-add-stage-authoring-contract.md
 - `completed/stage-define-map-document-bundle-layout.md` - HEAD - stance: stage-map contract defines background ownership for downstream parser/spawn/clear; agrees but is legacy import POC, not the Stage authoring bridge surface.
 - `completed/import-add-prop-gltf.md` and `import-add-prop-gltf-codex.md` - HEAD/open - stance: prop GLB import remains GLB-only asset registration plus prop spawn path; agrees by keeping asset import separate from Stage renderable replacement semantics.
 - `drafts/stage-add-map-document-parser-conflict.md` - HEAD - stance: old blocked parser draft said wait for contract; superseded by completed parser/contract plans and current `origin/main`, no disagreement.
-- Resolver gap: `ah-resolve-doc-path repo agent-hub` returned missing key, so the scan used the shared checkout at `/Users/younsoolim/Desktop/www/knitten`, which is where the active skill and shared policy were loaded.
+- Resolver gap: `ah-resolve-doc-path repo agent-hub` returned missing key, so the scan used the active agent-hub checkout where the skill and shared policy were loaded.
 
 **Pre-write checklist passed:**
 - [x] gh auth: tomlim2

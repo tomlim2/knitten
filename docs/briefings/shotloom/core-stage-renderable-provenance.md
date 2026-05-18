@@ -46,7 +46,7 @@ spec: ../../plans/proposed/core-stage-renderable-provenance.md
 - P3: Naming should avoid `stage_prop`, `asset_role`, and `dressing`; use `set_dressing`, `role_hint`, and `source_category` consistently. Evidence: `docs/specs/stage-entity-model.md` Terminology. AC-trace: Stage semantic ownership rule from STL-446/STL-450.
 
 **Sibling specs (agent-hub/docs/plans/):**
-- none found. Resolver key `agent-hub` is absent in this environment; scanned `/Users/younsoolim/Desktop/www/knitten/docs/plans`, `/Users/younsoolim/Desktop/www/knitten/docs`, and recently deleted plan paths for core/stage/renderable/asset/provenance/STL-450 overlaps.
+- none found. Resolver key `agent-hub` is absent in this environment; scanned the active agent-hub docs tree and recently deleted plan paths for core/stage/renderable/asset/provenance/STL-450 overlaps.
 
 **Pre-write checklist passed:**
 - [x] gh auth: tomlim2

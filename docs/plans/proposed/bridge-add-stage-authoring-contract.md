@@ -1,19 +1,19 @@
 ---
-status: open
+status: proposed
 created: 2026-05-18
 updated: 2026-05-18
 load: triggered
 trigger: working STL-451 - Stage authoring bridge command and DTO contract
 repo: shotloom
 linear: STL-451
-briefing: ../briefings/shotloom/bridge-add-stage-authoring-contract.md
+briefing: ../../briefings/shotloom/bridge-add-stage-authoring-contract.md
 ---
 
 # Add Stage Authoring Bridge Contract
 
 ## Spec Contract
 
-- Briefing basis: `../briefings/shotloom/bridge-add-stage-authoring-contract.md`
+- Briefing basis: `../../briefings/shotloom/bridge-add-stage-authoring-contract.md`
   defines STL-451 as a bridge-contract task after shot-local `StageModel`
   landed.
 - Current truth: `StageModel`, `StageElement`, `StageRenderable`, roles,

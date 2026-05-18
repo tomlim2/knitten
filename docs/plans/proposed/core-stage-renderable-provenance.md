@@ -1,5 +1,5 @@
 ---
-status: open
+status: proposed
 created: 2026-05-18
 updated: 2026-05-18
 load: triggered
@@ -123,7 +123,7 @@ asset metadata and source categories are provenance and hints.
    - Implementation stage: S3.
    - Verification: V5.
 8. Docs must explain the new model fields without turning the stage-map POC
-   schema into the source of truth for StageModel.
+   schema into the canonical owner for StageModel.
    - Trace: ADR-0051 and `contracts/stage-map/README.md`.
    - Implementation stage: S4.
    - Verification: V6.
@@ -134,7 +134,7 @@ asset metadata and source categories are provenance and hints.
 |---|---|---|---|---|
 | Error source chain | no | Planned new failures are internal validation enum variants; no external `io::Error` / `serde_json::Error` is wrapped in the core changes. | Do not introduce `String`-flattened wrappers for external errors; if asset metadata parsing later wraps serde errors, that belongs to the importing crate and must preserve `#[source]`. | V5 validates internal no-source errors through equality/diagnostics; source-chain proof is N/A for this PR. |
 | Schema / serialization compatibility | yes | `StageSourceRef` and `StageRenderable` are serde types under `ShotModel.stages`; `AssetKind` is a persisted enum. | New optional fields must use `#[serde(default, skip_serializing_if = "Option::is_none")]`; `AssetKind::StageRenderable` is an additive enum value documented as a new writer capability. | V1 round-trips populated values and deserializes an older Stage JSON without them; V3 covers `stage_renderable` enum serde. |
-| Ownership / API boundary | yes | ADR-0050 makes Stage semantic owner; ADR-0051 makes core model code/tests the source of truth for repository-internal StageModel shape. | Keep final role as `StageElement.role`; keep metadata extraction as hint-only helper; do not add bridge/runtime/UI behavior. | V3 asserts metadata hints do not mutate `StageRole`; V6 validates docs state authority correctly. |
+| Ownership / API boundary | yes | ADR-0050 makes Stage semantic owner; ADR-0051 makes core model code/tests the canonical owner for repository-internal StageModel shape. | Keep final role as `StageElement.role`; keep metadata extraction as hint-only helper; do not add bridge/runtime/UI behavior. | V3 asserts metadata hints do not mutate `StageRole`; V6 validates docs state authority correctly. |
 | Partial mutation / rollback | yes | `StageRenderable.asset_id` references `AssetCatalog`; `AssetCatalog::insert` can fail on invalid or duplicate ids, and validation can fail on unsupported asset kind. | Any helper that builds Stage values from candidate assets must prevalidate asset ids and kinds before returning a mutated Stage, or return a complete value without mutating existing state. | V5 failure-path tests prove missing or wrong-kind asset rejection leaves the existing model unchanged or uses immutable candidate construction. |
 | Diagnostic ownership | yes | `StageModelDiagnostic` persists code/message; stage-map parser also emits `Diagnostic` with `stage_map_document` source. | Core StageModel diagnostics own persisted Stage provenance warnings only; stage-map parser diagnostics remain parser-owned. | V4 asserts unknown source category emits/persists a Stage diagnostic code distinct from stage-map parser codes. |
 | Test oracle strength | yes | Existing `stage_model_round_trips` covers only element source and renderable asset id, not renderable provenance or metadata hint extraction. | Add tests that fail before the new fields/helpers exist. | V1-V5 each names a before/after assertion. |
@@ -296,7 +296,7 @@ asset metadata and source categories are provenance and hints.
   renderable source provenance and `representation_hint`, while keeping field
   definitions delegated to code.
 - Update `contracts/stage-map/README.md` only if needed to clarify authority:
-  stage-map remains local POC input, not StageModel source of truth.
+  stage-map remains local POC input, not the StageModel canonical owner.
 - Do not duplicate complete Rust field lists in prose.
 - Satisfies requirement: R8.
 - Satisfies risk rows: Scope creep, Ownership / API boundary.
