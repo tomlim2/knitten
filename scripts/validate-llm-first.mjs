@@ -1533,13 +1533,25 @@ const ROUTING_METADATA_FIELDS = [
 ];
 
 const TASK_TYPE_EVIDENCE = {
-  authoring: ["author", "make command", "make rule", "make skill", "write skill"],
+  authoring: ["author", "make command", "make rule", "make skill", "milestone", "plan", "planning", "spec", "write skill"],
   deploy: ["deploy", "rollout", "ship"],
   git: ["branch", "commit", "merge", "pull", "push", "rebase"],
   implementation: ["build", "code", "ecs", "fix", "implement", "material"],
   ops: ["alert", "linear", "notice", "ops", "slack", "status", "worktree"],
   research: ["find", "lookup", "research", "search"],
   review: ["audit", "pr", "review"],
+};
+
+const ROUTER_EVIDENCE = {
+  "ah-route-implementation": ["build", "code", "fix", "implement"],
+  "ah-route-plan": ["milestone", "plan", "planning", "spec first"],
+  "ah-route-review": ["audit", "review"],
+};
+
+const WORK_MODE_EVIDENCE = {
+  company: ["company", "linear", "pr", "pull request", "review comment", "shotloom", "stl-"],
+  experiment: ["benchmark", "comparison", "experiment", "prototype", "spike", "throwaway"],
+  personal: ["local-only", "personal", "private project", "solo"],
 };
 
 const ROUTE_VALUE_EVIDENCE = {
@@ -1606,6 +1618,24 @@ function taskTypeEvidence(text) {
     if (terms.some((term) => text.includes(term))) out.add(taskType);
   }
   return out;
+}
+
+function workModeEvidence(text) {
+  const out = new Set();
+  for (const [workMode, terms] of Object.entries(WORK_MODE_EVIDENCE)) {
+    if (terms.some((term) => text.includes(term))) out.add(workMode);
+  }
+  return out;
+}
+
+function selectRoutersForTask(task, routers) {
+  const text = task.toLowerCase();
+  const selected = [];
+  for (const router of routers) {
+    const terms = ROUTER_EVIDENCE[router.id] || [String(router.id).replaceAll("-", " ")];
+    if (terms.some((term) => text.includes(term))) selected.push(router);
+  }
+  return selected;
 }
 
 function contextManifestValues(fm, field) {
@@ -1741,7 +1771,7 @@ async function checkContextRouting() {
   }
   const repoKeys = new Set(Object.keys(repoPaths));
 
-  for (const axis of ["domains", "languages", "frameworks", "taskTypes"]) {
+  for (const axis of ["domains", "languages", "frameworks", "taskTypes", "workModes"]) {
     pushStringArrayViolations(violations, file, `axes.${axis}`, routing.axes?.[axis], { sorted: true });
   }
   const allowed = {
@@ -1750,6 +1780,7 @@ async function checkContextRouting() {
     languages: new Set(routing.axes?.languages || []),
     frameworks: new Set(routing.axes?.frameworks || []),
     taskTypes: new Set(routing.axes?.taskTypes || []),
+    workModes: new Set(routing.axes?.workModes || []),
   };
 
   pushUniqueIdViolations(violations, file, "profiles", routing.profiles);
@@ -1776,6 +1807,29 @@ async function checkContextRouting() {
     }
     if (!Number.isInteger(profile.maxBytes) || profile.maxBytes <= 0) {
       violations.push({ file, line: 1, message: `profiles.${profile.id}.maxBytes must be a positive integer` });
+    }
+  }
+
+  pushUniqueIdViolations(violations, file, "routers", routing.routers);
+  const routers = Array.isArray(routing.routers) ? routing.routers : [];
+  const routerIds = new Set(routers.map((router) => router.id).filter(Boolean));
+  for (const router of routers) {
+    if (!router.path || typeof router.path !== "string") {
+      violations.push({ file, line: 1, message: `routers.${router.id || "<unknown>"} missing path` });
+    } else if (!existsSync(path.join(REPO_ROOT, router.path))) {
+      violations.push({ file, line: 1, message: `router file does not exist: ${router.path}` });
+    }
+    pushStringArrayViolations(violations, file, `routers.${router.id}.taskTypes`, router.taskTypes);
+    for (const value of router.taskTypes || []) {
+      if (!allowed.taskTypes.has(value)) {
+        violations.push({ file, line: 1, message: `routers.${router.id}.taskTypes has unknown value ${JSON.stringify(value)}` });
+      }
+    }
+    pushStringArrayViolations(violations, file, `routers.${router.id}.workModes`, router.workModes);
+    for (const value of router.workModes || []) {
+      if (!allowed.workModes.has(value)) {
+        violations.push({ file, line: 1, message: `routers.${router.id}.workModes has unknown value ${JSON.stringify(value)}` });
+      }
     }
   }
 
@@ -1842,6 +1896,18 @@ async function checkContextRouting() {
       }
     }
     const domains = routeValuesFromFrontmatter(fm, "domains") || [];
+    const workModes = routeValuesFromFrontmatter(fm, "work-modes");
+    if (workModes) {
+      for (const value of workModes) {
+        if (!allowed.workModes.has(value)) {
+          violations.push({
+            file: pilot.path,
+            line: 1,
+            message: `frontmatter 'work-modes' has unknown value ${JSON.stringify(value)}`,
+          });
+        }
+      }
+    }
     const excluded = routeValuesFromFrontmatter(fm, "exclude-when") || [];
     for (const value of excluded) {
       if (!allowed.domains.has(value)) {
@@ -2021,11 +2087,11 @@ async function checkContextRouting() {
         continue;
       }
       for (const profileId of fixture[key]) {
-        if (!profileIds.has(profileId)) {
+        if (!profileIds.has(profileId) && !routerIds.has(profileId)) {
           violations.push({
             file: routing.fixtures.path,
             line: 1,
-            message: `fixture ${fixture.task} references unknown profile ${profileId}`,
+            message: `fixture ${fixture.task} references unknown profile or router ${profileId}`,
           });
         }
       }
@@ -2034,15 +2100,31 @@ async function checkContextRouting() {
       violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} maxBytes must be positive` });
     }
     const selected = selectProfilesForTask(fixture.task, profiles);
+    const selectedRouters = selectRoutersForTask(fixture.task, routers);
     const selectedIds = new Set(selected.map((profile) => profile.id));
-    for (const profileId of fixture.mustLoad || []) {
-      if (!selectedIds.has(profileId)) {
-        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} did not load ${profileId}` });
+    for (const router of selectedRouters) selectedIds.add(router.id);
+    const selectedWorkModes = workModeEvidence(fixture.task.toLowerCase());
+    if (fixture.workMode !== undefined) {
+      if (!allowed.workModes.has(fixture.workMode)) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} has unknown workMode ${fixture.workMode}` });
+      } else if (!selectedWorkModes.has(fixture.workMode)) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} did not select workMode ${fixture.workMode}` });
       }
     }
-    for (const profileId of fixture.mustNotLoad || []) {
-      if (selectedIds.has(profileId)) {
-        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} loaded forbidden ${profileId}` });
+    if (fixture.requiresClarification !== undefined && typeof fixture.requiresClarification !== "boolean") {
+      violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} requiresClarification must be boolean` });
+    }
+    if (fixture.requiresClarification === true && selectedWorkModes.size < 2) {
+      violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} requires conflicting work-mode evidence` });
+    }
+    for (const id of fixture.mustLoad || []) {
+      if (!selectedIds.has(id)) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} did not load ${id}` });
+      }
+    }
+    for (const id of fixture.mustNotLoad || []) {
+      if (selectedIds.has(id)) {
+        violations.push({ file: routing.fixtures.path, line: 1, message: `fixture ${fixture.task} loaded forbidden ${id}` });
       }
     }
     const totalBytes = selected.reduce((sum, profile) => sum + profile.maxBytes, 0);

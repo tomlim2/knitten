@@ -26,6 +26,18 @@ Use this rule before loading a high-cost route-domain body.
 | Compact route index | `AGENT-HUB.md` between `<!-- routing:start -->` and `<!-- routing:end -->` |
 | Regression fixtures | `tests/routing-fixtures.json` |
 
+## Work Mode
+
+Classify work mode before state-changing work:
+
+| Evidence | Work mode |
+|----------|-----------|
+| personal project, local-only repo, no company issue source | `personal` |
+| company repo key, Linear/GitHub PR workflow, company wording | `company` |
+| prototype, spike, throwaway test, benchmark, comparison | `experiment` |
+
+If evidence selects more than one work mode, ask one question before editing.
+
 ## Metadata Shape
 
 Use comma-separated scalar values in frontmatter:
@@ -37,6 +49,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
+work-modes: company,personal
 exclude-when: unreal,obsidian
 ```
 

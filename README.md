@@ -76,13 +76,13 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Skills (139)
+## Skills (142)
 
 | Category | Count |
 |----------|------:|
 | `shotloom-*` | 27 |
+| `ah-*` | 26 |
 | `dev-*` | 24 |
-| `ah-*` | 23 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
 | `ue-*` | 7 |

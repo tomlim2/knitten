@@ -52,6 +52,11 @@
       "ops",
       "research",
       "review"
+    ],
+    "workModes": [
+      "company",
+      "experiment",
+      "personal"
     ]
   },
   "profiles": [
@@ -70,6 +75,7 @@
       ],
       "taskTypes": [
         "authoring",
+        "implementation",
         "review"
       ],
       "maxBytes": 25000
@@ -328,6 +334,44 @@
       "maxBytes": 25000
     }
   ],
+  "routers": [
+    {
+      "id": "ah-route-implementation",
+      "path": "agent/skills/ah-route-implementation/SKILL.md",
+      "taskTypes": [
+        "implementation"
+      ],
+      "workModes": [
+        "company",
+        "experiment",
+        "personal"
+      ]
+    },
+    {
+      "id": "ah-route-plan",
+      "path": "agent/skills/ah-route-plan/SKILL.md",
+      "taskTypes": [
+        "authoring"
+      ],
+      "workModes": [
+        "company",
+        "experiment",
+        "personal"
+      ]
+    },
+    {
+      "id": "ah-route-review",
+      "path": "agent/skills/ah-route-review/SKILL.md",
+      "taskTypes": [
+        "review"
+      ],
+      "workModes": [
+        "company",
+        "experiment",
+        "personal"
+      ]
+    }
+  ],
   "pilotFiles": [
     {
       "path": "agent/skills/ah-manage-spec/SKILL.md",
@@ -343,6 +387,21 @@
       "path": "agent/skills/ah-review-implementation/SKILL.md",
       "profile": "ah-authoring",
       "contextCost": "medium"
+    },
+    {
+      "path": "agent/skills/ah-route-implementation/SKILL.md",
+      "profile": "ah-authoring",
+      "contextCost": "low"
+    },
+    {
+      "path": "agent/skills/ah-route-plan/SKILL.md",
+      "profile": "ah-authoring",
+      "contextCost": "low"
+    },
+    {
+      "path": "agent/skills/ah-route-review/SKILL.md",
+      "profile": "ah-authoring",
+      "contextCost": "low"
     },
     {
       "path": "agent/skills/obsidian-defuddle/SKILL.md",

@@ -59,7 +59,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 
 | Profile | Route domains | Repo keys | Frameworks | Task types | Max bytes |
 |---------|---------------|-----------|------------|------------|----------:|
-| `ah-authoring` | `agent-hub` | `agent-hub` | - | `authoring`, `review` | 25000 |
+| `ah-authoring` | `agent-hub` | `agent-hub` | - | `authoring`, `implementation`, `review` | 25000 |
 | `shotloom-ops` | `shotloom` | `shotloom` | `bevy`, `wgpu` | `authoring`, `git`, `ops` | 25000 |
 | `rust-bevy` | `rust` | `anju`, `shotloom`, `vrm2u-bevy` | `bevy`, `wgpu` | `implementation` | 25000 |
 | `shotloom-review` | `rust` | `shotloom` | `bevy`, `wgpu` | `review` | 25000 |
@@ -79,6 +79,9 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | `agent/skills/ah-manage-spec/SKILL.md` | `ah-authoring` | `medium` |
 | `agent/skills/ah-manage-milestone/SKILL.md` | `ah-authoring` | `medium` |
 | `agent/skills/ah-review-implementation/SKILL.md` | `ah-authoring` | `medium` |
+| `agent/skills/ah-route-implementation/SKILL.md` | `ah-authoring` | `low` |
+| `agent/skills/ah-route-plan/SKILL.md` | `ah-authoring` | `low` |
+| `agent/skills/ah-route-review/SKILL.md` | `ah-authoring` | `low` |
 | `agent/skills/obsidian-defuddle/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-fix-format/SKILL.md` | `obsidian-vault` | `low` |
 | `agent/skills/obsidian-json-canvas/SKILL.md` | `obsidian-vault` | `medium` |
@@ -145,4 +148,11 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 | CINEV art branch ops | `cinev-art` | `ah-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `3d-vrm`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | VRM PMX retarget review | `3d-vrm` | `ah-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `video-hyperframes`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
 | Implement HyperFrames video composition | `video-hyperframes` | `ah-authoring`, `shotloom-ops`, `rust-bevy`, `shotloom-review`, `shotloom-deploy`, `cinev-art`, `3d-vrm`, `unreal-engine`, `web-frontend`, `web-review`, `obsidian-vault` | 25000 |
+| Review my personal Astro app | `ah-route-review`, `web-review` | `shotloom-review`, `unreal-engine` | 25000 |
+| Review Shotloom Rust PR for company work | `ah-route-review`, `shotloom-review` | `web-review`, `unreal-engine` | 25000 |
+| Make a personal feature plan for local web app | `ah-route-plan` | `shotloom-review`, `unreal-engine` | 25000 |
+| Make a company Shotloom issue plan for STL-89 | `ah-route-plan`, `shotloom-ops` | `web-review`, `unreal-engine` | 25000 |
+| Implement personal Three.js shader | `ah-route-implementation`, `web-frontend` | `shotloom-review`, `unreal-engine` | 25000 |
+| Implement company Shotloom Rust task STL-89 | `ah-route-implementation`, `rust-bevy` | `web-review`, `unreal-engine` | 25000 |
+| Implement personal experiment benchmark for web | `ah-route-implementation`, `web-frontend` | `shotloom-review`, `unreal-engine` | 25000 |
 <!-- routing:end -->
