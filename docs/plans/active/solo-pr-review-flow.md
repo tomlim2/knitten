@@ -3,7 +3,7 @@ status: active
 created: 2026-05-18
 updated: 2026-05-18
 owner: agent-hub
-milestone:
+milestone: worktree-first-workflow
 ---
 
 # Solo PR Review Flow

@@ -13,6 +13,7 @@ Shared JSON registries and public service configuration.
 | `taxonomy.json` | Skill/command categories, standard groups, naming regexes | committed |
 | `audit-policy.json` | Garden/audit thresholds and severity tiers | committed |
 | `exceptions.json` | Grandfathered exceptions with reason, decision, review date | committed |
+| `repo-policy.schema.json` | Schema for machine-local repo path entries and optional `worktreePolicy` settings | committed |
 | `.env` | All secret tokens (bot tokens, API keys) | gitignored |
 | `.env.example` | Template — which keys exist, no values | committed |
 | `slack.json` | Slack channels, bot name, message templates with no tokens | committed |
@@ -25,6 +26,9 @@ Shared JSON registries and public service configuration.
 - **Per-service env key convention:** `{SERVICE}_{KEY}` — e.g. `SLACK_BOT_TOKEN`, `SHOTLOOM_SLACK_BOT_TOKEN`, `GEMINI_API_KEY`.
 - **Service-specific config** (channels, bot names, endpoints) goes in its own JSON file such as `slack.json` or `gemini.json`. These may contain non-secret IDs.
 - **Machine-specific paths and specs stay gitignored under `agent/private/agent-hub-config/` and deploy through `~/.claude/private/agent-hub-config/`.** Use that folder for repo paths, machine paths, and hardware specs.
+- **Worktree-first is opt-in per machine-local repo entry.** Add a
+  `worktreePolicy` object to `~/.claude/private/agent-hub-config/repo-paths.json`
+  only for repositories that should require task worktrees.
 
 ## Skills that read from here
 

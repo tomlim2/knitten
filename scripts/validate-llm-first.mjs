@@ -4,6 +4,7 @@
 import { readdir, readFile, stat, access } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { execFile } from "node:child_process";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
@@ -2622,6 +2623,60 @@ async function checkGeneratedBlocks() {
   return { name: "generated-blocks", violations };
 }
 
+async function checkRepoPolicyConfig() {
+  const violations = [];
+  const schemaPath = "agent/config/repo-policy.schema.json";
+  if (!existsSync(path.join(REPO_ROOT, schemaPath))) {
+    violations.push({ file: schemaPath, line: 1, message: "repo policy schema is missing" });
+  } else {
+    const schema = await readJsonRel(schemaPath);
+    const policyProps = schema?.additionalProperties?.properties?.worktreePolicy?.properties;
+    for (const key of ["enabled", "worktreeRoot", "branchPrefix", "requireFreshPerExecution", "blockMainCommit", "blockMainPush"]) {
+      if (!policyProps?.[key]) {
+        violations.push({ file: schemaPath, line: 1, message: `repo policy schema missing worktreePolicy.${key}` });
+      }
+    }
+  }
+
+  const configPath = path.join(os.homedir(), ".claude/private/agent-hub-config/repo-paths.json");
+  if (!existsSync(configPath)) return { name: "repo-policy", violations };
+
+  let repos;
+  try {
+    repos = JSON.parse(await readFile(configPath, "utf8"));
+  } catch (err) {
+    violations.push({ file: configPath, line: 1, message: `repo path config is invalid JSON: ${err.message}` });
+    return { name: "repo-policy", violations };
+  }
+
+  const enabled = Object.entries(repos)
+    .filter(([, entry]) => entry?.worktreePolicy?.enabled === true)
+    .map(([key]) => key);
+  for (const key of ["knitten", "shotloom", "story-previz"]) {
+    if (!enabled.includes(key)) {
+      violations.push({ file: configPath, line: 1, message: `expected worktreePolicy.enabled for ${key}` });
+    }
+  }
+  for (const [key, entry] of Object.entries(repos)) {
+    const policy = entry?.worktreePolicy;
+    if (!policy) continue;
+    if (typeof policy.enabled !== "boolean") {
+      violations.push({ file: configPath, line: 1, message: `${key}.worktreePolicy.enabled must be boolean` });
+    }
+    if (policy.enabled === true) {
+      for (const field of ["worktreeRoot", "branchPrefix"]) {
+        if (typeof policy[field] !== "string" || policy[field].length === 0) {
+          violations.push({ file: configPath, line: 1, message: `${key}.worktreePolicy.${field} must be a non-empty string` });
+        }
+      }
+      if (!policy.branchPrefix.endsWith("/")) {
+        violations.push({ file: configPath, line: 1, message: `${key}.worktreePolicy.branchPrefix must end with /` });
+      }
+    }
+  }
+  return { name: "repo-policy", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
@@ -2642,6 +2697,7 @@ const CHECKS = [
   { name: "tracked-user-paths", fn: checkTrackedUserAbsolutePaths },
   { name: "entry-documents", fn: checkEntryDocuments },
   { name: "generated-blocks", fn: checkGeneratedBlocks },
+  { name: "repo-policy", fn: checkRepoPolicyConfig },
   { name: "markdown-links", fn: checkMarkdownLinks },
   { name: "spec-lifecycle", fn: checkSpecLifecycle },
   { name: "length-caps", fn: checkLengthCaps },
