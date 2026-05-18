@@ -39,6 +39,7 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 | Explicit resume behavior | New write-capable requests create new worktrees; explicit resume requests can reuse a named worktree. |
 | Conservative cleanup | Cleanup defaults to dry-run and removes only clean, merged, user-approved worktrees. |
 | End-of-task cleanup | After PR merge or explicit abandonment, local task worktrees can be removed only when clean, merged, and no longer present on the remote. |
+| Local-only cleanup wording | User phrase `니튼 미사용 로컬 워크트리 정리` means switch Knitten to `main` and remove clean local worktree directories only; branches are preserved. |
 | Local verification | The implementation includes commands that prove main checkout guards fail and worktree guards pass. |
 
 ## Non-Goals
@@ -338,6 +339,19 @@ Cleanup candidate rules:
 
 This matches the end-of-task flow: merge PR, delete the remote feature branch,
 then remove the local worktree.
+
+Local-only cleanup behavior:
+
+| User phrase | Required behavior |
+|---|---|
+| `니튼 미사용 로컬 워크트리 정리` | Switch the Knitten checkout to `main`, inspect `git worktree list`, remove only clean local worktree directories, and preserve local plus remote branches. |
+
+Command mapping:
+
+```bash
+node scripts/worktree-clean.mjs --local-only
+node scripts/worktree-clean.mjs --local-only --apply --yes
+```
 
 ### Resume Rules
 

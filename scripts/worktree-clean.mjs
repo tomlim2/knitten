@@ -16,12 +16,13 @@ import {
 } from "./worktree-lib.mjs";
 
 function parseArgs(argv) {
-  const args = { apply: false, yes: false, merged: false, olderThan: null, cleanupTestArtifacts: false };
+  const args = { apply: false, yes: false, merged: false, olderThan: null, cleanupTestArtifacts: false, localOnly: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--apply") args.apply = true;
     else if (arg === "--yes") args.yes = true;
     else if (arg === "--merged") args.merged = true;
+    else if (arg === "--local-only") args.localOnly = true;
     else if (arg === "--cleanup-test-artifacts") args.cleanupTestArtifacts = true;
     else if (arg === "--older-than") args.olderThan = Number(argv[++i]);
     else if (arg.startsWith("--older-than=")) args.olderThan = Number(arg.slice("--older-than=".length));
@@ -77,8 +78,10 @@ async function main() {
     if (!existsSync(item.path)) continue;
     const branch = item.branch || currentBranch(item.path);
     if (!isClean(item.path)) continue;
-    if (!branchMergedIntoMain(branch, mainPath)) continue;
-    if (remoteBranchExists(branch, mainPath)) continue;
+    if (!args.localOnly) {
+      if (!branchMergedIntoMain(branch, mainPath)) continue;
+      if (remoteBranchExists(branch, mainPath)) continue;
+    }
     if (Number.isFinite(args.olderThan)) {
       const age = ageDays(item.path);
       if (age === null || age < args.olderThan) continue;
@@ -104,7 +107,7 @@ async function main() {
 
   for (const item of candidates) {
     runGit(["worktree", "remove", item.path], { cwd: mainPath, stdio: "inherit" });
-    if (item.branch) {
+    if (item.branch && !args.localOnly) {
       const deleteResult = tryGit(["branch", "-d", item.branch], { cwd: mainPath });
       if (!deleteResult.ok) console.error(deleteResult.stderr);
     }

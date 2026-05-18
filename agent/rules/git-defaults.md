@@ -23,6 +23,13 @@ Default-counter rules. The harness biases toward each opposite; these counter at
 - **Worktree cleanup** — After PR merge or explicit abandonment, run
   `node scripts/worktree-clean.mjs --merged` to inspect cleanup candidates.
   Deletion is explicit only: `--apply --yes` after user approval.
+- **Knitten unused local worktree cleanup** — If the user says
+  `니튼 미사용 로컬 워크트리 정리`, switch the Knitten checkout to `main`,
+  inspect local worktrees, and remove only clean local worktree directories.
+  Do not delete local branches or remote branches unless the user explicitly
+  says branch cleanup or remote branch deletion. Use
+  `node scripts/worktree-clean.mjs --local-only` for the dry run and
+  `--local-only --apply --yes` only after approval.
 - **Merge before cleanup** — Do not pass `--delete-branch` to `gh pr merge`
   for worktree-first tasks. Merge the PR first, then remove the task worktree
   and delete the local/remote branch in the cleanup flow.
