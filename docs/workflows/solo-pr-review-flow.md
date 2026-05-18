@@ -22,17 +22,18 @@ account, leave a PR comment with the review result instead.
 ## Flow
 
 1. Create a branch or worktree for the change.
-2. Open a PR for non-trivial work.
-3. Run local validation before pushing:
+2. Run local validation before pushing:
    - `git diff --check`
    - `node scripts/validate-llm-first.mjs`
-4. Review the PR diff objectively against the owning spec, repo rules, and
+3. Commit and push when the user requests publication.
+4. Open a PR after push unless the user explicitly says not to.
+5. Review the PR diff objectively against the owning spec, repo rules, and
    validation output.
-5. Record one review result on the PR:
+6. Record one review result on the PR:
    - `no requested changes`
    - `changes requested`
    - `blocked`
-6. Merge only after checks pass and the review result allows merge.
+7. Merge only after checks pass and the review result allows merge.
 
 ## Branch Protection
 

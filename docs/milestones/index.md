@@ -72,6 +72,7 @@ Milestone filenames must be kebab-case Markdown files:
 | Milestone | Status | Role |
 |-----------|--------|------|
 | [agent-work-routing-system.md](agent-work-routing-system.md) | completed | review, planning, and implementation routing |
+| [agent-artifact-pack-system.md](agent-artifact-pack-system.md) | active | external agent artifact packs, manifests, discovery, install, and validation |
 | [spec-lifecycle-system.md](spec-lifecycle-system.md) | completed | spec, milestone, and lifecycle-management system |
 | [worktree-first-workflow.md](worktree-first-workflow.md) | active | worktree-first isolation, solo PR flow, and future automatic PR review |
 

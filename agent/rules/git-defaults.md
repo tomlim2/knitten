@@ -18,5 +18,9 @@ Default-counter rules. The harness biases toward each opposite; these counter at
 - **Worktree cleanup** — After PR merge or explicit abandonment, run
   `node scripts/worktree-clean.mjs --merged` to inspect cleanup candidates.
   Deletion is explicit only: `--apply --yes` after user approval.
+- **PR after push** — In a worktree-first repo, when a write task has been
+  committed and pushed, create a PR before handing off unless the user
+  explicitly says not to. Record validation and objective review evidence in
+  the PR body.
 
 PR-phase rules: `pr-mutate.md`, `pr-comment.md`, `pr-create.md`. Repo-specific overrides: `shotloom.md`, `cinev-git.md`.
