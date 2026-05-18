@@ -8,16 +8,17 @@ allowed-tools: Read, Bash(git:*), Bash(jq:*), Bash(bash:*), Bash(ls:*)
 Pull every external vendor registered in agent-hub to its upstream latest commit.
 
 Scope: this command only touches `~/.claude/vendor/*` local upstream checkouts
-(git pull via `~/.claude/vendor/sync.sh`). It does NOT audit internal agent-hub
-skills, does NOT update descriptions or frontmatter, and does NOT write to the
-tracked repo except through the tracked vendor registry/script.
+(git pull via the vendor skill vault's `scripts/sync.sh`). It does NOT audit internal
+agent-hub skills, does NOT update descriptions or frontmatter, and does NOT
+write to the tracked agent-hub repo.
 
-agent-hub holds third-party vendor skills in `~/.claude/vendor/`. Wrapper skills
-`@import` from that vendor root. This command:
+The vendor skill vault holds third-party vendor skills in `vendor/`.
+`~/.claude/vendor` should symlink to that vendor root, and wrapper skills
+`@import` from the symlinked path. This command:
 
 1. Shows how far each vendor is behind its upstream
 2. Asks for confirmation
-3. Runs `~/.claude/vendor/sync.sh` to pull latest
+3. Runs the vendor skill vault's `scripts/sync.sh` to pull latest
 4. Verifies each wrapper's `@import` target still exists
 
 ## Usage
@@ -30,24 +31,26 @@ No arguments.
 
 ## Workflow
 
-### Step 1: Locate vendor root
+### Step 1: Locate vendor skill vault and vendor root
 
-Resolve the vendor root through the harness path:
+Resolve the vault through machine-paths, then derive the vendor root:
 
 ```bash
-vendor_root="$HOME/.claude/vendor"
-registry="$vendor_root/skills.json"
-sync_script="$vendor_root/sync.sh"
+vault_root="$(bash "$HOME/.claude/skills/ah-resolve-doc-path/resolve.sh" tool vendor-skill-vault | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+vendor_root="$vault_root/vendor"
+registry="$vault_root/skills.json"
+sync_script="$vault_root/scripts/sync.sh"
+[ -d "$vendor_root" ] || { echo "vendor root not found: $vendor_root"; exit 1; }
 [ -f "$registry" ] || { echo "vendor registry not found: $registry"; exit 1; }
 [ -x "$sync_script" ] || { echo "vendor sync script not executable: $sync_script"; exit 1; }
 ```
 
 If the vendor registry or sync script is missing, stop and fix the agent-hub
-install before pulling upstreams.
+and vendor vault install before pulling upstreams.
 
 ### Step 2: Report per-vendor drift
 
-Read `$vendor_root/skills.json`, and for each vendor under
+Read `$registry`, and for each vendor under
 `$vendor_root/<name>`:
 
 ```bash
@@ -83,7 +86,7 @@ If approved:
 bash "$sync_script"
 ```
 
-`sync.sh` iterates `skills.json` and does `git fetch --depth 1 + git reset --hard origin/<branch>` per vendor. Local changes in `~/.claude/vendor/<name>` are lost — that's intentional (vendor folders are gitignored, not a working copy).
+`sync.sh` iterates `skills.json` and does `git fetch --depth 1 + git reset --hard origin/<branch>` per vendor. Local changes in `vendor-skill-vault/vendor/<name>` are lost — that's intentional (vendor folders are gitignored, not a working copy).
 
 ### Step 5: Verify wrapper @import targets
 
@@ -112,13 +115,13 @@ Broken wrappers: (none) | <list>
 
 ## Notes
 
-- This command does NOT commit anything. `~/.claude/vendor/<name>/` checkouts
+- This command does NOT commit anything. `vendor-skill-vault/vendor/<name>/` checkouts
   are gitignored.
 - If `skills.json` changed (new vendor added, entry removed), that's a separate edit flow — covered by the CRUD process, not this command.
 - For a full wipe + reinstall: delete the vendor checkout folder and run
-  `bash ~/.claude/vendor/sync.sh`.
+  `cd "$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh tool vendor-skill-vault | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')" && ./scripts/sync.sh`.
 
 ## Related
 
 - Wrapper naming: `~/.claude/rules/author.md` — external wrapper pattern
-- Vendor layout: `~/.claude/vendor/README.md`
+- Vendor layout: `~/.claude/vendor` symlink plus the vendor skill vault `README.md`

@@ -6,7 +6,7 @@ owner: agent-hub
 milestone: spec-lifecycle-system
 ---
 
-# Caol Manage Spec
+# Agent Hub Manage Spec
 
 ## Purpose
 
@@ -81,7 +81,7 @@ domain-specific skills.
 | Spec | A durable pre-work or review contract stored as Markdown. |
 | Intake | The captured input set used to make or update a spec. |
 | Evidence | Files, commands, docs, skill references, links, or user decisions used by the spec. |
-| Route | The chosen workflow for the spec, such as Shotloom, code-derived, web review, or caol policy. |
+| Route | The chosen workflow for the spec, such as Shotloom, code-derived, web review, or agent-hub policy. |
 | Lifecycle | The frontmatter status and follow-up movement of a spec. |
 | Direct spec | The main lifecycle path under `docs/plans/`. |
 | Intake artifact | Optional `docs/briefings/specs/<slug>.md` record of inputs and routing decisions. |
@@ -148,7 +148,7 @@ asks to delete the file.
 
 | Artifact | Path | Required |
 |----------|------|----------|
-| Direct caol spec | lifecycle path under `docs/plans/` | yes |
+| Direct agent-hub spec | lifecycle path under `docs/plans/` | yes |
 | Spec intake | `docs/briefings/specs/<slug>.md` | optional by default, required for high-risk specs |
 | Shotloom briefing | `docs/briefings/shotloom/<slug>.md` | owned by Shotloom flow |
 | Review report | `docs/plans/<slug>-review.md` or chat-only | optional, prefer chat unless asked to persist |
@@ -440,7 +440,7 @@ load the selected route's skill body only after routing.
 
 The implementation should add one of these:
 
-1. a `caol` route domain plus `ah-authoring` profile in
+1. a `agent-hub` route domain plus `ah-authoring` profile in
    `agent/config/context-routing.json`; or
 2. a metadata exemption for `ah-manage-spec` explaining why the profile should
    wait.
@@ -458,7 +458,7 @@ Candidate profile:
 }
 ```
 
-The same batch must add `caol` to `axes.domains` and keep that list sorted.
+The same batch must add `agent-hub` to `axes.domains` and keep that list sorted.
 
 ## Validation
 

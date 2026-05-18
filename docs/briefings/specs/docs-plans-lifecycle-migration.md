@@ -22,7 +22,7 @@ briefings, validators, or generated indexes.
 ## Route
 
 - selected route: agent-hub spec lifecycle migration
-- candidate routes: caol architecture hardening, milestone management,
+- candidate routes: agent-hub architecture hardening, milestone management,
   validator hardening
 - delegated or referenced skills: `ah-manage-spec`,
   `ah-manage-milestone`, `ah-review-implementation`

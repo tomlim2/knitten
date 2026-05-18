@@ -39,7 +39,7 @@ without opening chat history or external trackers.
 2. Exclude report/evidence folders from spec semantics.
 3. Check duplicate spec slugs across lifecycle-capable `docs/plans/**`.
 4. Check milestone links, spec back-links, and row status sync.
-5. Check caol spec intake links under `docs/briefings/specs/`.
+5. Check agent-hub spec intake links under `docs/briefings/specs/`.
 6. Register the new check in generated validator documentation and the agent hub
    manifest.
 
@@ -156,7 +156,7 @@ After the `docs/plans/` migration:
 ### Batch C: Optional Broader Briefing Checks
 
 If useful, add domain checks for `docs/briefings/shotloom/` separately. Do not
-fold that into the caol spec lifecycle validator unless the Shotloom briefing
+fold that into the agent-hub spec lifecycle validator unless the Shotloom briefing
 contract is updated first.
 
 ## Validation

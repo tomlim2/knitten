@@ -4,7 +4,7 @@ status: accepted
 
 # Spec Templates
 
-## General Caol/agent-hub Spec
+## General Agent Hub Spec
 
 ```markdown
 ---

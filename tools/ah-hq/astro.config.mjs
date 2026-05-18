@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 
-// Caol HQ — personal cockpit dashboard.
+// Agent Hub HQ — personal cockpit dashboard.
 // Port 9720 (4-digit homage to the legacy 972 — privileged port on macOS).
 export default defineConfig({
   output: 'server',

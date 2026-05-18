@@ -107,7 +107,7 @@ Sections marked **(if applicable)** apply only when the codebase uses that featu
 > Frontmatter (`---` block) runs **once per request** in SSR mode (no implicit cache). Slow frontmatter blocks the entire response.
 
 - ⚠️ 👁 **Parallel async work** — Sequential `await` over a list (`for ... await execAsync(...)` across N items) blocks for N×latency. Use `await Promise.all(items.map(async ...))` for independent calls. Specifically applies to `gh`, `git`, `fetch`, file reads across many paths
-  - *PERF-A01 · Caol HQ postmortem: OpenPRsWidget 7.2s → 0.22s, commit `83c4ed5`*
+  - *PERF-A01 · Agent Hub HQ postmortem: OpenPRsWidget 7.2s → 0.22s, commit `83c4ed5`*
 
 - ⚠️ 👁 **TTL cache for slow upstream calls** — Frontmatter that fetches from a flaky/slow source (gh API, GraphQL, image OCR, LLM) memoises on `globalThis` (or a Map keyed by request signature) with explicit TTL. Document the TTL in a comment
   - *PERF-A02 · Same postmortem*
@@ -119,7 +119,7 @@ Sections marked **(if applicable)** apply only when the codebase uses that featu
   - *PERF-A04 · Astro: "Components" docs*
 
 - ⚠️ 👁 **Timeout on every external call** — Every `execAsync`/`fetch` in frontmatter passes an explicit timeout (default `gh`/`git` is unbounded). One slow repo must not hang the entire page
-  - *PERF-A05 · Caol HQ postmortem*
+  - *PERF-A05 · Agent Hub HQ postmortem*
 
 ---
 
@@ -190,7 +190,7 @@ Sections marked **(if applicable)** apply only when the codebase uses that featu
   - *CONF-A01 · Astro: "Configuration" docs*
 
 - ⚠️ 👁 **Vite `server.host` / `port` aware of conflicts** — Hardcoded port should be in a non-privileged range (>1024). If the project ships with a registered port, document it in the SKILL.md / README so multiple servers don't collide
-  - *CONF-A02 · Caol HQ port migration: 972 (privileged, brittle) → 9720*
+  - *CONF-A02 · Agent Hub HQ port migration: 972 (privileged, brittle) → 9720*
 
 - ⚠️ 👁 **Server `host: 'localhost'`** for local dev — Binding to `0.0.0.0` exposes the dev server to LAN. Use `localhost` unless cross-device testing is the explicit purpose
   - *CONF-A03 · OWASP*

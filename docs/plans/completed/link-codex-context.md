@@ -70,13 +70,13 @@ related: docs/plans/completed/agent-symlink-followup.md
 
 | Task | Command / check | Acceptance |
 |------|-----------------|------------|
-| T1: Resolve paths | `CODEX_HOME="$(jq -r '."codex-home"' ~/.claude/private/agent-hub-config/machine-paths.json)"` and `CAOL_ILA="$(jq -r '."agent-hub".path' ~/.claude/private/agent-hub-config/repo-paths.json)"` | both variables are non-empty directories |
+| T1: Resolve paths | `CODEX_HOME="$(jq -r '."codex-home"' ~/.claude/private/agent-hub-config/machine-paths.json)"` and `AGENT_HUB="$(jq -r '."agent-hub".path' ~/.claude/private/agent-hub-config/repo-paths.json)"` | both variables are non-empty directories |
 | T2: Inspect collisions | `for p in AGENTS.md SYSTEM.md AGENT-HUB.md agent docs rules standards commands skills; do ls -ld "$CODEX_HOME/$p" 2>/dev/null || true; done` | every existing destination is understood before edits |
 | T3: Back up entry | `cp "$CODEX_HOME/AGENTS.md" "$CODEX_HOME/AGENTS.md.backup.$(date +%Y%m%d-%H%M%S)"` | backup file exists |
 | T4: Back up collisions | for each existing non-matching `SYSTEM.md`, `AGENT-HUB.md`, `agent`, `docs`, `rules`, `standards`, or `commands`, move it to `"$CODEX_HOME/<name>.backup.$(date +%Y%m%d-%H%M%S)"` | no non-matching destination remains |
-| T5: Link support paths | `ln -s "$CAOL_ILA/SYSTEM.md" "$CODEX_HOME/SYSTEM.md"`; `ln -s "$CAOL_ILA/AGENT-HUB.md" "$CODEX_HOME/AGENT-HUB.md"`; `ln -s "$CAOL_ILA/agent" "$CODEX_HOME/agent"`; `ln -s "$CAOL_ILA/docs" "$CODEX_HOME/docs"` | each link resolves to `agent-hub` |
-| T6: Link top-level shared layers | `ln -s "$CAOL_ILA/agent/rules" "$CODEX_HOME/rules"`; `ln -s "$CAOL_ILA/agent/standards" "$CODEX_HOME/standards"`; `ln -s "$CAOL_ILA/agent/commands" "$CODEX_HOME/commands"` | each link resolves to `agent-hub/agent` |
-| T7: Link agent-hub skills | for each `$CAOL_ILA/agent/skills/<skill>/SKILL.md`, create `"$CODEX_HOME/skills/<skill>" -> "$CAOL_ILA/agent/skills/<skill>"` | `.system` remains and agent-hub skills resolve |
+| T5: Link support paths | `ln -s "$AGENT_HUB/SYSTEM.md" "$CODEX_HOME/SYSTEM.md"`; `ln -s "$AGENT_HUB/AGENT-HUB.md" "$CODEX_HOME/AGENT-HUB.md"`; `ln -s "$AGENT_HUB/agent" "$CODEX_HOME/agent"`; `ln -s "$AGENT_HUB/docs" "$CODEX_HOME/docs"` | each link resolves to `agent-hub` |
+| T6: Link top-level shared layers | `ln -s "$AGENT_HUB/agent/rules" "$CODEX_HOME/rules"`; `ln -s "$AGENT_HUB/agent/standards" "$CODEX_HOME/standards"`; `ln -s "$AGENT_HUB/agent/commands" "$CODEX_HOME/commands"` | each link resolves to `agent-hub/agent` |
+| T7: Link agent-hub skills | for each `$AGENT_HUB/agent/skills/<skill>/SKILL.md`, create `"$CODEX_HOME/skills/<skill>" -> "$AGENT_HUB/agent/skills/<skill>"` | `.system` remains and agent-hub skills resolve |
 | T8: Update shim | edit `$CODEX_HOME/AGENTS.md` so the first shared-policy read is `SYSTEM.md`, then keep the existing personal queue rules below it | file keeps queue rules and names `SYSTEM.md` first |
 | T9: Verify reads | `sed -n '1,80p' "$CODEX_HOME/AGENTS.md"` and `sed -n '1,20p' "$CODEX_HOME/SYSTEM.md"` | output shows shim, load order, and canonical policy |
 | T10: Verify links | `readlink "$CODEX_HOME/SYSTEM.md"`; `readlink "$CODEX_HOME/AGENT-HUB.md"`; `readlink "$CODEX_HOME/agent"`; `readlink "$CODEX_HOME/docs"`; `readlink "$CODEX_HOME/rules"`; `readlink "$CODEX_HOME/standards"`; `readlink "$CODEX_HOME/commands"` | each target is under `agent-hub` |
@@ -132,7 +132,7 @@ Use `skills/<name>/SKILL.md` when a user names a skill or the task matches that 
 
 ```sh
 mkdir -p "$CODEX_HOME/skills"
-find "$CAOL_ILA/agent/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print0 |
+find "$AGENT_HUB/agent/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print0 |
   while IFS= read -r -d '' skill_file; do
     src="$(dirname "$skill_file")"
     name="$(basename "$src")"
@@ -161,7 +161,7 @@ Use this only after explicit user approval because it replaces personal Codex qu
 
 ```sh
 CODEX_HOME="$(jq -r '."codex-home"' ~/.claude/private/agent-hub-config/machine-paths.json)"
-CAOL_ILA="$(jq -r '."agent-hub".path' ~/.claude/private/agent-hub-config/repo-paths.json)"
+AGENT_HUB="$(jq -r '."agent-hub".path' ~/.claude/private/agent-hub-config/repo-paths.json)"
 mv "$CODEX_HOME/AGENTS.md" "$CODEX_HOME/AGENTS.md.backup.$(date +%Y%m%d-%H%M%S)"
-ln -s "$CAOL_ILA/AGENTS.md" "$CODEX_HOME/AGENTS.md"
+ln -s "$AGENT_HUB/AGENTS.md" "$CODEX_HOME/AGENTS.md"
 ```

@@ -7,7 +7,7 @@ milestone: spec-lifecycle-system
 briefing: ../../briefings/specs/ah-architecture-hardening.md
 ---
 
-# Caol Architecture Hardening
+# Agent Hub Architecture Hardening
 
 ## Purpose
 
@@ -202,7 +202,7 @@ Without this distinction, agents can over-load stale standard files or treat ski
 
 ### Finding 4: Context Routing Profiles Are Incomplete
 
-Current routing profiles cover core Shotloom, Unreal, web, Obsidian, and caol
+Current routing profiles cover core Shotloom, Unreal, web, Obsidian, and agent-hub
 authoring work. Missing candidate profiles from prior refactors should be
 reviewed before broad cleanup:
 

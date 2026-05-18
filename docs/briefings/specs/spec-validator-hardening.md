@@ -35,7 +35,7 @@ as `docs/plans/` gains lifecycle folders and more specs point to milestones.
 | spec | `docs/plans/completed/docs-plans-lifecycle-migration.md` | duplicate slug and link requirements |
 | spec | `docs/plans/completed/ah-manage-milestone.md` | milestone attachment contract |
 | directory | `docs/milestones/` | current milestone corpus |
-| directory | `docs/briefings/specs/` | caol spec intake corpus |
+| directory | `docs/briefings/specs/` | agent-hub spec intake corpus |
 | generated doc | `agent/standards/policy/principles.md` | validator check list block |
 | manifest | `agent/config/agent-hub.json` | validator registry |
 

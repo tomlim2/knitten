@@ -86,7 +86,7 @@ export function discoverSkills(): Skill[] {
 
 export function groupByCategory(skills: Skill[]): Array<{ category: string; skills: Skill[] }> {
     const order = [
-        'Caol', 'Shotloom', 'CINEV', 'Unreal Engine', 'Review', 'Git',
+        'Agent Hub', 'Shotloom', 'CINEV', 'Unreal Engine', 'Review', 'Git',
         'Dev Tools', 'Design', 'Image', 'Video', 'VRM/PMX',
         'Obsidian', 'Learning', 'Tutoring', 'Consulting', 'Writing',
         'Project', 'System', 'Personal', 'Other',

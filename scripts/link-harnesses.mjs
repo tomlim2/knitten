@@ -55,9 +55,7 @@ async function handleJsonConfig(harness, targetPath) {
 
   let modified = false;
   for (const [key, paths] of Object.entries(harness.configFormat || {})) {
-    const resolvedPaths = paths.map((p) =>
-      p.replace('$AGENT_HUB_ROOT', AGENT_HUB_ROOT).replace('$CAOL_ILA_ROOT', AGENT_HUB_ROOT)
-    );
+    const resolvedPaths = paths.map((p) => p.replace('$AGENT_HUB_ROOT', AGENT_HUB_ROOT));
     
     config[key] = config[key] || [];
     for (const p of resolvedPaths) {

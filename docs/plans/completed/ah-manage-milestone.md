@@ -6,7 +6,7 @@ owner: agent-hub
 milestone: spec-lifecycle-system
 ---
 
-# Caol Manage Milestone
+# Agent Hub Manage Milestone
 
 ## Purpose
 
@@ -83,7 +83,7 @@ context-profile: ah-authoring
 ---
 ```
 
-This uses the `caol` route domain and `ah-authoring` context profile.
+This uses the `agent-hub` route domain and `ah-authoring` context profile.
 
 ## Command Surface
 

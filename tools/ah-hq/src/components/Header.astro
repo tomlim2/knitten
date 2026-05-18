@@ -10,7 +10,7 @@ const { activeNav } = Astro.props;
 ---
 
 <header class="hq-header">
-    <a href="/" class="hq-logo">Caol HQ</a>
+    <a href="/" class="hq-logo">Agent Hub HQ</a>
     <nav class="hq-nav">
         {nav.map((item: { label: string; href: string }) => (
             <a href={item.href} class:list={[{ active: activeNav === item.href }]}>

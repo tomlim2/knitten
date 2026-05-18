@@ -9,7 +9,7 @@ owner: agent-hub
 
 ## Purpose
 
-Spec briefings capture the intake evidence for high-risk caol specs before the
+Spec briefings capture the intake evidence for high-risk agent-hub specs before the
 direct spec is authored or updated.
 
 Use this folder when a spec touches shared policy, validators, path routing,

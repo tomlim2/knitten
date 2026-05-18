@@ -6,7 +6,7 @@ owner: agent-hub
 milestone: spec-lifecycle-system
 ---
 
-# Caol Review Implementation
+# Agent Hub Review Implementation
 
 ## Purpose
 
@@ -25,7 +25,7 @@ Existing review skills cover narrow domains:
 | `review-audit-docs` | docs and comment defects in a diff | does not compare the implementation to a spec or validator evidence |
 | `ah-audit-skill` | one skill body against LLM-first and workflow logic | does not inspect a multi-file implementation |
 | `shotloom-review-before-pr` | Shotloom PR review | repo-specific and not applicable to agent-hub hub changes |
-| `review-audit-web` / `review-audit-ux` | web code and UI | web-specific, not a caol system gate |
+| `review-audit-web` / `review-audit-ux` | web code and UI | web-specific, not a agent-hub system gate |
 
 The missing layer is a post-implementation gate for agent-hub work: after files
 change, an agent needs a repeatable way to prove the diff matches the spec and
@@ -121,7 +121,7 @@ git diff --check
    routing metadata, deploy-target sync, docs accuracy, and safety.
 5. `agent/config/context-routing.json` lists the skill as a `ah-authoring`
    pilot file.
-6. `tests/routing-fixtures.json` contains a caol implementation review fixture.
+6. `tests/routing-fixtures.json` contains a agent-hub implementation review fixture.
 7. Generated inventory blocks are refreshed.
 8. Full validator passes.
 
