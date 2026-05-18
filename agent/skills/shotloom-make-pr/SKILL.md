@@ -158,15 +158,23 @@ Print drafted title + body, ask:
 ### Step 7: On approval — create PR
 
 ```bash
-gh pr create --base main --head <branch> --draft \
-  --title "<title>" \
-  --body "$(cat <<'EOF'
+body_file=$(mktemp)
+cat > "$body_file" <<'EOF'
 <body>
 EOF
-)"
+
+gh pr create --base main --head <branch> --draft \
+  --title "<title>" \
+  --body-file "$body_file"
+
+rm -f "$body_file"
 ```
 
 Default to `--draft` unless user explicitly said "ready-for-review". Draft → ready is easy; ready → draft is noisy.
+
+Do not pass PR markdown through `--body "..."`. Backticks, `$...`, and command
+snippets in the body can be interpreted by the shell before `gh` receives them.
+After creation, inspect `gh pr view <N> --json body` before reporting success.
 
 ### Step 8: Supersedes handling (if argument given)
 
@@ -177,7 +185,10 @@ Ask before posting it.
 2. Show the draft and ask before posting.
 3. On approval:
    ```bash
-   gh pr comment <prior-pr> --body "Superseded by #<new-pr> — <one-line rationale>."
+   comment_file=$(mktemp)
+   printf '%s\n' 'Superseded by #<new-pr> — <one-line rationale>.' > "$comment_file"
+   gh pr comment <prior-pr> --body-file "$comment_file"
+   rm -f "$comment_file"
    ```
 4. Add `Supersedes #<prior-pr>` to the new PR body.
 

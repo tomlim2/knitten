@@ -23,6 +23,9 @@ Default-counter rules. The harness biases toward each opposite; these counter at
 - **Worktree cleanup** — After PR merge or explicit abandonment, run
   `node scripts/worktree-clean.mjs --merged` to inspect cleanup candidates.
   Deletion is explicit only: `--apply --yes` after user approval.
+- **Merge before cleanup** — Do not pass `--delete-branch` to `gh pr merge`
+  for worktree-first tasks. Merge the PR first, then remove the task worktree
+  and delete the local/remote branch in the cleanup flow.
 - **PR after push** — In a worktree-first repo, when a write task has been
   committed and pushed, create a PR before handing off unless the user
   explicitly says not to. Record validation and objective review evidence in

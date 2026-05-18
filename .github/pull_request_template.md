@@ -1,3 +1,10 @@
+<!--
+Authoring note:
+- Create or edit PR bodies with a temporary markdown file plus `--body-file`.
+- Do not pass markdown with backticks through `--body "..."`; shells can treat
+  backticks as command substitution and corrupt the PR body.
+-->
+
 ## Summary
 
 - 

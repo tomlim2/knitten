@@ -12,6 +12,13 @@ Verify all before requesting user approval to call `gh pr create`:
 - PR title and description match team conventions — sample 3–5 recent merged PRs in the same repo/team if unsure.
 - Any referenced Linear/GitHub issues exist, are in the right project, and are cross-linked.
 - If superseding a prior PR, the redirect comment and the prior PR number are prepared in the new PR description.
+- PR body is written to a temporary markdown file and passed with
+  `--body-file`. Do not put markdown containing backticks, command snippets, or
+  `$...` text directly inside `--body "..."`; the shell can execute or expand
+  it before `gh` receives the body.
+- After creating or editing a PR body, read it back with
+  `gh pr view <N> --json body` and verify code spans, validation commands, and
+  issue links did not disappear.
 
 **Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated harness-side meta in `~/.claude/rules/<repo>.md`, consult and satisfy it in addition to the bullets above:
 

@@ -16,6 +16,13 @@ Expanded detail for the shotloom-make-pr skill. SKILL.md holds the gate sequence
 
 **Do NOT add `Resolves` / `Part of` for umbrella / parent issues** — Linear's parent-child relation already shows the tree. The linkage line is for the issue this PR directly closes or directly contributes to. Rule and decision tree are in pr-guideline.md § 4.
 
+**Transport rule:** write the final markdown body to a temporary file and pass it
+with `gh pr create --body-file` or `gh pr edit --body-file`. Do not use
+`--body "..."` for markdown bodies because inline code spans and command
+examples can be interpreted by the shell before `gh` receives them. Read the PR
+body back after creation or edit and verify code spans, validation commands, and
+issue links survived.
+
 ---
 
 ## Devlog frontmatter
