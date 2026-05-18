@@ -11,6 +11,11 @@ Default-counter rules. The harness biases toward each opposite; these counter at
   repo config has `worktreePolicy.enabled: true`, start with
   `node scripts/worktree-start.mjs <task-slug>`. New write-capable requests
   create a fresh worktree even if another task worktree exists.
+- **Lightweight branch exception** — In a worktree-first repo, small docs-only
+  or CI/CD-only changes can use a feature branch in the primary checkout when
+  `worktreePolicy.allowMainFeatureBranch: true`. Allowed scope: `.github/**`,
+  PR templates, release notes, changelog entries, and narrow docs-only policy
+  wording. Keep direct commits to `main` forbidden.
 - **Worktree resumes** — Continue in the current task worktree when the user
   explicitly resumes that task from inside it. If the user names an existing
   worktree path or branch, run `git status --short --branch` there before

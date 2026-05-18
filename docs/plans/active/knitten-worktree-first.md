@@ -32,6 +32,7 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 | Fresh isolation per execution | Each starter invocation creates a new worktree and a new `codex/` branch. |
 | Repo opt-in enforcement | Worktree-first applies only to repositories whose repo config has `worktreePolicy.enabled: true`. |
 | Main checkout protection | Commit and push from the main checkout fail with a clear message. |
+| Lightweight branch lane | Small docs-only and CI/CD-only changes can use a primary-checkout feature branch when explicitly enabled. |
 | LLM-visible workflow | Auto-loaded git rules tell agents to start Knitten write work in a new worktree. |
 | Deterministic naming | Worktree paths and branch names use `<stamp>-<task-slug>`, so repeated runs do not collide and repo names do not repeat. |
 | Operational visibility | A status command shows active, dirty, stale, and merged worktrees. |
@@ -49,6 +50,7 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 | Delete stale worktrees automatically | Cleanup is destructive and needs an explicit user action. |
 | Move existing tags or branches | Release tagging stays under direct user approval. |
 | Require GitHub branch protection | Local enforcement is the first implementation layer. |
+| Allow `main` direct commits | The lightweight lane permits feature branches only. |
 
 ## Current State
 
@@ -82,7 +84,8 @@ Repo config entry shape:
       "branchPrefix": "codex/",
       "requireFreshPerExecution": true,
       "blockMainCommit": true,
-      "blockMainPush": true
+      "blockMainPush": true,
+      "allowMainFeatureBranch": true
     }
   },
   "shotloom": {
@@ -120,6 +123,7 @@ Config behavior:
 | Repo config entry has `worktreePolicy.enabled: false` | Do not enforce worktree-first. |
 | Repo root cannot be mapped to a repo key | Do not enforce; print a warning in status commands only. |
 | Repo config entry has `worktreePolicy.deferToRepoWorkflow: true` | Register it as worktree-first, then use the repo-specific starter/rules when they exist. |
+| Repo config entry has `worktreePolicy.allowMainFeatureBranch: true` | Permit primary-checkout feature branch commits for the lightweight branch lane. |
 
 Initial allowlist:
 
@@ -154,6 +158,30 @@ agent/config/repo-policy.schema.json
 
 The schema documents the `worktreePolicy` object and validator checks it
 against machine-local repo config when that file exists.
+
+### Lightweight Branch Lane
+
+Use the lightweight branch lane only when every condition matches:
+
+| Condition | Required Value |
+|---|---|
+| Repo config | `worktreePolicy.allowMainFeatureBranch: true` |
+| Checkout | Primary checkout is on a feature branch, not `main`. |
+| Branch name | Uses the configured `branchPrefix`, normally `codex/`. |
+| Change type | `.github/**`, PR templates, release notes, changelog entries, or narrow docs-only policy wording. |
+| Change scope | Single ownership boundary and low conflict risk. |
+| PR | Required after push unless the user explicitly says not to. |
+
+Do not use the lightweight branch lane for these changes:
+
+| Change Type | Required Workflow |
+|---|---|
+| Code implementation | Task worktree. |
+| Validator or schema logic | Task worktree. |
+| Routing behavior | Task worktree. |
+| File migration or deletion | Task worktree. |
+| Multi-repo or multi-boundary work | Task worktree. |
+| Release tag movement | Explicit user approval and release workflow. |
 
 ## Proposed Design
 
@@ -208,7 +236,8 @@ Guard behavior:
 | Condition | Result |
 |---|---|
 | Current repo has no enabled `worktreePolicy` | Pass. |
-| Current top-level path is the enabled repo's main checkout | Fail with `<repo-key> policy: use a task worktree for commit and push.` |
+| Current top-level path is the enabled repo's main checkout on `main` | Fail with `<repo-key> policy: use a task worktree for commit and push.` |
+| Current top-level path is the enabled repo's main checkout on a feature branch and `allowMainFeatureBranch: true` | Pass. |
 | Current top-level path is an enabled repo linked worktree | Pass. |
 
 ### Hook Installer
@@ -339,6 +368,7 @@ Update `agent/rules/git-defaults.md` with a Knitten-specific rule:
 |---|---|
 | Read-only Knitten inspection | Main checkout allowed. |
 | Write-capable work in repo with `worktreePolicy.enabled: true` | Run `node scripts/worktree-start.mjs <slug>` first. |
+| Small docs-only or CI/CD-only work with `allowMainFeatureBranch: true` | Use a feature branch in the primary checkout; do not commit directly to `main`. |
 | Write-capable work in repo without enabled `worktreePolicy` | Use normal git workflow. |
 | Same task resumed inside a task worktree | Continue in that worktree. |
 | New write-capable user request in enabled repo | Create a new worktree, even if another worktree exists. |
@@ -353,6 +383,7 @@ Add a fixture or test script that proves:
 | Run starter twice with the same slug in test mode | Two distinct temporary worktree directories and two distinct temporary branches exist. |
 | Run starter in an unlisted lightweight repo | Stops without creating a worktree. |
 | Run guard from main checkout | Non-zero exit. |
+| Run guard from main checkout feature branch with `allowMainFeatureBranch: true` | Zero exit. |
 | Run guard from generated worktree | Zero exit. |
 | Run guard from an unlisted lightweight repo | Zero exit. |
 | Run installer twice | Hooks remain valid and no duplicate shell body accumulates. |
@@ -370,7 +401,7 @@ Add a fixture or test script that proves:
 | K1 Scripts | Add starter, guard, and installer scripts | Scripts parse arguments, avoid hardcoded user paths, and print actionable output. |
 | K2 Config Schema | Add tracked schema for repo config `worktreePolicy` | Initial enabled repo config entries are `knitten`, `shotloom`, and `story-previz`. |
 | K3 Status | Add status script | Active, dirty, ahead, age, and stale candidate fields are visible for enabled repos. |
-| K4 Rule | Update `agent/rules/git-defaults.md` | Auto rule states enabled repos start write work in a fresh worktree. |
+| K4 Rule | Update `agent/rules/git-defaults.md` | Auto rule states enabled repos start write work in a fresh worktree and allows the lightweight branch lane for scoped docs or CI/CD changes. |
 | K5 Tests | Add script-level tests or deterministic shell checks | Starter, guard, installer, repo config, and status behavior is proven locally. |
 | K6 Machine Config | Update current machine repo config and tracked schema/template docs | `knitten`, `shotloom`, and `story-previz` are discoverable from repo config. |
 | K7 Docs | Add README pointer for the worktree-first policy | A cold-start agent can find the workflow from README or rules. |
@@ -398,8 +429,8 @@ git status --short --branch
 ```
 
 Expected special case: `node scripts/worktree-guard.mjs` fails when run
-from the main checkout. The validation must also run the same guard from a
-generated worktree and confirm success.
+from the main checkout on `main`. The validation must also run the same guard
+from a generated worktree and from an allowed primary-checkout feature branch.
 
 Validation must restore the repository to its pre-test branch and worktree
 state.
@@ -416,6 +447,7 @@ state.
 | Status output becomes another stale source | Status reads git state live and stores no cache. |
 | Cleanup deletes useful work | Cleanup defaults to dry-run and refuses dirty or unmerged worktrees. |
 | Lightweight repos inherit heavy workflow | Worktree-first applies only to repos whose repo config has `worktreePolicy.enabled: true`. |
+| Lightweight branch lane hides risky work | Rule limits the lane to small docs-only or CI/CD-only changes; code, validators, schemas, routing, migrations, and multi-boundary work still use task worktrees. |
 | Validation leaves temporary branches or worktrees | Test mode uses a test prefix and cleanup verifies removal before final status. |
 | Hook tests create commits | Blocked commit uses `--allow-empty` and must fail before an object is created. |
 
@@ -430,6 +462,7 @@ state.
 - [ ] Test-mode starter invocations leave no worktrees or branches after cleanup.
 - [ ] Generated branches use the `codex/` prefix.
 - [ ] `scripts/worktree-guard.mjs` fails in the main Knitten checkout.
+- [ ] `scripts/worktree-guard.mjs` passes in a primary-checkout feature branch when `allowMainFeatureBranch` is true.
 - [ ] `scripts/worktree-guard.mjs` passes in a generated Knitten worktree.
 - [ ] `scripts/worktree-install-hooks.mjs` configures repo-local `core.hooksPath` and installs `pre-commit` and `pre-push` guards.
 - [ ] `core.hooksPath` is visible from the main checkout and a linked worktree.
@@ -441,6 +474,7 @@ state.
 - [ ] Cleanup candidates require clean status, merged state, and absent remote feature branch.
 - [ ] Main checkout commit and push attempts fail after hook installation.
 - [ ] Worktree commit and push attempts are not blocked by the Knitten guard.
+- [ ] Lightweight docs-only or CI/CD-only work can use a primary-checkout feature branch without allowing direct `main` commits.
 - [ ] `agent/rules/git-defaults.md` instructs agents to create a fresh Knitten worktree before write-capable work.
 - [ ] `git diff --check` passes.
 - [ ] `node scripts/validate-llm-first.mjs` passes.

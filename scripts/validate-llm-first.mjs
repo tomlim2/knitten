@@ -2631,7 +2631,7 @@ async function checkRepoPolicyConfig() {
   } else {
     const schema = await readJsonRel(schemaPath);
     const policyProps = schema?.additionalProperties?.properties?.worktreePolicy?.properties;
-    for (const key of ["enabled", "worktreeRoot", "branchPrefix", "requireFreshPerExecution", "blockMainCommit", "blockMainPush"]) {
+    for (const key of ["enabled", "worktreeRoot", "branchPrefix", "requireFreshPerExecution", "blockMainCommit", "blockMainPush", "allowMainFeatureBranch"]) {
       if (!policyProps?.[key]) {
         violations.push({ file: schemaPath, line: 1, message: `repo policy schema missing worktreePolicy.${key}` });
       }
