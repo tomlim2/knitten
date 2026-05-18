@@ -12,6 +12,11 @@
 - [ ] `node scripts/validate-llm-first.mjs`
 - [ ] Other:
 
+## Review Evidence
+
+- Result: `no requested changes` / `changes requested` / `blocked` / `N/A`
+- Review comment or notes:
+
 ## Risk & Cleanup
 
 - [ ] Main checkout commit/push safety considered, or N/A

@@ -1,0 +1,43 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Repository validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check committed whitespace
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.base_ref }}" --depth=1
+            git diff --check "origin/${{ github.base_ref }}...HEAD"
+          elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            git diff --check "${{ github.event.before }}..${{ github.sha }}"
+          elif git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+            git diff --check "HEAD^..HEAD"
+          else
+            git diff --check HEAD
+          fi
+
+      - name: Validate LLM-first docs
+        run: node scripts/validate-llm-first.mjs
