@@ -1,5 +1,5 @@
 ---
-description: Run Shotloom pre-PR review through code/docs passes, then hand off to shotloom-make-pr when clean
+description: Run Shotloom pre-PR review with auto Standard/Triad mode, then hand off to shotloom-make-pr when clean
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
 domains: rust
 repo-keys: shotloom
@@ -13,13 +13,14 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-before-pr
 
-Run pre-PR self-review on the current Shotloom branch, then immediately hand
-off to `shotloom-make-pr` once both code and docs phases are clean or nit-only.
-The skill uses read-only Explore subagents. The first pass for each phase is a
-cold-start review. Later passes in the same phase are independent verification
-passes from different angles after fixes change `HEAD`. If later verification
-passes find P0-P2 issues and fixes change `HEAD` again, continue the same review
-chain with the next pass letter instead of restarting at pass A.
+Run pre-PR self-review on the current Shotloom branch, choose Standard or Triad
+review mode from diff size and risk signals, then immediately hand off to
+`shotloom-make-pr` once all fired phases are clean or nit-only. The skill uses
+read-only Explore subagents. The first pass for each phase is a cold-start
+review. Later passes in the same phase are independent verification passes from
+different angles after fixes change `HEAD`. If later verification passes find
+P0-P2 issues and fixes change `HEAD` again, continue the same review chain with
+the next pass letter instead of restarting at pass A.
 
 ## Delegation Authorization
 
@@ -49,29 +50,42 @@ as deletions in the review branch.
 
 ## Review Shape
 
+### Review Mode
+
+| Mode | Fires | Required phases |
+|---|---|---|
+| Standard | Diff is small and limited to UI, tests, docs, or one low-risk surface | code, large-boundary if triggered, docs |
+| Triad | Diff size or risk triggers match Step 2 | code, large-boundary if triggered, triad, docs |
+
+Default mode is Auto. In Auto, the orchestrator selects Standard or Triad after
+Step 1 and prints the decision before Step 3. If the user explicitly says
+`force standard` or `force triad`, use that mode and still print the evidence.
+
 | Phase | Initial cold-start pass | Follow-up verification passes |
 |---|---|---|
 | Code | code pass A | code pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
+| Triad | triad pass A | triad pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
 | Docs | targeted docs pass A | docs pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
 
-Large boundary PRs add lens batches between the code and docs phases. Use
+Large boundary PRs add lens batches after the code phase. Use
 `references/LARGE_BOUNDARY_PR_LENSES.md` when the diff touches two or more of:
 Rust bridge DTOs, TypeScript bridge mirrors, engine handlers, model validation,
 fixtures, `docs/ipc/bridge-contract.md`, promote/demote/import/save/load paths,
 or event sequencing.
 
-Run phases sequentially: code first, docs second. Docs review includes
-comments and docstrings, so it must read the post-code-fix tree.
+Run phases sequentially: code first, large-boundary batches when triggered,
+triad when selected, docs last. Docs review includes comments and docstrings,
+so it must read the post-code-fix and post-triad-fix tree.
 
 Stop a phase when its latest report is clean or contains only P3/nit
 findings. If the last remaining issues are nits, either fix/accept those nits
 once and move on, but do not keep cycling that phase solely to chase more nits.
 
-Do not stop after a clean code phase. A clean or nit-only code phase
-continues to large boundary lens batches when they trigger; otherwise it
-continues to the targeted docs phase. A clean or nit-only docs phase
-automatically continues to `shotloom-make-pr`; the make-PR skill still owns
-its local gates, PR body draft, and explicit `gh pr create` approval.
+Do not stop after a clean code phase. A clean or nit-only code phase continues
+to large boundary lens batches when they trigger, then to triad when selected,
+then to the targeted docs phase. A clean or nit-only docs phase automatically
+continues to `shotloom-make-pr`; the make-PR skill still owns its local gates,
+PR body draft, and explicit `gh pr create` approval.
 
 ## Workflow
 
@@ -97,7 +111,34 @@ Refuse if `HEAD` is `main`, the branch has zero commits ahead of
 
 Record `head_step1=$(git rev-parse HEAD)`.
 
-### Step 2: Code Pass A
+### Step 2: Review Mode Decision
+
+Read `references/REVIEW_MODE.md`, gather its required diff evidence, and select
+`review_mode=standard` or `review_mode=triad`.
+
+```bash
+git diff --shortstat origin/main...HEAD
+git diff --name-only origin/main...HEAD
+git diff --name-status origin/main...HEAD
+```
+
+Use `force standard` or `force triad` only when the user explicitly wrote that
+override. Otherwise use Auto. Render the decision template from
+`references/REVIEW_MODE.md` before launching review agents.
+
+```markdown
+## Review Mode Decision - branch <branch>
+
+Mode: Standard | Triad
+Reason: <one sentence>
+Signals:
+- files changed: <N>
+- lines changed: +<A>/-<D>
+- touched surfaces: <list>
+- triad triggers: <list or none>
+```
+
+### Step 3: Code Pass A
 
 Dispatch one read-only Explore subagent.
 
@@ -119,10 +160,10 @@ declines fixes, compute:
 code_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_step1" && echo true || echo false)
 ```
 
-### Step 3: Code Verification Passes If Needed
+### Step 4: Code Verification Passes If Needed
 
-If `code_fixes_applied=false`, set
-`head_after_code=$(git rev-parse HEAD)` and continue automatically to Step 4.
+If `code_fixes_applied=false`, set `head_after_code=$(git rev-parse HEAD)`
+and continue automatically to Step 5.
 
 If `code_fixes_applied=true`, dispatch one read-only Explore subagent
 using the `shotloom-review-code` Step 3 checklist. Override the role
@@ -175,7 +216,7 @@ the user explicitly asks for a fresh cold-start review.
 
 If the verification pass is clean or contains only P3/nit findings, stop the
 code review loop. Fix or accept the final nits once, then set
-`head_after_code=$(git rev-parse HEAD)` and continue automatically to Step 4
+`head_after_code=$(git rev-parse HEAD)` and continue automatically to Step 5
 without another code pass.
 
 Each verification pass must:
@@ -188,9 +229,9 @@ Each verification pass must:
 
 Record `head_after_code=$(git rev-parse HEAD)`.
 
-### Step 4: Large Boundary Lens Batches If Triggered
+### Step 5: Large Boundary Lens Batches If Triggered
 
-If the large boundary PR trigger in Review Shape does not match, skip to Step 5.
+If the large boundary PR trigger in Review Shape does not match, skip to Step 6.
 
 If it matches, read `references/LARGE_BOUNDARY_PR_LENSES.md`, select batches
 from its Trigger-To-Batch Map, and dispatch one read-only Explore subagent per
@@ -217,7 +258,26 @@ After each batch:
 Do not run every lens in one pass. Do not continue from Batch B to Batch C
 while unresolved P0-P2 findings from Batch B remain.
 
-### Step 5: Targeted Docs Pass A
+### Step 6: Triad Pass A If Selected
+
+If `review_mode=standard`, skip to Step 7.
+
+If `review_mode=triad`, read `references/TRIAD_REVIEW.md` and dispatch the
+three role subagents in parallel using its Role Subagent Prompt. Render each
+role report verbatim under
+`## Pre-PR review - branch <branch> - triad pass A - <role>`, then apply the
+reference Merge Rules.
+
+If merged P0-P2 findings remain, fix or ask which findings to fix. If fixes
+change `HEAD`, rerun code verification first, then rerun triad verification for
+roles that reported P0-P2 or whose owned surface changed. If only P3/nit
+findings remain, fix or accept those nits once and continue.
+
+Record `head_after_triad=$(git rev-parse HEAD)`.
+
+### Step 7: Targeted Docs Pass A
+
+Record `head_before_docs=$(git rev-parse HEAD)`.
 
 Dispatch one read-only Explore subagent.
 
@@ -328,12 +388,12 @@ If findings exist, ask which findings to fix. After the user finishes or
 declines fixes, compute:
 
 ```bash
-docs_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_after_code" && echo true || echo false)
+docs_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_before_docs" && echo true || echo false)
 ```
 
-### Step 6: Docs Verification Passes If Needed
+### Step 8: Docs Verification Passes If Needed
 
-If `docs_fixes_applied=false`, continue to Step 7.
+If `docs_fixes_applied=false`, continue to Step 9.
 
 If `docs_fixes_applied=true`, dispatch one read-only Explore subagent using
 the same targeted docs brief. Override the role framing with this preamble:
@@ -360,7 +420,7 @@ verification preamble and a new pass letter. Do not restart docs pass A unless
 the user explicitly asks for a fresh cold-start review.
 
 If the verification pass is clean or contains only P3/nit findings, stop the
-docs review loop. Fix or accept the final nits once, then continue to Step 7
+docs review loop. Fix or accept the final nits once, then continue to Step 9
 without another docs pass.
 
 Each verification pass must:
@@ -371,9 +431,9 @@ Each verification pass must:
 - look for regressions introduced by the latest fixes;
 - render under `docs pass <letter> (verify)`.
 
-### Step 7: Make-PR Handoff
+### Step 9: Make-PR Handoff
 
-If the latest code and docs passes are clean or nit-only, invoke
+If the latest code, selected triad, and docs passes are clean or nit-only, invoke
 `shotloom-make-pr` immediately in the same worktree. Do not stop at a
 "ready" recommendation. The handoff is part of this skill's default success
 path.
@@ -400,8 +460,11 @@ Add one short Korean paragraph only if findings were non-clean.
 
 ## Binding Rules
 
+- Always print the Review Mode Decision before launching review agents.
 - Always run code before docs, and never stop after code while docs has not run.
 - Always use read-only Explore subagents.
+- Triad mode is additive. It never replaces code or docs review.
+- Standard mode is allowed only when Step 2 Standard conditions all match.
 - After docs is clean or nit-only, immediately hand off to `shotloom-make-pr`
   unless the harness cannot invoke local skills.
 - Docs passes are targeted to changed implementation-zone terms and nearby
