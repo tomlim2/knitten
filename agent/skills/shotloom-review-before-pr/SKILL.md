@@ -54,6 +54,12 @@ as deletions in the review branch.
 | Code | code pass A | code pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
 | Docs | targeted docs pass A | docs pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
 
+Large boundary PRs add lens batches between the code and docs phases. Use
+`references/LARGE_BOUNDARY_PR_LENSES.md` when the diff touches two or more of:
+Rust bridge DTOs, TypeScript bridge mirrors, engine handlers, model validation,
+fixtures, `docs/ipc/bridge-contract.md`, promote/demote/import/save/load paths,
+or event sequencing.
+
 Run phases sequentially: code first, docs second. Docs review includes
 comments and docstrings, so it must read the post-code-fix tree.
 
@@ -62,9 +68,10 @@ findings. If the last remaining issues are nits, either fix/accept those nits
 once and move on, but do not keep cycling that phase solely to chase more nits.
 
 Do not stop after a clean code phase. A clean or nit-only code phase
-automatically continues to the targeted docs phase. A clean or nit-only docs
-phase automatically continues to `shotloom-make-pr`; the make-PR skill still
-owns its local gates, PR body draft, and explicit `gh pr create` approval.
+continues to large boundary lens batches when they trigger; otherwise it
+continues to the targeted docs phase. A clean or nit-only docs phase
+automatically continues to `shotloom-make-pr`; the make-PR skill still owns
+its local gates, PR body draft, and explicit `gh pr create` approval.
 
 ## Workflow
 
@@ -168,7 +175,7 @@ the user explicitly asks for a fresh cold-start review.
 
 If the verification pass is clean or contains only P3/nit findings, stop the
 code review loop. Fix or accept the final nits once, then set
-`head_after_code=$(git rev-parse HEAD)` and continue automatically to docs
+`head_after_code=$(git rev-parse HEAD)` and continue automatically to Step 4
 without another code pass.
 
 Each verification pass must:
@@ -181,7 +188,36 @@ Each verification pass must:
 
 Record `head_after_code=$(git rev-parse HEAD)`.
 
-### Step 4: Targeted Docs Pass A
+### Step 4: Large Boundary Lens Batches If Triggered
+
+If the large boundary PR trigger in Review Shape does not match, skip to Step 5.
+
+If it matches, read `references/LARGE_BOUNDARY_PR_LENSES.md`, select batches
+from its Trigger-To-Batch Map, and dispatch one read-only Explore subagent per
+selected batch. The subagent prompt is:
+
+```text
+Read `<skill-dir>/references/LARGE_BOUNDARY_PR_LENSES.md`.
+Review current `HEAD` for Batch <batch> only.
+Use the batch's lenses and stop condition.
+Use `git diff origin/main...HEAD` as the reviewed diff.
+Report only P0-P3 findings grounded in the changed surfaces.
+Render the Result Template from the reference.
+Do not edit files, stage, commit, push, post comments, or change Linear.
+```
+
+After each batch:
+
+1. Render a `Lens Batch Result` table.
+2. Stop before the next batch when P0-P2 findings exist.
+3. Fix or explicitly accept findings.
+4. Run targeted checks for the changed surface.
+5. Resume with the next matching batch from current `HEAD`.
+
+Do not run every lens in one pass. Do not continue from Batch B to Batch C
+while unresolved P0-P2 findings from Batch B remain.
+
+### Step 5: Targeted Docs Pass A
 
 Dispatch one read-only Explore subagent.
 
@@ -295,9 +331,9 @@ declines fixes, compute:
 docs_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_after_code" && echo true || echo false)
 ```
 
-### Step 5: Docs Verification Passes If Needed
+### Step 6: Docs Verification Passes If Needed
 
-If `docs_fixes_applied=false`, continue to Step 6.
+If `docs_fixes_applied=false`, continue to Step 7.
 
 If `docs_fixes_applied=true`, dispatch one read-only Explore subagent using
 the same targeted docs brief. Override the role framing with this preamble:
@@ -324,7 +360,7 @@ verification preamble and a new pass letter. Do not restart docs pass A unless
 the user explicitly asks for a fresh cold-start review.
 
 If the verification pass is clean or contains only P3/nit findings, stop the
-docs review loop. Fix or accept the final nits once, then continue to Step 6
+docs review loop. Fix or accept the final nits once, then continue to Step 7
 without another docs pass.
 
 Each verification pass must:
@@ -335,7 +371,7 @@ Each verification pass must:
 - look for regressions introduced by the latest fixes;
 - render under `docs pass <letter> (verify)`.
 
-### Step 6: Make-PR Handoff
+### Step 7: Make-PR Handoff
 
 If the latest code and docs passes are clean or nit-only, invoke
 `shotloom-make-pr` immediately in the same worktree. Do not stop at a
