@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-18
+updated: 2026-05-19
 owner: agent-hub
 milestone: worktree-first-workflow
 repo: agent-hub
@@ -171,7 +171,7 @@ Use the lightweight branch lane only when every condition matches:
 | Branch name | Uses the configured `branchPrefix`, normally `codex/`. |
 | Change type | `.github/**`, PR templates, release notes, changelog entries, or narrow docs-only policy wording. |
 | Change scope | Single ownership boundary and low conflict risk. |
-| PR | Required after push unless the user explicitly says not to. |
+| PR | Suggested after push; create only when the user asks for PR or merge publication. |
 
 Do not use the lightweight branch lane for these changes:
 

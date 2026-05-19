@@ -26,14 +26,16 @@ account, leave a PR comment with the review result instead.
    - `git diff --check`
    - `node scripts/validate-llm-first.mjs`
 3. Commit and push when the user requests publication.
-4. Open a PR after push unless the user explicitly says not to.
+4. Suggest opening a PR after push; open it only when the user asks for PR or
+   merge publication.
 5. Review the PR diff objectively against the owning spec, repo rules, and
    validation output.
 6. Record one review result on the PR:
    - `no requested changes`
    - `changes requested`
    - `blocked`
-7. Merge only after checks pass and the review result allows merge.
+7. If a PR is opened, merge only after checks pass and the review result allows
+   merge.
 
 ## Branch Protection
 

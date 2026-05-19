@@ -33,9 +33,10 @@ Default-counter rules. The harness biases toward each opposite; these counter at
 - **Merge before cleanup** — Do not pass `--delete-branch` to `gh pr merge`
   for worktree-first tasks. Merge first with `gh pr merge <N> --squash`; delete
   local/remote branches only in the cleanup flow after worktree removal.
-- **PR after push** — In a worktree-first repo, when a write task has been
-  committed and pushed, create a PR before handing off unless the user
-  explicitly says not to. Record validation and objective review evidence in
-  the PR body.
+- **Suggest PR after push** — In a worktree-first repo, when a write task has
+  been committed and pushed, suggest opening a PR before handing off. Create
+  the PR only when the user asks for it or has already requested publication
+  through PR/merge. If a PR is created, record validation and objective review
+  evidence in the PR body.
 
 PR-phase rules: `pr-mutate.md`, `pr-comment.md`, `pr-create.md`. Repo-specific overrides: `shotloom.md`, `cinev-git.md`.
