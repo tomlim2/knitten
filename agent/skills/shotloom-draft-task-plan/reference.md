@@ -136,6 +136,7 @@ Every direct Shotloom spec includes:
 | Ownership / API boundary | yes/no | `<crate/module boundary>` | Keep responsibility in owner layer. | Compile/API test or `N/A: no public API change`. |
 | Partial mutation / rollback | yes/no | `<state/cache/persistence path>` | Pre-validate, rollback, or prove no persistence. | Failure-path test proving final state. |
 | Diagnostic ownership | yes/no | `<diagnostic code/source>` | Single owner for code, severity, and recoverability. | Negative test or manual repro. |
+| Local absolute path exposure | yes/no | `<doc/manifest/source/config path>` | Do not commit `/Users/...`, `/home/...`, drive-letter paths, `Downloads/`, `Desktop/`, or machine-specific checkout roots; use repo-relative paths, symbolic source names, resolvers, or private config. | `rg` proof or validator rejecting local absolute paths. |
 | Test oracle strength | yes | `<planned test>` | Say why it fails before implementation. | Failing-before/passing-after assertion target. |
 | Scope creep | yes | `<adjacent feature>` | Put in Non-Goals or Follow-Up Candidates. | `N/A: plan-boundary proof`. |
 | Reviewer objection | yes | `<likely blocking comment>` | Pre-answer with code/test/doc plan. | Covered by mapped proof row. |
@@ -231,6 +232,7 @@ Run each lens before declaring convergence:
 | Wire contract | Existing command and event shapes stay intact unless protocol change is in scope. |
 | Invariants | Staged-byte draining, cache failures, success events, identity, paths, and URI shapes do not regress. |
 | Mutation atomicity | Coupled artifact writes pre-validate or roll back so cache/persistence cannot store half-updated state. |
+| Local path privacy | Durable source, docs, manifests, tests, examples, and scripts do not commit `/Users/...`, `/home/...`, drive-letter paths, `Downloads/`, `Desktop/`, or machine-specific checkout roots. Use repo-relative paths, symbolic source names, resolvers, or private config instead. |
 | Test evidence | Unit, integration, snapshot, fixture, manual, and negative cases map to changed behavior. |
 | Format and docs | Tables render, paths resolve, and doc targets match repo structure. |
 | Scope creep | Related features are in `Non-Goals` or `Follow-Up Candidates`. |

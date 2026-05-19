@@ -124,6 +124,22 @@ done
 
 For each hit verify against the current file's actual content; status word that no longer matches the code is a lie — rewrite or delete.
 
+### H13: local absolute path exposure in durable files
+
+```bash
+git diff --name-only origin/main..HEAD \
+  | rg -v '(^node_modules/|^target/|^\\.git/)' \
+  | xargs rg -n '(/Users/|/home/|[A-Za-z]:[\\/]|Downloads/|Desktop/)'
+```
+
+For each hit:
+- P1 if the local machine path appears in source, docs, manifests, fixtures,
+  generated examples, scripts, or PR-ready prose.
+- Replace with a repo-relative path, symbolic source name, resolver/config
+  lookup, or `.gitignore`d private config.
+- Allow only intentionally local runtime config, private ignored files, and
+  clearly home-relative harness paths such as `~/.claude/...`.
+
 ### H3: cross-crate citation accuracy
 
 ```bash

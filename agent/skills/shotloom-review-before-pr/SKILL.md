@@ -245,6 +245,14 @@ Scope:
    terms. For example, if code review discussed malformed skins,
    inverse-bind metadata, cache versioning, or best-effort skips, check whether
    docs/comments now describe that boundary accurately.
+6. Run the local-absolute-path exposure check on the changed files and any
+   changed durable metadata (docs, manifests, fixtures, examples, scripts):
+   search for `/Users/`, `/home/`, `C:\`, `D:\`, `Downloads/`, `Desktop/`,
+   and machine-specific checkout roots. Treat a committed local machine path
+   as P1 when it appears in source, docs, manifests, fixtures, generated
+   examples, or PR-ready prose. Allow only intentionally local runtime config,
+   `.gitignore`d private files, or clearly home-relative harness paths such as
+   `~/.claude/...`.
 
 Report only actionable mismatches in the changed/related zone. If a broad docs
 standard would require PR-body-only content and no PR body exists, mark it N/A.
