@@ -16,6 +16,7 @@ STATE="$OPS_DIR/state.json"
 LOG="$OPS_DIR/log.md"
 LOCK="$OPS_DIR/watch.lock"
 EVENT="$OPS_DIR/last-event.json"
+PAUSE="$OPS_DIR/watcher.paused"
 
 mkdir -p "$OPS_DIR"
 
@@ -37,11 +38,19 @@ else
   trap 'rmdir "$MKDIR_LOCK" 2>/dev/null || true' EXIT
 fi
 
+# A react cycle may be editing, testing, committing, pushing, or posting
+# replies. During that window the watcher loop stays alive but skips polling so
+# it cannot spawn a second reactor against the same PR round.
+if [[ -f "$PAUSE" ]]; then
+  exit 0
+fi
+
 # ---- fetch ----
-# BOT_LOGIN: this watcher's own gh user. Bot-authored comments and reviews
-# must be excluded from the change-detection sets, otherwise the inline
-# replies the reactor itself posts trigger another react cycle on the next
-# tick — self-induced loop.
+# BOT_LOGIN: this watcher's own gh user. Self-authored comments and reviews
+# must be excluded from the change-detection sets, otherwise the inline replies
+# the reactor itself posts trigger another react cycle on the next tick.
+# Other bot-authored feedback remains visible so actionable review bots can be
+# handled by the react policy instead of being dropped at the watcher layer.
 BOT_LOGIN=$(gh api user --jq '.login' 2>/dev/null || echo "")
 
 PR_VIEW=$(gh pr view "$PR" --repo "$REPO" --json state,reviewDecision,headRefOid,mergeable,mergeStateStatus,isDraft,title,headRefName,baseRefName)

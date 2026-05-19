@@ -96,7 +96,7 @@ Dispatch one read-only Explore subagent.
 
 | Field | Value |
 |---|---|
-| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + U + J + review axes + deep adjacency` |
+| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + U + J + code sub-passes + review axes + deep adjacency` |
 | `prompt` | Read `~/.claude/skills/shotloom-review-code/SKILL.md` Step 3 and pass it verbatim with `<worktree>` and `<branch>` substituted. |
 
 Render the report verbatim under:
@@ -133,19 +133,24 @@ fixes, and report any pre-existing defect still visible in the current diff.
 Re-run Review Axes Triage on current HEAD. Use the axes as a compact checklist:
 correctness, regression risk, test coverage, data/state consistency, error
 handling, API/contract consistency, security/safety, performance,
-maintainability, and scope control. Report only axes that add a finding beyond
-the section and pattern findings. The Shotloom in-repo review guidelines remain
-the authority; the axes only reveal missed applications of those guidelines,
-directly related ADRs, specs, bridge contracts, task issue acceptance criteria,
-or skill-side patterns. Do not scan every Shotloom ADR, spec, bridge contract,
-or issue for this verification pass. Default evidence depth is 2: inspect
-direct evidence, then only the artifacts directly referenced by that evidence.
+maintainability, and scope control. Then run the current `shotloom-review-code`
+Phase 3a sub-pass catalog. Trigger only the sub-passes that match the changed
+diff: Core correctness, Bridge contract, Boundary/domain, Test matrix, and
+Asset/manifest/platform. Report each triggered sub-pass separately and list
+non-triggered sub-passes as `N/A`.
+
+The Shotloom in-repo review guidelines remain the authority; the axes and
+sub-passes only reveal missed applications of those guidelines, directly
+related ADRs, specs, bridge contracts, task issue acceptance criteria, or
+skill-side patterns. Do not scan every Shotloom ADR, spec, bridge contract, or
+issue for this verification pass. Default evidence depth is 2: inspect direct
+evidence, then only the artifacts directly referenced by that evidence.
 Escalate to Depth 3 only for protocol/schema/serialization/persistence
 compatibility risk or a concrete contradiction found at Depth 2.
-Re-run the Deep Adjacency pass on current HEAD: re-check two-depth
-load/save/import paths, direct consumers, bridge mirrors, fixtures, diagnostic
-wording, public helper exposure, and migration/compatibility decisions for any
-changed validation rejection.
+Re-run the Deep Adjacency pass on current HEAD using the same sub-pass grouping
+from `shotloom-review-code`, including two-depth load/save/import paths, direct
+consumers, bridge mirrors, fixtures, diagnostic wording, public helper exposure,
+and migration/compatibility decisions for changed validation rejections.
 Do not rely on the authoring session or on earlier pass conclusions; check
 directly.
 ```

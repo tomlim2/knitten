@@ -126,6 +126,15 @@ Run more rounds with a different stance each time. Useful stances:
 | Minimal PR reviewer | What should be follow-up because it makes this PR too large? |
 | Domain owner | Does it respect Shotloom ADRs, module boundaries, diagnostics, and cache policy? |
 | Error-source-chain owner | Do planned Rust error enums and conversions preserve wrapped external errors with `#[source]`, instead of flattening them into `String`? |
+| Contract serialization owner | Do Rust serde defaults, skipped fields, TS optional fields, fixtures, and docs preserve the same runtime meaning? |
+| Rejection-matrix owner | Does every changed command handler list and test each rejection branch, shared helper failure, missing entity path, and boundary conversion failure? |
+| Asset/manifest owner | Do manifests, catalogs, data packs, LFS assets, and generated fixtures avoid local path leaks, prove root containment, and name source/license plus validator placement? |
+| CLI portability owner | Do Node/TS scripts avoid URL/native-path entrypoint mismatches and platform-specific filesystem assumptions? |
+| Validation-context owner | Does a new context-aware validator leave any old public wrapper, doc source-of-truth reference, or production caller that silently skips the new invariant? |
+| Drift-surface owner | Could a new metadata field, DTO field, enum string, or documented key list desync from code without a compile error or failing test? |
+| Bridge-contract owner | Do command/event matrices, payload examples, rejection-code catalogs, ADR/spec links, and TS/Rust fixtures all match the wire contract? |
+| State-visibility owner | Does every accepted command expose observable state changes through events, selection updates, trailing sync, or documented consumer derivation? |
+| Input-constraint owner | Are newly exposed bridge inputs validated or explicitly documented as schema-free/bounded with the same rigor as adjacent fields? |
 | Test owner | Would tests fail before implementation and pass after? |
 | Docs/spec owner | Are docs required, and are non-goals explicit? |
 | Release/cache owner | Does it invalidate cache/state/user-visible behavior correctly? |
@@ -154,6 +163,41 @@ Before landing, verify:
 - It has `## Risk Map` with rows for error source chain, schema compatibility,
   ownership/API boundary, partial mutation/rollback, diagnostic ownership, test
   oracle strength, scope creep, and reviewer objection.
+- Bridge-visible DTO specs must cover omitted-field/default semantics across
+  Rust serde, JSON fixtures, TypeScript consumers, and docs.
+- Command specs must include a rejection matrix for changed branches, shared
+  helper failures, missing entities, and boundary conversion failures.
+- Manifest/catalog/asset specs must cover root containment, local absolute path
+  privacy, LFS or asset hydration, source/license metadata, size impact, and
+  local-only versus CI validator placement.
+- Node/TS CLI specs must include a cross-platform entrypoint decision when the
+  branch changes script dispatch or path handling.
+- Promotion/demotion/import specs must validate source kind, target kind,
+  ownership boundary, and the rejection diagnostic for wrong-kind inputs.
+- Context-aware validation specs must decide what happens to older weaker
+  entrypoints: remove, deprecate, restrict visibility, rename, or document their
+  intentionally narrower invariant set.
+- Specs that add metadata hint fields, DTO fields, enum string mappings, or
+  documented key lists must include drift prevention: shared constants,
+  compile-enforced destructuring, full-field tests, or explicit docs/code
+  cross-checks.
+- Aggregated validation error specs must test both the inner error and the
+  outer attribution id, such as shot id, entity id, file path, or source id.
+- Optional/guarded validation specs must test the intentional skip branch when
+  the guard preserves a valid happy path.
+- Bridge contract specs must update Rust DTOs, TS mirrors, snapshots, IPC
+  command/event matrices, JSON examples, rejection-code catalogs, and related
+  ADR/spec links in the same PR.
+- Command specs must state how each accepted mutation becomes observable:
+  success event payload, selection event, trailing `shot_loaded`/sync, or an
+  explicit documented derivation rule.
+- New free-form inputs such as tags, options maps, ids, payload objects, and
+  transforms must have validation bounds or a documented schema-free contract.
+- Tests for state-changing commands must include post-state assertions when the
+  model state, cleanup side effect, event ordering, or rollback is the behavior
+  under review.
+- Non-obvious rejection precedence and no-op behavior must be documented or
+  covered by tests.
 - Every applicable Risk Map row has evidence, plan response, and test proof.
   Any `N/A` must include a concrete rationale.
 - It has an explicit one-PR suitability judgment, either in summary, decisions,

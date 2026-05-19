@@ -56,6 +56,46 @@ Note the file shapes are different (object vs array). Step 8 jq must run filters
 
 Checkout PR branch if needed: `git checkout <headRefName> && git pull`.
 
+### Step 2.1: Bot-authored feedback policy
+
+Do not discard review feedback just because it came from a bot. Bot-authored
+comments and review bodies are part of the PR review surface when they contain
+actionable findings.
+
+Classify each bot-authored item before Step 2.5:
+
+| Bot item type | Action |
+|---|---|
+| Concrete inline finding with a file/path/line and fixable claim | Send through Step 2.5 scope + justification exactly like a human comment. If fixed or intentionally deferred, reply on the same inline thread in Step 6. |
+| Concrete review-body or suppressed finding without an inline comment id | Send through Step 2.5. If addressed, include it in the suppressed-item summary reply in Step 6. |
+| PR summary / risk note with no concrete requested action | Mark `informational`; do not fix, do not reply, but mention the inspected risk in the user briefing if it affected prioritization. |
+| Bot uncertainty, question, or unverifiable warning | Mark `needs-user-question`; do not fix, do not reply, do not resolve, and ask the user before Step 4 or Step 6. |
+
+`needs-user-question` triggers include:
+
+- The bot says it cannot verify something, asks whether something is true, or
+  uses wording such as "확인 필요", "알 수 없습니다", "검토하세요",
+  "confirm", "unclear", "unknown", or a direct question mark around product,
+  migration, rollout, compatibility, or reviewer intent.
+- The suggested action depends on user/business priority, production data,
+  rollout timing, migration sequencing, or whether a follow-up should be filed.
+- The finding is plausible but the correct response is a technical explanation
+  rather than a code/doc change, and the explanation could sound like pushback.
+
+When a bot item is `needs-user-question`, show the user:
+
+```md
+Bot feedback needs a decision before I reply:
+- Source: <bot login>, <inline/review-body/top-level>, <url or id>
+- Bot said: <one-sentence Korean summary>
+- Why I am stopping: <uncertainty/question>
+- My proposed options: <fix / defer with STL / reply with rationale / ignore as informational>
+```
+
+Wait for the user decision. Until then, no reply is posted for that bot item
+and no other prepared reply batch may be posted if the unresolved bot question
+could change the batch wording, PR body, or reviewer re-request decision.
+
 ### Step 2.5: Classify each item by scope AND justification
 
 **Two axes, applied in order. A finding only reaches Step 4 if BOTH pass.**
@@ -105,9 +145,14 @@ Justification triggers (any one is enough to drop a finding out of "justified �
 
 ### Step 3: List feedback items
 
-Parse all comments into a numbered table (# | Source | File | Line | Summary | **Scope** | **Justification**). Inline = has `id` (directly repliable); suppressed = review body items.
+Parse all comments into a numbered table (# | Source | Author kind | File | Line | Summary | **Scope** | **Justification**). Inline = has `id` (directly repliable); suppressed = review body items. `Author kind` is `human`, `bot`, or `app`.
 
 The **Scope** column carries the Axis 1 bucket from Step 2.5 (`fix-now` / `defer-with-issue` / `out-of-scope` / `ambiguous`). The **Justification** column carries the Axis 2 bucket (`justified-as-rec` / `justified-fix-different` / `pushback` / `disagree`). A row only auto-proceeds to Step 4 fix queue if Scope is in-scope AND Justification is `justified-as-rec`. Any other combination requires explicit user input before fixing.
+
+For bot-authored rows, include the Step 2.1 bot classification
+(`concrete-inline`, `concrete-suppressed`, `informational`,
+`needs-user-question`). Rows marked `needs-user-question` are hard stops for
+reply posting until the user answers.
 
 "Default: all" no longer applies blindly. The default is: every `in-scope + justified-as-rec` row proceeds; every other row gets surfaced for user decision. Invoking this skill authorizes the workflow on the un-flagged rows; the flagged ones still need a per-row call.
 
@@ -200,6 +245,12 @@ Compare the new comment id set to whatever you classified in Step 2.5. Any id pr
 
 PR #253 round 1 (2026-05-07) trigger — main review at 02:01 had 0 inline; second review at 02:09 added 11 inline comments; reply was drafted off the 02:01 cache and posted at 02:44 without those 11 threads addressed; reviewer flipped to `CHANGES_REQUESTED` at 02:46. Re-fetch before posting would have caught it.
 
+**Bot-question gate:** after the mandatory re-fetch, re-run Step 2.1 on any new
+bot-authored comment or review body. If any current bot-authored item is
+`needs-user-question`, stop before posting the whole reply batch and ask the
+user. Do not post partial replies while a bot question could change the fix
+scope, PR body, suppressed summary reply, or re-request roster.
+
 **Reply discipline (same negative checklist as `shotloom-make-pr` Step 5):**
 
 - Inputs for the reply text: only the diff of your fix commit + the reviewer's specific comment. Do NOT echo the reviewer's tone or wording back; do NOT pull context from past PRs, the Linear issue body, sibling PRs, `.agent/`, or `reference.md`.
@@ -211,6 +262,16 @@ Draft a reply per resolved item:
 - **Deferred (with issue):** "Follow-up tracked as STL-NN. <rationale>"
 - **Deferred (no issue yet):** "Acknowledged — will file a follow-up before resolving."
 - **Disagreed:** "<technical rationale>"
+
+Bot-authored items use the same reply templates and same approval gate as human
+review items. Keep the reply addressed to the finding, not to the bot:
+
+- Do reply when the bot made a concrete actionable finding and the branch now
+  addresses or intentionally defers it.
+- Do not reply to informational bot summaries unless the user explicitly asks.
+- Do not reply to bot uncertainty/questions until the user has chosen the
+  intended answer. If the user chooses a rationale reply, draft it as technical
+  evidence, not as "the bot was wrong."
 
 For suppressed items, draft one review-level summary reply.
 

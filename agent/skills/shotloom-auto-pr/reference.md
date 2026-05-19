@@ -8,6 +8,48 @@ Supplementary to [SKILL.md](SKILL.md). Holds the PR review reply classification 
 
 Goal: keep PRs focused. Don't grow scope inside the current PR. Split clearly-separate work into new Linear issues. Stop and ask only when genuinely ambiguous.
 
+### 0. Bot-authored feedback policy
+
+The watcher excludes only this reactor's own GitHub user from
+`new_comments`/`new_reviews`. Other bot-authored comments and review bodies
+remain visible and must be classified by content.
+
+| Bot item type | Auto-pr action |
+|---|---|
+| Concrete inline finding with a file/path/line and fixable claim | Treat as a normal inline finding. If in-scope and justified, fix, gate, commit, push, and reply on the inline thread. |
+| Concrete review-body or suppressed finding without an inline comment id | Treat as a suppressed finding. If in-scope and justified, fix, gate, commit, push, and include it in the single review-level summary reply. |
+| PR summary / risk note with no concrete requested action | Mark informational. Do not fix or reply. Mention it only in the briefing when it affected prioritization. |
+| Bot uncertainty, question, or unverifiable warning | Mark `needs-human`. Do not fix, do not reply, do not resolve, and do not re-request based on this item. |
+
+`needs-human` triggers include:
+
+- the bot says it cannot verify something, asks a direct question, or uses
+  wording such as `confirm`, `unclear`, `unknown`, `확인 필요`,
+  `알 수 없습니다`, or `검토하세요`;
+- the response depends on production data, rollout timing, migration order,
+  business/user priority, or whether a follow-up issue should exist;
+- the technically correct response is likely a rationale or pushback rather
+  than a code/doc change.
+
+When any bot item is `needs-human`, append this block to `log.md`:
+
+```md
+### Bot feedback needs human
+
+Source: <bot login>, <inline/review-body/top-level>, <url or id>
+Summary: <one-sentence Korean summary>
+Why paused: <uncertainty/question>
+Suggested options:
+- fix in this PR: <when reasonable>
+- defer with STL: <when reasonable>
+- reply with rationale: <when reasonable>
+- ignore as informational: <when reasonable>
+```
+
+If the unresolved bot question could change the fix scope, PR body, reply
+wording, or reviewer re-request roster, stop the reply-posting part of the
+react cycle. Do not post partial replies around the unresolved question.
+
 ### 1. In-scope → auto-resolve
 
 The feedback is about code this PR already touches, or is mechanical/local enough that fixing in this PR does not grow scope.
@@ -161,6 +203,15 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 
 **`last-event.json`** (watcher writes, react reads): present only on change / terminal. `fail_checks` is an array of `{name, workflow, link}` objects — `link` is the github.com URL embedding `run_id` (and sometimes `job_id`).
 
+**`watcher.paused`** (owned by the react cycle): present only while
+`/shotloom-auto-pr react <N>` is actively handling a PR round. When present,
+`watch.sh` exits before fetching GitHub state, so the 120-second watcher loop
+cannot start overlapping reactors while edits, gates, commits, pushes, or
+review replies are in progress. The reactor removes the file on every normal,
+blocked, or handled failure exit. If a crash leaves it behind, status reports
+`alive (paused)`; inspect `react.log`, then remove the file or restart the
+watcher.
+
 **`log.md`**: append-only. Entries only on real events. No silent-tick lines.
 
 ---
@@ -169,6 +220,8 @@ Append: `## PR #<N> — <MERGED|CLOSED> <ts>` + title/branch/linear/duration/mer
 
 - launchd is **blocked** from `~/.claude/` by macOS TCC; jobs queued there silently fail to fire.
 - nohup loop survives logout but **not reboot** — re-run `start.sh <N>` after boot.
+- default polling interval is 120 seconds. Override with `start.sh <N>
+  <seconds>` only when a PR needs a quieter or more aggressive cadence.
 - Per-PR PID file in `~/.claude/ops/pr-<N>/watcher.pid` makes stop/start surgical.
 - Separate `watcher.log` / `react.log` per PR.
 - Does NOT consume Claude context tokens on no-change ticks — `claude -p` fires only when `watch.sh` detects a diff.
@@ -193,6 +246,7 @@ Footguns in the reactor's `fail_checks` → run_id/job_id resolution path (SKILL
 | `claude: command not found` in `watcher.log` | `~/.local/bin` not on PATH for the nohup process; export PATH in `start.sh` or use the absolute claude path |
 | Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback: `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap cleans the mkdir lock automatically; manual cleanup only needed after SIGKILL |
 | Watcher not firing | `kill -0 $(cat ~/.claude/ops/pr-<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick |
+| Watcher alive but no polling | Check `~/.claude/ops/pr-<N>/watcher.paused`; if stale after a crashed react cycle, inspect `react.log` and remove it. |
 | `gh` auth prompt in nohup ctx | keychain locked at login; run `gh auth status` interactively in a regular shell once |
 | Duplicate react runs | `flock` (or `mkdir` fallback) prevents concurrent ticks; overlapping `claude -p` sessions are fine — each re-diffs state.json and is idempotent |
 | Stale launchd plist from old install | `stop.sh <N>` unloads + removes any `com.shotloom.autopr.<N>.plist` left behind |

@@ -147,6 +147,34 @@ Required axes:
 10. Scope Control — PR goal fit, mixed refactor/feature/contract changes,
    reviewable size, and follow-up issue boundaries.
 
+### Phase 3a — Code sub-pass catalog
+
+After the broad Review Axes Triage, run only the sub-passes whose trigger
+matches the diff. A sub-pass is a focused review lens, not a separate skill.
+Report each triggered sub-pass separately. If a sub-pass trigger does not
+match, report it once under `N/A` rather than mentally executing it.
+
+| Sub-pass | Trigger | Must check |
+|---|---|---|
+| Core correctness | Any Rust/TS production-code diff | panic/error/result handling, partial mutation, rollback, no-op mutation, event ordering, post-state assertions, and performance hazards visible in changed hot paths. |
+| Bridge contract | Bridge DTOs, commands, events, TS mirrors, fixtures, IPC docs, or rejection codes changed | serde defaults and skipped fields, Rust DTO ↔ TS optionality, command/event/rejection matrix parity, fixture snapshots, docs parity, ADR/spec links, and omitted/default-field prose. |
+| Boundary/domain | Stage/Prop ownership, promotion/demotion, validators, loaders, or context-aware APIs changed | source/target kind validation, ownership boundary, validation context downgrade, error precedence, and whether existing persisted data can now fail. |
+| Test matrix | New or changed command handlers, validators, fallback branches, or behavior tests | rejection-path coverage, shared failure paths, skipped happy paths, rollback/no-partial-mutation tests, aggregate attribution, and tests that fail for the real bug. |
+| Asset/manifest/platform | Manifest/catalog/data-pack/assets/LFS/Node CLI/path-handling changes | manifest containment, local path leaks, asset/LFS lifecycle, source/license metadata, CI/local validator placement, and CLI entrypoint portability. |
+
+Sub-pass detail:
+
+- DTO default serialization: when Rust uses `#[serde(default)]`,
+  `skip_serializing_if`, or a bridge-visible default, verify TypeScript treats
+  omitted JSON fields as the same runtime value.
+- Command rejection matrix: enumerate every new rejection branch, shared helper
+  failure, missing entity path, and boundary conversion failure.
+- Field-set drift: inspect manual `is_empty`, metadata keys, enum string
+  mappings, docs key lists, and DTO mirrors for compile/test enforcement.
+- Input constraint parity: compare new bridge inputs against adjacent validation
+  policy. Tags, IDs, free-form JSON options, transforms, and payload fields need
+  bounds or an explicit schema-free contract.
+
 Report axes compactly. List only triggered axes with findings. If no axis adds
 a finding beyond Phases 1-2, report one line: `Review axes triage: clean`.
 Never let this phase outrank `review-rust.md`, `code-review-guideline.md`,
@@ -165,24 +193,41 @@ contradiction found at Depth 2.
 ### Phase 4 — Deep Adjacency pass (AFTER Phase 3)
 
 Run `reference.md` "Deep Adjacency Pass". This pass follows two bounded hops
-past the diff instead of broad-scanning the repo.
+past the diff instead of broad-scanning the repo. Use the same sub-pass
+grouping from Phase 3a so the report stays readable.
 
 Required checks:
 
-1. For each new or changed public type, enum variant, validation function, or
+1. Core correctness: for each new or changed public type, enum variant,
+   validation function, or
    serde field, inspect direct callers/consumers and direct load/save/import
    paths, then inspect those callers' direct contract/evidence references when
    they exist.
-2. For each new validation rejection, identify whether existing persisted data
-   can now fail. If yes, require an explicit migration/compatibility decision
-   in the PR body or a linked follow-up issue.
-3. For each new serde enum variant or bridge-visible type, check Rust serde
-   tests, TypeScript mirrors, directly related docs/specs, fixtures, and
-   diagnostic wording.
-4. For each new public helper, decide whether it has a current production
-   consumer. If not, prefer private/crate-private surface or require a named
-   follow-up issue.
-5. Report this pass separately as `Deep adjacency findings`, even when clean.
+2. Bridge contract: for each new serde enum variant or bridge-visible type,
+   check Rust serde tests, TypeScript mirrors, directly related docs/specs,
+   fixtures, diagnostic wording, IPC docs, snapshot fixtures, ADR/spec links,
+   and rejection-code catalogs.
+   Also check omitted-field/default semantics: Rust serialization,
+   TypeScript optional/nullish handling, fixtures, and docs must agree on the
+   runtime meaning.
+3. Boundary/domain: for each new validation rejection, identify whether
+   existing persisted data can now fail. If yes, require an explicit migration
+   or compatibility decision in the PR body or a linked follow-up issue. For
+   new context-aware validation paths, inspect direct public wrappers, docs
+   source-of-truth references, and production callers for silent downgrade to a
+   weaker no-context path.
+4. Test matrix: for each accepted command that mutates state, inspect emitted
+   events, selection updates, trailing sync, post-state tests, and docs for
+   observable state visibility and event ordering.
+5. Asset/manifest/platform: for each manifest/catalog/asset-list validator,
+   inspect the direct IO path consumer and require root-containment proof before
+   filesystem access. For each changed Node/TS CLI script, inspect entrypoint
+   guards and supported invocation paths for URL/native-path mismatch.
+6. Public surface drift: for each new public helper, metadata hint struct, DTO,
+   enum string mapping, or documented key list, decide whether it has a current
+   production consumer and whether field/key drift is compile-enforced,
+   test-covered, or likely to go stale.
+7. Report this pass separately as `Deep adjacency findings`, even when clean.
    Include `Depth checked: 2` unless the diff has no contract-shaped items.
 
 Triage taxonomy (both phases):

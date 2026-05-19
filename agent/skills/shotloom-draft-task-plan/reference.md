@@ -132,11 +132,20 @@ Every direct Shotloom spec includes:
 | Risk | Applies? | Evidence | Plan response | Test proof |
 |---|---|---|---|---|
 | Error source chain | yes/no | `<path>:<symbol>` | Preserve `#[source]` or state no wrapped source exists. | Assert `Error::source()` or `N/A: internal validator only`. |
-| Schema / serialization compatibility | yes/no | `<contract or serde type>` | Preserve wire shape or name protocol scope. | Round-trip, rejection, or fixture test. |
+| Schema / serialization compatibility | yes/no | `<contract or serde type>` | Preserve wire shape or name protocol scope. For Rust/TS/JSON DTOs, prove `#[serde(default)]`, `skip_serializing_if`, optional TS fields, and omitted JSON fields keep the same runtime meaning. | Round-trip, omitted-field/default test, rejection, or fixture test. |
 | Ownership / API boundary | yes/no | `<crate/module boundary>` | Keep responsibility in owner layer. | Compile/API test or `N/A: no public API change`. |
 | Partial mutation / rollback | yes/no | `<state/cache/persistence path>` | Pre-validate, rollback, or prove no persistence. | Failure-path test proving final state. |
 | Diagnostic ownership | yes/no | `<diagnostic code/source>` | Single owner for code, severity, and recoverability. | Negative test or manual repro. |
 | Local absolute path exposure | yes/no | `<doc/manifest/source/config path>` | Do not commit `/Users/...`, `/home/...`, drive-letter paths, `Downloads/`, `Desktop/`, or machine-specific checkout roots; use repo-relative paths, symbolic source names, resolvers, or private config. | `rg` proof or validator rejecting local absolute paths. |
+| Manifest path containment | yes/no | `<manifest/catalog path fields>` | Resolve candidate paths against the owning root and reject traversal, absolute path injection, and symlink/normalization escapes before IO. | Negative manifest fixture for `..`, absolute path, and root-escape cases. |
+| Command rejection matrix | yes/no | `<command/handler>` | List each rejection branch, error code, shared helper failure, and promoted/demoted boundary case. | One test per new rejection or an explicit equivalence rationale. |
+| Cross-platform CLI entrypoint | yes/no | `<node/script entrypoint>` | Avoid platform-sensitive `process.argv[1]` path equality; use `fileURLToPath(import.meta.url)` or unconditional main dispatch. | Direct script invocation proof on the supported host plus static entrypoint check. |
+| Asset/data pack lifecycle | yes/no | `<asset pack/LFS/fixture>` | Name source/license, LFS hydration expectation, local-only vs CI gate, size cost, and cleanup/update owner. | Validator/gate placement proof plus source/license metadata or `N/A: generated test fixture`. |
+| Validation context downgrade | yes/no | `<new context-aware validator/API>` | Avoid keeping an equally discoverable no-context API that silently skips new validation; deprecate, rename, restrict visibility, or document the safe caller. | Consumer grep plus test proving the context-aware path is used where required. |
+| Field-set drift | yes/no | `<metadata hint/DTO/manual matcher>` | Avoid hand-maintained field lists that can desync from structs, serde names, docs, or constants; prefer `Default`/`PartialEq`, destructuring that forces compile errors, shared constants, or exhaustive tests. | Test or compile-enforced pattern covering every field/key. |
+| Bridge docs parity | yes/no | `<IPC/contract/doc section>` | Update command matrix, payload field docs, rejection-code catalog, examples, ADR/spec links, and omitted/default-field prose for every wire change. | Doc diff plus fixture/snapshot trace. |
+| Event-state visibility | yes/no | `<command/event/state change>` | Every accepted command that changes observable state emits an event or documented trailing sync that lets consumers see the change without inference. | Event snapshot plus post-state assertion. |
+| Input constraint parity | yes/no | `<bridge input>` | Validate new free-form inputs with the same rigor as adjacent IDs, names, tags, JSON options, and payload fields; document intentionally schema-free surfaces and limits. | Negative tests or explicit contract text. |
 | Test oracle strength | yes | `<planned test>` | Say why it fails before implementation. | Failing-before/passing-after assertion target. |
 | Scope creep | yes | `<adjacent feature>` | Put in Non-Goals or Follow-Up Candidates. | `N/A: plan-boundary proof`. |
 | Reviewer objection | yes | `<likely blocking comment>` | Pre-answer with code/test/doc plan. | Covered by mapped proof row. |
@@ -230,9 +239,24 @@ Run each lens before declaring convergence:
 | Error ownership | Rejection codes, diagnostics, messages, and event order have one owning layer. |
 | Error source chain | Rust error enums preserve wrapped external errors with `#[source]`; internal validator-only errors explicitly have no source. |
 | Wire contract | Existing command and event shapes stay intact unless protocol change is in scope. |
+| DTO default serialization | For bridge-visible Rust/TS/JSON DTOs, omitted fields and serde defaults preserve the same runtime meaning across Rust serialization, TypeScript consumption, fixtures, and docs. |
 | Invariants | Staged-byte draining, cache failures, success events, identity, paths, and URI shapes do not regress. |
 | Mutation atomicity | Coupled artifact writes pre-validate or roll back so cache/persistence cannot store half-updated state. |
 | Local path privacy | Durable source, docs, manifests, tests, examples, and scripts do not commit `/Users/...`, `/home/...`, drive-letter paths, `Downloads/`, `Desktop/`, or machine-specific checkout roots. Use repo-relative paths, symbolic source names, resolvers, or private config instead. |
+| Manifest containment | Manifest/catalog/source path fields cannot escape the owning root through `..`, absolute paths, symlinks, or platform-specific normalization. |
+| Command rejection matrix | Each new or changed command handler has rejection coverage for the changed branch, shared helper failures, missing entity paths, and boundary/promotion failures. |
+| CLI entrypoint portability | Node/TS scripts dispatch correctly on supported OSes; entrypoint checks do not compare incompatible URL and native path formats. |
+| Asset pack lifecycle | Added binary fixtures, LFS pointers, generated assets, or data packs name source/license, CI/local validator placement, hydration assumptions, size impact, and owner. |
+| Boundary conversion kind | Promotion/demotion or cross-domain conversion validates the source kind, target kind, ownership boundary, and rejection diagnostic. |
+| Validation context downgrade | New context-aware validators do not leave older no-context public entrypoints that silently skip required checks; docs name the exact source of truth for each invariant. |
+| Field-set drift | Manual `is_empty`, `as_str`, metadata-key extraction, docs key lists, and DTO mirrors cannot silently miss a newly added field or serde rename. |
+| Aggregate error attribution | Tests for collected per-shot/per-entity/per-file errors assert both the inner error and the outer attribution id. |
+| Bridge docs parity | IPC docs, command/event matrices, JSON examples, rejection-code catalogs, ADR/spec links, and runtime-deferral notes match the actual Rust/TS wire contract. |
+| Event-state visibility | Success events, selection events, trailing syncs, and docs expose every observable state change in the right order. |
+| Input constraint parity | New bridge inputs do not leave tags, schema-free options, IDs, payloads, or transforms less constrained than adjacent fields without a documented reason. |
+| Error precedence | When multiple request fields are invalid, rejection order is deterministic and matches the most actionable ownership boundary. |
+| No-op mutation | Commands that set state to its current value either no-op without events or document why a full sync is intentionally emitted. |
+| Post-state assertion | Behavior tests assert durable post-state, not only success event payloads, for create/update/delete/promote/demote flows. |
 | Test evidence | Unit, integration, snapshot, fixture, manual, and negative cases map to changed behavior. |
 | Format and docs | Tables render, paths resolve, and doc targets match repo structure. |
 | Scope creep | Related features are in `Non-Goals` or `Follow-Up Candidates`. |
@@ -247,6 +271,15 @@ before running the next pass.
 | 1 | Spec author | Did the spec contain every required contract: evidence, requirements, decisions, implementation, verification, traps? |
 | 2 | Paranoid reviewer | What invariant, error path, edge case, or review objection is absent? |
 | 2a | Error-source-chain reviewer | Which planned `thiserror` variant or `map_err` branch could lose a wrapped external cause by converting it into `String`? |
+| 2b | Contract serialization reviewer | Which serde default, skipped true/false field, TS optional field, or fixture omission could invert runtime meaning? |
+| 2c | Rejection-matrix reviewer | Which command rejection, shared helper failure, missing entity, or boundary conversion path has no explicit test proof? |
+| 2d | Asset/manifest reviewer | Which committed manifest, catalog, binary fixture, LFS pointer, or generated data pack can leak local paths, escape its root, miss source/license metadata, or bypass the intended CI/local gate? |
+| 2e | CLI portability reviewer | Which Node/TS entrypoint or filesystem path check assumes one platform's path format? |
+| 2f | Validation-context reviewer | Which old public method, wrapper, doc link, or source-of-truth sentence could bypass the newly required validation context? |
+| 2g | Drift-surface reviewer | Which manual field list, key list, enum string mapping, or docs list can desync without compiler or test failure? |
+| 2h | Bridge-contract reviewer | Which command/event/rejection/doc example/ADR link is missing after the wire contract changed? |
+| 2i | State-visibility reviewer | Which accepted command changes state without an event, post-state proof, or documented trailing sync? |
+| 2j | Input-constraint reviewer | Which newly exposed input is less validated or less bounded than neighboring bridge inputs? |
 | 3 | Minimalist reviewer | What speculative API or related feature belongs outside scope? |
 | 4 | Domain reviewer | Does each spec line trace to an AC, ADR, or repo precedent? |
 

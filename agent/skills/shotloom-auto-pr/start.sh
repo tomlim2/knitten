@@ -7,7 +7,7 @@
 set -euo pipefail
 
 PR="${1:?usage: start.sh <pr-number> [interval-seconds]}"
-INTERVAL="${2:-300}"
+INTERVAL="${2:-120}"
 SKILL_DIR="$HOME/.claude/skills/shotloom-auto-pr"
 OPS_DIR="$HOME/.claude/ops/pr-$PR"
 PID_FILE="$OPS_DIR/watcher.pid"
@@ -49,3 +49,4 @@ echo "watcher started: PID $PID, interval ${INTERVAL}s"
 echo "pid file: $PID_FILE"
 echo "loop log: $LOOP_LOG"
 echo "state:    $OPS_DIR/state.json"
+echo "pause:    $OPS_DIR/watcher.paused"

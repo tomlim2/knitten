@@ -16,7 +16,7 @@ exclude-when: unreal,obsidian
 
 Split into two halves:
 
-1. **Watcher** — `watch.sh` run in a `nohup` bash sleep-loop spawned by `start.sh` (PID tracked in `~/.claude/ops/pr-<N>/watcher.pid`). Polls PR via `gh` every `INTERVAL` seconds (default 300, override `start.sh <N> 180`), diffs against `state.json`, exits silently on no-change. Claude is NOT invoked on no-change ticks. **macOS note:** launchd is blocked from `~/.claude/` by TCC, so we use `nohup` — watcher dies on reboot; re-run `start.sh` after boot.
+1. **Watcher** — `watch.sh` run in a `nohup` bash sleep-loop spawned by `start.sh` (PID tracked in `~/.claude/ops/pr-<N>/watcher.pid`). Polls PR via `gh` every `INTERVAL` seconds (default 120, override `start.sh <N> 180`), diffs against `state.json`, exits silently on no-change. Claude is NOT invoked on no-change ticks. **macOS note:** launchd is blocked from `~/.claude/` by TCC, so we use `nohup` — watcher dies on reboot; re-run `start.sh` after boot.
 2. **Reactor** — `/shotloom-auto-pr react <N>` is a headless handler the watcher fires ONLY when a real change is detected (new comment, new review, CI flipped to fail, state→MERGED/CLOSED). Reads `last-event.json`, applies fixes/replies, exits.
 
 Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing nothing.
@@ -52,7 +52,7 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
 2. Resolve PR number. If no arg: `gh pr view --json number -q .number`.
 3. `chmod +x ~/.claude/skills/shotloom-auto-pr/{watch,start,stop}.sh` if needed.
 4. Run `~/.claude/skills/shotloom-auto-pr/start.sh <N>`.
-5. `start.sh` spawns a `nohup` background loop running `watch.sh <N>` every 180s (default `INTERVAL=300` — `start.sh <N> 180` overrides).
+5. `start.sh` spawns a `nohup` background loop running `watch.sh <N>` every 120s by default (`start.sh <N> 180` overrides).
 6. Report: "watcher PID <pid> for PR #<N>. logs: ~/.claude/ops/pr-<N>/{watcher,react}.log"
 
 ## Stop workflow
@@ -67,7 +67,11 @@ for d in ~/.claude/ops/pr-*; do
   [[ -f "$d/watcher.pid" ]] || continue
   pid=$(cat "$d/watcher.pid")
   if kill -0 "$pid" 2>/dev/null; then
-    echo "PR ${d##*/pr-} watcher PID $pid alive"
+    if [[ -f "$d/watcher.paused" ]]; then
+      echo "PR ${d##*/pr-} watcher PID $pid alive (paused)"
+    else
+      echo "PR ${d##*/pr-} watcher PID $pid alive"
+    fi
   else
     echo "PR ${d##*/pr-} watcher PID $pid stale"
   fi
@@ -89,8 +93,8 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
 ```json
 {"pr": 141, "kind": "change"|"terminal", "state": "OPEN|MERGED|CLOSED",
  "sha": "...",
- "new_comments": [...],          // comment ids new since last tick, bot-authored excluded
- "new_reviews": [...],           // review ids new since last tick, bot-authored excluded
+ "new_comments": [...],          // comment ids new since last tick, self-authored excluded
+ "new_reviews": [...],           // review ids new since last tick, self-authored excluded
  "fail_checks": [{"name": "...", "workflow": "...", "link": "..."}, ...],
                                  // checks failing on this tick that count as new
                                  // (set diff against prior tick OR all current
@@ -98,6 +102,41 @@ Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-ev
  "all_fail_checks": [...]}       // current full failing-check set, same shape;
                                  // diagnostic context, NOT a trigger
 ```
+
+### React pause/resume guard
+
+At the start of every `react <N>` cycle, before any file edit, test run, commit,
+push, PR reply, or reviewer re-request, create:
+
+```bash
+OPS_DIR="$HOME/.claude/ops/pr-$ARGUMENTS"
+PAUSE_FILE="$OPS_DIR/watcher.paused"
+mkdir -p "$OPS_DIR"
+printf 'paused_at=%s\nreason=react\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$PAUSE_FILE"
+```
+
+While this file exists, `watch.sh` exits silently before fetching GitHub state.
+The watcher process remains alive, but no second reactor can start while the
+current round is editing/testing/pushing/posting replies.
+
+At every normal exit, blocked `needs-human` exit, red/ambiguous CI exit, and
+unexpected handled stop, remove the pause file:
+
+```bash
+rm -f "$PAUSE_FILE"
+```
+
+If the harness supports shell traps for the reactor orchestration, install one
+around the whole react cycle:
+
+```bash
+trap 'rm -f "$PAUSE_FILE"' EXIT
+```
+
+Do not leave a successful or blocked react cycle with `watcher.paused` still
+present. If a previous crash leaves a stale pause file, `/shotloom-auto-pr
+status` reports `alive (paused)`; inspect `~/.claude/ops/pr-<N>/react.log`, then
+delete `watcher.paused` manually or rerun `/shotloom-auto-pr start <N>`.
 
 **Trigger semantics:**
 - Dispatch CI auto-fix only on `fail_checks` (the set diff or, when the head commit moved this tick, the full current failure set re-treated as new).
@@ -171,6 +210,23 @@ Dispatch by event type:
   - red / ambiguous: log "needs human" in `log.md`, exit without comment
 
 - **`new_comments` or `new_reviews` non-empty** → review auto-respond per the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md`:
+  - **bot-authored feedback is not discarded by default** — only self-authored
+    reactor replies are excluded by the watcher. For every new bot-authored
+    comment or review body, classify it first:
+    - concrete actionable inline finding → process like a human inline finding;
+      if fixed or intentionally deferred, reply on that inline thread;
+    - concrete actionable review-body finding → process like a suppressed item
+      and include it in the single review-level summary reply;
+    - informational summary/risk note with no requested action → log as
+      informational, no fix/reply;
+    - uncertainty, question, unverifiable warning, production/migration/rollout
+      decision, or "confirm/unknown/unclear/확인 필요" style note →
+      `needs-human`: write a briefing block, do not fix, do not reply, do not
+      re-request based on that item.
+  - If any bot item is `needs-human` and could change the reply wording, PR body,
+    fix scope, or reviewer roster, stop the review-response posting for this
+    react cycle and surface it in `log.md` for the user. Do not post a partial
+    reply batch around an unresolved bot question.
   - classify in-scope / out-of-scope / ambiguous (≥9/10 only counts as ambiguous; ≤8 → pick closest interpretation)
   - **inline vs suppressed split** — every finding is either an inline comment (has `comment_id` in the `/comments` REST array) or a suppressed/review-body item (lives only inside a `/reviews` body). The two groups have different reply surfaces and must NOT be conflated:
     - **inline in-scope** → apply fix, gate commit on pattern capture, commit, push, **inline reply** via `POST /pulls/<N>/comments/<comment_id>/replies` (one per finding)
