@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-18
+updated: 2026-05-19
 owner: agent-hub
 target-date:
 ---
@@ -28,7 +28,7 @@ the task is finished.
 |------|--------|------|
 | [knitten-worktree-first.md](../plans/active/knitten-worktree-first.md) | active | Define and implement worktree-first repo isolation. |
 | [solo-pr-review-flow.md](../plans/active/solo-pr-review-flow.md) | active | Define solo PR review evidence and check-based merge flow. |
-| `auto-pr-review` | proposed | Future spec: automatically run an LLM review comment when a PR opens or updates. |
+| [auto-pr-review.md](../plans/proposed/auto-pr-review.md) | proposed | Define safe automatic LLM PR review evidence after PR creation or update. |
 
 ## Progress
 
@@ -36,10 +36,10 @@ the task is finished.
 |-------|-------|----------|
 | PR template | done | `.github/pull_request_template.md` has review evidence fields. |
 | Validation workflow | done | `.github/workflows/validate.yml` runs repository validation. |
-| Worktree-first implementation | in review | PR #3 contains starter, guard, status, installer, cleanup, and policy validation. |
+| Worktree-first implementation | done | PR #3 landed starter, guard, status, installer, cleanup, and policy validation. |
 | Lightweight branch exception | done | `agent/rules/git-defaults.md` documents the allowed scope and `scripts/worktree-guard.mjs` allows primary-checkout feature branches when configured. |
 | PR after push rule | done | `agent/rules/git-defaults.md` tells agents to open a PR after committing and pushing from a worktree-first repo. |
-| Automatic LLM PR review | future | Needs a separate spec after worktree-first lands. |
+| Automatic LLM PR review | proposed | `docs/plans/proposed/auto-pr-review.md` defines report-only review automation before any PR-visible posting. |
 
 ## Acceptance Criteria
 
