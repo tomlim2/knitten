@@ -2,7 +2,6 @@
 Authoring note:
 - Create or edit PR bodies with a temporary markdown file plus `--body-file`.
 - Do not pass markdown with backticks through shell inline body arguments.
-- Canonical template: `agent/document-templates/github/pull-request.md`.
 -->
 
 ## Summary

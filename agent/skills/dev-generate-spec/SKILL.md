@@ -8,7 +8,7 @@ Technical specification document generator for Claude Code.
 
 ## Purpose
 
-Analyzes code (plugin, module, or directory) and generates a technical specification document following the skill-owned template in `references/TECH-SPEC-TEMPLATE.md`.
+Analyzes code (plugin, module, or directory) and generates a technical specification document following `agent/document-templates/agent-hub/technical-spec.md`.
 
 **Note:** This is an agent-driven workflow skill with no standalone script. It is invoked exclusively via the `/spec` command.
 
@@ -53,7 +53,7 @@ Use Task(Explore) agent to:
 
 ### Step 3: Generate Specification
 
-Read `references/TECH-SPEC-TEMPLATE.md` and fill each section:
+Read `agent/document-templates/agent-hub/technical-spec.md` and fill each section:
 
 | Section | Source |
 |---------|--------|
@@ -85,5 +85,5 @@ Naming convention:
 ## Related Files
 
 - Command: `~/.claude/commands/spec.md`
-- Template: `references/TECH-SPEC-TEMPLATE.md`
+- Template: `agent/document-templates/agent-hub/technical-spec.md`
 - Output: `~/.claude/private/specs/`

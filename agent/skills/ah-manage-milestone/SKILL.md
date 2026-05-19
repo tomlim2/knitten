@@ -70,7 +70,7 @@ If more than one path exists, stop and report duplicate lifecycle state.
 
 1. Resolve slug and ensure the file does not already exist.
 2. Create `docs/milestones/` if missing.
-3. Write the template from [MILESTONE-TEMPLATE.md](references/MILESTONE-TEMPLATE.md).
+3. Write the template from [`agent/document-templates/agent-hub/milestone.md`](../../document-templates/agent-hub/milestone.md).
 4. Add or update the row in `docs/milestones/index.md`.
 5. Run validation.
 
@@ -175,7 +175,7 @@ For attach or detach, also run checks from
 |------|---------|
 | `SKILL.md` | operational workflow |
 | `references/MILESTONE-LIFECYCLE.md` | status, archive, and delete rules |
-| `references/MILESTONE-TEMPLATE.md` | milestone and index row templates |
+| `../../document-templates/agent-hub/milestone.md` | milestone and index row templates |
 | `references/MILESTONE-VALIDATION.md` | link, backlink, and status checks |
 
 ## Related

@@ -1,12 +1,16 @@
 ---
-title: "{CompanyName} Consulting"
-tags: [consulting, {company}]
+title: "{{COMPANY_NAME}} Consulting"
+tags:
+  - type/profile
+  - project/career
+date: {{YYYY-MM-DD}}
+source: agent
 ---
 
-# {CompanyName} - Consulting History
+# {{COMPANY_NAME}} Consulting History
 
-**Industry:** Gaming / Tech / etc.
-**Contact:** Name, role (if applicable)
+**Industry:** {{INDUSTRY}}
+**Contact:** {{NAME_AND_ROLE}}
 **Relationship:** Active / Completed / One-time
 **Total sessions:** N
 
@@ -14,11 +18,11 @@ tags: [consulting, {company}]
 
 ## Sessions
 
-### YYYY-MM-DD | {Topic Title}
+### YYYY-MM-DD | {{TOPIC_TITLE}}
 
 **Duration:** 2h
 **Format:** On-site / Remote / Async
-**Area:** UE optimization / Pipeline / Shader / etc.
+**Area:** {{AREA}}
 
 **Context:**
 Why this consulting happened. What they needed.

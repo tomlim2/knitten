@@ -20,10 +20,10 @@ Use active standards as policy. Use redirect stubs only to find the skill-owned 
 | [`policy/naming.md`](policy/naming.md) | accepted | naming a new rule, standard, command, skill, plan, or vault file |
 | [`policy/platform-adapters.md`](policy/platform-adapters.md) | accepted | classifying artifacts for multiple harnesses |
 | [`policy/principles.md`](policy/principles.md) | accepted | checking whether a pattern fits the layer model |
+| [`authoring/document-templates.md`](authoring/document-templates.md) | accepted | changing a document template or finding its canonical owner |
 | [`research/research-methodology.md`](research/research-methodology.md) | accepted | doing research |
 | [`review/review-code-unreal-cpp.md`](review/review-code-unreal-cpp.md) | accepted | reviewing UE C++ code |
 | [`review/review-code-unreal-python.md`](review/review-code-unreal-python.md) | accepted | reviewing UE Python code |
-| [`review/review-template.md`](review/review-template.md) | accepted | using the base review output template |
 | [`review/review-ux-python-gui.md`](review/review-ux-python-gui.md) | accepted | reviewing Python GUI UX |
 | [`system/repo-paths-keys.md`](system/repo-paths-keys.md) | accepted | registering repo keys or setting up a new machine |
 | [`unreal/unreal-engine-cpp.md`](unreal/unreal-engine-cpp.md) | accepted | writing UE C++ code |
@@ -49,7 +49,8 @@ Use active standards as policy. Use redirect stubs only to find the skill-owned 
 | [`obsidian/obsidian-format.md`](obsidian/obsidian-format.md) | `agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md` |
 | [`obsidian/obsidian-tag-taxonomy.md`](obsidian/obsidian-tag-taxonomy.md) | `agent/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md` |
 | [`obsidian/vault-audience.md`](obsidian/vault-audience.md) | `agent/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md` |
-| [`research/tech-spec-template.md`](research/tech-spec-template.md) | `../../skills/dev-generate-spec/references/TECH-SPEC-TEMPLATE.md` |
+| [`research/tech-spec-template.md`](research/tech-spec-template.md) | `agent/document-templates/agent-hub/technical-spec.md` |
+| [`review/review-template.md`](review/review-template.md) | `agent/document-templates/review/code-review.md` |
 | [`review/review-3d-rendering.md`](review/review-3d-rendering.md) | `agent/skills/review-audit-3d/references/REVIEW-3D-RENDERING.md` |
 | [`review/review-ai-motion.md`](review/review-ai-motion.md) | `agent/skills/review-audit-ai-motion/references/REVIEW-AI-MOTION.md` |
 | [`review/review-code-astro.md`](review/review-code-astro.md) | `agent/skills/review-audit-web/references/REVIEW-CODE-ASTRO.md` |

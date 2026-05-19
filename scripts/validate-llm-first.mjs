@@ -2677,6 +2677,286 @@ async function checkRepoPolicyConfig() {
   return { name: "repo-policy", violations };
 }
 
+function firstMarkdownHeading(text) {
+  const { body, fmLines } = stripFrontmatter(text);
+  const lines = body.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^#{1,6}\s+/.test(line)) return { line: fmLines + i + 1, text: line };
+  }
+  return null;
+}
+
+function frontmatterTagCount(text, prefix) {
+  if (!text.startsWith("---\n")) return 0;
+  const rest = text.slice(4);
+  const end = rest.indexOf("\n---\n");
+  if (end === -1) return 0;
+  const yaml = rest.slice(0, end);
+  const matches = yaml.match(new RegExp(`^\\s*-\\s*${prefix.replace("/", "\\/")}[^\\n]*`, "gm"));
+  return matches ? matches.length : 0;
+}
+
+function frontmatterTags(text) {
+  if (!text.startsWith("---\n")) return [];
+  const rest = text.slice(4);
+  const end = rest.indexOf("\n---\n");
+  if (end === -1) return [];
+  const yaml = rest.slice(0, end);
+  const tags = [];
+  for (const raw of yaml.split("\n")) {
+    const m = raw.match(/^\s*-\s*([A-Za-z0-9_/{}/-]+)\s*(?:#.*)?$/);
+    if (m) tags.push(m[1]);
+  }
+  return tags;
+}
+
+function frontmatterTagMentions(text) {
+  if (!text.startsWith("---\n")) return [];
+  const rest = text.slice(4);
+  const end = rest.indexOf("\n---\n");
+  if (end === -1) return [];
+  const yaml = rest.slice(0, end);
+  const tags = [];
+  for (const raw of yaml.split("\n")) {
+    const m = raw.match(/^\s*(?:#\s*)?-\s*([a-z][a-z0-9-]*\/(?:\{\{[A-Z0-9_]+\}\}|[a-z0-9-]+))/);
+    if (m) tags.push(m[1]);
+  }
+  return tags;
+}
+
+function lineNumberForText(text, needle) {
+  const idx = text.indexOf(needle);
+  if (idx === -1) return 1;
+  return text.slice(0, idx).split("\n").length;
+}
+
+function pushMarkdownFenceViolations(violations, file, text) {
+  const lines = text.split("\n");
+  let open = null;
+  const fenceRe = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(fenceRe);
+    if (!match) continue;
+    const marker = match[1];
+    const rest = match[2] || "";
+    if (!open) {
+      open = {
+        line: i + 1,
+        char: marker[0],
+        length: marker.length,
+      };
+      continue;
+    }
+    const trimmedRest = rest.trim();
+    if (marker[0] === open.char && marker.length >= open.length && trimmedRest === "") {
+      open = null;
+    }
+  }
+  if (open) {
+    violations.push({
+      file,
+      line: open.line,
+      message: "template has an unclosed Markdown fenced code block",
+    });
+  }
+}
+
+async function readAllowedObsidianTagAxes() {
+  const taxonomyPath = path.join(
+    AGENT_ROOT,
+    "skills",
+    "obsidian-obsidian-markdown",
+    "references",
+    "TAG-TAXONOMY.md"
+  );
+  const text = await readFile(taxonomyPath, "utf8");
+  return new Set([...text.matchAll(/^### `([^`]+\/)`/gm)].map((m) => m[1]));
+}
+
+function pushObsidianTagViolations(violations, file, text, allowedAxes) {
+  const tags = frontmatterTags(text);
+  if (tags.length > 5) {
+    violations.push({
+      file,
+      line: 1,
+      message: `Obsidian template must have at most 5 frontmatter tags (found ${tags.length})`,
+    });
+  }
+  const tagLike = [...new Set(frontmatterTagMentions(text))];
+  for (const tag of tagLike) {
+    const slash = tag.indexOf("/");
+    if (slash === -1) continue;
+    const axis = tag.slice(0, slash + 1);
+    if (!allowedAxes.has(axis)) {
+      violations.push({
+        file,
+        line: lineNumberForText(text, tag),
+        message: `Obsidian template uses unknown tag axis ${JSON.stringify(axis)}`,
+      });
+    }
+  }
+}
+
+function normalizeGithubPrTemplate(text) {
+  return text
+    .split("\n")
+    .filter((line) => !line.includes("Canonical template: `agent/document-templates/github/pull-request.md`"))
+    .join("\n")
+    .trimEnd();
+}
+
+function pushRequiredFrontmatter(violations, file, text, keys) {
+  const fm = parseFrontmatter(text);
+  if (!fm) {
+    violations.push({ file, line: 1, message: "template missing YAML frontmatter" });
+    return null;
+  }
+  for (const key of keys) {
+    if (!Object.prototype.hasOwnProperty.call(fm, key)) {
+      violations.push({ file, line: 1, message: `template frontmatter missing ${JSON.stringify(key)}` });
+    }
+  }
+  return fm;
+}
+
+async function checkDocumentTemplates() {
+  const violations = [];
+  const root = path.join(AGENT_ROOT, "document-templates");
+  const files = await walk(root, (f) => f.endsWith(".md"));
+  const allowedObsidianTagAxes = await readAllowedObsidianTagAxes();
+
+  for (const f of files) {
+    const file = rel(f);
+    const relative = path.relative(root, f);
+    const text = await readFile(f, "utf8");
+    const parts = relative.split(path.sep);
+    const group = parts[0];
+    pushMarkdownFenceViolations(violations, file, text);
+
+    if (relative === "README.md") {
+      pushRequiredFrontmatter(violations, file, text, ["status"]);
+      if (!text.includes("## Consumer Format Contract")) {
+        violations.push({ file, line: 1, message: "README must declare consumer format contract" });
+      }
+      continue;
+    }
+
+    if (group === "github") {
+      if (parseFrontmatter(text)) {
+        violations.push({ file, line: 1, message: "GitHub body template must not have YAML frontmatter" });
+      }
+      for (const heading of ["## Summary", "## Scope", "## Validation"]) {
+        if (!text.includes(heading)) {
+          violations.push({ file, line: 1, message: `GitHub body template missing ${heading}` });
+        }
+      }
+      continue;
+    }
+
+    if (group === "linear") {
+      pushRequiredFrontmatter(violations, file, text, ["status"]);
+      if (!text.includes("```markdown")) {
+        violations.push({ file, line: 1, message: "Linear template must include fenced markdown body examples" });
+      }
+      continue;
+    }
+
+    if (["obsidian", "consulting", "project"].includes(group)) {
+      pushRequiredFrontmatter(violations, file, text, ["title", "tags", "date", "source"]);
+      pushObsidianTagViolations(violations, file, text, allowedObsidianTagAxes);
+      const typeCount = frontmatterTagCount(text, "type/");
+      const projectCount = frontmatterTagCount(text, "project/");
+      if (typeCount !== 1) {
+        violations.push({ file, line: 1, message: `Obsidian template must have exactly one type/ tag (found ${typeCount})` });
+      }
+      if (projectCount !== 1) {
+        violations.push({ file, line: 1, message: `Obsidian template must have exactly one project/ tag (found ${projectCount})` });
+      }
+      const firstHeading = firstMarkdownHeading(text);
+      if (!firstHeading || !firstHeading.text.startsWith("# ")) {
+        violations.push({ file, line: firstHeading?.line || 1, message: "Obsidian template first heading must be one H1" });
+      }
+      continue;
+    }
+
+    if (group === "agent-hub") {
+      pushRequiredFrontmatter(violations, file, text, ["status"]);
+      if (!text.includes("```markdown")) {
+        violations.push({ file, line: 1, message: "agent-hub template must include fenced markdown generated-body examples" });
+      }
+      continue;
+    }
+
+    if (group === "review") {
+      pushRequiredFrontmatter(violations, file, text, ["status"]);
+      if (!text.includes("Review Output")) {
+        violations.push({ file, line: 1, message: "review template must include review output sections" });
+      }
+      continue;
+    }
+
+    violations.push({ file, line: 1, message: `unknown document template consumer group ${JSON.stringify(group)}` });
+  }
+
+  const mirror = path.join(REPO_ROOT, ".github", "pull_request_template.md");
+  const canonicalPr = path.join(root, "github", "pull-request.md");
+  if (existsSync(mirror)) {
+    const text = await readFile(mirror, "utf8");
+    if (!text.includes("agent/document-templates/github/pull-request.md")) {
+      violations.push({
+        file: ".github/pull_request_template.md",
+        line: 1,
+        message: "GitHub runtime mirror must name canonical document template",
+      });
+    }
+    if (existsSync(canonicalPr)) {
+      const canonicalText = await readFile(canonicalPr, "utf8");
+      if (normalizeGithubPrTemplate(text) !== normalizeGithubPrTemplate(canonicalText)) {
+        violations.push({
+          file: ".github/pull_request_template.md",
+          line: 1,
+          message: "GitHub runtime mirror must match canonical pull request template body",
+        });
+      }
+    }
+  } else if (existsSync(canonicalPr)) {
+    violations.push({
+      file: ".github/pull_request_template.md",
+      line: 1,
+      message: "GitHub runtime mirror is missing",
+    });
+  }
+
+  const consumerRoots = [
+    path.join(AGENT_ROOT, "skills"),
+    path.join(AGENT_ROOT, "commands"),
+    path.join(AGENT_ROOT, "standards"),
+    path.join(REPO_ROOT, ".github"),
+    path.join(REPO_ROOT, "scripts"),
+  ];
+  for (const consumerRoot of consumerRoots) {
+    const consumerFiles = await walk(consumerRoot, (f) => f.endsWith(".md") || f.endsWith(".mjs"));
+    for (const f of consumerFiles) {
+      const file = rel(f);
+      if (file === "scripts/validate-llm-first.mjs") continue;
+      const text = await readFile(f, "utf8");
+      for (const pattern of ["~/.claude/templates/", "agent/templates/"]) {
+        const idx = text.indexOf(pattern);
+        if (idx !== -1) {
+          violations.push({
+            file,
+            line: text.slice(0, idx).split("\n").length,
+            message: `legacy template path ${JSON.stringify(pattern)} must be a documented runtime mirror or removed`,
+          });
+        }
+      }
+    }
+  }
+
+  return { name: "document-templates", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
@@ -2698,6 +2978,7 @@ const CHECKS = [
   { name: "entry-documents", fn: checkEntryDocuments },
   { name: "generated-blocks", fn: checkGeneratedBlocks },
   { name: "repo-policy", fn: checkRepoPolicyConfig },
+  { name: "document-templates", fn: checkDocumentTemplates },
   { name: "markdown-links", fn: checkMarkdownLinks },
   { name: "spec-lifecycle", fn: checkSpecLifecycle },
   { name: "length-caps", fn: checkLengthCaps },

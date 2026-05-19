@@ -6,7 +6,7 @@ Company file format template, full workflow details for all 3 actions, and notes
 
 ## Company File Format
 
-@~/.claude/templates/consulting/company.md
+`agent/document-templates/consulting/company-history.md`
 
 ---
 

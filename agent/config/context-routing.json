@@ -384,6 +384,11 @@
       "contextCost": "medium"
     },
     {
+      "path": "agent/skills/ah-manage-document-template/SKILL.md",
+      "profile": "ah-authoring",
+      "contextCost": "medium"
+    },
+    {
       "path": "agent/skills/ah-review-implementation/SKILL.md",
       "profile": "ah-authoring",
       "contextCost": "medium"

@@ -2,14 +2,12 @@
 title: "{{ONE_LINE_TITLE}}"
 tags:
   - type/learning
-  - project/_cross-project
+  - project/cross-project
   # Add lang/ + lib/ when the lesson is anchored to a specific
   # language/framework. Drop both (and this comment) when not.
   - lang/{{LANG}}
   - lib/{{LIB}}
   - area/{{AREA}}
-  # tool/{{TOOL}} for tool-level lessons (codex, cmux, gh).
-  - tool/{{TOOL}}
 date: {{YYYY-MM-DD}}
 source: agent
 ---
@@ -57,9 +55,10 @@ End with at least one #rule or #gotcha inline tag in the body. These are
 the searchable anchors — don't move them to frontmatter.
 
 Tag rules:
-- type/learning + project/_cross-project required.
-- tool/ for Codex / cmux / gh lessons.
+- type/learning + project/cross-project required.
 - lang/ + lib/ when anchored to a language/framework. Both or neither.
 - area/ describes the subject (observability, hooks, performance, build, …).
+- Use sys/ or llm/ only when the lesson is anchored to a named tool or model
+  listed in the taxonomy, and drop another optional tag to stay under 5 tags.
 - Max 5 tags total — drop the least informative axis if you exceed.
 -->

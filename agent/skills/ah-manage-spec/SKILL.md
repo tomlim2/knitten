@@ -78,7 +78,7 @@ rg -n "<slug>|<main-term>" docs/plans docs/milestones docs/briefings
 ```
 
 6. Read only required evidence and selected route references.
-7. Draft using [SPEC-TEMPLATES.md](references/SPEC-TEMPLATES.md).
+7. Draft using [`agent/document-templates/agent-hub/spec.md`](../../document-templates/agent-hub/spec.md).
 8. Review the draft for missing evidence, unclear decisions, impossible
    validation, and unsafe operations.
 9. Write the spec; write intake if required.
@@ -161,7 +161,7 @@ report the exact blocker and still run `git diff --check`.
 | `SKILL.md` | operational workflow |
 | `references/SPEC-INTAKE.md` | intake artifact template and rules |
 | `references/SPEC-LIFECYCLE.md` | status/archive/delete rules |
-| `references/SPEC-TEMPLATES.md` | direct spec templates |
+| `../../document-templates/agent-hub/spec.md` | direct spec templates |
 | `references/SPEC-ROUTING.md` | route matrix and existing skill reuse |
 
 ## Related

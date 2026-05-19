@@ -19,7 +19,7 @@ Project role folders are owned by `obsidian-obsidian-markdown/references/PROJECT
 | 프로젝트 교훈 | `learning <worked\|failed\|gotcha>` | real project | `projects/<P>/learnings/<slug>.md` |
 | 횡단 교훈 (언어, 도구) | `learning <slug>` | `_cross-project` | resolver-owned `cross-learning` destination |
 | 리소스 / 토픽 (개념·API·결정·how-to) | `topic <name>` | real project or `_cross-project` | `projects/<P>/topics/<name>.md` |
-| 횡단 일지 | ❌ 없음 | — | 진짜 프로젝트 devlog 안에서 `[[_cross-project/...]]` 로 링크 |
+| 횡단 일지 | ❌ 없음 | — | 진짜 프로젝트 devlog 안에서 `[[cross-project/topics/<slug>]]` 로 링크 |
 
 ## Args
 
@@ -56,7 +56,7 @@ Read `RESOLVED_PATH` from output. If real project's folder doesn't exist → run
 
 ## Step 2 — Sub-command bodies
 
-Pick the section. Each one points at one template under `~/.claude/templates/devlog/`. Templates carry the canonical frontmatter and inline LLM fill-in instructions — read the template once before each write so frontmatter stays current.
+Pick the section. Each one points at one template under `agent/document-templates/obsidian/`. Templates carry the canonical frontmatter and inline LLM fill-in instructions — read the template once before each write so frontmatter stays current.
 
 ### `devlog` — project day log
 
@@ -82,7 +82,7 @@ Frontmatter (must match template exactly):
 
 ### `learning <worked\|failed\|gotcha>` — project learnings index
 
-Write or update a concept-first note under `learnings/<slug>.md`. Template: `templates/devlog/learnings.md`.
+Write or update a concept-first note under `learnings/<slug>.md`. Template: `agent/document-templates/obsidian/learning-index.md`.
 
 Ask in order: **Context · Problem · Solution** (worked / gotcha) **· Why it worked** (worked) **· Rule**. Every entry MUST end with `> [!abstract] Rule` callout + `#rule` inline tag — that's the takeaway anyone scanning the file reads first. Update top-level `updated:` field on every append.
 
@@ -90,15 +90,15 @@ Frontmatter: `type/learning` + `project/<P>` + `area/<A>`.
 
 ### `learning <slug>` — cross-project learning (only for `_cross-project`)
 
-One file per concept in the resolver-owned cross-learning destination. Existing convention: `learning-rust-traits.md`, `learning-claude-code-hooks.md`. Template: `templates/devlog/cross-learning.md`.
+One file per concept in the resolver-owned cross-learning destination. Existing convention: `learning-rust-traits.md`, `learning-claude-code-hooks.md`. Template: `agent/document-templates/obsidian/cross-project-learning.md`.
 
 If file exists → open for append/edit, don't overwrite. New file → write from template. Body shape: 증상 → 원인 → 검증 → 해결 (skip sections that don't apply for the kind of lesson). End with at least one `#rule` or `#gotcha` inline tag in the body.
 
-Frontmatter: `type/learning` + `project/_cross-project` + (`tool/<T>` for cmux / gh lessons, `lang/+lib/` when language-anchored, `area/<A>`).
+Frontmatter: `type/learning` + `project/cross-project` + (`tool/<T>` for cmux / gh lessons, `lang/+lib/` when language-anchored, `area/<A>`).
 
 ### `topic <name>` — resource / reference (리소스)
 
-Self-contained one-concept file: `topics/<name>.md` (kebab-case English). Template: `templates/devlog/topic.md` carries four shape options — pick one and delete the rest:
+Self-contained one-concept file: `topics/<name>.md` (kebab-case English). Template: `agent/document-templates/obsidian/topic-reference.md` carries four shape options. Default tag is `type/reference`; replace it with `type/analysis`, `type/spec`, `type/brief`, `type/note`, or `type/decision` when the selected shape requires it.
 
 | Shape | Default sections | Use for |
 |---|---|---|
@@ -109,7 +109,7 @@ Self-contained one-concept file: `topics/<name>.md` (kebab-case English). Templa
 
 Rule: only ONE shape per file. Mixing shapes is a smell — split into two topics instead.
 
-Frontmatter: `type/topic` + `project/<P>` + `area/<A>` + (optional `lang/+lib/` when code-bearing).
+Frontmatter: `type/reference` by default + `project/<P>` + `area/<A>` + (optional `lang/+lib/` when code-bearing). Replace `type/reference` with a taxonomy-approved type when the topic body is a decision, spec, brief, analysis, or note.
 
 ---
 
@@ -132,12 +132,12 @@ Inline tags (`#rule`, `#failed`, `#gotcha`) live in body callouts/footers ONLY �
 |---|---|
 | day → learning entry | `[[<P>/learnings/<slug>]]` |
 | day → topic | `[[<P>/topics/<topic>]]` |
-| anywhere → cross-project topic | `[[_cross-project/graphics#term]]` |
+| anywhere → cross-project topic | `[[cross-project/topics/graphics#term]]` |
 | cross-repo | `[[bevy-vrm/days/2026-04-13/orchestrator]]` |
 
 ### Private PRs and inline tags
 
-- Do not write private repository PR URLs in vault notes. For Shotloom, never include `github.com/CINEV/shotloom/pull/...`; write `PR 309` or a descriptive work title instead.
+- Do not write private repository PR URLs in vault notes. For Shotloom, never include a `github.com/CINEV/shotloom/pull/<number>` URL; write `PR 309` or a descriptive work title instead.
 - Do not use markdown links for private PRs. `[#309](https://github.com/CINEV/shotloom/pull/309)` leaks the private UI path and also encourages bare `#NNN` prose nearby.
 - Do not write bare numeric hash references in body prose. Use `Finding 1`, `case 2`, `item 3`, or `PR 309`; never `#1`, `#2`, or `PR #309`.
 - Before saving, scan for `github.com/CINEV/shotloom/pull/` and `(^|\s)#[A-Za-z0-9]`. Only intentional footer markers (`#rule`, `#failed`, `#gotcha`) may remain.

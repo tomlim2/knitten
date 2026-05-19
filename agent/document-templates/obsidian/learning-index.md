@@ -62,5 +62,5 @@ append-only. Each entry = one ### subsection.
   That's the takeaway anyone (incl. future-you) skim-reads first.
 - Update top-level `updated:` field on every append.
 - Cross-project learnings use the flat shape instead — see
-  agent/templates/devlog/cross-learning.md.
+  agent/document-templates/obsidian/cross-project-learning.md.
 -->

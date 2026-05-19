@@ -1,5 +1,5 @@
 ---
-description: "Route create/read/update/delete work for agent-hub shared artifacts: skills, rules, standards, commands, plans, and entry docs."
+description: "Route lifecycle work for agent-hub shared artifacts: skills, rules, standards, commands, plans, and entry docs."
 ---
 
 # ah-manage-artifact
@@ -10,7 +10,8 @@ Lifecycle router for agent-hub shared artifacts.
 
 Use this before creating, inspecting, editing, updating, deleting, renaming, or moving a shared artifact under `agent/`, root entry documents, or managed docs.
 
-This skill prevents CRUD drift across skills, rules, standards, commands, plans, and manifests.
+This skill prevents lifecycle drift across skills, rules, standards, commands,
+plans, and manifests.
 
 ## Artifact Classes
 
@@ -37,11 +38,12 @@ This skill prevents CRUD drift across skills, rules, standards, commands, plans,
 | Create command | `agent/skills/ah-make-command/SKILL.md` |
 | Create rule | `agent/skills/ah-make-rule/SKILL.md` |
 | Create standard | `agent/skills/ah-make-standard/SKILL.md` |
+| Manage document template lifecycle | `agent/skills/ah-manage-document-template/SKILL.md` |
 | Inspect patterns | `agent/skills/ah-show-patterns/SKILL.md` |
 | Browse commands | `agent/skills/ah-browse-commands/SKILL.md` |
 | Browse standards | `agent/skills/ah-browse-standards/SKILL.md` |
 
-## CRUD Decision
+## Lifecycle Decision
 
 | User intent | Action |
 |-------------|--------|

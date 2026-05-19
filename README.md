@@ -76,12 +76,12 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Skills (142)
+## Skills (143)
 
 | Category | Count |
 |----------|------:|
+| `ah-*` | 27 |
 | `shotloom-*` | 27 |
-| `ah-*` | 26 |
 | `dev-*` | 24 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
@@ -108,13 +108,13 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Standards (48)
+## Standards (49)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 | Group | Count | Files |
 |-------|------:|-------|
-| `authoring/` | 2 | `command-skill-reference.md`, `slash-commands.md` |
+| `authoring/` | 3 | `command-skill-reference.md`, `document-templates.md`, `slash-commands.md` |
 | `cinev/` | 4 | `cci-slack.md`, `cinev-character-asset-naming.md`, `cinev-git-workflow.md`, `cinev-vrm-shading.md` |
 | `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
 | `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |

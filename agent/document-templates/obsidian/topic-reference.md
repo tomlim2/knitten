@@ -1,7 +1,7 @@
 ---
 title: "{{TOPIC_TITLE}}"
 tags:
-  - type/topic
+  - type/reference
   - project/{{PROJECT}}
   - area/{{AREA}}
   # Add lang/{{LANG}} + lib/{{LIB}} when the topic is code-bearing.
@@ -48,13 +48,15 @@ Shape D — Concept explainer (one idea, prose-leaning)
 
 <!--
 Tag rules:
-- type/topic + project/{{PROJECT}} required.
+- `type/reference` + project/{{PROJECT}} required by default.
+- If the note is not a reference, replace `type/reference` with one of
+  `type/analysis`, `type/spec`, `type/brief`, `type/note`, or `type/decision`.
 - area/ recommended (game-dev / shader / web / hardware / writing / …).
 - lang/ + lib/ ONLY when code-bearing. Both or neither.
 - Max 5 tags total.
 
 Filename: kebab-case, English. Example: vrm-spring-bone.md, audio-pipeline.md.
 Cross-project topics: lives under projects/_cross-project/{{NAME}}.md
-(graphics / web3d / unreal / slack / general / …) — use project tag
-`project/_cross-project`.
+(graphics / web3d / unreal / slack / general) — use project tag
+`project/cross-project`.
 -->

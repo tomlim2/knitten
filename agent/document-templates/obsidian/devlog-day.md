@@ -54,7 +54,8 @@ LLM fill-in:
 - "커밋" / "상태" are optional. Drop entirely when empty.
 - Frontmatter: lang/lib only when the day touched code; area/ always.
   Drop the comment line itself.
-- Wikilinks use [[{{PROJECT}}/...]], never bare relative paths.
+- Wikilinks use `[[{{PROJECT}}/learnings/{{SLUG}}]]` or
+  `[[{{PROJECT}}/topics/{{SLUG}}]]`, never bare relative paths.
 - Inline tags (#rule / #failed / #gotcha) live inside callout bodies
   only — never in frontmatter.
 -->

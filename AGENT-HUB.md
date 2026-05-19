@@ -78,6 +78,7 @@ Load route-domain bodies only after a profile matches. Keep discovery in this co
 |------|---------|------|
 | `agent/skills/ah-manage-spec/SKILL.md` | `ah-authoring` | `medium` |
 | `agent/skills/ah-manage-milestone/SKILL.md` | `ah-authoring` | `medium` |
+| `agent/skills/ah-manage-document-template/SKILL.md` | `ah-authoring` | `medium` |
 | `agent/skills/ah-review-implementation/SKILL.md` | `ah-authoring` | `medium` |
 | `agent/skills/ah-route-implementation/SKILL.md` | `ah-authoring` | `low` |
 | `agent/skills/ah-route-plan/SKILL.md` | `ah-authoring` | `low` |
