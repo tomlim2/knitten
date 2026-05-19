@@ -143,6 +143,11 @@ delete `watcher.paused` manually or rerun `/shotloom-auto-pr start <N>`.
 - `all_fail_checks` exists so the reactor can show the full red surface in `log.md` without re-firing on persisted failures.
 - If `fail_checks` is empty but `all_fail_checks` is not, the change came from comments/reviews — do not enter the CI-fix branch on that tick.
 - The `link` field on each entry is the canonical lookup key for the failing run (and, when single-job, the failing job). Reactor must prefer `link` over `name` for `gh run view --log-failed --job <id>` resolution.
+- If `chatgpt-codex-connector[bot]` adds a `+1` reaction to the PR
+  description, an issue comment, or a PR review comment, the watcher requests
+  `ryumiel` as reviewer once for the newly observed reaction. This is handled
+  directly by the watcher and does not invoke the reactor on otherwise quiet
+  ticks.
 
 ### kind == "terminal" (MERGED / CLOSED)
 

@@ -63,6 +63,18 @@ REVIEW_IDS=$(gh api "repos/$REPO/pulls/$PR/reviews" \
 # instead of guessing from check name. Multi-job workflows have one check per
 # job, each with its own link, so this avoids name → run ambiguity.
 CHECKS=$(gh pr checks "$PR" --repo "$REPO" --json name,state,workflow,link 2>/dev/null || echo '[]')
+CODEX_THUMBS_UP_IDS=$(
+  {
+    echo -e "issue:$PR\thttps://api.github.com/repos/$REPO/issues/$PR/reactions"
+    gh api "repos/$REPO/issues/$PR/comments" --jq '.[] | [.id, .reactions.url] | @tsv'
+    gh api "repos/$REPO/pulls/$PR/comments" --jq '.[] | [.id, .reactions.url] | @tsv'
+  } | while IFS=$'\t' read -r target_id reactions_url; do
+    [[ -n "$target_id" && -n "$reactions_url" ]] || continue
+    gh api "$reactions_url" \
+      --jq ".[] | select(.user.login == \"chatgpt-codex-connector[bot]\" and .content == \"+1\") | \"${target_id}:\" + (.id | tostring)" \
+      2>/dev/null || true
+  done | jq -R -s -c 'split("\n") | map(select(length > 0)) | sort'
+)
 
 STATE_NOW=$(jq -r '.state' <<<"$PR_VIEW")
 SHA_NOW=$(jq -r '.headRefOid' <<<"$PR_VIEW")
@@ -76,19 +88,23 @@ if [[ ! -f "$STATE" ]]; then
   OLD_COMMENT_IDS="[]"
   OLD_REVIEW_IDS="[]"
   OLD_FAIL_CHECKS="[]"
+  OLD_CODEX_THUMBS_UP_IDS="[]"
 else
   OLD_STATE=$(jq -r '.state // "(none)"' "$STATE")
   OLD_SHA=$(jq -r '.headRefOid // ""' "$STATE")
   OLD_COMMENT_IDS=$(jq -c '.comment_ids // []' "$STATE")
   OLD_REVIEW_IDS=$(jq -c '.review_ids // []' "$STATE")
   OLD_FAIL_CHECKS=$(jq -c '.fail_checks // []' "$STATE")
+  OLD_CODEX_THUMBS_UP_IDS=$(jq -c '.codex_thumbs_up_ids // []' "$STATE")
 fi
 
 # ---- diff ----
 NEW_COMMENTS=$(jq --argjson old "$OLD_COMMENT_IDS" '. - $old' <<<"$COMMENT_IDS")
 NEW_REVIEWS=$(jq --argjson old "$OLD_REVIEW_IDS" '. - $old' <<<"$REVIEW_IDS")
+NEW_CODEX_THUMBS_UP_IDS=$(jq --argjson old "$OLD_CODEX_THUMBS_UP_IDS" '. - $old' <<<"$CODEX_THUMBS_UP_IDS")
 NEW_COMMENT_COUNT=$(jq 'length' <<<"$NEW_COMMENTS")
 NEW_REVIEW_COUNT=$(jq 'length' <<<"$NEW_REVIEWS")
+NEW_CODEX_THUMBS_UP_COUNT=$(jq 'length' <<<"$NEW_CODEX_THUMBS_UP_IDS")
 
 CHANGED=0
 REASONS=()
@@ -118,7 +134,7 @@ NEW_FAIL_CHECKS=$(jq --argjson old "$OLD_FAIL_CHECKS" \
   <<<"$FAIL_CHECKS")
 NEW_FAIL_COUNT=$(jq 'length' <<<"$NEW_FAIL_CHECKS")
 
-[[ "$STATE_NOW" != "$OLD_STATE" ]] && { CHANGED=1; REASONS+=("state:$OLD_STATE→$STATE_NOW"); }
+[[ "$STATE_NOW" != "$OLD_STATE" ]] && { CHANGED=1; REASONS+=("state:${OLD_STATE}→${STATE_NOW}"); }
 (( NEW_COMMENT_COUNT > 0 )) && { CHANGED=1; REASONS+=("+$NEW_COMMENT_COUNT comments"); }
 (( NEW_REVIEW_COUNT > 0 )) && { CHANGED=1; REASONS+=("+$NEW_REVIEW_COUNT reviews"); }
 (( NEW_FAIL_COUNT > 0 )) && { CHANGED=1; REASONS+=("newly failing: $(jq -r '[.[].name] | join(",")' <<<"$NEW_FAIL_CHECKS")"); }
@@ -131,6 +147,7 @@ jq -n \
   --argjson review_ids "$REVIEW_IDS" \
   --argjson fail_count "$FAIL_COUNT" \
   --argjson fail_checks "$FAIL_CHECKS" \
+  --argjson codex_thumbs_up_ids "$CODEX_THUMBS_UP_IDS" \
   --arg last_tick "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   '{
      pr: ($pr | tonumber),
@@ -147,8 +164,24 @@ jq -n \
      review_ids: $review_ids,
      fail_count: $fail_count,
      fail_checks: $fail_checks,
+     codex_thumbs_up_ids: $codex_thumbs_up_ids,
      last_tick: $last_tick
    }' > "$STATE"
+
+# ---- Codex thumbs-up handoff ----
+if (( NEW_CODEX_THUMBS_UP_COUNT > 0 )); then
+  {
+    echo ""
+    echo "## $(date -u +%Y-%m-%dT%H:%M:%SZ) — Codex thumbs-up detected"
+    echo "- new +1 reactions: $(jq -r 'join(",")' <<<"$NEW_CODEX_THUMBS_UP_IDS")"
+  } >> "$LOG"
+  if gh api -X POST "repos/$REPO/pulls/$PR/requested_reviewers" \
+    -f reviewers[]=ryumiel >/dev/null 2>>"$LOG"; then
+    echo "- requested reviewer: ryumiel" >> "$LOG"
+  else
+    echo "- reviewer request skipped or failed: ryumiel" >> "$LOG"
+  fi
+fi
 
 # ---- stop if terminal ----
 if [[ "$STATE_NOW" == "MERGED" || "$STATE_NOW" == "CLOSED" ]]; then
