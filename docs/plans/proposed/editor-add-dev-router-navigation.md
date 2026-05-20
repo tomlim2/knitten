@@ -112,9 +112,11 @@ of replacing the old left activity rail.
    route/nav labels and docs should distinguish Dev mode from debug functions.
    Traces to Linear AC2 and user clarification.
 8. Update docs and references (`apps/editor/README.md`, `MAP.md`,
-   `apps/editor/src/components/debug/README.md`, and ADR-0046 if needed) to
-   describe Main/Dev navigation and the current `/debug/*` Dev URL namespace.
-   Traces to Linear AC4 and repo documentation rules.
+   `apps/editor/src/components/debug/README.md`, and ADR-0046) to describe
+   Main/Dev navigation and the current `/debug/*` Dev URL namespace. ADR-0046
+   currently conflicts by naming the route only as the debug route, so this is a
+   required doc update rather than optional cleanup. Traces to Linear AC4 and
+   repo documentation rules.
 9. Tests must cover the shared navbar on both modes, Main/Dev switch behavior,
    mode-specific menu entries, `/debug/*` compatibility, and viewport mount
    stability. Traces to Linear AC4 and TypeScript review expectations.
@@ -250,8 +252,10 @@ drift, test oracle strength, reviewer objection.
 S5. Update docs/references. Adjust `apps/editor/README.md`, `MAP.md`,
 `apps/editor/src/components/debug/README.md`, and ADR-0046 wording so they
 describe Main/Dev navigation and explicitly state that `/debug/*` is the current
-Dev mode route namespace until a later rename. Requirements: 7, 8. Risk rows:
-local absolute path exposure, reviewer objection.
+Dev mode route namespace until a later rename. ADR-0046 must be updated because
+its current route contract is the authoritative source that still names only a
+debug route. Requirements: 7, 8. Risk rows: local absolute path exposure,
+reviewer objection.
 
 S6. Run focused verification, then the applicable editor gates. Requirements:
 9. Risk rows: test oracle strength.
@@ -273,6 +277,8 @@ S6. Run focused verification, then the applicable editor gates. Requirements:
   labels and docs.
 - [ ] Docs/tests describe the current Main/Dev navigation model and the later
   `/dev/*` rename boundary.
+- [ ] ADR-0046 no longer contradicts the Main/Dev navbar model while still
+  preserving `/debug/*` as the current Dev mode route namespace.
 
 ## Verification
 
