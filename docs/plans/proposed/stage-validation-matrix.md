@@ -37,13 +37,13 @@ briefing: ../../briefings/shotloom/stage-validation-matrix.md
 | Stage persisted model | `crates/shotloom-core/src/model/stage.rs::StageModel` | Partial | Persists `tags: im::Vector<String>` with no bounds helper or canonicalization function. |
 | Stage renderable options | `crates/shotloom-core/src/model/stage.rs::StageRenderable::options` | Partial | Persists free-form `serde_json::Map<String, serde_json::Value>` with no byte-size or depth bound. |
 | Stage reference validation | `crates/shotloom-core/src/model/shot.rs::validate_stage_refs_inner` | Already Done / Adjacent | Validates duplicate Stage ids, active-stage refs, element/renderable ids, renderable refs, and renderable asset kind when catalog context exists. Keep this reference validator separate from new tag/options content validation. |
-| Stage content validation | `crates/shotloom-core/src/model/stage.rs` or `crates/shotloom-core/src/model/validate.rs` | Missing | No typed Stage content validator exists for tags, display names, or renderable options. |
+| Stage content validation | `crates/shotloom-core/src/model/stage.rs` or `crates/shotloom-core/src/model/validate.rs` | Missing | No typed Stage content validator exists for tags, Stage/StageElement display names, or renderable options. |
 | Bundle validation aggregation | `crates/shotloom-core/src/model/bundle.rs::BundleModel::validate` and `crates/shotloom-core/src/model/validate.rs` | Already Done / Extension target | Collects per-shot validation errors and projects validation failures into diagnostics. New Stage tag/options validation should attach to this path without bypassing existing attribution. |
 | Bridge rejection docs | `docs/ipc/bridge-contract.md` §13A.2 | Partial | Maps invalid tags and oversized/deep renderable options to `INVALID_STAGE_PAYLOAD`, but still says concrete options bounds will land with the runtime handler PR. |
 | Stage DTO docs | `docs/ipc/bridge-contract.md` §22A.2 | Partial | Describes bounded `options` maps but does not name the concrete 8192-byte / depth-8 limits. |
 | Bundle format docs | `docs/specs/bundle-format.md` §11.1, §17, §18.3 | Partial | Documents additive `stages` compatibility and Stage reference validation, but not tag/options compatibility or load-failure behavior for bad persisted Stage bounds. |
 | Stage entity spec | `docs/specs/stage-entity-model.md` | Partial | Defines Stage responsibilities, roles, representation kinds, and provenance, but not authored Stage tag canonicalization or options bounds. |
-| Core display-name validation | `crates/shotloom-core/src/model/mod.rs::validate_display_name` | Already Done / Reuse | Existing display-name validation should remain the owner for Stage display-name failures and bridge `INVALID_DISPLAY_NAME`. |
+| Core display-name validation | `crates/shotloom-core/src/model/mod.rs::validate_display_name` | Already Done / Reuse | Existing display-name validation should remain the owner for Stage and StageElement display-name failures and bridge `INVALID_DISPLAY_NAME`. |
 | Bridge wire contract | `crates/shotloom-core/src/bridge/mod.rs`, `apps/editor/src/bridge/types.ts` | Already Done / Do not change | Stage command/event/rejection-code vocabulary landed before this task; STL-492 must reuse `INVALID_STAGE_PAYLOAD` rather than adding a new code unless the user expands scope. |
 | Fixture load-gate pattern | `crates/shotloom-core/tests/fixtures/README.md` and `tests/bundle_fixtures.rs` | Already Done / Optional proof | Existing malformed bundle fixtures prove load-stage attribution. Use this only if direct validator tests do not prove persisted-shot attribution clearly enough. |
 
@@ -104,17 +104,19 @@ locks that matrix first.
    - Trace: STL-492 tag AC and command rejection matrix.
    - Stage: S1, S2.
    - Verification: V1, V3.
-4. Validate Stage display names through the existing
+4. Validate Stage and StageElement display names through the existing
    `validate_display_name` helper; do not create a Stage-specific display-name
-   grammar or rejection code. Persisted Stage display names must already equal
-   the helper's normalized output; command handlers may normalize before
-   writing.
+   grammar or rejection code. Persisted Stage and StageElement display names
+   must already equal the helper's normalized output; command handlers may
+   normalize before writing.
    - Trace: STL-492 display-name AC and `docs/ipc/bridge-contract.md` §13A.2.
    - Stage: S2.
    - Verification: V4.
 5. Validate `StageRenderable.options` by serialized JSON byte length and
    nesting depth, with empty maps accepted and arrays/objects counted toward
-   depth deterministically.
+   depth deterministically. The root options map has depth 1; scalar top-level
+   values remain depth 1; each object or array child increments depth by 1; a
+   payload whose measured depth is 9 is rejected.
    - Trace: STL-492 options AC.
    - Stage: S1, S2.
    - Verification: V2, V3.
@@ -160,9 +162,9 @@ locks that matrix first.
 |---|---|---|---|---|---|
 | Stage tags canonicalize by trim, de-duplicate by exact canonical value, preserve case and first-seen order. | `[" main ", "main", "Main"]` canonicalizes to `["main", "Main"]`; persisted `[" main "]` fails because it is not canonical. | String-only persisted values; no path or IO boundary. | Empty canonical tag fails before canonical-form mismatch; canonical-form mismatch fails before count overflow. | Core helper and bundle validation. | Unit test for helper plus bundle validation test. |
 | Stage tags are capped at 32 canonical tags and 128 UTF-8 bytes per tag. | 33 unique canonical tags; one 129-byte tag. | Byte count uses UTF-8 length, not character count. | Per-tag byte failure beats total-count failure when the offending tag appears before count overflow; otherwise count failure is deterministic after canonicalization. | Core validation and IPC docs. | Focused validation tests with exact error variant. |
-| Stage display names reuse `validate_display_name`. | Empty, overlong, or non-canonical persisted Stage display name. | Existing display-name grammar is the only owner; persisted values must equal the helper's normalized output. | Display-name failure is reported as display-name validation, not `InvalidStagePayload`, at the core layer. Bridge command mapping remains `INVALID_DISPLAY_NAME`. | Core validation plus bridge docs. | Test asserts display-name error variant or conversion path. |
+| Stage and StageElement display names reuse `validate_display_name`. | Empty, overlong, or non-canonical persisted Stage or StageElement display name. | Existing display-name grammar is the only owner; persisted values must equal the helper's normalized output. | Display-name failure is reported as display-name validation, not `InvalidStagePayload`, at the core layer. Bridge command mapping remains `INVALID_DISPLAY_NAME`. | Core validation plus bridge docs. | Test asserts display-name error variant or conversion path. |
 | StageRenderable options are capped at 8192 serialized JSON bytes. | Options map whose serialized JSON exceeds 8192 bytes. | Serialized byte length is computed from deterministic JSON value serialization; no filesystem root involved. | Byte-size failure is reported independently from depth when the depth is within bound. | Core validation and IPC docs. | Focused options-size test. |
-| StageRenderable options depth is capped at 8. | Nested object/array value depth 9. | Objects and arrays both increase depth; scalar leaves do not. | Depth failure is reported independently from byte-size when the payload stays under 8192 bytes. | Core validation and IPC docs. | Focused options-depth test. |
+| StageRenderable options depth is capped at 8. | Nested object/array value depth 9. | Root options map depth is 1; objects and arrays both increase depth; scalar leaves do not. | Depth failure is reported independently from byte-size when the payload stays under 8192 bytes. | Core validation and IPC docs. | Focused options-depth test. |
 | Bad persisted Stage data blocks bundle load. | Shot JSON containing present Stage data with over-limit tags/options. | Missing `stages` and `active_stage_id` remain default-compatible; present invalid data is not truncated. | Schema/version failures still precede model validation; Stage reference validation runs before Stage content validation so dangling refs are reported before tag/options details. | `BundleModel::validate_stage_content` / load-check path. | Direct bundle validation attribution test; add malformed fixture only if direct test cannot prove attribution. |
 | Bridge command payload violations keep `INVALID_STAGE_PAYLOAD`. | Future STL-479 `update_stage` with invalid tags; `replace_stage_renderable` with oversized options. | Bridge rejection code vocabulary stays unchanged. | Specific generic failures still win where applicable: bad display name -> `INVALID_DISPLAY_NAME`, bad transform -> `NON_FINITE_TRANSFORM`, missing asset -> `ASSET_NOT_FOUND`. | IPC docs and later handler tests. | Docs parity plus STL-479 handler tests as follow-up. |
 
@@ -174,7 +176,7 @@ locks that matrix first.
 | Schema / serialization compatibility | yes | `ShotModel.stages` is persisted and defaulted; `StageRenderable.options` is persisted free-form today. | Missing `stages` remains compatible; present invalid Stage data becomes load-blocking by current validation policy; no schema version bump or automatic truncation. | Legacy omitted-field test remains green; invalid present-data test fails validation. |
 | Ownership / API boundary | yes | Stage model validation belongs in `shotloom-core`; bridge command handlers belong to STL-479. | Add core validation and docs only; do not implement engine command handlers. | Diff has no lifecycle/edit handler implementation. |
 | Partial mutation / rollback | no for STL-492, yes for sibling consumption | This PR validates static model state and docs; no command mutates Stage plus event state. | Name STL-479 as the mutation consumer; keep rollback tests out of this PR except documenting rejection mapping. | N/A for this PR; STL-479 must assert rollback/event order. |
-| Diagnostic ownership | yes | `CommandRejectionCode::InvalidStagePayload` is the existing bridge owner for invalid tags/options. | Do not add new bridge code; core validation owns typed details, bridge maps payload violations to existing code. | Core tests assert validation detail; docs assert bridge code mapping. |
+| Diagnostic ownership | yes | `CommandRejectionCode::InvalidStagePayload` is the existing bridge owner for invalid tags/options, while bundle diagnostics project model validation into named diagnostic codes. | Do not add new bridge code; core validation owns typed details, bridge maps payload violations to existing code. Add a separate Stage content diagnostic projection so tag/options/display-name failures do not masquerade as Stage reference failures. | Core tests assert validation detail and a representative `stage_content` diagnostic; docs assert bridge code mapping. |
 | Local absolute path exposure | no | Planned edits are repo docs and Rust tests with no local asset manifests. | Do not add `/Users`, `/home`, `Desktop`, `Downloads`, or machine checkout paths. | `rg` scan before PR if fixture/doc examples are added. |
 | Manifest path containment | no | No manifest/catalog path field or asset URI resolver changes. | Keep path containment out of scope. | N/A. |
 | Command rejection matrix | yes | `docs/ipc/bridge-contract.md` §13A.2 lists Stage rejection codes. | Keep invalid tags/options under `INVALID_STAGE_PAYLOAD`; document precedence for display names, transforms, assets, and bundle validation. | Docs diff plus future STL-479 handler tests; no new rejection code fixtures in STL-492. |
@@ -322,19 +324,22 @@ drift, Test oracle strength.
 Requirements: R4, R6. Risk rows: Schema / serialization compatibility,
 Validation context downgrade, Diagnostic ownership.
 
-- Add `ShotModel::validate_stage_content` for Stage display names, canonical
-  persisted tags, and renderable options. Keep it independent from
+- Add `ShotModel::validate_stage_content` for Stage and StageElement display
+  names, canonical persisted tags, and renderable options. Keep it independent from
   `validate_stage_refs`.
 - Add `BundleModel::validate_stage_content` and call it from
   `BundleModel::validate` after `validate_stage_refs`, preserving current
   higher-level error precedence before Stage content details.
 - Preserve no-catalog versus catalog-context semantics for asset-reference
   validation by leaving `validate_stage_refs` focused on references only.
-- Reuse `validate_display_name` for Stage display names and ensure its failure
-  remains distinguishable from tag/options payload failures.
+- Reuse `validate_display_name` for Stage and StageElement display names and
+  ensure its failure remains distinguishable from tag/options payload failures.
 - Add `ShotValidationError::StageContent` or an equivalent typed variant so
   diagnostics can identify the containing shot and, where useful,
   stage/renderable ids without collapsing detail into `StageReferenceError`.
+- Add or extend diagnostic projection so Stage content failures use a distinct
+  diagnostic code, for example `stage_content`, with enough related-id/detail
+  context to identify the affected stage and renderable/tag/display-name field.
 
 ### S3 - Update Durable Documentation
 
@@ -369,8 +374,9 @@ attribution, Schema / serialization compatibility.
   - 129-byte canonical tag rejection,
   - accepted empty options,
   - options over 8192 bytes rejection,
-  - options depth 9 rejection,
-  - invalid or non-canonical Stage display name reuse,
+  - options depth 9 rejection using the root-depth-1 rule,
+  - invalid or non-canonical Stage and StageElement display name reuse,
+  - representative Stage content diagnostic code and context,
   - validation error `source()` intentionally absent.
 - Add bundle validation attribution coverage for invalid persisted Stage data.
 - Add a malformed fixture only if direct bundle validation tests cannot prove
@@ -409,7 +415,8 @@ Requirements: all. Risk rows: Local absolute path exposure, Bridge docs parity.
       preserves case, and preserves first-seen order.
 - [ ] Invalid Stage tags and oversized/deep StageRenderable options fail core
       validation with typed details.
-- [ ] Stage display names reuse the existing display-name validator.
+- [ ] Stage and StageElement display names reuse the existing display-name
+      validator.
 - [ ] Bundle validation rejects present invalid Stage data through a separate
       Stage content validation step and preserves compatibility for omitted
       Stage fields.
@@ -429,8 +436,8 @@ Requirements: all. Risk rows: Local absolute path exposure, Bridge docs parity.
 | V1 | Stage tags canonicalize and reject non-canonical/empty/too-many/oversized values. | Focused `shotloom-core` unit tests under Stage validation. |
 | V2 | StageRenderable options accept empty maps and reject over-8192-byte or depth-9 values. | Focused options validator tests. |
 | V3 | Bundle validation invokes separate Stage reference and Stage content validation steps for present Stage data. | `cargo test -p shotloom-core --lib validate_stage` or exact focused test name. |
-| V4 | Stage display names reuse existing display-name validation. | Focused test proving invalid display name returns the display-name validation path. |
-| V5 | Invalid persisted Stage data is attributed to the containing shot. | Bundle validation test or malformed persisted shot fixture test. |
+| V4 | Stage and StageElement display names reuse existing display-name validation. | Focused test proving invalid display name returns the display-name validation path. |
+| V5 | Invalid persisted Stage data is attributed to the containing shot and projected as Stage content rather than Stage reference diagnostics. | Bundle validation test or malformed persisted shot fixture test; representative diagnostic-code assertion. |
 | V6 | Bridge rejection matrix remains stable. | IPC doc review: invalid tags/options -> `INVALID_STAGE_PAYLOAD`; display name -> `INVALID_DISPLAY_NAME`; transform -> `NON_FINITE_TRANSFORM`; asset -> `ASSET_NOT_FOUND`; post-mutation validation -> `BUNDLE_VALIDATION_FAILED`. |
 | V7 | Durable docs agree on bounds and compatibility. | `node scripts/validate-doc-paths.mjs` plus manual cross-check of the three docs. |
 
