@@ -31,7 +31,7 @@ different row shapes and produce incompatible migration batches.
 | Define canonical storage. | Canonical inventory data path is `agent/config/artifact-inventory.json`. |
 | Define schema. | Schema path is `agent/config/artifact-inventory.schema.json`. |
 | Preserve row links. | `skill` rows and `extraction-item` rows use stable parent links. |
-| Match thin-skill boundary. | Skill body shape, extraction fields, and content kinds match `thin-skill-guide-boundary`. |
+| Match thin-skill boundary. | Skill size, kind, split-readiness, extraction fields, and content kinds match `thin-skill-guide-boundary`. |
 | Block premature migration. | Physical moves stay out of scope until generated inventory rows are reviewed. |
 
 ## Batch A Non-Goals
@@ -94,9 +94,11 @@ different row shapes and produce incompatible migration batches.
 
 | Field | Values |
 |-------|--------|
-| `body-shape` | `thin`, `mixed`, `guide-heavy`, `reference-heavy`, or `unknown`. |
+| `skill-size` | `tiny`, `small`, `medium`, `large`, or `huge`. |
+| `skill-kind` | `workflow-only`, `workflow-with-notes`, `guide-heavy`, `reference-heavy`, `mixed-heavy`, or `unknown`. |
 | `core-skill-role` | `bootstrap`, `router`, `lifecycle`, `domain`, `repo-specific`, or `none`. |
 | `extraction-count` | Integer count of linked extraction item rows. |
+| `split-readiness` | `none`, `low`, `ready`, or `blocked`. |
 
 ### Extraction Item Row Fields
 
@@ -127,7 +129,7 @@ different row shapes and produce incompatible migration batches.
 | Batch | Action | Output |
 |-------|--------|--------|
 | A | Add schema contract. | `agent/config/artifact-inventory.schema.json` parses and matches this spec. |
-| B | Add generator script. | `agent/config/artifact-inventory.json` is generated from tracked files. |
+| B | Add generator script. | `agent/config/artifact-inventory.json` is generated from repo files. |
 | C | Add pilot classification rows. | At least five representative skills have skill rows and extraction item rows. |
 | D | Add fail-only validator checks. | Validator catches invalid enum values, duplicate ids, missing parents, and extraction-count mismatches. |
 | E | Review generated inventory. | Rows are accepted or blocked before migration specs use them. |
@@ -159,8 +161,8 @@ different row shapes and produce incompatible migration batches.
 - [x] `dependencies` has a machine-readable array encoding.
 - [x] The milestone links this active spec.
 - [x] `thin-skill-guide-boundary` points to this spec as the inventory schema owner.
-- [ ] Generator creates `agent/config/artifact-inventory.json`.
-- [ ] Pilot classification covers at least five representative skills.
+- [x] Generator creates `agent/config/artifact-inventory.json`.
+- [x] Pilot classification covers at least five representative skills.
 - [ ] Validator checks enforce row ids, parent links, enum values, and extraction counts.
 
 ## Open Decisions

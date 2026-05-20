@@ -58,10 +58,10 @@ copying everything into the core repository.
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
-| Inventory and classification | active | Schema contract exists; generator and row population are next. |
+| Inventory and classification | active | Schema contract, generated inventory output, and five-skill pilot classification exist; validator checks are next. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | active | Inventory schema contract exists; generator and pilot classification are next. |
+| Thin skill / guide boundary | active | Five-skill pilot classification exists; pilot extraction is next. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |
@@ -110,7 +110,7 @@ Inventory supports linked row types:
 | Row type | Meaning |
 |----------|---------|
 | `artifact` | Non-skill artifact or skill-independent artifact row. |
-| `skill` | Skill file row with body-shape and extraction summary fields. |
+| `skill` | Skill file row with LLM-friendly size, kind, split-readiness, and extraction summary fields. |
 | `extraction-item` | Candidate content piece extracted from a skill row. |
 
 Common fields:
@@ -133,9 +133,11 @@ Skill row fields:
 
 | Field | Meaning |
 |-------|---------|
-| Body shape | `thin`, `mixed`, `guide-heavy`, `reference-heavy`, or `unknown`. |
+| Skill size | `tiny`, `small`, `medium`, `large`, or `huge`. |
+| Skill kind | `workflow-only`, `workflow-with-notes`, `guide-heavy`, `reference-heavy`, `mixed-heavy`, or `unknown`. |
 | Core skill role | `bootstrap`, `router`, `lifecycle`, `domain`, `repo-specific`, or `none`. |
 | Extraction count | Count of linked `extraction-item` rows. |
+| Split readiness | `none`, `low`, `ready`, or `blocked`. |
 
 Extraction item row fields:
 

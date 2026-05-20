@@ -129,7 +129,7 @@
         },
         {
           "type": "object",
-          "required": ["row-type", "body-shape", "core-skill-role", "extraction-count"],
+          "required": ["row-type", "skill-size", "skill-kind", "core-skill-role", "extraction-count", "split-readiness"],
           "properties": {
             "row-type": {
               "const": "skill"
@@ -137,8 +137,11 @@
             "artifact-type": {
               "const": "skill"
             },
-            "body-shape": {
-              "enum": ["thin", "mixed", "guide-heavy", "reference-heavy", "unknown"]
+            "skill-size": {
+              "enum": ["tiny", "small", "medium", "large", "huge"]
+            },
+            "skill-kind": {
+              "enum": ["workflow-only", "workflow-with-notes", "guide-heavy", "reference-heavy", "mixed-heavy", "unknown"]
             },
             "core-skill-role": {
               "enum": ["bootstrap", "router", "lifecycle", "domain", "repo-specific", "none"]
@@ -146,6 +149,9 @@
             "extraction-count": {
               "type": "integer",
               "minimum": 0
+            },
+            "split-readiness": {
+              "enum": ["none", "low", "ready", "blocked"]
             }
           }
         }

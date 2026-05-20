@@ -31,7 +31,7 @@ later classification work can generate rows without chat history.
 | Type | Path or source | Reason |
 |------|----------------|--------|
 | file | `docs/milestones/agent-artifact-pack-system.md` | Names the inventory spec and required row types. |
-| file | `docs/plans/active/thin-skill-guide-boundary.md` | Defines skill rows, extraction item rows, and body-shape rules. |
+| file | `docs/plans/active/thin-skill-guide-boundary.md` | Defines skill rows, extraction item rows, and skill size/kind/readiness rules. |
 | file | `docs/plans/completed/artifact-pack-vocabulary.md` | Owns artifact type and pack vocabulary. |
 | file | `agent/config/README.md` | Owns config registry and schema placement rules. |
 | file | `agent/config/repo-policy.schema.json` | Existing JSON schema placement pattern. |

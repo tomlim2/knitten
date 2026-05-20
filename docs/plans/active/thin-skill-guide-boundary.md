@@ -270,9 +270,11 @@ Skill row fields:
 
 | Field | Values |
 |-------|--------|
-| `body-shape` | `thin`, `mixed`, `guide-heavy`, `reference-heavy`, `unknown` |
+| `skill-size` | `tiny`, `small`, `medium`, `large`, `huge` |
+| `skill-kind` | `workflow-only`, `workflow-with-notes`, `guide-heavy`, `reference-heavy`, `mixed-heavy`, `unknown` |
 | `core-skill-role` | `bootstrap`, `router`, `lifecycle`, `domain`, `repo-specific`, `none` |
 | `extraction-count` | integer count of extraction item rows for this skill |
+| `split-readiness` | `none`, `low`, `ready`, `blocked` |
 
 Extraction item row fields:
 
@@ -299,23 +301,35 @@ Row identity rules:
 | extraction count | skill `extraction-count` must equal linked extraction item rows |
 | base fields | extraction item rows fill the common row fields independently; do not infer privacy, owner, destination, or dependencies from the parent skill |
 
-Body-shape classification:
+Skill-size classification:
 
 | Value | Deterministic rule |
 |-------|--------------------|
-| `thin` | `extraction-count` is `0`, and the skill body contains only purpose, inputs or modes, workflow, validation, report, and related sections. |
-| `mixed` | `extraction-count` is `1` or `2`, and the executable workflow remains usable after those extraction items move. |
-| `guide-heavy` | `extraction-count` is `3` or more, and at least one extraction item has `content-kind` `judgment`, `naming-policy`, `lifecycle-policy`, or `output-body`. |
-| `reference-heavy` | `extraction-count` is `3` or more, and every extraction item has `content-kind` `example` or `domain-reference`. |
-| `unknown` | required fields are missing or the skill cannot be classified after one complete file read. |
+| `tiny` | 80 lines or fewer. |
+| `small` | 81-160 lines. |
+| `medium` | 161-260 lines. |
+| `large` | 261-400 lines. |
+| `huge` | More than 400 lines. |
 
-If multiple body-shape rules match, choose in this order:
+Skill-kind classification:
 
-1. `reference-heavy`
-2. `guide-heavy`
-3. `mixed`
-4. `thin`
-5. `unknown`
+| Value | Deterministic rule |
+|-------|--------------------|
+| `workflow-only` | Execution workflow only, with no extraction candidates. |
+| `workflow-with-notes` | Workflow plus one or two small notes or reference candidates. |
+| `guide-heavy` | Three or more extraction candidates, including judgment, policy, or rubric material. |
+| `reference-heavy` | Three or more extraction candidates, mostly examples or domain reference material. |
+| `mixed-heavy` | Three or more extraction candidates with no dominant guide/reference character. |
+| `unknown` | Required fields are missing or the skill cannot be classified after one complete file read. |
+
+Split-readiness classification:
+
+| Value | Deterministic rule |
+|-------|--------------------|
+| `none` | No extraction candidates. |
+| `low` | One extraction candidate with a known target. |
+| `ready` | Two or more extraction candidates with known targets. |
+| `blocked` | At least one extraction candidate has no target home yet. |
 
 Extraction target matrix:
 
@@ -378,7 +392,7 @@ Potential checks:
 | inventory schema | fail invalid enum values, duplicate row ids, missing parent links, and extraction-count mismatches |
 | context manifest | fail undeclared standard/rule references in pilot skills |
 | template ownership | fail `output-body` rows without `artifact-subkind: document-template` and a valid `target-path` |
-| extraction coverage | fail `guide-heavy` or `reference-heavy` skills with no extraction item rows |
+| extraction coverage | fail `guide-heavy`, `reference-heavy`, or `mixed-heavy` skills with no extraction item rows |
 | route quality metrics | fail pilot reports that exceed decision-quality pass gates |
 | authoring gate | fail new high-cost skills without routing metadata, context manifest, or explicit exemption |
 
@@ -407,29 +421,32 @@ Potential checks:
    artifact inventory contract in `artifact-inventory-classification`.
 2. Done: Define the machine-readable inventory source and schema paths in
    `artifact-inventory-classification`.
-3. Pending: Update any inventory generator or template created by
+3. Done: Add the initial inventory generator and generated JSON output through
    `artifact-inventory-classification`.
-4. Pending: Validate that every skill can be classified without reading chat
-   history.
+4. Pending: Validate pilot skill classifications without reading chat history.
 
 ### Batch D: Pilot Classification
 
-Start this batch only after Batch C is complete.
+Done: initial generated inventory covers 5 representative skills:
+`ah-manage-spec`, `ah-route-plan`, `shotloom-review-before-pr`,
+`obsidian-obsidian-markdown`, and `hatch-pet`.
 
-1. Select 5 skills from different families:
+1. Done: Select 5 skills from different families:
    - one `ah-*` lifecycle skill;
    - one router skill;
    - one Shotloom review skill;
    - one Obsidian skill;
    - one domain-heavy skill.
-2. Classify each skill row by `body-shape`, `core-skill-role`, and
-   `extraction-count`.
-3. Add extraction item rows for each source section that can leave the skill.
-4. Record blockers where no existing target home fits.
+2. Done: Classify each skill row by `skill-size`, `skill-kind`,
+   `core-skill-role`, `extraction-count`, and `split-readiness`.
+3. Done: Add extraction item rows for source sections that can leave the pilot
+   skills.
+4. Pending: Review blockers where no existing target home fits.
 
 ### Batch E: Pilot Extraction
 
-1. Pick one low-risk `mixed` or `guide-heavy` skill.
+1. Pick one low-risk `workflow-with-notes`, `guide-heavy`, or
+   `reference-heavy` skill with `split-readiness: ready`.
 2. Move durable guidance to the selected target home.
 3. Record before/after decision-quality metrics.
 4. Keep the skill executable through frontmatter, required reads, workflow, and
@@ -515,6 +532,6 @@ rg -l "^domains:|^repo-keys:|^task-types:|^work-modes:" agent/skills/*/SKILL.md 
 | Decision | Default |
 |----------|---------|
 | Is `guide` a first-class artifact type? | Defer to artifact-pack manifest design. |
-| First pilot skill | Choose after inventory shows a low-risk `mixed` skill. |
+| First pilot skill | Choose after inventory shows a low-risk ready skill. |
 | Skill size budget | Use existing high-cost routing thresholds until extraction data exists. |
 | Core or pack placement | Defer to `core-artifact-boundary` and pack classification. |
