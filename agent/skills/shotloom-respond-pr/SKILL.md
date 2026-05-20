@@ -108,10 +108,16 @@ Apply the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md`:
 |---|---|---|---|
 | **in-scope — fix now** | route to Axis 2 (justification) | apply fix if Axis 2 passes | "Fixed in `<sha>`." |
 | **in-scope — defer with follow-up** (large but legitimate scope inside this PR's domain) | route to Axis 2 (justification) | acknowledge, file STL-NN via `/shotloom-linear-create-issue` | "Follow-up tracked as STL-NN." |
-| **out-of-scope** (different subsystem / unrelated concern) | surface to user as "needs separate issue"; do NOT fix, do NOT reply, do NOT resolve thread | skip | (no reply) |
+| **out-of-scope nit — follow-up issue** (P3/nit/optional/non-blocking, different subsystem, valid standalone concern) | verify the concern is real, file or reuse STL-NN assigned to me via `/shotloom-linear-create-issue` | no code fix in this PR | "Follow-up tracked as STL-NN; I will handle it outside this PR." |
+| **out-of-scope non-nit** (different subsystem / unrelated concern, not marked nit or optional) | surface to user as "needs separate issue"; do NOT fix, do NOT reply, do NOT resolve thread | skip | (no reply) |
 | **ambiguous (≥9/10)** | surface to user for routing decision; do NOT fix, do NOT reply, do NOT resolve | skip until user decides | (no reply) |
 
-**Key distinction:** "out-of-scope" and "defer-with-issue" both involve filing a Linear ticket, but they differ on whether to reply on this PR. Out-of-scope = the comment shouldn't have been on this PR at all → no reply, surface separately to user. Defer-with-issue = legitimate concern inside the PR's domain that's too large to land here → reply with STL-NN link so the reviewer sees the trail. Step 7 only governs the in-scope rows.
+**Key distinction:** `defer-with-issue` is inside the PR's domain but too large
+to land here. `out-of-scope nit` is outside the PR's domain but small,
+optional, and valid enough to track. Both require an assigned STL-NN before
+reply.
+`out-of-scope non-nit` gets surfaced to the user and receives no PR reply until
+the user chooses a route. Step 7 governs every row that receives a reply.
 
 Ambiguity scoring: ≤8 = pick best interpretation and proceed; ≥9 = surface.
 
@@ -147,7 +153,14 @@ Justification triggers (any one is enough to drop a finding out of "justified �
 
 Parse all comments into a numbered table (# | Source | Author kind | File | Line | Summary | **Scope** | **Justification**). Inline = has `id` (directly repliable); suppressed = review body items. `Author kind` is `human`, `bot`, or `app`.
 
-The **Scope** column carries the Axis 1 bucket from Step 2.5 (`fix-now` / `defer-with-issue` / `out-of-scope` / `ambiguous`). The **Justification** column carries the Axis 2 bucket (`justified-as-rec` / `justified-fix-different` / `pushback` / `disagree`). A row only auto-proceeds to Step 4 fix queue if Scope is in-scope AND Justification is `justified-as-rec`. Any other combination requires explicit user input before fixing.
+The **Scope** column carries the Axis 1 bucket from Step 2.5 (`fix-now` /
+`defer-with-issue` / `out-of-scope-nit` / `out-of-scope-non-nit` /
+`ambiguous`). The **Justification** column carries the Axis 2 bucket
+(`justified-as-rec` / `justified-fix-different` / `pushback` / `disagree`). A
+row only auto-proceeds to Step 4 fix queue if Scope is in-scope AND
+Justification is `justified-as-rec`. `out-of-scope-nit` proceeds only to
+Linear follow-up creation and reply drafting. Any other combination requires
+explicit user input before fixing or replying.
 
 For bot-authored rows, include the Step 2.1 bot classification
 (`concrete-inline`, `concrete-suppressed`, `informational`,
@@ -173,6 +186,7 @@ For each finding routed here from Step 2.5 / Step 3:
    - **Valid concern, justified as recommended** → implement the fix exactly as recommended
    - **Valid concern, justified differently** → apply the user-agreed fix (Step 2.5 Axis 2 already surfaced this); reply text cites the rule and explains the divergence from the recommendation
    - **Design concern / large scope** → acknowledge, defer to STL-NN
+   - **Out-of-scope nit** → file or reuse an STL-NN assigned to me, do not change code, draft a follow-up reply with the STL number
    - **Pushback / disagree** → prepare explanation for reply citing the rule (or the reason the cited rule doesn't apply)
 4. Apply the fix (also PR description + docs if implied).
 5. Briefly report each change, including the justification verdict (`as-rec` / `differently — <reason>` / `pushback` / `disagree`).
@@ -260,8 +274,12 @@ scope, PR body, suppressed summary reply, or re-request roster.
 Draft a reply per resolved item:
 - **Fixed:** "Fixed in <sha-short>. <brief description>"
 - **Deferred (with issue):** "Follow-up tracked as STL-NN. <rationale>"
+- **Out-of-scope nit:** "Follow-up tracked as STL-NN; I will handle it outside this PR."
 - **Deferred (no issue yet):** "Acknowledged — will file a follow-up before resolving."
 - **Disagreed:** "<technical rationale>"
+
+Do not use `Deferred (no issue yet)` for `out-of-scope-nit`. Create or reuse
+the assigned STL issue before drafting that reply.
 
 Bot-authored items use the same reply templates and same approval gate as human
 review items. Keep the reply addressed to the finding, not to the bot:
@@ -351,6 +369,7 @@ Use this exactly once per cycle even when there are multiple suppressed items �
 
 - **Fixed** (default) → reply posted in Step 6, thread stays open for reviewer to resolve.
 - **Deferred with Linear issue filed** → reply posted with STL-NN link, thread stays open.
+- **Out-of-scope nit with Linear issue filed** → reply posted with STL-NN link, thread stays open.
 - **Deferred with no issue yet** → file via `/shotloom-linear-create-issue` first, post reply, thread stays open.
 - **Disagreed** → reply posted, thread stays open (never resolve your own disagreement).
 - **Ambiguous** → no reply, no resolve.
@@ -422,7 +441,10 @@ Purpose: give the user the *shape* of the round-trip so they can decide what it 
 
 Purpose: give the user an **auditable Korean record** of "what was said to me and what I said back" without them having to open the GitHub thread.
 
-For every finding addressed in this response-pr cycle (both `fix` and `keep-as-is` rows from Step 2.5; skip `out-of-scope` and `ambiguous` rows since those have no reply):
+For every finding addressed in this response-pr cycle (both `fix` and
+`keep-as-is` rows from Step 2.5, including `out-of-scope-nit` rows with STL
+replies; skip `out-of-scope-non-nit` and `ambiguous` rows since those have no
+reply):
 
 - **리뷰어 원문 완역:** full Korean translation of the reviewer comment, verbatim. Preserve structure — P-level tag, bold title, reasoning, `Recommendation:` line.
 - **내 리플라이 완역:** full Korean translation of the English reply that was (or will be) posted inline on GitHub. Do not summarize — translate the reply as posted.
@@ -467,6 +489,8 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 - **Repo-specific rule wins.** `~/.claude/rules/shotloom.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `~/.claude/rules/git-defaults.md` is supplementary — it applies only where shotloom-git.md does not override.
 - **Reply inline on each individual review comment**, NOT top-level PR comment (per `rules/git-defaults.md`).
 - **Suppressed items** — evaluate honestly; OK to defer scope-exceeding work.
+- **Out-of-scope nits** — create or reuse an STL issue assigned to me, include
+  the STL number in the reply, and say it is handled outside this PR.
 - **Commit message** — conventional, imperative, ≤80 char subject, counted before commit (per `docs/guidelines/commit-guideline.md` in the shotloom repo).
 - **No Co-Authored-By line.**
 
