@@ -18,6 +18,8 @@ System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossa
 
 Shared rules, standards, skills, and commands are binding repository conventions for Codex unless they depend on another harness's runtime features.
 
+When a user names a shared skill or the task matches one, read `agent/skills/<name>/SKILL.md` directly even if the Codex runtime does not list it in the native available-skills block.
+
 If a shared instruction uses another harness's mechanics, translate the intent into Codex behavior and follow higher-priority Codex platform instructions.
 
 If frontmatter declares another platform, treat the artifact as reference unless the user asks about that platform or the task edits that artifact.

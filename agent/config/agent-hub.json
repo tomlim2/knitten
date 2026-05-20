@@ -37,6 +37,7 @@
         "docs": "docs",
         "rules": "agent/rules",
         "standards": "agent/standards",
+        "skills": "agent/skills",
         "commands": "agent/commands"
       }
     },

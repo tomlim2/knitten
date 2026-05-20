@@ -24,6 +24,19 @@ Execute the script in dry-run mode to see the proposed changes without altering 
 node scripts/link-harnesses.mjs --dry-run
 ```
 
+For one harness only:
+
+```bash
+node scripts/link-harnesses.mjs --dry-run --harness codex
+```
+
+Check the dry-run output before asking to proceed:
+
+- Link-based harnesses must show `rules`, `standards`, `skills`, and `commands` mappings.
+- Existing harness-owned directories and hidden children, such as `~/.codex/skills/.system`, must be preserved; the installer syncs visible directory entries instead of replacing the whole directory.
+- Missing required mappings are install blockers; fix `agent/config/agent-hub.json` first.
+- Run `node scripts/validate-llm-first.mjs` after manifest edits.
+
 Show the output to the user and explicitly ask: **"Do you want to proceed and apply these changes?"**
 
 ### 3. Apply the Changes
@@ -31,6 +44,12 @@ Only if the user replies affirmatively (e.g., "yes", "proceed", "do it"), run th
 
 ```bash
 node scripts/link-harnesses.mjs
+```
+
+For one harness only:
+
+```bash
+node scripts/link-harnesses.mjs --harness codex
 ```
 
 ## How it works

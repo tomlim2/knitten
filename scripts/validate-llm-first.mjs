@@ -1329,6 +1329,8 @@ function collectManifestStrings(value, out = []) {
   return out;
 }
 
+const REQUIRED_SYMLINK_LAYER_MAPPINGS = ["rules", "standards", "skills", "commands"];
+
 async function checkAgentHubManifest() {
   const violations = [];
   const file = "agent/config/agent-hub.json";
@@ -1400,6 +1402,18 @@ async function checkAgentHubManifest() {
         line: 1,
         message: `entry document table missing harness ${harness.displayName}`,
       });
+    }
+    if (harness.linkMethod === "symlink") {
+      const mappings = harness.mappings || {};
+      for (const layerId of REQUIRED_SYMLINK_LAYER_MAPPINGS) {
+        if ((manifest.sharedLayers || []).some((layer) => layer.id === layerId) && !mappings[layerId]) {
+          violations.push({
+            file,
+            line: 1,
+            message: `harness ${harness.id} missing required mapping ${layerId} -> agent/${layerId}`,
+          });
+        }
+      }
     }
   }
 

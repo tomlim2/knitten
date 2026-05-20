@@ -26,6 +26,21 @@ Never manually copy files from the durable source to a deploy target. Always lin
 
 When a harness natively supports reading external paths via configuration (like `pi` via `settings.json`), **Native Config** is preferred over symlinking. 
 
+## Required Shared-Layer Coverage
+
+For every link-based harness, `agent/config/agent-hub.json` `mappings` must include the operator-facing shared layers:
+
+| Mapping | Source |
+|---------|--------|
+| `rules` | `agent/rules` |
+| `standards` | `agent/standards` |
+| `skills` | `agent/skills` |
+| `commands` | `agent/commands` |
+
+Omitting one of these mappings is an install blocker. Fix the registry before running the installer, then validate with `node scripts/validate-llm-first.mjs`.
+
+When a deploy target directory already exists, installers must preserve harness-owned children and sync mapped entries inside it. Hidden children are harness-owned by default. Example: do not replace `~/.codex/skills` as a whole, and do not overwrite `~/.codex/skills/.system`.
+
 ## Harness Registry
 
 All supported harnesses must be registered in `agent/config/agent-hub.json` under the `harnesses` array. The registry dictates:
