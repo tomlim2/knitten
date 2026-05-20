@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-18
+updated: 2026-05-20
 owner: agent-hub
 target-date:
 ---
@@ -21,6 +21,7 @@ copying everything into the core repository.
 | Core boundary | Define which rules, validators, routes, and lifecycle tools stay in Knitten core. |
 | Artifact vocabulary | Define `agent artifact`, `artifact type`, `artifact pack`, `artifact manifest`, and `artifact resolver`. |
 | Core/external split | Define which artifacts remain in Knitten core and which move to an external artifact repository. |
+| Skill/guide boundary | Define what remains in thin executable skills and what moves to standards, guides, references, templates, or validators. |
 | Inventory and classification | Produce a complete artifact inventory before any move. |
 | Pack manifest | Define how an external artifact pack declares skills, rules, standards, commands, dependencies, and repo scope. |
 | Migration plan | Move eligible skills, commands, rules, and standards into artifact packs without breaking current routing. |
@@ -29,6 +30,7 @@ copying everything into the core repository.
 | Install and link flow | Link local artifact pack folders or repos into the active harness without hardcoded user paths. |
 | Compatibility | Keep old paths, aliases, or deprecation mappings until pack routing is proven. |
 | Validation and release gates | Check manifest shape, naming, duplicate exports, missing paths, routing conflicts, public-safety, and release readiness. |
+| LLM decision quality | Reduce wrong route selection, duplicate policy conflicts, and accidental domain-context loading. |
 
 ## Specs
 
@@ -38,6 +40,7 @@ copying everything into the core repository.
 | `artifact-inventory-classification` | proposed | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
 | `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
+| [thin-skill-guide-boundary.md](../plans/proposed/thin-skill-guide-boundary.md) | proposed | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
 | `artifact-pack-manifest-contract` | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
@@ -58,6 +61,7 @@ copying everything into the core repository.
 | Inventory and classification | not started | Must produce the canonical artifact inventory before any move. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
+| Thin skill / guide boundary | proposed | Must define the rule for reducing skill bodies before inventory classification. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |
@@ -71,8 +75,9 @@ copying everything into the core repository.
 
 1. Knitten has a documented core/artifact-pack boundary.
 2. External artifact packs can declare their exported artifacts through one manifest.
-3. Every existing skill, command, rule, and standard is classified as core,
-   external pack, deprecated, or migrate-later.
+3. Every existing skill, command, rule, and standard has a staged
+   classification: `core-candidate`, `pack-candidate`, `deprecated`,
+   `migrate-later`, or `undecided`.
 4. A new artifact repository migration plan defines order, compatibility shims,
    validation, rollback, and cleanup.
 5. Pack artifacts can be routed without duplicating them into Knitten core.
@@ -82,22 +87,77 @@ copying everything into the core repository.
 9. A public-safe example artifact pack proves the pack contract end to end.
 10. Compatibility shims have documented removal criteria before any old path is
     deleted.
+11. Skill bodies have a documented boundary: executable workflow stays in
+    skills; durable judgment, examples, contracts, and format policy move to
+    standards, guides, references, templates, or validators.
+12. Pack discovery improves LLM decision quality by exposing compact route
+    metadata before loading skill, reference, template, or domain bodies.
+13. Pilot migrations record decision-quality metrics: candidate count, loaded
+    skill bodies, loaded context bytes, must-not-load violations, canonical
+    owner conflicts, and secondary route count.
 
 ## Inventory Contract
 
 The first migration artifact is an inventory table. No physical artifact move
 starts before this inventory is generated and reviewed.
 
+The canonical inventory is machine-readable. Markdown tables are validated
+views. The `artifact-inventory-classification` spec owns the exact storage path
+and file format.
+
+Inventory supports linked row types:
+
+| Row type | Meaning |
+|----------|---------|
+| `artifact` | Non-skill artifact or skill-independent artifact row. |
+| `skill` | Skill file row with body-shape and extraction summary fields. |
+| `extraction-item` | Candidate content piece extracted from a skill row. |
+
+Common fields:
+
 | Field | Meaning |
 |-------|---------|
+| Row ID | Stable unique id. |
+| Row type | `artifact`, `skill`, or `extraction-item`. |
 | Artifact path | Current tracked path. |
 | Artifact type | `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim`. |
 | Owner domain | Core, repo, company, personal, domain, or experiment owner. |
 | Privacy risk | `public-safe`, `needs-scrub`, `private-only`, or `unknown`. |
 | Dependencies | Other artifacts, scripts, config files, or harness assumptions. |
-| Proposed destination | `knitten-core`, `knitten-private-pack`, domain pack, deprecated, or migrate-later. |
+| Proposed destination | `knitten-core`, `knitten-private-pack`, domain pack, deprecated, migrate-later, or undecided. |
 | Compatibility need | Alias, shim, redirect, old path mapping, or none. |
 | Review state | pending, accepted, blocked, or moved. |
+
+Skill row fields:
+
+| Field | Meaning |
+|-------|---------|
+| Body shape | `thin`, `mixed`, `guide-heavy`, `reference-heavy`, or `unknown`. |
+| Core skill role | `bootstrap`, `router`, `lifecycle`, `domain`, `repo-specific`, or `none`. |
+| Extraction count | Count of linked `extraction-item` rows. |
+
+Extraction item row fields:
+
+| Field | Meaning |
+|-------|---------|
+| Parent row ID | Row ID of the source skill. |
+| Extraction ID | Stable id unique within the parent skill. |
+| Source section | Exact heading or line anchor in the source skill. |
+| Content kind | `judgment`, `example`, `output-body`, `naming-policy`, `lifecycle-policy`, `domain-reference`, or `machine-checkable-contract`. |
+| Artifact subkind | `guide`, `reference`, `document-template`, `validator-check`, `rubric`, `example`, or `none`. |
+| Target path | Planned path or `undecided`. |
+| Required at runtime | `yes`, `no`, or `unknown`. |
+| Validation needed | `yes`, `no`, or `unknown`. |
+
+Classification stages:
+
+| Stage | Meaning |
+|-------|---------|
+| `undecided` | Inventory has facts but no placement decision. |
+| `core-candidate` | Candidate for core; final decision belongs to `core-artifact-boundary`. |
+| `pack-candidate` | Candidate for an artifact pack; final pack belongs to manifest and migration specs. |
+| `deprecated` | Candidate for removal after compatibility checks. |
+| `migrate-later` | Keep in place until a blocking spec or dependency lands. |
 
 ## Boundary Criteria
 
@@ -108,10 +168,31 @@ starts before this inventory is generated and reviewed.
 | Artifact vocabulary, manifest schema, resolver, and installer. | Design, media, UE, Shotloom, Obsidian, tutoring, drink, and other optional domains. |
 | Safety rules for git, PR, worktrees, permissions, and config. | Large reference catalogs that are only useful when that pack is selected. |
 | Minimal bootstrap skills for spec, milestone, and artifact-pack management. | Experimental or high-churn artifacts. |
+| Thin skills that route, sequence, and validate a task. | Long judgment rubrics, examples, format contracts, and domain guides. |
 
 Artifacts that are required to install, validate, route, or repair artifact
 packs stay in core. Artifacts that only become relevant after a domain or repo
 is selected move out.
+
+LLM decision quality rule:
+
+| If artifact content can cause | Then |
+|-------------------------------|------|
+| wrong route selection | keep only route metadata exposed before selection |
+| duplicate policy precedence | move policy to one canonical standard or validator |
+| example-led workflow drift | move examples to references or templates |
+| unrelated domain context loading | require repo key, route domain, work mode, or user wording before loading |
+
+Decision-quality gates:
+
+| Metric | Pass gate |
+|--------|-----------|
+| pre-route candidate count | `<= 5` and one primary route |
+| pre-route skill body count | `<= 1` router body |
+| loaded context bytes | `<= context-profile.maxBytes` |
+| must-not-load violations | `0` |
+| canonical owner conflicts | `0` |
+| secondary route count | `<= 2`, each with evidence |
 
 ## Compatibility And Deprecation
 
@@ -138,7 +219,7 @@ eventually becomes a private artifact pack plus integration overlay.
 | 4. Private pack conversion | Private artifact pack monorepo plus local integration overlay. | Public core framework and release surface. | Private workflows run as `knitten-core` plus `knitten` pack manifests. |
 | 5. Pack-stabilized operation | Private pack and incubator for unreleased artifacts. | Stable public core that can consume packs through manifests. | Compatibility links are removed and resolver paths are stable. |
 
-`knitten` should not be treated as public core after Stage 4. From that point,
+Do not treat `knitten` as public core after Stage 4. From that point,
 new core work is promoted into `knitten-core`; new private/domain work stays in
 `knitten` or moves to a domain artifact pack.
 
@@ -169,7 +250,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Phase | Goal |
 |-------|------|
 | Inventory | Produce a complete list of current skills, commands, rules, and standards with owner, domain, risk, and dependencies. |
-| Classification | Mark each artifact as `core`, `external-pack`, `deprecated`, or `migrate-later`. |
+| Classification | Mark each artifact as `core-candidate`, `pack-candidate`, `deprecated`, `migrate-later`, or `undecided`. |
 | Repository setup | Create the artifact repository and its initial manifest, README, validator config, and worktree policy. |
 | Pilot pack | Move one low-risk pack first and keep compatibility links or router aliases. |
 | Router update | Teach Knitten core to discover the artifact repo and resolve pack artifacts. |
@@ -196,6 +277,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Decision | Default |
 |----------|---------|
 | First spec | Start with `artifact-pack-vocabulary`, then `core-artifact-boundary`. |
+| Thin skill boundary | Define before inventory classification so every skill row can be classified by the same rule. |
 | Pack storage | Support local folders and git worktrees first; remote registries later. |
 | Artifact types | Skills, commands, rules, and standards. |
 | Harness support | Preserve Codex/Claude adapters instead of binding the architecture to one harness. |
@@ -212,6 +294,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 |---------|--------|
 | Artifact vocabulary is not accepted. | Manifest and resolver specs can drift. |
 | Inventory is missing. | File moves would be guesswork. |
+| Thin skill / guide boundary is missing. | Skill reduction decisions would be inconsistent during classification. |
 | Public-safety scrub gates are not defined. | `knitten-core` cannot be safely exposed. |
 | License and versioning decisions are open. | Public release cannot complete. |
 

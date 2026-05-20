@@ -134,6 +134,23 @@ The spec must answer four questions before any implementation stage appears:
 | What is locked? | Decisions, rejected alternatives, non-goals, invariants, and ownership. |
 | How is it proven? | Verification gates, manual repro, and failure-path evidence. |
 
+If the spec adds or changes a validator, manifest, package script, file IO path,
+asset importer, or path resolver, add a `Validator Contract Matrix` before
+implementation stages:
+
+| Row | Required content |
+|---|---|
+| Contract claim | What the validator/script promises to accept or reject. |
+| Negative fixture | Minimal bad input that must fail before implementation. |
+| Boundary rule | Root containment, absolute-path policy, traversal handling, and symlink stance when relevant. |
+| Error order | Which diagnostic appears first for the bad input. |
+| Enforcement surface | CI workflow, local-only command, or README-documented exclusion with reason. |
+| Regression proof | Test or command that fails before the fix and passes after it. |
+
+Use `path.relative`-style root containment for new relative path checks unless
+the spec names a stronger existing Shotloom helper. Do not use string-prefix
+containment alone for sibling-path safety.
+
 Apply the specialized clauses in [reference.md](reference.md) for coupled
 artifact atomicity, Rust fixture shape, error-source-chain proof, Linear
 Briefing, and Risk Map.

@@ -138,6 +138,7 @@ Run more rounds with a different stance each time. Useful stances:
 | Test owner | Would tests fail before implementation and pass after? |
 | Docs/spec owner | Are docs required, and are non-goals explicit? |
 | Release/cache owner | Does it invalidate cache/state/user-visible behavior correctly? |
+| Validator contract owner | For validators, manifests, package scripts, file IO, asset importers, or path resolvers: does the spec define contract claims, negative fixtures, root containment, error order, enforcement surface, and regression proof? |
 
 After each round:
 
@@ -160,6 +161,10 @@ Before landing, verify:
   current review state, and planning consequence.
 - It has numbered requirements that trace to Linear AC, ADR, repo precedent, or
   user clarification.
+- If it adds or changes a validator, manifest, package script, file IO path,
+  asset importer, or path resolver, it has a `Validator Contract Matrix` with
+  contract claim, negative fixture, boundary rule, error order, enforcement
+  surface, and regression proof.
 - It has `## Risk Map` with rows for error source chain, schema compatibility,
   ownership/API boundary, partial mutation/rollback, diagnostic ownership, test
   oracle strength, scope creep, and reviewer objection.
@@ -200,6 +205,9 @@ Before landing, verify:
   covered by tests.
 - Every applicable Risk Map row has evidence, plan response, and test proof.
   Any `N/A` must include a concrete rationale.
+- New relative path containment uses `path.relative`-style containment or a
+  named stronger existing Shotloom helper. String-prefix-only root checks are
+  a `P2` floor failure.
 - It has an explicit one-PR suitability judgment, either in summary, decisions,
   non-goals, or implementation stages.
 - `## Implementation Spec` starts with baseline re-check or includes one.

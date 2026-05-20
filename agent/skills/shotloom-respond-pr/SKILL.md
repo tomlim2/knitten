@@ -281,6 +281,24 @@ Also draft the **reviewer re-request roster** for Step 8 right now, so the user 
 Re-request from: @reviewer1, @reviewer2  (rationale: CHANGES_REQUESTED resolved | review round complete)
 ```
 
+#### Bot-only review branch (mandatory — reply-only)
+
+If every current inline/review-body finding in this response cycle came from a bot reviewer, set `RESPOND_PR_SKIP_RE_REQUEST=1` and leave `RESPOND_PR_RESOLVE_THREADS` unset.
+
+Bot reviewer test:
+
+- Treat a login ending in `[bot]` as bot-authored.
+- If any actionable finding came from a non-bot login, do not use this branch.
+- If a human reviewer is in `reviewRequests`, do not use this branch.
+
+Default action in this branch:
+
+- Show reply drafts only.
+- Tell the user: `Bot-only review round: reply only; no resolve; no re-request.`
+- Wait for explicit user approval before posting.
+- After approval, post inline replies and suppressed-item review reply if needed.
+- Skip Step 7 and Step 8.
+
 #### APPROVED-state branch (mandatory — do NOT default to bundled re-request)
 
 Inspect cached PR review state before bundling the re-request with the reply drafts:
@@ -292,7 +310,7 @@ LATEST_REVIEW_STATE=$(jq -r '[.[] | select(.state != "COMMENTED")] | sort_by(.su
 
 When `DECISION == "APPROVED"` OR `LATEST_REVIEW_STATE == "APPROVED"` AND every addressed finding from Step 2.5 is non-blocking (P3 nit, or reviewer body explicitly says "non-blocking" / "optional" / "author's call"), do NOT silently bundle the re-request into the Step 6 batch. Re-requesting an already-APPROVED reviewer for optional nits is courtesy ping noise that the reviewer didn't ask for.
 
-The **default action** in this branch is **reply + resolve, NO re-request** — the cycle closes from the author side because the reviewer has already approved and the addressed nits don't need a second look. Resolving the threads signals "I addressed your optional notes; nothing else needed from you." This is the only scenario where this skill resolves threads (cf. Step 7's general no-resolve policy — APPROVED + non-blocking is the documented exception, not a rewrite of the rule).
+The **default action** in this branch is **reply + resolve, NO re-request** — the cycle closes from the author side because the reviewer has already approved and the addressed nits don't need a second look. Resolving the threads signals "I addressed your optional notes; nothing else needed from you." This is the only scenario where this skill resolves threads, except that the bot-only review branch above always stays reply-only and never resolves threads.
 
 Present a **three-way choice** to the user, in addition to the standard reply-batch approval:
 
@@ -337,7 +355,7 @@ Use this exactly once per cycle even when there are multiple suppressed items �
 - **Disagreed** → reply posted, thread stays open (never resolve your own disagreement).
 - **Ambiguous** → no reply, no resolve.
 
-**Exception — APPROVED-state branch (`RESPOND_PR_RESOLVE_THREADS=1` set in Step 6):** when the reviewer has already APPROVED the PR and the addressed findings were all non-blocking nits the reviewer marked optional, the skill DOES resolve every thread it just replied to. Rationale: the reviewer pre-acknowledged in the APPROVE that they don't need to re-confirm these notes; leaving threads open after the cycle closes accumulates UI noise on the next round-trip without giving the reviewer any signal they want. The author closes the threads on behalf of the closed cycle.
+**Exception — APPROVED-state branch (`RESPOND_PR_RESOLVE_THREADS=1` set in Step 6):** when the reviewer has already APPROVED the PR and the addressed findings were all non-blocking nits the reviewer marked optional, the skill DOES resolve every thread it just replied to. Rationale: the reviewer pre-acknowledged in the APPROVE that they don't need to re-confirm these notes; leaving threads open after the cycle closes accumulates UI noise on the next round-trip without giving the reviewer any signal they want. The author closes the threads on behalf of the closed cycle. Bot-only review rounds never set this flag.
 
 When the flag is set, run the graphql sequence:
 
@@ -350,7 +368,7 @@ The graphql queries live in `reference.md` § "Step 7 — graphql thread-resolut
 
 ### Step 8: Re-request review (after replies posted, conditional)
 
-Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply, EXCEPT when the Step 6 APPROVED-state branch fired and the user picked `reply-only` (which sets `RESPOND_PR_SKIP_RE_REQUEST=1`). **Approval was already collected in Step 6's batch** — do not prompt the user again here.
+Re-request is the signal that "I'm done with this round; please re-review." It runs whenever Step 6 posted at least one reply, EXCEPT when Step 6 set `RESPOND_PR_SKIP_RE_REQUEST=1`. The bot-only review branch sets that flag. The APPROVED-state branch sets that flag when the user picked `reply-only`. **Approval was already collected in Step 6's batch** — do not prompt the user again here.
 
 1. Identify reviewers to re-request from the cache files Step 2 saved. The two files have different shapes — view is an object, reviews is an array — so jq filters MUST run against the matching file. Mixing them in one `jq … fileA fileB` invocation crashes with `Cannot index array with string "reviewRequests"`.
 
@@ -379,7 +397,7 @@ Re-request is the signal that "I'm done with this round; please re-review." It r
    ```
 3. Do **not** post a top-level "ready for re-review" comment — the re-request is the signal.
 
-**Skip Step 8 only when:** no replies were posted in Step 6, OR user passed `--no-rerequest`, OR the Step 6 APPROVED-state branch fired and the user picked `reply-only` (`RESPOND_PR_SKIP_RE_REQUEST=1`).
+**Skip Step 8 only when:** no replies were posted in Step 6, OR user passed `--no-rerequest`, OR Step 6 set `RESPOND_PR_SKIP_RE_REQUEST=1` via the bot-only review branch or APPROVED-state `reply-only` choice.
 
 ### Step 9: Report final summary
 

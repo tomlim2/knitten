@@ -144,7 +144,7 @@ Dispatch one read-only Explore subagent.
 
 | Field | Value |
 |---|---|
-| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + U + J + code sub-passes + review axes + deep adjacency` |
+| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + V + U + J + code sub-passes + review axes + deep adjacency` |
 | `prompt` | Read `~/.claude/skills/shotloom-review-code/SKILL.md` Step 3 and pass it verbatim with `<worktree>` and `<branch>` substituted. |
 
 Render the report verbatim under:
