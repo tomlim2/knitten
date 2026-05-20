@@ -129,6 +129,12 @@ The prior PR #360 already proved one broad implementation, but it mixed lifecycl
 
    Rejected alternatives: always creating the directory layout in STL-479; ignoring an already-landed facade; editing module paths just to match the old PR #360 file.
 
+7. **This is one PR only if it stays lifecycle/edit plus required validation.**
+
+   Rationale: the slice replaces one placeholder behavior family with model-only lifecycle/edit handlers and their focused tests. It remains reviewable because wire shape, promote/demote provenance, handler layout, UI, and runtime hydration are excluded.
+
+   Rejected alternatives: merging STL-479 with STL-480 provenance, STL-477 layout, or STL-481 hardening; creating separate PRs for every lifecycle command when the shared rollback/event helper is the main invariant.
+
 ## Non-Goals
 
 - No bridge command, event, DTO, rejection-code, fixture schema, or TypeScript mirror redesign.
@@ -140,6 +146,16 @@ The prior PR #360 already proved one broad implementation, but it mixed lifecycl
 - No legacy background-prop migration or removal.
 - No dependency, ADR, CI, hook, or workspace script changes.
 - No broad handler directory split unless the base already provides the split.
+
+## Validator Contract Matrix
+
+This matrix applies only if the implementation base does not already contain the Stage tag and renderable-options validators needed by STL-479.
+
+| Contract claim | Negative fixture | Boundary rule | Error order | Enforcement surface | Regression proof |
+|---|---|---|---|---|---|
+| Stage tags are display-name-like labels: trim/normalize through the existing display-name validator, preserve order, and reject more than the Stage tag cap. | `create_stage` with one control-character tag; `update_stage` with one more than the max tag count. | Tags are strings only; no path, asset, or external IO interpretation. | Length/count guard first when count exceeds the cap; otherwise first invalid tag by input order. | Core model validator plus engine command prevalidation and post-mutation `BundleModel::validate()`. | Unit test for validator source error; engine rejection test for bad tag proving no Stage mutation. |
+| Stage renderable options are schema-free JSON objects but bounded by serialized byte size and nesting depth. | `replace_stage_renderable` with deeply nested JSON; another case with a large string value exceeding the byte cap. | Options stay JSON-only; no path resolution, no asset lookup, no script execution. | Serialize-size failure before depth failure when encoded bytes exceed the cap; depth failure for small but deeply nested input. | Core model validator plus engine command prevalidation and post-mutation `BundleModel::validate()`. | Unit tests for too-large and too-deep options; engine rejection test proving the previous renderable remains unchanged. |
+| Validator errors preserve external causes when an external error can exist. | A validator branch that wraps `DisplayNameError`; an options serialization branch if it is represented in the enum. | External causes are diagnostic context only and never become bridge wire payload structs. | The domain validator reports its typed error first; engine maps it to the owning `CommandRejectionCode`. | Rust error enum with `#[source]`; engine command rejection mapping. | `std::error::Error::source()` assertion for source-bearing variants when the validator is added or changed. |
 
 ## Implementation Spec
 
