@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-20
 updated: 2026-05-20
 owner: agent-hub
-spec: docs/plans/proposed/thin-skill-guide-boundary.md
+spec: docs/plans/active/thin-skill-guide-boundary.md
 ---
 
 # Spec Intake: thin-skill-guide-boundary

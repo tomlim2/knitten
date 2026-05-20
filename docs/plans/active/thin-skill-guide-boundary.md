@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: active
 created: 2026-05-20
 updated: 2026-05-20
 owner: agent-hub
@@ -365,10 +365,10 @@ Potential checks:
 
 ### Batch A: Accept Boundary Spec
 
-1. Review this spec against `agent-artifact-pack-system`.
-2. Record that guide/core/pack retention decisions are deferred to the future
+1. Done: Review this spec against `agent-artifact-pack-system`.
+2. Done: Record that guide/core/pack retention decisions are deferred to the future
    core boundary and artifact-pack manifest specs.
-3. Attach this spec to the milestone.
+3. Done: Attach this spec to the milestone.
 
 ### Batch B: Inventory Schema Update
 
@@ -381,13 +381,13 @@ Potential checks:
 
 ### Batch C: Authoring Gate Wiring
 
-1. Update `ah-make-skill` to run the skill creation gate before writing a new
+1. Done: Update `ah-make-skill` to run the skill creation gate before writing a new
    skill.
-2. Update `ah-make-command` to reject route duplicates already owned by skills
+2. Done: Update `ah-make-command` to reject route duplicates already owned by skills
    or routers.
-3. Update `ah-make-standard` and `ah-manage-document-template` handoff wording
+3. Done: Update `ah-make-standard` and `ah-manage-document-template` handoff wording
    so extracted criteria and reusable bodies have canonical homes.
-4. Add validator checks only after the pilot extraction proves the gate.
+4. Deferred: Add validator checks only after the pilot extraction proves the gate.
 
 ### Batch D: Pilot Classification
 

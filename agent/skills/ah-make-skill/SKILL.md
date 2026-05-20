@@ -14,6 +14,43 @@ Authoritative rulebook for skill creation. Claude Code merged custom commands in
 
 ---
 
+## Creation Gate
+
+Before creating a skill, classify the requested content.
+
+| Requested content | Artifact to create |
+|-------------------|--------------------|
+| Task trigger plus ordered tool workflow | skill |
+| Cross-skill decision criteria | standard |
+| Reusable output body | document template |
+| Long example set | reference |
+| Exact allowed values or path contract | standard plus validator |
+| Route-only delegation to existing skills | router skill only when no existing router owns the route |
+| Domain-specific workflow | pack-candidate skill unless the workflow is required before pack loading |
+
+If the request is not a task trigger plus ordered tool workflow, stop skill
+creation and route to the owning artifact workflow.
+
+| Destination | Route |
+|-------------|-------|
+| standard | `ah-make-standard` |
+| document template | `ah-manage-document-template` |
+| reference | skill-local `references/` file or future pack reference |
+| validator | `scripts/validate-llm-first.mjs` plus owning standard |
+
+Before writing files, run:
+
+```bash
+rg -n "<slug>|<route words>|<subject>" agent/skills agent/commands agent/standards agent/document-templates
+```
+
+If an existing router, lifecycle skill, or standard owns the route, update that
+canonical owner instead of adding a new skill.
+
+Source contract: `docs/plans/active/thin-skill-guide-boundary.md`.
+
+---
+
 ## Skill Structure
 
 ```
@@ -68,10 +105,11 @@ Canonical command and skill categories live in `agent/config/taxonomy.json` unde
 
 When creating a skill:
 
-1. Extract the category prefix before the first hyphen.
-2. Reuse an existing prefix from `skillCommandCategories`.
-3. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
-4. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the agent-hub repo root.
+1. Pass the Creation Gate.
+2. Extract the category prefix before the first hyphen.
+3. Reuse an existing prefix from `skillCommandCategories`.
+4. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
+5. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the agent-hub repo root.
 
 ---
 

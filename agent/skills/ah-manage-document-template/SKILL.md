@@ -23,6 +23,10 @@ or delete a document template.
 This skill owns the document template lifecycle. It does not own broader skill,
 command, rule, or artifact-pack lifecycle work.
 
+Use this skill when thin-skill reduction extracts a reusable output body from a
+skill, command, standard, or reference. The skill keeps the workflow; the
+template owns the generated body shape.
+
 ## Canonical Paths
 
 | Template family | Path | Consumer |
@@ -61,17 +65,29 @@ template family names one.
 ## Create Workflow
 
 1. Resolve the family from `agent/document-templates/README.md`.
-2. Search for existing templates and consumers:
+2. Classify the source content:
+
+| Source content | Action |
+|----------------|--------|
+| reusable output body | create or update a document template |
+| cross-skill criteria | route to `ah-make-standard` |
+| long example set | create a reference file |
+| executable workflow | keep in or route to a skill |
+| validator contract | route to standard plus validator |
+
+3. Search for existing templates and consumers:
 
 ```bash
 rg -n "<slug>|<template-name>" agent docs .github scripts
 ```
 
-3. Create the template under the canonical family folder.
-4. Add or update the inventory row in
+4. Create the template under the canonical family folder.
+5. Add or update the inventory row in
    `agent/standards/authoring/document-templates.md`.
-5. Add validator coverage when the family or consumer contract is new.
-6. Add runtime mirror handling when the consumer requires a fixed path.
+6. Add validator coverage when the family or consumer contract is new.
+7. Add runtime mirror handling when the consumer requires a fixed path.
+8. Update the source skill or command so it links the template instead of
+   embedding the reusable body.
 
 ## Update Workflow
 

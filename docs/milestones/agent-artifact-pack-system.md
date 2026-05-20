@@ -40,7 +40,7 @@ copying everything into the core repository.
 | `artifact-inventory-classification` | proposed | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
 | `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
-| [thin-skill-guide-boundary.md](../plans/proposed/thin-skill-guide-boundary.md) | proposed | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
+| [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
 | `artifact-pack-manifest-contract` | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
@@ -61,7 +61,7 @@ copying everything into the core repository.
 | Inventory and classification | not started | Must produce the canonical artifact inventory before any move. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | proposed | Must define the rule for reducing skill bodies before inventory classification. |
+| Thin skill / guide boundary | active | Authoring gate wiring is done; pilot classification is next. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |

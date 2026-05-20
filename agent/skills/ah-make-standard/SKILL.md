@@ -20,6 +20,35 @@ Use this when:
 Do NOT use this when:
 - The content is a short, must-follow constraint → use `ah-make-rule` instead.
 - The content is a reusable tool/script → use `ah-make-skill` instead.
+- The content is a reusable output body: use `ah-manage-document-template`
+  instead.
+- The content is a long example catalog: create a reference file instead.
+
+---
+
+## Extraction Intake
+
+Use this skill when thin-skill reduction extracts durable criteria from a skill.
+
+| Extracted content | Standard role |
+|-------------------|---------------|
+| cross-skill decision criteria | canonical rule table |
+| judgment rubric | review or authoring rubric |
+| naming policy | accepted names and rejected names |
+| lifecycle policy | state machine, gates, and transitions |
+| path or enum contract | policy owner paired with validator |
+
+Before writing the standard, scan for existing owners:
+
+```bash
+rg -n "<topic>|<key terms>" agent/standards agent/rules agent/skills agent/document-templates
+```
+
+If an existing standard owns the rule, update it. If the extracted content is a
+template body, route to `ah-manage-document-template`. If it is a workflow,
+route to `ah-make-skill`.
+
+Source contract: `docs/plans/active/thin-skill-guide-boundary.md`.
 
 ---
 
@@ -95,16 +124,17 @@ Structural rules:
 ## Workflow
 
 1. Parse filename from `$ARGUMENTS` (single token, lowercase, hyphens).
-2. Check `agent/standards/<group>/{name}.md` does not already exist. Abort if it does.
-3. Ask the user:
+2. Classify the requested content with Extraction Intake.
+3. Check `agent/standards/<group>/{name}.md` does not already exist. Abort if it does.
+4. Ask the user:
    - One-line purpose
    - Which `standards/index.md` group it belongs to (Command Authoring, Multi-Agent, Research, Web, UE, Review, CINEV, Docs/System, or new group)
    - When-to-read hint for the index table
    - Which context profile applies, or why this standard needs a `metadataExemptions` entry
-4. Write the file from the template, filling in `{Title}` and `{One-line purpose}`.
-5. Update `agent/standards/index.md` — add a row to the chosen group.
-6. Run `node scripts/validate-llm-first.mjs --check context-routing`.
-7. Print the new path and remind the user to fill in the sections.
+5. Write the file from the template, filling in `{Title}` and `{One-line purpose}`.
+6. Update `agent/standards/index.md` — add a row to the chosen group.
+7. Run `node scripts/validate-llm-first.mjs --check context-routing`.
+8. Print the new path and remind the user to fill in the sections.
 
 ---
 
