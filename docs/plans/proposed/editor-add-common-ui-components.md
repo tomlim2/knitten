@@ -35,6 +35,7 @@ briefing: ../../briefings/shotloom/editor-add-common-ui-components.md
 |---|---|---|---|
 | Tailwind config | `apps/editor/tailwind.config.cjs` | Partial | Tailwind is wired with preflight disabled and debug grid columns, but it has no editor color, typography, or spacing tokens. |
 | Tailwind decision | `docs/adr/adr-0047-tailwind-as-editor-styling-default.md` | Already Done | New and modified editor components should use Tailwind; token drift belongs in Tailwind config; ad-hoc hex and spacing values in component TSX are defects. |
+| Feedback surface spec | `docs/specs/ui-feedback-surfaces.md` | Already Done / adjacent | Owns when to use toast, inline feedback, banner, modal, destructive modal, and progress overlay. STL-490 owns visual tokens/components only. |
 | Router decision | `docs/adr/adr-0046-editor-router-and-spa-fallback.md` | Already Done / adjacent | Route namespaces are UI-only and the viewport stays outside route-local branches. STL-490 must not change route semantics. |
 | Existing reusable button | `apps/editor/src/components/debug/DebugButton.tsx` | Partial | Provides `type="button"` default and shared classes, but it is debug-namespaced and embeds ad-hoc hex/spacing. |
 | Non-debug consumers | `apps/editor/src/components/ToolToolbar.tsx`, `apps/editor/src/components/UndoRedoControls.tsx` | Partial | Both import `DebugButton` even though they are viewport/editor controls, proving the component is already broader than debug. |
@@ -182,6 +183,17 @@ will have to mix route migration with UI cleanup.
    Rejected alternatives: rename `/debug` to `/dev` while touching UI;
    duplicate router cleanup in this PR; add compatibility redirects here.
 
+6. **Feedback colors do not redefine feedback surface selection.**
+
+   Rationale: `docs/specs/ui-feedback-surfaces.md` already owns when to use
+   toast, inline feedback, banners, modals, destructive modals, and progress
+   overlays. STL-490 may expose success/warning/error tokens for components,
+   but it must not change the surface-selection contract or toast/modal APIs.
+
+   Rejected alternatives: fold feedback-surface rules into Button variants;
+   replace `useToast()` or Radix Dialog usage; introduce a global modal
+   service as part of common UI.
+
 ## Non-Goals
 
 - Do not rename `/debug` to `/dev` or move existing debug screens.
@@ -190,6 +202,8 @@ will have to mix route migration with UI cleanup.
 - Do not change Rust, bridge protocol, command/event payloads, bundle state,
   asset import, or stage import sample data.
 - Do not add Tailwind plugins, new dependencies, or new build steps.
+- Do not change feedback surface selection rules, `useToast()`, Radix Dialog
+  usage, or modal/toast architecture.
 - Do not migrate every raw `<button>` or every CSS Module in the editor.
 - Do not introduce a public design-system package or cross-app token contract.
 - Do not rewrite production timeline, toast, modal, or asset-panel styling
