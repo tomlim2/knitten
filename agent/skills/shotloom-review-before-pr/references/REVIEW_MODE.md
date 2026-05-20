@@ -5,7 +5,7 @@ status: accepted
 # Review Mode
 
 Use this reference from `shotloom-review-before-pr` Step 2. Default mode is
-Auto. Auto selects Standard for small low-risk diffs and Triad for large or
+Auto. Auto selects Single for small low-risk diffs and Triad for large or
 boundary-risk diffs.
 
 ## Evidence
@@ -44,7 +44,7 @@ Select `review_mode=triad` if any condition is true:
 - Rust and TypeScript contract surfaces both change in the same branch.
 - Large boundary lens batching triggers with three or more trigger rows.
 
-Select `review_mode=standard` only when all conditions are true:
+Select `review_mode=single` only when all conditions are true:
 
 - `files_changed <= 5`.
 - `lines_added + lines_deleted <= 500`.
@@ -53,12 +53,20 @@ Select `review_mode=standard` only when all conditions are true:
 
 If neither rule is decisive, select `review_mode=triad`.
 
+Compatibility:
+
+| User override | Effective mode |
+|---------------|----------------|
+| `force single` | `single` |
+| `force standard` | `single` |
+| `force triad` | `triad` |
+
 ## Decision Template
 
 ```markdown
 ## Review Mode Decision - branch <branch>
 
-Mode: Standard | Triad
+Mode: Single | Triad
 Reason: <one sentence>
 Signals:
 - files changed: <N>

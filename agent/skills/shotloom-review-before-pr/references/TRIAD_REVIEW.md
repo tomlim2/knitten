@@ -9,6 +9,10 @@ mode. All three roles use the same Shared Checklist and the same priority
 taxonomy. Role lenses change the failure modes to inspect; they do not change
 the checklist.
 
+Triad is the main review pass for large or risky diffs. Do not run
+`shotloom-review-code` code pass A before Triad. Use Triad verification passes
+after fixes change `HEAD`.
+
 ## Shared Checklist
 
 | Check | Required question |
