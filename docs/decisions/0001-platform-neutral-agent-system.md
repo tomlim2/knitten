@@ -12,14 +12,14 @@ partially_superseded_by: docs/decisions/0003-agent-root-directory.md
 | Layer | Role |
 |-------|------|
 | `SYSTEM.md` | Current shared policy and top-level contract |
-| `CLAUDE.md` | Claude Code entry adapter |
-| `AGENTS.md` | Codex entry adapter |
+| `agent/CLAUDE.md` | Claude Code deploy entry adapter |
+| `agent/AGENTS.md` | Codex deploy entry adapter |
 | `agent/{rules,standards,skills,commands}` | Shared source layers, classified by metadata |
 | `docs/decisions/` | Accepted rationale for policy choices |
 
 ## Context
 
-Claude Code and Codex need the same operating rules without duplicating policy. Duplicating policy in `CLAUDE.md`, `AGENTS.md`, or platform-specific folders creates drift: one harness follows an updated rule while another follows stale text.
+Claude Code and Codex need the same operating rules without duplicating policy. Duplicating policy in deploy entry templates or platform-specific folders creates drift: one harness follows an updated rule while another follows stale text.
 
 At decision time, the shared artifact directory was named `claude/`. Rename pressure existed because the content targeted multiple harnesses. A big rename would have broken imports and runtime paths before the content had compatibility metadata.
 
@@ -40,7 +40,7 @@ When this decision changes:
 
 1. Edit `SYSTEM.md` if the operating contract changes.
 2. Edit `agent/standards/policy/platform-adapters.md` if metadata or adapter semantics change.
-3. Edit `CLAUDE.md` and `AGENTS.md` if entry behavior changes.
+3. Edit `agent/CLAUDE.md` and `agent/AGENTS.md` if entry behavior changes.
 4. Edit `README.md`, `LOOKUP.md`, and indexes if navigation changes.
 5. Extend `scripts/validate-llm-first.mjs` for every new mechanically checkable invariant.
 
@@ -54,6 +54,6 @@ When this decision changes:
 
 ## Consequences
 
-- New harnesses add a root entry document and register it in `SYSTEM.md`.
+- New harnesses add a deploy entry template under `agent/` and register it in `SYSTEM.md`.
 - Shared artifacts use metadata to declare whether they are shared, adapter-backed, or harness-specific.
 - Policy changes use decision records when rationale matters across sessions.

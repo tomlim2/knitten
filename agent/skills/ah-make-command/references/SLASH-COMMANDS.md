@@ -348,18 +348,18 @@ Before finalizing a command, verify:
 
 ```markdown
 ---
-description: Update entry document project overview and language conventions
+description: Update deploy entry template project overview and language conventions
 allowed-tools: Read, Write, Edit
 ---
 
 # clean-up
 
-Scan the codebase and update entry document project overview and conventions to reflect the current state.
+Scan the codebase and update deploy entry template project overview and conventions to reflect the current state.
 
 ## Workflow
 
-### Step 1: Read entry documents
-- Read current entry document content
+### Step 1: Read deploy entry templates
+- Read current `agent/CLAUDE.md` or `agent/AGENTS.md` content
 
 ### Step 2: Update Documentation
 - Update project overview
@@ -367,7 +367,7 @@ Scan the codebase and update entry document project overview and conventions to 
 - Ensure consistency
 
 ### Step 3: Save Changes
-- Write updated entry document
+- Write updated deploy entry template
 - Confirm completion
 ```
 

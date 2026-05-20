@@ -10,8 +10,8 @@ Entry documents:
 
 | Entry document | Harness | Role |
 |----------------|---------|------|
-| `CLAUDE.md` | Claude Code | Imports this file before Claude-specific `@~/.claude/...` layers |
-| `AGENTS.md` | Codex | Directs Codex to read this file before Codex-specific behavior |
+| `agent/CLAUDE.md` | Claude Code | Deploy entry template linked to `~/.claude/CLAUDE.md`; imports this file before Claude-specific `@~/.claude/...` layers |
+| `agent/AGENTS.md` | Codex | Deploy entry template linked to `~/.codex/AGENTS.md`; directs Codex to read this file before Codex-specific behavior |
 | `SYSTEM.md` | Pi Coding Agent | Configured as Pi's first shared-policy instruction |
 
 Do not add shared policy to an entry document. Put shared policy here, `agent/rules/`, `agent/standards/`, `agent/skills/`, or `agent/commands/`.
@@ -109,8 +109,8 @@ The intentional asymmetry:
 | Path | Canonical | Notes |
 |------|-----------|-------|
 | `skills/`, `rules/`, `standards/`, `commands/`, `lib/`, `config/` | agent-hub | shared via APFS clone or hard-link; edits propagate |
-| `CLAUDE.md`, `AGENTS.md` | agent-hub root | canonical entry documents |
-| `agent/CLAUDE.md`, `repo-registry.json` | agent-hub | `agent/CLAUDE.md` is the `~/.claude` deploy shim; edit root `CLAUDE.md` for entry-document changes |
+| `agent/CLAUDE.md`, `agent/AGENTS.md` | agent-hub | canonical deploy entry templates; installers link them into harness deploy targets |
+| `repo-registry.json` | agent-hub | durable repository registry for harness helpers |
 | `hooks/` | agent-hub must hold these | durable harness scripts deployed to `~/.claude/hooks/` |
 | `settings.json` | agent-hub must hold this | per-machine secrets stay in `settings.local.json` |
 | `private/agent-hub-config/doc-paths.json` and similar non-machine config | agent-hub | shared config files that belong in source |

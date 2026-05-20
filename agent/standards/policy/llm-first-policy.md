@@ -51,7 +51,7 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 ## What this policy enforces
 
 1. **Cold-start parsability.** Every file must be interpretable without prior session context. No `as we discussed`, no implicit references.
-2. **Entry documents are adapters.** `CLAUDE.md` and `AGENTS.md` load `SYSTEM.md` first, then add harness-specific mechanics.
+2. **Entry documents are adapters.** `agent/CLAUDE.md` and `agent/AGENTS.md` load `SYSTEM.md` first, then add harness-specific mechanics.
 3. **Explicit load semantics.** Every rule declares whether it is `auto` or `triggered`. The agent never has to guess.
 4. **Mechanical anti-rot.** Drift is caught by validators, not by human review. If a rule cannot be validated mechanically, it must be rewritten until it can.
 5. **Layered context budget.** Always-loaded surface stays under a token cap (`SYSTEM.md` and entry documents stay ≤ 150 lines each). Detail is pushed to lower-frequency layers.
@@ -102,7 +102,7 @@ When a layer's constraint blocks a legitimate need:
 
 ## Anti-goals
 
-- Do not add an unregistered entry document. Register every entry document in `SYSTEM.md` and keep shared policy out of the entry document.
+- Do not add an unregistered entry document or a repo-root entry document. Register every deploy entry template in `SYSTEM.md` and keep shared policy out of the entry document.
 - Do not split this policy across multiple files for "organization." This is a single stance; it lives in one file.
 - Do not weaken a layer to silence a violator. The violator is the bug.
 - Do not add a layer that the validator cannot enforce. Unenforceable layers rot in one session.
@@ -119,4 +119,4 @@ Before committing a change to any layer:
 - [ ] If it adds a layer 4 standard, the standard is registered in `standards/index.md` with a "When to read" entry.
 - [ ] If it changes layer 1 (charter), the cascade through layers 2–7 has been planned, not deferred.
 - [ ] Validator (layer 7) still passes. If the change disables a validator check, an issue is filed for the replacement.
-- [ ] No new memory file, no unregistered entry document, no human-aesthetic prose has been added.
+- [ ] No new memory file, no unregistered or repo-root entry document, no human-aesthetic prose has been added.

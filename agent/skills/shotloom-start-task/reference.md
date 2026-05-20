@@ -134,12 +134,12 @@ read the full body and record: slug, status, stance summary, and disagreement
 signal.
 
 ```bash
-agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
-agent_hub="${agent_hub#RESOLVED_PATH=}"
-ls "$agent_hub/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-ls "$agent_hub/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-git -C "$agent_hub" log --diff-filter=D --name-only --pretty=format: -- \
-  "docs/plans/" | rg -i "<scope>|<subject>" | head -5
+knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="${knitten#RESOLVED_PATH=}"
+rg --files "$knitten/docs/plans" "$knitten/docs/briefings/shotloom" \
+  2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$knitten" log --diff-filter=D --name-only --pretty=format: -- \
+  "docs/plans/" "docs/briefings/shotloom/" | rg -i "<scope>|<subject>"
 ```
 
 ---
@@ -157,7 +157,7 @@ load: triggered
 trigger: STL-NN
 repo: shotloom
 linear: STL-NN
-spec: ../../plans/<slug>.md
+spec: ../../plans/proposed/<slug>.md
 ---
 
 ### Shotloom coding mode — <category>
@@ -183,19 +183,19 @@ spec: ../../plans/<slug>.md
 - P2: <ambiguity/test/doc gap to resolve in the spec> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
 - P3: <cheap nit or precedent to review> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent, or related-follow-up>
 
-**Sibling specs (agent-hub/docs/plans/):**
+**Sibling specs (Knitten docs):**
 - <slug>.md - <working-tree | staged | HEAD | deleted> - stance: <one-line scope summary> - <agrees | disagrees> with this briefing
 - (or: "none found" if Step 5d scan returned empty)
 
 **Pre-write checklist passed:**
 - [x] gh auth: tomlim2
-- [x] commit identity: tomlim2 <deemo@vonvon.me>
-- [x] conventions re-read: AGENTS, CONTRIBUTING, CLAUDE, ADR index
+- [x] Shotloom repo commit identity: tomlim2 <deemo@vonvon.me>
+- [x] conventions re-read: AGENTS, CONTRIBUTING, ADR index
 - [x] category: <category>
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (agent-hub/docs/plans/, full body via Read tool for every match)
+- [x] sibling-spec scan run (Knitten docs/plans/ + docs/briefings/shotloom/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.
 ```

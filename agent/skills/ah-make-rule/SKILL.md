@@ -27,7 +27,7 @@ Do NOT use this when:
 |--|-------|-----------|
 | Purpose | Enforce | Explain |
 | Length | 1-10 bullets | Pages of prose |
-| Loading | Always (via @import) | On-demand |
+| Loading | Always (via entry document or index) | On-demand |
 | Voice | Imperative ("NEVER", "ALWAYS") | Descriptive ("Here's how X works") |
 | Examples | Rare, only inline | Required section |
 | Links back | Yes, to a standard | No, is the source |
@@ -75,7 +75,7 @@ Structural rules:
    - Which standard (if any) backs this rule
 4. Write the file from the template.
 5. Update `agent/rules/index.md` — add a code-span row to the chosen group. Do not use Markdown links in the rules index.
-6. If the rule has `load: auto`, add it to root `CLAUDE.md` imports and `agent/rules/index.md`.
+6. If the rule has `load: auto`, add it to `agent/rules/index.md`. If Claude Code must import it at cold-start, add it to `agent/CLAUDE.md` and update the validator allowlist.
 7. Print the new path.
 
 ---
@@ -84,10 +84,11 @@ Structural rules:
 
 - Fill the bullets if not already.
 - If this rule was extracted from an existing standard, add a cross-reference note to the standard's "Related" section (pointing to `rules/{name}.md`).
-- If this rule belongs in every Claude Code session, add an import to root `CLAUDE.md`:
+- If this rule belongs in every Claude Code session, add an import to `agent/CLAUDE.md`:
   ```markdown
   @~/.claude/rules/{name}.md
   ```
+- Update `scripts/validate-llm-first.mjs` `allowedClaudeRuleImports` for the new bootstrap import.
 - Commit: `feat: add rules/{name}.md — {topic}`.
 
 ---

@@ -77,12 +77,12 @@ Step 3: Output results
 ```markdown
 ---
 allowed-tools: Glob, Grep, Read, Edit
-description: Update entry documents based on codebase analysis
+description: Update deploy entry templates based on codebase analysis
 ---
 
-# Clean Up Entry Documents
+# Clean Up Deploy Entry Templates
 
-Update entry document project overview and language conventions based on codebase analysis.
+Update deploy entry template project overview and language conventions based on codebase analysis.
 
 ## Step 1: Scan
 
@@ -101,8 +101,8 @@ Analyze discovered patterns:
 
 ## Step 3: Update
 
-Update entry documents:
-- Edit entry document sections based on analysis
+Update deploy entry templates:
+- Edit `agent/CLAUDE.md` or `agent/AGENTS.md` sections based on analysis
 - Show diff before writing
 - Confirm changes with user
 - Update version if needed

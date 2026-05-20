@@ -8,7 +8,7 @@ Lifecycle router for agent-hub shared artifacts.
 
 ## Purpose
 
-Use this before creating, inspecting, editing, updating, deleting, renaming, or moving a shared artifact under `agent/`, root entry documents, or managed docs.
+Use this before creating, inspecting, editing, updating, deleting, renaming, or moving a shared artifact under `agent/`, deploy entry templates, or managed docs.
 
 This skill prevents lifecycle drift across skills, rules, standards, commands,
 plans, and manifests.
@@ -26,7 +26,7 @@ plans, and manifests.
 | document template | `agent/document-templates/<family>/<name>.md` |
 | plan | `docs/plans/<lifecycle>/<name>.md` |
 | decision | `docs/decisions/<id>-<name>.md` |
-| entry document | `SYSTEM.md`, `AGENTS.md`, `CLAUDE.md` |
+| entry document | `SYSTEM.md`, `agent/AGENTS.md`, `agent/CLAUDE.md` |
 | manifest / registry | `agent/config/*.json`, `README.md`, `AGENT-HUB.md`, `LOOKUP.md` |
 
 ## Operation Router
@@ -64,7 +64,7 @@ plans, and manifests.
 1. Classify artifact class and operation.
 2. Resolve canonical owner:
    - shared layer files live under `agent/`
-   - root entry documents live at repo root
+   - deploy entry templates live under `agent/`
    - machine-local files stay outside git unless a policy says otherwise
 3. Read only required policy:
    - creation or naming → `agent/rules/author.md` and `agent/standards/policy/naming.md`
@@ -74,7 +74,7 @@ plans, and manifests.
 4. Search references before destructive or path-changing work:
 
 ```bash
-rg -n "<artifact-name>|<artifact-path>" AGENT-HUB.md README.md LOOKUP.md SYSTEM.md AGENTS.md CLAUDE.md agent docs scripts
+rg -n "<artifact-name>|<artifact-path>" AGENT-HUB.md README.md LOOKUP.md SYSTEM.md agent docs scripts
 ```
 
 5. Patch canonical source only.

@@ -45,10 +45,11 @@ rules on top:
 
 ## Output Contract
 
-- `agent-hub/docs/briefings/shotloom/<slug>.md`
-- `agent-hub/docs/plans/proposed/<slug>.md`
+- `docs/briefings/shotloom/<slug>.md` in Knitten
+- `docs/plans/proposed/<slug>.md` in Knitten
 - one direct-spec commit and push when the spec converges
 - optional review-spec commit and push when review patches the spec
+- one created or updated daily docs PR for the Knitten branch
 - final user prompt: "이 스펙으로 구현 시작할까요?"
 
 ## Branch Contract

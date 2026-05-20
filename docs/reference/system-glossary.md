@@ -14,8 +14,8 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 |------|---------|---------|----------------|
 | canonical policy | Shared policy every harness must follow | `SYSTEM.md` and policy that applies across harnesses | Machine-local state or generated output |
 | shared layer | Shared rules, standards, skills, and commands below `agent/` | Reusable policy or procedure loaded by multiple harnesses | Harness-only mechanics |
-| agent root | Canonical repository directory for shared agent artifacts | `agent/` and path-ownership docs | `~/.claude/` deploy target or root entry documents |
-| entry document | Harness-specific cold-start file that reads `SYSTEM.md` first | `CLAUDE.md`, `AGENTS.md`, and future root entry files | Long policy copies |
+| agent root | Canonical repository directory for shared agent artifacts | `agent/` and path-ownership docs | `~/.claude/` deploy target or repo-root entry documents |
+| entry document | Harness-specific cold-start file that reads `SYSTEM.md` first | `agent/CLAUDE.md`, `agent/AGENTS.md`, and future deploy entry templates | Long policy copies or repo-root entry files |
 | harness | Agent runtime that reads and executes repo instructions | Claude Code, Codex, or another agent runtime | A single file, command, or adapter |
 | adapter | Translation from shared intent to harness mechanics | Tool syntax, imports, approval flow, slash-command behavior | New policy |
 | platform mechanic | Runtime-specific behavior exposed by one harness | Claude `@` imports, Codex approval flow, tool names | Shared meaning |

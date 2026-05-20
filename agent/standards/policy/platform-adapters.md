@@ -48,15 +48,15 @@ Add these fields during portability migration:
 
 | Harness | Entry document | Duty |
 |---------|----------------|------|
-| Claude Code | `CLAUDE.md` | Import shared layers, then apply Claude Code mechanics |
-| Codex | `AGENTS.md` | Read shared layers, translate Claude Code mechanics only when intent applies |
-| New harness | New root entry document | Register in `SYSTEM.md`, load `SYSTEM.md` first, keep shared policy out of the entry document |
+| Claude Code | `agent/CLAUDE.md` | Import shared layers, then apply Claude Code mechanics |
+| Codex | `agent/AGENTS.md` | Read shared layers, translate Claude Code mechanics only when intent applies |
+| New harness | New deploy entry template under `agent/` | Register in `SYSTEM.md`, load `SYSTEM.md` first, keep shared policy out of the entry document |
 
 ## New harness workflow
 
 When adding a harness adapter:
 
-1. Create one root entry document.
+1. Create one deploy entry template under `agent/`.
 2. Make its first shared-policy read point to `SYSTEM.md`.
 3. Add the harness to `agent/config/agent-hub.json` `harnesses`.
 4. Add the entry document row to `SYSTEM.md`.

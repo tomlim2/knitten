@@ -15,6 +15,17 @@ Knitten.
 | PR title | `chore(shotloom): collect YYYY-MM-DD planning docs` |
 | Commit subject | `chore(shotloom): collect planning docs` |
 
+Identity split:
+
+| Surface | Required identity |
+|---------|-------------------|
+| Shotloom implementation repo | `tomlim2 <deemo@vonvon.me>` |
+| Knitten docs lane commits | `tomlim2 <tomandlim@gmail.com>` |
+
+Do not compare the Knitten docs lane identity against the Shotloom
+implementation identity. Check the identity in the repo where the commit will be
+made.
+
 Applies when a Shotloom flow writes any of these paths in Knitten:
 
 | Path | Examples |

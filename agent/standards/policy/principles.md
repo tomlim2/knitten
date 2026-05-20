@@ -16,7 +16,7 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`. This
 
 **charter** — The repository's foundational stance. Lives in `SYSTEM.md` → "Repository charter". One paragraph. Says *who* the repo serves and *why*. Rarely changes; when it does, every lower layer is re-derived. Distinct from a rule (rule is `must`) or a standard (standard is `how`).
 
-**entry document** — Harness-specific session file. It loads `SYSTEM.md` first, then adds harness-specific mechanics. Current entry documents: `CLAUDE.md` for Claude Code and `AGENTS.md` for Codex.
+**entry document** — Harness-specific session file. It loads `SYSTEM.md` first, then adds harness-specific mechanics. Current entry documents: `agent/CLAUDE.md` for Claude Code and `agent/AGENTS.md` for Codex.
 
 **llm-first** — The repository is engineered for the LLM that reads it cold-start every session: token-efficient, cold-start parsable, structured for limited context windows. Split across two files for read-cost: `llm-first-policy.md` (layer architecture, why & how) and `llm-first-docs.md` (writing rules, how to write).
 

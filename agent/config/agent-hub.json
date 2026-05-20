@@ -4,13 +4,14 @@
     {
       "id": "claude-code",
       "displayName": "Claude Code",
-      "entryDocument": "CLAUDE.md",
+      "entryDocument": "agent/CLAUDE.md",
       "deployTarget": "~/.claude",
       "firstRead": "@SYSTEM.md",
       "adapter": "claude",
       "linkMethod": "symlink",
       "mappings": {
         "CLAUDE.md": "agent/CLAUDE.md",
+        "SYSTEM.md": "SYSTEM.md",
         "commands": "agent/commands",
         "rules": "agent/rules",
         "skills": "agent/skills",
@@ -25,12 +26,13 @@
     {
       "id": "codex",
       "displayName": "Codex",
-      "entryDocument": "AGENTS.md",
+      "entryDocument": "agent/AGENTS.md",
       "deployTarget": "~/.codex",
-      "firstRead": "[`SYSTEM.md`](SYSTEM.md)",
+      "firstRead": "First shared-policy read: `SYSTEM.md`.",
       "adapter": "codex",
       "linkMethod": "symlink",
       "mappings": {
+        "AGENTS.md": "agent/AGENTS.md",
         "AGENT-HUB.md": "AGENT-HUB.md",
         "SYSTEM.md": "SYSTEM.md",
         "agent": "agent",

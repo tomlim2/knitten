@@ -20,7 +20,7 @@ the task spec artifact only. Do not edit Shotloom source files.
 
 ## Purpose
 
-Take an existing lifecycle spec under `agent-hub/docs/plans/` and validate it as a
+Take an existing lifecycle spec under Knitten `docs/plans/` and validate it as a
 requirements/decisions/verification contract. Run cold-start rounds until no
 unhandled `P1`/`P2` findings remain. Patch the spec after each serious finding.
 When only `P3`/nit findings remain, land the spec and stop.
@@ -30,14 +30,14 @@ When only `P3`/nit findings remain, land the spec and stop.
 - `[slug-or-path]` optional.
 - If omitted, derive the slug from the current Shotloom branch body after
   `<type>/`.
-- If cwd is `agent-hub`, an omitted input is a hard stop. Pass a slug or path.
+- If cwd is Knitten, an omitted input is a hard stop. Pass a slug or path.
 - If the input is a path, use it directly.
 - Otherwise resolve the slug through the spec lifecycle search order.
 
 ## Preconditions
 
-- cwd is inside Shotloom or `agent-hub`.
-- `ah-resolve-doc-path` resolves both `shotloom` and `agent-hub`.
+- cwd is inside Shotloom or Knitten.
+- `ah-resolve-doc-path` resolves both `shotloom` and `knitten`.
 - The spec file exists.
 - If spec frontmatter has `briefing:`, read that briefing before validation.
 - If a Linear id appears in spec frontmatter, title, or body, fetch the current
@@ -54,22 +54,22 @@ repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 shotloom_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
 shotloom_root="${shotloom_root#RESOLVED_PATH=}"
-agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
-agent_hub="${agent_hub#RESOLVED_PATH=}"
+knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="${knitten#RESOLVED_PATH=}"
 ```
 
 Resolve the spec path. Surface:
 
 - spec path
 - Shotloom root
-- agent-hub root
+- Knitten root
 - current branches and dirty files for both repos
 
-If the spec path cannot be resolved, stop without writing. If `repo_root` is
-`agent-hub` and no input was provided, stop and ask for `[slug-or-path]`.
+If the spec path cannot be resolved, stop without writing. If `repo_root`
+equals `$knitten` and no input was provided, stop and ask for `[slug-or-path]`.
 
 If the spec belongs to Shotloom and the review patches Knitten docs, verify
-agent-hub/Knitten is on the daily Shotloom docs branch from
+Knitten is on the daily Shotloom docs branch from
 `agent/rules/shotloom-docs-lane.md`: `codex/YYYYMMDD-shotloom-docs`. If it is
 not, switch to that branch or use the matching Knitten docs worktree before
 editing.
@@ -82,8 +82,8 @@ Read the whole spec. Then gather current context as if the spec were untrusted:
 git -C "$shotloom_root" status --short
 rg -n "<linear id>|<title keywords>|<primary symbols>" "$shotloom_root"/crates "$shotloom_root"/apps "$shotloom_root"/docs "$shotloom_root"/contracts "$shotloom_root"/assets "$shotloom_root"/MAP.md
 rg -n "<diagnostic/cache/bridge/test/doc keywords>" "$shotloom_root"/crates "$shotloom_root"/apps "$shotloom_root"/docs "$shotloom_root"/contracts
-ls "$agent_hub/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
-git -C "$agent_hub" log --diff-filter=D --name-only --pretty=format: -- docs/plans/ | rg -i "<scope>|<subject>"
+ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
+git -C "$knitten" log --diff-filter=D --name-only --pretty=format: -- docs/plans/ | rg -i "<scope>|<subject>"
 ```
 
 Also inspect:
@@ -234,19 +234,23 @@ does not choose one, stop and ask the user which direction to lock.
 ### Step 6: Commit Spec-Only Changes
 
 If the spec has no unhandled `P1`/`P2`, commit only that spec file from
-`agent-hub`:
+Knitten:
 
 ```bash
-git -C "$agent_hub" config user.name
-git -C "$agent_hub" config user.email
-git -C "$agent_hub" add "$spec_path"
-git -C "$agent_hub" commit -m "docs(shotloom): review spec <slug>"
-git -C "$agent_hub" push
+git -C "$knitten" config user.name
+git -C "$knitten" config user.email
+git -C "$knitten" add "$spec_path"
+git -C "$knitten" commit -m "docs(shotloom): review spec <slug>"
+git -C "$knitten" push
 ```
 
-Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. Never use
+Before commit, verify the Knitten docs lane identity from
+`agent/rules/shotloom-docs-lane.md` (`tomlim2 <tomandlim@gmail.com>`). This is
+separate from the Shotloom implementation repo identity. Never use
 `--no-verify`. Do not stage unrelated dirty files.
 The commit lands on the daily Shotloom docs branch.
+After push, create or update the daily docs PR required by
+`agent/rules/shotloom-docs-lane.md`.
 
 If no edits were needed, do not create an empty commit.
 

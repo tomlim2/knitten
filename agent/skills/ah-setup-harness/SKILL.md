@@ -8,7 +8,7 @@ description: Connects external agent harnesses (Pi, Claude Code, Codex, Cursor) 
 Use this skill when installing a new AI coding agent on the machine, or when configuring an agent to access the agent-hub globally.
 
 ## Purpose
-The agent-hub is the durable source of truth for rules, standards, skills, and commands. This skill maps those durable folders to local deploy targets (like `~/.pi/settings.json` or `~/.claude/skills`).
+The agent-hub is the durable source of truth for entry documents, rules, standards, skills, and commands. This skill maps durable files and folders to local deploy targets (like `~/.codex/AGENTS.md`, `~/.pi/settings.json`, or `~/.claude/skills`).
 
 ## Execution Flow (MANDATORY)
 
@@ -32,7 +32,8 @@ node scripts/link-harnesses.mjs --dry-run --harness codex
 
 Check the dry-run output before asking to proceed:
 
-- Link-based harnesses must show `rules`, `standards`, `skills`, and `commands` mappings.
+- Link-based harnesses must show their entry document mapping plus `rules`, `standards`, `skills`, and `commands` mappings.
+- The entry document source must live under `agent/` (for example, `agent/CLAUDE.md` or `agent/AGENTS.md`); root entry documents are not canonical.
 - Existing harness-owned directories and hidden children, such as `~/.codex/skills/.system`, must be preserved; the installer syncs visible directory entries instead of replacing the whole directory.
 - Missing required mappings are install blockers; fix `agent/config/agent-hub.json` first.
 - Run `node scripts/validate-llm-first.mjs` after manifest edits.

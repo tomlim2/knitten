@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-20
+updated: 2026-05-21
 owner: agent-hub
 target-date:
 ---
@@ -22,6 +22,7 @@ copying everything into the core repository.
 | Artifact vocabulary | Define `agent artifact`, `artifact type`, `artifact pack`, `artifact manifest`, and `artifact resolver`. |
 | Core/external split | Define which artifacts remain in Knitten core and which move to an external artifact repository. |
 | Bootstrap skill definition | Define what qualifies as a Knitten bootstrap skill and decide whether bootstrap-skill gaps are filled by keeping, rewriting, or creating skills. |
+| Skill lifecycle management | Define one workflow owner for skill create, read/review, update, archive/delete, rename, and compatibility handling. |
 | Skill/guide boundary | Define what remains in thin executable skills and what moves to standards, guides, references, templates, or validators. |
 | Command retirement | Treat commands as legacy migration sources; convert command workflows to skills, aliases, or shims before removal. |
 | Inventory and classification | Produce a complete artifact inventory before any move. |
@@ -43,6 +44,7 @@ copying everything into the core repository.
 | `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
+| `skill-lifecycle-manager` | todo | Define skill CRUD and lifecycle management before broad skill inventory edits. |
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
@@ -64,6 +66,7 @@ copying everything into the core repository.
 | Inventory and classification | active | Schema contract, generated inventory output, and five-skill pilot classification exist; validator checks are next. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
+| Skill lifecycle manager | todo | Add a dedicated spec for skill CRUD/lifecycle management. |
 | Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
 | Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
@@ -86,26 +89,28 @@ copying everything into the core repository.
 4. Commands have a retirement plan: each command is converted to a skill, kept
    as a compatibility alias or shim, or scheduled for removal after reference
    scans pass.
-5. Command adapter behavior is decided per agent before command paths are
+5. Skill lifecycle management has one workflow owner for create, inspect/review,
+   update, rename, archive/delete, compatibility mapping, and validation.
+6. Command adapter behavior is decided per agent before command paths are
    removed.
-6. Every existing skill, command, rule, and standard has a staged
+7. Every existing skill, command, rule, and standard has a staged
    classification: `core-candidate`, `pack-candidate`, `deprecated`,
    `migrate-later`, or `undecided`.
-7. A new artifact repository migration plan defines order, compatibility shims,
+8. A new artifact repository migration plan defines order, compatibility shims,
    validation, rollback, and cleanup.
-8. Pack artifacts can be routed without duplicating them into Knitten core.
-9. Validators catch missing pack paths, duplicate names, and routing conflicts.
-10. Install, update, and uninstall flows are explicit and reversible.
-11. Public `knitten-core` release is blocked by public-safety and release gates.
-12. A public-safe example artifact pack proves the pack contract end to end.
-13. Compatibility shims have documented removal criteria before any old path is
+9. Pack artifacts can be routed without duplicating them into Knitten core.
+10. Validators catch missing pack paths, duplicate names, and routing conflicts.
+11. Install, update, and uninstall flows are explicit and reversible.
+12. Public `knitten-core` release is blocked by public-safety and release gates.
+13. A public-safe example artifact pack proves the pack contract end to end.
+14. Compatibility shims have documented removal criteria before any old path is
     deleted.
-14. Skill bodies have a documented boundary: executable workflow stays in
+15. Skill bodies have a documented boundary: executable workflow stays in
     skills; durable judgment, examples, contracts, and format policy move to
     standards, guides, references, templates, or validators.
-15. Pack discovery improves LLM decision quality by exposing compact route
+16. Pack discovery improves LLM decision quality by exposing compact route
     metadata before loading skill, reference, template, or domain bodies.
-16. Pilot migrations record decision-quality metrics: candidate count, loaded
+17. Pilot migrations record decision-quality metrics: candidate count, loaded
     skill bodies, loaded context bytes, must-not-load violations, canonical
     owner conflicts, and secondary route count.
 
@@ -297,6 +302,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 |----------|---------|
 | First spec | Start with `artifact-pack-vocabulary`, then `core-artifact-boundary`. |
 | Thin skill boundary | Define before inventory classification so every skill row can be classified by the same rule. |
+| Skill lifecycle manager shape | Default to one lifecycle skill that routes to specialized references before splitting create/update/delete into separate skills. |
 | Pack storage | Support local folders and git worktrees first; remote registries later. |
 | Artifact types | Skills, rules, standards, and legacy commands as migration sources. |
 | Harness support | Preserve Codex/Claude adapters instead of binding the architecture to one harness. |

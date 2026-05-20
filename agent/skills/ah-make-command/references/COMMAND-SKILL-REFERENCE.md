@@ -102,7 +102,7 @@ Run the git commit collector:
 ```markdown
 ---
 allowed-tools: Glob, Grep, Read, Edit
-description: Update entry documents based on codebase analysis
+description: Update deploy entry templates based on codebase analysis
 ---
 
 ## Step 1: Scan
@@ -114,7 +114,7 @@ description: Update entry documents based on codebase analysis
 - Identify conventions
 
 ## Step 3: Update
-- Edit entry document sections
+- Edit `agent/CLAUDE.md` or `agent/AGENTS.md` sections
 - Show diff before writing
 ```
 

@@ -1,10 +1,9 @@
 # AGENTS.md
 
-Codex entry document.
+Codex deploy entry document. Installed at `~/.codex/AGENTS.md` by `scripts/link-harnesses.mjs`.
 
-First shared-policy read: [`SYSTEM.md`](SYSTEM.md).
-Sibling entry document: [`CLAUDE.md`](CLAUDE.md).
-System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md).
+First shared-policy read: `SYSTEM.md`.
+System terms: [`docs/reference/system-glossary.md`](../docs/reference/system-glossary.md).
 
 ## Load Order
 

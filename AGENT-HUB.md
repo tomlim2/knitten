@@ -22,8 +22,8 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 
 | ID | Entry document | Deploy target |
 |----|----------------|---------------|
-| `claude-code` | `CLAUDE.md` | `~/.claude` |
-| `codex` | `AGENTS.md` | `~/.codex` |
+| `claude-code` | `agent/CLAUDE.md` | `~/.claude` |
+| `codex` | `agent/AGENTS.md` | `~/.codex` |
 | `pi` | `SYSTEM.md` | `~/.pi/agent/settings.json` |
 
 ## Shared Layers

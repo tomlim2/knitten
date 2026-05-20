@@ -23,10 +23,10 @@ After Step 1 resolves `$spec_path`, every stop writes one `.md` artifact:
 
 | Result | Artifact | Commit |
 |---|---|---|
-| Clean converged spec | `$agent_hub/docs/plans/proposed/<slug>.md` + `$agent_hub/docs/briefings/shotloom/<slug>.md` | Yes |
-| Step 2 factual stop | `$agent_hub/docs/plans/drafts/<slug>.md` | No |
-| Unconverged draft | `$agent_hub/docs/plans/drafts/<slug>-partial.md` | No |
-| Parallel or staged-delete spec | `$agent_hub/docs/plans/drafts/<slug>-claude.md` | No |
+| Clean converged spec | `$knitten/docs/plans/proposed/<slug>.md` + `$knitten/docs/briefings/shotloom/<slug>.md` | Yes |
+| Step 2 factual stop | `$knitten/docs/plans/drafts/<slug>.md` | No |
+| Unconverged draft | `$knitten/docs/plans/drafts/<slug>-partial.md` | No |
+| Parallel or staged-delete spec | `$knitten/docs/plans/drafts/<slug>-claude.md` | No |
 
 Pre-Step-1 failures stop without writing because no target path exists.
 
@@ -57,8 +57,8 @@ git_common="$(git rev-parse --git-common-dir)"
 origin="$(git remote get-url origin)"
 shotloom_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
 shotloom_root="${shotloom_root#RESOLVED_PATH=}"
-agent_hub="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo agent-hub)"
-agent_hub="${agent_hub#RESOLVED_PATH=}"
+knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="${knitten#RESOLVED_PATH=}"
 ```
 
 ```bash
@@ -75,19 +75,21 @@ fi
 
 Verify:
 - `/shotloom-start-task` has run and the user accepted the Ready briefing.
+  When invoked by `/shotloom-prepare-task`, its no-blocker orchestration counts
+  as Ready-briefing acceptance.
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
-- agent-hub/Knitten is on the daily Shotloom docs branch from
+- Knitten is on the daily Shotloom docs branch from
   `agent/rules/shotloom-docs-lane.md`: `codex/YYYYMMDD-shotloom-docs`.
-- `$agent_hub/docs/plans/proposed/` and `$agent_hub/docs/plans/drafts/` exist.
-- `$agent_hub/docs/briefings/shotloom/$slug.md` exists.
+- `$knitten/docs/plans/proposed/` and `$knitten/docs/plans/drafts/` exist.
+- `$knitten/docs/briefings/shotloom/$slug.md` exists.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Set `spec_path="$agent_hub/docs/plans/proposed/$slug.md"`. Surface spec slug, target,
+Set `spec_path="$knitten/docs/plans/proposed/$slug.md"`. Surface spec slug, target,
 briefing path, and Shotloom root.
 
 ### Step 2: Run Current-State Audit
 
-Read `briefing_path="$agent_hub/docs/briefings/shotloom/$slug.md"` first. Before
+Read `briefing_path="$knitten/docs/briefings/shotloom/$slug.md"` first. Before
 authoring, search the live Shotloom tree. Choose terms from the briefing,
 Linear, branch, AC, ADR, and affected modules. Search examples:
 [reference.md](reference.md).
@@ -107,9 +109,10 @@ skip commit, then ask for the split or scope decision.
 
 ### Step 3: Detect Create vs Update Mode
 
-Inspect `$spec_path`, `git status`, and `git show HEAD:docs/plans/proposed/<slug>.md`.
-Use Read for files present on disk. Use `git show HEAD:<path>` only for
-HEAD-only or deleted-at-HEAD content.
+Inspect `$spec_path`, `git -C "$knitten" status`, and
+`git -C "$knitten" show HEAD:docs/plans/proposed/<slug>.md`.
+Use Read for files present on disk. Use `git -C "$knitten" show HEAD:<path>`
+only for HEAD-only or deleted-at-HEAD content.
 
 | Disk | Index | HEAD | Action |
 |---|---|---|---|
@@ -189,25 +192,30 @@ and report the blocker.
 
 Continue only when Step 6a wrote directly to `$spec_path`.
 
-From `agent-hub`:
+From Knitten:
 
 ```bash
-git config user.name
-git config user.email
-git add docs/briefings/shotloom/<slug>.md
-git add docs/plans/proposed/<slug>.md
-git commit -m "docs(shotloom): spec <slug>"
-git push
+git -C "$knitten" config user.name
+git -C "$knitten" config user.email
+git -C "$knitten" add docs/briefings/shotloom/<slug>.md
+git -C "$knitten" add docs/plans/proposed/<slug>.md
+git -C "$knitten" commit -m "docs(shotloom): spec <slug>"
+git -C "$knitten" push
 ```
 
-Before commit, verify identity is `tomlim2 <tomandlim@gmail.com>`. If hooks
-fail, fix the cause and retry. Never use `--no-verify`.
+Before commit, verify the Knitten docs lane identity from
+`agent/rules/shotloom-docs-lane.md` (`tomlim2 <tomandlim@gmail.com>`). This is
+separate from the Shotloom implementation repo identity. If hooks fail, fix the
+cause and retry. Never use `--no-verify`.
 The commit lands on the daily Shotloom docs branch, not a per-STL Knitten
 branch.
 
 Commit only `docs/briefings/shotloom/<slug>.md` and
 `docs/plans/proposed/<slug>.md` unless the user explicitly requested skill or
 doc edits in the same turn.
+
+After push, create or update the daily docs PR required by
+`agent/rules/shotloom-docs-lane.md`.
 
 ### Step 7: Chain to Review or Stop
 

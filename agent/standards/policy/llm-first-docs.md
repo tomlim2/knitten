@@ -9,7 +9,7 @@ Operational standard implementing the agent-hub LLM-first charter (see `SYSTEM.m
 
 Applies unless one of three switches fires (see below). Non-exhaustive list of LLM-first artifacts:
 
-- `SYSTEM.md`, `AGENTS.md`, `CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
+- `SYSTEM.md`, `agent/AGENTS.md`, `agent/CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
 - Every agent-to-agent handoff: `asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts
 - Repo `README.md` (yes — even README), `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
 - PR bodies, commit messages, code comments, issue descriptions
@@ -145,7 +145,7 @@ Avoid:
 | Doc type | Budget | Why this limit |
 |----------|--------|----------------|
 | `SYSTEM.md` | ≤ 150 lines | Shared policy loaded by every entry document |
-| entry documents (`AGENTS.md`, `CLAUDE.md`) | ≤ 150 lines | Harness adapters loaded every cold-start |
+| entry documents (`agent/AGENTS.md`, `agent/CLAUDE.md`) | ≤ 150 lines | Harness adapters loaded every cold-start |
 | `rules/*.md` (auto, body) | ≤ 40 lines | Always in cold-start context — every line costs every turn |
 | `rules/*.md` (triggered, body) | ≤ 120 lines | Loads only on declared trigger — more room for detail |
 | `skills/*/SKILL.md` | ≤ 200 lines | Loaded when invoked; push reference detail to `reference.md` |

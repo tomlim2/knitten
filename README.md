@@ -3,9 +3,9 @@
 **LLM-first agent hub.** System docs, config, routing, skills, rules, and
 standards use `agent-hub`. Agent configuration — commands, skills, standards,
 rules, and machine config — is optimized for LLM efficiency, accuracy, and
-clarity. `agent/` is symlinked to `~/.claude`.
+clarity. Harness install scripts link deploy targets to this checkout.
 
-Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Entry documents: [`CLAUDE.md`](CLAUDE.md) for Claude Code, [`AGENTS.md`](AGENTS.md) for Codex. Editing standard: [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
+Canonical policy: [`SYSTEM.md`](SYSTEM.md). Agent hub overview: [`AGENT-HUB.md`](AGENT-HUB.md). Changelog: [`CHANGELOG.md`](CHANGELOG.md). System terms: [`docs/reference/system-glossary.md`](docs/reference/system-glossary.md). Deploy entry templates: [`agent/CLAUDE.md`](agent/CLAUDE.md) for Claude Code, [`agent/AGENTS.md`](agent/AGENTS.md) for Codex. Editing standard: [`agent/standards/policy/llm-first-docs.md`](agent/standards/policy/llm-first-docs.md). Human-readable output is delivered only on explicit user request.
 
 Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?" — start there.
 
@@ -17,14 +17,13 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 <agent-hub-checkout>/
 ├── SYSTEM.md                 # Shared agent-agnostic policy
 ├── AGENT-HUB.md              # Generated hub overview
-├── CLAUDE.md                 # Claude Code entry document
-├── AGENTS.md                 # Codex entry document
 ├── docs/
 │   ├── decisions/            # Accepted policy decisions and rationale
 │   ├── plans/                # Lifecycle-managed specs, plans, and reports
 │   └── reference/            # Lookup docs such as system glossary
-├── agent/                    # Symlinked to ~/.claude
-│   ├── CLAUDE.md             # Claude Code deploy shim
+├── agent/                    # Durable shared agent source
+│   ├── CLAUDE.md             # Claude Code deploy entry template
+│   ├── AGENTS.md             # Codex deploy entry template
 │   ├── rules/                # Always-applied constraints
 │   ├── standards/            # Reference docs, on-demand
 │   ├── commands/             # Slash command .md files
@@ -42,16 +41,25 @@ Counts are validated by `scripts/validate-llm-first.mjs`.
 ## Setup
 
 ```bash
-# macOS / Linux
-ln -s /path/to/agent-hub/agent ~/.claude
+# Inspect the planned harness links first.
+node scripts/link-harnesses.mjs --dry-run
 
-# Windows (admin PowerShell)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude" -Target "D:\vs\agent-hub\agent"
+# Apply after reviewing the dry run.
+node scripts/link-harnesses.mjs
 ```
 
-After symlinking, initialize machine config:
+For one harness only:
 
+```bash
+node scripts/link-harnesses.mjs --dry-run --harness codex
+node scripts/link-harnesses.mjs --harness codex
 ```
+
+The installer links `agent/CLAUDE.md` to `~/.claude/CLAUDE.md` and `agent/AGENTS.md` to `~/.codex/AGENTS.md`; do not create root entry documents by hand.
+
+After linking, initialize machine config:
+
+```text
 /ah-manage-config setup
 ```
 
@@ -76,12 +84,12 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Skills (143)
+## Skills (144)
 
 | Category | Count |
 |----------|------:|
+| `shotloom-*` | 28 |
 | `ah-*` | 27 |
-| `shotloom-*` | 27 |
 | `dev-*` | 24 |
 | `cci-*` | 10 |
 | `review-*` | 7 |

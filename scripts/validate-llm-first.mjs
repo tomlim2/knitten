@@ -424,18 +424,24 @@ async function llmFirstFiles() {
   files.push(
     ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => path.basename(f) === "SKILL.md"))
   );
-  for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md", "AGENTS.md", "CLAUDE.md"]) {
+  for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md"]) {
     const p = path.join(REPO_ROOT, name);
     if (existsSync(p)) files.push(p);
+  }
+  for (const entry of await harnessEntryDocuments()) {
+    if (existsSync(entry.file)) files.push(entry.file);
   }
   return files;
 }
 
 async function systemTerminologyFiles() {
   const files = [];
-  for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md", "AGENTS.md", "CLAUDE.md", "AGENT-HUB.md"]) {
+  for (const name of ["README.md", "LOOKUP.md", "SYSTEM.md", "AGENT-HUB.md"]) {
     const p = path.join(REPO_ROOT, name);
     if (existsSync(p)) files.push(p);
+  }
+  for (const entry of await harnessEntryDocuments()) {
+    if (existsSync(entry.file)) files.push(entry.file);
   }
   for (const dir of ["docs/decisions", "docs/plans", "docs/reference"]) {
     files.push(...(await walk(path.join(REPO_ROOT, dir), (f) => f.endsWith(".md"))));
@@ -444,6 +450,27 @@ async function systemTerminologyFiles() {
   files.push(path.join(AGENT_ROOT, "config", "agent-hub.json"));
   files.push(path.join(AGENT_ROOT, "config", "context-routing.json"));
   return files.filter((f) => existsSync(f));
+}
+
+async function harnessEntryDocuments() {
+  let manifest;
+  try {
+    manifest = await readJsonConfig("agent-hub.json");
+  } catch {
+    return [];
+  }
+  const seen = new Set();
+  const entries = [];
+  for (const harness of manifest.harnesses || []) {
+    if (!harness.entryDocument || seen.has(harness.entryDocument)) continue;
+    seen.add(harness.entryDocument);
+    entries.push({
+      file: path.join(REPO_ROOT, harness.entryDocument),
+      path: harness.entryDocument,
+      harness,
+    });
+  }
+  return entries;
 }
 
 // ---------- checks ----------
@@ -682,9 +709,9 @@ async function checkRepoPathReads() {
 
 async function checkImportTargets() {
   const violations = [];
-  const files = [path.join(REPO_ROOT, "CLAUDE.md"), path.join(AGENT_ROOT, "CLAUDE.md")];
-  const re = /@(\S+)/g;
-  for (const f of files) {
+  const entries = await harnessEntryDocuments();
+  for (const entry of entries) {
+    const f = entry.file;
     let text;
     try {
       text = await readFile(f, "utf8");
@@ -695,23 +722,23 @@ async function checkImportTargets() {
     const lines = text.split("\n");
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      let m;
-      re.lastIndex = 0;
-      while ((m = re.exec(line)) !== null) {
-        const spec = m[1];
-        let target;
-        if (spec.startsWith("~/.claude/")) {
-          target = path.join(AGENT_ROOT, spec.slice("~/.claude/".length));
-        } else {
-          target = path.resolve(path.dirname(f), spec);
-        }
+      const m = line.match(/^@(\S+)/);
+      if (!m) continue;
+      const spec = m[1];
+      let target;
+      if (spec.startsWith("~/.claude/")) {
+        target = path.join(AGENT_ROOT, spec.slice("~/.claude/".length));
+      } else if (entry.harness?.mappings?.[spec]) {
+        target = path.join(REPO_ROOT, entry.harness.mappings[spec]);
+      } else {
+        target = path.resolve(path.dirname(f), spec);
+      }
       if (!existsSync(target)) {
         violations.push({
           file: rel(f),
           line: i + 1,
           message: `broken @import: @${spec} -> ${rel(target)}`,
         });
-      }
       }
     }
   }
@@ -1560,6 +1587,16 @@ async function checkAgentHubManifest() {
     }
     if (harness.linkMethod === "symlink") {
       const mappings = harness.mappings || {};
+      if (harness.entryDocument) {
+        const targetName = path.basename(harness.entryDocument);
+        if (mappings[targetName] !== harness.entryDocument) {
+          violations.push({
+            file,
+            line: 1,
+            message: `harness ${harness.id} missing entry mapping ${targetName} -> ${harness.entryDocument}`,
+          });
+        }
+      }
       for (const layerId of REQUIRED_SYMLINK_LAYER_MAPPINGS) {
         if ((manifest.sharedLayers || []).some((layer) => layer.id === layerId) && !mappings[layerId]) {
           violations.push({
@@ -2385,10 +2422,16 @@ async function checkTaxonomy() {
 
 async function checkEntryDocuments() {
   const violations = [];
-  const entries = [
-    { file: "CLAUDE.md", marker: "@SYSTEM.md" },
-    { file: "AGENTS.md", marker: "[`SYSTEM.md`](SYSTEM.md)" },
-  ];
+  for (const rootEntry of ["CLAUDE.md", "AGENTS.md"]) {
+    if (existsSync(path.join(REPO_ROOT, rootEntry))) {
+      violations.push({
+        file: rootEntry,
+        line: 1,
+        message: "root entry documents are not canonical; use agent/ deploy entry templates",
+      });
+    }
+  }
+  const entries = await harnessEntryDocuments();
   const allowedClaudeRuleImports = new Set([
     "rules/index.md",
     "rules/ambiguity-scoring.md",
@@ -2400,32 +2443,33 @@ async function checkEntryDocuments() {
     "rules/verify-before-report.md",
   ]);
   for (const entry of entries) {
-    const f = path.join(REPO_ROOT, entry.file);
+    const f = entry.file;
+    const marker = entry.harness?.firstRead || "SYSTEM.md";
     let text;
     try {
       text = await readFile(f, "utf8");
     } catch {
-      violations.push({ file: entry.file, line: 0, message: "entry document not found" });
+      violations.push({ file: entry.path, line: 0, message: "entry document not found" });
       continue;
     }
-    const idx = text.indexOf(entry.marker);
+    const idx = text.indexOf(marker);
     if (idx === -1) {
       violations.push({
-        file: entry.file,
+        file: entry.path,
         line: 1,
-        message: `entry document must read SYSTEM.md first via ${entry.marker}`,
+        message: `entry document must read SYSTEM.md first via ${marker}`,
       });
       continue;
     }
     const before = text.slice(0, idx);
     if (/@~?\/?\.?claude\//.test(before) || /claude\/(rules|standards|skills|commands)\//.test(before)) {
       violations.push({
-        file: entry.file,
+        file: entry.path,
         line: 1,
         message: "entry document references shared layers before SYSTEM.md",
       });
     }
-    if (entry.file === "CLAUDE.md") {
+    if (entry.harness?.adapter === "claude") {
       const importRe = /^@~\/\.claude\/(rules|standards|skills|commands)\/(.+)$/gm;
       let m;
       while ((m = importRe.exec(text)) !== null) {
@@ -2433,7 +2477,7 @@ async function checkEntryDocuments() {
         const line = text.slice(0, m.index).split("\n").length;
         if (m[1] === "rules" && allowedClaudeRuleImports.has(importPath)) continue;
         violations.push({
-          file: entry.file,
+          file: entry.path,
           line,
           message: `entry document may import bootstrap rules only, not ${importPath}`,
         });
@@ -2449,11 +2493,10 @@ async function checkMarkdownLinks() {
     path.join(REPO_ROOT, "README.md"),
     path.join(REPO_ROOT, "LOOKUP.md"),
     path.join(REPO_ROOT, "SYSTEM.md"),
-    path.join(REPO_ROOT, "AGENTS.md"),
-    path.join(REPO_ROOT, "CLAUDE.md"),
     path.join(AGENT_ROOT, "rules", "index.md"),
     path.join(AGENT_ROOT, "standards", "index.md"),
   ];
+  files.push(...(await harnessEntryDocuments()).map((entry) => entry.file));
   files.push(...(await walk(path.join(REPO_ROOT, "docs"), (f) => f.endsWith(".md"))));
   const seen = new Set();
   const linkRe = /\[[^\]]+\]\(([^)]+)\)/g;
