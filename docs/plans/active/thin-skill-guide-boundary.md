@@ -403,12 +403,14 @@ Potential checks:
 
 ### Batch C: Inventory Schema Update
 
-1. Add the skill row and extraction item row fields from this spec to the
-   artifact inventory contract.
-2. Define the machine-readable inventory source for those rows.
-3. Update any inventory generator or template created by
+1. Done: Add the skill row and extraction item row fields from this spec to the
+   artifact inventory contract in `artifact-inventory-classification`.
+2. Done: Define the machine-readable inventory source and schema paths in
    `artifact-inventory-classification`.
-4. Validate that every skill can be classified without reading chat history.
+3. Pending: Update any inventory generator or template created by
+   `artifact-inventory-classification`.
+4. Pending: Validate that every skill can be classified without reading chat
+   history.
 
 ### Batch D: Pilot Classification
 

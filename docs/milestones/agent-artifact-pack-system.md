@@ -37,7 +37,7 @@ copying everything into the core repository.
 | Spec | Status | Role |
 |------|--------|------|
 | [artifact-pack-vocabulary.md](../plans/completed/artifact-pack-vocabulary.md) | completed | Define shared terms for artifacts, packs, manifests, and resolvers. |
-| `artifact-inventory-classification` | proposed | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
+| [artifact-inventory-classification.md](../plans/active/artifact-inventory-classification.md) | active | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
 | `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
@@ -58,10 +58,10 @@ copying everything into the core repository.
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
-| Inventory and classification | not started | Must produce the canonical artifact inventory before any move. |
+| Inventory and classification | active | Schema contract exists; generator and row population are next. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | active | Authoring gate wiring is done; inventory schema update is next. |
+| Thin skill / guide boundary | active | Inventory schema contract exists; generator and pilot classification are next. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |
@@ -127,6 +127,7 @@ Common fields:
 | Proposed destination | `knitten-core`, `knitten-private-pack`, domain pack, deprecated, migrate-later, or undecided. |
 | Compatibility need | Alias, shim, redirect, old path mapping, or none. |
 | Review state | pending, accepted, blocked, or moved. |
+| Classification stage | `undecided`, `core-candidate`, `pack-candidate`, `deprecated`, or `migrate-later`. |
 
 Skill row fields:
 

@@ -14,6 +14,7 @@ Shared JSON registries and public service configuration.
 | `audit-policy.json` | Garden/audit thresholds and severity tiers | committed |
 | `exceptions.json` | Grandfathered exceptions with reason, decision, review date | committed |
 | `repo-policy.schema.json` | Schema for machine-local repo path entries and optional `worktreePolicy` settings | committed |
+| `artifact-inventory.schema.json` | Schema for artifact inventory rows and skill extraction candidates | committed |
 | `.env` | All secret tokens (bot tokens, API keys) | gitignored |
 | `.env.example` | Template — which keys exist, no values | committed |
 | `slack.json` | Slack channels, bot name, message templates with no tokens | committed |
