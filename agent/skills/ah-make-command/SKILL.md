@@ -46,10 +46,10 @@ If the requested content is not an invocation wrapper, route it:
 | task workflow | `ah-make-skill` |
 | cross-skill criteria or policy | `ah-make-standard` |
 | reusable output body | `ah-manage-document-template` |
-| long examples | reference file |
+| long examples | owning command `agent/commands/references/<slug>.md` or owning authoring skill `references/` file |
 | exact allowed values or path contract | standard plus validator |
 
-Source contract: `docs/plans/active/thin-skill-guide-boundary.md`.
+Source contract: `thin-skill-guide-boundary` entry in `docs/milestones/agent-artifact-pack-system.md`.
 
 ---
 

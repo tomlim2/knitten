@@ -19,8 +19,11 @@ plans, and manifests.
 |-------|------|
 | skill | `agent/skills/<name>/SKILL.md` |
 | command | `agent/commands/<name>.md` |
+| skill reference | `agent/skills/<skill>/references/<slug>.md` |
+| command reference | `agent/commands/references/<slug>.md` |
 | rule | `agent/rules/<name>.md` |
 | standard | `agent/standards/<group>/<name>.md` |
+| document template | `agent/document-templates/<family>/<name>.md` |
 | plan | `docs/plans/<lifecycle>/<name>.md` |
 | decision | `docs/decisions/<id>-<name>.md` |
 | entry document | `SYSTEM.md`, `AGENTS.md`, `CLAUDE.md` |
@@ -36,6 +39,8 @@ plans, and manifests.
 | Delete skill | `agent/skills/ah-delete-skill/SKILL.md` |
 | Audit skill | `agent/skills/ah-audit-skill/SKILL.md` |
 | Create command | `agent/skills/ah-make-command/SKILL.md` |
+| Create skill reference | owning skill `agent/skills/<skill>/references/`; update the owner skill link |
+| Create command reference | `agent/commands/references/<slug>.md`; update the owner command link |
 | Create rule | `agent/skills/ah-make-rule/SKILL.md` |
 | Create standard | `agent/skills/ah-make-standard/SKILL.md` |
 | Manage document template lifecycle | `agent/skills/ah-manage-document-template/SKILL.md` |

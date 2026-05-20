@@ -219,10 +219,31 @@ Authoring integration:
 |------------------------------|---------|
 | "How do I decide between cases?" | `agent/standards/<domain>/<topic>.md` |
 | "What generated body is emitted?" | `agent/document-templates/**` |
-| "What are many examples?" | `agent/skills/<skill>/references/*.md` or pack reference |
+| "What are many examples?" | reference route owner |
 | "What exact path/name/status is allowed?" | standard plus validator |
 | "How do I call tools in order?" | keep in skill |
-| "What external repo policy applies?" | repo-local doc or future pack reference |
+| "What external repo policy applies?" | repo-local doc or reference route owner |
+
+### Reference Route Ownership
+
+Before writing a `reference` extraction target, assign one owning consumer.
+
+| Reference scope | Owner | Target path |
+|-----------------|-------|-------------|
+| one existing skill consumes it after route selection | owning skill | `agent/skills/<skill>/references/<slug>.md` |
+| one existing command consumes it after invocation | owning command | `agent/commands/references/<slug>.md` |
+| command authoring or skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
+| cross-skill decision criteria or policy | standard owner | not a reference; route to `agent/standards/<domain>/` |
+| reusable generated body | template owner | not a reference; route to `agent/document-templates/` |
+| domain-pack detail with no current core owner | artifact-pack manifest | inventory row with `target-path: undecided` until the manifest contract selects a path |
+
+Runtime load rule:
+
+| Condition | Action |
+|-----------|--------|
+| required before workflow step 1 | declare the reference in `context-references` |
+| only needed after mode or route selection | link it in the body; do not declare it in pre-route context |
+| no single owner exists | block the extraction and add an inventory blocker row |
 
 ### Inventory Model
 
@@ -301,11 +322,11 @@ Extraction target matrix:
 | `content-kind` | `extracted-artifact-type` | `artifact-subkind` | Default home |
 |----------------|---------------------------|--------------------|--------------|
 | `judgment` | `standard` | `rubric` | `agent/standards/<domain>/` |
-| `example` | `doc` | `example` | `agent/skills/<skill>/references/` or future pack reference |
+| `example` | `doc` | `example` | reference route owner |
 | `output-body` | `doc` | `document-template` | `agent/document-templates/` |
 | `naming-policy` | `standard` | `none` | `agent/standards/<domain>/` |
 | `lifecycle-policy` | `standard` | `guide` | `agent/standards/<domain>/` |
-| `domain-reference` | `doc` | `reference` | `undecided` until the pack boundary decides |
+| `domain-reference` | `doc` | `reference` | reference route owner or `undecided` until the pack boundary decides |
 | `machine-checkable-contract` | `script` | `validator-check` | `scripts/validate-llm-first.mjs` or future pack validator |
 
 Runtime load rule:
@@ -370,16 +391,7 @@ Potential checks:
    core boundary and artifact-pack manifest specs.
 3. Done: Attach this spec to the milestone.
 
-### Batch B: Inventory Schema Update
-
-1. Add the skill row and extraction item row fields from this spec to the
-   artifact inventory contract.
-2. Define the machine-readable inventory source for those rows.
-3. Update any inventory generator or template created by
-   `artifact-inventory-classification`.
-4. Validate that every skill can be classified without reading chat history.
-
-### Batch C: Authoring Gate Wiring
+### Batch B: Authoring Gate Wiring
 
 1. Done: Update `ah-make-skill` to run the skill creation gate before writing a new
    skill.
@@ -389,7 +401,18 @@ Potential checks:
    so extracted criteria and reusable bodies have canonical homes.
 4. Deferred: Add validator checks only after the pilot extraction proves the gate.
 
+### Batch C: Inventory Schema Update
+
+1. Add the skill row and extraction item row fields from this spec to the
+   artifact inventory contract.
+2. Define the machine-readable inventory source for those rows.
+3. Update any inventory generator or template created by
+   `artifact-inventory-classification`.
+4. Validate that every skill can be classified without reading chat history.
+
 ### Batch D: Pilot Classification
+
+Start this batch only after Batch C is complete.
 
 1. Select 5 skills from different families:
    - one `ah-*` lifecycle skill;

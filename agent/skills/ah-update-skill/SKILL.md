@@ -37,7 +37,8 @@ For one small requested change, use `ah-edit-skill`.
    - support files are referenced only when needed
    - commands and scripts are executable from documented paths
 4. Patch the skill in small groups.
-5. Move bulky templates or examples into local reference files if `SKILL.md` is too long.
+5. Move bulky templates or examples into
+   `agent/skills/<skill-name>/references/<slug>.md` if `SKILL.md` is too long.
 6. Update registries only when the skill's discovery or routing behavior changes.
 7. Refresh generated inventory if counts or generated blocks change.
 

@@ -37,7 +37,8 @@ This is not for creating, deleting, renaming, or broad policy refreshes.
    - `routing`
 5. Patch only the requested surface.
 6. Preserve unrelated user edits and local support files.
-7. Keep `SKILL.md` concise. Move long examples, templates, or logs into local reference files.
+7. Keep `SKILL.md` concise. Move long examples, templates, or logs into
+   `agent/skills/<skill-name>/references/<slug>.md`.
 
 ## Routing Edits
 

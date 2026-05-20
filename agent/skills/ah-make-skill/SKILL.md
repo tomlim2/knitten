@@ -35,7 +35,7 @@ creation and route to the owning artifact workflow.
 |-------------|-------|
 | standard | `ah-make-standard` |
 | document template | `ah-manage-document-template` |
-| reference | skill-local `references/` file or future pack reference |
+| reference | owning skill `agent/skills/<skill>/references/<slug>.md`; use an inventory blocker row when only a future pack can own it |
 | validator | `scripts/validate-llm-first.mjs` plus owning standard |
 
 Before writing files, run:
@@ -47,7 +47,7 @@ rg -n "<slug>|<route words>|<subject>" agent/skills agent/commands agent/standar
 If an existing router, lifecycle skill, or standard owns the route, update that
 canonical owner instead of adding a new skill.
 
-Source contract: `docs/plans/active/thin-skill-guide-boundary.md`.
+Source contract: `thin-skill-guide-boundary` entry in `docs/milestones/agent-artifact-pack-system.md`.
 
 ---
 

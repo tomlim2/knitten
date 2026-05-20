@@ -22,7 +22,8 @@ Do NOT use this when:
 - The content is a reusable tool/script → use `ah-make-skill` instead.
 - The content is a reusable output body: use `ah-manage-document-template`
   instead.
-- The content is a long example catalog: create a reference file instead.
+- The content is a long example catalog: route it to the owning skill reference,
+  owning command reference, or future pack blocker row.
 
 ---
 
@@ -48,7 +49,7 @@ If an existing standard owns the rule, update it. If the extracted content is a
 template body, route to `ah-manage-document-template`. If it is a workflow,
 route to `ah-make-skill`.
 
-Source contract: `docs/plans/active/thin-skill-guide-boundary.md`.
+Source contract: `thin-skill-guide-boundary` entry in `docs/milestones/agent-artifact-pack-system.md`.
 
 ---
 

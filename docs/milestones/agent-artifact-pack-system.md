@@ -61,7 +61,7 @@ copying everything into the core repository.
 | Inventory and classification | not started | Must produce the canonical artifact inventory before any move. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | active | Authoring gate wiring is done; pilot classification is next. |
+| Thin skill / guide boundary | active | Authoring gate wiring is done; inventory schema update is next. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |

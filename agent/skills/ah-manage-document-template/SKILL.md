@@ -71,7 +71,7 @@ template family names one.
 |----------------|--------|
 | reusable output body | create or update a document template |
 | cross-skill criteria | route to `ah-make-standard` |
-| long example set | create a reference file |
+| long example set | route to the owning skill reference, `agent/commands/references/<slug>.md`, or future pack blocker row |
 | executable workflow | keep in or route to a skill |
 | validator contract | route to standard plus validator |
 
