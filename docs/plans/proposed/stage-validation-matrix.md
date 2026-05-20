@@ -46,6 +46,7 @@ briefing: ../../briefings/shotloom/stage-validation-matrix.md
 | Core display-name validation | `crates/shotloom-core/src/model/mod.rs::validate_display_name` | Already Done / Reuse | Existing display-name validation should remain the owner for Stage and StageElement display-name failures and bridge `INVALID_DISPLAY_NAME`. |
 | Bridge wire contract | `crates/shotloom-core/src/bridge/mod.rs`, `apps/editor/src/bridge/types.ts` | Already Done / Do not change | Stage command/event/rejection-code vocabulary landed before this task; STL-492 must reuse `INVALID_STAGE_PAYLOAD` rather than adding a new code unless the user expands scope. |
 | Fixture load-gate pattern | `crates/shotloom-core/tests/fixtures/README.md` and `tests/bundle_fixtures.rs` | Already Done / Optional proof | Existing malformed bundle fixtures prove load-stage attribution. Use this only if direct validator tests do not prove persisted-shot attribution clearly enough. |
+| Closed reference branch | PR #360 `feat/bridge-add-stage-authoring-contract` | Reference Only | The closed 6821-line PR had early Stage tag/options validation, but it folded those checks into `validate_stage_refs` and reused display-name validation for tags. Treat it as precedent for test shapes and rejection mapping only; current `origin/main` and this STL-492 spec supersede its validator layering. |
 
 ## Linear Briefing
 
@@ -58,7 +59,7 @@ briefing: ../../briefings/shotloom/stage-validation-matrix.md
 | Acceptance criteria | Stage tags max 32 plus display-name validation and normalization; StageRenderable options max 8192 bytes and depth 8; bundle-format compatibility decision; bridge rejection matrix cross-check; tests/fixtures if needed. |
 | Latest relevant comment | N/A |
 | Blockers / dependencies | Parent `STL-479`; related `STL-480`. Work can run before or after STL-479 but must rebase if constants or rejection codes change. |
-| Related PRs | PR #370 merged Stage wire contract into `origin/main`; it left concrete renderable options bounds for a follow-up. |
+| Related PRs | PR #360 was closed as too large and split; PR #370 merged Stage wire contract into `origin/main`; it left concrete renderable options bounds for a follow-up. |
 | Current review state | No PR for STL-492 yet. |
 | Planning consequence | Keep this PR small and upstream of runtime handlers: core constants/validator proof plus durable docs, not command handler behavior. |
 
@@ -93,7 +94,9 @@ locks that matrix first.
    - Verification: V1, V2.
 2. Define a Stage tag canonicalization helper that trims leading/trailing
    whitespace, rejects empty results, preserves case, preserves first-seen
-   order, and removes exact duplicates after trimming.
+   order, and removes exact duplicates after trimming. Stage tags are not
+   display names: do not reuse the display-name grammar or codepoint cap for
+   tag validation.
    - Trace: STL-492 normalization AC and existing safe tag vocabulary.
    - Stage: S1.
    - Verification: V1.
@@ -155,6 +158,29 @@ locks that matrix first.
     - Trace: STL-492 test/fixture AC.
     - Stage: S4.
     - Verification: V1 through V7.
+
+## Closed PR Reference
+
+PR #360 remains useful as a source branch for split work, but STL-492 should
+not re-land its validator design verbatim. Relevant observations:
+
+- Keep: `INVALID_STAGE_PAYLOAD` was the bridge-level rejection code for invalid
+  Stage tags and oversized/deep renderable options.
+- Keep: tests should cover helper behavior, bridge/bundle rejection wiring, and
+  no-partial-mutation consumers in STL-479.
+- Change: #360 placed tag/options validation inside `validate_stage_refs`.
+  STL-492 must keep reference validation and content validation separate so
+  diagnostics and future handler consumers can distinguish dangling references
+  from malformed persisted Stage content.
+- Change: #360's `validate_stage_tags` reused `validate_display_name`, which
+  made tags inherit the display-name grammar. STL-492 treats tags as bounded
+  safe user strings with trim/dedupe canonicalization and a 128-byte cap.
+- Change: #360 did not model StageElement display-name validation as its own
+  persisted content obligation. STL-492 covers both Stage and StageElement
+  display names through the existing display-name helper.
+
+Current `origin/main` remains the implementation authority. The closed PR is
+only a reference for review history and test ideas.
 
 ## Validator Contract Matrix
 
@@ -218,12 +244,14 @@ locks that matrix first.
 
    Rationale: command/input paths can trim accidental UI whitespace before
    persistence while preserving user-authored case and source vocabulary. Load
-   validation then checks the persisted value is already canonical. Case folding
-   would be a product semantics decision and could collapse distinct upstream
-   labels.
+   validation then checks the persisted value is already canonical. Tags are not
+   display names, so they should not inherit the display-name codepoint grammar
+   or 64-codepoint cap from the closed #360 branch. Case folding would be a
+   product semantics decision and could collapse distinct upstream labels.
 
    Rejected alternatives: lowercase all tags; slugify tags; preserve duplicate
-   tags; reject any tag that changes under trimming.
+   tags; reject any tag that changes under trimming; reuse
+   `validate_display_name` for tags.
 
 4. **Stage tag byte limit follows the background-prop safe-tag precedent.**
 
@@ -472,10 +500,14 @@ Manual review proof:
 
 - Do not make the PR docs-only; without executable constants/tests, STL-479 can
   still drift.
+- Do not copy PR #360's validator layering verbatim; tag/options content checks
+  must not be hidden inside `validate_stage_refs`.
 - Do not add new bridge rejection codes for tag/options bounds unless the user
   explicitly expands scope.
 - Do not silently truncate tags or options during load.
 - Do not lowercase or slugify Stage tags as part of canonicalization.
+- Do not validate Stage tags with `validate_display_name`; only Stage and
+  StageElement display names use that helper.
 - Do not implement STL-479 handlers while wiring validator calls.
 - Do not weaken existing asset-reference validation by replacing catalog-aware
   paths with a no-context helper.
