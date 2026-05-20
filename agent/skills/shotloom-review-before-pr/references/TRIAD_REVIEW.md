@@ -27,7 +27,7 @@ after fixes change `HEAD`.
 | Performance | Does the diff add hot-path allocation, serialization, IO, locks, or frame-budget risk? |
 | Maintainability | Does the diff add speculative public surface, drift-prone duplication, or unclear ownership? |
 | Scope control | Does the PR stay inside the issue boundary and leave unrelated refactors out? |
-| Docs/handoff | Can the PR body, comments, and durable docs explain the changed contract and tests? |
+| Handoff evidence | Are contract impact, tests, and accepted follow-ups clear enough for the later docs/make-pr phases? |
 
 ## Role Lenses
 
@@ -35,7 +35,7 @@ after fixes change `HEAD`.
 |---|---|
 | Runtime/Contract Engineer | Bridge DTOs, commands, events, serde/default semantics, saved-data compatibility, event order, runtime/editor observation order, rollback paths |
 | QA/Test Automation Engineer | Missing negative tests, weak assertions, fixture rationale, no-mutation checks, fallback branches, flake risk, command rejection matrix |
-| Maintainer/Product Engineer | Reviewable scope, debug UX, operational support cost, naming, helper ownership, docs and PR evidence, follow-up boundaries |
+| Maintainer/Product Engineer | Reviewable scope, debug UX, operational support cost, naming, helper ownership, handoff evidence, follow-up boundaries |
 
 ## Role Subagent Prompt
 
@@ -55,7 +55,7 @@ Do not edit files, stage, commit, push, post comments, or change Linear.
 ## Triad role review - <role> - branch <branch>
 
 ### Applicability
-- Shared checklist: correctness, regression risk, test coverage, data/state consistency, error handling, API/contract consistency, security/safety, performance, maintainability, scope control, docs/handoff
+- Shared checklist: correctness, regression risk, test coverage, data/state consistency, error handling, API/contract consistency, security/safety, performance, maintainability, scope control, handoff evidence
 - Role lens: <role lens>
 - Files checked: <list>
 - Context checked: <directly related specs/docs/contracts/issues or N/A>
@@ -73,7 +73,7 @@ Do not edit files, stage, commit, push, post comments, or change Linear.
 | Performance | clean/P0/P1/P2/P3 | <path:line or reason> |
 | Maintainability | clean/P0/P1/P2/P3 | <path:line or reason> |
 | Scope control | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Docs/handoff | clean/P0/P1/P2/P3 | <path:line or reason> |
+| Handoff evidence | clean/P0/P1/P2/P3 | <path:line or reason> |
 
 ### Findings
 - clean
@@ -93,7 +93,7 @@ Do not edit files, stage, commit, push, post comments, or change Linear.
 - Keep the highest priority across role reports.
 - If roles disagree about whether a behavior is a defect, mark
   `needs-design-judgment` and list both role names.
-- Treat P0-P2 as blocking until fixed or explicitly accepted for the PR body.
+- Treat P0-P2 as blocking until fixed or explicitly accepted for later handoff.
 - Treat P3/nit as optional once; do not loop only for nits.
 
 ## Verification Pass

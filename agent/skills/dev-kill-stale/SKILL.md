@@ -1,7 +1,7 @@
 ---
 description: "Kill stale python/node processes exceeding a time limit — for experiments, solvers, or quick compute tasks."
-allowed-tools: Bash(ps:*), Bash(kill:*), Bash(ls:*)
 argument-hint: "[time_limit_seconds]"
+allowed-tools: Bash(ps:*), Bash(kill:*), Bash(ls:*)
 ---
 
 # dev-kill-stale

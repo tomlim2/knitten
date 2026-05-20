@@ -5,7 +5,11 @@ status: accepted
 # Large Boundary PR Lenses
 
 Use this reference from `shotloom-review-before-pr` when a Shotloom PR crosses
-bridge, model, runtime, editor, fixture, and docs boundaries.
+bridge, model, runtime, editor, fixture, and contract-doc boundaries.
+
+Large-boundary batches own cross-surface consistency only. They do not perform
+general code review, broad docs review, PR body review, or merge readiness
+checks; those belong to Triad, Docs, `shotloom-make-pr`, or PR monitoring.
 
 ## Trigger
 
@@ -29,8 +33,8 @@ Run large boundary lens batching when the diff touches two or more rows:
 | A Shape | Surface Map, Diff Risk Classification, Contract Mirror | Stop if mirror mismatch or undocumented public field exists. |
 | B Behavior | Negative Path Coverage, Atomicity/Rollback, Ownership Boundary | Stop if data loss, partial mutation, or missing P0-P2 rejection coverage exists. |
 | C Runtime/UI | Event Sequencing, State Sync, TS/Editor Consumer | Stop if UI cannot observe state transition or stale state can remain. |
-| D Docs/Handoff | Docs-As-Contract, Existing Section Drift, PR Body Evidence | Stop if docs describe a false wire shape or omit a new public contract field. |
-| E Final | Prior Finding Verification, Regression Scan, Merge Readiness | Stop if a prior P0-P2 finding is not directly verified on current `HEAD`. |
+| D Contract Docs | Docs-As-Contract, Existing Contract Section Drift | Stop if contract docs describe a false wire shape or omit a new public contract field. |
+| E Boundary Verify | Prior Boundary Finding Verification, Boundary Regression Scan | Stop if a prior boundary P0-P2 finding is not directly verified on current `HEAD`. |
 
 ## Trigger-To-Batch Map
 
@@ -61,12 +65,10 @@ Run large boundary lens batching when the diff touches two or more rows:
 | Event Sequencing | Verify success echo, state cleanup, and `BundleChanged` order match consumer needs. |
 | State Sync | Verify selection, active IDs, cache maps, and desired runtime entities cannot remain stale. |
 | TS/Editor Consumer | Verify optional/required fields and discriminants match Rust wire semantics. |
-| Docs-As-Contract | Verify command matrix, event payloads, rejection catalog, and existing sections match current code. |
-| Existing Section Drift | Search old docs sections for new field/event/code names and update nearby stale prose. |
-| PR Body Evidence | Verify PR body lists contract/API impact, test commands, and follow-up issues. |
-| Prior Finding Verification | Re-open every previous P0-P2 finding and cite the exact current evidence that fixes it. |
-| Regression Scan | Inspect the files touched by fixes for new mismatches introduced after earlier batches. |
-| Merge Readiness | Confirm latest checks are green and remaining findings are only P3/nit or accepted follow-ups. |
+| Docs-As-Contract | Verify command matrix, event payloads, rejection catalog, and contract sections match current code. |
+| Existing Contract Section Drift | Search contract docs for changed field/event/code names and update nearby stale contract prose. |
+| Prior Boundary Finding Verification | Re-open every previous boundary P0-P2 finding and cite the exact current evidence that fixes it. |
+| Boundary Regression Scan | Inspect files touched by boundary fixes for new cross-surface mismatches. |
 
 ## Result Template
 

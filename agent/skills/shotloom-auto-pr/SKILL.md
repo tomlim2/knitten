@@ -266,11 +266,12 @@ End of react cycle, after any push lands + CI green:
   ```
 - **Do NOT auto-invoke `gh pr merge`.** Merge is a state-changing PR action. The skill's blanket approval-exempt scope (`feedback_auto_pr_approval_exempt`) covers comments / pushes / inline replies — NOT merge. Per `rules/git-defaults.md`, every PR-state-changing action requires explicit per-PR user approval.
 - The user reads `log.md` (or the watcher's terminal handler when `state==MERGED` later observes the merge from a manual `gh pr merge`) and decides when to merge.
-- Do not include `--delete-branch` in the suggested merge command. Task
-  branches can be checked out by a worktree, so branch deletion belongs to the
-  post-merge worktree cleanup step after the worktree is removed. `gh pr merge
-  --delete-branch` can report a local main-worktree checkout conflict after the
-  GitHub merge already succeeded; keep merge and cleanup as separate operations.
+- Do not include `--delete-branch` in suggested or user-approved merge commands.
+  Task branches can be checked out by a worktree, so branch deletion belongs to
+  a separate cleanup step. `gh pr merge --delete-branch` can report a local
+  main-worktree checkout conflict after the GitHub merge already succeeded; keep
+  merge and cleanup as separate operations. If remote branch deletion is
+  requested, run `git push origin --delete <headRefName>` after the PR is merged.
 
 This is the architectural decision recorded as P0 from the 2026-04-25 skill audit: the prior auto-merge step exceeded the documented exemption.
 

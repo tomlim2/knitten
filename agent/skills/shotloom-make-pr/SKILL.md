@@ -1,7 +1,7 @@
 ---
 description: Draft and open a Shotloom PR per repo guideline, with local gates and approval before `gh pr create`
 argument-hint: "[pr-number-to-supersede]"
-allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*)
+allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -34,6 +34,7 @@ PR body and ask before posting any redirect comment.
 - **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
 - **All PR body text in English** (Shotloom convention).
+- **Assign every PR to `@me`.** This applies to both draft and ready-for-review PRs.
 
 ## Workflow
 
@@ -60,11 +61,42 @@ worktree="$toplevel"
 
 ```bash
 cd "$worktree"
-git status                                      # working tree clean
-git log -1 --format="%an <%ae>"                  # tomlim2 <deemo@vonvon.me>
-gh auth status 2>&1 | grep -E "Active|account"   # tomlim2 active
-git rev-parse --abbrev-ref HEAD                  # current branch (NOT main)
-git log --oneline origin/main..HEAD || git log --oneline main..HEAD
+git fetch origin main
+
+status=$(git status --short)
+[ -z "$status" ] || { echo "ERROR: working tree is not clean"; git status --short; exit 1; }
+
+identity="$(git config user.name) <$(git config user.email)>"
+[ "$identity" = "tomlim2 <deemo@vonvon.me>" ] || {
+  echo "ERROR: git identity must be tomlim2 <deemo@vonvon.me> (got: $identity)"
+  exit 1
+}
+
+gh_login=$(gh api user --jq .login 2>/dev/null) || {
+  echo "ERROR: unable to read active GitHub login"
+  exit 1
+}
+[ "$gh_login" = "tomlim2" ] || {
+  echo "ERROR: active GitHub login must be tomlim2 (got: $gh_login)"
+  exit 1
+}
+
+default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
+default_branch="${default_branch#origin/}"
+[ -n "$default_branch" ] || default_branch="main"
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+[ "$branch" != "main" ] && [ "$branch" != "$default_branch" ] || {
+  echo "ERROR: HEAD is the default branch ($branch)"
+  exit 1
+}
+
+ahead_count=$(git rev-list --count "origin/main..HEAD")
+[ "$ahead_count" -gt 0 ] || {
+  echo "ERROR: branch has no commits ahead of origin/main"
+  exit 1
+}
+git log --oneline origin/main..HEAD
 ```
 
 Stop on any failure. **Refuse to proceed if `HEAD` is `main` or the default branch** — almost certainly invoked from the wrong worktree.
@@ -77,8 +109,8 @@ Stop on any failure. **Refuse to proceed if `HEAD` is `main` or the default bran
 Read: $worktree/docs/guidelines/pr-guideline.md
 Read: $worktree/.github/pull_request_template.md
 Read: $worktree/docs/guidelines/commit-guideline.md   # title format only
-git diff origin/main..HEAD                            # the actual code
-git diff --stat origin/main..HEAD                     # file list for grounding
+git diff origin/main...HEAD                           # actual branch changes
+git diff --stat origin/main...HEAD                    # file list for grounding
 ```
 
 **Do NOT read for drafting purposes:** past PR bodies, Linear issue
@@ -141,6 +173,10 @@ in the title.
 
 **Issue linkage in `## Related Issues`** — pick `Resolves` / `Part of` / `No issue` per `docs/guidelines/pr-guideline.md` § 4. Decision rule: "after this PR merges, is there meaningful work left in the named issue?" Yes → `Part of`, No → `Resolves`. Do NOT include umbrella / parent issues — Linear's parent-child relation already shows the tree.
 
+**Supersedes linkage** — if the skill argument names prior PR numbers, add one
+`Supersedes #<prior-pr>` line per prior PR in `## Related Issues` before the
+first `gh pr create`. Accept comma-separated prior PRs as a list.
+
 **Do NOT write while drafting:** qualitative adjectives, future work,
 sibling/umbrella PR content, invented sections, unsupported numbers, or
 internal tool names. State concrete checks without wrapper names.
@@ -154,6 +190,8 @@ Print drafted title + body, ask:
 > `gh pr create` 실행해도 될까요? (draft / ready-for-review)
 
 **Wait for explicit user approval. Do NOT run `gh pr create` until yes.**
+Record the approved visibility as `pr_visibility=draft` or
+`pr_visibility=ready-for-review`.
 
 ### Step 7: On approval — create PR
 
@@ -163,43 +201,75 @@ cat > "$body_file" <<'EOF'
 <body>
 EOF
 
-gh pr create --base main --head <branch> --draft \
-  --title "<title>" \
-  --body-file "$body_file"
+if [ "$pr_visibility" = "ready-for-review" ]; then
+  gh pr create --base main --head <branch> \
+    --assignee @me \
+    --title "<title>" \
+    --body-file "$body_file"
+else
+  gh pr create --base main --head <branch> --draft \
+    --assignee @me \
+    --title "<title>" \
+    --body-file "$body_file"
+fi
 
 rm -f "$body_file"
+pr_number=$(gh pr view --json number --jq .number)
+pr_url=$(gh pr view --json url --jq .url)
 ```
 
-Default to `--draft` unless user explicitly said "ready-for-review". Draft → ready is easy; ready → draft is noisy.
+Default to `--draft` unless the user explicitly said "ready-for-review".
+Draft → ready is easy; ready → draft is noisy.
 
 Do not pass PR markdown through `--body "..."`. Backticks, `$...`, and command
 snippets in the body can be interpreted by the shell before `gh` receives them.
 After creation, inspect `gh pr view <N> --json body` before reporting success.
+
+### Step 7a: Ready-for-review follow-up
+
+If `pr_visibility=ready-for-review`, run `references/ready-for-review.md`
+after the PR is created and before the final handoff:
+
+1. Confirm CI checks have appeared for the new PR.
+2. Post `/claude-review` as a PR comment.
+3. Confirm Claude review activity is visible.
+4. Ask the user which reviewer to request. Do not add a human reviewer until
+   the user answers with a GitHub login.
+
+Skip this follow-up for draft PRs unless the user explicitly asks to mark the PR
+ready for review in the same session.
 
 ### Step 8: Supersedes handling (if argument given)
 
 The redirect comment posted to the prior PR is a PR-level comment.
 Ask before posting it.
 
-1. Draft `Superseded by #<new-pr> - <one-line rationale>.`
-2. Show the draft and ask before posting.
-3. On approval:
+1. Confirm the new PR body already contains one `Supersedes #<prior-pr>` line
+   per prior PR.
+2. Draft one redirect comment per prior PR:
+   `Superseded by #<new-pr> - <one-line rationale>.`
+3. Show the drafts and ask before posting.
+4. On approval:
    ```bash
-   comment_file=$(mktemp)
-   printf '%s\n' 'Superseded by #<new-pr> — <one-line rationale>.' > "$comment_file"
-   gh pr comment <prior-pr> --body-file "$comment_file"
-   rm -f "$comment_file"
+   for prior_pr in <prior-pr-list>; do
+     comment_file=$(mktemp)
+     printf '%s\n' 'Superseded by #<new-pr> - <one-line rationale>.' > "$comment_file"
+     gh pr comment "$prior_pr" --body-file "$comment_file"
+     rm -f "$comment_file"
+   done
    ```
-4. Add `Supersedes #<prior-pr>` to the new PR body.
 
 If the user declines or wants a different rationale, do not post; loop back with a fresh draft.
 
 ### Step 9: Linear update
 
-If the PR references `STL-NN`, add/link the PR in Linear when the
-integration has not already done so. For ready-for-review PRs, move the
-issue to `In Review`; skip for draft PRs unless the user asked for a
-ready PR.
+If the PR references `STL-NN` and a Linear connector/tool is available in the
+current harness, fetch that issue, add or verify the PR link, and move it to
+`In Review` for ready-for-review PRs. Skip the state move for draft PRs unless
+the user asked for a ready PR.
+
+If no Linear connector/tool is visible, report
+`Linear update skipped — connector unavailable`; do not block PR creation.
 
 ### Step 10: Report + handoff
 
@@ -207,6 +277,7 @@ Report the PR URL + one-line status. Do NOT push further commits
 without being asked.
 
 **Briefing tone:** report in Korean, one level above the PR body.
+
 Lead with the subsystem and contract the PR advances, then give URL,
 draft/ready status, and one next action. Do not paste the PR body back.
 
@@ -214,11 +285,12 @@ Step 6 still prints the literal English body verbatim.
 
 Offer one follow-up only if useful: `/shotloom-auto-pr <PR-number>` for
 active handling or `/shotloom-watch-pr <PR-number>` for passive watching.
-Post-create devlog, CI waiting, and Claude review details live in
-`reference.md`.
+Post-create devlog details live in `reference.md`. Ready-for-review CI and
+Claude review handoff lives in `references/ready-for-review.md`.
 
 ## Related
 
 - `docs/guidelines/pr-guideline.md` - authoritative PR body spec.
 - `docs/guidelines/commit-guideline.md` - title format.
 - `reference.md` - post-create handoff and devlog details.
+- `references/ready-for-review.md` - post-create ready-for-review follow-up.

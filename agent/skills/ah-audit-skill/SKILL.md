@@ -1,21 +1,25 @@
 ---
-description: "Depth-first audit of a single skill against LLM-first standards + workflow logic gaps (env vars, step deps, path claims, idempotency, cross-machine portability)."
-argument-hint: "<skill-name>"
-allowed-tools: Read, Bash(jq:*), Bash(grep:*), Bash(git:*), Bash(rg:*), Bash(test:*), Bash(ls:*), Bash(wc:*), Glob
+description: "Depth-first audit of a single skill or command against LLM-first standards and workflow logic gaps."
+argument-hint: "<skill-or-command-name|path>"
+allowed-tools: Read, Bash(bash:*), Bash(jq:*), Bash(grep:*), Bash(git:*), Bash(rg:*), Bash(test:*), Bash(ls:*), Bash(wc:*), Glob
+platforms: all
+portability: adapter
 ---
 
 # ah-audit-skill
 
-Depth-first audit of one named skill (commands or skills/) against the LLM-first stack and workflow-logic gaps that batch reviewers (`/ah-review-skills`) miss. Reports defects; does NOT auto-fix.
+Depth-first audit of one named skill or command against the LLM-first stack and
+workflow-logic gaps that batch reviewers miss. Reports defects; does not
+auto-fix.
 
 ## Arguments
 
-- `<skill-name>` — skill folder name (e.g. `ah-manage-config`) or command stem (e.g. `ah-review-skills`).
+- `<skill-or-command-name|path>` — skill folder name, command stem, or direct file path.
 
 **If no argument provided, show usage and stop. NEVER auto-execute.**
 
 ```
-Usage: /ah-audit-skill <name>
+Usage: /ah-audit-skill <name-or-path>
 Examples:
   /ah-audit-skill ah-manage-config
   /ah-audit-skill shotloom-make-pr
@@ -25,138 +29,81 @@ Examples:
 
 | File | Used for |
 |------|----------|
-| `~/.claude/standards/policy/llm-first-docs.md` | 7 writing rules + length budget + self-audit list |
-| `~/.claude/standards/policy/llm-first-policy.md` | Layer assignment + duplication + cross-layer reference |
-| `~/.claude/rules/author.md` | Naming, frontmatter, `allowed-tools` for skill / command |
+| `agent/standards/policy/llm-first-docs.md`, else installed `llm-first-docs.md` | Writing rules, length budget, self-audit list |
+| `agent/standards/policy/llm-first-policy.md`, else installed `llm-first-policy.md` | Layer assignment, duplication, cross-layer reference |
+| `agent/rules/author.md`, else installed `author.md` | Naming, frontmatter, `allowed-tools` |
+| `references/AUDIT-CHECKS.md` | Audit check matrix, status rules, and report template |
 
 ## Resolve target
 
 ```bash
-name="$ARGUMENTS"
-skill="$HOME/.claude/skills/$name/SKILL.md"
-cmd="$HOME/.claude/commands/$name.md"
-[ -f "$skill" ] && target="$skill"
-[ -f "$cmd" ] && target="$cmd"
-[ -z "${target:-}" ] && { echo "ERROR: $name not found in skills/ or commands/"; exit 1; }
+input="$ARGUMENTS"
+repo=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+case "$input" in
+  /*) candidates=("$input") ;;
+  ./*|../*|*/*) candidates=("$input" "$repo/$input") ;;
+  *) candidates=(
+    "$repo/agent/skills/$input/SKILL.md"
+    "$repo/agent/commands/$input.md"
+    "$HOME/.claude/skills/$input/SKILL.md"
+    "$HOME/.claude/commands/$input.md"
+  ) ;;
+esac
+for candidate in "${candidates[@]}"; do
+  [ -f "$candidate" ] && { printf '%s\n' "$candidate"; exit 0; }
+done
+echo "ERROR: $input not found as a file, repo-local skill/command, or installed skill/command" >&2
+exit 1
 ```
 
-## Checklist (each hit = one finding row)
-
-### W. LLM-first writing (from llm-first-docs.md §7 rules + §8 Extreme-S)
-
-| ID | Check | Detection |
-|----|-------|-----------|
-| W1 | Actionability — banned hedges | `rg -nw 'consider\|usually\|typically\|may\|should probably\|might want to'` |
-| W2 | Explicit enumeration — no `etc.` / `…` ending a list | `rg -n 'etc\.\|…\|\.\.\.\s*$'` (excluding code blocks) |
-| W3 | Decision-tree structure | Branches use `If X → Y` or `if/else` headers, not prose `"when …, you usually …"` |
-| W4 | Self-contained | Rules that say "follow X standard" without inline summary |
-| W5 | Paired examples | For boundary-setting rules (naming, format), Bad+Good both shown |
-| W6 | No duplication | Content not copy-pasted from another auto-loaded rule/standard |
-| W7 | No rhetoric | `rg -nw 'powerful\|elegant\|comprehensive\|world-class\|seamless\|robust'` |
-| W8 | Extreme-S — no N-language | `rg -n 'will support\|going to\|aims to\|goal is to\|could\|probably\|in theory\|might\|this represents\|in essence'` |
-
-### B. Length budget (llm-first-docs.md §Length budget — canonical reference)
-
-| ID | Check (per-target) |
-|----|---------------------|
-| B1 | Apply the budget that matches the target type: skills/SKILL.md ≤ 200, commands ≤ 100, auto rule body ≤ 40, triggered rule body ≤ 120, standards ≤ 500, SYSTEM.md ≤ 150, entry documents ≤ 150. Over budget → split to `reference.md` or push detail down a layer. |
-
-### F. Frontmatter (rules/author.md — Frontmatter + Permissions sections)
-
-| ID | Check |
-|----|-------|
-| F1 | `description` present and one sentence |
-| F2 | `argument-hint` present iff skill accepts `$ARGUMENTS` |
-| F3 | Field order: `description` → `argument-hint` → `allowed-tools` |
-| F4 | `allowed-tools` patterns specific — no bare `Bash` |
-
-### N. Naming (rules/author.md — Naming section)
-
-| ID | Check |
-|----|-------|
-| N1 | Folder/file name matches `{category}-{verb}-{subject}` |
-| N2 | Lowercase + hyphens only, ≤ 64 chars |
-| N3 | Category from approved list (`cci`, `ue`, `dev`, `review`, `git`, `tutoring`, `writing`, `drink`, `design`, `consulting`, `learn`, `pmx`, `vrm`, `image`, `video`, `project`, `system`, `ah`) |
-
-### A. Argument hygiene
-
-| ID | Check |
-|----|-------|
-| A1 | If `$ARGUMENTS` referenced, missing-argument guard ("If no argument provided, show usage and stop") present |
-
-### L. Layer compliance (llm-first-policy.md §Layered enforcement)
-
-| ID | Check |
-|----|-------|
-| L1 | Skill body encodes a procedure (Layer 6), not an always-applied constraint (Layer 3/5). Constraints belong in `rules/`. |
-| L2 | Skill cites standards by path instead of duplicating them. |
-| L3 | Cross-references resolve — every cited path/skill/command exists on disk. Run `Glob`/`test -e` on each. |
-
-### D. Workflow logic — the gap batch reviewers miss
-
-| ID | Check |
-|----|-------|
-| D1 | **Step dependency** — for each "Step N", scan whether it requires a file/state Step N−1 produces. Either Step N gates on existence, or Step N−1 actually creates it (not just "prompt user"). |
-| D2 | **Env var existence** — every `$VAR` / `${VAR}` referenced must be a real env. Banned phantoms: `$CLAUDE_SKILL_DIR`, `$SKILL_DIR`. Hard-code instead. |
-| D3 | **Path claim accuracy** — phrases like "managed in repo", "tracked", "auto-installed" must match reality. Cross-check with `git check-ignore` for tracked claims. |
-| D4 | **Idempotency claim** — if skill claims "safe to re-run", verify each mutating step (write, launchctl load, git push) is guarded or no-op on second run. |
-| D5 | **Cross-machine portability** — no hardcoded `/Users/<name>/`. All paths via `~`, `$HOME`, or config lookup. |
-| D6 | **Silent-failure surface** — auth/network/perms steps surface failures (not just `... 2>/dev/null \|\| true`) or document the silent-fail mode. |
-| D7 | **Mixed responsibility** — one skill does one thing. Setup + CRUD + validate in one file is a smell; flag for split. |
+Run the block with `bash -lc`, capture the printed path as `target`, then read
+that file. Resolve canonical references repo-local first, installed fallback
+second. If a reference cannot be found, mark affected checks `SKIPPED`.
 
 ## Workflow
 
 ### Step 1: Resolve target
 
-Run the resolve block above. Read `$target` in full.
+Run the resolve block above with `bash -lc`, assign stdout to `target`, and read
+that file in full.
 
-### Step 2: Sweep each class
+### Step 2: Load audit checks
+
+Read `references/AUDIT-CHECKS.md`.
+
+### Step 3: Sweep and judge
 
 For each class (W, B, F, N, A, L, D):
 
-1. Run the listed `rg`/`grep` sweep where applicable.
-2. For checks that need semantic reading (W3, W5, L1, L2, D1, D4, D7), read the file and judge.
-3. For path/file-existence checks (L3, D3), `test -e` or `git check-ignore` each cited path.
+1. Run validator-backed sweeps first: `banned-terms`, `length-caps`,
+   `skill-command-mechanics`, `taxonomy`, and `tracked-user-paths`; if the
+   target is outside validator scope, use the reference sweeps instead.
+2. Run only the listed manual sweeps for checks not covered by validators.
+3. Semantically judge hits before creating findings.
+4. Use `test -e`, `git ls-files --error-unmatch`, or `git check-ignore` based
+   on the path claim.
 
-Record per check: `PASS` / `WARN` / `FAIL` with file:line + one-line evidence.
+Record each check as `PASS`, `WARN`, `FAIL`, or `SKIPPED` with file:line
+evidence.
 
-### Step 3: Report
+### Step 4: Report
 
-```
-## Audit: <name> (<line-count> lines, target=<path>)
-
-### Findings (N issues)
-
-| ID | Sev | Location | Evidence | Fix direction |
-|----|-----|----------|----------|---------------|
-| W1 | WARN | line 42 | "consider running cargo test" | imperative: "Run cargo test before commit" |
-| D1 | FAIL | Step 7 | requires hardware.json from Step 6 (prompt-only) | gate-check existence or auto-invoke |
-| L3 | FAIL | line 188 | cites `${CLAUDE_SKILL_DIR}/foo.json` — env var doesn't exist | hard-code `~/.claude/skills/<name>/foo.json` |
-
-### Clean classes
-
-W2 W4 W5 W6 W7 W8 · B1 · F1 F2 F3 F4 · N1 N2 N3 · A1 · L1 L2 · D2 D4 D5 D6 D7
-```
+Use the report template in `references/AUDIT-CHECKS.md`.
 
 If a class is fully clean, list its IDs in the **Clean classes** line — do not pad the table.
 
-### Step 4: Recommend next action
+### Step 5: Recommend next action
 
 | Condition | Action |
 |-----------|--------|
 | 0 FAIL, 0 WARN | "Skill audit clean." Stop. |
-| 0 FAIL, ≥1 WARN | List warnings, ask user whether to fix or accept. |
-| ≥1 FAIL | Report + stop. **Do NOT auto-fix.** Ask user how to proceed (fix in this session, file follow-up, ignore). |
+| 0 FAIL, ≥1 WARN | List warnings, ask user whether to accept, file follow-up, or start a separate fix workflow. |
+| ≥1 FAIL | Report + stop. Ask whether to start `ah-edit-skill`, file follow-up, or ignore. |
 
 ## Binding rules
 
-- **Read-only.** Never modify the audited skill. The user fixes.
+- **Read-only audit.** Never modify the audited target during this skill. If the
+  user requests fixes, hand off to `ah-edit-skill` or a separate fix workflow.
 - **Re-read canonical references every invocation.** Do not summarize from memory.
-- **One target per invocation.** Batch sweeps belong to `/ah-review-skills`.
+- **One target per invocation.** Batch sweeps belong to the batch review workflow.
 - **No silent skips.** If a class can't be evaluated, write `SKIPPED — <reason>` for the IDs.
-
-## Related
-
-- `/ah-review-skills` — breadth-first batch audit (12+11+6 structural checks)
-- `~/.claude/standards/policy/llm-first-docs.md` — canonical writing rules
-- `~/.claude/standards/policy/llm-first-policy.md` — canonical layer model

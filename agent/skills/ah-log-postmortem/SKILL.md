@@ -1,7 +1,7 @@
 ---
 description: "Record a finished project — auto-explore codebase, log tech stack, LOC, techniques, and learnings for portfolio."
-allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(wc:*), Bash(git:*), Bash(cloc:*), Bash(ls:*)
 argument-hint: "<project-path-or-repo-name> [subfolder]"
+allowed-tools: Read, Write, Edit, Glob, Grep, Task, Bash(wc:*), Bash(git:*), Bash(cloc:*), Bash(ls:*)
 ---
 
 # ah-log-postmortem

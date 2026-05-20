@@ -1,6 +1,6 @@
 # shotloom-review-code reference
 
-**Supplementary catalog — runs in Phases 2-4 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The test-code review lens and patterns below catch additional defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage). Review Axes Triage runs after those sweeps as a compact mandatory checklist. The Deep Adjacency pass then follows two bounded hops past the diff to direct consumers, persistence paths, bridge mirrors, and compatibility decisions.
+**Supplementary catalog — runs in Phases 2-4 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The test-code review lens and patterns below catch additional defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage, validator/manifest contracts, speculative public surface, TypeScript defensive shapes). Review Axes Triage runs after those sweeps as a compact mandatory checklist. The Deep Adjacency pass then follows two bounded hops past the diff to direct consumers, persistence paths, bridge mirrors, and compatibility decisions.
 
 If a Pattern below already overlaps an in-repo §-section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Keep sweeps grep-catchable; semantic-judgment hits move to the subagent's triage column, not into the sweep itself.
 
@@ -52,7 +52,7 @@ descriptive `expect`, `unwrap`, and `panic!` are permitted in tests per
 ### A1: backticked identifiers in changed comments must resolve
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -o '`[A-Za-z_][A-Za-z0-9_]{2,}`' \
   | sort -u
@@ -61,7 +61,7 @@ git diff origin/main..HEAD -- '*.rs' '*.md' \
 ### A2: file path references in changed comments must exist
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -o '`(docs|crates|examples|scripts)/[^`]+`' \
   | sort -u
@@ -71,7 +71,7 @@ git diff origin/main..HEAD -- '*.rs' '*.md' \
 ### A3: top-of-file state descriptions in touched crates
 
 ```bash
-for f in $(git diff --name-only origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs'); do
+for f in $(git diff --name-only origin/main...HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs'); do
   echo "=== $f ==="
   head -30 "$f" | rg '//!|scaffold|WIP|stub|Phase|session'
 done
@@ -90,7 +90,7 @@ gh pr list --head $(git rev-parse --abbrev-ref HEAD) --json number --jq '.[0].nu
 ### A5: test names vs setup
 
 ```bash
-for f in $(git diff --name-only origin/main..HEAD -- '*.rs'); do
+for f in $(git diff --name-only origin/main...HEAD -- '*.rs'); do
   rg -A 5 '#\[test\]' "$f" 2>/dev/null
 done
 # Does each test body actually exercise what the name promises?
@@ -99,7 +99,7 @@ done
 ### A6: numeric claims in comments
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -i '~?\s*[0-9]+\s*(MB|MiB|GB|GiB|minutes?|hours?|[kK]|[mM]illion|x\b)'
 # For each hit, re-derive from std::mem::size_of / a constant / a bench.
@@ -112,7 +112,7 @@ Only runs when the PR renames an identifier whose role-noun changed (importer→
 ```bash
 old_role_noun="importer"   # ← set per PR from commit subject / PR description
 
-for crate_dir in $(git diff --name-only origin/main..HEAD -- 'crates/*/Cargo.toml' | xargs -n1 dirname | sort -u); do
+for crate_dir in $(git diff --name-only origin/main...HEAD -- 'crates/*/Cargo.toml' | xargs -n1 dirname | sort -u); do
   echo "=== $crate_dir ==="
   rg -n -w "$old_role_noun" \
     "$crate_dir/Cargo.toml" \
@@ -134,7 +134,7 @@ For every hit: keep (valid historical reference) or swap (drifted self-descripti
 ### B1: every classifier bucket is the only input to its handler
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' \
+git diff origin/main...HEAD -- '*.rs' \
   | rg -B 2 -A 20 'match.*\{' \
   | rg 'push\(|insert\('
 ```
@@ -144,7 +144,7 @@ Manual review: grep `match classify` and trace each bucket.
 ### B2: early returns near the top of multi-stage functions
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' | rg '^\+.*\.is_empty\(\).*return'
+git diff origin/main...HEAD -- '*.rs' | rg '^\+.*\.is_empty\(\).*return'
 ```
 
 ---
@@ -155,14 +155,14 @@ git diff origin/main..HEAD -- '*.rs' | rg '^\+.*\.is_empty\(\).*return'
 
 ```bash
 rg 'unwrap_or\(|or_default\(|unwrap_or_default\(' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs')
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs')
 ```
 
 ### C2: normalize_or_zero followed by a magnitude check
 
 ```bash
 rg -A 5 'normalize_or_zero\(\)' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs') \
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs') \
   | rg 'length_squared|length\('
 ```
 
@@ -170,7 +170,7 @@ rg -A 5 'normalize_or_zero\(\)' \
 
 ```bash
 rg -B 2 '_\s*=>\s*[A-Z][A-Za-z]+' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs') \
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs') \
   | rg -B 2 'config|strategy|kind|type|name'
 ```
 
@@ -182,7 +182,7 @@ rg -B 2 '_\s*=>\s*[A-Z][A-Za-z]+' \
 
 ```bash
 rg '\beprintln!|\bprintln!|\bdbg!' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs') \
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs') \
   | rg -v '#\[cfg\(test\)\]'
 ```
 
@@ -190,7 +190,7 @@ rg '\beprintln!|\bprintln!|\bdbg!' \
 
 ```bash
 rg '\.unwrap\(\)|\.expect\(' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs') \
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs') \
   | rg -v '#\[cfg\(test\)\]|#\[test\]'
 ```
 
@@ -198,14 +198,14 @@ rg '\.unwrap\(\)|\.expect\(' \
 
 ```bash
 rg '[가-힣]|[ぁ-んァ-ン一-龯]' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs')
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs')
 ```
 
 ### D4: bare `#[allow(dead_code)]` without justifying comment
 
 ```bash
 rg -B 3 '#!?\[allow\(dead_code\)\]' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs')
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs')
 ```
 
 ---
@@ -215,7 +215,7 @@ rg -B 3 '#!?\[allow\(dead_code\)\]' \
 ### E1: Linux dev-dep regression check (only if Cargo.toml/lock touched)
 
 ```bash
-if git diff --name-only origin/main..HEAD | rg -q 'Cargo\.(toml|lock)'; then
+if git diff --name-only origin/main...HEAD | rg -q 'Cargo\.(toml|lock)'; then
   cargo metadata --filter-platform x86_64-unknown-linux-gnu 2>/dev/null \
     | rg -o '"name":\s*"[^"]+"' \
     | rg 'alsa-sys|udev-sys|gilrs|cpal|bevy_audio'
@@ -225,8 +225,8 @@ fi
 ### E2: Cargo.lock drift after Cargo.toml change
 
 ```bash
-if git diff --name-only origin/main..HEAD | rg -q 'Cargo\.toml' && \
-   ! git diff --name-only origin/main..HEAD | rg -q 'Cargo\.lock'; then
+if git diff --name-only origin/main...HEAD | rg -q 'Cargo\.toml' && \
+   ! git diff --name-only origin/main...HEAD | rg -q 'Cargo\.lock'; then
   echo "WARNING: Cargo.toml changed but Cargo.lock did not — run cargo update and commit the lockfile"
 fi
 ```
@@ -235,7 +235,7 @@ fi
 
 ```bash
 rg 'fs::rename|fs::symlink|Path::canonicalize|set_permissions' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs')
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs')
 # For each hit, verify Windows semantics (POSIX rename-over-existing fails on Windows).
 ```
 
@@ -247,7 +247,7 @@ rg 'fs::rename|fs::symlink|Path::canonicalize|set_permissions' \
 
 ```bash
 rg 'as u8|as u16|as u32' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/parse/*.rs' 'crates/*/src/importer/*.rs')
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/parse/*.rs' 'crates/*/src/importer/*.rs')
 # Is the source range validated at the parser, not delegated downstream?
 ```
 
@@ -255,7 +255,7 @@ rg 'as u8|as u16|as u32' \
 
 ```bash
 rg -A 10 'fs::read' \
-  $(git diff --name-only origin/main..HEAD -- 'crates/*/src/*.rs') \
+  $(git diff --name-only origin/main...HEAD -- 'crates/*/src/*.rs') \
   | rg -A 5 '== '
 # Is this defensive check still load-bearing in THIS crate, or inherited?
 ```
@@ -265,7 +265,7 @@ rg -A 10 'fs::read' \
 ```bash
 git log origin/main..HEAD --format='%B' \
   | rg -i 'mirror|follows|same as|like .* pattern|copied from'
-git diff origin/main..HEAD -- '*.rs' \
+git diff origin/main...HEAD -- '*.rs' \
   | rg '^\+' \
   | rg -i '// mirror|// follows|// same as|// copied from'
 # For each hit, open the source and audit under A–F before accepting.
@@ -282,7 +282,7 @@ Mindset: **a changed `impl From<X>` whose source type moved across crates is a b
 ### T1: public surface added or modified
 
 ```bash
-git diff origin/main..HEAD --unified=0 -- 'crates/*/src/*.rs' \
+git diff origin/main...HEAD --unified=0 -- 'crates/*/src/*.rs' \
   | rg '^\+\s*(pub fn|pub struct|pub enum|impl(?:\s+<[^>]+>)?\s+(?:From<|TryFrom<|Default for|Display for))' \
   | sort -u
 ```
@@ -290,7 +290,7 @@ git diff origin/main..HEAD --unified=0 -- 'crates/*/src/*.rs' \
 ### T2: new test functions added in the same diff
 
 ```bash
-git diff origin/main..HEAD --unified=0 -- 'crates/*/src/*.rs' 'crates/*/tests/*.rs' \
+git diff origin/main...HEAD --unified=0 -- 'crates/*/src/*.rs' 'crates/*/tests/*.rs' \
   | rg -B 2 '^\+\s*fn ' \
   | rg -B 1 '#\[test\]'
 ```
@@ -318,7 +318,7 @@ Triggers (any one):
 
 ```bash
 # TS: new fallback-shaped testids without a matching test
-git diff origin/main..HEAD --unified=0 -- '*.tsx' \
+git diff origin/main...HEAD --unified=0 -- '*.tsx' \
   | rg '^\+.*data-testid="([^"]*(?:-fallback|-empty|-none|-error|-no-[^"]+))"' -o -r '$1' \
   | sort -u
 # For each testid, grep tests for getByTestId("<id>") usage.
@@ -334,7 +334,7 @@ T5: <path>:<line> +<branch shape> — branch reachable but no test exercises the
 ### T4: tests referencing private items in OTHER crates by name
 
 ```bash
-git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+git diff origin/main...HEAD -- 'crates/*/src/*.rs' \
   | rg '^\+' \
   | rg -B 5 '#\[test\]|#\[cfg\(test\)\]' \
   | rg -o '\b(compute_|extract_|build_|parse_|normalize_)[a-z_]+\b' \
@@ -352,6 +352,82 @@ If the test is in crate `A` and the identifier is private in crate `B`, rewrite 
 
 ---
 
+## Pattern V — Validator / manifest contract
+
+Trigger when the diff adds or changes a validator, manifest, package script,
+file IO path, asset importer, loader, saver, path resolver, or diagnostic
+contract.
+
+Before reading the implementation, build a bad-input matrix:
+
+| Column | Required content |
+|---|---|
+| Contract claim | The exact accepted and rejected input shape. |
+| Negative fixture | The bad input that proves rejection behavior. |
+| Boundary rule | The ownership, path, platform, or schema boundary. |
+| Error order | The primary failure reported before secondary failures. |
+| Enforcement surface | CLI, CI, unit test, integration test, or runtime guard. |
+| Regression proof | The test or validator run that fails without the fix. |
+
+### V1: changed validator / manifest surface
+
+```bash
+git diff origin/main...HEAD --name-only \
+  | rg '(^|/)(validate|validator|manifest|catalog|schema|config|package\.json|Cargo\.toml|\.github/workflows/)'
+```
+
+For each hit, require a negative fixture or a named reason that no negative
+input exists for this change.
+
+### V2: path containment before filesystem access
+
+```bash
+git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' '*.js' '*.mjs' \
+  | rg '^\+' \
+  | rg 'path\.join|PathBuf::from|fs::|readFile|writeFile|copyFile|rename|remove'
+```
+
+Flag `path.join(root, relative)` or `PathBuf::from(root).join(relative)` when
+the code reads or writes before proving the final path remains inside `root`.
+Require canonicalization or an equivalent containment proof before IO.
+
+### V3: short read before prefix / schema checks
+
+```bash
+git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' '*.js' '*.mjs' \
+  | rg '^\+' \
+  | rg 'read_to_string|readFile|JSON\.parse|serde_json|toml|yaml|startsWith|strip_prefix'
+```
+
+If parsing, prefix checks, or schema validation happen after partial file reads,
+verify the primary error path still reports the caller's bad input rather than a
+secondary parse or missing-file error.
+
+### V4: package / CI enforcement gap
+
+```bash
+git diff origin/main...HEAD --name-only -- 'package.json' '.github/workflows/*' 'scripts/*' \
+  | sort -u
+```
+
+When a new package script or validator entry lands, require at least one of:
+local command documented in the PR body, CI workflow coverage, README/guideline
+surface, or a validator inventory update.
+
+Finding format:
+
+```
+V2: <path>:<line> +<path operation> — IO occurs before root-containment proof.
+    Fix: resolve/canonicalize the candidate path, reject paths outside the root, and add a negative fixture.
+```
+
+```
+V4: <path>:<line> +<script-or-validator> — no CI, README, or validator inventory surface runs it.
+    Fix: wire it into the smallest relevant gate or document the manual command in the PR body.
+```
+
+---
+
 ## Pattern U — Speculative public API surface
 
 Barrel `index.ts` re-exports, public Rust `pub fn` / `pub use` items, and similar widenings of a module's contract surface should only land when an out-of-module consumer already needs them. Speculative re-exports turn future renames or removals into breaking changes for callers that do not exist yet, and are a recurring source of barrel drift.
@@ -362,7 +438,7 @@ Rule: every newly exported symbol from a barrel / `pub` item must have at least 
 
 ```bash
 # 1. New `export {...}` / `export type {...}` lines added in any index.ts under apps/<x>/src
-git diff origin/main..HEAD --unified=0 -- 'apps/*/src/**/index.ts' \
+git diff origin/main...HEAD --unified=0 -- 'apps/*/src/**/index.ts' \
   | rg '^\+export\s+(\{[^}]+\}|type\s+\{[^}]+\}|\*)' -o
 # 2. For each new symbol name, grep for an import outside the symbol's own folder.
 ident="DebugSidebar"
@@ -378,7 +454,7 @@ Zero out-of-folder hits → finding.
 
 ```bash
 # New `pub fn` / `pub struct` / `pub enum` / `pub use` in lib.rs / mod.rs entries
-git diff origin/main..HEAD --unified=0 -- 'crates/*/src/lib.rs' 'crates/*/src/**/mod.rs' \
+git diff origin/main...HEAD --unified=0 -- 'crates/*/src/lib.rs' 'crates/*/src/**/mod.rs' \
   | rg '^\+\s*pub\s+(fn|struct|enum|use|type)\s+([A-Za-z_][A-Za-z0-9_]*)' -o -r '$2' \
   | sort -u
 # For each symbol, check if any other crate consumes it.
@@ -419,15 +495,15 @@ Sweep commands:
 
 ```bash
 # J1 — nullish-coalescing literal in production code
-git diff origin/main..HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
+git diff origin/main...HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
   | rg '^\+' | rg '\?\?\s*"[a-z][\w-]*"' | rg -v '__tests__|\.test\.'
 
 # J2 — defensive `!arg` guard added on a widened signature
-git diff origin/main..HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
+git diff origin/main...HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
   | rg '^\+' | rg 'if \(!\w+\)\s*return (undefined|null|\{|\[|\"\")'
 
 # J3 — first-non-empty path/URL extraction
-git diff origin/main..HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
+git diff origin/main...HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
   | rg '^\+' | rg '\.split\("/"\)\.(find|filter)\(' \
   | rg -v 'filter\(.*\)\.join\('   # join after filter is fine — drop the .find() over-tolerant shape
 ```
@@ -577,11 +653,11 @@ Useful commands:
 
 ```bash
 # Contract-shaped Rust additions
-git diff origin/main..HEAD --unified=0 -- '*.rs' \
+git diff origin/main...HEAD --unified=0 -- '*.rs' \
   | rg '^\+\s*(pub\s+)?(struct|enum|fn|type)\s+|^\+\s*#\[serde|^\+\s*pub\s+use'
 
 # Bridge/serde/diagnostic additions
-git diff origin/main..HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' \
+git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' \
   | rg '^\+' \
   | rg 'serde|Serialize|Deserialize|diagnostic|error|warning|bridge|Dto|DTO|Bundle|import|load|save|validate'
 
@@ -603,10 +679,11 @@ If the pass escalates to Depth 3, include `Depth escalation: <reason>`.
 
 1. **A–F** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
 2. **T** — test coverage on changed behavior (`rules/test-write.md` enforcement).
-3. **U** — speculative public API surface (barrel widening without consumer).
-4. **J** — TypeScript defensive-shape patterns (fires only when `ts_changed > 0`).
-5. **Review Axes Triage** — compact defect-class checklist.
-6. **Deep Adjacency** — two-depth consumers, persistence paths, mirrors,
+3. **V** — validator / manifest contract, bad-input matrix, and IO boundary proof.
+4. **U** — speculative public API surface (barrel widening without consumer).
+5. **J** — TypeScript defensive-shape patterns (fires only when `ts_changed > 0`).
+6. **Review Axes Triage** — compact defect-class checklist.
+7. **Deep Adjacency** — two-depth consumers, persistence paths, mirrors,
    diagnostics, public exposure, and validation compatibility.
 
 Findings in T are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.

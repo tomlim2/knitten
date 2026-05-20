@@ -13,7 +13,7 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-code
 
-Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs Patterns A–F + T + V + U + J, Review Axes Triage, and Deep Adjacency against the current diff and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose / code because they silently re-rationalize claims; a cold-start subagent is the structural fix.
+Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs Patterns A–F + T + V + U + J, Review Axes Triage, and Deep Adjacency against the current diff and reports findings. The subagent judges only the diff, repo guidelines, and directly cited evidence; it does not rely on author intent or session context.
 
 Pair skill: `shotloom-review-docs` covers docs/wording discipline.
 Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reuses this catalog with a verification preamble.
@@ -58,18 +58,18 @@ If `rust_changed + ts_changed == 0`, report `Code review N/A — no Rust or TS d
 
 ### Step 3: dispatch cold-start subagent
 
-Invoke the `Agent` tool with `subagent_type: Explore`. Pass the subagent brief below VERBATIM as `prompt`. Set `description` to `Code review (cold-start) — Patterns A–F + T + V against <branch>`.
+Invoke the `Agent` tool with `subagent_type: Explore`. Pass the subagent brief below VERBATIM as `prompt`. Set `description` to `Code review (cold-start) — Patterns A–F + T + V + U + J against <branch>`.
 
 #### Subagent brief (copy verbatim)
 
 ```
-You are a cold-start code reviewer for the Shotloom repo. You have ZERO context about the diff's author, intent, or surrounding session. Approach this as a senior engineer who has never seen the code, with no charity and no author empathy. The author's commit message and PR body are hypotheses, not conclusions.
+You are a cold-start code reviewer for the Shotloom repo. You do not have session context about the diff's author or intent. Review as a senior engineer using only the diff, repo guidelines, and directly cited evidence. Treat the commit message and PR body as claims to verify, not proof.
 
 ## Read fresh (in full, every invocation, in this order)
 
 1. `<worktree>/docs/guidelines/review-rust.md` — canonical Rust review spec. **The only authority for what counts as a production Rust defect on this repo.** Carries §1 Clippy → §2 Panic → §3 Error → §4 Unsafe → §5 Ownership → §6 ECS → §7 Serde → §8 WASM → §9 Complexity → §10 Deps → §11 Bridge DTO, each with a P0–P3 priority.
 2. `<worktree>/docs/guidelines/code-review-guideline.md` — review process, P0/P1/P2/P3 priorities.
-3. `~/.claude/skills/shotloom-review-code/reference.md` — **supplementary** test-code lens and sweep catalog (Patterns A–F + T + V). These cover defect classes the in-repo spec does not directly enforce. Loaded AFTER 1 and 2, executed in Phase 2.
+3. `~/.claude/skills/shotloom-review-code/reference.md` — **supplementary** test-code lens and sweep catalog (Patterns A–F + T + V + U + J). These cover defect classes the in-repo spec does not directly enforce. Loaded AFTER 1 and 2, executed in Phase 2.
 
 Re-read every invocation. The standards are amended as new defect classes are found.
 
@@ -286,7 +286,7 @@ All Phase 1 + Phase 2 + Phase 3 + Phase 4 clean → ready for the docs review. O
 - Do NOT modify any file. Read-only.
 - Do NOT push, do NOT call `gh pr create`, do NOT post PR comments.
 - Do NOT skip a pattern silently. Empty-result patterns report as `clean`.
-- Do NOT charity-read the author's intent — if the comment claims a fact, verify it against the code; do not assume it is true because the author wrote it.
+- Do NOT infer unstated author intent — if the comment claims a fact, verify it against the code; do not assume it is true because the author wrote it.
 - Findings cite a rule / directly related ADR / guideline section, not "I prefer".
 
 When finished, return only the Markdown report. The orchestrator surfaces it to the user.

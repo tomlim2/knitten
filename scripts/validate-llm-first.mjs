@@ -810,14 +810,18 @@ function bodyLineCount(text) {
   return total - fmLines;
 }
 
+function exceptionPathSet(exceptions, key) {
+  return new Set((exceptions[key] || []).map((entry) => entry.path));
+}
+
 async function checkLengthCaps() {
   const violations = [];
   const docBudgets = await readJsonConfig("doc-budgets.json");
   const exceptions = await readJsonConfig("exceptions.json");
   const budgets = docBudgets.lineBudgets;
-  const standardLengthGrandfathered = new Set(
-    exceptions.standardLengthGrandfathered.map((entry) => entry.path)
-  );
+  const standardLengthGrandfathered = exceptionPathSet(exceptions, "standardLengthGrandfathered");
+  const skillLengthGrandfathered = exceptionPathSet(exceptions, "skillLengthGrandfathered");
+  const commandLengthGrandfathered = exceptionPathSet(exceptions, "commandLengthGrandfathered");
   const ruleDir = path.join(AGENT_ROOT, "rules");
   const ruleFiles = await walk(ruleDir, (f) => f.endsWith(".md"));
   for (const f of ruleFiles) {
@@ -848,6 +852,38 @@ async function checkLengthCaps() {
         file: relPath,
         line: 1,
         message: `standard body ${lines} lines exceeds cap ${budgets.standardBody} — split into multiple standards`,
+      });
+    }
+  }
+  const skillDir = path.join(AGENT_ROOT, "skills");
+  const skillFiles = await walk(skillDir, (f) => path.basename(f) === "SKILL.md");
+  for (const f of skillFiles) {
+    const relPath = rel(f);
+    if (skillLengthGrandfathered.has(relPath)) continue;
+    const text = await readFile(f, "utf8");
+    const lines = bodyLineCount(text);
+    if (lines > budgets.skillTotal) {
+      violations.push({
+        file: relPath,
+        line: 1,
+        message: `skill body ${lines} lines exceeds cap ${budgets.skillTotal} — move reference, rubric, template, or example detail below SKILL.md`,
+      });
+    }
+  }
+  const commandDir = path.join(AGENT_ROOT, "commands");
+  const commandEntries = await listDirOnce(commandDir);
+  for (const entry of commandEntries) {
+    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+    const f = path.join(commandDir, entry.name);
+    const relPath = rel(f);
+    if (commandLengthGrandfathered.has(relPath)) continue;
+    const text = await readFile(f, "utf8");
+    const lines = bodyLineCount(text);
+    if (lines > budgets.commandTotal) {
+      violations.push({
+        file: relPath,
+        line: 1,
+        message: `command body ${lines} lines exceeds cap ${budgets.commandTotal} — convert to a skill, alias, or shim before command retirement`,
       });
     }
   }
@@ -940,6 +976,111 @@ async function checkSkillRootShape() {
     }
   }
   return { name: "skill-root-shape", violations };
+}
+
+function frontmatterKeyPositions(text) {
+  if (!text.startsWith("---\n")) return null;
+  const rest = text.slice(4);
+  const end = rest.indexOf("\n---\n");
+  if (end === -1) return null;
+  const positions = new Map();
+  const lines = rest.slice(0, end).split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const match = lines[i].match(/^\s*([A-Za-z0-9_-]+)\s*:/);
+    if (match && !positions.has(match[1])) positions.set(match[1], i + 2);
+  }
+  return positions;
+}
+
+function pushFrontmatterOrderViolation(violations, file, text) {
+  const positions = frontmatterKeyPositions(text);
+  if (!positions) {
+    violations.push({ file, line: 1, message: "missing YAML frontmatter" });
+    return;
+  }
+  const order = ["description", "argument-hint", "allowed-tools"];
+  const present = order.filter((key) => positions.has(key));
+  for (let i = 1; i < present.length; i++) {
+    if (positions.get(present[i - 1]) > positions.get(present[i])) {
+      violations.push({
+        file,
+        line: positions.get(present[i]),
+        message: `frontmatter order must keep ${order.join(", ")} when fields are present`,
+      });
+      return;
+    }
+  }
+}
+
+function hasBareBashTool(value) {
+  return String(value || "")
+    .split(",")
+    .some((item) => item.trim() === "Bash");
+}
+
+async function checkSkillCommandMechanics() {
+  const violations = [];
+  const taxonomy = await readJsonConfig("taxonomy.json");
+  const maxNameChars = taxonomy.maxArtifactNameChars;
+  const namePattern = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+  const targets = [];
+  const skillEntries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
+  for (const entry of skillEntries) {
+    if (!entry.isDirectory() || entry.name.startsWith(".")) continue;
+    targets.push({
+      name: entry.name,
+      file: `agent/skills/${entry.name}/SKILL.md`,
+      fullPath: path.join(AGENT_ROOT, "skills", entry.name, "SKILL.md"),
+      kind: "skill",
+    });
+  }
+  const commandEntries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
+  for (const entry of commandEntries) {
+    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+    targets.push({
+      name: entry.name.slice(0, -".md".length),
+      file: `agent/commands/${entry.name}`,
+      fullPath: path.join(AGENT_ROOT, "commands", entry.name),
+      kind: "command",
+    });
+  }
+
+  for (const target of targets) {
+    if (!namePattern.test(target.name)) {
+      violations.push({
+        file: target.file,
+        line: 0,
+        message: `${target.kind} name must be lowercase hyphen-case`,
+      });
+    }
+    if (Number.isInteger(maxNameChars) && target.name.length > maxNameChars) {
+      violations.push({
+        file: target.file,
+        line: 0,
+        message: `${target.kind} name length ${target.name.length} exceeds taxonomy maxArtifactNameChars ${maxNameChars}`,
+      });
+    }
+    if (!existsSync(target.fullPath)) continue;
+    const text = await readFile(target.fullPath, "utf8");
+    const fm = parseFrontmatter(text);
+    if (!fm) {
+      violations.push({ file: target.file, line: 1, message: "missing YAML frontmatter" });
+      continue;
+    }
+    if (!fm.description || !String(fm.description).trim()) {
+      violations.push({ file: target.file, line: 1, message: "frontmatter missing non-empty description" });
+    }
+    pushFrontmatterOrderViolation(violations, target.file, text);
+    if (hasBareBashTool(fm["allowed-tools"])) {
+      violations.push({
+        file: target.file,
+        line: 1,
+        message: "allowed-tools must use specific Bash(...) patterns, not bare Bash",
+      });
+    }
+  }
+
+  return { name: "skill-command-mechanics", violations };
 }
 
 function isTrackedRuntimePath(file) {
@@ -1223,39 +1364,53 @@ async function checkRegistryIntegrity() {
     }
   }
 
-  for (const entry of exceptions.standardLengthGrandfathered || []) {
-    const fields = ["path", "reason", "decision"];
-    for (const field of fields) {
-      if (!entry[field] || !String(entry[field]).trim()) {
+  for (const key of [
+    "standardLengthGrandfathered",
+    "skillLengthGrandfathered",
+    "commandLengthGrandfathered",
+  ]) {
+    if (exceptions[key] !== undefined && !Array.isArray(exceptions[key])) {
+      violations.push({
+        file: "agent/config/exceptions.json",
+        line: 1,
+        message: `${key} must be an array`,
+      });
+      continue;
+    }
+    for (const entry of exceptions[key] || []) {
+      const fields = ["path", "reason", "decision"];
+      for (const field of fields) {
+        if (!entry[field] || !String(entry[field]).trim()) {
+          violations.push({
+            file: "agent/config/exceptions.json",
+            line: 1,
+            message: `${key} entry missing ${field}`,
+          });
+        }
+      }
+      if (!entry.expires && !entry.reviewAfter) {
         violations.push({
           file: "agent/config/exceptions.json",
           line: 1,
-          message: `standardLengthGrandfathered entry missing ${field}`,
+          message: `${key} ${entry.path || "<unknown>"} requires expires or reviewAfter`,
         });
       }
-    }
-    if (!entry.expires && !entry.reviewAfter) {
-      violations.push({
-        file: "agent/config/exceptions.json",
-        line: 1,
-        message: `standardLengthGrandfathered ${entry.path || "<unknown>"} requires expires or reviewAfter`,
-      });
-    }
-    if (entry.path && !existsSync(path.join(REPO_ROOT, entry.path))) {
-      violations.push({
-        file: "agent/config/exceptions.json",
-        line: 1,
-        message: `exception target does not exist: ${entry.path}`,
-      });
-    }
-    if (entry.decision) {
-      const decisionPath = String(entry.decision).split("#")[0];
-      if (!existsSync(path.join(REPO_ROOT, decisionPath))) {
+      if (entry.path && !existsSync(path.join(REPO_ROOT, entry.path))) {
         violations.push({
           file: "agent/config/exceptions.json",
           line: 1,
-          message: `exception decision target does not exist: ${entry.decision}`,
+          message: `exception target does not exist: ${entry.path}`,
         });
+      }
+      if (entry.decision) {
+        const decisionPath = String(entry.decision).split("#")[0];
+        if (!existsSync(path.join(REPO_ROOT, decisionPath))) {
+          violations.push({
+            file: "agent/config/exceptions.json",
+            line: 1,
+            message: `exception decision target does not exist: ${entry.decision}`,
+          });
+        }
       }
     }
   }
@@ -2987,6 +3142,7 @@ const CHECKS = [
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
   { name: "skill-root-shape", fn: checkSkillRootShape },
+  { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },
   { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },
   { name: "tracked-user-paths", fn: checkTrackedUserAbsolutePaths },
   { name: "entry-documents", fn: checkEntryDocuments },

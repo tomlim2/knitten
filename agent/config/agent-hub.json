@@ -387,6 +387,14 @@
       ]
     },
     {
+      "id": "skill-command-mechanics",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "skill-command-mechanics",
+      "covers": [
+        "skill and command mechanical shape"
+      ]
+    },
+    {
       "id": "tracked-runtime-paths",
       "script": "scripts/validate-llm-first.mjs",
       "listedCheck": "tracked-runtime-paths",

@@ -1,8 +1,8 @@
 ---
 description: Analyze bevy-vrm viewer screenshots with bone gizmo color reference
+argument-hint: "[screenshot_path]"
 allowed-tools: Read
 user-invocable: true
-argument-hint: "[screenshot_path]"
 ---
 
 # vrm-debug-screenshot

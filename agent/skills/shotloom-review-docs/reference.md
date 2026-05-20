@@ -11,7 +11,7 @@ If a Pattern below already overlaps an in-repo guideline section, the Phase 1 fi
 ### G1: new files under changed crates — crate ownership matches file's concern?
 
 ```bash
-for f in $(git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/src/*.rs'); do
+for f in $(git diff --name-only --diff-filter=A origin/main...HEAD -- 'crates/*/src/*.rs'); do
   echo "=== NEW FILE: $f ==="
   crate=$(echo "$f" | cut -d/ -f1-2)
   echo "Existing content in $crate:"
@@ -57,10 +57,10 @@ esac
 ### G5: ADR / tech-debt coherence when structure shifts
 
 ```bash
-git diff --name-only origin/main..HEAD -- 'crates/*/src/' 'crates/Cargo.toml' \
+git diff --name-only origin/main...HEAD -- 'crates/*/src/' 'crates/Cargo.toml' \
   | rg 'lib\.rs|mod\.rs' \
   && echo "Structure may have shifted — verify docs/adr/ or docs/tech-debt/ reflect it"
-git diff --name-only origin/main..HEAD -- 'docs/adr/' 'docs/tech-debt/' 'docs/adr/README.md' 'docs/tech-debt/README.md'
+git diff --name-only origin/main...HEAD -- 'docs/adr/' 'docs/tech-debt/' 'docs/adr/README.md' 'docs/tech-debt/README.md'
 # If crate structure changed but no ADR/tech-debt edit — justify in PR body or add one.
 ```
 
@@ -68,7 +68,7 @@ git diff --name-only origin/main..HEAD -- 'docs/adr/' 'docs/tech-debt/' 'docs/ad
 
 ```bash
 node scripts/validate-doc-paths.mjs 2>&1 | tail -2
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -o '`(docs|crates|scripts|examples|fixtures)/[^`]+`' \
   | sort -u
@@ -102,7 +102,7 @@ Mindset: **doc must describe what IS, not what MIGHT BE.** A comment that promis
 ### H1: future-tense / speculation in added prose
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -in '\b(will\s+(?:add|land|move|become|expose|introduce|migrate|emit)|future\b|follow[- ]up|lands?\s+in|planned|TODO|will\s+be|to\s+be\s+(?:added|defined|implemented)|eventually|soon|coming soon|next pass|phase [0-9]|\bTBD\b|TBA)\b' \
   | rg -v 'STL-[0-9]+'
@@ -116,7 +116,7 @@ For each hit:
 ### H2: stale status claims on touched lib/mod docs
 
 ```bash
-for f in $(git diff --name-only origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs'); do
+for f in $(git diff --name-only origin/main...HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs'); do
   echo "=== $f ==="
   head -40 "$f" | rg -in '\b(scaffold|stub|WIP|placeholder|reserved|empty|TODO|coming soon|not yet)\b'
 done
@@ -127,7 +127,7 @@ For each hit verify against the current file's actual content; status word that 
 ### H13: local absolute path exposure in durable files
 
 ```bash
-git diff --name-only origin/main..HEAD \
+git diff --name-only origin/main...HEAD \
   | rg -v '(^node_modules/|^target/|^\\.git/)' \
   | xargs rg -n '(/Users/|/home/|[A-Za-z]:[\\/]|Downloads/|Desktop/)'
 ```
@@ -143,7 +143,7 @@ For each hit:
 ### H3: cross-crate citation accuracy
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -in '(lives in|moved to|owned by|owns|consumes|now in|re-exported (?:from|via))\s+`?(shotloom-[a-z0-9-]+|shotloom_[a-z0-9_]+)' \
   | sort -u
@@ -155,17 +155,17 @@ For each hit verify the cited crate / module path exists and the symbol is actua
 
 ```bash
 # 1. New crate names
-git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/Cargo.toml' \
+git diff --name-only --diff-filter=A origin/main...HEAD -- 'crates/*/Cargo.toml' \
   | xargs -I{} dirname {} | xargs -I{} basename {}
 # Each MUST match shotloom-<domain>-<role>.
 
 # 2. New public types / traits / fns in changed files
-git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+git diff origin/main...HEAD -- 'crates/*/src/*.rs' \
   | rg '^\+pub (struct|enum|trait|fn|const|type) [A-Za-z_]'
 # Verify against sibling crate's analogue (same suffix shape).
 
 # 3. Module file layout vs sibling crates
-for new_crate in $(git diff --name-only --diff-filter=A origin/main..HEAD -- 'crates/*/src/lib.rs' | xargs -I{} dirname {}); do
+for new_crate in $(git diff --name-only --diff-filter=A origin/main...HEAD -- 'crates/*/src/lib.rs' | xargs -I{} dirname {}); do
   echo "=== $new_crate ==="
   ls "$new_crate"
 done
@@ -174,7 +174,7 @@ done
 ### H5: ADR section-citation accuracy
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -o 'ADR-[0-9]{4}' \
   | sort -u \
@@ -192,18 +192,18 @@ For each ADR cited with `§SectionName`, manually open the ADR and confirm the s
 ### H6: claimed Out-of-Scope items honored by the diff
 
 ```bash
-git diff --name-only origin/main..HEAD | rg -q 'Cargo\.toml' && \
+git diff --name-only origin/main...HEAD | rg -q 'Cargo\.toml' && \
   git log origin/main..HEAD --format='%B' | rg -i 'out of scope.*dep' && \
   echo "VERIFY: PR claims no new deps but Cargo.toml changed."
 
-git diff origin/main..HEAD -- 'crates/*/src/*.rs' | rg '^\+pub fn|^\-pub fn' | head -20
+git diff origin/main...HEAD -- 'crates/*/src/*.rs' | rg '^\+pub fn|^\-pub fn' | head -20
 # Cross-check against any "Out of scope: API change" claim.
 ```
 
 ### H7: past-state contrast framing in added comments
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -in '\b(previously|prior pipeline|was unconstrained|used to|before this change|now\s+(?:we|the))\b'
 ```
@@ -213,7 +213,7 @@ Comments live forever; the contrast becomes meaningless once the prior version i
 ### H8: Linear-ID references anywhere in the working tree
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' '*.toml' '*.json' \
+git diff origin/main...HEAD -- '*.rs' '*.md' '*.toml' '*.json' \
   | rg '^\+' \
   | rg 'STL-[0-9]+'
 ```
@@ -223,7 +223,7 @@ Linear IDs belong in commit messages and PR descriptions only. Rewrite prose to 
 ### H9: execution-status leak in ADR body
 
 ```bash
-git diff origin/main..HEAD -- 'docs/adr/*.md' \
+git diff origin/main...HEAD -- 'docs/adr/*.md' \
   | rg '^\+' \
   | rg -in 'Implementation status|Implementation log|landed in|this PR scopes|this PR locks|formalized by PR #|as of [0-9]{4}-[0-9]{2}-[0-9]{2}|currently scoped to'
 ```
@@ -234,21 +234,21 @@ git diff origin/main..HEAD -- 'docs/adr/*.md' \
 
 ```bash
 # Linear-ID in ADR Decision / Consequences / Alternatives
-git diff origin/main..HEAD -- 'docs/adr/*.md' \
+git diff origin/main...HEAD -- 'docs/adr/*.md' \
   | rg '^\+' \
   | rg -in 'STL-[0-9]+' \
   | rg -v 'Status:|Amendment'
 
 # Session-plan / port-plan prose
-git diff origin/main..HEAD -- 'docs/adr/*.md' \
+git diff origin/main...HEAD -- 'docs/adr/*.md' \
   | rg '^\+' \
   | rg -in '\b(Session\s+[0-9]|Phase\s+[0-9]|will\s+land\s+(?:in|when)|ports?\s+them|defers?\s+to\s+whenever|Revised during port|incremental port)\b'
 
 # In-place Decision rewrite vs canonical amendment style
-for adr in $(git diff --name-only origin/main..HEAD -- 'docs/adr/*.md'); do
+for adr in $(git diff --name-only origin/main...HEAD -- 'docs/adr/*.md'); do
   echo "=== $adr ==="
   rg -n '^\*\*Status:\*\*|^Status:' "$adr"
-  git diff origin/main..HEAD -- "$adr" \
+  git diff origin/main...HEAD -- "$adr" \
     | rg '^[-+].*##\s+(Decision|Consequences|Alternatives)' && \
     echo "  WARN: decision-section header changed in diff — verify Status banner reflects amendment per adr-template.md Usage Notes"
 done
@@ -260,7 +260,7 @@ Material Decision-section edits to an Accepted ADR must bump Status to `Accepted
 
 ```bash
 # Added //! blocks longer than 40 lines, or 3+ new # Heading subsections of prose
-git diff origin/main..HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs' \
+git diff origin/main...HEAD -- 'crates/*/src/lib.rs' 'crates/*/src/mod.rs' \
   | rg -c '^\+//!' \
   | awk -F: '$2 > 40 {print}'
 ```
@@ -280,7 +280,7 @@ Three principles for any decision sentence in a durable doc:
 Sweep:
 
 ```bash
-git diff origin/main..HEAD -- 'docs/adr/*.md' 'docs/specs/*.md' 'docs/arch/*.md' '*/README.md' \
+git diff origin/main...HEAD -- 'docs/adr/*.md' 'docs/specs/*.md' 'docs/arch/*.md' '*/README.md' \
   | rg '^\+' \
   | rg -in '\bdecided\s+(in|per|when|by)\s+(the|a|each|implementation|first|next)|left\s+(open|to)\s+(implementation|the\s+implementer|each|future)|intentionally\s+(underspecified|deferred|TBD|left\s+open|open)|implementation\s+choice\s+(and|;|,)|pinned\s+(in|by|at)\s+(the|each|implementation|first|next)|to\s+be\s+(decided|chosen|pinned)\s+(in|by|at|per)|wait[s]?\s+for\s+(a|the)\s+(concrete|real|first)|justif(ies|y)\s+them|TBD\s+(by|in)\s+(the|next|first)|defers?\s+to\s+(implementation|the\s+implementer)'
 ```
@@ -306,7 +306,7 @@ Mindset: **A1/H3 catch what the PR adds; I catches what the PR breaks elsewhere.
 ### I1: symbols this PR removes from a crate's public surface
 
 ```bash
-git diff origin/main..HEAD -- 'crates/*/src/lib.rs' \
+git diff origin/main...HEAD -- 'crates/*/src/lib.rs' \
   | rg '^-\s*pub use ' \
   | rg -o '`?[A-Za-z_][A-Za-z0-9_]*`?' \
   | sort -u
@@ -321,7 +321,7 @@ rg -n "shotloom_y::X|shotloom-y.*\bX\b" crates/ docs/ MAP.md AGENTS.md 2>/dev/nu
 ### I2: file deletions / renames
 
 ```bash
-git diff --name-status origin/main..HEAD | rg '^[DR]'
+git diff --name-status origin/main...HEAD | rg '^[DR]'
 
 old_path="crates/shotloom-gltf/src/vrm_foot_contact.rs"   # ← per finding
 rg -n "$old_path|$(basename "$old_path" .rs)" crates/ docs/ 2>/dev/null
@@ -330,7 +330,7 @@ rg -n "$old_path|$(basename "$old_path" .rs)" crates/ docs/ 2>/dev/null
 ### I3: module-internal imports removed from a non-test source file
 
 ```bash
-git diff origin/main..HEAD -- 'crates/*/src/*.rs' \
+git diff origin/main...HEAD -- 'crates/*/src/*.rs' \
   | rg '^-use\s+(shotloom_[a-z_]+::[A-Za-z0-9_:]+)' \
   | rg -o 'shotloom_[a-z_]+::[A-Za-z0-9_:]+' \
   | sort -u
@@ -361,25 +361,25 @@ Trigger: `yaml_changed + json_changed > 0`. Catches workflow yaml / JSON syntax 
 
 ```bash
 # M1 — GitHub Actions workflow yaml syntax
-for f in $(git diff --name-only origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml'); do
+for f in $(git diff --name-only origin/main...HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml'); do
   python3 -c "import sys, yaml; yaml.safe_load(open('$f'))" || echo "::error::$f: invalid yaml"
 done
 
 # M2 — uses: pinned to a tag (not branch); flag unpinned refs
-git diff origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+git diff origin/main...HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
   | rg '^\+\s*uses: ' | rg -v '@v[0-9]|@[0-9a-f]{40}'
 
 # M3 — JSON files parseable
-for f in $(git diff --name-only origin/main..HEAD -- '*.json'); do
+for f in $(git diff --name-only origin/main...HEAD -- '*.json'); do
   python3 -m json.tool "$f" >/dev/null 2>&1 || echo "::error::$f: invalid json"
 done
 
 # M4 — secrets reference uses ${{ secrets.NAME }} form, no hardcoded
-git diff origin/main..HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+git diff origin/main...HEAD -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
   | rg '^\+' | rg -i 'password|token|api_key|secret' | rg -v '\$\{\{\s*secrets\.'
 
 # M5 — workflow has meaningful concurrency group when it can race
-for f in $(git diff --name-only origin/main..HEAD -- '.github/workflows/*.yml'); do
+for f in $(git diff --name-only origin/main...HEAD -- '.github/workflows/*.yml'); do
   if ! rg -q '^concurrency:' "$f"; then
     echo "::note::$f: no concurrency group — confirm no race against itself"
   fi
@@ -392,7 +392,10 @@ Priorities: M1 / M3 invalid syntax = P0 (workflow does not run). M2 unpinned act
 
 ## Pattern S — Load-bearing prose verification (subagent territory)
 
-Three defect classes are **not author-reviewable** — the same model that wrote the prose silently re-rationalizes the same claim. Author-self-review repeatedly clears them; reviewers catch them. The fix is structural: this Pattern S section is the subagent's main work, not a grep sweep.
+Three defect classes are difficult to self-review because the same context that
+wrote the prose can make a claim feel obvious on reread. Pattern S makes the
+subagent verify cited text directly; this section is the subagent's main work,
+not a grep sweep.
 
 The grep step below is just the **trigger check** — mechanical scan for added prose carrying S1/S2/S3 patterns. For every trigger hit, the subagent MUST open the cited source, paste the literal text into the report, and verify confirm | refute | unclear.
 
@@ -401,7 +404,7 @@ The grep step below is just the **trigger check** — mechanical scan for added 
 Trigger:
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -in '(ADR-[0-9]{4}|docs/[a-z/]+\.md|crates/[a-z-]+/README\.md)\s*§'
 ```
@@ -413,7 +416,7 @@ Failure mode: section exists (H5 verifies), but the literal text says something 
 Trigger:
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -in '\b(scaffold|stub|WIP|empty|owns\s+\w+|produces\s+\w+|no output yet|only consumer is)\b' \
   | rg -i 'shotloom-[a-z-]+|shotloom_[a-z_]+'
@@ -426,7 +429,7 @@ Subagent opens the named crate's `lib.rs` / `types.rs` / `Cargo.toml`, pastes a 
 Trigger:
 
 ```bash
-git diff origin/main..HEAD -- '*.rs' '*.md' \
+git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg '^\+' \
   | rg -in '[0-9]+(\.[0-9]+)?\s+(is|=|→|->)\s+(forward|backward|left|right|up|down|wrist|elbow|shoulder|hip|toe|axis|ratio)'
 ```

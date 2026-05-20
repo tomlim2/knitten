@@ -1,7 +1,7 @@
 ---
 description: "Diagnose why an approach failed via external AI (Gemini, GPT-4o) — use when stuck and all attempts have failed."
-allowed-tools: Read, Write, Bash(pbcopy:*), Bash(python3:*)
 argument-hint: "<what_failed>"
+allowed-tools: Read, Write, Bash(pbcopy:*), Bash(python3:*)
 ---
 
 # dev-analyze-failure

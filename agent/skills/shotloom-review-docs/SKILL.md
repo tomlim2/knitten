@@ -13,10 +13,13 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-docs
 
-Cold-start docs / wording / markup review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/pr-guideline.md`, `commit-guideline.md`, `documentation-standard.md`, and `adr-template.md` fresh on every invocation, runs Patterns G + H + I + M + S against the current diff, and reports findings. The subagent has zero context about the author's intent — that is the point. The current author cannot reliably review their own prose; a cold-start subagent is the structural fix for the doc-claim self-rationalization failure mode.
+Standalone cold-start docs / wording / markup review for a Shotloom branch.
+Dispatches one Explore subagent that re-reads Shotloom docs guidelines, runs
+Patterns G + H + I + M + S against the current diff, and reports findings.
 
 Pair skill: `shotloom-review-code` covers Rust/TS code quality.
-Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reuses this catalog with a verification preamble.
+`shotloom-review-before-pr` uses `references/PRE_PR_PROMPTS.md` for a targeted
+docs pass and reuses this skill's `reference.md` for targeted G/H/S checks.
 
 ## Arguments
 
@@ -75,7 +78,7 @@ Invoke the `Agent` tool with `subagent_type: Explore`. Pass the subagent brief b
 #### Subagent brief (copy verbatim)
 
 ```
-You are a cold-start docs / wording / markup reviewer for the Shotloom repo. You have ZERO context about the diff's author, intent, or surrounding session. Approach this as a senior reviewer who has never seen the prose, with no charity and no author empathy. The author's commit message and PR body are hypotheses, not conclusions.
+You are a cold-start docs / wording / markup reviewer for the Shotloom repo. You do not have session context about the diff's author or intent. Review as a senior reviewer using only the prose, repo guidelines, and directly cited evidence. Treat the commit message and PR body as claims to verify, not proof.
 
 ## Read fresh (in full, every invocation, in this order)
 
@@ -179,7 +182,7 @@ All Phase 1 + Phase 2 clean → ready to pair with code review. OR specific find
 - Do NOT modify any file. Read-only.
 - Do NOT push, do NOT call `gh pr create`, do NOT post PR comments.
 - Do NOT skip a pattern silently. Empty-result patterns report as `clean`.
-- Do NOT charity-read the author's intent — if the prose claims a fact (section name, sibling-crate state, numeric pairing), open the source and verify it; do not assume it is true because the author wrote it. This is the entire reason Pattern S exists.
+- Do NOT infer unstated author intent — if the prose claims a fact (section name, sibling-crate state, numeric pairing), open the source and verify it; do not assume it is true because the author wrote it. This is the reason Pattern S exists.
 - Findings cite a rule / ADR / guideline section, not "I prefer".
 
 When finished, return only the Markdown report. The orchestrator surfaces it to the user.
@@ -195,7 +198,7 @@ User fixes findings, re-invokes — restart from Step 1. Skill is idempotent.
 
 ## Binding rules
 
-- **Default invocation is cold-start.** Never inline the sweep into the main session. If `shotloom-review-before-pr` reuses this catalog for pass B, its verification preamble controls the role framing; keep pattern and output rules.
+- **Default invocation is cold-start.** Never inline the sweep into the main session. If `shotloom-review-before-pr` reuses this catalog through its targeted docs prompt, that prompt controls the role framing; keep pattern and output rules.
 - **Read-only by contract.** The Explore subagent type is read-only.
 - **Re-read standards inside the subagent.** Main session does not need to load the docs standards.
 - **Sibling skill split:** Rust/TS code quality lives in `shotloom-review-code`. This skill only covers docs / comment / markup / PR-prose / Linear-discipline.
@@ -204,8 +207,5 @@ User fixes findings, re-invokes — restart from Step 1. Skill is idempotent.
 
 - `shotloom-review-code` — paired skill for Rust/TS code quality + test coverage.
 - `shotloom-review-before-pr` — umbrella router invoking code first, then docs.
-- `docs/guidelines/pr-guideline.md` (in shotloom repo) — PR body shape.
-- `docs/guidelines/commit-guideline.md` (in shotloom repo) — Conventional Commits.
-- `docs/guidelines/documentation-standard.md` (in shotloom repo) — durable-knowledge rules.
-- `docs/guidelines/adr-template.md` (in shotloom repo) — ADR template + Usage Notes.
+- Shotloom docs guidelines — PR body, commits, durable docs, and ADR template.
 - [reference.md](reference.md) — full bash command catalog for every pattern.

@@ -1,5 +1,6 @@
 ---
 description: Run Shotloom pre-PR review with auto Single/Triad mode, then hand off to shotloom-make-pr when clean
+argument-hint: "[force single|force standard|force triad] [review only|no make-pr]"
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
 domains: rust
 repo-keys: shotloom
@@ -13,81 +14,40 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-before-pr
 
-Run pre-PR self-review on the current Shotloom branch, choose Single or Triad
-review mode from diff size and risk signals, then immediately hand off to
-`shotloom-make-pr` once all fired phases are clean or nit-only. The skill uses
-read-only Explore subagents. The first pass for each phase is a cold-start
-review. Later passes in the same phase are independent verification passes from
-different angles after fixes change `HEAD`. If later verification passes find
-P0-P2 issues and fixes change `HEAD` again, continue the same review chain with
-the next pass letter instead of restarting at pass A.
+Run pre-PR self-review on the current Shotloom branch. This skill is an
+orchestrator: it reads references, dispatches read-only review agents, applies
+in-scope fixes, verifies changed `HEAD`, and hands off to `shotloom-make-pr`
+when clean.
+
+Read first:
+
+| Reference | Owns |
+|---|---|
+| `references/PROCESS_POLICY.md` | Phase boundary, finding handling, handoff, binding rules. |
+| `references/REVIEW_MODE.md` | Single/Triad selection. |
+| `references/TRIAD_REVIEW.md` | Triad roles and merge rules. |
+| `references/LARGE_BOUNDARY_PR_LENSES.md` | Boundary trigger and batch lenses. |
+| `references/PRE_PR_PROMPTS.md` | Verification and docs prompts. |
 
 ## Delegation Authorization
 
-Invoking this skill is an explicit request to delegate the review passes to
-read-only subagents. For Codex harnesses with a "spawn agents only when the user
-explicitly asks" rule, this skill invocation itself is the explicit delegation
-request because the workflow cannot satisfy its review contract without
-independent subagent passes.
-
-Subagent scope is read-only:
-
-- Allowed: inspect the worktree, read files, run read-only git/rg commands, and
-  report findings.
-- Forbidden: edit files, stage, commit, push, post GitHub comments, change
-  Linear, or run destructive commands.
-
-If a harness cannot spawn subagents after this authorization, stop and report
-that the pre-PR review gate is blocked. Do not silently substitute a local-only
-review and call the gate complete.
+Invoking this skill authorizes read-only review subagents. Subagents may inspect
+the worktree and report findings. They must not edit, stage, commit, push, post
+GitHub comments, change Linear, or run destructive commands. If subagents are
+unavailable, report that the pre-PR review gate is blocked.
 
 ## Arguments
 
-None. Operates on the PR diff, `git diff origin/main...HEAD`, from the
-current Shotloom worktree. The three-dot diff is required because branches may
-be behind `origin/main`; a two-dot tree diff can misread base-branch additions
-as deletions in the review branch.
+Optional natural-language overrides:
 
-## Review Shape
+| User phrase | Effect |
+|---|---|
+| `force single` or `force standard` | Use Single mode after Step 1 evidence. |
+| `force triad` | Use Triad mode after Step 1 evidence. |
+| `review only` or `no make-pr` | Stop after the final review report; do not hand off to `shotloom-make-pr`. |
 
-### Review Mode
-
-| Mode | Fires | Required phases |
-|---|---|---|
-| Single | Diff is small and limited to UI, tests, docs, or one low-risk surface | single code, large-boundary if triggered, docs |
-| Triad | Diff size or risk triggers match Step 2 | triad, large-boundary if triggered, docs |
-
-Default mode is Auto. In Auto, the orchestrator selects Single or Triad after
-Step 1 and prints the decision before Step 3. If the user explicitly says
-`force single`, `force standard`, or `force triad`, use that mode and still
-print the evidence. Treat `force standard` as `force single`.
-
-| Phase | Initial cold-start pass | Follow-up verification passes |
-|---|---|---|
-| Single code | code pass A | code pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
-| Triad | triad pass A | triad pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
-| Docs | targeted docs pass A | docs pass B, C, ... while fixes change `HEAD` and P0-P2 findings remain |
-
-Large-boundary lens batching is an extra phase, not a main review mode. Use
-`references/LARGE_BOUNDARY_PR_LENSES.md` when the diff touches two or more of:
-Rust bridge DTOs, TypeScript bridge mirrors, engine handlers, model validation,
-fixtures, `docs/ipc/bridge-contract.md`, promote/demote/import/save/load paths,
-or event sequencing. If three or more trigger rows match, Step 2 selects Triad.
-
-Run phases sequentially: selected main review first, large-boundary batches when
-triggered, docs last. The selected main review is either Single code or Triad,
-never both in the same pass chain. Docs review includes comments and docstrings,
-so it must read the post-main-review tree.
-
-Stop a phase when its latest report is clean or contains only P3/nit
-findings. If the last remaining issues are nits, either fix/accept those nits
-once and move on, but do not keep cycling that phase solely to chase more nits.
-
-Do not stop after a clean selected main review. A clean or nit-only main review
-continues to large boundary lens batches when they trigger, then to the targeted
-docs phase. A clean or nit-only docs phase automatically continues to
-`shotloom-make-pr`; the make-PR skill still owns its local gates, PR body draft,
-and explicit `gh pr create` approval.
+By default, review `git diff origin/main...HEAD` from the current Shotloom
+worktree. Use the three-dot diff because branches can be behind `origin/main`.
 
 ## Workflow
 
@@ -102,6 +62,7 @@ case "$remote" in
 esac
 cd "$toplevel"
 pwd
+git fetch origin main
 branch=$(git rev-parse --abbrev-ref HEAD); echo "$branch"
 [ "$branch" = "main" ] && { echo "ERROR: HEAD is main"; exit 1; }
 git log --oneline origin/main..HEAD
@@ -109,14 +70,13 @@ git status --short
 ```
 
 Refuse if `HEAD` is `main`, the branch has zero commits ahead of
-`origin/main`, or cwd is not a Shotloom worktree.
-
-Record `head_step1=$(git rev-parse HEAD)`.
+`origin/main`, or cwd is not a Shotloom worktree. Record
+`head_step1=$(git rev-parse HEAD)`.
 
 ### Step 2: Review Mode Decision
 
-Read `references/REVIEW_MODE.md`, gather its required diff evidence, and select
-`review_mode=single` or `review_mode=triad`.
+Gather diff evidence plus large-boundary trigger rows, then choose
+`review_mode=single` or `review_mode=triad` from `references/REVIEW_MODE.md`.
 
 ```bash
 git diff --shortstat origin/main...HEAD
@@ -124,417 +84,112 @@ git diff --name-only origin/main...HEAD
 git diff --name-status origin/main...HEAD
 ```
 
-Use `force single`, `force standard`, or `force triad` only when the user
-explicitly wrote that override. Treat `force standard` as `force single`.
-Otherwise use Auto. Render the decision template from
-`references/REVIEW_MODE.md` before launching review agents.
+Use `references/LARGE_BOUNDARY_PR_LENSES.md` → `Trigger` while deciding
+`triad triggers`; Step 5 uses the same trigger count to select batches.
 
-```markdown
-## Review Mode Decision - branch <branch>
-
-Mode: Single | Triad
-Reason: <one sentence>
-Signals:
-- files changed: <N>
-- lines changed: +<A>/-<D>
-- touched surfaces: <list>
-- triad triggers: <list or none>
-```
+Honor `force single`, `force standard`, or `force triad` only when the user
+explicitly wrote that override. Render the Review Mode Decision template before
+launching review agents.
 
 ### Step 3: Selected Main Review Pass A
 
-If `review_mode=single`, run Step 3a.
+If `review_mode=single`:
 
-If `review_mode=triad`, run Step 3b. Do not run code pass A before Triad.
-Triad is the main review pass for large or risky diffs.
+1. Dispatch one read-only Explore subagent.
+2. Prompt: read installed `shotloom-review-code/SKILL.md`; if unavailable, read
+   `agent/skills/shotloom-review-code/SKILL.md`. Extract only the fenced
+   `Subagent brief (copy verbatim)` block under Step 3; substitute
+   `<worktree>`, `<pwd>`, and `<branch>`. Do not pass wrapper instructions that
+   tell the caller to invoke another Agent.
+3. Render under `## Pre-PR review - branch <branch> - code pass A`.
+4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
+5. Set `main_review_mode=single`.
+6. Compute `code_fixes_applied` by comparing `HEAD` to `head_step1`.
 
-#### Step 3a: Single Code Pass A
+If `review_mode=triad`:
 
-Dispatch one read-only Explore subagent.
+1. Dispatch the three role subagents from `references/TRIAD_REVIEW.md`.
+2. Render each under `## Pre-PR review - branch <branch> - triad pass A - <role>`.
+3. Apply the Triad Merge Rules.
+4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
+5. Set `main_review_mode=triad`.
+6. Compute `triad_fixes_applied` by comparing `HEAD` to `head_step1`.
 
-| Field | Value |
-|---|---|
-| `description` | `Code review pass A (cold-start) - review-rust + skill-side test lens + Patterns A-F + T + V + U + J + code sub-passes + review axes + deep adjacency` |
-| `prompt` | Read `~/.claude/skills/shotloom-review-code/SKILL.md` Step 3 and pass it verbatim with `<worktree>` and `<branch>` substituted. |
+### Step 4: Main Review Verification
 
-Render the report verbatim under:
+If no main-review fixes changed `HEAD`, set
+`head_after_main=$(git rev-parse HEAD)` and continue to Step 5.
 
-```markdown
-## Pre-PR review - branch <branch> - code pass A
-```
+If Single fixes changed `HEAD`, run code verification with
+`PRE_PR_PROMPTS.md` → `Single Code Verification Preamble`. Render under
+`## Pre-PR review - branch <branch> - code pass <letter> (verify)`.
 
-If findings exist, ask which findings to fix. After the user finishes or
-declines fixes, compute:
+If Triad fixes changed `HEAD`, run Triad verification for roles that reported
+P0-P2 or whose owned surface changed. Use `TRIAD_REVIEW.md` → `Verification
+Pass`. Render under
+`## Pre-PR review - branch <branch> - triad pass <letter> (verify) - <role>`.
 
-```bash
-code_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_step1" && echo true || echo false)
-```
+After each verification pass, apply `PROCESS_POLICY.md` → `Finding Handling`.
+If fixes changed `HEAD`, run the next verification pass letter. Stop when the
+latest pass is clean or nit-only, then set `head_after_main=$(git rev-parse HEAD)`.
 
-Set `main_review_mode=single`.
+### Step 5: Large Boundary Lens Batches
 
-#### Step 3b: Triad Pass A
+If `references/LARGE_BOUNDARY_PR_LENSES.md` does not trigger, skip to Step 6.
 
-Read `references/TRIAD_REVIEW.md` and dispatch the three role subagents in
-parallel using its Role Subagent Prompt. Render each role report verbatim under
-`## Pre-PR review - branch <branch> - triad pass A - <role>`, then apply the
-reference Merge Rules.
+If it triggers:
 
-If merged P0-P2 findings remain, fix or ask which findings to fix. If only
-P3/nit findings remain, fix or accept those nits once and continue.
+1. Select matching batches from the Trigger-To-Batch Map.
+2. Dispatch one read-only Explore subagent per selected batch.
+3. Prompt: read the same reference, review current `HEAD` for Batch `<batch>`
+   only, use `git diff origin/main...HEAD`, render the Result Template, and do
+   not mutate files or external systems.
+4. Stop between batches when P0-P2 findings exist.
+5. Apply `PROCESS_POLICY.md` → `Finding Handling`.
+6. Run targeted checks for the changed surface: choose the smallest relevant
+   local package/test command or `shotloom-check-gates`; report commands run.
+7. Resume with the next matching batch from current `HEAD`.
 
-After fixes or acceptance, compute:
-
-```bash
-triad_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_step1" && echo true || echo false)
-```
-
-Set `main_review_mode=triad`.
-
-### Step 4: Main Review Verification Passes If Needed
-
-| Condition | Action |
-|---|---|
-| `main_review_mode=single` and `code_fixes_applied=false` | set `head_after_main=$(git rev-parse HEAD)` and continue to Step 5 |
-| `main_review_mode=triad` and `triad_fixes_applied=false` | set `head_after_main=$(git rev-parse HEAD)` and continue to Step 5 |
-| `main_review_mode=single` and `code_fixes_applied=true` | run Single code verification |
-| `main_review_mode=triad` and `triad_fixes_applied=true` | run Triad verification; do not run code verification |
-
-#### Single Code Verification
-
-Dispatch one read-only Explore subagent using the `shotloom-review-code` Step 3
-checklist. Override the role framing with this preamble:
-
-```text
-This is an independent verification pass after earlier fixes changed HEAD.
-Use the code-review catalog as a verification checklist for current HEAD.
-If the changed HEAD is test-heavy, start by verifying the in-repo
-`review-rust.md` production-code sections and the skill-side Test Code Review
-Lens before applying the rest of the supplementary patterns.
-Review from a different angle than all earlier passes in this phase: confirm
-previously reported P0-P2 issues are fixed, look for regressions introduced by
-fixes, and report any pre-existing defect still visible in the current diff.
-Re-run Review Axes Triage on current HEAD. Use the axes as a compact checklist:
-correctness, regression risk, test coverage, data/state consistency, error
-handling, API/contract consistency, security/safety, performance,
-maintainability, and scope control. Then run the current `shotloom-review-code`
-Phase 3a sub-pass catalog. Trigger only the sub-passes that match the changed
-diff: Core correctness, Bridge contract, Boundary/domain, Test matrix, and
-Asset/manifest/platform. Report each triggered sub-pass separately and list
-non-triggered sub-passes as `N/A`.
-
-The Shotloom in-repo review guidelines remain the authority; the axes and
-sub-passes only reveal missed applications of those guidelines, directly
-related ADRs, specs, bridge contracts, task issue acceptance criteria, or
-skill-side patterns. Do not scan every Shotloom ADR, spec, bridge contract, or
-issue for this verification pass. Default evidence depth is 2: inspect direct
-evidence, then only the artifacts directly referenced by that evidence.
-Escalate to Depth 3 only for protocol/schema/serialization/persistence
-compatibility risk or a concrete contradiction found at Depth 2.
-Re-run the Deep Adjacency pass on current HEAD using the same sub-pass grouping
-from `shotloom-review-code`, including two-depth load/save/import paths, direct
-consumers, bridge mirrors, fixtures, diagnostic wording, public helper exposure,
-and migration/compatibility decisions for changed validation rejections.
-Do not rely on the authoring session or on earlier pass conclusions; check
-directly.
-```
-
-Render the report verbatim under:
-
-```markdown
-## Pre-PR review - branch <branch> - code pass <letter> (verify)
-```
-
-If the verification pass finds P0-P2 issues, fix/ask whether to fix now. If
-fixes change `HEAD`, run the next code verification pass with the same
-verification preamble and a new pass letter. Do not restart code pass A unless
-the user explicitly asks for a fresh cold-start review.
-
-If the verification pass is clean or contains only P3/nit findings, stop the
-code review loop. Fix or accept the final nits once, then set
-`head_after_main=$(git rev-parse HEAD)` and continue automatically to Step 5
-without another code pass.
-
-Each verification pass must:
-
-- use the same independent-verification preamble;
-- review current `HEAD` directly;
-- confirm prior findings were fixed;
-- look for regressions introduced by the latest fixes;
-- render under `code pass <letter> (verify)`.
-
-After the latest code verification pass is clean or nit-only, set
-`head_after_main=$(git rev-parse HEAD)`.
-
-#### Triad Verification
-
-Dispatch read-only Explore subagents only for roles that reported P0-P2 or
-whose owned surface changed. Use `references/TRIAD_REVIEW.md` Verification Pass
-preamble. Render each role report under:
-
-```markdown
-## Pre-PR review - branch <branch> - triad pass <letter> (verify) - <role>
-```
-
-If the verification pass finds P0-P2 issues, fix/ask whether to fix now. If
-fixes change `HEAD`, run the next Triad verification pass for affected roles
-with the same verification preamble and a new pass letter. Do not run Single
-code verification before or after Triad verification.
-
-If the verification pass is clean or contains only P3/nit findings, stop the
-Triad loop. Fix or accept the final nits once, then set
-`head_after_main=$(git rev-parse HEAD)` and continue automatically to Step 5.
-
-### Step 5: Large Boundary Lens Batches If Triggered
-
-If the large-boundary trigger in `references/LARGE_BOUNDARY_PR_LENSES.md` does
-not match, skip to Step 6.
-
-If it matches, read `references/LARGE_BOUNDARY_PR_LENSES.md`, select batches
-from its Trigger-To-Batch Map, and dispatch one read-only Explore subagent per
-selected batch. The subagent prompt is:
-
-```text
-Read `<skill-dir>/references/LARGE_BOUNDARY_PR_LENSES.md`.
-Review current `HEAD` for Batch <batch> only.
-Use the batch's lenses and stop condition.
-Use `git diff origin/main...HEAD` as the reviewed diff.
-Report only P0-P3 findings grounded in the changed surfaces.
-Render the Result Template from the reference.
-Do not edit files, stage, commit, push, post comments, or change Linear.
-```
-
-After each batch:
-
-1. Render a `Lens Batch Result` table.
-2. Stop before the next batch when P0-P2 findings exist.
-3. Fix or explicitly accept findings.
-4. Run targeted checks for the changed surface.
-5. Resume with the next matching batch from current `HEAD`.
-
-Do not run every lens in one pass. Do not continue from Batch B to Batch C
-while unresolved P0-P2 findings from Batch B remain.
-
-If lens fixes change `HEAD`, run the verification pass for the selected main
-review mode before docs. Single mode uses code verification. Triad mode uses
-Triad verification for roles whose owned surface changed.
+If boundary fixes changed `HEAD`, run the selected main-review verification
+path before docs.
 
 ### Step 6: Targeted Docs Pass A
 
 Record `head_before_docs=$(git rev-parse HEAD)`.
 
-Dispatch one read-only Explore subagent.
+Dispatch one read-only Explore subagent with `PRE_PR_PROMPTS.md` →
+`Targeted Docs Brief`, substituting `<worktree>` and `<branch>`. Render under
+`## Pre-PR review - branch <branch> - docs pass A (targeted)`.
 
-| Field | Value |
-|---|---|
-| `description` | `Docs review pass A (targeted context) - changed zones + related terms` |
-| `prompt` | Use the targeted docs brief below with `<worktree>` and `<branch>` substituted. |
+Apply `PROCESS_POLICY.md` → `Finding Handling`. Compute `docs_fixes_applied` by
+comparing `HEAD` to `head_before_docs`.
 
-#### Targeted docs brief
+### Step 7: Docs Verification
 
-```text
-You are a targeted Shotloom docs/comment reviewer. This is not a broad
-cold-start docs audit. Stay near the implementation zone changed by the branch.
+If docs fixes did not change `HEAD`, continue to Step 8.
 
-Read fresh:
-1. `<worktree>/docs/guidelines/documentation-standard.md`
-2. `<worktree>/docs/guidelines/code-review-guideline.md`
-3. `~/.claude/skills/shotloom-review-docs/reference.md` only for targeted
-   G/H/S checks that apply to changed prose.
+If docs fixes changed `HEAD`, dispatch one read-only Explore subagent with the
+same targeted docs brief plus `PRE_PR_PROMPTS.md` → `Docs Verification
+Preamble`. Render under
+`## Pre-PR review - branch <branch> - docs pass <letter> (verify)`.
 
-Diff under review:
-- Worktree: `<worktree>`
-- Branch: `<branch>`
-- File list: `git diff --name-only origin/main..HEAD`
-- Content: `git diff origin/main..HEAD`
-
-Related issue and decision context:
-- Detect a Linear issue from `$ARGUMENTS`, PR body, or recent commit footers
-  like `Related to STL-NN`. If a Linear connector is visible, fetch the issue
-  and use its title, problem statement, acceptance criteria, affected modules,
-  linked ADRs, linked specs, and linked bridge contracts as context. If Linear
-  is unavailable, say so and continue from local branch/commit hints.
-- Check related ADRs/specs/bridge contracts deliberately. Start from artifacts
-  linked by Linear, PR/branch text, changed docs, changed code comments, or
-  directly referenced specs/contracts. If no direct link exists, use exact
-  implementation-zone keyword matches in the smallest relevant root
-  (`docs/adr/`, `docs/specs/`, or `docs/ipc/`). Do not scan every ADR, spec,
-  bridge contract, or unrelated issue just to fill the report.
-- Default evidence depth is 2: Depth 0 is the changed prose/comment surface,
-  Depth 1 is directly linked or exact-match evidence, and Depth 2 is artifacts
-  directly referenced by Depth 1 evidence. Stop after Depth 2 unless a concrete
-  contradiction is visible in the changed implementation zone. Escalate to
-  Depth 3 only for protocol/schema/serialization/persistence compatibility risk
-  or a concrete contradiction found at Depth 2.
-- Treat code comments and rustdoc in changed or nearby implementation files as
-  docs. Review them with the same previous-vs-current behavior standard as
-  markdown docs.
-
-Scope:
-1. Identify changed docs/comments/rustdoc/prose in the diff.
-2. Extract implementation-zone keywords from changed code and docs. Include
-   domain terms, diagnostic codes, cache/version strings, function names, and
-   behavior words. Examples: `normalize_vrm`, `axis-bake`, `humanoid`,
-   `inverseBindMatrices`, `skin`, `cache`, `VRM 0.x`, `VRM 1.x`,
-   `normalized_vrm_axis_bake`.
-3. Search only nearby related docs/comments/evidence for those terms. Prefer
-   changed files first, then directly related ADRs, specs, bridge contracts,
-   guidelines, and architecture pages. Do not run a repository-wide prose audit
-   except for exact diagnostic/code/path references introduced by the diff.
-4. Compare previous wording against current wording:
-   - What did the pre-branch text imply before?
-   - What does the branch now claim?
-   - Is there stale contrast, future-tense, old behavior, or an incomplete
-     replacement near the same topic?
-5. Use actual review findings from the selected main review as inspiration for
-   targeted terms. For example, if the main review discussed malformed skins,
-   inverse-bind metadata, cache versioning, or best-effort skips, check whether
-   docs/comments now describe that boundary accurately.
-6. Run the local-absolute-path exposure check on the changed files and any
-   changed durable metadata (docs, manifests, fixtures, examples, scripts):
-   search for `/Users/`, `/home/`, `C:\`, `D:\`, `Downloads/`, `Desktop/`,
-   and machine-specific checkout roots. Treat a committed local machine path
-   as P1 when it appears in source, docs, manifests, fixtures, generated
-   examples, or PR-ready prose. Allow only intentionally local runtime config,
-   `.gitignore`d private files, or clearly home-relative harness paths such as
-   `~/.claude/...`.
-
-Report only actionable mismatches in the changed/related zone. If a broad docs
-standard would require PR-body-only content and no PR body exists, mark it N/A.
-
-Output:
-## Docs review — branch <branch>
-
-### Applicability
-- Targeted terms searched: ...
-- Context sources checked: Linear issue/ACs, directly related ADRs/specs/bridge
-  contracts, changed comments/rustdoc, related docs, with unavailable sources
-  called out.
-- Files checked: ...
-
-### Findings
-- clean, OR findings with P0/P1/P2/P3 priority and source rule/pattern.
-
-### Previous vs Current Notes
-- Briefly list any important changed meaning that was verified as coherent.
-
-### Recommendation
-- clean / nit-only / P0-P2 remains.
-```
-
-Render the report verbatim under:
-
-```markdown
-## Pre-PR review - branch <branch> - docs pass A (targeted)
-```
-
-If findings exist, ask which findings to fix. After the user finishes or
-declines fixes, compute:
-
-```bash
-docs_fixes_applied=$(test "$(git rev-parse HEAD)" != "$head_before_docs" && echo true || echo false)
-```
-
-### Step 7: Docs Verification Passes If Needed
-
-If `docs_fixes_applied=false`, continue to Step 8.
-
-If `docs_fixes_applied=true`, dispatch one read-only Explore subagent using
-the same targeted docs brief. Override the role framing with this preamble:
-
-```text
-This is an independent verification pass after earlier docs fixes changed
-HEAD. Use the targeted docs brief as a verification checklist for current
-HEAD. Review from a different angle than all earlier docs passes: confirm
-previously reported P0-P2 issues are fixed, look for regressions introduced by
-fixes, and report any stale previous-vs-current wording still visible around
-the changed implementation zone. Do not rely on the authoring session or on
-earlier pass conclusions; check directly.
-```
-
-Render the report verbatim under:
-
-```markdown
-## Pre-PR review - branch <branch> - docs pass <letter> (verify)
-```
-
-If the verification pass finds P0-P2 issues, fix/ask whether to fix now. If
-fixes change `HEAD`, run the next docs verification pass with the same
-verification preamble and a new pass letter. Do not restart docs pass A unless
-the user explicitly asks for a fresh cold-start review.
-
-If the verification pass is clean or contains only P3/nit findings, stop the
-docs review loop. Fix or accept the final nits once, then continue to Step 8
-without another docs pass.
-
-Each verification pass must:
-
-- use the same independent-verification preamble;
-- review current `HEAD` directly;
-- confirm prior findings were fixed;
-- look for regressions introduced by the latest fixes;
-- render under `docs pass <letter> (verify)`.
+Apply `PROCESS_POLICY.md` → `Finding Handling`. If fixes changed `HEAD`, run
+the next docs verification pass letter. Stop when the latest pass is clean or
+nit-only.
 
 ### Step 8: Make-PR Handoff
 
-If the selected main review, large-boundary batches when triggered, and docs
-passes are clean or nit-only, invoke
-`shotloom-make-pr` immediately in the same worktree. Do not stop at a
-"ready" recommendation. The handoff is part of this skill's default success
-path.
-
-`shotloom-make-pr` must still:
-
-- run its own local CI-equivalent gates;
-- draft the title/body from its whitelisted inputs;
-- ask for explicit per-PR approval before `gh pr create`.
-
-If the current harness cannot invoke another local skill directly, report:
+Apply `PROCESS_POLICY.md` → `Handoff`. If the current harness cannot invoke
+another local skill directly, report:
 `Ready to /shotloom-make-pr — run it next in this same worktree`.
 
-Report one of these outcomes:
-
-| Result | Recommendation |
-|---|---|
-| All fired passes clean | Invoke `shotloom-make-pr` now |
-| Only P3/nit findings remain | Invoke `shotloom-make-pr` now; note fixed/accepted nits |
-| Findings fixed or accepted | Invoke `shotloom-make-pr` now; note accepted residual risk |
-| Latest verification pass found P0-P2 issues | Fix and continue with next pass, or document accepted risk in PR body |
-
 Add one short Korean paragraph only if findings were non-clean.
-
-## Binding Rules
-
-- Always print the Review Mode Decision before launching review agents.
-- Always run one selected main review before docs.
-- In Single mode, the selected main review is code pass A.
-- In Triad mode, the selected main review is triad pass A. Do not run code pass
-  A before Triad.
-- Always use read-only Explore subagents.
-- Triad mode replaces Single code review. It never runs after code pass A in the
-  same chain.
-- Single mode is allowed only when Step 2 Single conditions all match.
-- After docs is clean or nit-only, immediately hand off to `shotloom-make-pr`
-  unless the harness cannot invoke local skills.
-- Docs passes are targeted to changed implementation-zone terms and nearby
-  related wording, especially previous-vs-current behavior. They are not broad
-  cold-start repository docs audits unless the user explicitly asks.
-- Never run a verification pass unless the matching phase's fixes changed
-  `HEAD`.
-- Label every follow-up pass as independent verification after fixes changed
-  `HEAD`.
-- Only the first pass of each phase is cold-start. Later passes are different
-  verification perspectives, not fresh cold-start restarts.
-- Continue verification while P0-P2 findings remain and fixes keep changing
-  `HEAD`; stop once the latest pass is clean or nit-only.
-- Do not push, create PRs, or post PR comments inside this review skill. PR
-  creation belongs only to the `shotloom-make-pr` handoff.
-- Use this umbrella for default pre-PR review. Use leaf skills only for
-  narrow rechecks.
 
 ## Related
 
 - `shotloom-review-code` - code-quality leaf.
-- `shotloom-review-docs` - docs and wording leaf.
+- `shotloom-review-docs` - standalone docs review catalog; Step 6 uses its
+  reference through `PRE_PR_PROMPTS.md`.
 - `shotloom-make-pr` - next step after a clean report.
 - `docs/guidelines/review-rust.md` - Rust review spec.
 - `docs/guidelines/code-review-guideline.md` - review priorities.

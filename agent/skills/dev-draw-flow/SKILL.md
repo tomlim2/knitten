@@ -2,8 +2,8 @@
 name: dev-draw-flow
 description: ASCII data-flow / module-architecture diagrams — module boxes, type-labeled arrows, fan-in/fan-out, bypass lanes.
 when_to_use: User asks to "draw a pipeline diagram", "make a flow chart", "show data flow", "diagram the modules", "그림 그려줘", "다이어그램 만들어줘", or wants to update an existing flow diagram. Also useful when explaining architecture and a visual would beat prose.
-allowed-tools: Read, Write, Edit, Bash(cat:*), Bash(ls:*), Bash(rg:*), Bash(grep:*)
 argument-hint: "[topic] or [path-to-existing-diagram-md]"
+allowed-tools: Read, Write, Edit, Bash(cat:*), Bash(ls:*), Bash(rg:*), Bash(grep:*)
 ---
 
 # dev-draw-flow

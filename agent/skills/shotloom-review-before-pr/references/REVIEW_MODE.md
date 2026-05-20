@@ -19,6 +19,10 @@ git diff --name-status origin/main...HEAD
 git diff origin/main...HEAD
 ```
 
+Also count matching trigger rows from
+`references/LARGE_BOUNDARY_PR_LENSES.md` → `Trigger`; the same count feeds the
+`triad triggers` field in the decision template.
+
 ## Surface Map
 
 | Surface | Evidence |

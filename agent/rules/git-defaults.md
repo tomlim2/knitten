@@ -30,9 +30,9 @@ Default-counter rules. The harness biases toward each opposite; these counter at
   says branch cleanup or remote branch deletion. Use
   `node scripts/worktree-clean.mjs --local-only` for the dry run and
   `--local-only --apply --yes` only after approval.
-- **Merge before cleanup** — Do not pass `--delete-branch` to `gh pr merge`
-  for worktree-first tasks. Merge first with `gh pr merge <N> --squash`; delete
-  local/remote branches only in the cleanup flow after worktree removal.
+- **No merge-time branch deletion** — Never pass `--delete-branch` to
+  `gh pr merge`. Merge first; if cleanup was requested, run
+  `git push origin --delete <branch>` and then the worktree cleanup flow.
 - **Suggest PR after push** — In a worktree-first repo, when a write task has
   been committed and pushed, suggest opening a PR before handing off. Create
   the PR only when the user asks for it or has already requested publication
