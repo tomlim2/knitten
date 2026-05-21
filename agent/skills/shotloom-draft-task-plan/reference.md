@@ -35,6 +35,52 @@ briefing: ../../briefings/shotloom/<slug>.md
 ---
 ```
 
+## Step 4 - Planning Scale
+
+| Task shape | Required planning shape |
+|---|---|
+| Small fix | Briefing, Research, Spec Contract, compact Design Plan. |
+| Medium change | Briefing, Research, Spec Contract, Design Plan, explicit Risk Map. |
+| Boundary-heavy change | Briefing, Research, Options Considered, Spec Contract, Design Plan, review loop. |
+
+Boundary-heavy work includes bridge protocol, core model, runtime topology,
+import/export pipeline, persisted schema, asset lifecycle, promotion/demotion,
+or user-facing workflow ownership.
+
+## Step 4 - Design Plan Stage I/O Contract
+
+Every Design Plan stage uses this block:
+
+```md
+S<N> - <stage name>
+
+Input:
+- <typed data, existing function, command payload, file, or artifact consumed>
+
+Output:
+- <state, file, event, diagnostic, test, or artifact produced>
+
+Non-output:
+- <state, file, event, side effect, or scope this stage must not produce>
+
+Failure:
+- <reject, skip, rollback, stop-and-ask, or diagnostic behavior>
+
+Proof:
+- <test, gate, manual repro, diff check, or post-state assertion>
+```
+
+Rules:
+
+- Name concrete paths, symbols, command payloads, model types, and event names.
+- Use `None` only when the stage has no input, output, forbidden output,
+  failure branch, or proof branch.
+- `Output` describes observable post-state, not an implementation activity.
+- `Non-output` blocks scope creep such as `PropModel` mutation, protocol
+  changes, asset writes, or user-visible events.
+- `Failure` names the exact rejection, rollback, skip, or stop behavior.
+- `Proof` names a failing-before/passing-after assertion when code changes.
+
 ## Step 4 - Spec Body Template
 
 | Section | Required content |
@@ -44,15 +90,21 @@ briefing: ../../briefings/shotloom/<slug>.md
 | `## Current State` | Evidence table with paths, symbols, classification, and what each surface proves. |
 | `## Linear Briefing` | Required when frontmatter has `linear:` or the briefing cites a Linear issue. |
 | `## Problem` | Concrete remaining gap after audit, tied to Linear/user intent. |
+| `## Options Considered` | Required for boundary-heavy work. Compare 2-3 feasible approaches, choose one, and trace rejected alternatives to evidence. |
 | `## Requirements` | Numbered implementation requirements. Each requirement maps to AC, ADR, repo precedent, or user clarification. |
 | `## Risk Map` | Defect-class table with evidence, plan response, and test proof for each applicable risk. |
 | `## Locked Decisions` | Numbered decisions with `Rationale:` and `Rejected alternatives:`. |
 | `## Non-Goals` | Explicit adjacent exclusions. |
-| `## Implementation Spec` | Ordered implementation stages from smallest proof to broader updates. First stage is S0 baseline re-check. |
+| `## Design Plan` | Ordered implementation stages from smallest proof to broader updates. First stage is S0 baseline re-check. Every stage uses the Design Plan Stage I/O Contract. |
 | `## Acceptance Criteria` | Checklist tied to remaining work. |
 | `## Verification` | Focused gates, broad gates, manual repro per diagnostic or rejection code. |
 | `## Traps` | Defensive warnings against false implementation paths, including partial mutation traps for coupled artifacts. |
 | `## Follow-Up Candidates` | Real out-of-scope work. |
+
+Compatibility rule: existing specs with `## Implementation Spec` remain valid.
+For new specs, write `## Design Plan`. When updating an existing spec, rename
+`## Implementation Spec` to `## Design Plan` only if the whole section is being
+rewritten.
 
 ## Step 4 - Body Rules
 
@@ -61,6 +113,13 @@ briefing: ../../briefings/shotloom/<slug>.md
   that survive live-code audit.
 - Do not write a chronological implementation checklist. Write a contract that
   an implementer can execute and a reviewer can verify.
+- Separate decision content from execution order:
+  - `## Options Considered` compares approaches.
+  - `## Spec Contract`, `## Requirements`, and `## Locked Decisions` define the
+    chosen contract.
+  - `## Design Plan` defines the implementation sequence and test strategy.
+- Every Design Plan stage includes `Input`, `Output`, `Non-output`, `Failure`,
+  and `Proof`.
 - Do not list already-complete behavior as future work.
 - Do not promise unsupported formats or workflows.
 - Use concrete file paths in `## Current State`.
@@ -68,14 +127,16 @@ briefing: ../../briefings/shotloom/<slug>.md
 - If the spec says `reuse existing`, name the implementation.
 - Every requirement traces to an AC line, ADR, repo precedent, or user
   clarification.
-- Every implementation stage maps to at least one requirement and one
+- Boundary-heavy specs include `## Options Considered` before
+  `## Locked Decisions`.
+- Every Design Plan stage maps to at least one requirement and one
   verification item.
 - Linear-backed specs include `## Linear Briefing` before `## Problem`.
 - Every direct spec includes `## Risk Map` before `## Locked Decisions`.
 - Every applicable Risk Map row has concrete `Evidence`, `Plan response`, and
   `Test proof`. Use `N/A: <reason>` only when the evidence proves the risk does
   not apply.
-- High-risk implementation stages cite the Risk Map row they satisfy.
+- High-risk Design Plan stages cite the Risk Map row they satisfy.
 - Every user-facing string defaults to split diagnostics or labels. Collapse
   only when `Rationale:` cites source evidence.
 - If one operation mutates more than one representation of the same artifact
@@ -190,7 +251,7 @@ Then answer before patching:
 | Scope fit | Does every proposed edit trace to Linear AC, ADR, repo precedent, or user instruction? |
 | Missing context | What live source or doc changed the spec from the Ready briefing? |
 | Blocking ambiguity | Does any implementation choice need user/Linear clarification before coding? |
-| Contract completeness | Does each requirement have a locked decision, implementation stage, and verification path? |
+| Contract completeness | Does each requirement have a locked decision, Design Plan stage, and verification path? |
 
 Patch all `P1`/`P2` findings from Round 1 before running Round 2.
 
@@ -236,7 +297,7 @@ Run each lens before declaring convergence:
 | Lens | Check |
 |---|---|
 | Current-code contradiction | Spec does not add existing code, cite absent APIs, or miss failure paths. |
-| Requirements trace | Every requirement maps to a source of authority, implementation stage, and verification item. |
+| Requirements trace | Every requirement maps to a source of authority, Design Plan stage, and verification item. |
 | API boundary | Signatures, ownership, validation, return types, and public surface are exact. |
 | Error ownership | Rejection codes, diagnostics, messages, and event order have one owning layer. |
 | Error source chain | Rust error enums preserve wrapped external errors with `#[source]`; internal validator-only errors explicitly have no source. |
@@ -326,8 +387,9 @@ Every final direct spec must pass:
 | Non-Goals | At least 5 adjacent-concern exclusions. |
 | Manual repro | One line per user-facing diagnostic, error, or rejection code. |
 | Persisted artifact proof | Coupled artifact mutation specs assert final persisted bytes/state/event order, not only intermediate counters or one mutated side. |
-| Requirements trace | Every requirement maps to one implementation stage and one verification item. |
-| Baseline | Implementation Spec starts with S0 baseline re-check or AC for one. |
+| Requirements trace | Every requirement maps to one Design Plan stage and one verification item. |
+| Baseline | Design Plan starts with S0 baseline re-check or AC for one. |
+| Design Plan I/O | Every Design Plan stage includes Input, Output, Non-output, Failure, and Proof. |
 | Locked Decisions | Every decision has `Rationale:` and `Rejected alternatives:` labels. |
 | String split | Every user-facing string defaults to separate code or label; collapsed strings cite rationale. |
 | Error source chain | Rust parser/loader/validator specs preserve external causes with `#[source]`, and tests cover `Error::source()` for source/no-source variants. |

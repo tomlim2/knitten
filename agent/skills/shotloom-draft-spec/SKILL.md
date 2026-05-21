@@ -18,9 +18,10 @@ User-facing Shotloom spec workflow after `/shotloom-start-task`.
 
 ## Purpose
 
-Create the implementation spec in one pass, run the spec review loop before any
-source edits, commit and push the briefing plus reviewed spec, then stop and ask
-whether to implement.
+Create the implementation spec after a separated planning path: briefing,
+research, options, spec contract, design plan, review. Run the spec review loop
+before any source edits, commit and push the briefing plus reviewed spec, then
+stop and ask whether to implement.
 
 ## Workflow
 
@@ -32,15 +33,26 @@ rules on top:
 1. Call this workflow `/shotloom-draft-spec` in chat, briefings, and next-step
    instructions.
 2. Treat "draft plan" as legacy wording; write a **spec**, not a plan.
-3. After the direct spec lands, immediately run the review gate named in the
+3. Use this planning vocabulary in chat and artifacts:
+
+   | Stage | Meaning |
+   |---|---|
+   | Briefing | `shotloom-start-task` readiness, blockers, Linear/PR/head state. |
+   | Research | Live code, ADR, spec, sibling issue/PR audit. |
+   | Options | Plausible approaches and chosen direction for boundary-heavy work. |
+   | Spec Contract | Requirements, locked decisions, non-goals, invariants, acceptance. |
+   | Design Plan | File/module implementation sequence with per-stage input, output, failure handling, and proof. |
+   | Implementation | Source edits after the user gives a separate go-ahead. |
+
+4. After the direct spec lands, immediately run the review gate named in the
    compatibility workflow.
-4. If spec authoring or review uncovers a question for the user, stop and ask
+5. If spec authoring or review uncovers a question for the user, stop and ask
    before locking that choice into the spec. Use this for scope boundaries,
    product intent, Linear interpretation, implementation trade-offs, or
    unresolved P1/P2 review findings that cannot be answered from live code.
-5. Final response must share the reviewed spec path and ask whether to start
+6. Final response must share the reviewed spec path and ask whether to start
    implementation.
-6. Do not edit Shotloom source files before the user gives a separate
+7. Do not edit Shotloom source files before the user gives a separate
    implementation go-ahead.
 
 ## Output Contract

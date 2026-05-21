@@ -121,7 +121,7 @@ Run more rounds with a different stance each time. Useful stances:
 
 | Stance | Lead question |
 |---|---|
-| Requirements trace owner | Does each requirement map to authority, implementation stage, and verification? |
+| Requirements trace owner | Does each requirement map to authority, Design Plan stage, and verification? |
 | Paranoid implementer | Where will the code fail to compile, borrow, parse, cache, or validate? |
 | Minimal PR reviewer | What should be follow-up because it makes this PR too large? |
 | Domain owner | Does it respect Shotloom ADRs, module boundaries, diagnostics, and cache policy? |
@@ -156,6 +156,10 @@ Before landing, verify:
 - The spec has `## Spec Contract` or equivalent summary of briefing basis,
   current truth, required change, locked boundary, and proof method.
 - The spec has a current-state evidence table with concrete paths.
+- Boundary-heavy specs have `## Options Considered` before locked decisions.
+  Boundary-heavy means bridge protocol, core model, runtime topology,
+  import/export pipeline, persisted schema, asset lifecycle,
+  promotion/demotion, or user-facing workflow ownership.
 - If the spec has `linear:` frontmatter or cites a Linear issue, it has
   `## Linear Briefing` with issue state, AC summary, blockers, related PRs,
   current review state, and planning consequence.
@@ -209,9 +213,15 @@ Before landing, verify:
   named stronger existing Shotloom helper. String-prefix-only root checks are
   a `P2` floor failure.
 - It has an explicit one-PR suitability judgment, either in summary, decisions,
-  non-goals, or implementation stages.
-- `## Implementation Spec` starts with baseline re-check or includes one.
-- Every implementation stage maps to at least one requirement and verification
+  non-goals, or Design Plan stages.
+- `## Design Plan` starts with baseline re-check or includes one. Existing
+  specs with `## Implementation Spec` pass this floor when that section starts
+  with baseline re-check or includes one.
+- Every new or rewritten Design Plan stage states `Input`, `Output`,
+  `Non-output`, `Failure`, and `Proof`. For unchanged legacy
+  `## Implementation Spec` sections, patch only when missing I/O hides a
+  `P1`/`P2` ambiguity.
+- Every Design Plan stage maps to at least one requirement and verification
   item. High-risk stages map to a Risk Map row.
 - Every `Locked Decisions` item has `Rationale:` and
   `Rejected alternatives:`.

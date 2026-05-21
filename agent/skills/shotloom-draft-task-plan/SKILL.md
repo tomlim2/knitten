@@ -34,10 +34,17 @@ Pre-Step-1 failures stop without writing because no target path exists.
 
 This skill authors a task spec, not an implementation checklist or briefing.
 The spec is a pre-implementation contract: it locks requirements, evidence,
-decisions, non-goals, verification, and traps before source edits begin. The
-persisted Ready briefing is the required handoff input; live Shotloom code is
-canonical evidence. Missing primitives or scope expansion create a `.draft.md`
-conflict artifact.
+decisions, non-goals, verification, traps, and the design plan before source
+edits begin. The persisted Ready briefing is the required handoff input; live
+Shotloom code is canonical evidence. Missing primitives or scope expansion
+create a `.draft.md` conflict artifact.
+
+## Planning Stages
+
+Use this stage order: Briefing -> Research -> Options -> Spec Contract ->
+Design Plan -> Implementation. This skill owns Research through Design Plan;
+`/shotloom-start-task` owns Briefing, and a later user-approved workflow owns
+Implementation. Full section rules: [reference.md](reference.md).
 
 ## Arguments
 
@@ -96,7 +103,7 @@ Linear, branch, AC, ADR, and affected modules. Search examples:
 
 Read matching source files that define wire shape, handler branch, editor entry
 point, fixtures, tests, and docs. Classify each surface as `Already Done`,
-`Partial`, `Missing`, or `Conflict`.
+`Partial`, `Missing`, or `Conflict`. This step is the Research stage.
 
 Factual stop conditions:
 1. Cited primitive mismatch: briefing cites a template, standard, ADR, or repo
@@ -128,18 +135,31 @@ Author around the audited remaining gap. Do not restate Linear verbatim or list
 complete work as future work. Use concrete file paths. Verify every `add`
 target is missing and every `reuse` target is named.
 
-The spec must answer four questions before any implementation stage appears:
+For boundary-heavy work, include an `## Options Considered` section before
+locked decisions. Boundary-heavy work includes bridge protocol, core model,
+runtime topology, import/export pipeline, persisted schema, asset lifecycle,
+promotion/demotion, or user-facing workflow ownership.
+
+Write `## Design Plan` as the implementation-order section in new specs.
+Existing specs that already use `## Implementation Spec` remain valid during
+updates; do not rename the section unless the spec is already being rewritten.
+Each Design Plan stage must state input, output, forbidden output, failure
+handling, and proof. Use the I/O block in [reference.md](reference.md).
+
+The spec must answer these questions before any Design Plan stage appears:
 
 | Question | Required answer |
 |---|---|
 | What exists now? | Current-state evidence table with paths and symbols. |
 | What must change? | Problem statement and acceptance criteria tied to Linear/user intent. |
+| Which option is selected? | Options considered, rejected alternatives, and selected direction when more than one plausible design exists. |
 | What is locked? | Decisions, rejected alternatives, non-goals, invariants, and ownership. |
+| How is it built? | Design Plan stages with file/module boundaries, I/O blocks, and risk rows. |
 | How is it proven? | Verification gates, manual repro, and failure-path evidence. |
 
 If the spec adds or changes a validator, manifest, package script, file IO path,
 asset importer, or path resolver, add a `Validator Contract Matrix` before
-implementation stages:
+Design Plan stages:
 
 | Row | Required content |
 |---|---|
@@ -159,8 +179,8 @@ artifact atomicity, Rust fixture shape, error-source-chain proof, Linear
 Briefing, and Risk Map.
 
 Every direct Shotloom spec must include `## Risk Map`. If a Linear issue id is
-known, the spec must also include `## Linear Briefing`. High-risk
-implementation stages must cite the Risk Map row they satisfy.
+known, the spec must also include `## Linear Briefing`. High-risk Design Plan
+stages must cite the Risk Map row they satisfy.
 
 If any answer depends on user intent rather than live code or written Linear
 scope, stop and ask the user before writing the direct spec. Do not bury the
