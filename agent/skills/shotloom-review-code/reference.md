@@ -1,6 +1,6 @@
 # shotloom-review-code reference
 
-**Supplementary catalog — runs in Phases 2-4 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The test-code review lens and patterns below catch additional defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage, validator/manifest contracts, speculative public surface, TypeScript defensive shapes). Review Axes Triage runs after those sweeps as a compact mandatory checklist. The Deep Adjacency pass then follows two bounded hops past the diff to direct consumers, persistence paths, bridge mirrors, and compatibility decisions.
+**Supplementary stable catalog — runs in Phases 2-4 of the SKILL.md subagent brief.** The canonical Rust review spec is the in-repo `<shotloom>/docs/guidelines/review-rust.md` §1–11, which the subagent walks first in Phase 1. The stable test-code lens and patterns below catch durable defect classes the in-repo spec does not directly enforce (test signal quality, doc-code coherence, classifier asymmetry, silent fallback in hot path, library hygiene, build/platform, cross-crate inheritance, test coverage). Review-derived patterns that are still being evaluated live in `reference-promoted.md`. Review Axes Triage runs after those sweeps as a compact mandatory checklist. The Deep Adjacency pass then follows two bounded hops past the diff to direct consumers, persistence paths, bridge mirrors, and compatibility decisions.
 
 If a Pattern below already overlaps an in-repo §-section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Keep sweeps grep-catchable; semantic-judgment hits move to the subagent's triage column, not into the sweep itself.
 
@@ -352,166 +352,6 @@ If the test is in crate `A` and the identifier is private in crate `B`, rewrite 
 
 ---
 
-## Pattern V — Validator / manifest contract
-
-Trigger when the diff adds or changes a validator, manifest, package script,
-file IO path, asset importer, loader, saver, path resolver, or diagnostic
-contract.
-
-Before reading the implementation, build a bad-input matrix:
-
-| Column | Required content |
-|---|---|
-| Contract claim | The exact accepted and rejected input shape. |
-| Negative fixture | The bad input that proves rejection behavior. |
-| Boundary rule | The ownership, path, platform, or schema boundary. |
-| Error order | The primary failure reported before secondary failures. |
-| Enforcement surface | CLI, CI, unit test, integration test, or runtime guard. |
-| Regression proof | The test or validator run that fails without the fix. |
-
-### V1: changed validator / manifest surface
-
-```bash
-git diff origin/main...HEAD --name-only \
-  | rg '(^|/)(validate|validator|manifest|catalog|schema|config|package\.json|Cargo\.toml|\.github/workflows/)'
-```
-
-For each hit, require a negative fixture or a named reason that no negative
-input exists for this change.
-
-### V2: path containment before filesystem access
-
-```bash
-git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' '*.js' '*.mjs' \
-  | rg '^\+' \
-  | rg 'path\.join|PathBuf::from|fs::|readFile|writeFile|copyFile|rename|remove'
-```
-
-Flag `path.join(root, relative)` or `PathBuf::from(root).join(relative)` when
-the code reads or writes before proving the final path remains inside `root`.
-Require canonicalization or an equivalent containment proof before IO.
-
-### V3: short read before prefix / schema checks
-
-```bash
-git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' '*.js' '*.mjs' \
-  | rg '^\+' \
-  | rg 'read_to_string|readFile|JSON\.parse|serde_json|toml|yaml|startsWith|strip_prefix'
-```
-
-If parsing, prefix checks, or schema validation happen after partial file reads,
-verify the primary error path still reports the caller's bad input rather than a
-secondary parse or missing-file error.
-
-### V4: package / CI enforcement gap
-
-```bash
-git diff origin/main...HEAD --name-only -- 'package.json' '.github/workflows/*' 'scripts/*' \
-  | sort -u
-```
-
-When a new package script or validator entry lands, require at least one of:
-local command documented in the PR body, CI workflow coverage, README/guideline
-surface, or a validator inventory update.
-
-Finding format:
-
-```
-V2: <path>:<line> +<path operation> — IO occurs before root-containment proof.
-    Fix: resolve/canonicalize the candidate path, reject paths outside the root, and add a negative fixture.
-```
-
-```
-V4: <path>:<line> +<script-or-validator> — no CI, README, or validator inventory surface runs it.
-    Fix: wire it into the smallest relevant gate or document the manual command in the PR body.
-```
-
----
-
-## Pattern U — Speculative public API surface
-
-Barrel `index.ts` re-exports, public Rust `pub fn` / `pub use` items, and similar widenings of a module's contract surface should only land when an out-of-module consumer already needs them. Speculative re-exports turn future renames or removals into breaking changes for callers that do not exist yet, and are a recurring source of barrel drift.
-
-Rule: every newly exported symbol from a barrel / `pub` item must have at least one out-of-module consumer in the same diff. If the new symbol is only used by siblings reachable via relative imports / `crate::` paths inside the same module, drop the re-export; siblings should keep using the direct import.
-
-### U1: barrel widening without an external consumer (TS)
-
-```bash
-# 1. New `export {...}` / `export type {...}` lines added in any index.ts under apps/<x>/src
-git diff origin/main...HEAD --unified=0 -- 'apps/*/src/**/index.ts' \
-  | rg '^\+export\s+(\{[^}]+\}|type\s+\{[^}]+\}|\*)' -o
-# 2. For each new symbol name, grep for an import outside the symbol's own folder.
-ident="DebugSidebar"
-folder="apps/editor/src/components/debug"
-rg -l "from \".*${folder##*/components/}" apps/ --type ts --type tsx \
-  | rg -v "^${folder}/" \
-  | xargs -I{} rg -l "\\b${ident}\\b" {} 2>/dev/null
-```
-
-Zero out-of-folder hits → finding.
-
-### U2: speculative `pub` symbol without an external consumer (Rust)
-
-```bash
-# New `pub fn` / `pub struct` / `pub enum` / `pub use` in lib.rs / mod.rs entries
-git diff origin/main...HEAD --unified=0 -- 'crates/*/src/lib.rs' 'crates/*/src/**/mod.rs' \
-  | rg '^\+\s*pub\s+(fn|struct|enum|use|type)\s+([A-Za-z_][A-Za-z0-9_]*)' -o -r '$2' \
-  | sort -u
-# For each symbol, check if any other crate consumes it.
-ident="DebugSidebar"
-rg -n "use\s+[a-z_]+::${ident}\b|::${ident}\b" crates/ 2>/dev/null \
-  | rg -v "^crates/${owning_crate}/"
-```
-
-Zero out-of-crate hits → finding. Downgrade to `pub(crate)` if siblings need it; drop entirely if the symbol is only used inside its own module.
-
-Finding format:
-
-```
-U1: <path>:<line> +export {<symbol>} — no out-of-module consumer in the diff.
-    Fix: drop the re-export; siblings can keep using the direct relative import. Re-export later when an outside consumer arrives.
-```
-
-```
-U2: <crate>/src/<file>.rs +pub <kind> <symbol> — no out-of-crate consumer.
-    Fix: downgrade to `pub(crate)` (if siblings need it) or drop the `pub` entirely.
-```
-
-Tie-in: this is the "speculative public API" defect class — the more general form of `~/.claude/rules/code-write.md` "Start small, prove, then grow". Reviewers commonly cite it as a Maintainability nit; record it on the skill side so the next session catches it before review.
-
----
-
-## Pattern J — TypeScript defensive-shape patterns
-
-Trigger: `ts_changed > 0`. Three patterns the shotloom in-repo `docs/guidelines/review-typescript.md` did not yet name when this group was added; recurring on editor PRs as "defensive but lying" shapes that weaken the type system, hide call shapes, or make alarm-bell paths unreachable.
-
-Each hit is a candidate defect needing human triage — same triage discipline as Pattern H in the docs leaf. Grep is best-effort; the *judgment* is whether the literal/guard/parser actually has a live consumer that justifies the defensive form.
-
-- **J1 — Nullish-coalescing literal that fake-narrows `T | undefined`.** Find lines that paper over a `Maybe<T>` with a magic literal (typical shape: `const X = something()?.field ?? "literal"`). The literal often makes the type appear `string` when it is really `string | undefined`, hiding the missing case from every downstream caller. Triage rule: confirm the literal is a *meaningful* domain value (e.g. a real default like `"system"`, `"auto"`, `0`); a placeholder keyword borrowed from the first array entry is the defect form.
-- **J2 — Function signature widened beyond actual callers + dead `if (!arg)` guard.** Find `if (!<name>) return undefined` (or equivalent) added in the diff where the surrounding function's argument type includes `| undefined` / `| null`. Cross-check: does any current caller actually pass `undefined`? If every call site narrows beforehand, the widening + guard is dead code that lies about the contract. Tighten to the strict type; let future callers narrow at the call site.
-- **J3 — Parser over-tolerance: silently collapsing invalid input into valid input.** Find URL / path / query parsers added in the diff that use `.split(<sep>).find(<filter>)` or `array[0]` to "extract" a single token — these patterns silently drop the rest of the input. If the route already renders an unknown-input fallback, the over-tolerant parser makes that fallback unreachable for nested-path typos and broken bookmarks. Triage rule: preserve enough structure that invalid input flows through the existing unknown / fallback UI rather than being rewritten to look valid.
-
-Sweep commands:
-
-```bash
-# J1 — nullish-coalescing literal in production code
-git diff origin/main...HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
-  | rg '^\+' | rg '\?\?\s*"[a-z][\w-]*"' | rg -v '__tests__|\.test\.'
-
-# J2 — defensive `!arg` guard added on a widened signature
-git diff origin/main...HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
-  | rg '^\+' | rg 'if \(!\w+\)\s*return (undefined|null|\{|\[|\"\")'
-
-# J3 — first-non-empty path/URL extraction
-git diff origin/main...HEAD -- 'apps/editor/src/**/*.ts' 'apps/editor/src/**/*.tsx' \
-  | rg '^\+' | rg '\.split\("/"\)\.(find|filter)\(' \
-  | rg -v 'filter\(.*\)\.join\('   # join after filter is fine — drop the .find() over-tolerant shape
-```
-
-Findings escalate per the rule's source — all three default to P2 (maintainability / contract clarity / UX-signal preservation). When the in-repo `docs/guidelines/review-typescript.md` ships parallel section names for J1/J2/J3, prune the Pattern J entries here in the same PR — this pattern is for what the in-repo spec misses, not a parallel catalog. Same discipline as Pattern H in the docs leaf.
-
----
-
 ## Review Axes Triage — compact defect-class checklist
 
 Run after the mechanical sweeps. This checklist prevents blind spots; it must
@@ -679,11 +519,9 @@ If the pass escalates to Depth 3, include `Depth escalation: <reason>`.
 
 1. **A–F** (in-repo `docs/guidelines/review-rust.md` rules) — formal Rust spec.
 2. **T** — test coverage on changed behavior (`rules/test-write.md` enforcement).
-3. **V** — validator / manifest contract, bad-input matrix, and IO boundary proof.
-4. **U** — speculative public API surface (barrel widening without consumer).
-5. **J** — TypeScript defensive-shape patterns (fires only when `ts_changed > 0`).
-6. **Review Axes Triage** — compact defect-class checklist.
-7. **Deep Adjacency** — two-depth consumers, persistence paths, mirrors,
+3. **Review-derived promoted patterns** — load and run `reference-promoted.md`.
+4. **Review Axes Triage** — compact defect-class checklist.
+5. **Deep Adjacency** — two-depth consumers, persistence paths, mirrors,
    diagnostics, public exposure, and validation compatibility.
 
 Findings in T are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through. Treat them as part of the same standard.

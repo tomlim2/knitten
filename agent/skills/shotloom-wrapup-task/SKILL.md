@@ -174,12 +174,73 @@ If the Obsidian vault is writable (`obsidian` on home Mac) the entry lands there
 
 **After learn-log-day writes the file**, commit and push it from the agent-hub repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
 
+### Step 5.5: Append review-finding pattern candidates
+
+If the PR had any real review, CI, or rule finding, also record generalized pattern candidates in Knitten for later consolidation. Do not promote these candidates into review rules during wrapup; promotion is a separate manual lifecycle handled by `/shotloom-promote-review-patterns`.
+
+Destination:
+
+- Branch: `codex/shotloom-review-finding-patterns`
+- Preferred worktree: `<knitten-root>/.worktrees/shotloom-review-finding-patterns`
+- File: `docs/briefings/shotloom/review-finding-patterns-inbox.md`
+
+Worktree rules:
+
+1. Do not write this inbox from a dirty Knitten main checkout.
+2. If the preferred worktree exists, use it.
+3. If the branch exists but no worktree exists, create a worktree for that branch under `<knitten-root>/.worktrees/shotloom-review-finding-patterns`.
+4. If neither branch nor worktree can be prepared safely, skip this phase and report the skip; do not block Linear/worktree cleanup.
+5. Commit and push only the inbox update from that branch.
+
+Write one `## PR NNN` section only when the PR has findings. Under it, add one `### Pattern: ...` entry per generalized lesson. The entry is not a PR summary and not a duplicate of the devlog `지적`; it is a reusable pattern candidate.
+
+Required fields per pattern:
+
+| Field | Content |
+|---|---|
+| `Finding` | What the reviewer/CI/rule actually pointed out. |
+| `Why It Was Right` | The underlying engineering principle, generalized beyond the PR. |
+| `General Rule` | A portable rule that could guide future implementation/review. |
+| `Trigger` | Concrete signals that should make an agent check for this pattern next time. |
+| `Fix Shape` | The smallest typical fix or test shape. |
+| `Source Evidence` | `PR NNN`, reviewer type, file:line or check name; no private GitHub URLs. |
+
+Constraints:
+
+- Do not include private Shotloom PR URLs or markdown links.
+- Do not include Branch / Worktree / Commit-list metadata.
+- Do not summarize the feature.
+- Do not write bare `#NNN` or `#word` inline tags, except intentional allowed tags already used by the destination doc.
+- Prefer 1-3 high-signal patterns per PR; merge repetitive nits into one pattern.
+- If the finding is too PR-specific to generalize, keep it in the day log only and skip the inbox entry.
+
+Manual promotion:
+
+- Run `/shotloom-promote-review-patterns` when the user wants to turn accumulated inbox entries into the actual review catalog.
+- Run `/shotloom-promote-review-patterns --dry-run` to preview proposed promotions without editing.
+- No scheduled automation is required by this skill.
+
+Example shape:
+
+```md
+## PR 371
+
+### Pattern: Multi-event command status precedence needs a regression case
+
+- Finding: Reviewer pointed out that the status-ordering refactor had only single-terminal-event tests.
+- Why It Was Right: Ordering bugs only appear when competing terminal events share the same command identity.
+- General Rule: Any event-status precedence rule needs at least one test with competing correlated events in the same buffer.
+- Trigger: Code chooses status by scanning an event list, prioritizing errors, or combining success and failure sentinels.
+- Fix Shape: Add a test with success then failure, and preferably failure then success, for the same command id.
+- Source Evidence: PR 371; review finding on `apps/editor/src/components/debug/__tests__/StageImportDebugPanel.test.tsx:437`.
+```
+
 ### Step 6: Report
 
 One compact line back to the user:
 
 ```
-STL-NN closed (<mode>). Linear: → Done. Worktree removed. Logged to <log_path>.
+STL-NN closed (<mode>). Linear: → Done. Worktree removed. Logged to <log_path>. Patterns: <updated|none|skipped>.
 ```
 
 Include any warnings that came up (branch not fully merged, dirty worktree preserved, Linear move skipped, or similar).
@@ -189,6 +250,7 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 - **Never force** (`-D`, `--force`) without explicit user confirmation. Uncommitted changes or unmerged branches are signals — pause and ask.
 - **Clean the used local task worktree only after moving to the main checkout.** `cd $shotloom_root` before `git worktree remove`; do not remove a worktree from inside itself.
 - **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go through `/learn-log-day`, which resolves `machine-paths.json → obsidian` with `obsidian-staging` fallback.
+- **Pattern candidates live in Knitten, not the Obsidian day log.** Day logs preserve retrospective context; `docs/briefings/shotloom/review-finding-patterns-inbox.md` accumulates generalized lessons for later consolidation.
 - **PR-level lifecycle is `/shotloom-auto-pr`'s job when running.** This skill is the manual equivalent — if auto-pr already did the Linear move and worktree cleanup on MERGE, this skill detects that and only appends the day log.
 - **Abandoned PRs** — worktree removal still requires the branch to be pushed (or user-approved discard). Local-only work should never be dropped silently.
 
@@ -197,4 +259,5 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 - `~/.claude/skills/shotloom-auto-pr/SKILL.md` — running watcher that auto-cleans on MERGE (this skill is the manual fallback)
 - `~/.claude/skills/shotloom-linear-move/SKILL.md` — Linear state transition
 - `~/.claude/skills/learn-log-day/SKILL.md` — Obsidian devlog flow that owns day-log format and path conventions
+- `~/.claude/skills/shotloom-promote-review-patterns/SKILL.md` — manually promotes accumulated review-finding pattern candidates into the reusable review catalog
 - `~/.claude/skills/shotloom-status/SKILL.md` — see active worktrees / PRs before deciding what to close
