@@ -176,7 +176,7 @@ If the Obsidian vault is writable (`obsidian` on home Mac) the entry lands there
 
 ### Step 5.5: Append review-finding pattern candidates
 
-If the PR had any real review, CI, or rule finding, also record generalized pattern candidates in Knitten for later consolidation.
+If the PR had any real review, CI, or rule finding, also record generalized pattern candidates in Knitten for later consolidation. Do not promote these candidates into review rules during wrapup; promotion is a separate manual lifecycle handled by `/shotloom-promote-review-patterns`.
 
 Destination:
 
@@ -213,6 +213,12 @@ Constraints:
 - Do not write bare `#NNN` or `#word` inline tags, except intentional allowed tags already used by the destination doc.
 - Prefer 1-3 high-signal patterns per PR; merge repetitive nits into one pattern.
 - If the finding is too PR-specific to generalize, keep it in the day log only and skip the inbox entry.
+
+Manual promotion:
+
+- Run `/shotloom-promote-review-patterns` when the user wants to turn accumulated inbox entries into the actual review catalog.
+- Run `/shotloom-promote-review-patterns --dry-run` to preview proposed promotions without editing.
+- No scheduled automation is required by this skill.
 
 Example shape:
 
@@ -253,4 +259,5 @@ Include any warnings that came up (branch not fully merged, dirty worktree prese
 - `~/.claude/skills/shotloom-auto-pr/SKILL.md` — running watcher that auto-cleans on MERGE (this skill is the manual fallback)
 - `~/.claude/skills/shotloom-linear-move/SKILL.md` — Linear state transition
 - `~/.claude/skills/learn-log-day/SKILL.md` — Obsidian devlog flow that owns day-log format and path conventions
+- `~/.claude/skills/shotloom-promote-review-patterns/SKILL.md` — manually promotes accumulated review-finding pattern candidates into the reusable review catalog
 - `~/.claude/skills/shotloom-status/SKILL.md` — see active worktrees / PRs before deciding what to close
