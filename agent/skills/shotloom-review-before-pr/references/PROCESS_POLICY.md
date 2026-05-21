@@ -57,6 +57,9 @@ explicit approval before `gh pr create`.
 - Always run one selected main review before docs.
 - In Single mode, run code pass A only.
 - In Triad mode, run triad pass A only; never run code pass A in the same chain.
+- Treat PR scope as a reviewable truth source: when the diff combines multiple
+  Linear scopes, the PR title/body and related issue list must name the combined
+  boundary or the reviewer should report a scope-control finding.
 - Always use read-only Explore subagents.
 - Never run verification unless the matching phase changed `HEAD`.
 - Label every follow-up pass as independent verification.

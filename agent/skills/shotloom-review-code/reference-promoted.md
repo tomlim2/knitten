@@ -209,3 +209,153 @@ Findings default to P2 unless the nearest Shotloom guideline or directly
 related contract raises or lowers priority. When the in-repo
 `docs/guidelines/review-typescript.md` ships parallel section names for J1/J2/J3,
 prune these entries from this promoted file in the same PR.
+
+## Pattern B — Bridge contract and diagnostic surfaces
+
+Origin: promoted from Shotloom PR 384 and PR 388 review findings around
+bridge-visible command contracts, shared helpers, diagnostic display hardening,
+and representative test coverage.
+
+Trigger when the diff adds or changes bridge handlers, bridge events,
+rejection codes, command-specific diagnostics, bounded display helpers,
+tracing fields, or tests for any of those surfaces.
+
+### B1: shared bridge helpers do not reduce public command coverage
+
+Shared helpers can reduce implementation duplication, but they do not erase the
+public contract of each bridge command. A helper-level test is not enough when
+different commands expose distinct rejection codes, event kinds, event order, or
+parse/lookup precedence.
+
+Sweep:
+
+```bash
+git diff origin/main...HEAD --name-only \
+  | rg 'crates/shotloom-engine/src/bridge/(handlers|tests)|crates/shotloom-core/src/bridge|apps/editor/src/bridge|docs/ipc/bridge-contract\.md'
+
+git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' '*.md' \
+  | rg '^\+' \
+  | rg 'BridgeEvent|bundle_changed|rejection|reject|command_id|commit_|handler|SHOT_NOT_FOUND|INVALID_|ASSET_NOT_FOUND'
+```
+
+For each shared helper used by multiple bridge commands, require one of:
+
+- table-driven or parameterized regression across every public command surface;
+- an explicit shared-contract comment plus representative input-class tests;
+- an existing direct per-command test named in the PR body.
+
+Finding format:
+
+```text
+B1: <path>:<line> shared bridge helper has only helper-level coverage.
+    Fix: add per-command rejection/event coverage, or document and test the shared contract boundary explicitly.
+```
+
+Source evidence: PR 384, reviewer, `crates/shotloom-engine/src/bridge/tests/stage.rs`.
+
+### B2: diagnostic helper wrappers preserve ownership shape
+
+When a helper only standardizes a lower-level diagnostic API call, its signature
+should preserve the lower-level ownership shape. Do not narrow an
+owned-or-borrowed API such as `impl Into<String>` to a borrowed-only helper such
+as `impl AsRef<str>` unless the narrower contract is intentional and documented.
+
+Sweep:
+
+```bash
+git diff origin/main...HEAD --unified=0 -- '*.rs' \
+  | rg '^\+' \
+  | rg 'BoundedDisplay|impl AsRef<str>|impl Into<String>|to_string\(\)|escape_debug|tracing::|warn!|error!'
+```
+
+Finding format:
+
+```text
+B2: <path>:<line> helper narrows the wrapped diagnostic API ownership shape.
+    Fix: match the wrapped API signature, or document why this helper intentionally requires borrowed input.
+```
+
+Source evidence: PR 388, reviewer, `crates/shotloom-engine/src/bridge/handlers/stage.rs`.
+
+### B3: escaped diagnostic display tests separate source and render bounds
+
+Diagnostic display tests should distinguish source-side truncation from rendered
+escape expansion. A rendered string containing escaped control characters can be
+much longer than the original source, so one mixed `MAX_LEN + N` assertion can
+prove the ASCII path while pretending to cover escape-heavy input.
+
+Sweep:
+
+```bash
+git diff origin/main...HEAD --unified=0 -- '*.rs' '*.ts' '*.tsx' \
+  | rg '^\+' \
+  | rg 'MAX_LEN|escape_debug|BoundedDisplay|truncate|truncated|control|\\n|\\u|diagnostic|rejection'
+```
+
+Require both input classes when user-controlled diagnostic strings are bounded:
+
+- ASCII-overlong input with a tight rendered-length ceiling.
+- Control-heavy or escape-heavy input that verifies truncation and escaping
+  without reusing the same rendered-length ceiling.
+
+Finding format:
+
+```text
+B3: <path>:<line> bounded diagnostic test mixes source length and escaped render length.
+    Fix: split ASCII-overlong and escape-heavy cases, and assert the correct property for each.
+```
+
+Source evidence: PR 388, reviewer, `crates/shotloom-engine/src/bridge/tests/stage.rs`.
+
+### B4: representative shared-helper tests state their coverage assumption
+
+A shared-helper smoke test can represent many call sites only when the test name,
+comment, or assertion shape makes that assumption explicit. Otherwise the reader
+cannot tell whether untested rejection codes are intentional inheritance or
+accidental gaps.
+
+Trigger: one helper is called from multiple bridge rejection, event, validation,
+or logging paths, but only one path has a direct regression test.
+
+Fix shape: either parameterize across public rejection/event codes, or name the
+test as a shared-helper smoke test and cover the meaningful input classes that
+all call sites inherit.
+
+Finding format:
+
+```text
+B4: <path>:<line> one path tests a helper used by multiple bridge surfaces without naming the shared-helper assumption.
+    Fix: parameterize across public surfaces or make the representative shared-helper scope explicit.
+```
+
+Source evidence: PR 388, reviewer, `crates/shotloom-engine/src/bridge/tests/stage.rs`.
+
+## Pattern G — Architecture gate exceptions
+
+Origin: promoted from Shotloom PR 384 review findings around hand-written
+mutation lifecycle code bypassing the documented BundleEditor mutation facade.
+
+Trigger when a diff repeats a documented facade or gate lifecycle by hand,
+especially for clone/mutate/validate/rollback, dirty marking, persistence,
+bridge contracts, runtime scheduling, or import/export boundaries.
+
+Rule: architecture gates are audit points. Code either goes through the gate, or
+the owning architecture document names a narrow exception with preserved
+invariants and a migration path back to the gate.
+
+Sweep:
+
+```bash
+git diff origin/main...HEAD --unified=0 -- '*.rs' '*.md' \
+  | rg '^\+' \
+  | rg 'edit_with_scope|rollback|dirty|validate|facade|temporary|exception|mutation|BundleEditor|bridge handler'
+```
+
+Finding format:
+
+```text
+G1: <path>:<line> reimplements a documented architecture gate lifecycle without an owning-doc exception.
+    Fix: use the facade, or document a narrow exception with preserved invariants and a migration commitment.
+```
+
+Source evidence: PR 384, reviewer, `docs/arch/bundle-editor-mutation-facade.md`.

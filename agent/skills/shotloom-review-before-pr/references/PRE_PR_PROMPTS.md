@@ -30,6 +30,10 @@ issue for this verification pass. Default evidence depth is 2: inspect direct
 evidence, then only the artifacts directly referenced by that evidence.
 Escalate to Depth 3 only for protocol/schema/serialization/persistence
 compatibility risk or a concrete contradiction found at Depth 2.
+Run the promoted scope-control pattern: if commits, changed docs, fetched Linear
+issues, or an existing PR body show that the diff combines multiple Linear
+scopes, require the PR title/body and related issue list to say so explicitly,
+or report a scope-truth-source finding. Source evidence: PR 384 review finding.
 Re-run the Deep Adjacency pass on current HEAD using the same sub-pass grouping
 from `shotloom-review-code`, including two-depth load/save/import paths, direct
 consumers, bridge mirrors, fixtures, diagnostic wording, public helper exposure,
