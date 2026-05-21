@@ -52,7 +52,7 @@ briefing: ../../briefings/shotloom/stage-bind-s2m-glb-renderables.md
 | Runtime asset copy list | `apps/editor/runtime-assets.ts` | Partial / dirty in-progress | Dirty copy list includes `s2m_props`; production build needs this proof, not only Vite dev serving. |
 | Vite dev serving | `apps/editor/vite.config.ts` | Already Done | Dev server serves repo assets, so local browser testing can resolve `/assets/s2m_props/...`. |
 | Import handler | `crates/shotloom-engine/src/bridge/handlers/stage.rs` | Partial | Handler validates `asset_hint` and stores accepted `asset_id`; dirty work also seeds built-in S2M assets on `new_bundle`. |
-| Engine bootstrap asset seeding | `crates/shotloom-engine/src/app.rs::seed_debug_character_assets` | Partial / dirty in-progress | Existing seed path is the right lifecycle owner for built-in debug/runtime assets; dirty work adds S2M StageRenderable entries here. |
+| Engine bootstrap asset seeding | `crates/shotloom-engine/src/app.rs::seed_debug_character_assets` plus proposed `seed_builtin_s2m_stage_renderable_assets` helper | Partial / dirty in-progress | Existing seed path is the right lifecycle owner for built-in debug/runtime assets; S2M StageRenderable entries should live in a clearly scoped helper. |
 | Stage runtime hydration | `crates/shotloom-engine/src/stage_runtime.rs::hydrate_stage_runtime` | Partial / dirty in-progress | Runtime creates Stage wrapper entities; dirty work resolves `StageRenderable.asset_id` to a GLB `SceneRoot`. |
 | Model sync | `crates/shotloom-engine/src/model_sync.rs` | Partial / dirty in-progress | Stage hydration must receive manifest context; dirty work threads that through. |
 | Prop GLB precedent | `crates/shotloom-engine/src/entity.rs` prop SceneRoot path | Already Done / precedent | Prop hydration already attaches a GLB `SceneRoot`; Stage should reuse this rendering pattern without creating `PropModel`. |
@@ -120,9 +120,12 @@ debug route. The Stage path must stay Stage-owned and bind GLB assets through
 2. Seed those entries both during normal engine bootstrap and after
    `new_bundle`, because `new_bundle` resets the bundle manifest used by the
    debug route. Trace: Linear AC1, briefing P1.
-3. Use one deterministic path-safe asset-id derivation for S2M source asset ids
-   in both the TS sample dispatch path and the Rust seeded manifest path. Trace:
-   `AssetCatalog::insert` path-safety invariant.
+3. Use one deterministic path-safe S2M asset id normalization rule for S2M
+   source asset ids in both the TS sample dispatch path and the Rust seeded
+   manifest path. The Rust helper should be named
+   `s2m_stage_renderable_asset_id_from_source`; the TypeScript helper should be
+   named `stageRenderableAssetIdFromSource`. Trace: `AssetCatalog::insert`
+   path-safety invariant.
 4. Preserve S2M source metadata on built-in StageRenderable manifest entries,
    including at least source asset id and manifest path, without committing
    machine-local absolute paths. Trace: asset provenance sibling specs and
@@ -143,9 +146,10 @@ debug route. The Stage path must stay Stage-owned and bind GLB assets through
    non-shell renderables and emit a structured runtime diagnostic through the
    existing logging/tracing path. Do not add a bridge event in this PR. Trace:
    Linear AC4 and ask-first trigger for bridge protocol changes.
-10. Avoid shell/background checker placeholder fallback when an S2M shell GLB is
-    unavailable, so the imported map does not reintroduce the default checker
-    floor occlusion problem. Trace: briefing P1 shell/background behavior.
+10. Apply the shell placeholder fallback policy: avoid shell/background checker
+    placeholder fallback when an S2M shell GLB is unavailable, so the imported
+    map does not reintroduce the default checker floor occlusion problem.
+    Trace: briefing P1 shell/background behavior.
 11. Add `assets/s2m_props` to the editor runtime asset production copy list and
     test that the manifest exists from the editor package context. Trace:
     Linear AC5 and runtime-assets contract.
@@ -197,12 +201,16 @@ debug route. The Stage path must stay Stage-owned and bind GLB assets through
    Rejected alternatives: editor-side manifest mutation, one-off seeding inside
    the UI, or relying on a preexisting user bundle manifest.
 
-3. **Keep deterministic source-id-to-asset-id mapping in both TS and Rust,
-   tested on both sides.**
+3. **Name S2M asset id normalization explicitly and keep it tested in both TS
+   and Rust.**
 
    Rationale: `asset_hint` is sent from TypeScript while manifest entries are
    seeded in Rust. The mapping must be stable and path-safe because the bridge
-   validates hints before mutating Stage content.
+   validates hints before mutating Stage content. Use
+   `s2m_stage_renderable_asset_id_from_source` in Rust and
+   `stageRenderableAssetIdFromSource` in TypeScript so both helpers name the
+   source-to-asset-id boundary rather than implying a generic StageRenderable id
+   helper.
 
    Rejected alternatives: hard-code unrelated short ids in the editor, trust raw
    S2M ids with slashes/colons, or add a new bridge query only to ask Rust for
@@ -217,23 +225,28 @@ debug route. The Stage path must stay Stage-owned and bind GLB assets through
    Rejected alternatives: spawn GLB nodes as `Prop`, make GLB scene children
    authoritative Stage ids, or bypass Stage runtime topology.
 
-5. **Use runtime logging/tracing for GLB load diagnostics in this PR.**
+5. **Resolve StageRenderable scene assets without introducing a new bridge
+   diagnostic surface.**
 
    Rationale: a bridge-visible `validation_diagnostics` event for runtime asset
    hydration would be a protocol behavior change and is explicitly ask-first.
-   The issue can satisfy failure visibility with structured runtime warnings
-   while keeping placeholder fallback.
+   The implementation should use names such as
+   `resolve_stage_renderable_scene_asset` and
+   `StageRenderableSceneAssetError` for the internal resolution path, then
+   satisfy failure visibility with structured runtime warnings while keeping
+   placeholder fallback.
 
    Rejected alternatives: add a new bridge event, reuse command-time validation
    diagnostics for runtime-only asset-server failures, or silently fail without
    diagnostic output.
 
-6. **Do not spawn checker placeholder geometry for shell renderables when GLB
-   loading fails.**
+6. **Treat shell placeholder fallback as a policy, not an ad-hoc suppression.**
 
    Rationale: shell/background content can cover the scene with a large checker
    surface and obscure the reason the real map did not load. Non-shell prop or
-   proxy renderables may still preview as placeholders.
+   proxy renderables may still preview as placeholders. Document and code this
+   as the shell placeholder fallback policy rather than a generic suppression
+   rule.
 
    Rejected alternatives: placeholder fallback for every role, or no
    placeholder fallback for any role.
@@ -302,6 +315,7 @@ Risk rows:
 Input:
 - `assets/s2m_props/manifest.json`
 - `crates/shotloom-engine/src/app.rs::seed_debug_character_assets`
+- Proposed helper `seed_builtin_s2m_stage_renderable_assets`
 - `crates/shotloom-core/src/model/asset.rs::AssetRecord`
 
 Output:
@@ -320,6 +334,8 @@ Failure:
 
 Proof:
 - Rust unit test resolving `s2m_props_background_map_1004_glb`.
+- Rust unit test named
+  `seed_builtin_s2m_stage_renderable_assets_registers_map_assets`.
 - Engine test that `new_bundle` leaves S2M StageRenderable entries in the
   active bundle manifest.
 
@@ -338,6 +354,8 @@ Output:
 - `toStageMapImportPlacements()` includes `asset_hint.asset_id` for shell,
   prop, and cube placements that have S2M source assets.
 - Representative asset ids match the Rust seed derivation.
+- Helper is named `stageRenderableAssetIdFromSource` rather than the broader
+  `stageRenderableAssetId`.
 
 Non-output:
 - No change to `toStageImportBackgroundPlacements()` compatibility payload
@@ -367,6 +385,9 @@ Output:
   `stage_renderable` GLB assets.
 - Wrapper components such as Stage id, element id, renderable id, role, and
   transform remain on the wrapper entity.
+- Internal resolver names should prefer `resolve_stage_renderable_scene_asset`
+  and `StageRenderableSceneAssetError` when a named resolver/error surface is
+  needed.
 
 Non-output:
 - No `Prop` component.
@@ -493,7 +514,7 @@ Risk rows:
 ## Verification
 
 - `cargo fmt --check`
-- `cargo test -p shotloom-engine seed_debug_character_assets_seeds_s2m_stage_renderables --lib`
+- `cargo test -p shotloom-engine seed_builtin_s2m_stage_renderable_assets_registers_map_assets --lib`
 - `cargo test -p shotloom-engine new_bundle_emits_bundle_changed_correlated_with_cmd_id --lib`
 - `cargo test -p shotloom-engine import_stage_map_creates_stage_content_and_preserves_source --lib`
 - `cargo test -p shotloom-engine stage_renderable_asset_id_loads_scene_root_without_prop_promotion --lib`
@@ -518,6 +539,10 @@ Risk rows:
 - Do not use raw S2M ids such as `s2m_props:background/Map_1004.glb` directly
   as `asset_id`; colons and slashes violate the asset catalog path-safety
   rules.
+- Do not name the conversion helper generically as `stage_renderable_asset_id`
+  or `stageRenderableAssetId`; the rule is S2M-specific, so use
+  `s2m_stage_renderable_asset_id_from_source` and
+  `stageRenderableAssetIdFromSource`.
 - Do not seed S2M assets only at engine startup. `new_bundle` resets the
   manifest and is the route used during debug testing.
 - Do not load Stage GLBs by promoting them to props. The visual result may look
@@ -526,8 +551,9 @@ Risk rows:
   the wrapper entity remains the Stage runtime boundary.
 - Do not add `validation_diagnostics` for runtime asset-server load skips
   without an explicit bridge-contract scope decision.
-- Do not spawn checker placeholder geometry for shell backgrounds when the GLB
-  fails; that can hide the useful failure state behind a large checker plane.
+- Do not describe shell behavior as generic suppression. It is the shell
+  placeholder fallback policy: shell backgrounds avoid checker fallback, while
+  eligible non-shell renderables may still preview.
 - Do not remove `Props Map_*` tests while fixing the Stage path.
 - Do not rely on Vite dev serving as production proof; `runtime-assets.ts` must
   include `s2m_props`.
