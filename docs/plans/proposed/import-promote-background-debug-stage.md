@@ -30,7 +30,7 @@ briefing: ../../briefings/shotloom/import-promote-background-debug-stage.md
 | Stage runtime topology | `docs/arch/stage-runtime-topology.md`, `crates/shotloom-engine/src/stage_runtime.rs`, `crates/shotloom-engine/src/bridge/tests/model_sync.rs` | Stage runtime hydration exists for `StageModel` and intentionally does not attach `Prop`, `ShotEntityIdComponent`, or `BridgeEntityId` to Stage runtime entities. | Imported content should become Stage-owned content, not hidden PropModel content. |
 | Stage content validation | `docs/adr/adr-0054-stage-content-load-time-validation.md`, `crates/shotloom-core/src/model/stage.rs`, `crates/shotloom-core/src/model/shot.rs` | Invalid persisted Stage content is load-blocking. Tags and renderable options have explicit limits. | The import path must canonicalize tags/options before writing to the bundle. |
 | Stage map parser | `docs/specs/stage-map-document.md`, `crates/shotloom-stage/src/map_document.rs` | `shotloom-stage` parses and resolves source map documents without depending on the persisted `StageModel`. | StageModel conversion belongs outside the parser crate. |
-| Editor debug samples | `apps/editor/src/components/debug/stageImportSamples.ts`, `apps/editor/src/components/debug/StageImportDebugPanel.tsx` | Sample data preserves S2M-ish source provenance locally, but the current dispatch converts it to the background prop payload. | The Stage import proof path should consume source-aware sample data before it is reduced to prop placements. |
+| Editor debug samples | `apps/editor/src/components/debug/stageImportSamples.ts`, `apps/editor/src/components/debug/StageImportDebugPanel.tsx` | Sample data preserves S2M-ish source provenance locally, but the current dispatch converts it to the background prop payload. | The Stage import proof path should consume source-preserving sample data before it is reduced to prop placements. |
 
 ## Linear Briefing
 
@@ -60,7 +60,7 @@ Rejected as the only STL-453 deliverable. A pure helper is useful, but it does n
 
 ### Option C: Add A Narrow Stage Map Import Command
 
-Selected. Add a new source-aware Stage import path named `import_stage_map_document` that writes StageModel content while keeping `spawn_background_props` and `clear_background_props` unchanged. The command should reuse existing Stage DTO/event vocabulary where possible and should not introduce a production StoryPreviz API.
+Selected. Add a new source-preserving Stage import path named `import_stage_map` that writes StageModel content while keeping `spawn_background_props` and `clear_background_props` unchanged. The command should reuse existing Stage DTO/event vocabulary where possible and should not introduce a production StoryPreviz API.
 
 ### Option D: Stack Directly On PR #384
 
@@ -112,11 +112,11 @@ Use a stable source key for matching imported elements:
 
 On reimport:
 
-- update source-owned renderable/provenance fields for matched elements;
-- preserve author-facing fields such as element id, display name, visibility, lock state, user-adjusted base transform, and user-added tags where possible;
+- update source-managed renderable/provenance fields for matched elements;
+- preserve authored fields such as element id, display name, visibility, lock state, user-adjusted base transform, and user-added tags where possible;
 - add new source objects as new Stage elements using client-provided destination ids;
-- do not delete missing source objects in the first implementation. Instead, record diagnostics or leave them untouched so user edits are not lost.
-- if the source key matches an existing element but the incoming `element_id` differs, keep the existing element id and update source-owned fields only.
+- do not delete elements missing from source in the first implementation. Instead, record diagnostics or leave them untouched so user edits are not lost.
+- if the source key matches an existing element but the incoming `element_id` differs, keep the existing element id and update source-managed fields only.
 
 ### R6. Treat Asset Binding Conservatively
 
@@ -151,8 +151,8 @@ On reimport:
 | R2 | Linear AC1, ADR-0050, Stage runtime topology doc | S1, S2, S3 | Stage import create test, Stage runtime hydration/model sync assertion |
 | R3 | Linear AC2, `docs/specs/stage-entity-model.md`, `stageImportSamples.ts` | S1, S2 | source-ref/role mapping assertions |
 | R4 | `docs/specs/stage-map-document.md`, crate boundary precedent | S2 | compile boundary plus no `shotloom-stage` dependency on persisted StageModel |
-| R5 | user clarification about source-friendly import and later reuse | S2, S3 | reimport update test with preserved authored fields |
-| R6 | ADR-0054, `validate_stage_refs_with_assets` behavior | S2, S3 | assetless renderable validation and wrong-kind asset rejection test |
+| R5 | user clarification about source-preserving import and later reuse | S2, S3 | reimport update test with preserved authored fields |
+| R6 | ADR-0054, `validate_stage_refs_with_assets` behavior | S2, S3 | asset-unbound renderable validation and wrong-kind asset rejection test |
 | R7 | existing bridge mutation/event contract | S1, S3 | event ordering, transaction class, and model sync tests |
 | R8 | Linear AC3, existing debug panel tests | S4, S5 | editor dispatch tests for both old and new debug actions |
 | R9 | Shotloom bridge contract standards | S1, S5 | Rust/TS/docs/snapshot drift tests |
@@ -170,16 +170,16 @@ On reimport:
 | Scope creep | Related issues cover real S2M assets, production connectors, shared stages, and full UI. | Keep production import, GLB/Gaussian loading, shared catalog, and full CRUD UI as non-goals. | PR checklist links non-goals; no files outside bridge/debug/docs/model tests unless required by this spec. |
 | Reviewer objection | A new command is a bridge contract change and normally ask-first. | This spec makes the bridge change explicit and reviewable before implementation. S0 rechecks blocker/stacking before source edits. | Review includes command matrix, rejection matrix, docs/snapshot updates, and explicit implementation gate. |
 | Drift surface | Stage role/source mappings and command fields can drift across Rust, TS, docs, and tests. | Add shared constants or exhaustive mirror tests; update contract examples and related ADR/spec links in the same PR. | Rust/TS wire-shape tests plus docs examples covering every required field and mapping row. |
-| Asset-kind mismatch | Current debug prop assets are `Prop`, while Stage validation requires `stage_renderable` asset kind for referenced assets. | Keep first import assetless or bind only valid StageRenderable assets. | Wrong-kind asset hint rejects; assetless renderable validates. |
-| User-authored data loss | Reimport can overwrite edits if it treats source as authoritative for all fields. | Match by source key, update source-owned fields, preserve authored fields, and do not delete missing source objects in first implementation. | Reimport test changes display name/visibility/base transform/tags before reimport and asserts preservation. |
+| Asset-kind mismatch | Current debug prop assets are `Prop`, while Stage validation requires `stage_renderable` asset kind for referenced assets. | Keep first import asset-unbound or bind only valid StageRenderable assets. | Wrong-kind asset hint rejects; asset-unbound renderable validates. |
+| User-authored data loss | Reimport can overwrite edits if it treats source as authoritative for all fields. | Match by source key, update source-managed fields, preserve authored fields, and do not delete elements missing from source in first implementation. | Reimport test changes display name/visibility/base transform/tags before reimport and asserts preservation. |
 
 ## Locked Decisions
 
-1. Keep `spawn_background_props` as the legacy prop compatibility command.
+1. Keep `spawn_background_props` as the legacy background prop compatibility command.
    Rationale: it already has prop-specific events, diagnostics, cleanup behavior, and tests.
    Rejected alternatives: changing the command to write StageModel or silently migrating its output.
 2. Add a separate Stage import path instead of overloading the prop command.
-   Rationale: import-to-Stage is a different ownership boundary and needs source-aware DTOs.
+   Rationale: import-to-Stage is a different ownership boundary and needs source-preserving DTOs.
    Rejected alternatives: adding optional Stage fields to `spawn_background_props`, or relying on an editor-only helper with no bridge proof.
 3. Stage import writes Stage-owned content only; it does not auto-create `PropModel`s.
    Rationale: ADR-0050 separates Stage-owned environment content from Shot-owned props, with promotion as an explicit later operation.
@@ -187,9 +187,9 @@ On reimport:
 4. StageModel conversion does not live in `shotloom-stage`; that crate stays parser/resolver focused.
    Rationale: `shotloom-stage` is the runtime-agnostic map document layer and should not depend on persisted bundle model types.
    Rejected alternatives: making the parser produce `StageModel` directly or moving bridge DTO decisions into the parser crate.
-5. Reimport is additive/upsert-first and does not delete source-missing elements in the first implementation.
+5. Reimport is non-destructive and does not delete elements missing from source in the first implementation.
    Rationale: imported Stage content may be edited by users after import, and deletion policy needs an explicit diff/preview story.
-   Rejected alternatives: destructive source mirroring, clear-and-recreate import, or automatic deletion of missing source objects.
+   Rejected alternatives: destructive source mirroring, clear-and-recreate import, or automatic deletion of elements missing from source.
 6. Stage import does not require real StageRenderable asset loading in STL-453.
    Rationale: current debug assets are prop-oriented and actual S2M GLB/Gaussian ingestion is tracked separately.
    Rejected alternatives: blocking STL-453 on asset ingestion or binding prop assets as Stage renderables.
@@ -252,7 +252,7 @@ Input:
 
 Output:
 
-- a narrow Stage import command contract named `import_stage_map_document`;
+- a narrow Stage import command contract named `import_stage_map`;
 - TypeScript bridge types and Rust DTOs;
 - documented rejection cases;
 - no change to existing background prop command contracts.
@@ -276,7 +276,7 @@ Proof:
 Expected command shape:
 
 ```text
-import_stage_map_document {
+import_stage_map {
   shot_id,
   stage_id,
   display_name,
@@ -317,7 +317,7 @@ DTO/default semantics:
 | `display_name` per placement | no | importer derives a stable display label from source object id/category only for new elements; existing element display names are preserved. |
 | `role_hint` | no | absence uses mapping defaults. |
 | `representation_hint` | no | absence uses mapping defaults. |
-| `asset_hint` | no | absence creates an assetless Stage renderable. Present hints must resolve to valid StageRenderable assets or reject before mutation. |
+| `asset_hint` | no | absence creates an asset-unbound Stage renderable. Present hints must resolve to valid StageRenderable assets or reject before mutation. |
 
 Rejection matrix:
 
@@ -433,7 +433,7 @@ Failure:
 
 Proof:
 
-- React test asserts Stage import dispatch uses source-aware payload with client-provided ids;
+- React test asserts Stage import dispatch uses source-preserving payload with client-provided ids;
 - existing debug panel tests still assert `spawn_background_props` and `clear_background_props` paths.
 
 ### S5. Documentation And Regression Coverage
@@ -489,7 +489,7 @@ Proof:
 | --- | --- | --- | --- |
 | Source document identity | debug/sample map source with `source_system`, `source_document_id`, and per-placement `source_object_id` | Stage provenance/source refs | reject missing identity as `INVALID_STAGE_PAYLOAD`. |
 | Semantic role | source category and role hint | explicit Stage role | keep source category as evidence; unknown categories map through defaults with a Stage import diagnostic rather than becoming final semantics. |
-| Renderable asset | omitted asset or valid StageRenderable asset | `StageRenderable.asset_id` or assetless renderable | `ASSET_NOT_FOUND` for missing ids; wrong asset kind rejects with `UNSUPPORTED_ASSET_KIND`. |
+| Renderable asset | omitted asset or valid StageRenderable asset | `StageRenderable.asset_id` or asset-unbound renderable | `ASSET_NOT_FOUND` for missing ids; wrong asset kind rejects with `UNSUPPORTED_ASSET_KIND`. |
 | Ownership | Stage import command | `ShotModel.stages` | no `PropModel` creation; tests fail if `shot.props` changes. |
 | Legacy compatibility | existing background prop command | `ShotModel.props` | no StageModel creation from `spawn_background_props`; existing tests protect this. |
 
@@ -533,7 +533,7 @@ Manual repro after implementation:
 - Do not use the existing `background_map` tag as the only reimport identity. It is too broad; source object identity must participate.
 - Do not silently convert source `fixture` into Stage `set_dressing` or vice versa. Store the source category and persist the selected Stage role.
 - Do not bind existing prop assets as Stage renderables unless the asset kind is valid.
-- Do not delete source-missing Stage elements on first implementation. That would make reimport destructive.
+- Do not delete Stage elements missing from source on first implementation. That would make reimport destructive.
 - Do not hide a bridge protocol change by treating it as internal-only. If a command/DTO is added, update the contract docs and tests.
 
 ## Follow-Up Candidates
@@ -542,4 +542,4 @@ Manual repro after implementation:
 - Stage import preview and diff UI before applying reimport.
 - Shared Stage grouping for multiple shots that reference the same environment.
 - Source connector support for StoryPreviz/MiniCineV documents beyond debug samples.
-- Stage element deletion/archive policy for source-missing objects.
+- Stage element deletion/archive policy for objects missing from source.
