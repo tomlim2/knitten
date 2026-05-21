@@ -40,10 +40,10 @@ briefing: ../../briefings/shotloom/editor-stage-outliner-inspector-edit-mode-ui.
 | Stage command/event types | `apps/editor/src/bridge/types.ts` | Already Done | Lifecycle/edit commands and success events exist, including `create_stage`, `duplicate_stage`, `delete_stage`, `set_active_stage`, `update_stage`, `update_stage_element`, and `replace_stage_renderable`. |
 | Stage runtime topology | `crates/shotloom-engine/src/stage_runtime.rs`, `docs/arch/stage-runtime-topology.md` | Already Done / boundary evidence | Runtime Stage roots/elements/renderables are separate from shot-owned props and intentionally do not carry `BridgeEntityId` or `ShotEntityIdComponent`. |
 | Stage authoring command behavior | `docs/ipc/bridge-contract.md` §13A.2 / §22A.2 | Partial for STL-454 | Lifecycle/edit commands mutate state; `promote_stage_content_to_prop` and `demote_prop_to_stage_content` remain reserved placeholders that reject with `INVALID_STAGE_PAYLOAD`. |
-| Bundle store | `apps/editor/src/state/bundleStore.ts` | Partial | Stores characters, props, assets, selection ids, and asset usage, but no current shot id, Stage mirror, active Stage id, or editor-owned Stage selection. |
+| Bundle store | `apps/editor/src/state/bundleStore.ts` | Partial | Stores characters, props, assets, selection ids, and asset usage, but no current shot id, editor Stage state, active Stage id, or editor-owned Stage selection. |
 | Bundle event reducer | `apps/editor/src/state/BundleStateProvider.tsx` | Partial | Hydrates characters/props from `shot_loaded`; ignores Stage success events. |
 | Scene outliner | `apps/editor/src/components/SceneOutlinerPanel.tsx`, `apps/editor/src/components/outliner/*` | Partial | Renders `CharactersSection` and `PropsSection`; existing rows dispatch `select_entities` with runtime bridge ids. |
-| Inspector overlay | `apps/editor/src/App.tsx`, `apps/editor/src/components/Sidebar.tsx` | Missing for Stage | The top bar opens an inspector shell, but no Stage-aware inspector component or selected Stage target exists. |
+| Inspector overlay | `apps/editor/src/App.tsx`, `apps/editor/src/components/Sidebar.tsx` | Missing for Stage | The top bar opens an inspector shell, but no Stage-aware inspector component or selected Stage item exists. |
 | Transaction helpers | `apps/editor/src/commands/sceneObjectDeleteTransaction.ts`, `editorTransactionActions.ts` | Partial | Character/prop deletion helpers exist; no Stage action labels or helpers exist for Stage commands. |
 | Existing RTL patterns | `apps/editor/src/components/__tests__/SceneOutlinerPanel.test.tsx`, `apps/editor/src/state/__tests__/BundleStateProvider.test.tsx` | Already Done / reusable proof pattern | Tests already cover store seeding, outliner row rendering, command dispatch, and event reduction for adjacent character/prop flows. |
 | Authored id rules | `crates/shotloom-core/src/model/id.rs::validate_authored_id`, `docs/ipc/bridge-contract.md` §13A.2 | Already Done | Stage commands use client-provided destination ids; authored ids must be non-empty and must not contain `:`. Duplicate Stage ids reject as `DUPLICATE_STAGE_ID`. |
@@ -58,7 +58,7 @@ briefing: ../../briefings/shotloom/editor-stage-outliner-inspector-edit-mode-ui.
 | State | In Progress |
 | Owner | deemo 디모 |
 | Goal | Connect authored Stage data to editor outliner/inspector/edit-mode UI so Stage-owned content is visible and distinct from shot-owned props. |
-| Acceptance criteria | Stage/prop UI distinction; normal prop mode cannot edit locked Stage content; Stage edit mode can inspect roles; explicit promotion affordance; provenance/role/representation visible; editor interaction tests. |
+| Acceptance criteria | Stage/prop UI distinction; normal prop mode cannot edit locked Stage content; Stage edit mode can inspect roles; explicit Promote to Prop action; provenance/role/representation visible; editor interaction tests. |
 | Latest relevant comment | N/A |
 | Blockers / dependencies | `STL-495`, `STL-496`, and `STL-452` are effectively satisfied on current `origin/main`; #384 and #385 provide Stage handlers/hydration. |
 | Related PRs | #384 Stage lifecycle/edit handlers; #385 Stage runtime hydration; earlier #370/#377 bridge/validation slices. |
@@ -85,7 +85,7 @@ slice lands.
 | Option | Summary | Result |
 |---|---|---|
 | Reuse `select_entities` and engine bridge entity ids for Stage rows | Treat Stage roots/elements/renderables like characters and props in outliner selection. | Rejected. `stage-runtime-topology.md` and engine tests state Stage runtime entities do not carry `BridgeEntityId` or `ShotEntityIdComponent`, so this would require engine/runtime scope outside STL-454. |
-| Add editor-owned Stage selection and inspector state | Mirror Stage DTOs in `bundleStore`, store a selected Stage target locally, and dispatch Stage authoring commands for actual mutations. | Selected. It matches current editor architecture and keeps Stage/Prop ownership separate without new bridge protocol. |
+| Add editor-owned Stage selection and inspector state | Store editor Stage state in `bundleStore`, keep a selected Stage item locally, and dispatch Stage authoring commands for actual mutations. | Selected. It matches current editor architecture and keeps Stage/Prop ownership separate without new bridge protocol. |
 | Build a full Stage editor including successful promotion/demotion and renderable asset picking | Implement all UI controls implied by Linear in one PR. | Rejected for this slice. Promote/demote still reject in the current runtime, and broad asset picking/import behavior belongs to later Stage/Prop boundary or import work. |
 
 Selected direction: editor-owned Stage authoring UI. Outliner Stage rows select
@@ -94,15 +94,15 @@ not pretend Stage runtime entities are selectable bridge entities.
 
 ## Requirements
 
-1. Add a Stage mirror to editor state: current `shotId`, current-shot
-   `stages`, `activeStageId`, and a local selected Stage target that can
+1. Add editor Stage state: current `shotId`, current-shot `stages`,
+   `activeStageId`, and a local selected Stage item that can
    represent a Stage root, element, or renderable.
 2. Hydrate Stage state from `shot_loaded` and reduce Stage success events:
    `stage_created`, `stage_duplicated`, `stage_deleted`,
    `active_stage_changed`, `stage_updated`, `stage_element_updated`, and
    `stage_renderable_replaced`.
-3. Clear Stage state, selected Stage target, and active Stage id on fresh
-   bundle reset and remove stale selected Stage targets when their owning Stage,
+3. Clear Stage state, selected Stage item, and active Stage id on fresh bundle
+   reset and remove stale selected Stage items when their owning Stage,
    element, or renderable disappears.
 4. Add a Stage section to the Scene outliner that visually distinguishes Stage
    roots from shot-owned props and marks the active Stage.
@@ -116,7 +116,7 @@ not pretend Stage runtime entities are selectable bridge entities.
    kind, asset id, options summary, and `StageSourceRef` provenance/hints.
 8. Add client-side Stage id allocation helpers for create/duplicate commands.
    The helper must use non-empty colon-free ids, choose an unused candidate from
-   the current Stage mirror, and be injectable/deterministic in tests.
+   the current editor Stage state, and be injectable/deterministic in tests.
 9. Wire lifecycle/edit UI commands that are implemented today:
    `create_stage`, `duplicate_stage`, `delete_stage`, `set_active_stage`,
    `update_stage`, `update_stage_element`, and `replace_stage_renderable` only
@@ -127,7 +127,7 @@ not pretend Stage runtime entities are selectable bridge entities.
     Stage runtime wrappers lack `BridgeEntityId`.
 11. Lock and visibility controls must dispatch `update_stage_element`; locked
    Stage element restrictions must be represented in UI affordances and tested.
-12. Provide an explicit Stage-owned set-dressing promotion affordance, but keep
+12. Provide an explicit Stage-owned set-dressing Promote to Prop action, but keep
     it disabled or rejection-surfacing while the bridge contract says boundary
     commands are placeholders. Do not claim successful promotion in STL-454.
 13. Use existing shared UI primitives if available on the implementation base;
@@ -148,8 +148,8 @@ not pretend Stage runtime entities are selectable bridge entities.
 |---|---|---|---|---|
 | Error source chain | no | Editor UI/state code introduces no Rust parser, loader, validator, or wrapped external error type. | Keep failures as bridge events or UI disabled states. | N/A: no Rust error type is added. |
 | Schema / serialization compatibility | yes | `apps/editor/src/bridge/shot.ts`, `apps/editor/src/bridge/types.ts`, `docs/ipc/bridge-contract.md` §13A.2. | Consume existing DTOs and command shapes only; no field rename or TS mirror redesign. | Existing bridge contract tests remain unchanged; new UI tests assert command payloads use current types. |
-| Ownership / API boundary | yes | `docs/arch/stage-runtime-topology.md` says Stage runtime entities do not carry `BridgeEntityId`; ADR-0050 separates Stage-owned content from `PropModel`. | Use editor-owned Stage target selection, not `select_entities`; keep prop helpers separate from Stage commands. | Outliner tests assert Stage row click does not dispatch `select_entities`; prop row tests remain unchanged. |
-| Partial mutation / rollback | yes | Stage commands mutate runtime bundle state; UI mirrors command results through events. | UI does not optimistically mutate Stage model before bridge success events; local selected target may update only as view state. | Store tests assert Stage model changes only after success events; rejection tests keep previous mirror. |
+| Ownership / API boundary | yes | `docs/arch/stage-runtime-topology.md` says Stage runtime entities do not carry `BridgeEntityId`; ADR-0050 separates Stage-owned content from `PropModel`. | Use editor-owned Stage item selection, not `select_entities`; keep prop helpers separate from Stage commands. | Outliner tests assert Stage row click does not dispatch `select_entities`; prop row tests remain unchanged. |
+| Partial mutation / rollback | yes | Stage commands mutate runtime bundle state; UI mirrors command results through events. | UI does not optimistically mutate editor Stage state before bridge success events; local selected Stage item may update only as view state. | Store tests assert editor Stage state changes only after success events; rejection tests keep previous state. |
 | Diagnostic ownership | yes | `command_rejected` carries runtime rejection codes; promote/demote placeholder rejects with `INVALID_STAGE_PAYLOAD`. | Surface bridge-provided rejection/status where a command is dispatched; disabled promotion copy explains unavailable boundary without inventing new codes. | Mocked bridge event/status tests for rejected update or promotion path. |
 | Local absolute path exposure | no | No file paths, manifests, or local asset roots are needed for Stage UI. | Do not include local checkout paths in source/docs beyond this Knitten planning artifact. | N/A for implementation; normal doc/code review. |
 | Manifest path containment | no | No manifest/catalog path field or file IO path is introduced. | Do not implement asset import or file picker behavior for replacement in this slice. | N/A. |
@@ -157,7 +157,7 @@ not pretend Stage runtime entities are selectable bridge entities.
 | Cross-platform CLI entrypoint | no | No scripts or CLI entrypoints are added. | N/A. | N/A. |
 | Asset/data pack lifecycle | no | No assets, fixture packs, or LFS data are added. | Keep replacement UI to existing catalog entries or a non-picking placeholder if no safe source exists. | N/A. |
 | Validation context downgrade | no | No validator API is added or weakened. | Use existing bridge command validation. | N/A. |
-| Field-set drift | yes | Stage inspector will manually display role, representation, source, visible, locked, tags, options, and safe replacement candidates. | Centralize selected Stage target derivation helpers and test representative field rendering/candidate filtering. | Inspector tests assert role, representation, provenance, active state, lock/visibility fields, and disabled replacement state when no safe candidate exists. |
+| Field-set drift | yes | Stage inspector will manually display role, representation, source, visible, locked, tags, options, and replacement options. | Centralize selected Stage item derivation helpers and test representative field rendering/candidate filtering. | Inspector tests assert role, representation, provenance, active state, lock/visibility fields, and disabled replacement state when no safe candidate exists. |
 | Bridge docs parity | no | No IPC command or event shape changes are planned. | Do not edit `docs/ipc/bridge-contract.md` unless implementation discovers stale UI-facing prose. | N/A: no wire diff. |
 | Event-state visibility | yes | Stage success events are the only UI-visible confirmation for runtime mutations. | Reduce every implemented Stage success event used by UI; do not rely only on `bundle_changed`. | BundleStateProvider tests for `stage_updated`, `stage_element_updated`, `active_stage_changed`, and delete fallback. |
 | Input constraint parity | yes | UI may expose display name, tags, visibility, lock, active state, and renderable replacement. | Constrain inputs through existing component patterns and dispatch only non-empty edit payloads where bridge requires a field. | Tests assert empty/no-op stage edits do not dispatch invalid commands. |
@@ -197,16 +197,16 @@ not pretend Stage runtime entities are selectable bridge entities.
    Rejected alternatives: always render every Stage child in the outliner;
    hide Stage elements entirely; put Stage elements under the Props section.
 
-4. **Implemented bridge commands get real UI wiring; boundary placeholders do
+4. **Implemented bridge commands get real UI wiring; reserved boundary commands do
    not pretend to succeed.**
 
    Rationale: lifecycle/edit handlers are landed, but promote/demote remain
-   reserved Stage/Prop boundary placeholders in the bridge contract. STL-454 can
+   reserved Stage/Prop boundary commands in the bridge contract. STL-454 can
    show the intended action explicitly, but it must not claim successful
    promotion before the runtime supports it.
 
    Rejected alternatives: dispatch promote and ignore rejection; implement
-   promote/demote runtime behavior; remove promotion affordance entirely from
+   promote/demote runtime behavior; remove the Promote to Prop action entirely from
    the first Stage inspector.
 
 5. **Stage and Prop helpers stay separate.**
@@ -287,7 +287,7 @@ Input:
 
 Output:
 - `bundleStore` stores `shotId`, `stages`, `activeStageId`, and local selected
-  Stage target; store helpers update/clear stale Stage targets.
+  Stage item; store helpers update/clear stale Stage items.
 
 Non-output:
 - No bridge dispatch, no optimistic persisted Stage mutation, no prop store
@@ -295,12 +295,12 @@ Non-output:
 
 Failure:
 - Unknown Stage event target ids are ignored or clear stale local selection
-  conservatively; command rejection does not mutate Stage mirror.
+  conservatively; command rejection does not mutate editor Stage state.
 
 Proof:
 - Store tests for initial state, `shot_loaded`, fresh bundle reset, stage delete
   fallback, element/renderable update, current shot id availability for
-  commands, and stale selected-target cleanup.
+  commands, and stale selected item cleanup.
 
 ### S2 - Reduce Stage Bridge Events
 
@@ -327,12 +327,12 @@ Proof:
 ### S3 - Add Stage Outliner Section And Edit Mode
 
 Input:
-- Stage mirror, selected Stage target, current `SceneOutlinerPanel`,
+- Editor Stage state, selected Stage item, current `SceneOutlinerPanel`,
   `OutlinerItem`, and existing character/prop row tests.
 
 Output:
 - Scene outliner shows Stage roots separately from Props, marks active Stage,
-  supports local Stage target selection, and reveals elements/renderables only
+  supports local Stage item selection, and reveals elements/renderables only
   when Stage edit mode is enabled.
 
 Non-output:
@@ -351,7 +351,7 @@ Proof:
 ### S4 - Add Stage Inspector Surface
 
 Input:
-- Selected Stage target, Stage DTOs, source/provenance fields, and inspector
+- Selected Stage item, Stage DTOs, source/provenance fields, and inspector
   overlay slot.
 
 Output:
@@ -373,7 +373,7 @@ Proof:
 ### S5 - Wire Stage Lifecycle Commands
 
 Input:
-- Bridge client, current shot id from editor state, Stage mirror, existing
+- Bridge client, current shot id from editor state, editor Stage state, existing
   command types, and deterministic Stage id allocator.
 
 Output:
@@ -399,7 +399,7 @@ Proof:
 ### S6 - Wire Implemented Stage Edit Commands
 
 Input:
-- Bridge client, Stage mirror, command types, transaction patterns, and current
+- Bridge client, editor Stage state, command types, transaction patterns, and current
   bridge contract rules for non-empty update payloads.
 
 Output:
@@ -523,7 +523,7 @@ Proof:
     `update_stage` / `update_stage_element` commands are dispatched;
   - inspect a sourced renderable and verify source/provenance fields are
     visible;
-  - verify the promotion affordance is explicit but unavailable or rejection
+  - verify the Promote to Prop action is explicit but unavailable or rejection
     surfaced under current runtime behavior.
 
 ## Traps
