@@ -34,7 +34,8 @@ Usage:
 | Work branch | `codex/shotloom-review-finding-patterns` |
 | Preferred worktree | `<knitten-root>/.worktrees/shotloom-review-finding-patterns` |
 | Inbox | `docs/briefings/shotloom/review-finding-patterns-inbox.md` |
-| Primary catalog | `agent/skills/shotloom-review-code/reference.md` |
+| Stable catalog | `agent/skills/shotloom-review-code/reference.md` |
+| Promoted-only catalog | `agent/skills/shotloom-review-code/reference-promoted.md` |
 | Secondary targets | `agent/skills/shotloom-review-before-pr/references/*.md` only when clearly relevant |
 
 ## Workflow
@@ -64,6 +65,7 @@ the proposed promotions only.
 Read:
 - inbox file;
 - `agent/skills/shotloom-review-code/reference.md`;
+- `agent/skills/shotloom-review-code/reference-promoted.md`;
 - any secondary target only after deciding a pattern belongs there.
 
 Build a table:
@@ -86,16 +88,21 @@ Skip when:
 - existing catalog already covers it clearly;
 - source evidence is too vague to trust.
 
-### Step 4: Edit catalog
+### Step 4: Edit promoted-only catalog
 
-Add to the smallest relevant section:
+Default destination is `agent/skills/shotloom-review-code/reference-promoted.md`,
+not the stable `reference.md`. This keeps newly promoted patterns separately
+auditable. Move entries into `reference.md` only in a later consolidation pass
+when the user explicitly asks.
+
+Add to the smallest relevant section in `reference-promoted.md`:
 
 | Pattern kind | Destination |
 |---|---|
-| test signal quality | `Test Code Review Lens` or `Pattern T` |
-| validator / manifest / path resolver | `Pattern V` |
-| TypeScript UI defensive shape | `Pattern J` |
-| bridge/event status behavior | add or update a compact TypeScript/Event subsection near `Pattern J` unless an existing section fits |
+| test signal quality | `Promoted Test Patterns` |
+| validator / manifest / path resolver | `Promoted Validator / Manifest Patterns` |
+| TypeScript UI defensive shape | `Promoted TypeScript UI Patterns` |
+| bridge/event status behavior | `Promoted Bridge / Event Patterns` |
 | docs / PR / review-process guidance | `shotloom-review-before-pr` references only if code catalog is the wrong home |
 
 Rules:
@@ -132,6 +139,7 @@ git diff --check
 rg -n 'github\.com/CINEV/shotloom/pull/|(^|\s)#[A-Za-z0-9]' \
   docs/briefings/shotloom/review-finding-patterns-inbox.md \
   agent/skills/shotloom-review-code/reference.md \
+  agent/skills/shotloom-review-code/reference-promoted.md \
   agent/skills/shotloom-review-before-pr/references/*.md
 ```
 
@@ -147,6 +155,7 @@ If changed:
 ```bash
 git add docs/briefings/shotloom/review-finding-patterns-inbox.md \
   agent/skills/shotloom-review-code/reference.md \
+  agent/skills/shotloom-review-code/reference-promoted.md \
   agent/skills/shotloom-review-before-pr/references/*.md
 git commit -m "docs(shotloom): promote review finding patterns"
 git push
