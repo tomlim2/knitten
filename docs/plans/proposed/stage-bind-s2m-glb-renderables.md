@@ -32,6 +32,10 @@ briefing: ../../briefings/shotloom/stage-bind-s2m-glb-renderables.md
   sample/runtime-asset tests, docs path validation, WASM/web build proof, and a
   browser repro on `/debug/stage-import` showing `Stage Map_1004` loads S2M
   GLB content rather than checker placeholder content.
+- One-PR suitability: this is one reviewable blocker PR update because it
+  touches one debug sample source, one built-in asset seeding path, one Stage
+  runtime hydration path, focused tests, and matching docs without changing
+  bridge schema or adding new assets.
 
 ## Current State
 
@@ -164,7 +168,7 @@ debug route. The Stage path must stay Stage-owned and bind GLB assets through
 | Local absolute path exposure | yes | `assets/s2m_props/manifest.json` carries repo asset metadata; docs must avoid local POC roots. | Store repo-relative URIs and source metadata only. | `rg` proof for `/Users/`, `/home/`, drive-letter, `Downloads`, and `Desktop` in touched durable files. |
 | Manifest path containment | yes | Stage runtime resolves manifest URIs to Bevy asset paths / configured roots. | Reject or skip asset paths that escape the configured asset root; do not load absolute or traversal URIs. | Negative runtime tests for missing, wrong-kind, and root-escape-style URI behavior where feasible. |
 | Command rejection matrix | yes | `import_stage_map` already rejects missing/wrong-kind asset hints. | Reuse existing rejection branches; add only tests needed for S2M happy path and preserve rejection tests. | `cargo test -p shotloom-engine bridge::tests::stage --lib`. |
-| Asset/data pack lifecycle | yes | `assets/s2m_props` is a checked-in external validation subset. | Reuse existing asset subset; no new binary asset pack in this PR. Add editor production-copy proof. | Runtime asset test checks `RUNTIME_ASSET_SUBDIRS` contains `s2m_props` and manifest exists. |
+| Asset/data pack lifecycle | yes | `assets/s2m_props` is a checked-in external StoryPreviz/S2M validation subset documented by `assets/README.md` and `assets/s2m_props/README.md`. | Reuse existing asset subset; no new binary asset pack in this PR. Preserve source/license metadata already attached to the subset, and keep size impact to manifest bindings plus tests/docs. | Runtime asset test checks `RUNTIME_ASSET_SUBDIRS` contains `s2m_props` and manifest exists; diff review shows no new GLB files. |
 | Field-set drift | yes | TS and Rust both derive asset ids from S2M source asset ids. | Keep derivation small, deterministic, and covered by tests on representative background/prop/cube ids. | TS test asserts emitted `asset_hint.asset_id`; Rust seed test resolves the same ids. |
 | Bridge docs parity | yes | `docs/ipc/bridge-contract.md` describes `asset_hint` behavior. | Update docs to say runtime may load StageRenderable GLB SceneRoot without changing payload shape. | `node scripts/validate-doc-paths.mjs`. |
 | Event-state visibility | no | Stage runtime GLB hydration is viewport state driven by model sync, not a new accepted command. | Preserve existing `stage_created` / `stage_updated` events from `import_stage_map`; no new success event. | Existing stage event-order tests remain green. |
@@ -257,6 +261,16 @@ debug route. The Stage path must stay Stage-owned and bind GLB assets through
 - No new dependency, ADR, CI workflow, or Bevy schedule redesign.
 - No broad Stage entity model rename or ADR rewrite.
 
+## Validator Contract Matrix
+
+| Contract claim | Negative fixture | Boundary rule | Error order | Enforcement surface | Regression proof |
+|---|---|---|---|---|---|
+| S2M source asset ids map to path-safe Shotloom asset ids. | `s2m_props:background/Map_1004.glb` must not be used raw because it contains `:` and `/`. | Convert with the same deterministic sanitizer on TS and Rust sides, then rely on `AssetCatalog::insert` to reject non-path-safe ids. | Sanitizer/test failure before bridge dispatch; catalog insertion failure before any import uses the id. | Rust seed tests and TS sample mapping tests. | TS test expects `asset_hint.asset_id`; Rust test resolves the same representative id in the manifest. |
+| Seeded StageRenderable manifest entries use repo-relative asset URIs under `assets/s2m_props`. | A URI outside the subset such as `../props/box.glb` or an absolute local path must not be accepted as an S2M StageRenderable seed. | Use repo-relative `assets/s2m_props/...` URIs only; runtime resolution skips root escapes and absolute/local paths. | Asset seed/path validation fails or runtime hydration skips before attaching `SceneRoot`. | Rust unit/integration tests plus local path privacy grep. | Negative runtime test for root-escape-style URI where feasible; privacy grep over touched files. |
+| `import_stage_map.asset_hint` accepts only existing `stage_renderable` assets. | Missing asset id and wrong-kind `prop` asset hint. | Existing bridge handler checks the active bundle manifest and kind before mutating Stage content. | `ASSET_NOT_FOUND` for missing asset; `UNSUPPORTED_ASSET_KIND` for wrong kind; no Stage mutation. | Existing and focused `bridge::tests::stage` coverage. | `import_stage_map_rejects_bad_asset_hints_without_mutating` remains green. |
+| Runtime GLB hydration is optional and non-destructive. | Manifest asset exists but cannot be loaded due to missing root, unavailable pipeline, or invalid path. | Skip GLB `SceneRoot`, emit runtime diagnostic, and keep eligible placeholder fallback without mutating persisted bundle state. | Runtime diagnostic/log first; no bridge rejection because the command already succeeded and model sync is hydrating viewport state. | Stage runtime/model-sync tests. | Negative runtime hydration tests assert no `SceneRoot` and placeholder behavior where eligible. |
+| `assets/s2m_props` is available in production editor builds. | Production copy list omits `s2m_props` while dev Vite still works. | `RUNTIME_ASSET_SUBDIRS` is the production copy source of truth; dev server behavior is not accepted as production proof. | Editor runtime-assets test fails before build/browser verification. | Editor Vitest and WASM/build proof. | `runtime-assets.test.ts` asserts `s2m_props` is included and manifest exists from editor cwd. |
+
 ## Design Plan
 
 ### S0 - Baseline Re-Check
@@ -279,6 +293,9 @@ Failure:
 Proof:
 - `git status --short`
 - `rg -n "StageRenderable|stage_renderable|asset_hint|s2m_props|SceneRoot" crates apps docs contracts assets`
+
+Risk rows:
+- Test oracle strength, Scope creep.
 
 ### S1 - Seed Built-In S2M StageRenderable Assets
 
@@ -306,6 +323,10 @@ Proof:
 - Engine test that `new_bundle` leaves S2M StageRenderable entries in the
   active bundle manifest.
 
+Risk rows:
+- Partial mutation / rollback, Asset/data pack lifecycle, Field-set drift,
+  Local absolute path exposure.
+
 ### S2 - Emit Stage `asset_hint` Values From Editor Samples
 
 Input:
@@ -330,6 +351,9 @@ Failure:
 Proof:
 - Focused `StageImportDebugPanel` or sample mapper test asserting
   `asset_hint` for `Map_1004` background and at least one cube/prop placement.
+
+Risk rows:
+- Schema / serialization compatibility, Field-set drift, Test oracle strength.
 
 ### S3 - Hydrate StageRenderable GLB Scene Roots
 
@@ -359,6 +383,10 @@ Proof:
 - Negative runtime tests for missing/wrong-kind or unavailable asset binding
   preserving placeholder behavior.
 
+Risk rows:
+- Ownership / API boundary, Diagnostic ownership, Manifest path containment,
+  Test oracle strength.
+
 ### S4 - Preserve Legacy Prop Compatibility
 
 Input:
@@ -383,6 +411,9 @@ Proof:
 - Existing panel tests for Props buttons plus new tests for Stage asset hints.
 - `cargo test -p shotloom-engine bridge::tests::stage --lib` keeps existing
   `import_stage_map` rejection/rollback matrix green.
+
+Risk rows:
+- Command rejection matrix, Scope creep, Reviewer objection.
 
 ### S5 - Production Asset Availability And Docs
 
@@ -409,6 +440,9 @@ Proof:
 - `pnpm --dir apps/editor exec vitest run src/__tests__/runtime-assets.test.ts`
 - `node scripts/validate-doc-paths.mjs`
 
+Risk rows:
+- Bridge docs parity, Asset/data pack lifecycle, Local absolute path exposure.
+
 ### S6 - Browser Verification
 
 Input:
@@ -432,6 +466,9 @@ Proof:
 - `pnpm build:wasm`
 - `pnpm dev:web`
 - Browser repro on `http://localhost:<port>/debug/stage-import`
+
+Risk rows:
+- Test oracle strength, Reviewer objection.
 
 ## Acceptance Criteria
 
