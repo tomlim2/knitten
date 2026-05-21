@@ -99,10 +99,11 @@ Add to the smallest relevant section in `reference-promoted.md`:
 
 | Pattern kind | Destination |
 |---|---|
-| test signal quality | `Promoted Test Patterns` |
-| validator / manifest / path resolver | `Promoted Validator / Manifest Patterns` |
-| TypeScript UI defensive shape | `Promoted TypeScript UI Patterns` |
-| bridge/event status behavior | `Promoted Bridge / Event Patterns` |
+| test signal quality | new or existing promoted test-pattern section |
+| validator / manifest / path resolver | `Pattern V` |
+| TypeScript UI defensive shape | `Pattern J` |
+| speculative public surface | `Pattern U` |
+| bridge/event status behavior | new promoted bridge/event section |
 | docs / PR / review-process guidance | `shotloom-review-before-pr` references only if code catalog is the wrong home |
 
 Rules:

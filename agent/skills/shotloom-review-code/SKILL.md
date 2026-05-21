@@ -1,5 +1,5 @@
 ---
-description: Cold-start Rust/TS code-quality review via Explore subagent — review-rust.md, test-code lens, Patterns A–F + T + V + U + J, review axes, deep adjacency. Pair skill of shotloom-review-docs
+description: Cold-start Rust/TS code-quality review via Explore subagent — review-rust.md, stable Patterns A–F + T, promoted patterns, review axes, deep adjacency. Pair skill of shotloom-review-docs
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(pwd), Bash(cd:*)
 domains: rust
 repo-keys: shotloom
@@ -13,7 +13,7 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-code
 
-Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs Patterns A–F + T + V + U + J, promoted review-finding patterns, Review Axes Triage, and Deep Adjacency against the current diff and reports findings. The subagent judges only the diff, repo guidelines, and directly cited evidence; it does not rely on author intent or session context.
+Cold-start code-quality review for a Shotloom branch before opening a PR. Dispatches an Explore subagent that re-reads `docs/guidelines/review-rust.md` and `code-review-guideline.md` fresh on every invocation, runs the skill-side test-code lens when tests change, then runs stable Patterns A–F + T, promoted review-finding patterns, Review Axes Triage, and Deep Adjacency against the current diff and reports findings. The subagent judges only the diff, repo guidelines, and directly cited evidence; it does not rely on author intent or session context.
 
 Pair skill: `shotloom-review-docs` covers docs/wording discipline.
 Umbrella `shotloom-review-before-pr` invokes this as pass A; for pass B, it reuses this catalog with a verification preamble.
@@ -69,7 +69,7 @@ You are a cold-start code reviewer for the Shotloom repo. You do not have sessio
 
 1. `<worktree>/docs/guidelines/review-rust.md` — canonical Rust review spec. **The only authority for what counts as a production Rust defect on this repo.** Carries §1 Clippy → §2 Panic → §3 Error → §4 Unsafe → §5 Ownership → §6 ECS → §7 Serde → §8 WASM → §9 Complexity → §10 Deps → §11 Bridge DTO, each with a P0–P3 priority.
 2. `<worktree>/docs/guidelines/code-review-guideline.md` — review process, P0/P1/P2/P3 priorities.
-3. `~/.claude/skills/shotloom-review-code/reference.md` — **supplementary** test-code lens and stable sweep catalog (Patterns A–F + T + V + U + J). These cover defect classes the in-repo spec does not directly enforce. Loaded AFTER 1 and 2, executed in Phase 2.
+3. `~/.claude/skills/shotloom-review-code/reference.md` — **supplementary** test-code lens and stable sweep catalog (Patterns A–F + T). These cover durable defect classes the in-repo spec does not directly enforce. Loaded AFTER 1 and 2, executed in Phase 2.
 4. `~/.claude/skills/shotloom-review-code/reference-promoted.md` — **promoted-only** review patterns generalized from real Shotloom PR review findings. Load after `reference.md`; execute any applicable promoted pattern in Phase 2, but keep source provenance separate from the stable catalog.
 
 Re-read every invocation. The standards are amended as new defect classes are found.
@@ -112,12 +112,10 @@ Only after Phase 1 is fully reported, run the patterns in `reference.md`, then r
 - **Pattern E** — Build / platform (Linux dev-dep regressions, Cargo.lock drift, Windows fs ops).
 - **Pattern F** — Cross-crate & inherited-pattern hygiene.
 - **Pattern T** — Test coverage on changed behavior (enforces `~/.claude/rules/test-write.md`). Use it for missing-test gaps; use the Test Code Review Lens above for the quality of tests that already exist. Includes T5: defensive / fallback branch without a matching test (TS `data-testid` fallbacks, Rust `_ =>` arms, empty-state guards).
-- **Pattern V** — Validator / manifest contract. Fires when the diff adds or changes a validator, manifest, package script, file IO path, asset importer, or path resolver. Build a bad-input matrix before reading the implementation: contract claim, negative fixture, boundary rule, error order, enforcement surface, and regression proof. Check for short reads before prefix checks, `path.join(root, relative)` without containment, string-prefix-only root checks, package scripts with no CI/README/test surface, and diagnostics that report a secondary failure before the primary cause.
-- **Pattern U** — Speculative public API surface. Barrel `index.ts` re-exports and `pub` items added without an out-of-module consumer in the same diff. Source of recurring "Maintainability" nits at review time.
-- **Pattern J** — TypeScript defensive-shape patterns (J1 nullish-coalescing fake-narrow, J2 dead `!arg` guard on widened signature, J3 parser over-tolerance). Fires only when `ts_changed > 0`. Detail in `reference.md`.
-- **Promoted patterns** — recent reusable lessons from actual Shotloom review findings. Run only the entries in `reference-promoted.md` whose trigger matches the diff. These entries are separated so they can be audited or folded into the stable catalog later.
+- **Promoted patterns** — recent reusable lessons from actual Shotloom review findings, currently including Pattern V (validator / manifest contract), Pattern U (speculative public API surface), and Pattern J (TypeScript defensive-shape patterns). Run only entries in `reference-promoted.md` whose trigger matches the diff. These entries are separated so they can be audited or folded into the stable catalog later.
 
-For each pattern: run the sweep command from reference.md, triage hits, report.
+For each pattern: run the sweep command from its reference file, triage hits,
+report.
 
 ### Phase 3 — Review Axes Triage (AFTER Phase 2)
 
@@ -319,4 +317,5 @@ User fixes findings, re-invokes — restart from Step 1. Skill is idempotent.
 
 ## Additional Resources
 
-[reference.md](reference.md) — full bash command catalog for every pattern.
+[reference.md](reference.md) — stable bash command catalog.
+[reference-promoted.md](reference-promoted.md) — review-derived promoted patterns loaded after the stable catalog.
