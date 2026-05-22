@@ -320,10 +320,11 @@ Then delegate the thread-reply to `/shotloom-send-deploy-status success` — sam
 
 If `start_ts` is empty because Step 7 was skipped or failed, do **not** silently omit Slack. Use the fallback:
 
-1. Draft a top-level message through `/cci-send-alert` with the release tag, source short SHA, workflow URL, image, manifest commit, live URL result, ETag result, and patch-note document URL.
-2. Show the full draft and wait for explicit `y` under the per-message Slack gate.
-3. Send it as a top-level channel message.
-4. In Step 11, state that the normal threaded deploy notification could not be used because no start thread existed.
+1. Draft a top-level message through `/cci-send-alert` with only the live URL and patch-note document URL.
+2. Put deployment details in a thread reply under that top-level message: release tag, source short SHA, workflow URL, image, manifest commit, live URL result, and ETag result.
+3. Show the full draft and wait for explicit `y` under the per-message Slack gate.
+4. Send the top-level channel message, capture its `ts`, then send the detail message as a thread reply.
+5. In Step 11, state that the normal started-thread deploy notification could not be used because no start thread existed.
 
 ### Step 10: Devlog append (Obsidian)
 

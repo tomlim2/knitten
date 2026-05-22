@@ -18,6 +18,7 @@ Two-phase Slack notifier for Shotloom web deploys.
 
 - **start** — two sends: top-level "배포 시작" channel message + thread reply with workflow details. Returns the top-level ts for pairing with `success`.
 - **success** — two sends: broadcast "사내망 배포 완료" on the start ts + thread detail reply with ETag and manifest commit.
+- **completion-only fallback** — when no start thread exists, send a top-level message containing only the live URL and patch-note URL, then put deployment details in a thread reply.
 
 ## Arguments
 
@@ -108,6 +109,27 @@ Message B (thread reply under A):
 
 Omit `패치노트:` only when `--release-url` is absent. Do not paste long patch notes into Slack; link the generated release or equivalent patch-note document.
 
+Completion-only fallback — use only when a deploy finished but no `start` phase was sent, so `success --thread-ts` cannot be used:
+
+Top-level channel message:
+```
+Shotloom $VERSION 사내망 배포 완료.
+
+- 대상: $TARGET_URL
+- 패치노트: $RELEASE_URL
+```
+
+Thread reply under the top-level message:
+```
+- HEAD: $HEAD_SHA
+- 이미지: $IMAGE
+- 워크플로: $WORKFLOW_URL
+- prototype-manifest: $MANIFEST_COMMIT
+- ETag: $ETAG_FROM → $ETAG_TO
+```
+
+Do not put workflow, manifest, image, SHA, or ETag details in the top-level message for this fallback.
+
 ### Step 4: Approval prompt (skipped when `--no-confirm`)
 
 Show all messages in the phase before sending any:
@@ -184,7 +206,7 @@ On any `ok=false`: surface Slack API error verbatim. Common errors:
 |---|---|
 | `not_in_channel` | invite `@아르리므` to the channel |
 | `channel_not_found` | wrong channel id in `slack.json` |
-| `invalid_auth` / `token_revoked` | rotate `SLACK_BOT_TOKEN` in `~/.claude/config/.env` |
+| `invalid_auth` / `token_revoked` | rotate `SLACK_BOT_TOKEN` in `~/.config/cinev/.env` |
 
 ### Step 6: Report
 
