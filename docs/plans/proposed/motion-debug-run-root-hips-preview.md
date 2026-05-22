@@ -55,6 +55,27 @@ The Debug Run asset is useful as a retarget stress clip because it carries real 
 
 The remaining gap is not "make all root motion in-place." The gap is an explicit preview policy for built-in validation animations whose purpose is to prove pose application rather than authored traversal.
 
+## Product Direction
+
+This urgent fix is intentionally narrower than the durable product model.
+The product-facing model should be clip-owned:
+
+- `PerformanceClip.root_motion_mode` is the eventual source of truth for
+  whether a clip evaluates as `follow_path` or `in_place`.
+- Animation asset metadata should provide the default recommendation when a
+  clip is created, not the final authority after authoring.
+- The clip inspector should expose a small Root Motion control, such as
+  `In place` / `Follow path`.
+- Preview and export should initially share the same clip policy so users do
+  not see one behavior while authoring and another in output.
+- When `follow_path` is enabled, the viewport should distinguish authored
+  placement from evaluated root motion through a path/marker visualization
+  rather than making the gizmo appear wrong.
+
+This PR only adds the emergency built-in Debug Run preview policy because the
+clip-level model requires core schema, bridge DTO, TypeScript state, inspector
+UI, and migration/defaulting decisions.
+
 ## Options Considered
 
 | Option | Summary | Pros | Cons | Decision |
@@ -62,7 +83,7 @@ The remaining gap is not "make all root motion in-place." The gap is an explicit
 | Global suppress hips X/Z in `apply_motion_preview` | Always keep root at authored placement and only apply hips Y. | Small code diff; fixes screenshot. | Violates ADR-0039, breaks existing root split test, removes root-motion preview for all locomotion clips. | Rejected. |
 | Add a clip-level `root_motion_mode` to `PerformanceClip` | Make each clip choose root-motion or placement-locked behavior. | Durable product shape; aligns with timeline spec's future root motion policy. | Requires core model, DTO, TS bridge types, command/editor wiring, serialization tests, and UX decisions beyond this urgent bug. | Rejected for this PR; follow-up candidate. |
 | Replace Debug Run with a gentler asset | Keep runtime logic untouched. | Avoids new policy code. | Asset choice is product/debug-fixture scope, and it does not cover other built-in validation clips that may need explicit preview policy later. | Rejected for this PR; follow-up candidate. |
-| Asset metadata plus built-in Debug Run fallback declares preview root-motion mode | Mark built-in Debug Run as placement-locked for editor preview, while unmarked clips keep ADR-0039. If the manifest entry is absent after `new_bundle`, the known `DEBUG_RUN_ANIMATION_ASSET_ID` still uses the same policy. | Small, reviewable, no bridge/schema change, preserves root-motion behavior by default, and covers the built-in debug lifecycle. | Free-form metadata needs constants, and the asset-id fallback must stay narrowly scoped to Debug Run. | Selected. |
+| Asset metadata plus built-in Debug Run fallback declares preview root-motion mode | Mark built-in Debug Run as placement-locked for editor preview, while unmarked clips keep ADR-0039. If the manifest entry is absent after `new_bundle`, the known `DEBUG_RUN_ANIMATION_ASSET_ID` still uses the same policy. | Small, reviewable, no bridge/schema change, preserves root-motion behavior by default, and covers the built-in debug lifecycle. It also mirrors the eventual product model by treating asset metadata as a default hint. | Free-form metadata needs constants, and the asset-id fallback must stay narrowly scoped to Debug Run. | Selected. |
 
 ## Requirements
 
@@ -118,21 +139,27 @@ The remaining gap is not "make all root motion in-place." The gap is an explicit
    Rationale: `PerformanceClip` has no root-motion mode today, and adding one would expand the PR into core schema, DTO, bridge, editor, and UX work. The fallback covers the existing `new_bundle` lifecycle where built-in bytes remain available but boot-time asset entries are intentionally lost.
    Rejected alternatives: new `PerformanceClip.root_motion_mode`; new bridge command field; or TypeScript-only UI flag.
 
-3. **The built-in Debug Run asset opts into placement-locked preview.**
+3. **Asset metadata is a default hint in the product model, but a runtime policy in this emergency PR.**
+   Rationale: the durable design should let users change root-motion behavior per clip. Until that field and UI exist, Debug Run metadata is the smallest safe way to keep the built-in validation flow stable.
+   Rejected alternatives: make asset metadata permanent final authority; create hidden per-clip state in the editor only; or delay the urgent fix until the full product model lands.
+
+4. **The built-in Debug Run asset opts into placement-locked preview.**
    Rationale: the asset is the default validation path and carries known large hips X/Z deltas; this is the exact failure mode in STL-519.
    Rejected alternatives: clamp every large root delta; infer mode from FBX magnitude; or swap the built-in animation file.
 
-4. **Placement-locked preview suppresses root X/Z only.**
+5. **Placement-locked preview suppresses root X/Z only.**
    Rationale: the bug is off-placement root traversal; rotations and hips Y bob are still necessary to prove animation application.
    Rejected alternatives: disable the whole motion preview, apply only rotations, or apply full hips translation on the hips bone.
 
-5. **Unknown or absent metadata falls back to ADR behavior for non-Debug-Run assets.**
+6. **Unknown or absent metadata falls back to ADR behavior for non-Debug-Run assets.**
    Rationale: existing user/imported animations should not silently change because a new optional metadata key exists; Debug Run is the only id-based exception because it is the built-in validation asset named by this issue.
    Rejected alternatives: treat unknown values as errors or diagnostics; default all built-in animations to placement-locked.
 
 ## Non-Goals
 
 - No `PerformanceClip` schema, DTO, TypeScript bridge, or editor command changes.
+- No clip inspector Root Motion control in this PR.
+- No viewport root path/ghost marker visualization in this PR.
 - No route/navigation/debug UI changes.
 - No retargeter math, hips translation output, rest translation, or snapshot change.
 - No replacement of `21566_M_AiFigureEightRun_250108.fbx`.
@@ -317,12 +344,18 @@ Privacy check for docs:
 - Do not "fix" the symptom by deleting hips translations in `shotloom-retarget`; the retargeter is intentionally preserving locomotion data.
 - Do not globally clamp root motion by magnitude; that creates hidden behavior for user-imported locomotion clips.
 - Do not introduce `PerformanceClip.root_motion_mode` in this urgent PR. That is the better durable product model, but it is a larger schema and UI change.
+- Do not make asset metadata the permanent product authority. It is a default hint once clip-level mode exists.
+- Do not let preview/export diverge in future product work without an explicit user-facing reason.
 - Do not log local screenshot paths or browser cache paths into durable docs or PR text.
 - Keep `apply_motion_preview` scrub-deterministic. Do not introduce frame-to-frame accumulation.
 
 ## Follow-Up Candidates
 
-- Add a typed clip-level root-motion mode to `PerformanceClip`, evaluator state, bridge DTOs, and editor UI.
+- Add a typed clip-level root-motion mode to `PerformanceClip`, evaluator state, bridge DTOs, and editor UI. Initial modes: `in_place` and `follow_path`.
+- Copy animation asset root-motion metadata into the clip as the default when creating a performance clip, then let the clip own later edits.
+- Add a clip inspector Root Motion control with `In place` / `Follow path` labels.
+- Add viewport root-motion visualization for `follow_path`: authored placement marker, evaluated root marker, and optional path preview.
+- Keep preview/export policy unified at first; only split them later if product requirements demand it.
 - Revisit whether `21566_M_AiFigureEightRun_250108.fbx` is the right default smoke-test animation or should be replaced by a gentler validation clip.
 - Add a small debug overlay that visualizes authored placement versus root-motion preview path when root motion is enabled.
 - Decide whether ADR-0039 should move from Proposed to Accepted after the clip-level mode lands.
