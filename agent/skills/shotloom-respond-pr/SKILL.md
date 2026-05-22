@@ -29,7 +29,11 @@ Usage: `/shotloom-respond-pr <pr-number>`
 ### Step 1: Sanity check
 
 1. Validate `$ARGUMENTS` is a PR number.
-2. `gh auth status` — confirm `tomlim2` active.
+2. `gh auth status` — confirm `tomlim2` is the active account.
+   - If `gh auth status` exits nonzero only because an inactive secondary
+     account has an invalid token, continue when the active account is
+     `tomlim2`.
+   - If the active account is not `tomlim2`, stop and switch accounts.
 3. `git log -1 --format="%an <%ae>"` — confirm `tomlim2 <deemo@vonvon.me>`.
 4. Confirm repo is `CINEV/shotloom`.
 
@@ -326,7 +330,19 @@ DECISION=$(jq -r '.reviewDecision // ""' "/tmp/pr${ARGUMENTS}-view.json")
 LATEST_REVIEW_STATE=$(jq -r '[.[] | select(.state != "COMMENTED")] | sort_by(.submitted_at) | last | .state // ""' "/tmp/pr${ARGUMENTS}-reviews.json")
 ```
 
-When `DECISION == "APPROVED"` OR `LATEST_REVIEW_STATE == "APPROVED"` AND every addressed finding from Step 2.5 is non-blocking (P3 nit, or reviewer body explicitly says "non-blocking" / "optional" / "author's call"), do NOT silently bundle the re-request into the Step 6 batch. Re-requesting an already-APPROVED reviewer for optional nits is courtesy ping noise that the reviewer didn't ask for.
+Use this branch when both conditions are true:
+
+1. `DECISION == "APPROVED"` OR `LATEST_REVIEW_STATE == "APPROVED"`.
+   - `reviewDecision` can be empty on GitHub even when the latest substantive
+     review state is `APPROVED`; in that case `LATEST_REVIEW_STATE` controls.
+2. Every addressed finding from Step 2.5 is non-blocking:
+   - P3 nit.
+   - Reviewer body explicitly says `non-blocking`, `optional`, or
+     `author's call`.
+
+Do NOT silently bundle the re-request into the Step 6 batch in this branch.
+Re-requesting an already-APPROVED reviewer for optional nits is courtesy ping
+noise that the reviewer did not ask for.
 
 The **default action** in this branch is **reply + resolve, NO re-request** — the cycle closes from the author side because the reviewer has already approved and the addressed nits don't need a second look. Resolving the threads signals "I addressed your optional notes; nothing else needed from you." This is the only scenario where this skill resolves threads, except that the bot-only review branch above always stays reply-only and never resolves threads.
 

@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/git-defaults.md,rules/test-write.md
+context-rules: rules/git-defaults.md,rules/shotloom.md,rules/test-write.md
 exclude-when: unreal,obsidian
 ---
 
@@ -30,7 +30,7 @@ PR body and ask before posting any redirect comment.
 ## Binding rules (CRITICAL)
 
 - **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git-defaults.md`.)
-- **Use `tomlim2` account only.** If `gh auth status` shows deemotl active, abort and ask user.
+- **Use `tomlim2` account only.** Follow the active-login check in `rules/shotloom.md`; do not treat inactive secondary-account noise in `gh auth status` as a blocker by itself.
 - **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
 - **All PR body text in English** (Shotloom convention).

@@ -10,16 +10,17 @@ Operational rules with **no in-repo equivalent**. The full project ruleset (comm
 Resolve the shotloom repo path with `bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom` (returns `RESOLVED_PATH=<path>`).
 
 ## Identity
-
-- **Active `gh` account = `tomlim2`.** Confirm with `gh auth status`. The `deemotl` token is invalid; using it breaks `gh pr create` / `git push` with "Invalid username or token".
+- **Active `gh` account = `tomlim2`.** Use `gh api user --jq .login` as the canonical
+  check. `gh auth status` is advisory only: it can exit nonzero when an inactive
+  secondary account has an invalid token. Continue when the active login is `tomlim2`;
+  stop only when the active login is different or unreadable. `deemotl` is invalid
+  and breaks `gh pr create` / `git push`.
 - **Commit author = `tomlim2 <deemo@vonvon.me>`.** Verify with `git log -1 --format="%an <%ae>"`. If wrong: `git config user.name tomlim2 && git config user.email deemo@vonvon.me && git commit --amend --reset-author --no-edit`.
 
 ## Build gate quirk
-
 - **`cargo check` / `cargo clippy` / `cargo test` MUST pass `--exclude shotloom-desktop`.** Why: the `shotloom-desktop` Tauri binary has a pre-existing icon.png issue unrelated to feature work; including it produces a false-red. Same exclusion as Shotloom CI.
 
 ## Approval-gate exceptions
-
 Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). Other repos (CINEV, agent-hub, personal) follow the strict approval flow in `~/.claude/rules/git-defaults.md`.
 
 **Pre-commit gates (NEVER skip):** `cargo fmt --check`, `cargo clippy`, `cargo check`, `cargo test`, `node scripts/validate-doc-paths.mjs`, `node scripts/validate-ci-rust-coverage.mjs`.
@@ -107,7 +108,6 @@ Each subfolder has a `README.md` declaring its audience, style, and mutability. 
 - **Multi-agent mission files live in `ops/` with a shared mission prefix.** Example: VRM import mission → `ops/vrm-import.md`, `ops/vrm-import-briefing.md`, `ops/vrm-import-log.md`. Never scatter these at the project root.
 
 ## Linear AC ↔ primitive cross-check
-
 **Rule:** Before applying a Linear AC that cites a repo primitive (template, standard, rule, ADR section, in-repo guideline), open the primitive's actual file and confirm the cited pattern is codified there.
 
 **If the primitive does NOT codify the cited pattern:**

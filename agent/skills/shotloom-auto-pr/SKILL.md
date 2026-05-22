@@ -48,7 +48,7 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
 
 ## Start workflow
 
-1. Pre-flight: `gh auth status` shows `tomlim2` active, `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
+1. Pre-flight: confirm the active login per `rules/shotloom.md`; `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
 2. Resolve PR number. If no arg: `gh pr view --json number -q .number`.
 3. `chmod +x ~/.claude/skills/shotloom-auto-pr/{watch,start,stop}.sh` if needed.
 4. Run `~/.claude/skills/shotloom-auto-pr/start.sh <N>`.

@@ -50,7 +50,7 @@ git status --short
 ```
 
 Verify:
-- active `gh` user is `tomlim2`;
+- active `gh` user is `tomlim2` per `gh api user --jq .login`;
 - repo origin is `CINEV/shotloom`;
 - current dirty files are reported before creating any worktree;
 - PR is not authored by `tomlim2` unless the user explicitly says this is a

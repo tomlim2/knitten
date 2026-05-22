@@ -34,8 +34,8 @@ bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom
 ```
 
 Verify: resolver returns the Shotloom main checkout path; cwd is Shotloom by
-toplevel, git-common-dir, or origin URL; `gh` user is `tomlim2`; Shotloom repo
-git identity matches `agent/rules/shotloom-docs-lane.md`
+toplevel, git-common-dir, or origin URL; active `gh` user is `tomlim2` per
+`gh api user --jq .login`; Shotloom repo git identity matches `agent/rules/shotloom-docs-lane.md`
 (`tomlim2 <deemo@vonvon.me>`, warn only); dirty changes are reported with
 stash/commit/proceed choices.
 
