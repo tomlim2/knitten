@@ -13,6 +13,7 @@ This table is inventory only. Rule cells MUST use code spans, not Markdown links
 | `ambiguity-scoring.md` | auto | Meta-decision gate — 1-10 score before any ambiguous action; 9+ auto, else surface |
 | `canonical-first.md` | auto | Before adopting any external term/path/pattern/recommendation, verify against the user's canonical source |
 | `git-defaults.md` | auto | No auto-push / no Co-Authored-By / author identity |
+| `main-chore-lane.md` | triggered | committing or pushing from the primary `main` checkout in a worktree-first repo |
 | `behavior.md` | auto | Output style, delegation, context budget, plan approval triggers |
 | `verify-before-report.md` | auto | Verify before presenting any result |
 | `security.md` | auto | Secrets handling, documentation language |
