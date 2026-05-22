@@ -42,9 +42,12 @@ briefing: ../../briefings/shotloom/core-migrate-stage-renderable-kind.md
 | Bundle validation tests | `crates/shotloom-core/src/model/bundle.rs` tests | Already Done | Tests accept `AssetKind::StageRenderable` and reject missing/wrong-kind Stage renderable assets. |
 | Character asset usage | `crates/shotloom-core/src/model/entity.rs::CharacterModel::asset_id` | Partial | Character instances reference an asset id; bundle directory IO checks referenced asset records/files, and character asset removal requires `AssetKind::Character`. |
 | Prop asset usage | `crates/shotloom-core/src/model/entity.rs::PropModel::asset_id` | Partial | Prop instances reference an asset id; directory bundle IO includes prop asset ids in referenced asset checks, but there is no equivalent Stage-style kind expectation table in docs. |
+| Runtime character/prop resolution | `crates/shotloom-engine/src/entity.rs::resolve_character_asset_path`, `resolve_prop_asset_path` | Already Done / Context | Runtime resolution warns on asset-kind mismatch for character and prop assets instead of treating the mismatch as a Stage-style persisted reference validation failure. |
+| Asset import kind choice | `crates/shotloom-engine/src/bridge/tests/assets.rs` | Already Done / Context | Tests state the user-chosen import kind is canonical; a structurally valid VRM-like GLB imported as `prop` remains `AssetKind::Prop`. |
 | Asset catalog policy | `docs/specs/stage-entity-model.md` Asset Catalog Policy | Partial | Metadata keys such as `source_category`, `role_hint`, and `representation_hint` are hints/provenance only. |
 | Stage import rule | `docs/specs/stage-entity-model.md` Import rule / Example Mapping | Partial | Source evidence maps to Stage role/representation examples and says Stage chooses the final role. It does not state the manifest `AssetKind` decision rule. |
 | Bundle format Stage refs | `docs/specs/bundle-format.md` §17 rule 4 | Already Done | Stage renderable `asset_id` points at a manifest asset with kind `stage_renderable`; `BundleModel::validate_stage_refs` is source of truth. |
+| Bridge Stage replacement docs | `docs/ipc/bridge-contract.md` §13A.2 | Already Done / Context | `replace_stage_renderable` rejects replacement `asset_id` whose asset kind is not `stage_renderable` as `INVALID_STAGE_PAYLOAD`. |
 | Parent umbrella | Linear `STL-457` | Already Done / Context | Stage implementation umbrella separates core, asset/provenance, bridge, runtime/import/editor, and regression closure phases. |
 | Direct predecessor | `docs/plans/proposed/core-stage-renderable-provenance.md` | Already Done / Sibling | STL-450 introduced `StageRenderable` provenance and `AssetKind::StageRenderable`; this task documents criteria on top of that state. |
 
@@ -114,8 +117,12 @@ describes where the evidence came from.
    - Stage: S1.
    - Verification: V1.
 3. Add a consumer expectation table for character, prop, and StageRenderable
-   asset references.
-   - Trace: STL-475 AC4; `CharacterModel`, `PropModel`, `StageRenderable`.
+   asset references, including where each expectation is enforced today
+   (core validation, runtime warning, bridge command rejection, or import
+   command choice).
+   - Trace: STL-475 AC4; `CharacterModel`, `PropModel`, `StageRenderable`;
+     `resolve_character_asset_path`; `resolve_prop_asset_path`;
+     `docs/ipc/bridge-contract.md` §13A.2.
    - Stage: S2.
    - Verification: V1, V3.
 4. Record the current wrong-kind handling: persisted Stage renderable asset
@@ -150,7 +157,7 @@ describes where the evidence came from.
 | Schema / serialization compatibility | yes | `AssetKind` and `StageRenderable.asset_id` are persisted model surfaces. | Document existing behavior only; do not add enum variants or serde fields. | `git diff` should show docs/spec only unless review requires test candidate proof. |
 | Ownership / API boundary | yes | ADR-0050 says Stage owns semantics; assets own bytes/URI/metadata; source categories remain provenance. | State consumer-based kind criteria and keep Stage/Prop boundaries distinct. | V1 docs readback against ADR-0050 and Stage Entity Model. |
 | Partial mutation / rollback | no | No model mutation or command handler is planned. | Explicitly keep migration/repair/runtime mutation out of scope. | N/A: docs-only task. |
-| Diagnostic ownership | yes | `StageReferenceError::UnsupportedRenderableAssetKind` currently owns wrong-kind Stage renderable refs. | Document current load-validation failure and avoid inventing runtime diagnostics in STL-475. | V2 confirms docs cite the existing error source. |
+| Diagnostic ownership | yes | `StageReferenceError::UnsupportedRenderableAssetKind` owns persisted wrong-kind Stage renderable refs; `docs/ipc/bridge-contract.md` maps replacement wrong-kind payloads to `INVALID_STAGE_PAYLOAD`; runtime character/prop resolution uses warnings. | Document each owner by enforcement layer and avoid inventing new runtime diagnostics in STL-475. | V2 and V3 confirm docs cite the existing owners. |
 | Local absolute path exposure | no | Planned docs use repo paths and issue ids only; no asset manifest examples with local paths. | Do not add `/Users`, `Downloads`, `Desktop`, or machine checkout roots. | V4 `rg` proof before PR. |
 | Manifest path containment | no | No URI resolver or manifest path field changes. | Keep path containment out of scope. | N/A. |
 | Asset/data pack lifecycle | no | No binary assets or LFS pointers planned. | Keep external S2M asset preparation and GLB copy work out of scope. | N/A. |
@@ -291,7 +298,11 @@ Input:
 - `CharacterModel::asset_id`, `PropModel::asset_id`,
   `StageRenderable::asset_id`.
 - `BundleModel::remove_character_asset` kind check.
+- `resolve_character_asset_path` and `resolve_prop_asset_path` runtime
+  kind-mismatch warnings.
 - `validate_stage_refs_with_assets` wrong-kind rejection.
+- `docs/ipc/bridge-contract.md` §13A.2 `replace_stage_renderable`
+  wrong-kind rejection.
 - `docs/specs/bundle-format.md` Stage reference rule.
 
 Output:
@@ -300,7 +311,8 @@ Output:
   - shot-owned prop asset refs and `prop` assets;
   - Stage renderable asset refs and `stage_renderable` assets;
   - Stage templates/defaults and `stage_template` assets.
-- A wrong-kind section stating current `StageRenderable.asset_id` behavior.
+- A wrong-kind section stating current `StageRenderable.asset_id` behavior and
+  distinguishing it from runtime character/prop warning behavior.
 
 Non-output:
 - No claim that every existing character/prop path has identical
