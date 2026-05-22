@@ -55,7 +55,8 @@ commit or push time when an agent attempts to use the main checkout.
 - Existing Knitten task worktrees are not reused unless the user names one
   explicitly.
 - Read-only inspection can run in the main checkout.
-- Commit and push from the main checkout are blocked by local git hooks.
+- Commit and push from the main checkout are blocked by local git hooks except
+  for an explicitly allowed small chore lane.
 - The first implementation should include starter, guard, hook installer,
   status command, and git-defaults rule.
 - Hook installation uses repo-local `core.hooksPath`; global git config is not

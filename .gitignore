@@ -83,6 +83,7 @@ Thumbs.db
 
 # Stray root-level Claude Code runtime dir
 .claude/
+.worktrees/
 
 # Hyperframes runtime
 hyperframes/node_modules/

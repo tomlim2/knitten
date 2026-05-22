@@ -15,7 +15,11 @@ Default-counter rules. The harness biases toward each opposite; these counter at
   or CI/CD-only changes can use a feature branch in the primary checkout when
   `worktreePolicy.allowMainFeatureBranch: true`. Allowed scope: `.github/**`,
   PR templates, release notes, changelog entries, and narrow docs-only policy
-  wording. Keep direct commits to `main` forbidden.
+  wording.
+- **Main chore lane** — A worktree-first repo may also allow a narrow primary
+  `main` checkout lane when the repo-specific guard recognizes a small safe
+  chore. In Knitten this lane is capped at 8 safe files and the commit subject
+  must start with `chore:`.
 - **Worktree resumes** — Continue in the current task worktree when the user
   explicitly resumes that task from inside it. If the user names an existing
   worktree path or branch, run `git status --short --branch` there before

@@ -31,7 +31,7 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 |---|---|
 | Fresh isolation per execution | Each starter invocation creates a new worktree and a new `codex/` branch. |
 | Repo opt-in enforcement | Worktree-first applies only to repositories whose repo config has `worktreePolicy.enabled: true`. |
-| Main checkout protection | Commit and push from the main checkout fail with a clear message. |
+| Main checkout protection | Commit and push from the main checkout fail with a clear message except for an explicitly scoped small chore lane. |
 | Lightweight branch lane | Small docs-only and CI/CD-only changes can use a primary-checkout feature branch when explicitly enabled. |
 | LLM-visible workflow | Auto-loaded git rules tell agents to start Knitten write work in a new worktree. |
 | Deterministic naming | Worktree paths and branch names use `<stamp>-<task-slug>`, so repeated runs do not collide and repo names do not repeat. |
@@ -51,7 +51,7 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 | Delete stale worktrees automatically | Cleanup is destructive and needs an explicit user action. |
 | Move existing tags or branches | Release tagging stays under direct user approval. |
 | Require GitHub branch protection | Local enforcement is the first implementation layer. |
-| Allow `main` direct commits | The lightweight lane permits feature branches only. |
+| Broad `main` direct commits | `main` stays blocked except for a narrow small chore lane. |
 
 ## Current State
 
@@ -237,7 +237,7 @@ Guard behavior:
 | Condition | Result |
 |---|---|
 | Current repo has no enabled `worktreePolicy` | Pass. |
-| Current top-level path is the enabled repo's main checkout on `main` | Fail with `<repo-key> policy: use a task worktree for commit and push.` |
+| Current top-level path is the enabled repo's main checkout on `main` | Fail with `<repo-key> policy: use a task worktree for commit and push.` unless the repo-specific small chore lane matches. |
 | Current top-level path is the enabled repo's main checkout on a feature branch and `allowMainFeatureBranch: true` | Pass. |
 | Current top-level path is an enabled repo linked worktree | Pass. |
 
@@ -382,7 +382,7 @@ Update `agent/rules/git-defaults.md` with a Knitten-specific rule:
 |---|---|
 | Read-only Knitten inspection | Main checkout allowed. |
 | Write-capable work in repo with `worktreePolicy.enabled: true` | Run `node scripts/worktree-start.mjs <slug>` first. |
-| Small docs-only or CI/CD-only work with `allowMainFeatureBranch: true` | Use a feature branch in the primary checkout; do not commit directly to `main`. |
+| Small docs-only or CI/CD-only work with `allowMainFeatureBranch: true` | Use a feature branch in the primary checkout unless the repo-specific small chore lane allows `main`. |
 | Write-capable work in repo without enabled `worktreePolicy` | Use normal git workflow. |
 | Same task resumed inside a task worktree | Continue in that worktree. |
 | New write-capable user request in enabled repo | Create a new worktree, even if another worktree exists. |
