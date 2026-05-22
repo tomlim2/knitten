@@ -1,5 +1,5 @@
 ---
-status: ready
+status: superseded
 created: 2026-05-22
 updated: 2026-05-22
 load: triggered
@@ -7,7 +7,14 @@ trigger: STL-519
 repo: shotloom
 linear: STL-519
 spec: ../../plans/proposed/motion-debug-run-root-hips-preview.md
+superseded_by: debug-run-vrm-normalization-mismatch.md
 ---
+
+> Superseded on 2026-05-22 by
+> `debug-run-vrm-normalization-mismatch.md`. This briefing captured the first
+> root/hips XZ placement hypothesis. The confirmed STL-519 cause is the
+> Debug Character seed path caching raw embedded VRM bytes while retarget data
+> is built from normalized VRM bytes.
 
 ### Shotloom coding mode - rust
 

@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: superseded
 created: 2026-05-22
 updated: 2026-05-22
 load: triggered
@@ -7,9 +7,16 @@ trigger: working STL-519 - Debug Run preview root/hips placement stability
 repo: shotloom
 linear: STL-519
 briefing: ../../briefings/shotloom/motion-debug-run-root-hips-preview.md
+superseded_by: debug-run-vrm-normalization-mismatch.md
 ---
 
 # Stabilize Debug Run Motion Preview Placement
+
+> Superseded on 2026-05-22 by
+> `debug-run-vrm-normalization-mismatch.md`. This plan remains as diagnostic
+> history for the initial root/hips placement hypothesis. Do not implement it
+> for STL-519 unless a later issue explicitly reopens root-motion preview
+> policy.
 
 ## Spec Contract
 
