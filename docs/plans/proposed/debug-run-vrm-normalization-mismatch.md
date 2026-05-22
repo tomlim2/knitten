@@ -64,6 +64,10 @@ unstable limbs during the Debug Character + Debug Run preview.
 | Project | Shotloom - bravo |
 | Goal | Make Debug Character + Debug Run use the same normalized VRM basis as imported characters. |
 | Acceptance | normalized debug seed bytes; seed/motion/full-app regressions; manual editor happy path. |
+| Blockers | None after the raw-vs-normalized diagnosis; implementation is engine-local. |
+| Related PRs | None yet for STL-519. |
+| Current review state | No implementation PR yet; spec review only. |
+| Planning consequence | Implement seed normalization and hierarchy regression, not root-motion policy. |
 | Superseded premise | root/hips XZ placement policy was the initial hypothesis, but the confirmed bug is raw-vs-normalized debug VRM basis mismatch. |
 | Current candidate | `fix/debug-run-normalized-vrm-seed`, commits `3c4030d8` and `f2d6080f`. |
 
@@ -111,23 +115,38 @@ unstable limbs during the Debug Character + Debug Run preview.
 
 1. **The source of truth is raw-vs-normalized seed mismatch, not root-motion
    traversal.**
-   The old root/hips plan is retained only as superseded diagnostic history.
+   Rationale: the full loaded hierarchy failed while synthetic retarget/FK
+   remained plausible, which points at render-basis mismatch rather than
+   retarget output absence or root X/Z policy.
+   Rejected alternatives: implementing the superseded root/hips placement plan
+   for STL-519, or treating visible off-placement motion as the same bug as
+   feet above hips.
 
 2. **Debug seed bytes must follow the import path's normalization rule.**
-   Imported characters already render from normalized bytes. Built-in debug
-   characters should not be a special raw-byte path.
+   Rationale: imported characters already render from normalized bytes. Built-in
+   debug characters should not be a special raw-byte path when they share the
+   same runtime cache.
+   Rejected alternatives: normalizing only for retarget input, or leaving the
+   debug render path raw because the asset is embedded.
 
 3. **The fix belongs in `seed_debug_character_assets_from_bytes`.**
-   This is the earliest engine-local place where the embedded debug VRM enters
-   the same in-memory byte cache used by runtime character loading.
+   Rationale: this is the earliest engine-local place where the embedded debug
+   VRM enters the same in-memory byte cache used by runtime character loading.
+   Rejected alternatives: patching the Bevy loader, adding bridge/editor flags,
+   or special-casing motion application after the wrong bytes are already in
+   the cache.
 
 4. **Normalization failure is non-fatal for app startup.**
-   A bad embedded debug asset should disable the debug seed and surface through
-   existing logging rather than crashing normal editor startup.
+   Rationale: a bad embedded debug asset should disable the debug seed and
+   surface through existing logging rather than crashing normal editor startup.
+   Rejected alternatives: panic on app startup, silently insert raw fallback
+   bytes after normalization failure, or ignore the existing LFS guard posture.
 
 5. **Tests must include a loaded hierarchy check.**
-   Synthetic retarget tests are necessary but insufficient because this bug was
-   a mismatch between retarget basis and rendered skeleton basis.
+   Rationale: synthetic retarget tests are necessary but insufficient because
+   this bug was a mismatch between retarget basis and rendered skeleton basis.
+   Rejected alternatives: browser-only visual verification, or only unit tests
+   that never load the Bevy VRM hierarchy.
 
 ## Risk Map
 
@@ -136,10 +155,23 @@ unstable limbs during the Debug Character + Debug Run preview.
 | Error source chain | yes | `normalize_vrm` can fail while app startup should remain usable. | Preserve seed failure logging and skip only the debug VRM overlay entry. | Seed tests plus no new panic path. |
 | Schema / serialization compatibility | no | No `shotloom-core`, bridge DTO, or bundle schema changes. | Keep work inside engine seed/cache path. | `git diff` excludes schema/contract files except docs. |
 | Ownership / API boundary | yes | Import path already owns normalized VRM bytes; engine seed owns embedded debug bytes. | Mirror import behavior in `seed_debug_character_assets_from_bytes`; do not edit retargeter. | Retarget tests unchanged; seed test pins bytes. |
+| Partial mutation / rollback | no | The seed path inserts into an in-memory overlay during startup/debug setup, not a persisted multi-artifact transaction. | On failure, skip the debug VRM entry rather than partially inserting raw bytes. | Seed failure tests and manual app startup. |
+| Diagnostic ownership | yes | Normalization failure belongs to seed logging; retarget diagnostics are not the owner of this mismatch. | Keep failure reporting at the seed boundary and avoid new bridge diagnostics. | No command rejection or event contract changes. |
 | Asset lifecycle | yes | Debug VRM and FBX are embedded debug assets with LFS guards. | Keep raw LFS pointer check before normalization and preserve FBX seed logic. | Existing LFS guard tests still pass. |
 | Test oracle strength | yes | Synthetic retarget can pass while loaded hierarchy fails. | Require both focused motion tests and ignored full app integration regression. | `motion::tests::debug_run_vrm1_preview_` and `vrm_spawn_integration`. |
 | Scope creep | yes | Root-motion product policy and asset replacement are adjacent. | Put them in Non-Goals and Follow-Up Candidates. | Spec excludes editor, bridge, core schema, retargeter math. |
+| Reviewer objection | yes | Reviewers may ask why an ignored full app test is required or why debug startup can skip a failed asset. | Document the basis mismatch and keep a fast seed test plus explicit ignored integration command. | Verification lists both targeted and ignored commands. |
 | Local path exposure | no | Durable repo docs should not include machine-local paths. | Use repo-relative paths in the Shotloom tech-debt note and Knitten plan. | Privacy grep/manual review before PR. |
+
+## Traps
+
+- Do not infer the fix from the screenshot alone. The screenshot is compatible
+  with root-motion drift, but the loaded hierarchy diagnostic is the deciding
+  evidence for STL-519.
+- Do not prove this only in synthetic retarget/FK code. That layer can pass
+  while the real Bevy-loaded skeleton still uses raw debug bytes.
+- Do not add a root-motion product field while fixing this urgent bug. That is
+  a separate product/UI/bridge decision.
 
 ## Design Plan
 
@@ -154,10 +186,10 @@ Input:
 Output:
 - Confirmed implementation entry points and existing test names.
 
-Forbidden output:
+Non-output:
 - No source edits in this stage.
 
-Failure handling:
+Failure:
 - Stop if debug seeding moved out of `app.rs` or if the full app regression no
   longer uses the Debug Character path.
 
@@ -192,11 +224,11 @@ Input:
 Output:
 - Normalized bytes stored under `DEBUG_CHARACTER_VRM_ASSET_ID`.
 
-Forbidden output:
+Non-output:
 - No Debug Run FBX behavior change.
 - No panic on normalization failure.
 
-Failure handling:
+Failure:
 - On normalization failure, log and skip inserting the debug VRM overlay entry.
 
 Proof:
@@ -226,10 +258,10 @@ Input:
 Output:
 - A regression test comparing overlay bytes with direct `normalize_vrm` output.
 
-Forbidden output:
+Non-output:
 - No brittle byte fixture copied into the test body.
 
-Failure handling:
+Failure:
 - If fixture normalization fails, fail the test because debug seed cannot be
   trusted.
 
@@ -259,11 +291,11 @@ Input:
 Output:
 - Focused motion regression and full loaded-app regression.
 
-Forbidden output:
+Non-output:
 - No retargeter math change.
 - No browser-only verification as the only proof.
 
-Failure handling:
+Failure:
 - If the full app regression is too slow for normal CI, keep it ignored but
   document the exact command and why it exists.
 
@@ -297,11 +329,11 @@ Output:
 - Durable note explaining the raw-vs-normalized basis mismatch and confirming
   root-motion policy was not changed.
 
-Forbidden output:
+Non-output:
 - No local machine paths.
 - No claim that root-motion policy is fixed or decided here.
 
-Failure handling:
+Failure:
 - If the implementation changes the diagnosis, update Linear and this spec
   before PR.
 
