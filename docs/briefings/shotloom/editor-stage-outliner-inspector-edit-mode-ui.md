@@ -30,8 +30,7 @@ objects.
 - Editor tests or Playwright/RTL tests verify major interactions.
 
 **Branch:** `feat/editor-stage-authoring-ui`\
-Worktree:
-`/Users/deemooooooooo/Desktop/www/shotloom-github/.worktrees/editor-stage-authoring-ui`\
+Worktree alias: `shotloom-github/.worktrees/editor-stage-authoring-ui`\
 Base: `origin/main` at `12bcb9d7` (`feat(bridge): handle stage lifecycle and
 edit commands (#384)`). Branch is clean and configured as
 `tomlim2 <deemo@vonvon.me>`.
