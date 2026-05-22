@@ -11,19 +11,23 @@ from pathlib import Path
 from typing import Optional
 
 ROOT_DIR = Path.home() / ".claude"
+ENV_PATHS = [
+    Path.home() / ".config" / "cinev" / ".env",
+    ROOT_DIR / "config" / ".env",
+]
 
 
 def load_env() -> None:
-    """Load SLACK_BOT_TOKEN from ~/.claude/config/.env if present."""
-    env_path = ROOT_DIR / "config" / ".env"
-    if not env_path.exists():
-        return
-    with open(env_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                key, value = line.split("=", 1)
-                os.environ.setdefault(key.strip(), value.strip())
+    """Load Slack secrets from the user-level private env file if present."""
+    for env_path in ENV_PATHS:
+        if not env_path.exists():
+            continue
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    os.environ.setdefault(key.strip(), value.strip())
 
 
 def load_slack_config() -> dict:
@@ -42,7 +46,7 @@ def post_message(text: str, thread_ts: Optional[str] = None) -> dict:
     if not token:
         return {
             "ok": False,
-            "error": "SLACK_BOT_TOKEN not set in ~/.claude/config/.env",
+            "error": "SLACK_BOT_TOKEN not set in ~/.config/cinev/.env",
         }
 
     channel = cfg.get("team_channel", "")

@@ -10,7 +10,7 @@ CINEV (cci) Slack integration standard. All cci skills that send Slack messages 
 ## Bot Identity
 
 - **Bot name:** 아트 아르리므
-- **Token:** `SLACK_BOT_TOKEN` in `~/.claude/config/.env`
+- **Token:** `SLACK_BOT_TOKEN` in `~/.config/cinev/.env`
 - **Scope required:** `chat:write.customize` (enables `username` parameter override)
 
 ### Channels
@@ -27,7 +27,7 @@ The `username` parameter in `chat.postMessage` is the only reliable way to contr
 
 ## Config Files
 
-### `~/.claude/config/.env`
+### `~/.config/cinev/.env`
 
 ```
 SLACK_BOT_TOKEN=xoxb-...

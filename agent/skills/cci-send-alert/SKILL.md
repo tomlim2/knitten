@@ -42,7 +42,7 @@ Usage:
 
 | Key | File | Purpose |
 |-----|------|---------|
-| `SLACK_BOT_TOKEN` | `~/.claude/config/.env` | Bot OAuth token (required) |
+| `SLACK_BOT_TOKEN` | `~/.config/cinev/.env` | Bot OAuth token (required) |
 | `team_channel` | `~/.claude/config/slack.json` | Target channel ID |
 | `team_bot_username` | `~/.claude/config/slack.json` | Bot display name |
 
@@ -73,4 +73,4 @@ On failure: print the Slack API error verbatim (`not_in_channel`, `invalid_auth`
 
 - `cci-art-send-notice` — art channel sender (threaded branch updates)
 - `~/.claude/config/slack.json` — channel + bot username config
-- `~/.claude/config/.env` — bot token storage
+- `~/.config/cinev/.env` — bot token storage
