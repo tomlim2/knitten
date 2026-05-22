@@ -113,7 +113,7 @@ unstable limbs during the Debug Character + Debug Run preview.
 
 ## Locked Decisions
 
-1. **The source of truth is raw-vs-normalized seed mismatch, not root-motion
+1. **The canonical diagnosis is raw-vs-normalized seed mismatch, not root-motion
    traversal.**
    Rationale: the full loaded hierarchy failed while synthetic retarget/FK
    remained plausible, which points at render-basis mismatch rather than

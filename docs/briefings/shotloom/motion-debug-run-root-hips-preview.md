@@ -6,7 +6,7 @@ load: triggered
 trigger: STL-519
 repo: shotloom
 linear: STL-519
-spec: ../../plans/proposed/motion-debug-run-root-hips-preview.md
+spec: ../../plans/archive/motion-debug-run-root-hips-preview.md
 superseded_by: debug-run-vrm-normalization-mismatch.md
 ---
 

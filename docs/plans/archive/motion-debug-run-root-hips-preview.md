@@ -67,7 +67,7 @@ The remaining gap is not "make all root motion in-place." The gap is an explicit
 This urgent fix is intentionally narrower than the durable product model.
 The product-facing model should be clip-owned:
 
-- `PerformanceClip.root_motion_mode` is the eventual source of truth for
+- `PerformanceClip.root_motion_mode` is the eventual canonical policy for
   whether a clip evaluates as `follow_path` or `in_place`.
 - Animation asset metadata should provide the default recommendation when a
   clip is created, not the final authority after authoring.
@@ -344,7 +344,7 @@ Open the editor, spawn Debug Character or Xiao, select Debug Run, create a perfo
 
 Privacy check for docs:
 
-- Run a local-path privacy grep over `docs/plans/proposed/motion-debug-run-root-hips-preview.md` and `docs/briefings/shotloom/motion-debug-run-root-hips-preview.md`; it should return no concrete machine-local paths.
+- Run a local-path privacy grep over `docs/plans/archive/motion-debug-run-root-hips-preview.md` and `docs/briefings/shotloom/motion-debug-run-root-hips-preview.md`; it should return no concrete machine-local paths.
 
 ## Traps
 

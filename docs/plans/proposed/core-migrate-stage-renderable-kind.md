@@ -14,16 +14,20 @@ briefing: ../../briefings/shotloom/core-migrate-stage-renderable-kind.md
 ## Spec Contract
 
 - Briefing basis: `../../briefings/shotloom/core-migrate-stage-renderable-kind.md`
-  defines STL-475 as a docs/core criteria task, not a migration or runtime
-  implementation task.
+  defines STL-475 as a thin STL-457 closure criteria task, not a migration,
+  runtime implementation, or new normalizer task.
 - Current truth: `StageRenderable.asset_id` is already validated against
   manifest assets of kind `stage_renderable`; asset metadata and Stage source
   fields are provenance/hints, not final semantics.
-- Required change: document that the A2M/S2M import/API adapter owns the
-  initial `AssetKind` classification decision, while core/bridge/runtime layers
-  validate or warn against mismatches according to their existing boundaries.
+- Required change: document Stage renderable `AssetKind` criteria and show that
+  it is consistent with existing import behavior where the usage/import kind is
+  canonical for manifest `AssetKind`.
 - Locked boundary: do not change bridge DTOs, runtime hydration, import API
   wiring, bundle migration, repair UI, or automatic PropModel promotion in this
+  task.
+- Scope guard: do not introduce a new normalizer/helper. Treat "normalization"
+  here as criteria wording for Stage renderable `AssetKind` only; path/URI
+  containment or source-file validation belongs to a separate import/asset-pack
   task.
 - Proof method: source-backed documentation update plus a focused regression
   test candidate table; implementation PR should prove no code behavior changed
@@ -44,10 +48,10 @@ briefing: ../../briefings/shotloom/core-migrate-stage-renderable-kind.md
 | Prop asset usage | `crates/shotloom-core/src/model/entity.rs::PropModel::asset_id` | Partial | Prop instances reference an asset id; directory bundle IO includes prop asset ids in referenced asset checks, but there is no equivalent Stage-style kind expectation table in docs. |
 | Runtime character/prop resolution | `crates/shotloom-engine/src/entity.rs::resolve_character_asset_path`, `resolve_prop_asset_path` | Already Done / Context | Runtime resolution warns on asset-kind mismatch for character and prop assets instead of treating the mismatch as a Stage-style persisted reference validation failure. |
 | Asset import kind choice | `crates/shotloom-engine/src/bridge/tests/assets.rs` | Already Done / Context | Tests state the user-chosen import kind is canonical; a structurally valid VRM-like GLB imported as `prop` remains `AssetKind::Prop`. |
-| A2M/S2M import classification | Future import/API adapter surface | Missing / Owner | The adapter that converts upstream A2M/S2M/map evidence into Shotloom assets should choose the manifest `AssetKind`; core validation should not infer kind from provenance after the fact. |
+| A2M/S2M provenance vs asset kind | Stage import criteria | Missing / Criteria | Source evidence can inform Stage renderable role/representation choices, but it does not directly equal manifest `AssetKind`; core validation should not infer kind from provenance after the fact. |
 | Asset catalog policy | `docs/specs/stage-entity-model.md` Asset Catalog Policy | Partial | Metadata keys such as `source_category`, `role_hint`, and `representation_hint` are hints/provenance only. |
 | Stage import rule | `docs/specs/stage-entity-model.md` Import rule / Example Mapping | Partial | Source evidence maps to Stage role/representation examples and says Stage chooses the final role. It does not state the manifest `AssetKind` decision rule. |
-| Bundle format Stage refs | `docs/specs/bundle-format.md` §17 rule 4 | Already Done | Stage renderable `asset_id` points at a manifest asset with kind `stage_renderable`; `BundleModel::validate_stage_refs` is source of truth. |
+| Bundle format Stage refs | `docs/specs/bundle-format.md` §17 rule 4 | Already Done | Stage renderable `asset_id` points at a manifest asset with kind `stage_renderable`; `BundleModel::validate_stage_refs` is the canonical validation boundary. |
 | Bridge Stage replacement docs | `docs/ipc/bridge-contract.md` §13A.2 | Already Done / Context | `replace_stage_renderable` rejects replacement `asset_id` whose asset kind is not `stage_renderable` as `INVALID_STAGE_PAYLOAD`. |
 | Parent umbrella | Linear `STL-457` | Already Done / Context | Stage implementation umbrella separates core, asset/provenance, bridge, runtime/import/editor, and regression closure phases. |
 | Direct predecessor | `docs/plans/proposed/core-stage-renderable-provenance.md` | Already Done / Sibling | STL-450 introduced `StageRenderable` provenance and `AssetKind::StageRenderable`; this task documents criteria on top of that state. |
@@ -68,9 +72,9 @@ briefing: ../../briefings/shotloom/core-migrate-stage-renderable-kind.md
 | Issue | `STL-475` |
 | State | In Progress |
 | Owner | deemo 디모 |
-| Goal | Clarify Stage renderable asset-kind criteria and how A2M/S2M/map provenance should guide import/API adapter `AssetKind` decisions. |
-| Acceptance criteria | Document Stage renderable asset-kind criteria; describe S2M/map provenance vs `AssetKind`; document asset-kind mismatch direction; compare character/prop/StageRenderable expectations; split follow-up implementation if needed. |
-| Latest relevant comment | User clarified to avoid overcommitted "team lead must decide" language and write what this task will organize. |
+| Goal | Close the STL-457 Stage renderable asset-kind criteria gap with a thin docs update. |
+| Acceptance criteria | Document Stage renderable asset-kind criteria; show consistency with existing import asset handling; describe A2M/S2M/map provenance vs `AssetKind`; document asset-kind mismatch direction; compare character/prop/StageRenderable expectations. |
+| Latest relevant comment | User clarified this is a parent-closure task and should not deepen into a new normalizer/path-validation design. |
 | Blockers / dependencies | Parent `STL-457`; related predecessor `STL-450`. |
 | Related PRs | N/A for STL-475. |
 | Current review state | No PR yet. |
@@ -79,7 +83,7 @@ briefing: ../../briefings/shotloom/core-migrate-stage-renderable-kind.md
 ## Problem
 
 Shotloom now has a canonical Stage renderable asset kind, but the durable docs
-do not yet explain where import-adjacent evidence should become that kind.
+do not yet summarize that boundary in one place for STL-457 closure.
 A2M/S2M/map inputs may say that an object is a fixture, prop-like furniture,
 background shell, source category, or renderable candidate. File names alone
 are not reliable, and source categories are not final Shotloom semantics.
@@ -91,20 +95,19 @@ Without a criteria doc, future import work can drift in two directions:
 - treat `prop`, `stage_template`, and `stage_renderable` as interchangeable
   because they may all point at GLB-like bytes.
 
-STL-475 should make the current policy legible before the next import/runtime
-work: `AssetKind` describes the Shotloom asset-kind boundary for a usage path,
-while provenance describes where the evidence came from. The importer or
-API-adapter is the place that turns upstream evidence into an intended
-`AssetKind`; core validation only checks whether the persisted/reference graph
-obeys that choice.
+STL-475 should make the current policy legible without adding a new import
+mechanism: `AssetKind` describes the Shotloom asset-kind boundary for a usage
+path, while provenance describes where the evidence came from. Existing import
+behavior already follows this shape: the explicit import/usage kind determines
+the manifest kind, and preflight checks bytes for that chosen path.
 
 ## Options Considered
 
 | Option | Description | Result |
 |---|---|---|
-| Keep only current code/tests | Rely on `validate_stage_refs_with_assets` and existing tests to teach the rule. | Rejected. Reviewers and import implementers still need criteria for S2M/map provenance and asset-kind expectation comparison. |
+| Keep only current code/tests | Rely on `validate_stage_refs_with_assets` and existing tests to teach the rule. | Rejected. Reviewers and import implementers still need one criteria section for A2M/S2M/map provenance and asset-kind expectation comparison. |
 | Add migration/repair behavior now | Convert mismatched `stage_template`/`prop` references or warn-and-skip at load/runtime. | Rejected. Linear non-goals exclude migration, repair UI, and runtime changes; ADR-0054 rejects silent load repair. |
-| Document asset-kind criteria using existing concepts | State that the import/API adapter chooses `AssetKind` from the Shotloom usage path and asset-kind boundary, not file extension or source label; record mismatch handling and follow-up candidates. | Selected. This satisfies STL-475 without expanding implementation scope or inventing a new domain concept. |
+| Document asset-kind criteria using existing concepts | State that Stage renderable assets use `stage_renderable`, consistent with existing import behavior where the usage/import kind is canonical; record mismatch handling and follow-up candidates. | Selected. This satisfies STL-475 without expanding implementation scope or inventing a new domain concept. |
 
 ## Requirements
 
@@ -113,10 +116,9 @@ obeys that choice.
    - Trace: STL-475 AC1; `docs/specs/bundle-format.md` §17 rule 4.
    - Stage: S1.
    - Verification: V1, V2.
-2. Document that S2M/map `source_category`, `role_hint`, and
-   `representation_hint` are provenance/hints used to choose Stage role,
-   representation, and asset binding at the import/API adapter boundary, but
-   they do not directly equal `AssetKind`.
+2. Document that A2M/S2M/map `source_category`, `role_hint`, and
+   `representation_hint` are provenance/hints used to choose Stage role and
+   representation, but they do not directly equal `AssetKind`.
    - Trace: STL-475 AC2; ADR-0050; Stage Entity Model Asset Catalog Policy.
    - Stage: S1.
    - Verification: V1.
@@ -144,8 +146,7 @@ obeys that choice.
      ADR-0050 Stage/Prop/Asset boundary.
    - Stage: S1, S2.
    - Verification: V1, V3.
-6. List minimal regression-test candidates without implementing them in this
-   docs-only criteria task unless review requires a tiny existing-test update.
+6. State that this is a thin STL-457 closure task and avoid adding behavior.
    - Trace: STL-475 AC5 and issue scope.
    - Stage: S3.
    - Verification: V3, V4.
@@ -160,11 +161,11 @@ obeys that choice.
 |---|---|---|---|---|
 | Error source chain | no | This task is documentation/policy criteria; no Rust error enum or external error wrapping is planned. | Do not add error types. If implementation expands, route through a follow-up spec. | N/A: no error source changes. |
 | Schema / serialization compatibility | yes | `AssetKind` and `StageRenderable.asset_id` are persisted model surfaces. | Document existing behavior only; do not add enum variants or serde fields. | `git diff` should show docs/spec only unless review requires test candidate proof. |
-| Ownership / API boundary | yes | ADR-0050 says Stage owns semantics; assets own bytes/URI/metadata; source categories remain provenance. | State that the import/API adapter chooses asset kind, while core validates persisted references; keep Stage/Prop boundaries distinct. | V1 docs readback against ADR-0050 and Stage Entity Model. |
+| Ownership / API boundary | yes | ADR-0050 says Stage owns semantics; assets own bytes/URI/metadata; source categories remain provenance. | State that manifest `AssetKind` follows the intended Shotloom usage path, while core validates persisted references; keep Stage/Prop boundaries distinct. | V1 docs readback against ADR-0050 and Stage Entity Model. |
 | Partial mutation / rollback | no | No model mutation or command handler is planned. | Explicitly keep migration/repair/runtime mutation out of scope. | N/A: docs-only task. |
 | Diagnostic ownership | yes | `StageReferenceError::UnsupportedRenderableAssetKind` owns persisted Stage renderable asset-kind mismatches; `docs/ipc/bridge-contract.md` maps replacement mismatches to `INVALID_STAGE_PAYLOAD`; runtime character/prop resolution uses `AssetKindMismatch` warnings. | Document each owner by enforcement path and avoid inventing new runtime diagnostics in STL-475. | V2 and V3 confirm docs cite the existing owners. |
 | Local absolute path exposure | no | Planned docs use repo paths and issue ids only; no asset manifest examples with local paths. | Do not add `/Users`, `Downloads`, `Desktop`, or machine checkout roots. | V4 `rg` proof before PR. |
-| Manifest path containment | no | No URI resolver or manifest path field changes. | Keep path containment out of scope. | N/A. |
+| Manifest path containment | no | STL-475 starts narrowly with Stage renderable `AssetKind` criteria. | Keep path/URI containment and source-file validation out of scope. | N/A. |
 | Asset/data pack lifecycle | no | No binary assets or LFS pointers planned. | Keep external S2M asset preparation and GLB copy work out of scope. | N/A. |
 | Validation context downgrade | yes | `ShotModel::validate_stage_refs` skips catalog kind checks; `validate_stage_refs_with_assets` performs them. | Document bundle/catalog context as required for kind validation and avoid implying shot-local validation can check manifest kind. | V2 readback names the context-aware validator. |
 | Field-set drift | yes | Metadata hint keys are listed in docs and code docs. | Reuse the existing six keys and point to Asset Catalog Policy; avoid inventing a second key set. | V1 checks the doc list matches `stage-entity-model.md`. |
@@ -174,13 +175,12 @@ obeys that choice.
 
 ## Locked Decisions
 
-1. **The import/API adapter chooses `AssetKind` from the Shotloom asset-kind
-   boundary for a usage path, not from file extension or upstream category
-   alone.**
+1. **Stage renderable asset kind follows the Shotloom usage boundary, not file
+   extension or upstream category alone.**
 
    Rationale: GLB-like bytes can feed characters, shot props, Stage renderables,
-   or templates. The importer that registers or materializes the manifest asset
-   must choose the kind from the intended Shotloom usage. The manifest kind then
+   or templates. Existing import behavior already treats the requested
+   import/usage kind as canonical for the manifest kind. The manifest kind then
    tells later layers which asset contract may use the bytes.
 
    Rejected alternatives: infer kind from `.glb`, source folder, local file
@@ -196,13 +196,12 @@ obeys that choice.
    Rejected alternatives: permit `prop` or `stage_template` as equivalent
    direct renderable bindings, or defer kind checking to runtime hydration.
 
-3. **A2M/S2M/map provenance informs the adapter decision but does not own it.**
+3. **A2M/S2M/map provenance informs Stage choices but does not own
+   `AssetKind`.**
 
    Rationale: ADR-0050 and the Stage Entity Model make Stage the final semantic
    owner. Source evidence can suggest `set_dressing`, `shell`, `mesh`, or
-   provenance fields, but the Shotloom import/API adapter chooses the final
-   Stage role, representation, and manifest kind before core validation sees
-   the persisted graph.
+   provenance fields, but it is not a one-to-one manifest `AssetKind` mapping.
 
    Rejected alternatives: one-to-one mapping from A2M/S2M `source_category` to
    `AssetKind`, core reclassification after persistence, or treating unknown
@@ -225,7 +224,7 @@ obeys that choice.
    Rationale: Linear asks to make follow-up implementation separable and names
    bridge/runtime/migration/API work as non-goals.
 
-   Rejected alternatives: implement import classification, add bridge DTOs, or
+   Rejected alternatives: implement import helpers, add bridge DTOs, or
    modify runtime hydration in the STL-475 PR.
 
 ## Non-Goals
@@ -240,6 +239,8 @@ obeys that choice.
 - No change to `AssetKind` enum values.
 - No change to `StageReferenceError` behavior.
 - No change to directory bundle asset path containment.
+- No import path/URI validation criteria beyond the existing asset-kind
+  reference context.
 
 ## Design Plan
 
@@ -284,8 +285,8 @@ Output:
 - A durable section, likely in `docs/specs/stage-entity-model.md`, stating:
   - provenance/hints guide importer decisions but do not own final fields;
   - final Stage role and representation decisions are Shotloom-owned;
-  - the A2M/S2M import/API adapter chooses manifest `AssetKind` from the
-    intended Shotloom usage path;
+  - source provenance can inform Stage role/representation, but does not
+    directly equal manifest `AssetKind`;
   - core validation checks persisted/reference consistency but does not infer
     a different kind from provenance after the fact.
 
@@ -314,7 +315,8 @@ Input:
 - `resolve_character_asset_path` and `resolve_prop_asset_path` runtime
   kind-mismatch warnings.
 - `AssetImportKind` and asset import tests where user-chosen kind is canonical.
-- The future A2M/S2M import/API adapter as the classification owner.
+- Existing import command choice and future A2M/S2M import usage as context for
+  manifest `AssetKind`.
 - `validate_stage_refs_with_assets` asset-kind mismatch rejection.
 - `docs/ipc/bridge-contract.md` §13A.2 `replace_stage_renderable`
   asset-kind mismatch rejection.
@@ -326,9 +328,9 @@ Output:
   - shot-owned prop asset refs and `prop` assets;
   - Stage renderable asset refs and `stage_renderable` assets;
   - Stage templates/defaults and `stage_template` assets.
-- An enforcement path column that distinguishes import command choice,
-  future A2M/S2M adapter classification, runtime `AssetKindMismatch` warnings,
-  core bundle validation, and bridge command rejection.
+- An enforcement path column that distinguishes import command choice, runtime
+  `AssetKindMismatch` warnings, core bundle validation, and bridge command
+  rejection.
 - An asset-kind mismatch section stating current `StageRenderable.asset_id`
   behavior and distinguishing it from runtime character/prop warning behavior.
 
@@ -362,8 +364,8 @@ Output:
   - existing import test precedent where requested/imported kind wins over file
     shape;
   - candidate doc/lint readback for provenance key drift;
-  - possible future A2M/S2M adapter classification test if an importer creates
-    manifest assets from upstream evidence;
+  - possible future A2M/S2M import test if an importer creates manifest assets
+    from upstream evidence;
   - possible future runtime warning/skip test only if policy changes.
 - Follow-up candidates only where implementation is outside STL-475.
 
@@ -409,7 +411,7 @@ Proof:
 ## Acceptance Criteria
 
 - [ ] Stage renderable asset-kind criteria are documented.
-- [ ] S2M/map provenance and Shotloom manifest `AssetKind` relationship is
+- [ ] A2M/S2M/map provenance and Shotloom manifest `AssetKind` relationship is
       documented without making source categories authoritative.
 - [ ] `StageRenderable.asset_id` asset-kind mismatch handling states the
       current validation-failure behavior and separates warning/skip as
@@ -423,9 +425,9 @@ Proof:
 
 | ID | Gate | Command / Check | Expected result |
 |---|---|---|---|
-| V1 | Provenance docs readback | Read changed `docs/specs/stage-entity-model.md` section. | Six provenance keys match existing Asset Catalog Policy; docs say hints/provenance guide the import/API adapter but do not own final semantics or trigger core reclassification. |
+| V1 | Provenance docs readback | Read changed `docs/specs/stage-entity-model.md` section. | Six provenance keys match existing Asset Catalog Policy; docs say hints/provenance can guide Stage choices but do not directly equal manifest `AssetKind` or trigger core reclassification. |
 | V2 | Asset-kind mismatch readback | Compare docs against `validate_stage_refs_with_assets`, `StageReferenceError::UnsupportedRenderableAssetKind`, and bridge `INVALID_STAGE_PAYLOAD` docs. | Docs state current Stage renderable mismatch behavior as bundle validation failure under catalog context and bridge rejection for replacement payloads. |
-| V3 | Asset-kind expectation table readback | Compare docs table against `AssetImportKind`, `AssetKindMismatch`, `CharacterModel`, `PropModel`, `StageRenderable`, and `AssetKind`. | Table names asset-kind expectations and enforcement paths, including adapter classification, without overstating parity. |
+| V3 | Asset-kind expectation table readback | Compare docs table against `AssetImportKind`, `AssetKindMismatch`, `CharacterModel`, `PropModel`, `StageRenderable`, and `AssetKind`. | Table names asset-kind expectations and enforcement paths without overstating parity. |
 | V4 | Scope/privacy check | `git diff --name-only`; `rg -n "/Users/|/home/|Desktop|Downloads|[A-Za-z]:\\\\" docs/specs docs/adr`. | Only expected docs/test paths changed; no local absolute path examples added. |
 | V5 | Docs validation | `pnpm validate:docs` if available in the Shotloom worktree. | Documentation links and formatting pass. |
 
@@ -435,8 +437,9 @@ Proof:
   manifest asset kind.
 - Do not make `source_category` equal `AssetKind`; source category is upstream
   evidence.
-- Do not make core validation infer or rewrite `AssetKind` from provenance; the
-  import/API adapter owns initial classification.
+- Do not make core validation infer or rewrite `AssetKind` from provenance.
+- Do not expand this task's normalization wording to path/URI validation; this
+  task starts with Stage renderable and `AssetKind` only.
 - Do not claim shot-local `validate_stage_refs` checks asset kinds; the catalog
   context variant owns that check.
 - Do not turn this docs criteria task into a migration, repair, runtime
@@ -447,9 +450,9 @@ Proof:
 
 ## Follow-Up Candidates
 
-- Import classification implementation: when A2M/S2M/map import creates
+- Import implementation: when A2M/S2M/map import creates
   manifest assets, add tests proving upstream evidence produces the intended
-  `AssetKind` at the adapter boundary.
+  `AssetKind` for the intended usage path.
 - Runtime asset-kind mismatch degradation policy: if product wants warning/skip
   instead of load rejection for runtime materialization, create a separate
   policy and handler task.
