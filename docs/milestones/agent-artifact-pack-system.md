@@ -45,6 +45,7 @@ copying everything into the core repository.
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
 | `skill-lifecycle-manager` | todo | Define skill CRUD and lifecycle management before broad skill inventory edits. |
+| [operational-findings-pipeline.md](../plans/proposed/operational-findings-pipeline.md) | proposed | Define one Knitten-wide findings intake, promotion, and reporting lifecycle for operational issues and lessons; periodic consolidation stays manual-first. |
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
