@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-25
 updated: 2026-05-25
 owner: agent-hub
-spec: docs/plans/proposed/artifact-pack-validation-gates.md
+spec: docs/plans/completed/artifact-pack-validation-gates.md
 ---
 
 # Spec Intake: artifact-pack-validation-gates
@@ -24,7 +24,7 @@ resolver, installer, migration, or release work depends on pack validation.
 |-------|-------|
 | selected route | `ah-route-plan` to `ah-manage-spec create` |
 | planning mode | `personal-spec` |
-| target spec | `docs/plans/proposed/artifact-pack-validation-gates.md` |
+| target spec | `docs/plans/completed/artifact-pack-validation-gates.md` |
 | milestone | `docs/milestones/agent-artifact-pack-system.md` |
 | delegated or referenced skills | `ah-manage-spec` |
 

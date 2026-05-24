@@ -1,0 +1,30 @@
+{
+  "schema-version": 1,
+  "pack-id": "route-pack-b",
+  "display-name": "Route Pack B",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Second route fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "route-doc-b",
+      "artifact-type": "doc",
+      "path": "docs/route-b.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "route-b.md",
+        "mode": "copy"
+      },
+      "load": "route-selected",
+      "route": {
+        "domains": ["agent-hub"],
+        "task-types": ["authoring"],
+        "min-evidence": 1,
+        "max-context-bytes": 1000
+      },
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

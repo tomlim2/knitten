@@ -1,0 +1,33 @@
+{
+  "schema-version": 1,
+  "pack-id": "empty-removal-criteria",
+  "display-name": "Empty Removal Criteria",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid compatibility fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "demo-doc",
+      "artifact-type": "doc",
+      "path": "docs/demo.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "demo.md",
+        "mode": "copy"
+      },
+      "load": "manual",
+      "privacy-risk": "public-safe"
+    }
+  ],
+  "compatibility-aliases": [
+    {
+      "alias-id": "empty-removal",
+      "target-artifact-id": "demo-doc",
+      "compatibility-need": "alias",
+      "old-name": "old-demo-doc",
+      "removal-criteria": ""
+    }
+  ]
+}

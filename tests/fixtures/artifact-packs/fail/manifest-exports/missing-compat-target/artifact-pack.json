@@ -1,0 +1,33 @@
+{
+  "schema-version": 1,
+  "pack-id": "missing-compat-target",
+  "display-name": "Missing Compatibility Target",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Missing compatibility target fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "demo-doc",
+      "artifact-type": "doc",
+      "path": "docs/demo.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "demo.md",
+        "mode": "copy"
+      },
+      "load": "manual",
+      "privacy-risk": "public-safe"
+    }
+  ],
+  "compatibility-aliases": [
+    {
+      "alias-id": "missing-target",
+      "target-artifact-id": "absent",
+      "compatibility-need": "alias",
+      "old-name": "missing-target",
+      "removal-criteria": "Remove after reference scan."
+    }
+  ]
+}

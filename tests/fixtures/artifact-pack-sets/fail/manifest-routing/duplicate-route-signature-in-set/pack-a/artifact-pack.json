@@ -1,0 +1,30 @@
+{
+  "schema-version": 1,
+  "pack-id": "route-pack-a",
+  "display-name": "Route Pack A",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "First route fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "route-doc-a",
+      "artifact-type": "doc",
+      "path": "docs/route-a.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "route-a.md",
+        "mode": "copy"
+      },
+      "load": "route-selected",
+      "route": {
+        "domains": ["agent-hub"],
+        "task-types": ["authoring"],
+        "min-evidence": 1,
+        "max-context-bytes": 1000
+      },
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

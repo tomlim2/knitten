@@ -341,5 +341,5 @@ Proof:
 
 | Decision | Default |
 |----------|---------|
-| Core capability registry | Define valid `core:<capability-id>` values in `artifact-pack-validation-gates`. |
+| Core capability registry | Defined by `docs/plans/completed/artifact-pack-validation-gates.md`. |
 | Pack root registry | Define installed pack root discovery in `artifact-pack-install-link-flow`. |

@@ -29,7 +29,7 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`. This
 **validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
 <!-- generated:validator-checks -->
-Validator checks: **28**.
+Validator checks: **36**.
 
 - `banned-terms`
 - `terminology`
@@ -45,6 +45,14 @@ Validator checks: **28**.
 - `taxonomy`
 - `managed-paths`
 - `artifact-inventory`
+- `artifact-pack`
+- `artifact-pack:manifest-shape`
+- `artifact-pack:manifest-paths`
+- `artifact-pack:manifest-exports`
+- `artifact-pack:manifest-dependencies`
+- `artifact-pack:manifest-routing`
+- `artifact-pack:manifest-visibility`
+- `artifact-pack:manifest-compatibility`
 - `skill-root-shape`
 - `skill-command-mechanics`
 - `tracked-runtime-paths`

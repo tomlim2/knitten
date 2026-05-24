@@ -1,15 +1,14 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-25
 updated: 2026-05-25
 owner: agent-hub
 milestone: agent-artifact-pack-system
 intake: docs/briefings/specs/artifact-pack-validation-gates.md
+completed: 2026-05-25
 ---
 
 # Artifact Pack Validation Gates
-
-**status:** not implemented
 
 ## Purpose
 
@@ -352,18 +351,18 @@ Proof:
 
 ## Acceptance Criteria
 
-- [ ] `artifact-pack` parent validator check is defined.
-- [ ] Seven gate-specific checks are defined and separately runnable.
-- [ ] `artifact-pack-manifest-contract` defines `route.priority`.
-- [ ] `agent/config/artifact-pack.schema.json` exists.
-- [ ] `agent/config/artifact-pack-core-capabilities.json` exists.
-- [ ] `core:<capability-id>` dependencies validate against the core capability registry.
-- [ ] In-set `pack:<id>` and `artifact:<pack-id>/<artifact-id>` dependencies validate when fixture sets provide both manifests.
-- [ ] Route conflict signatures fail without distinct route priorities.
-- [ ] Company visibility rejects `private-only` and `unknown` exports.
-- [ ] Fixture manifests cover every gate with at least one passing fixture and one failing fixture.
-- [ ] Full validator includes artifact-pack validation.
-- [ ] No resolver, installer, migration, public scrub, or release gate is implemented by this spec.
+- [x] `artifact-pack` parent validator check is defined.
+- [x] Seven gate-specific checks are defined and separately runnable.
+- [x] `artifact-pack-manifest-contract` defines `route.priority`.
+- [x] `agent/config/artifact-pack.schema.json` exists.
+- [x] `agent/config/artifact-pack-core-capabilities.json` exists.
+- [x] `core:<capability-id>` dependencies validate against the core capability registry.
+- [x] In-set `pack:<id>` and `artifact:<pack-id>/<artifact-id>` dependencies validate when fixture sets provide both manifests.
+- [x] Route conflict signatures fail without distinct route priorities.
+- [x] Company visibility rejects `private-only` and `unknown` exports.
+- [x] Fixture manifests cover every gate with at least one passing fixture and one failing fixture.
+- [x] Full validator includes artifact-pack validation.
+- [x] No resolver, installer, migration, public scrub, or release gate is implemented by this spec.
 
 ## Open Decisions
 
