@@ -76,7 +76,7 @@ function fetchBase(mainPath, base, dryRun) {
       console.log(`would run: git fetch origin ${base.slice("origin/".length)}`);
       return;
     }
-    runGit(["fetch", "origin", base.slice("origin/".length)], { cwd: mainPath, stdio: "inherit" });
+    runGit(["fetch", "origin", base.slice("origin/".length)], { cwd: mainPath });
   }
 }
 
@@ -86,7 +86,7 @@ function ensureRemoteBranchFetched(mainPath, branch, dryRun) {
       console.log(`would run: git fetch origin ${branch}`);
       return;
     }
-    runGit(["fetch", "origin", branch], { cwd: mainPath, stdio: "inherit" });
+    runGit(["fetch", "origin", branch], { cwd: mainPath });
   }
 }
 

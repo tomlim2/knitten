@@ -8,7 +8,6 @@ import {
   gitRoot,
   isClean,
   runGit,
-  slugify,
   statusPorcelain,
   tryGit,
 } from "./worktree-lib.mjs";
@@ -72,6 +71,23 @@ function tableCell(value) {
 
 function titleFromArgs(args) {
   return args.title || args.summary.split(/[.!?。]/)[0].trim().slice(0, 80) || "Operational finding";
+}
+
+function reportSlug(value) {
+  const maxLength = 72;
+  const words = String(value || "finding")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .split("-")
+    .filter(Boolean);
+  let slug = "";
+  for (const word of words) {
+    const next = slug ? `${slug}-${word}` : word;
+    if (next.length > maxLength) break;
+    slug = next;
+  }
+  return slug || "finding";
 }
 
 function reportBody(args, reportTitle) {
@@ -142,7 +158,7 @@ async function ensureInbox(root) {
 }
 
 async function resolveReportPath(root, title, { dryRun = false } = {}) {
-  const baseSlug = slugify(title);
+  const baseSlug = reportSlug(title);
   const dir = path.join(root, REPORT_DIR);
   if (!dryRun) {
     await mkdir(dir, { recursive: true });
