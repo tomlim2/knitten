@@ -81,7 +81,7 @@ duplicate exports, stale paths, invalid route metadata, or unresolved
 | Seven independent checks | Each gate is separately runnable with `--check`. | Accept for implementation names. |
 | Parent `artifact-pack` check plus seven internal gates | Full validator runs one parent check and reports gate-prefixed failures. | Accept as reporting wrapper. |
 | Validate installed packs only | Read manifests from the future install registry. | Reject for first implementation; install registry is not defined. |
-| Validate explicit manifest fixtures and repo-local pack roots | Validator accepts fixture roots, manifest sets, and current repo examples. | Accept for first implementation. |
+| Validate explicit manifest fixtures and repo-local pack roots | Validator accepts fixture roots, manifest sets, current repo examples, and `--artifact-pack <path>` inputs. | Accept for first implementation. |
 
 ### Failure Levels
 
@@ -113,13 +113,18 @@ First implementation uses errors only.
 | Input | Rule |
 |-------|------|
 | Manifest file | JSON file named `artifact-pack.json`. |
-| Manifest set | Two or more `artifact-pack.json` files supplied by a fixture set or explicit validator input. |
+| Manifest set | Two or more `artifact-pack.json` files supplied by a fixture set or `--artifact-pack <path>` input. |
 | Manifest schema | `agent/config/artifact-pack.schema.json`. |
 | Core capability registry | `agent/config/artifact-pack-core-capabilities.json`. |
 | Context routing registry | `agent/config/context-routing.json`. |
 | Test fixtures | `tests/fixtures/artifact-packs/**/artifact-pack.json`. |
 | Test fixture sets | `tests/fixtures/artifact-pack-sets/**/artifact-pack.json`. |
 | Optional repo example | `examples/artifact-packs/**/artifact-pack.json` after `example-artifact-pack` exists. |
+| Explicit validator input | `--artifact-pack <path>` accepts a pack root, an `artifact-pack.json` file, or a directory containing nested manifest files. |
+
+Use a manifest set directory when validating `pack:<id>` dependencies before an
+install registry exists; single-pack input only validates dependency syntax and
+same-pack artifact refs.
 
 ### Core Capability Registry
 
@@ -186,8 +191,11 @@ implementation work starts.
 | `valid-minimal-public` | pass | all |
 | `invalid-json` | fail | `manifest-shape` |
 | `missing-required-root-field` | fail | `manifest-shape` |
+| `non-array-compatibility-aliases` | fail | `manifest-shape` |
+| `non-string-platform` | fail | `manifest-shape` |
 | `absolute-export-path` | fail | `manifest-paths` |
 | `entrypoint-escapes-directory` | fail | `manifest-paths` |
+| `file-shape-directory-path` | fail | `manifest-paths` |
 | `duplicate-artifact-id` | fail | `manifest-exports` |
 | `missing-compat-target` | fail | `manifest-exports` |
 | `invalid-dependency-ref` | fail | `manifest-dependencies` |

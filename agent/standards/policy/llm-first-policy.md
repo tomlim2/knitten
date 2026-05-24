@@ -3,7 +3,7 @@ status: accepted
 platforms: all
 portability: shared
 ---
-# Agent-First Policy
+# LLM-First Policy
 
 The meta-policy that governs every other agent-hub document, rule, skill, and command. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
 

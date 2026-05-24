@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Mechanical anti-rot validator for the LLM-first / agent-first policy.
+// Mechanical anti-rot validator for the LLM-first policy.
 // Run from repo root: node scripts/validate-llm-first.mjs
 import { readdir, readFile, stat, access } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { execFile } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
@@ -3036,9 +3036,12 @@ const ARTIFACT_PACK_FIXTURE_EXPECTED_MESSAGES = new Map([
   ["missing-compat-target", "target-artifact-id does not exist"],
   ["missing-in-set-pack-dependency", "pack dependency not present"],
   ["missing-required-root-field", "exports must be a non-empty array"],
+  ["non-array-compatibility-aliases", "compatibility-aliases must be an array"],
+  ["non-string-platform", "platforms values must be non-empty strings"],
   ["public-private-export", "public pack export must be public-safe"],
   ["route-selected-without-evidence", "requires positive route evidence"],
   ["trailing-dotdot-path", "path must be repo-relative"],
+  ["file-shape-directory-path", "file export path must be a file"],
   ["unknown-core-capability", "unknown core capability"],
   ["unknown-root-field", "unknown root field"],
   ["unknown-route-domain", "domains has unknown value"],
@@ -3056,6 +3059,10 @@ function isSemverCore(value) {
   return typeof value === "string" && /^\d+\.\d+\.\d+$/.test(value);
 }
 
+function repoOrAbsolutePath(file) {
+  return path.isAbsolute(file) ? file : path.join(REPO_ROOT, file);
+}
+
 function isSafePackPath(value) {
   if (typeof value !== "string" || value.length === 0) return false;
   if (path.isAbsolute(value) || /^[A-Za-z]:[\\/]/.test(value) || value.includes("\\")) return false;
@@ -3070,7 +3077,7 @@ function pathStaysUnder(parent, child) {
 async function parseArtifactPackManifest(file) {
   let text;
   try {
-    text = await readFile(path.join(REPO_ROOT, file), "utf8");
+    text = await readFile(repoOrAbsolutePath(file), "utf8");
   } catch (err) {
     return {
       file,
@@ -3163,6 +3170,16 @@ function pushUniqueArrayViolation(out, file, gate, label, value) {
   if (Array.isArray(value) && hasDuplicates(value)) artifactPackViolation(out, gate, file, `${label} values must be unique`);
 }
 
+function pushArtifactPackStringArrayViolations(out, file, gate, label, value) {
+  if (value === undefined || !Array.isArray(value)) return;
+  for (const item of value) {
+    if (typeof item !== "string" || item.length === 0) {
+      artifactPackViolation(out, gate, file, `${label} values must be non-empty strings`);
+      return;
+    }
+  }
+}
+
 function validateArtifactPackShape(ctx, out) {
   const { file, manifest } = ctx;
   if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
@@ -3211,22 +3228,26 @@ function validateArtifactPackShape(ctx, out) {
     }
     if (entry.dependencies !== undefined && !Array.isArray(entry.dependencies)) artifactPackViolation(out, "manifest-shape", file, `${label}.dependencies must be an array`);
     pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.dependencies`, entry.dependencies);
+    pushArtifactPackStringArrayViolations(out, file, "manifest-shape", `${label}.dependencies`, entry.dependencies);
     pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.platforms`, entry.platforms);
+    pushArtifactPackStringArrayViolations(out, file, "manifest-shape", `${label}.platforms`, entry.platforms);
     if (entry.platforms !== undefined && !Array.isArray(entry.platforms)) artifactPackViolation(out, "manifest-shape", file, `${label}.platforms must be an array`);
     if (entry.route !== undefined && (!entry.route || typeof entry.route !== "object" || Array.isArray(entry.route))) artifactPackViolation(out, "manifest-shape", file, `${label}.route must be an object`);
     if (entry.route && typeof entry.route === "object" && !Array.isArray(entry.route)) {
       pushUnknownKeyViolations(out, file, "manifest-shape", `${label}.route`, entry.route, ARTIFACT_PACK_ALLOWED_KEYS.route);
       for (const field of ["domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes", "exclude-when"]) {
         pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.route.${field}`, entry.route[field]);
+        pushArtifactPackStringArrayViolations(out, file, "manifest-shape", `${label}.route.${field}`, entry.route[field]);
       }
     }
   }
   if (manifest.dependencies !== undefined && !Array.isArray(manifest.dependencies)) artifactPackViolation(out, "manifest-shape", file, "dependencies must be an array");
   pushUniqueArrayViolation(out, file, "manifest-shape", "dependencies", manifest.dependencies);
+  pushArtifactPackStringArrayViolations(out, file, "manifest-shape", "dependencies", manifest.dependencies);
   if (manifest["compatibility-aliases"] !== undefined && !Array.isArray(manifest["compatibility-aliases"])) {
     artifactPackViolation(out, "manifest-shape", file, "compatibility-aliases must be an array");
   }
-  for (const [index, alias] of (manifest["compatibility-aliases"] || []).entries()) {
+  for (const [index, alias] of (Array.isArray(manifest["compatibility-aliases"]) ? manifest["compatibility-aliases"] : []).entries()) {
     const label = `compatibility-aliases[${index}]`;
     if (!alias || typeof alias !== "object" || Array.isArray(alias)) {
       artifactPackViolation(out, "manifest-shape", file, `${label} must be an object`);
@@ -3248,7 +3269,7 @@ function validateArtifactPackShape(ctx, out) {
 
 function validateArtifactPackPaths(ctx, out) {
   const { file, root, manifest } = ctx;
-  const rootAbs = path.join(REPO_ROOT, root);
+  const rootAbs = repoOrAbsolutePath(root);
   for (const entry of manifest.exports || []) {
     for (const [field, value] of [["path", entry.path], ["entrypoint", entry.entrypoint], ["mount.target", entry.mount?.target]]) {
       if (value === undefined) continue;
@@ -3257,6 +3278,11 @@ function validateArtifactPackPaths(ctx, out) {
     if (!isSafePackPath(entry.path)) continue;
     const exportAbs = path.join(rootAbs, entry.path);
     if (!existsSync(exportAbs)) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} path does not exist: ${entry.path}`);
+    if (existsSync(exportAbs)) {
+      const exportStats = statSync(exportAbs);
+      if (entry.shape === "file" && !exportStats.isFile()) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} file export path must be a file`);
+      if (entry.shape === "directory" && !exportStats.isDirectory()) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} directory export path must be a directory`);
+    }
     if (entry.shape === "directory") {
       if (!existsSync(exportAbs) || !pathStaysUnder(rootAbs, exportAbs)) {
         artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} directory path is invalid`);
@@ -3560,7 +3586,38 @@ async function validateArtifactPackCase(files, gate, setMode = false) {
   return out.filter((violation) => !gate || violation.gate === gate);
 }
 
-async function checkArtifactPack(gate = null) {
+async function artifactPackInputCase(inputs) {
+  const files = [];
+  let setMode = inputs.length > 1;
+  for (const input of inputs) {
+    const absolute = path.resolve(REPO_ROOT, input);
+    const displayPath = absolute.startsWith(`${REPO_ROOT}${path.sep}`) ? rel(absolute) : absolute;
+    if (!existsSync(absolute)) {
+      throw new Error(`artifact pack input does not exist: ${input}`);
+    }
+    const inputStats = statSync(absolute);
+    if (inputStats.isFile()) {
+      if (path.basename(absolute) !== "artifact-pack.json") throw new Error(`artifact pack input file must be named artifact-pack.json: ${input}`);
+      files.push(displayPath);
+      continue;
+    }
+    if (!inputStats.isDirectory()) throw new Error(`artifact pack input must be a directory or artifact-pack.json file: ${input}`);
+    const rootManifest = path.join(absolute, "artifact-pack.json");
+    if (existsSync(rootManifest)) {
+      files.push(rootManifest.startsWith(`${REPO_ROOT}${path.sep}`) ? rel(rootManifest) : rootManifest);
+      continue;
+    }
+    const nested = (await walk(absolute, (f) => path.basename(f) === "artifact-pack.json")).map((file) => (
+      file.startsWith(`${REPO_ROOT}${path.sep}`) ? rel(file) : file
+    ));
+    if (nested.length === 0) throw new Error(`artifact pack input directory contains no artifact-pack.json files: ${input}`);
+    files.push(...nested);
+    setMode = true;
+  }
+  return { files: [...new Set(files)].sort(sortInventoryFiles), setMode };
+}
+
+async function checkArtifactPack(gate = null, inputs = []) {
   const violations = [];
   if (gate && !ARTIFACT_PACK_GATES.has(gate)) {
     return { name: `artifact-pack:${gate}`, violations: [{ file: "scripts/validate-llm-first.mjs", line: 1, message: `unknown artifact pack gate: ${gate}` }] };
@@ -3571,6 +3628,22 @@ async function checkArtifactPack(gate = null) {
     } catch (err) {
       violations.push({ file: `agent/config/${required}`, line: 1, message: `cannot read artifact pack registry: ${err.message}` });
     }
+  }
+  if (inputs.length > 0) {
+    let inputCase;
+    try {
+      inputCase = await artifactPackInputCase(inputs);
+    } catch (err) {
+      return { name: gate ? `artifact-pack:${gate}` : "artifact-pack", violations: [{ file: "scripts/validate-llm-first.mjs", line: 1, message: err.message }] };
+    }
+    const actual = await validateArtifactPackCase(inputCase.files, null, inputCase.setMode);
+    const selectedActual = gate ? actual.filter((violation) => violation.gate === "manifest-shape" || violation.gate === gate) : actual;
+    violations.push(...selectedActual.map(({ gate: actualGate, file, line, message }) => ({
+      file,
+      line,
+      message: `${actualGate}: ${message}`,
+    })));
+    return { name: gate ? `artifact-pack:${gate}` : "artifact-pack", violations };
   }
   const cases = await artifactPackFixtureCases(gate);
   for (const fixtureCase of cases) {
@@ -4378,14 +4451,14 @@ const CHECKS = [
   { name: "taxonomy", fn: checkTaxonomy },
   { name: "managed-paths", fn: checkManagedPaths },
   { name: "artifact-inventory", fn: checkArtifactInventory },
-  { name: "artifact-pack", fn: () => checkArtifactPack() },
-  { name: "artifact-pack:manifest-shape", fn: () => checkArtifactPack("manifest-shape"), full: false },
-  { name: "artifact-pack:manifest-paths", fn: () => checkArtifactPack("manifest-paths"), full: false },
-  { name: "artifact-pack:manifest-exports", fn: () => checkArtifactPack("manifest-exports"), full: false },
-  { name: "artifact-pack:manifest-dependencies", fn: () => checkArtifactPack("manifest-dependencies"), full: false },
-  { name: "artifact-pack:manifest-routing", fn: () => checkArtifactPack("manifest-routing"), full: false },
-  { name: "artifact-pack:manifest-visibility", fn: () => checkArtifactPack("manifest-visibility"), full: false },
-  { name: "artifact-pack:manifest-compatibility", fn: () => checkArtifactPack("manifest-compatibility"), full: false },
+  { name: "artifact-pack", fn: (args) => checkArtifactPack(null, args.artifactPackInputs) },
+  { name: "artifact-pack:manifest-shape", fn: (args) => checkArtifactPack("manifest-shape", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-paths", fn: (args) => checkArtifactPack("manifest-paths", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-exports", fn: (args) => checkArtifactPack("manifest-exports", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-dependencies", fn: (args) => checkArtifactPack("manifest-dependencies", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-routing", fn: (args) => checkArtifactPack("manifest-routing", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-visibility", fn: (args) => checkArtifactPack("manifest-visibility", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-compatibility", fn: (args) => checkArtifactPack("manifest-compatibility", args.artifactPackInputs), full: false },
   { name: "skill-root-shape", fn: checkSkillRootShape },
   { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },
   { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },
@@ -4403,12 +4476,31 @@ const CHECKS = [
 ];
 
 function parseArgs(argv) {
-  const args = { check: null, list: false };
+  const args = { check: null, list: false, artifactPackInputs: [], unknown: [], errors: [] };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--list") args.list = true;
-    else if (a === "--check") args.check = argv[++i];
+    else if (a === "--check") {
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) {
+        args.errors.push("--check requires a check name");
+        if (value?.startsWith("--")) i--;
+      } else {
+        args.check = value;
+      }
+    }
     else if (a.startsWith("--check=")) args.check = a.slice("--check=".length);
+    else if (a === "--artifact-pack") {
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) {
+        args.errors.push("--artifact-pack requires a path");
+        if (value?.startsWith("--")) i--;
+      } else {
+        args.artifactPackInputs.push(value);
+      }
+    }
+    else if (a.startsWith("--artifact-pack=")) args.artifactPackInputs.push(a.slice("--artifact-pack=".length));
+    else args.unknown.push(a);
   }
   return args;
 }
@@ -4424,6 +4516,18 @@ async function main() {
     for (const c of CHECKS) console.log(c.name);
     process.exit(0);
   }
+  if (args.errors.length > 0) {
+    console.error(args.errors.join("\n"));
+    process.exit(2);
+  }
+  if (args.unknown.length > 0) {
+    console.error(`unknown argument(s): ${args.unknown.join(", ")}`);
+    process.exit(2);
+  }
+  if (args.artifactPackInputs.length > 0 && (!args.check || !args.check.startsWith("artifact-pack"))) {
+    console.error("--artifact-pack can only be used with --check artifact-pack or artifact-pack:<gate>");
+    process.exit(2);
+  }
   const selected = args.check
     ? CHECKS.filter((c) => c.name === args.check)
     : CHECKS.filter((c) => c.full !== false);
@@ -4436,7 +4540,7 @@ async function main() {
   let totalViolations = 0;
   const failingChecks = [];
   for (const c of selected) {
-    const result = await c.fn();
+    const result = await c.fn(args);
     if (result.violations.length === 0) continue;
     failingChecks.push(result);
     totalViolations += result.violations.length;

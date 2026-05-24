@@ -25,7 +25,7 @@ Do not introduce a synonym for a term in this table unless the glossary changes 
 | validator | Script that enforces contracts and catches drift | `scripts/validate-llm-first.mjs` checks | Human-only review |
 | generated document | Markdown block or file derived from a registry or validator output | README inventory, validator check list, optional `AGENT-HUB.md` sections | Manually maintained prose |
 | validated view | Human-readable view checked against a canonical registry | Tables copied from `agent-hub.json` and validator-checked | Unchecked duplicate data |
-| deploy target | Runtime path read by a harness | `~/.claude/` paths and future harness install paths | Canonical repo ownership |
+| deploy target | Harness runtime path installed or linked from the durable source | `~/.claude/` paths and future harness install paths | Canonical repo ownership or server deployment |
 | runtime path policy | Rule for classifying a runtime path's ownership and git policy | Durable, private, cache, session, or generated runtime paths | The path contents themselves |
 | canonical owner | File or registry that owns the editable value | Where an agent must edit first | Mirrors, shims, or generated views |
 | managed artifact | File, folder, registry, generated document, or runtime path governed by the hub | Inventory and drift checks | Arbitrary repo content |

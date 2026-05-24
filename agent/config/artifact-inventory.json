@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-24T16:43:19.002Z",
-  "source-commit": "65c5a76c2d70a722b68741c5f6bec3d79bfcf846",
+  "generated-at": "2026-05-24T23:24:12.268Z",
+  "source-commit": "78f1ee2c49ff60b2c7b80fa901464773bdb033b5",
   "source-dirty": true,
   "rows": [
     {
@@ -7025,6 +7025,32 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:tests/fixtures/artifact-packs/fail/manifest-paths/file-shape-directory-path/artifact-pack.json",
+      "row-type": "artifact",
+      "source-artifact-path": "tests/fixtures/artifact-packs/fail/manifest-paths/file-shape-directory-path/artifact-pack.json",
+      "artifact-type": "fixture",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:tests/fixtures/artifact-packs/fail/manifest-paths/file-shape-directory-path/docs/.gitkeep",
+      "row-type": "artifact",
+      "source-artifact-path": "tests/fixtures/artifact-packs/fail/manifest-paths/file-shape-directory-path/docs/.gitkeep",
+      "artifact-type": "fixture",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:tests/fixtures/artifact-packs/fail/manifest-paths/trailing-dotdot-path/artifact-pack.json",
       "row-type": "artifact",
       "source-artifact-path": "tests/fixtures/artifact-packs/fail/manifest-paths/trailing-dotdot-path/artifact-pack.json",
@@ -7106,6 +7132,32 @@
       "row-id": "artifact:tests/fixtures/artifact-packs/fail/manifest-shape/missing-required-root-field/artifact-pack.json",
       "row-type": "artifact",
       "source-artifact-path": "tests/fixtures/artifact-packs/fail/manifest-shape/missing-required-root-field/artifact-pack.json",
+      "artifact-type": "fixture",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:tests/fixtures/artifact-packs/fail/manifest-shape/non-array-compatibility-aliases/artifact-pack.json",
+      "row-type": "artifact",
+      "source-artifact-path": "tests/fixtures/artifact-packs/fail/manifest-shape/non-array-compatibility-aliases/artifact-pack.json",
+      "artifact-type": "fixture",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:tests/fixtures/artifact-packs/fail/manifest-shape/non-string-platform/artifact-pack.json",
+      "row-type": "artifact",
+      "source-artifact-path": "tests/fixtures/artifact-packs/fail/manifest-shape/non-string-platform/artifact-pack.json",
       "artifact-type": "fixture",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",

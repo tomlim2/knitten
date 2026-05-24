@@ -1,0 +1,25 @@
+{
+  "schema-version": 1,
+  "pack-id": "non-string-platform",
+  "display-name": "Non String Platform",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid shape fixture with a non-string platform value.",
+  "exports": [
+    {
+      "artifact-id": "demo-doc",
+      "artifact-type": "doc",
+      "path": "README.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "demo-doc.md",
+        "mode": "link"
+      },
+      "load": "manual",
+      "privacy-risk": "public-safe",
+      "platforms": [1]
+    }
+  ]
+}
