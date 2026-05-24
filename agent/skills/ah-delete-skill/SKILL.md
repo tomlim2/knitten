@@ -71,6 +71,7 @@ Return:
 ## Related
 
 - `agent/skills/ah-manage-artifact/SKILL.md`
+- `agent/skills/ah-manage-skill/SKILL.md`
 - `agent/skills/ah-make-skill/SKILL.md`
 - `agent/skills/ah-edit-skill/SKILL.md`
 - `agent/skills/ah-update-skill/SKILL.md`

@@ -33,11 +33,7 @@ plans, and manifests.
 
 | Operation | Skill / doc |
 |-----------|-------------|
-| Create skill | `agent/skills/ah-make-skill/SKILL.md` |
-| Edit skill narrowly | `agent/skills/ah-edit-skill/SKILL.md` |
-| Update skill broadly | `agent/skills/ah-update-skill/SKILL.md` |
-| Delete skill | `agent/skills/ah-delete-skill/SKILL.md` |
-| Audit skill | `agent/skills/ah-audit-skill/SKILL.md` |
+| Manage skill lifecycle | `agent/skills/ah-manage-skill/SKILL.md` |
 | Create command | `agent/skills/ah-make-command/SKILL.md` |
 | Create skill reference | owning skill `agent/skills/<skill>/references/`; update the owner skill link |
 | Create command reference | `agent/commands/references/<slug>.md`; update the owner command link |
@@ -107,6 +103,7 @@ Return:
 ## Related
 
 - `agent/skills/ah-make-skill/SKILL.md`
+- `agent/skills/ah-manage-skill/SKILL.md`
 - `agent/skills/ah-edit-skill/SKILL.md`
 - `agent/skills/ah-update-skill/SKILL.md`
 - `agent/skills/ah-delete-skill/SKILL.md`

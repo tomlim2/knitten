@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-24T08:58:52.127Z",
-  "source-commit": "0bb1582572a182214f098222529b5b3ad049fb84",
+  "generated-at": "2026-05-24T09:18:17.252Z",
+  "source-commit": "4f160a09ae318e4a776919ca6c53eb29691e4a00",
   "rows": [
     {
       "row-id": "artifact:.github/pull_request_template.md",
@@ -5113,6 +5113,19 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:docs/plans/completed/skill-lifecycle-manager.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/completed/skill-lifecycle-manager.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:docs/plans/completed/skill-path-hardcoding-cleanup.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/completed/skill-path-hardcoding-cleanup.md",
@@ -7264,6 +7277,24 @@
       "review-state": "pending",
       "skill-size": "medium",
       "skill-kind": "workflow-only",
+      "core-skill-role": "lifecycle",
+      "extraction-count": 0,
+      "split-readiness": "none"
+    },
+    {
+      "row-id": "skill:agent/skills/ah-manage-skill/SKILL.md",
+      "row-type": "skill",
+      "source-artifact-path": "agent/skills/ah-manage-skill/SKILL.md",
+      "artifact-type": "skill",
+      "owner-domain": "core",
+      "privacy-risk": "public-safe",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending",
+      "skill-size": "medium",
+      "skill-kind": "workflow-with-notes",
       "core-skill-role": "lifecycle",
       "extraction-count": 0,
       "split-readiness": "none"

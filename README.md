@@ -84,12 +84,12 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Skills (146)
+## Skills (147)
 
 | Category | Count |
 |----------|------:|
+| `ah-*` | 29 |
 | `shotloom-*` | 29 |
-| `ah-*` | 28 |
 | `dev-*` | 24 |
 | `cci-*` | 10 |
 | `review-*` | 7 |

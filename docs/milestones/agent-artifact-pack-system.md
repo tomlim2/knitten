@@ -44,7 +44,7 @@ copying everything into the core repository.
 | `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
-| `skill-lifecycle-manager` | todo | Define skill CRUD and lifecycle management before broad skill inventory edits. |
+| [skill-lifecycle-manager.md](../plans/completed/skill-lifecycle-manager.md) | completed | Define skill CRUD and lifecycle management before broad skill inventory edits. |
 | [operational-findings-pipeline.md](../plans/proposed/operational-findings-pipeline.md) | proposed | Define one Knitten-wide findings intake, promotion, and reporting lifecycle for operational issues and lessons; periodic consolidation stays manual-first. |
 | [design-plan-template-skill-adoption.md](../plans/proposed/design-plan-template-skill-adoption.md) | proposed | Route spec creation and review skills to the canonical Design Plan template while keeping domain-specific constraints in skills. |
 | [document-template-consumption-phases.md](../plans/proposed/document-template-consumption-phases.md) | proposed | Split document template review policy into internal-consumption and vault-assetization phases after adding the Design Plan template. |
@@ -71,7 +71,7 @@ copying everything into the core repository.
 | Inventory and classification | active | Schema contract, generated inventory output, five-skill pilot classification, and validator checks exist; inventory review is next. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
-| Skill lifecycle manager | todo | Add a dedicated spec for skill CRUD/lifecycle management. |
+| Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |
 | Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
 | Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |

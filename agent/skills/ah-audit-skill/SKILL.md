@@ -107,3 +107,8 @@ If a class is fully clean, list its IDs in the **Clean classes** line — do not
 - **Re-read canonical references every invocation.** Do not summarize from memory.
 - **One target per invocation.** Batch sweeps belong to the batch review workflow.
 - **No silent skips.** If a class can't be evaluated, write `SKIPPED — <reason>` for the IDs.
+
+## Related
+
+- `agent/skills/ah-manage-skill/SKILL.md`
+- `agent/skills/ah-edit-skill/SKILL.md`
