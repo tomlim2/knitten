@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-20
-updated: 2026-05-20
+updated: 2026-05-24
 owner: agent-hub
 milestone: agent-artifact-pack-system
 briefing: ../../briefings/specs/thin-skill-guide-boundary.md
@@ -396,6 +396,45 @@ Potential checks:
 | route quality metrics | fail pilot reports that exceed decision-quality pass gates |
 | authoring gate | fail new high-cost skills without routing metadata, context manifest, or explicit exemption |
 
+### Extraction Rollout Rule
+
+Use this rule after a pilot classification row is accepted and before editing a
+source skill.
+
+| Step | Rule |
+|------|------|
+| 1. Select row | Pick one extraction item row with `review-state: accepted` and a parent skill row with `split-readiness: low` or `ready`. |
+| 2. Verify target owner | Reuse `target-path` only when the target already contains equivalent content or the same change patches the target before shrinking `SKILL.md`. |
+| 3. Preserve execution | Keep trigger, inputs, mode selection, ordered workflow, validation commands, and report format in `SKILL.md`. |
+| 4. Replace duplicate prose | Replace duplicated judgment, rubric, example, or format prose with a direct target reference and heading. |
+| 5. Declare runtime reads | If `required-at-runtime: yes`, add the target to frontmatter `context-*` or to the skill's required-read table. |
+| 6. Keep on-demand reads out | If `required-at-runtime: no`, link the target only where the workflow needs it after mode or route selection. |
+| 7. Resolve validation need | If `validation-needed: unknown`, record manual proof in the report or review the row before extraction. |
+| 8. Regenerate inventory | Run `node scripts/generate-artifact-inventory.mjs` after the skill or target changes. |
+| 9. Validate drift | Run `node scripts/validate-llm-first.mjs --check artifact-inventory` and full validation. |
+| 10. Record proof | Add a report under `docs/plans/reports/artifact-inventory-classification/` with before/after metrics, target-owner proof, validation-need proof, and validation commands. |
+
+Rollout stops when any condition matches:
+
+| Condition | Action |
+|-----------|--------|
+| target owner is ambiguous | mark the row `blocked`; do not create a new reference path |
+| target file exists but lacks equivalent content | patch the target in the same change or stop before shrinking `SKILL.md` |
+| runtime requirement is `unknown` | review the row first; do not extract |
+| validation need is `unknown` and no manual proof exists | review the row first; do not extract |
+| extraction removes executable workflow | revert the extraction and keep the skill body intact |
+| target belongs to a future pack decision | keep `target-path: undecided` until `core-artifact-boundary` or the manifest specs decide it |
+
+Validator rollout stays fail-only and narrow:
+
+| Check | Status |
+|-------|--------|
+| schema, enum, parent link, extraction-count, path safety | enforced |
+| `source-section` existence | enforced |
+| high-cost skill extraction coverage | deferred until at least one non-Shotloom pilot extraction lands |
+| route quality metric gates | deferred until reports use one stable metric table |
+| core-vs-pack destination enforcement | deferred to `core-artifact-boundary` and artifact-pack manifest specs |
+
 ## Execution Plan
 
 ### Batch A: Accept Boundary Spec
@@ -461,11 +500,14 @@ Done: initial generated inventory covers 5 representative skills:
 
 ### Batch F: Rollout Rule
 
-1. Convert the pilot result into an extraction rule for inventory
+1. Done: Convert the pilot result into an extraction rule for inventory
    classification.
-2. Hand core-vs-pack placement decisions to `core-artifact-boundary` and the
+   Evidence: `Extraction Rollout Rule`.
+2. Done: Hand core-vs-pack placement decisions to `core-artifact-boundary` and the
    future artifact-pack manifest specs.
-3. Add fail-only validator enforcement only after the rule is proven.
+   Evidence: validator rollout table.
+3. Done: Keep fail-only validator enforcement narrow until the rule is proven.
+   Evidence: broad extraction coverage and route quality gates stay deferred.
 
 ## Validation
 

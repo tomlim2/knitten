@@ -68,14 +68,14 @@ copying everything into the core repository.
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
-| Inventory and classification | active | Schema contract, generated inventory output, pilot classification review, and validator checks exist; pilot extraction is next. |
+| Inventory and classification | active | Schema contract, generated inventory output, pilot classification review, pilot extraction report, rollout rule, and validator checks exist. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |
 | Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
 | Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | active | Five-skill pilot classification and first extraction pilot exist; rollout rule is next. |
+| Thin skill / guide boundary | active | Five-skill pilot classification, first extraction pilot, and extraction rollout rule exist. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |
