@@ -68,7 +68,7 @@ resolver, installer, migration, or release work depends on pack validation.
 | Does public-safety scanning belong here? | Only manifest-level `visibility` and `privacy-risk`; deep content scrub belongs to `public-safety-scrub-gates`. |
 | Does route conflict resolution belong here? | Detect conflicts here; resolver ranking belongs to `artifact-pack-discovery-routing`. |
 | Does validation compare multiple manifests? | Yes for explicit manifest-set fixtures; installed pack discovery stays out of scope. |
-| Is `route.priority` already in the manifest contract? | No; patch the manifest contract before schema implementation. |
+| Is `route.priority` already in the manifest contract? | Yes; validation-gates planning adds it as the route-conflict tie-break field. |
 
 ## Exclusions
 

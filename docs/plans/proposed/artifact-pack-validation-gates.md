@@ -176,10 +176,9 @@ signature, the validator fails unless both exports declare distinct
 `route.priority` integers. Lower integer priority wins. Priority validation
 belongs to this gate; priority interpretation belongs to the resolver spec.
 
-`route.priority` is a required manifest-contract amendment before schema
-implementation. If the manifest contract does not include `route.priority`, S1
-must stop and patch `artifact-pack-manifest-contract` before creating the
-schema.
+`route.priority` is defined by `artifact-pack-manifest-contract`. If the
+manifest contract does not include `route.priority`, S0 must stop before
+implementation work starts.
 
 ### Fixture Matrix
 
@@ -231,7 +230,7 @@ Input:
 
 Output:
 - `scripts/validate-llm-first.mjs --list` includes the parent check and seven gate checks.
-- Gate checks return a controlled missing-implementation diagnostic until S3 and S4 fill them.
+- Gate checks return zero violations when no manifest fixtures or explicit manifest inputs exist.
 
 Non-output:
 - No schema, registry, fixture, resolver, installer, or pack root registry.
@@ -258,7 +257,6 @@ Non-output:
 
 Failure:
 - Stop if manifest fields conflict with the upstream manifest contract.
-- Stop if `route.priority` is absent from `artifact-pack-manifest-contract`.
 
 Proof:
 - JSON parse check for both files.
@@ -356,6 +354,7 @@ Proof:
 
 - [ ] `artifact-pack` parent validator check is defined.
 - [ ] Seven gate-specific checks are defined and separately runnable.
+- [ ] `artifact-pack-manifest-contract` defines `route.priority`.
 - [ ] `agent/config/artifact-pack.schema.json` exists.
 - [ ] `agent/config/artifact-pack-core-capabilities.json` exists.
 - [ ] `core:<capability-id>` dependencies validate against the core capability registry.
