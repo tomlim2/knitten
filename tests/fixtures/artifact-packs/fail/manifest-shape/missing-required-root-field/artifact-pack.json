@@ -1,0 +1,9 @@
+{
+  "schema-version": 1,
+  "pack-id": "missing-required-root-field",
+  "display-name": "Missing Required Root Field",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid fixture pack."
+}

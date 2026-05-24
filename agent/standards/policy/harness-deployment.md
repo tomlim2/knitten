@@ -12,7 +12,7 @@ Defines how external LLM agents and harnesses, including Claude Code, Pi, Codex,
 | Term | Rule |
 |------|------|
 | Durable Source | `agent/` in the agent-hub checkout is the single source of truth. Configurations live here. |
-| Deploy Target | The global path a harness reads from (e.g., `~/.claude`, `~/.pi`). |
+| Deploy Target | The harness runtime path installed or linked from the durable source (e.g., `~/.claude`, `~/.pi`). |
 | Deploy Entry Template | Harness entry document tracked under `agent/` and linked into the deploy target. |
 | Deployment Method | The mechanism that connects the deploy target to the durable source. |
 

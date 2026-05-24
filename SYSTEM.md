@@ -86,7 +86,8 @@ If unsure, default LLM-first. Full applies-to list: `agent/standards/policy/llm-
 
 All durable shared agent state has its canonical home in the agent-hub checkout's
 `agent/` directory and is git-tracked there. `~/.claude/` is the deploy target
-the Claude Code harness reads from at runtime.
+the Claude Code harness reads from at runtime; treat it as a harness runtime
+path, not a server deployment target.
 
 Current identifiers:
 

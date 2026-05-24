@@ -1,0 +1,29 @@
+{
+  "schema-version": 1,
+  "pack-id": "unknown-route-domain",
+  "display-name": "Unknown Route Domain",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Unknown route domain fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "route-doc",
+      "artifact-type": "doc",
+      "path": "docs/route.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "route.md",
+        "mode": "copy"
+      },
+      "load": "route-selected",
+      "route": {
+        "domains": ["not-a-domain"],
+        "min-evidence": 1,
+        "max-context-bytes": 1000
+      },
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

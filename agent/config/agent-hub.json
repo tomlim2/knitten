@@ -164,6 +164,22 @@
       "secretPolicy": "no-secrets"
     },
     {
+      "id": "artifact-pack-schema",
+      "path": "agent/config/artifact-pack.schema.json",
+      "domain": "artifact pack manifest schema",
+      "format": "json",
+      "deployTarget": "~/.claude/config/artifact-pack.schema.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-core-capabilities",
+      "path": "agent/config/artifact-pack-core-capabilities.json",
+      "domain": "core capability ids accepted by artifact pack dependency refs",
+      "format": "json",
+      "deployTarget": "~/.claude/config/artifact-pack-core-capabilities.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
       "id": "audit-policy",
       "path": "agent/config/audit-policy.json",
       "domain": "audit thresholds and severity tiers",
@@ -395,6 +411,16 @@
       "covers": [
         "managed path registry shape",
         "stale shared-layer path literals"
+      ]
+    },
+    {
+      "id": "artifact-pack",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "artifact-pack",
+      "covers": [
+        "artifact pack manifest shape",
+        "artifact pack dependencies",
+        "artifact pack route conflicts"
       ]
     },
     {

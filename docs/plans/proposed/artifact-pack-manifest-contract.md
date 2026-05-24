@@ -150,6 +150,7 @@ Route fields are optional only when `load` is `on-demand` or `manual`.
 | `exclude-when` | Route domain slugs that block preloading. |
 | `min-evidence` | Integer `1` or greater; resolver must see at least this many matching route evidence items. |
 | `max-context-bytes` | Integer byte cap for pre-body context loaded from this export. |
+| `priority` | Optional integer tie-breaker for duplicate route signatures in a manifest set; lower value wins. |
 
 Route evidence sources:
 
@@ -170,6 +171,7 @@ Preload guard:
 | `route.context-profile` exists | Validator checks the id against `agent/config/context-routing.json`. |
 | Any route axis exists | Validator checks values against `agent/config/context-routing.json` or the repo-key registry. |
 | `route.max-context-bytes` exists | Resolver must cap pre-body context below that value. |
+| `route.priority` exists | Validator checks it is an integer and only uses it as a route-conflict tie-breaker. |
 
 ### Visibility Rules
 
@@ -339,5 +341,5 @@ Proof:
 
 | Decision | Default |
 |----------|---------|
-| Core capability registry | Define valid `core:<capability-id>` values in `artifact-pack-validation-gates`. |
+| Core capability registry | Defined by `docs/plans/completed/artifact-pack-validation-gates.md`. |
 | Pack root registry | Define installed pack root discovery in `artifact-pack-install-link-flow`. |

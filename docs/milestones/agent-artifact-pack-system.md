@@ -59,7 +59,7 @@ copying everything into the core repository.
 | `artifact-pack-discovery-routing` | proposed | Define how core discovers artifact packs and lets routers select them. |
 | `artifact-pack-install-link-flow` | proposed | Define safe local install, symlink/link, update, and uninstall behavior. |
 | `artifact-compatibility-shims` | proposed | Define old path mappings, aliases, deprecation windows, and removal criteria. |
-| `artifact-pack-validation-gates` | proposed | Define validator checks for manifest integrity and route conflicts. |
+| [artifact-pack-validation-gates.md](../plans/completed/artifact-pack-validation-gates.md) | completed | Define validator checks for manifest integrity and route conflicts. |
 | `public-safety-scrub-gates` | proposed | Define public-safe checks for secrets, private paths, personal data, and company-only context. |
 | `core-release-validation` | proposed | Define CI, PR, release, versioning, changelog, and public-readiness gates for `knitten-core`. |
 | `example-artifact-pack` | proposed | Provide a public-safe sample pack that proves manifest, resolver, install, and validation behavior. |
@@ -86,7 +86,7 @@ copying everything into the core repository.
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
 | Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
 | Artifact inventory provenance | done | Validator checks `generated-at`, `source-commit`, and `source-dirty` metadata shape. |
-| Validation gates | not started | Depends on finalized manifest fields and public-safety policy. |
+| Validation gates | done | `docs/plans/completed/artifact-pack-validation-gates.md` defines and implements artifact pack manifest validation gates. |
 | Example pack | not started | Depends on manifest contract and resolver behavior. |
 
 ## Acceptance Criteria
