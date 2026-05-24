@@ -7,3 +7,4 @@ Detailed report context lives under `docs/briefings/operational-findings/reports
 | Date | Report | Initial Source | Area | Context | Summary | Status |
 |------|--------|----------------|------|---------|---------|--------|
 | 2026-05-24 | `operational-findings/reports/20260524-operational-findings-lifecycle-smoke-test.md` | smoke-test | workflow | operational-findings smoke test 2026-05-24 | Operational findings lifecycle needs an actual end-to-end smoke test so we know prepare, report capture, inbox update, commit, and push work outside dry-run validation. | captured |
+| 2026-05-24 | `operational-findings/reports/20260524-status-porcelain-parsing-damaged-changed.md` | smoke-test | validator | operational-findings smoke test 2026-05-24 | Operational findings capture initially parsed git status porcelain lines with a fixed slice and damaged modified paths, causing docs paths to be read as ocs paths and valid report/index changes to be rejected. | captured |
