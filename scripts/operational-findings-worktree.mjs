@@ -100,6 +100,21 @@ function ensureExistingWorktreeReady(worktreePath, branch, dryRun) {
   }
 
   const upstream = tryGit(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], { cwd: worktreePath });
+  if (upstream.ok && upstream.stdout === "origin/main") {
+    if (remoteBranchExists(branch, worktreePath)) {
+      if (dryRun) {
+        console.log(`would set upstream: ${branch} -> origin/${branch}`);
+        return;
+      }
+      runGit(["branch", "--set-upstream-to", `origin/${branch}`, branch], { cwd: worktreePath, stdio: "inherit" });
+    } else {
+      if (dryRun) {
+        console.log(`would unset inherited upstream for ${branch}`);
+        return;
+      }
+      runGit(["branch", "--unset-upstream", branch], { cwd: worktreePath, stdio: "inherit" });
+    }
+  }
   if (!upstream.ok && remoteBranchExists(branch, worktreePath)) {
     if (dryRun) {
       console.log(`would set upstream: ${branch} -> origin/${branch}`);
@@ -124,6 +139,16 @@ function ensureExistingWorktreeReady(worktreePath, branch, dryRun) {
     }
     runGit(["pull", "--ff-only"], { cwd: worktreePath, stdio: "inherit" });
   }
+}
+
+function clearInheritedUpstream(worktreePath, branch, dryRun) {
+  const upstream = tryGit(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], { cwd: worktreePath });
+  if (!upstream.ok || upstream.stdout !== "origin/main") return;
+  if (dryRun) {
+    console.log(`would unset inherited upstream for ${branch}`);
+    return;
+  }
+  runGit(["branch", "--unset-upstream", branch], { cwd: worktreePath, stdio: "inherit" });
 }
 
 async function resolveMainPath() {
@@ -169,6 +194,9 @@ async function prepare(args) {
   }
   await mkdir(path.dirname(worktreePath), { recursive: true });
   runGit(addArgs, { cwd: mainPath, stdio: "inherit" });
+  if (!hasRemote) {
+    clearInheritedUpstream(worktreePath, args.branch, false);
+  }
   ensureExistingWorktreeReady(worktreePath, args.branch, false);
   console.log(`worktree: ${worktreePath}`);
   console.log(`branch: ${args.branch}`);

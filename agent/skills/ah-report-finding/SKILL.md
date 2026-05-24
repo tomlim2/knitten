@@ -39,6 +39,7 @@ promotion, and durable artifact edits can happen later.
 2. Prepare the dedicated worktree and capture the absolute path:
 
 ```bash
+knitten_root=$(pwd)
 findings_worktree=$(
   node scripts/operational-findings-worktree.mjs prepare \
     | awk -F': ' '/^worktree:/ {print $2; exit}'
@@ -54,7 +55,7 @@ cd "$findings_worktree"
 4. In the prepared worktree, run the capture script:
 
 ```bash
-node scripts/operational-findings-report.mjs capture \
+node "$knitten_root/scripts/operational-findings-report.mjs" capture \
   --summary "<rough finding>" \
   --context "<context>" \
   --source user-report \
