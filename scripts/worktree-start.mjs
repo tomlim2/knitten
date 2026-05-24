@@ -17,15 +17,28 @@ import {
 } from "./worktree-lib.mjs";
 
 function parseArgs(argv) {
-  const args = { slug: null, testMode: false, repo: null };
+  const args = { slug: null, testMode: false, repo: null, type: "feat", dryRun: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--test-mode") args.testMode = true;
+    else if (arg === "--dry-run") args.dryRun = true;
     else if (arg === "--repo") args.repo = argv[++i];
     else if (arg.startsWith("--repo=")) args.repo = arg.slice("--repo=".length);
+    else if (arg === "--type" || arg === "--kind") args.type = argv[++i];
+    else if (arg.startsWith("--type=")) args.type = arg.slice("--type=".length);
+    else if (arg.startsWith("--kind=")) args.type = arg.slice("--kind=".length);
     else if (!args.slug) args.slug = arg;
   }
   return args;
+}
+
+function branchPrefixFor(args) {
+  if (args.testMode) return "codex/test/";
+  const allowedTypes = new Set(["feat", "fix", "docs", "chore"]);
+  if (!allowedTypes.has(args.type)) {
+    throw new Error(`worktree branch type must be one of feat|fix|docs|chore: ${args.type}`);
+  }
+  return `${args.type}/`;
 }
 
 async function main() {
@@ -48,7 +61,7 @@ async function main() {
     throw new Error(`${context.key} policy: main checkout has uncommitted changes`);
   }
 
-  const branchPrefix = args.testMode ? "codex/test/" : context.policy.branchPrefix || "codex/";
+  const branchPrefix = branchPrefixFor(args);
   const slug = slugify(args.slug);
   const root = resolveWorktreeRoot(mainPath, context.policy, args.testMode);
   let body;
@@ -62,12 +75,21 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   } while (true);
 
-  await mkdir(root, { recursive: true });
-  runGit(["fetch", "origin", "main"], { cwd: mainPath, stdio: "inherit" });
-  runGit(["worktree", "add", "-b", branch, worktreePath, "origin/main"], {
-    cwd: mainPath,
-    stdio: "inherit",
-  });
+  if (args.dryRun) {
+    console.log("would run: git fetch origin main");
+  } else {
+    runGit(["fetch", "origin", "main"], { cwd: mainPath, stdio: "inherit" });
+  }
+  const addArgs = ["worktree", "add", "-b", branch, worktreePath, "origin/main"];
+  if (args.dryRun) {
+    console.log(`would run: git ${addArgs.join(" ")}`);
+  } else {
+    await mkdir(root, { recursive: true });
+    runGit(addArgs, {
+      cwd: mainPath,
+      stdio: "inherit",
+    });
+  }
 
   console.log(`worktree: ${worktreePath}`);
   console.log(`branch: ${branch}`);

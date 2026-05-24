@@ -20,7 +20,7 @@ canonical owner, then update any command, skill, or redirect that references it.
 | Milestone | internal-consumption | `agent/document-templates/agent-hub/milestone.md` | `agent/skills/ah-manage-milestone/SKILL.md` |
 | Design plan | internal-consumption | `agent/document-templates/agent-hub/design-plan.md` | specs and task-plan skills that need implementation-order stages |
 | Generated technical spec | internal-consumption | `agent/document-templates/agent-hub/technical-spec.md` | `agent/skills/dev-generate-spec/SKILL.md` |
-| Operational finding report | internal-consumption | `agent/document-templates/agent-hub/operational-finding-report.md` | future `ah-report-finding` |
+| Operational finding report | internal-consumption | `agent/document-templates/agent-hub/operational-finding-report.md` | `agent/skills/ah-report-finding/SKILL.md` |
 | Code review output | internal-consumption | `agent/document-templates/review/code-review.md` | review standards and `review-audit-*` skills |
 | Devlog day | vault-assetization | `agent/document-templates/obsidian/devlog-day.md` | `learn-log-day` and devlog workflows |
 | Cross-project learning | vault-assetization | `agent/document-templates/obsidian/cross-project-learning.md` | `learn-log-day _cross-project learning` |

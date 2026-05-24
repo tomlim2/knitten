@@ -1,7 +1,7 @@
 ---
 status: proposed
 created: 2026-05-23
-updated: 2026-05-23
+updated: 2026-05-24
 owner: agent-hub
 milestone: agent-artifact-pack-system
 ---
@@ -57,10 +57,15 @@ backlog items.
 | Area | Current owner | Gap |
 |------|---------------|-----|
 | Review fix + reply | `agent/skills/shotloom-respond-pr/SKILL.md` | Should remain narrow; no shared findings lifecycle. |
-| Task retrospective | `agent/skills/shotloom-wrapup-task/SKILL.md` | Captures lessons, but flow is Shotloom-specific and not yet generalized to all Knitten operational findings. |
+| Task retrospective | `agent/skills/shotloom-wrapup-task/SKILL.md` | Uses the canonical operational findings capture path for generalized review, CI, or rule findings. |
 | Review-pattern inbox | `docs/briefings/shotloom/review-finding-patterns-inbox.md` | Narrow scope: PR review findings only. |
 | Review-pattern promotion | `agent/skills/shotloom-promote-review-patterns/SKILL.md` | Manual and useful, but aimed at one catalog lane. |
 | Direct user report | chat only | No durable shared intake contract. |
+| Report template | `agent/document-templates/agent-hub/operational-finding-report.md` | Exists; implementation should verify/update it, not create a duplicate. |
+| Prepare script | `scripts/operational-findings-worktree.mjs` | Exists; prepares or verifies the dedicated findings worktree. |
+| Manual report skill | `agent/skills/ah-report-finding/SKILL.md` | Exists; routes user-submitted findings through the dedicated worktree. |
+| Capture script | `scripts/operational-findings-report.mjs` | Exists; writes one report, updates the index, commits, and pushes from the findings branch. |
+| Shotloom compatibility promotion | `agent/skills/shotloom-promote-review-patterns/SKILL.md` | Legacy-only; new findings should enter through the canonical operational findings index. |
 
 ## Proposed Design
 
@@ -76,6 +81,7 @@ Maintain one Knitten worktree dedicated to findings intake and promotion.
 | Report directory | `docs/briefings/operational-findings/reports/` |
 | Report template | `agent/document-templates/agent-hub/operational-finding-report.md` |
 | Fast-track manual | `docs/briefings/operational-findings/fast-track-manual.md` |
+| Prepare script | `scripts/operational-findings-worktree.mjs prepare` |
 
 Rules:
 
@@ -97,7 +103,7 @@ Failure handling:
 | worktree is dirty before capture | skip capture; report the dirty files and leave them untouched |
 | branch is not `operational-findings` | skip capture; report the actual branch |
 | remote is ahead and worktree is clean | run `pull --ff-only`, then retry once |
-| push is rejected after commit | fetch, attempt `pull --ff-only` if clean, then retry once |
+| push is rejected after commit | stop; report that the local findings commit exists and manual rebase/repair is needed |
 | merge conflict or non-ff pull | stop; report manual repair needed |
 | files outside the intake index/report paths changed | stop; do not commit |
 | network failure prevents push | leave the commit in the findings worktree and report the exact push failure |
@@ -106,6 +112,24 @@ Script feedback:
 
 - on success, report only the created/updated report path and pushed commit;
 - on failure, analyze the failed condition and report the next safe action.
+
+Prepare script contract:
+
+- default branch is `operational-findings`, not `codex/operational-findings`;
+- reject any findings branch name that starts with `codex/`;
+- this long-lived branch is an exception to the general task worktree default,
+  where `scripts/worktree-start.mjs` creates `feat/` branches unless `--type
+  fix`, `--type docs`, or `--type chore` is supplied;
+- reuse the preferred worktree when it already exists and is clean;
+- fail when the branch is checked out in another worktree;
+- fail when the preferred worktree is dirty or on the wrong branch;
+- fetch `origin/main` before creating the worktree;
+- set upstream to `origin/operational-findings` when the remote branch exists
+  but the local branch is missing upstream tracking;
+- if the existing findings worktree is behind its upstream, run
+  `pull --ff-only`;
+- if the existing findings worktree diverged from upstream, stop and report
+  manual repair.
 
 ### 2. Capture lane
 
@@ -143,6 +167,14 @@ Index rows must record:
 | `Summary` | one-line rough description |
 | `Status` | `captured`, `triaged`, `promoted`, `merged`, `parked`, `discarded` |
 
+Canonical index table:
+
+```markdown
+| Date | Report | Initial Source | Area | Context | Summary | Status |
+|------|--------|----------------|------|---------|---------|--------|
+| YYYY-MM-DD | `operational-findings/reports/YYYYMMDD-short-slug.md` | user-report | unknown | <context> | <rough summary> | captured |
+```
+
 Report files use the template and are the place for:
 
 - rough findings;
@@ -175,6 +207,10 @@ File naming:
 - agent-generated slug by default;
 - if the user provides a usable title, reuse or adapt it;
 - one file = one report context, not one atomic finding.
+- default path shape is
+  `docs/briefings/operational-findings/reports/YYYYMMDD-<slug>.md`;
+- if the path already exists, append `-2`, `-3`, and so on rather than
+  overwriting.
 
 Status vocabulary:
 
@@ -267,11 +303,13 @@ Canonical ownership:
 
 1. Create `docs/briefings/operational-findings-inbox.md` with the accepted
    thin index shape.
-2. Define the dedicated findings branch/worktree contract.
+2. Define the dedicated findings branch/worktree contract and implement
+   `scripts/operational-findings-worktree.mjs prepare`.
 3. Create `docs/briefings/operational-findings/reports/` and
    `docs/briefings/operational-findings/fast-track-manual.md`.
-4. Add `agent/document-templates/agent-hub/operational-finding-report.md` and
-   keep report creation aligned to that template.
+4. Verify or update the existing
+   `agent/document-templates/agent-hub/operational-finding-report.md` and keep
+   report creation aligned to that template.
 5. Update `shotloom-wrapup-task` so it can append findings to the dedicated
    worktree and push safely.
 6. Add one manual reporting path for user-submitted findings under the name
@@ -291,6 +329,24 @@ During spec work:
 git diff --check
 node scripts/validate-llm-first.mjs
 git status --short --branch
+```
+
+Prepare-script smoke checks:
+
+```bash
+node scripts/operational-findings-worktree.mjs status
+node scripts/operational-findings-worktree.mjs prepare --dry-run
+node scripts/operational-findings-worktree.mjs prepare --branch codex/operational-findings --dry-run
+```
+
+The final command must fail with the `codex/` prefix rejection.
+
+Capture-script smoke checks:
+
+```bash
+node --check scripts/operational-findings-report.mjs
+node scripts/operational-findings-report.mjs capture --summary "test finding capture" --dry-run
+rg -n "operational-findings|ah-report-finding" agent/skills/shotloom-wrapup-task
 ```
 
 When implementation lands, validate at least:

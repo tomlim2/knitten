@@ -10,12 +10,13 @@ context-profile: shotloom-review
 
 # shotloom-promote-review-patterns
 
-Manual lifecycle for turning Shotloom PR review findings collected during
-`shotloom-wrapup-task` into reusable review patterns.
+Legacy manual lifecycle for turning existing Shotloom PR review findings from
+the compatibility inbox into reusable review patterns. New wrapup findings go
+through the Knitten-wide operational findings pipeline first.
 
 Use when:
 - the user says to promote, collect, generalize, or process Shotloom review
-  finding patterns;
+  finding patterns already stored in the legacy Shotloom inbox;
 - the user wants a manual alternative to scheduled automation;
 - the inbox has accumulated entries and it is time to update the actual review
   catalog.
@@ -39,6 +40,10 @@ Usage:
 | Secondary targets | `agent/skills/shotloom-review-before-pr/references/*.md` only when clearly relevant |
 
 ## Workflow
+
+If the user is reporting a new operational finding, stop and use
+`/ah-report-finding` instead. This skill only processes the compatibility inbox
+that predates `docs/briefings/operational-findings-inbox.md`.
 
 ### Step 1: Sanity check
 

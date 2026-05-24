@@ -13,24 +13,31 @@ promoting them directly into the review catalog.
 
 | Field | Value |
 |---|---|
-| Branch | `codex/shotloom-review-finding-patterns` |
-| Preferred worktree | `<knitten-root>/.worktrees/shotloom-review-finding-patterns` |
-| Inbox | `docs/briefings/shotloom/review-finding-patterns-inbox.md` |
+| Branch | `operational-findings` |
+| Preferred worktree | `<knitten-root>/.worktrees/operational-findings` |
+| Inbox | `docs/briefings/operational-findings-inbox.md` |
+| Report directory | `docs/briefings/operational-findings/reports/` |
+| Capture script | `scripts/operational-findings-report.mjs` |
 
 ## Worktree Rules
 
-1. Do not write this inbox from a dirty Knitten main checkout.
-2. Use the preferred worktree when it exists.
-3. If the branch exists without a worktree, create the preferred worktree.
-4. If neither branch nor worktree can be prepared safely, skip this phase and
+1. Do not write this inbox from a dirty findings worktree.
+2. Resolve the Knitten checkout from agent-hub config before running scripts;
+   wrapup is usually invoked from a Shotloom worktree, not from Knitten.
+3. Prepare the preferred worktree with
+   `node "$knitten_root/scripts/operational-findings-worktree.mjs" prepare`
+   and use the returned absolute `worktree:` path.
+4. Capture through `scripts/operational-findings-report.mjs`; do not hand-edit
+   the index from the task worktree.
+5. If neither branch nor worktree can be prepared safely, skip this phase and
    report the skip; do not block Linear or worktree cleanup.
-5. Commit and push only the inbox update from that branch.
+6. Commit and push only the index/report update from that branch.
 
 ## Entry Shape
 
-Write one `## PR NNN` section only when the PR has findings. Under it, add one
-`### Pattern: ...` entry per generalized lesson. The entry is not a PR summary
-and not a duplicate of the devlog `지적`; it is a reusable pattern candidate.
+Write one report only when the PR has findings. The report is not a PR summary
+and not a duplicate of the devlog `지적`; it is a reusable pattern candidate
+captured for later triage.
 
 | Field | Content |
 |---|---|
@@ -51,27 +58,39 @@ and not a duplicate of the devlog `지적`; it is a reusable pattern candidate.
 - Prefer 1-3 high-signal patterns per PR; merge repetitive nits into one
   pattern.
 - If the finding is too PR-specific to generalize, keep it in the day log only
-  and skip the inbox entry.
+  and skip the findings report.
 
 ## Manual Promotion
 
-- Run `/shotloom-promote-review-patterns` when the user wants to turn
-  accumulated inbox entries into the actual review catalog.
-- Run `/shotloom-promote-review-patterns --dry-run` to preview proposed
-  promotions without editing.
+- Run `/ah-report-finding` for direct user-submitted operational findings.
+- Run `/shotloom-promote-review-patterns` only for legacy entries already stored
+  in `docs/briefings/shotloom/review-finding-patterns-inbox.md`.
 - No scheduled automation is required by this skill.
 
 ## Example
 
-```md
-## PR 371
+```bash
+knitten_root=$(
+  jq -r '(.knitten.path? // ."agent-hub".path? // (if (.knitten | type) == "string" then .knitten else empty end) // (if (."agent-hub" | type) == "string" then ."agent-hub" else empty end) // empty)' \
+    "$HOME/.claude/private/agent-hub-config/repo-paths.json" 2>/dev/null
+)
+if [ -z "$knitten_root" ]; then
+  knitten_root=$(
+    jq -r '(.knitten.path? // ."agent-hub".path? // (if (.knitten | type) == "string" then .knitten else empty end) // (if (."agent-hub" | type) == "string" then ."agent-hub" else empty end) // empty)' \
+      "$HOME/.codex/private/agent-hub-config/repo-paths.json" 2>/dev/null
+  )
+fi
 
-### Pattern: Multi-event command status precedence needs a regression case
+findings_worktree=$(
+  node "$knitten_root/scripts/operational-findings-worktree.mjs" prepare \
+    | awk -F': ' '/^worktree:/ {print $2; exit}'
+)
 
-- Finding: Reviewer pointed out that the status-ordering refactor had only single-terminal-event tests.
-- Why It Was Right: Ordering bugs only appear when competing terminal events share the same command identity.
-- General Rule: Any event-status precedence rule needs at least one test with competing correlated events in the same buffer.
-- Trigger: Code chooses status by scanning an event list, prioritizing errors, or combining success and failure sentinels.
-- Fix Shape: Add a test with success then failure, and preferably failure then success, for the same command id.
-- Source Evidence: PR 371; review finding on `apps/editor/src/components/debug/__tests__/StageImportDebugPanel.test.tsx:437`.
+cd "$findings_worktree"
+node scripts/operational-findings-report.mjs capture \
+  --source wrapup-task \
+  --context "shotloom PR 371" \
+  --area workflow \
+  --summary "Reviewer found that the status-ordering refactor had only single-terminal-event tests; future event-status precedence changes need competing correlated-event regression coverage." \
+  --evidence "PR 371; review finding on apps/editor/src/components/debug/__tests__/StageImportDebugPanel.test.tsx:437"
 ```

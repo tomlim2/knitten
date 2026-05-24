@@ -47,6 +47,14 @@ function mainChoreMessageAllowed(file) {
   return subject.startsWith("chore:");
 }
 
+function allowedPrimaryCheckoutBranch(branch, policy) {
+  if (!branch || branch === "main") return false;
+  const branchTypes = ["feat/", "fix/", "docs/", "chore/"];
+  if (branchTypes.some((prefix) => branch.startsWith(prefix))) return true;
+  const legacyPrefix = policy?.branchPrefix || "";
+  return Boolean(legacyPrefix && branch.startsWith(legacyPrefix));
+}
+
 async function main() {
   const mode = process.argv[2] || "commit";
   const messageFile = process.argv[3];
@@ -56,12 +64,9 @@ async function main() {
   const mainPath = await mainPathFor(context.entry);
   if (path.resolve(context.topLevel) === path.resolve(mainPath)) {
     const branch = currentBranch(context.topLevel);
-    const prefix = context.policy?.branchPrefix || "";
     if (
       context.policy?.allowMainFeatureBranch === true &&
-      branch &&
-      branch !== "main" &&
-      branch.startsWith(prefix)
+      allowedPrimaryCheckoutBranch(branch, context.policy)
     ) {
       return;
     }
