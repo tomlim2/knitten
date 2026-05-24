@@ -103,6 +103,10 @@ context-references: references/review-checklist.md
 | `context-repo-docs` | Current-repo paths with `repo:` prefix |
 | `context-references` | Skill-local reference paths relative to the skill directory |
 
+Superseded standard paths may remain as compatibility redirect stubs, but their
+`superseded-by` target and `standards/index.md` Redirect Stubs row must stay in
+sync.
+
 Skill execution contract:
 
 1. Read the skill body.

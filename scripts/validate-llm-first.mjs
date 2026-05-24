@@ -955,8 +955,93 @@ async function checkStandardsStatus() {
   return { name: "standards-status", violations };
 }
 
+function repoRootRelativePath(absolutePath) {
+  return path.relative(REPO_ROOT, absolutePath).split(path.sep).join("/");
+}
+
+function agentRelativePath(absolutePath) {
+  return path.relative(AGENT_ROOT, absolutePath).split(path.sep).join("/");
+}
+
+function isRepoRootRelativeTarget(value) {
+  return value.startsWith("agent/") || value.startsWith("docs/") || value.startsWith("tools/");
+}
+
+function resolveStandardsRedirectTarget(fromFile, target) {
+  const absolutePath = isRepoRootRelativeTarget(target)
+    ? path.join(REPO_ROOT, target)
+    : path.resolve(path.dirname(fromFile), target);
+  return {
+    absolutePath,
+    repoRelativePath: repoRootRelativePath(absolutePath),
+  };
+}
+
+function markdownCellValue(cell) {
+  const linkTargets = markdownLinkTargets(cell);
+  if (linkTargets.length > 0) return linkTargets[0].trim();
+  return cell.trim().replace(/^`|`$/g, "").trim();
+}
+
+function parseRedirectStubRows(indexPath, text) {
+  const rows = new Map();
+  const lines = text.split("\n");
+  let inRedirectStubs = false;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^##\s+Redirect Stubs\b/.test(line)) {
+      inRedirectStubs = true;
+      continue;
+    }
+    if (inRedirectStubs && /^##\s+/.test(line)) break;
+    if (!inRedirectStubs) continue;
+
+    const cells = markdownTableCells(line);
+    if (!cells || cells.length < 2 || cells[0] === "Stub") continue;
+    const stubValue = markdownCellValue(cells[0]);
+    const replacementValue = markdownCellValue(cells[1]);
+    if (!stubValue || !replacementValue) continue;
+
+    const stubPath = resolveRepoMarkdownPath(indexPath, stubValue);
+    if (!stubPath) continue;
+    const stub = agentRelativePath(stubPath);
+    const replacement = resolveStandardsRedirectTarget(stubPath, replacementValue);
+    rows.set(stub, {
+      replacementRaw: replacementValue,
+      replacementRepoRelativePath: replacement.repoRelativePath,
+    });
+  }
+  return rows;
+}
+
+async function standardsRedirectIndexRows() {
+  const indexPath = path.join(AGENT_ROOT, "standards", "index.md");
+  const text = await readFile(indexPath, "utf8");
+  return parseRedirectStubRows(indexPath, text);
+}
+
+function validateStandardRedirectIndexRow(violations, file, stub, targetRepoRelativePath, indexRows) {
+  const row = indexRows.get(stub);
+  if (!row) {
+    violations.push({
+      file,
+      line: 1,
+      message: `standards index missing redirect row for standards redirect stub: ${stub}`,
+    });
+    return;
+  }
+  if (row.replacementRepoRelativePath !== targetRepoRelativePath) {
+    violations.push({
+      file,
+      line: 1,
+      message: `standards index redirect mismatch: ${stub} frontmatter=${targetRepoRelativePath} index=${row.replacementRepoRelativePath}`,
+    });
+  }
+}
+
 async function checkStandardsRedirects() {
   const violations = [];
+  const indexRows = await standardsRedirectIndexRows();
   const dir = path.join(AGENT_ROOT, "standards");
   const files = await walk(dir, (f) => f.endsWith(".md"));
   for (const f of files) {
@@ -974,16 +1059,22 @@ async function checkStandardsRedirects() {
       continue;
     }
     if (!target) continue;
-    const targetPath = target.startsWith("agent/") || target.startsWith("docs/") || target.startsWith("tools/")
-      ? path.join(REPO_ROOT, target)
-      : path.resolve(path.dirname(f), target);
-    if (!existsSync(targetPath)) {
+    const targetInfo = resolveStandardsRedirectTarget(f, target);
+    if (!existsSync(targetInfo.absolutePath)) {
       violations.push({
         file: rel(f),
         line: 1,
         message: `superseded-by target does not exist: ${target}`,
       });
+      continue;
     }
+    validateStandardRedirectIndexRow(
+      violations,
+      rel(f),
+      agentRelativePath(f),
+      targetInfo.repoRelativePath,
+      indexRows,
+    );
   }
   return { name: "standards-redirects", violations };
 }
@@ -1868,7 +1959,39 @@ function sharedContextRefsFromBody(body) {
   return refs;
 }
 
-function validateContextManifestPaths(violations, skillPath, fm) {
+async function validateContextStandardRedirect(violations, skillPath, declared, declaredPath, indexRows) {
+  const text = await readFile(declaredPath, "utf8");
+  const fm = parseFrontmatter(text);
+  if (!fm || fm.status !== "superseded") return;
+
+  const target = fm["superseded-by"]?.trim();
+  if (!target) {
+    violations.push({
+      file: skillPath,
+      line: 1,
+      message: `context-standards redirect missing superseded-by: ${declared}`,
+    });
+    return;
+  }
+  const targetInfo = resolveStandardsRedirectTarget(declaredPath, target);
+  if (!existsSync(targetInfo.absolutePath)) {
+    violations.push({
+      file: skillPath,
+      line: 1,
+      message: `context-standards redirect target does not exist: ${declared} -> ${targetInfo.repoRelativePath}`,
+    });
+    return;
+  }
+  validateStandardRedirectIndexRow(
+    violations,
+    skillPath,
+    declared,
+    targetInfo.repoRelativePath,
+    indexRows,
+  );
+}
+
+async function validateContextManifestPaths(violations, skillPath, fm, indexRows) {
   const groups = [
     { field: "context-rules", root: "agent", prefix: "rules/" },
     { field: "context-standards", root: "agent", prefix: "standards/" },
@@ -1883,8 +2006,13 @@ function validateContextManifestPaths(violations, skillPath, fm) {
         });
         continue;
       }
-      if (!existsSync(path.join(REPO_ROOT, group.root, value))) {
+      const targetPath = path.join(REPO_ROOT, group.root, value);
+      if (!existsSync(targetPath)) {
         violations.push({ file: skillPath, line: 1, message: `${group.field} path does not exist: ${value}` });
+        continue;
+      }
+      if (group.field === "context-standards") {
+        await validateContextStandardRedirect(violations, skillPath, value, targetPath, indexRows);
       }
     }
   }
@@ -2042,6 +2170,7 @@ async function checkContextRouting() {
 
   const pilotFiles = Array.isArray(routing.pilotFiles) ? routing.pilotFiles : [];
   const pilotPathSet = new Set(pilotFiles.map((pilot) => pilot.path).filter(Boolean));
+  const standardRedirectRows = await standardsRedirectIndexRows();
   if (pilotFiles.length === 0) {
     violations.push({ file, line: 1, message: "pilotFiles must be a non-empty array" });
   }
@@ -2133,7 +2262,7 @@ async function checkContextRouting() {
       }
     }
     if (pilot.path.endsWith("/SKILL.md")) {
-      validateContextManifestPaths(violations, pilot.path, fm);
+      await validateContextManifestPaths(violations, pilot.path, fm, standardRedirectRows);
       const hasContextManifest = [
         "context-rules",
         "context-standards",
