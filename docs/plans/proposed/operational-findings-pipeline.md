@@ -57,12 +57,15 @@ backlog items.
 | Area | Current owner | Gap |
 |------|---------------|-----|
 | Review fix + reply | `agent/skills/shotloom-respond-pr/SKILL.md` | Should remain narrow; no shared findings lifecycle. |
-| Task retrospective | `agent/skills/shotloom-wrapup-task/SKILL.md` | Captures lessons, but flow is Shotloom-specific and not yet generalized to all Knitten operational findings. |
+| Task retrospective | `agent/skills/shotloom-wrapup-task/SKILL.md` | Uses the canonical operational findings capture path for generalized review, CI, or rule findings. |
 | Review-pattern inbox | `docs/briefings/shotloom/review-finding-patterns-inbox.md` | Narrow scope: PR review findings only. |
 | Review-pattern promotion | `agent/skills/shotloom-promote-review-patterns/SKILL.md` | Manual and useful, but aimed at one catalog lane. |
 | Direct user report | chat only | No durable shared intake contract. |
 | Report template | `agent/document-templates/agent-hub/operational-finding-report.md` | Exists; implementation should verify/update it, not create a duplicate. |
 | Prepare script | `scripts/operational-findings-worktree.mjs` | Exists; prepares or verifies the dedicated findings worktree. |
+| Manual report skill | `agent/skills/ah-report-finding/SKILL.md` | Exists; routes user-submitted findings through the dedicated worktree. |
+| Capture script | `scripts/operational-findings-report.mjs` | Exists; writes one report, updates the index, commits, and pushes from the findings branch. |
+| Shotloom compatibility promotion | `agent/skills/shotloom-promote-review-patterns/SKILL.md` | Legacy-only; new findings should enter through the canonical operational findings index. |
 
 ## Proposed Design
 
@@ -337,6 +340,14 @@ node scripts/operational-findings-worktree.mjs prepare --branch codex/operationa
 ```
 
 The final command must fail with the `codex/` prefix rejection.
+
+Capture-script smoke checks:
+
+```bash
+node --check scripts/operational-findings-report.mjs
+node scripts/operational-findings-report.mjs capture --summary "test finding capture" --dry-run
+rg -n "operational-findings|ah-report-finding" agent/skills/shotloom-wrapup-task
+```
 
 When implementation lands, validate at least:
 

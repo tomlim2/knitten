@@ -75,7 +75,6 @@ async function main() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   } while (true);
 
-  await mkdir(root, { recursive: true });
   if (args.dryRun) {
     console.log("would run: git fetch origin main");
   } else {
@@ -85,6 +84,7 @@ async function main() {
   if (args.dryRun) {
     console.log(`would run: git ${addArgs.join(" ")}`);
   } else {
+    await mkdir(root, { recursive: true });
     runGit(addArgs, {
       cwd: mainPath,
       stdio: "inherit",

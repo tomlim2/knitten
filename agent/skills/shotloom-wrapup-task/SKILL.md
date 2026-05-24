@@ -1,7 +1,7 @@
 ---
 description: End-of-work cleanup for a Shotloom task — close Linear, remove worktree, delegate retrospective logging.
 argument-hint: "[STL-NN]"
-allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(awk:*), Bash(bash:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(awk:*), Bash(bash:*), Bash(node:*), Bash(rg:*)
 ---
 
 # shotloom-wrapup-task
@@ -174,31 +174,28 @@ If the Obsidian vault is writable (`obsidian` on home Mac) the entry lands there
 
 **After learn-log-day writes the file**, commit and push it from the agent-hub repo so the entry survives across machines. Skip the commit if learn-log-day already committed.
 
-### Step 5.5: Append review-finding pattern candidates
+### Step 5.5: Capture operational finding candidates
 
 If the PR had any real review, CI, or rule finding, record generalized pattern
 candidates for later consolidation. Follow
 [references/pattern-candidates.md](references/pattern-candidates.md); skip this
-phase if the dedicated inbox worktree cannot be prepared safely.
+phase if the dedicated findings worktree cannot be prepared safely.
+
+Capture only real findings. Do not create a finding report for a clean PR with
+no review, CI, or rule lesson.
 
 ### Step 6: Report
 
-One compact line back to the user:
-
-```
-STL-NN closed (<mode>). Linear: → Done. Worktree removed. Logged to <log_path>. Patterns: <updated|none|skipped>.
-```
-
-Include any warnings that came up (branch not fully merged, dirty worktree preserved, Linear move skipped, or similar).
+Return one compact line: `STL-NN closed (<mode>). Linear: <state>. Worktree:
+<removed|kept|skipped>. Logged: <path|skipped>. Findings: <updated|none|skipped>.`
+Include warnings such as branch not fully merged, dirty worktree preserved, or
+Linear move skipped.
 
 ## Binding rules
 
 - **Never force** (`-D`, `--force`) without explicit user confirmation. Uncommitted changes or unmerged branches are signals — pause and ask.
 - **Clean the used local task worktree only after moving to the main checkout.** `cd $shotloom_root` before `git worktree remove`; do not remove a worktree from inside itself.
 - **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go through `/learn-log-day`, which resolves `machine-paths.json → obsidian` with `obsidian-staging` fallback.
-- **Pattern candidates live in Knitten, not the Obsidian day log.** Day logs preserve retrospective context; `docs/briefings/shotloom/review-finding-patterns-inbox.md` accumulates generalized lessons for later consolidation.
+- **Pattern candidates live in Knitten, not the Obsidian day log.** Day logs preserve retrospective context; `docs/briefings/operational-findings-inbox.md` is the canonical Knitten-wide findings index. `docs/briefings/shotloom/review-finding-patterns-inbox.md` is legacy compatibility storage only.
 - **PR-level lifecycle is `/shotloom-auto-pr`'s job when running.** This skill is the manual equivalent — if auto-pr already did the Linear move and worktree cleanup on MERGE, this skill detects that and only appends the day log.
-- **Abandoned PRs** — worktree removal still requires the branch to be pushed (or user-approved discard). Local-only work should never be dropped silently.
-
-Related skills: `/shotloom-auto-pr`, `/shotloom-linear-move`,
-`/learn-log-day`, `/shotloom-promote-review-patterns`, `/shotloom-status`.
+- **Abandoned PRs** — worktree removal still requires the branch to be pushed or user-approved discard.

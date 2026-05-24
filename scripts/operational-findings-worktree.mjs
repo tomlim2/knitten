@@ -153,7 +153,6 @@ async function prepare(args) {
     return;
   }
 
-  await mkdir(path.dirname(worktreePath), { recursive: true });
   const hasLocal = localBranchExists(args.branch, mainPath);
   const hasRemote = remoteBranchExists(args.branch, mainPath);
   const addArgs = hasLocal
@@ -164,8 +163,11 @@ async function prepare(args) {
 
   if (args.dryRun) {
     console.log(`would run: git ${addArgs.join(" ")}`);
+    console.log(`worktree: ${worktreePath}`);
+    console.log(`branch: ${args.branch}`);
     return;
   }
+  await mkdir(path.dirname(worktreePath), { recursive: true });
   runGit(addArgs, { cwd: mainPath, stdio: "inherit" });
   ensureExistingWorktreeReady(worktreePath, args.branch, false);
   console.log(`worktree: ${worktreePath}`);
