@@ -3016,6 +3016,34 @@ const ARTIFACT_PACK_ENUMS = {
   visibility: new Set(["public", "private", "company", "local"]),
 };
 
+const ARTIFACT_PACK_ALLOWED_KEYS = {
+  root: new Set(["schema-version", "pack-id", "display-name", "version", "visibility", "owner-domain", "description", "exports", "dependencies", "compatibility-aliases"]),
+  export: new Set(["artifact-id", "artifact-type", "path", "shape", "mount", "entrypoint", "load", "route", "dependencies", "privacy-risk", "platforms"]),
+  mount: new Set(["layer", "target", "mode"]),
+  route: new Set(["context-profile", "domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes", "exclude-when", "min-evidence", "max-context-bytes", "priority"]),
+  compatibilityAlias: new Set(["alias-id", "target-artifact-id", "compatibility-need", "old-name", "old-path", "shim-path", "deprecation-date", "removal-criteria"]),
+};
+
+const ARTIFACT_PACK_FIXTURE_EXPECTED_MESSAGES = new Map([
+  ["absolute-export-path", "path must be repo-relative"],
+  ["company-unknown-export", "company pack export must be public-safe or needs-scrub"],
+  ["duplicate-artifact-id", "artifact-id values must be unique"],
+  ["duplicate-route-signature-in-set", "duplicate route signature"],
+  ["empty-removal-criteria", "removal-criteria must be non-empty"],
+  ["entrypoint-escapes-directory", "entrypoint must stay under path"],
+  ["invalid-dependency-ref", "invalid dependency ref"],
+  ["invalid-json", "invalid JSON"],
+  ["missing-compat-target", "target-artifact-id does not exist"],
+  ["missing-in-set-pack-dependency", "pack dependency not present"],
+  ["missing-required-root-field", "exports must be a non-empty array"],
+  ["public-private-export", "public pack export must be public-safe"],
+  ["route-selected-without-evidence", "requires positive route evidence"],
+  ["trailing-dotdot-path", "path must be repo-relative"],
+  ["unknown-core-capability", "unknown core capability"],
+  ["unknown-root-field", "unknown root field"],
+  ["unknown-route-domain", "domains has unknown value"],
+]);
+
 function artifactPackViolation(out, gate, file, message) {
   out.push({ gate, file, line: 1, message });
 }
@@ -3029,14 +3057,9 @@ function isSemverCore(value) {
 }
 
 function isSafePackPath(value) {
-  return (
-    typeof value === "string" &&
-    value.length > 0 &&
-    !path.isAbsolute(value) &&
-    !value.startsWith("../") &&
-    !value.includes("/../") &&
-    !/^[A-Za-z]:\\/.test(value)
-  );
+  if (typeof value !== "string" || value.length === 0) return false;
+  if (path.isAbsolute(value) || /^[A-Za-z]:[\\/]/.test(value) || value.includes("\\")) return false;
+  return value.split("/").every((part) => part !== "" && part !== "." && part !== "..");
 }
 
 function pathStaysUnder(parent, child) {
@@ -3126,12 +3149,27 @@ async function artifactPackFixtureCases(gate) {
   })).sort((a, b) => a.key.localeCompare(b.key));
 }
 
+function artifactPackFixtureExpectedMessage(fixtureCase) {
+  return ARTIFACT_PACK_FIXTURE_EXPECTED_MESSAGES.get(path.basename(fixtureCase.key));
+}
+
+function pushUnknownKeyViolations(out, file, gate, label, obj, allowed) {
+  for (const key of Object.keys(obj)) {
+    if (!allowed.has(key)) artifactPackViolation(out, gate, file, `${label} unknown ${label === "root" ? "root field" : "field"} ${key}`);
+  }
+}
+
+function pushUniqueArrayViolation(out, file, gate, label, value) {
+  if (Array.isArray(value) && hasDuplicates(value)) artifactPackViolation(out, gate, file, `${label} values must be unique`);
+}
+
 function validateArtifactPackShape(ctx, out) {
   const { file, manifest } = ctx;
   if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
     artifactPackViolation(out, "manifest-shape", file, "manifest must be an object");
     return false;
   }
+  pushUnknownKeyViolations(out, file, "manifest-shape", "root", manifest, ARTIFACT_PACK_ALLOWED_KEYS.root);
   const required = ["schema-version", "pack-id", "display-name", "version", "visibility", "owner-domain", "description", "exports"];
   for (const field of required) {
     if (manifest[field] === undefined) artifactPackViolation(out, "manifest-shape", file, `missing root field ${field}`);
@@ -3153,6 +3191,7 @@ function validateArtifactPackShape(ctx, out) {
       artifactPackViolation(out, "manifest-shape", file, `${label} must be an object`);
       continue;
     }
+    pushUnknownKeyViolations(out, file, "manifest-shape", label, entry, ARTIFACT_PACK_ALLOWED_KEYS.export);
     for (const field of ["artifact-id", "artifact-type", "path", "shape", "mount", "load", "privacy-risk"]) {
       if (entry[field] === undefined) artifactPackViolation(out, "manifest-shape", file, `${label} missing ${field}`);
     }
@@ -3165,14 +3204,25 @@ function validateArtifactPackShape(ctx, out) {
     if (!entry.mount || typeof entry.mount !== "object" || Array.isArray(entry.mount)) {
       artifactPackViolation(out, "manifest-shape", file, `${label}.mount must be an object`);
     } else {
+      pushUnknownKeyViolations(out, file, "manifest-shape", `${label}.mount`, entry.mount, ARTIFACT_PACK_ALLOWED_KEYS.mount);
       if (!ARTIFACT_PACK_ENUMS.layers.has(entry.mount.layer)) artifactPackViolation(out, "manifest-shape", file, `${label}.mount.layer has invalid value`);
       if (typeof entry.mount.target !== "string" || entry.mount.target.length === 0) artifactPackViolation(out, "manifest-shape", file, `${label}.mount.target must be non-empty`);
       if (!ARTIFACT_PACK_ENUMS.modes.has(entry.mount.mode)) artifactPackViolation(out, "manifest-shape", file, `${label}.mount.mode has invalid value`);
     }
     if (entry.dependencies !== undefined && !Array.isArray(entry.dependencies)) artifactPackViolation(out, "manifest-shape", file, `${label}.dependencies must be an array`);
+    pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.dependencies`, entry.dependencies);
+    pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.platforms`, entry.platforms);
+    if (entry.platforms !== undefined && !Array.isArray(entry.platforms)) artifactPackViolation(out, "manifest-shape", file, `${label}.platforms must be an array`);
     if (entry.route !== undefined && (!entry.route || typeof entry.route !== "object" || Array.isArray(entry.route))) artifactPackViolation(out, "manifest-shape", file, `${label}.route must be an object`);
+    if (entry.route && typeof entry.route === "object" && !Array.isArray(entry.route)) {
+      pushUnknownKeyViolations(out, file, "manifest-shape", `${label}.route`, entry.route, ARTIFACT_PACK_ALLOWED_KEYS.route);
+      for (const field of ["domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes", "exclude-when"]) {
+        pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.route.${field}`, entry.route[field]);
+      }
+    }
   }
   if (manifest.dependencies !== undefined && !Array.isArray(manifest.dependencies)) artifactPackViolation(out, "manifest-shape", file, "dependencies must be an array");
+  pushUniqueArrayViolation(out, file, "manifest-shape", "dependencies", manifest.dependencies);
   if (manifest["compatibility-aliases"] !== undefined && !Array.isArray(manifest["compatibility-aliases"])) {
     artifactPackViolation(out, "manifest-shape", file, "compatibility-aliases must be an array");
   }
@@ -3182,12 +3232,16 @@ function validateArtifactPackShape(ctx, out) {
       artifactPackViolation(out, "manifest-shape", file, `${label} must be an object`);
       continue;
     }
+    pushUnknownKeyViolations(out, file, "manifest-shape", label, alias, ARTIFACT_PACK_ALLOWED_KEYS.compatibilityAlias);
     for (const field of ["alias-id", "target-artifact-id", "compatibility-need", "removal-criteria"]) {
       if (alias[field] === undefined) artifactPackViolation(out, "manifest-shape", file, `${label} missing ${field}`);
     }
     if (!isSlug(alias["alias-id"])) artifactPackViolation(out, "manifest-shape", file, `${label}.alias-id must be kebab-case`);
     if (!isSlug(alias["target-artifact-id"])) artifactPackViolation(out, "manifest-shape", file, `${label}.target-artifact-id must be kebab-case`);
     if (!ARTIFACT_PACK_ENUMS.compatibilityNeeds.has(alias["compatibility-need"])) artifactPackViolation(out, "manifest-shape", file, `${label}.compatibility-need has invalid value`);
+    if (alias["deprecation-date"] !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(alias["deprecation-date"])) {
+      artifactPackViolation(out, "manifest-shape", file, `${label}.deprecation-date must be YYYY-MM-DD`);
+    }
   }
   return !out.some((violation) => violation.gate === "manifest-shape" && violation.file === file);
 }
@@ -3255,6 +3309,44 @@ function artifactPackDependencyRefs(manifest) {
     for (const ref of entry.dependencies || []) refs.push(ref);
   }
   return refs;
+}
+
+function validateArtifactPackCoreCapabilityRegistry(registry, out) {
+  const file = "agent/config/artifact-pack-core-capabilities.json";
+  if (!registry || typeof registry !== "object" || Array.isArray(registry)) {
+    artifactPackViolation(out, "manifest-dependencies", file, "core capability registry must be an object");
+    return new Set();
+  }
+  if (registry["schema-version"] !== 1) artifactPackViolation(out, "manifest-dependencies", file, "core capability registry schema-version must be 1");
+  if (!Array.isArray(registry.capabilities) || registry.capabilities.length === 0) {
+    artifactPackViolation(out, "manifest-dependencies", file, "core capability registry capabilities must be a non-empty array");
+    return new Set();
+  }
+  const ids = [];
+  for (const [index, capability] of registry.capabilities.entries()) {
+    const label = `capabilities[${index}]`;
+    if (!capability || typeof capability !== "object" || Array.isArray(capability)) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label} must be an object`);
+      continue;
+    }
+    ids.push(capability.id);
+    if (!isSlug(capability.id)) artifactPackViolation(out, "manifest-dependencies", file, `${label}.id must be kebab-case`);
+    if (typeof capability.owner !== "string" || capability.owner.length === 0) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label}.owner must be non-empty`);
+    } else if (capability.owner.startsWith("scripts/validate-llm-first.mjs --check ")) {
+      const checkName = capability.owner.slice("scripts/validate-llm-first.mjs --check ".length);
+      if (!CHECKS.some((check) => check.name === checkName)) {
+        artifactPackViolation(out, "manifest-dependencies", file, `${label}.owner references unknown validator check: ${checkName}`);
+      }
+    } else if (!existsSync(path.join(REPO_ROOT, capability.owner))) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label}.owner path does not exist: ${capability.owner}`);
+    }
+    if (typeof capability.description !== "string" || capability.description.length === 0) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label}.description must be non-empty`);
+    }
+  }
+  if (hasDuplicates(ids)) artifactPackViolation(out, "manifest-dependencies", file, "core capability ids must be unique");
+  return new Set(ids.filter(isSlug));
 }
 
 function validateArtifactPackDependencies(contexts, coreCapabilityIds, out, setMode) {
@@ -3453,7 +3545,7 @@ async function validateArtifactPackCase(files, gate, setMode = false) {
       artifactPackViolation(out, "manifest-dependencies", "agent/config/artifact-pack-core-capabilities.json", `cannot read core capability registry: ${err.message}`);
       registry = { capabilities: [] };
     }
-    const coreCapabilityIds = new Set((registry.capabilities || []).map((capability) => capability.id).filter(Boolean));
+    const coreCapabilityIds = validateArtifactPackCoreCapabilityRegistry(registry, out);
     validateArtifactPackDependencies(semanticContexts, coreCapabilityIds, out, setMode);
   }
   if (runGate("manifest-routing")) {
@@ -3498,6 +3590,14 @@ async function checkArtifactPack(gate = null) {
         file: fixtureCase.files[0],
         line: 1,
         message: `fixture expected ${fixtureCase.expectedGate} violation but none was reported`,
+      });
+    }
+    const expectedMessage = artifactPackFixtureExpectedMessage(fixtureCase);
+    if (expectedMessage && !expectedViolations.some((violation) => violation.message.includes(expectedMessage))) {
+      violations.push({
+        file: fixtureCase.files[0],
+        line: 1,
+        message: `fixture expected ${fixtureCase.expectedGate} violation containing ${JSON.stringify(expectedMessage)} but got: ${expectedViolations.map((violation) => violation.message).join("; ") || "none"}`,
       });
     }
     for (const violation of unexpectedViolations) {
