@@ -74,7 +74,7 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 | Signal | Add to layer |
 |--------|--------------|
 | "This must fire on every session, no exceptions" | 3 (always-applied rule) |
-| "This must fire only when condition X is true" | 5 (triggered rule) + register trigger in `rules/index.md` |
+| "This must fire only when condition X is true" | 5 (triggered rule) + register trigger in `agent/rules/index.md` |
 | "This is reference material; rule body is too short to hold it" | 4 (on-demand standard); rule links to it |
 | "Multiple files would each have the same paragraph" | 4 (standard) + delete duplicates; rules cite by path |
 | "I keep re-doing this procedure manually" | 6 (skill or command) |

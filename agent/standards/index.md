@@ -1,6 +1,6 @@
 # Standards Index
 
-On-demand reference docs. For always-applied rules see [`rules/index.md`](../rules/index.md).
+On-demand reference docs. For always-applied rules see [`agent/rules/index.md`](../rules/index.md).
 
 Use active standards as policy. Use redirect stubs only to find the skill-owned replacement reference.
 

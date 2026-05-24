@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-24
 updated: 2026-05-24
 owner: agent-hub
@@ -99,11 +99,11 @@ Initial entries:
 
 ## Acceptance Criteria
 
-- [ ] `agent/config/managed-paths.json` exists.
-- [ ] `managed-paths` validator check exists.
-- [ ] PR CI fails when an active artifact uses a retired managed path literal.
-- [ ] Existing Codex entry documents name `agent/rules/index.md` as the load-order path.
-- [ ] Scripts that share managed paths read a constant or registry value.
+- [x] `agent/config/managed-paths.json` exists.
+- [x] `managed-paths` validator check exists.
+- [x] PR CI fails when an active artifact uses a retired managed path literal.
+- [x] Existing Codex entry documents name `agent/rules/index.md` as the load-order path.
+- [x] Scripts that share managed paths read a constant or registry value.
 
 ## Open Decisions
 

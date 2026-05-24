@@ -54,7 +54,7 @@ durable plan or spec is written.
 
 ## Workflow
 
-1. Classify work mode with `rules/task-context-routing.md`.
+1. Classify work mode with `agent/rules/task-context-routing.md`.
 2. Select one planning mode.
 3. Read only the matching planning skill and evidence source.
 4. Produce the smallest plan that lets the next agent act.

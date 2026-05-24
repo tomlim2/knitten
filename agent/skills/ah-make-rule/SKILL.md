@@ -69,7 +69,7 @@ Structural rules:
 1. Parse filename from `$ARGUMENTS`.
 2. Check `agent/rules/{name}.md` does not exist. Abort if it does.
 3. Ask the user:
-   - Short scope description (for `rules/index.md`)
+   - Short scope description (for `agent/rules/index.md`)
    - The bullets themselves (or confirm the user will fill them in after)
    - Which index group: Core, Command Authoring, or Domain-specific
    - Which standard (if any) backs this rule
@@ -99,5 +99,5 @@ Structural rules:
 - `ah-make-standard` — long reference docs
 - `ah-make-skill` — reusable skills
 - `ah-make-command` — slash commands
-- `rules/index.md` — full index
+- `agent/rules/index.md` — full index
 - `standards/index.md` — reference docs rules link to

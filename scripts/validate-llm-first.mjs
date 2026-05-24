@@ -1577,6 +1577,199 @@ function manifestPathExists(value) {
   return existsSync(path.join(REPO_ROOT, value));
 }
 
+function normalizeManagedPath(value) {
+  return String(value || "").replace(/\/+$/, "");
+}
+
+function isUnsafeManagedPath(value) {
+  return (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    path.isAbsolute(value) ||
+    value.startsWith("../") ||
+    value.includes("/../") ||
+    /^([A-Za-z]:\\|\/Users\/)/.test(value)
+  );
+}
+
+function lineNumberAt(text, index) {
+  return text.slice(0, index).split("\n").length;
+}
+
+function aliasHasHarnessMapping(aliasValue, canonical, manifest) {
+  const [aliasRoot, ...restParts] = aliasValue.split("/");
+  const aliasRest = restParts.join("/");
+  for (const harness of manifest.harnesses || []) {
+    if (harness.linkMethod !== "symlink") continue;
+    const mapped = harness.mappings?.[aliasRoot];
+    if (!mapped) continue;
+    const mappedCanonical = aliasRest ? `${mapped}/${aliasRest}` : mapped;
+    if (normalizeManagedPath(mappedCanonical) === normalizeManagedPath(canonical)) return true;
+  }
+  return false;
+}
+
+async function managedPathAlias(id, fallback) {
+  try {
+    const registry = await readJsonConfig("managed-paths.json");
+    const entry = (registry.paths || []).find((item) => item.id === id);
+    const alias = (entry?.aliases || []).find((item) => item.contexts?.includes("validator-adapter"));
+    return alias?.value || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function isHistoricalManagedPathFile(file) {
+  return (
+    file.startsWith("docs/plans/completed/") ||
+    file.startsWith("docs/plans/archive/") ||
+    file.startsWith("docs/briefings/") ||
+    file.startsWith("docs/decisions/")
+  );
+}
+
+function isRegistryOwnerManagedPathFile(file) {
+  return (
+    file === "agent/config/artifact-inventory.json" ||
+    file === "agent/config/managed-paths.json" ||
+    file === "agent/config/managed-paths.schema.json" ||
+    file === "docs/plans/proposed/managed-path-registry-validation.md"
+  );
+}
+
+function isCanonicalSubstringUse(text, index) {
+  return text.slice(Math.max(0, index - "agent/".length), index) === "agent/";
+}
+
+function isRelativeMarkdownLinkUse(text, index) {
+  return text.slice(Math.max(0, index - "../".length), index) === "../";
+}
+
+function isDeployTargetAliasUse(text, index) {
+  const prefix = text.slice(Math.max(0, index - 20), index);
+  return /~\/\.(claude|codex)\//.test(prefix);
+}
+
+function isValidatorAdapterAliasUse(file, text, index) {
+  if (file !== "scripts/validate-llm-first.mjs") return false;
+  const lineStart = text.lastIndexOf("\n", index) + 1;
+  const lineEnd = text.indexOf("\n", index);
+  const line = text.slice(lineStart, lineEnd === -1 ? text.length : lineEnd);
+  return line.includes('"rules/');
+}
+
+function isContextFrontmatterAliasUse(text, index) {
+  if (!text.startsWith("---\n")) return false;
+  const frontmatterEnd = text.indexOf("\n---\n", 4);
+  if (frontmatterEnd === -1 || index > frontmatterEnd) return false;
+  const lineStart = text.lastIndexOf("\n", index) + 1;
+  const lineEnd = text.indexOf("\n", index);
+  const line = text.slice(lineStart, lineEnd === -1 ? text.length : lineEnd);
+  return /^context-(rules|standards|skills|commands):/.test(line.trim());
+}
+
+async function checkManagedPaths() {
+  const violations = [];
+  const file = "agent/config/managed-paths.json";
+  let registry;
+  let manifest;
+  try {
+    registry = await readJsonConfig("managed-paths.json");
+    manifest = await readJsonConfig("agent-hub.json");
+  } catch (err) {
+    return { name: "managed-paths", violations: [{ file, line: 1, message: `cannot read managed path registry: ${err.message}` }] };
+  }
+
+  if (registry["schema-version"] !== 1) {
+    violations.push({ file, line: 1, message: `schema-version must be 1, got ${JSON.stringify(registry["schema-version"])}` });
+  }
+  if (!Array.isArray(registry.paths)) {
+    violations.push({ file, line: 1, message: "paths must be an array" });
+    return { name: "managed-paths", violations };
+  }
+
+  const ids = [];
+  const canonicals = [];
+  const enforcedAliases = [];
+  const allowedContexts = new Set(["deploy-target", "context-frontmatter", "historical-doc", "registry-owner", "validator-adapter"]);
+  for (const entry of registry.paths) {
+    if (!entry || typeof entry !== "object") {
+      violations.push({ file, line: 1, message: "paths entries must be objects" });
+      continue;
+    }
+    if (!entry.id || typeof entry.id !== "string") {
+      violations.push({ file, line: 1, message: "paths entry missing id" });
+    } else {
+      ids.push(entry.id);
+    }
+    if (isUnsafeManagedPath(entry.canonical)) {
+      violations.push({ file, line: 1, message: `${entry.id || "<unknown>"} invalid canonical path: ${JSON.stringify(entry.canonical)}` });
+    } else {
+      canonicals.push(entry.canonical);
+      if (!existsSync(path.join(REPO_ROOT, entry.canonical))) {
+        violations.push({ file, line: 1, message: `${entry.id} canonical path does not exist: ${entry.canonical}` });
+      }
+    }
+    for (const alias of entry.aliases || []) {
+      if (!alias || typeof alias !== "object" || isUnsafeManagedPath(alias.value)) {
+        violations.push({ file, line: 1, message: `${entry.id || "<unknown>"} invalid alias value: ${JSON.stringify(alias?.value)}` });
+        continue;
+      }
+      if (!Array.isArray(alias.contexts) || alias.contexts.length === 0) {
+        violations.push({ file, line: 1, message: `${entry.id} alias ${alias.value} contexts must be non-empty` });
+      } else {
+        for (const context of alias.contexts) {
+          if (!allowedContexts.has(context)) {
+            violations.push({ file, line: 1, message: `${entry.id} alias ${alias.value} has unknown context ${JSON.stringify(context)}` });
+          }
+        }
+      }
+      if (alias.contexts?.includes("deploy-target") && !aliasHasHarnessMapping(alias.value, entry.canonical, manifest)) {
+        violations.push({ file, line: 1, message: `${entry.id} alias ${alias.value} does not map to ${entry.canonical} through a symlink harness` });
+      }
+      if (alias["enforce-canonical"]) enforcedAliases.push({ entry, alias });
+    }
+  }
+  if (hasDuplicates(ids)) violations.push({ file, line: 1, message: "path ids must not contain duplicates" });
+  if (hasDuplicates(canonicals)) violations.push({ file, line: 1, message: "canonical paths must not contain duplicates" });
+
+  const files = (await trackedFiles()).filter((f) => isTextAuditTarget(f));
+  for (const targetFile of files) {
+    if (isRegistryOwnerManagedPathFile(targetFile)) continue;
+    const historical = isHistoricalManagedPathFile(targetFile);
+    let text;
+    try {
+      text = await readFile(path.join(REPO_ROOT, targetFile), "utf8");
+    } catch {
+      continue;
+    }
+    for (const { entry, alias } of enforcedAliases) {
+      let index = text.indexOf(alias.value);
+      while (index !== -1) {
+        const contexts = new Set(alias.contexts || []);
+        const allowed =
+          isCanonicalSubstringUse(text, index) ||
+          isRelativeMarkdownLinkUse(text, index) ||
+          (historical && contexts.has("historical-doc")) ||
+          (contexts.has("deploy-target") && isDeployTargetAliasUse(text, index)) ||
+          (contexts.has("context-frontmatter") && isContextFrontmatterAliasUse(text, index)) ||
+          (contexts.has("validator-adapter") && isValidatorAdapterAliasUse(targetFile, text, index));
+        if (!allowed) {
+          violations.push({
+            file: targetFile,
+            line: lineNumberAt(text, index),
+            message: `use managed canonical path ${entry.canonical} instead of alias ${alias.value}`,
+          });
+        }
+        index = text.indexOf(alias.value, index + alias.value.length);
+      }
+    }
+  }
+
+  return { name: "managed-paths", violations };
+}
+
 function pushManifestPathViolation(violations, field, value) {
   if (!manifestPathExists(value)) {
     violations.push({
@@ -2777,8 +2970,9 @@ async function checkEntryDocuments() {
     }
   }
   const entries = await harnessEntryDocuments();
+  const rulesIndexAdapterPath = await managedPathAlias("rules-index", "rules/index.md");
   const allowedClaudeRuleImports = new Set([
-    "rules/index.md",
+    rulesIndexAdapterPath,
     "rules/ambiguity-scoring.md",
     "rules/behavior.md",
     "rules/canonical-first.md",
@@ -3529,6 +3723,7 @@ const CHECKS = [
   { name: "standards-redirects", fn: checkStandardsRedirects },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
+  { name: "managed-paths", fn: checkManagedPaths },
   { name: "artifact-inventory", fn: checkArtifactInventory },
   { name: "skill-root-shape", fn: checkSkillRootShape },
   { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },

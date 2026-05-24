@@ -49,7 +49,7 @@ copying everything into the core repository.
 | [design-plan-template-skill-adoption.md](../plans/proposed/design-plan-template-skill-adoption.md) | proposed | Route spec creation and review skills to the canonical Design Plan template while keeping domain-specific constraints in skills. |
 | [document-template-consumption-phases.md](../plans/proposed/document-template-consumption-phases.md) | proposed | Split document template review policy into internal-consumption and vault-assetization phases after adding the Design Plan template. |
 | [context-standards-redirect-validation.md](../plans/proposed/context-standards-redirect-validation.md) | proposed | Validate `context-standards` paths through standards redirect stubs and canonical replacement targets. |
-| [managed-path-registry-validation.md](../plans/proposed/managed-path-registry-validation.md) | proposed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
+| [managed-path-registry-validation.md](../plans/completed/managed-path-registry-validation.md) | completed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
@@ -82,7 +82,7 @@ copying everything into the core repository.
 | Discovery and routing | not started | Depends on the manifest contract. |
 | Install and link flow | not started | Depends on the manifest contract and current harness link behavior. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
-| Managed path registry | proposed | `docs/plans/proposed/managed-path-registry-validation.md` records the registry and CI validation plan. |
+| Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
 | Validation gates | not started | Depends on finalized manifest fields and public-safety policy. |
 | Example pack | not started | Depends on manifest contract and resolver behavior. |
 

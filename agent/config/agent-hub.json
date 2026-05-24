@@ -156,6 +156,14 @@
       "secretPolicy": "no-secrets"
     },
     {
+      "id": "managed-paths",
+      "path": "agent/config/managed-paths.json",
+      "domain": "canonical shared-layer paths, deploy aliases, and hardcoded path drift checks",
+      "format": "json",
+      "deployTarget": "~/.claude/config/managed-paths.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
       "id": "audit-policy",
       "path": "agent/config/audit-policy.json",
       "domain": "audit thresholds and severity tiers",
@@ -378,6 +386,15 @@
       "covers": [
         "skill and command categories",
         "managed document naming"
+      ]
+    },
+    {
+      "id": "managed-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "managed-paths",
+      "covers": [
+        "managed path registry shape",
+        "stale shared-layer path literals"
       ]
     },
     {

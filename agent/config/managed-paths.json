@@ -1,0 +1,70 @@
+{
+  "schema-version": 1,
+  "paths": [
+    {
+      "id": "artifact-inventory",
+      "canonical": "agent/config/artifact-inventory.json"
+    },
+    {
+      "id": "artifact-inventory-schema",
+      "canonical": "agent/config/artifact-inventory.schema.json"
+    },
+    {
+      "id": "commands-root",
+      "canonical": "agent/commands/",
+      "aliases": [
+        {
+          "value": "commands/",
+          "contexts": ["deploy-target", "context-frontmatter", "historical-doc"]
+        }
+      ],
+      "deploy-targets": ["~/.claude/commands", "~/.codex/commands"]
+    },
+    {
+      "id": "rules-index",
+      "canonical": "agent/rules/index.md",
+      "aliases": [
+        {
+          "value": "rules/index.md",
+          "contexts": ["deploy-target", "context-frontmatter", "historical-doc", "validator-adapter"],
+          "enforce-canonical": true
+        }
+      ],
+      "deploy-targets": ["~/.claude/rules/index.md", "~/.codex/rules/index.md"]
+    },
+    {
+      "id": "skills-root",
+      "canonical": "agent/skills/",
+      "aliases": [
+        {
+          "value": "skills/",
+          "contexts": ["deploy-target", "context-frontmatter", "historical-doc"]
+        }
+      ],
+      "deploy-targets": ["~/.claude/skills", "~/.codex/skills"]
+    },
+    {
+      "id": "standards-root",
+      "canonical": "agent/standards/",
+      "aliases": [
+        {
+          "value": "standards/",
+          "contexts": ["deploy-target", "context-frontmatter", "historical-doc"]
+        }
+      ],
+      "deploy-targets": ["~/.claude/standards", "~/.codex/standards"]
+    },
+    {
+      "id": "task-context-routing-rule",
+      "canonical": "agent/rules/task-context-routing.md",
+      "aliases": [
+        {
+          "value": "rules/task-context-routing.md",
+          "contexts": ["deploy-target", "context-frontmatter", "historical-doc"],
+          "enforce-canonical": true
+        }
+      ],
+      "deploy-targets": ["~/.claude/rules/task-context-routing.md", "~/.codex/rules/task-context-routing.md"]
+    }
+  ]
+}

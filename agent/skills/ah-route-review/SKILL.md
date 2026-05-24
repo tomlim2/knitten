@@ -60,7 +60,7 @@ Findings come first. If no findings exist, say so and list residual risk.
 
 ## Workflow
 
-1. Classify work mode with `rules/task-context-routing.md`.
+1. Classify work mode with `agent/rules/task-context-routing.md`.
 2. Select the narrowest review type from the table.
 3. Read only the selected skill bodies and direct references.
 4. Run required verification before reporting.

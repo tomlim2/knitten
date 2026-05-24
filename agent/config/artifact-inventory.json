@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-24T08:45:18.103Z",
-  "source-commit": "a04768d88715c4cade44f1842ca62cbf7c9bed4a",
+  "generated-at": "2026-05-24T08:58:52.127Z",
+  "source-commit": "0bb1582572a182214f098222529b5b3ad049fb84",
   "rows": [
     {
       "row-id": "artifact:.github/pull_request_template.md",
@@ -774,6 +774,32 @@
       "row-id": "artifact:agent/config/frontmatter-schema.json",
       "row-type": "artifact",
       "source-artifact-path": "agent/config/frontmatter-schema.json",
+      "artifact-type": "config",
+      "owner-domain": "core",
+      "privacy-risk": "public-safe",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/config/managed-paths.json",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/config/managed-paths.json",
+      "artifact-type": "config",
+      "owner-domain": "core",
+      "privacy-risk": "public-safe",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/config/managed-paths.schema.json",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/config/managed-paths.schema.json",
       "artifact-type": "config",
       "owner-domain": "core",
       "privacy-risk": "public-safe",
@@ -4866,6 +4892,19 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:docs/plans/completed/managed-path-registry-validation.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/completed/managed-path-registry-validation.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:docs/plans/completed/migrate-to-llm-first.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/completed/migrate-to-llm-first.md",
@@ -5506,19 +5545,6 @@
       "row-id": "artifact:docs/plans/proposed/knitten-core-public-transition.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/proposed/knitten-core-public-transition.md",
-      "artifact-type": "doc",
-      "owner-domain": "unknown",
-      "privacy-risk": "unknown",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:docs/plans/proposed/managed-path-registry-validation.md",
-      "row-type": "artifact",
-      "source-artifact-path": "docs/plans/proposed/managed-path-registry-validation.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",

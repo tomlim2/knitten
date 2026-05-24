@@ -37,7 +37,7 @@ Verified in the configured `agent-hub` repo on 2026-05-14.
 |---|---|---|
 | Shared load model | `SYSTEM.md` defines auto rules, triggered rules, standards, and skills as separate layers | `SYSTEM.md` |
 | Codex entry | `AGENTS.md` tells Codex to read `SYSTEM.md`, then `agent/rules/index.md`, then every auto rule | `AGENTS.md` |
-| Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `rules/index.md`, and seven bootstrap auto rules; standards are read on demand | `CLAUDE.md` |
+| Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `agent/rules/index.md`, and seven bootstrap auto rules; standards are read on demand | `CLAUDE.md` |
 | Rules index | `agent/rules/index.md` separates auto rules from triggered rules | `agent/rules/index.md` |
 | Standards index | `agent/standards/index.md` is a discoverable index for on-demand standards | `agent/standards/index.md` |
 | Routing plan | `docs/plans/completed/task-context-routing.md` already defines route-domain metadata and high-cost artifact routing | `docs/plans/completed/task-context-routing.md` |

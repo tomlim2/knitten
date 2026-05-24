@@ -152,7 +152,7 @@ Avoid:
 | `commands/*.md` | ≤ 100 lines | Loaded when invoked; thin orchestration only |
 | `standards/*.md` | ≤ 500 lines | On-demand layer 4 reference; split when reading the whole file is the bottleneck |
 
-`rules/*.md` body excludes frontmatter. The auto-vs-triggered split is declared by the rule's `load:` frontmatter field; see `rules/index.md`.
+`rules/*.md` body excludes frontmatter. The auto-vs-triggered split is declared by the rule's `load:` frontmatter field; see `agent/rules/index.md`.
 
 If a file exceeds budget, split — do not let it grow.
 

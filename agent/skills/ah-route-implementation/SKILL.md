@@ -49,7 +49,7 @@ pre-edit evidence, post-edit verification, and review handoff.
 
 ## Workflow
 
-1. Classify work mode with `rules/task-context-routing.md`.
+1. Classify work mode with `agent/rules/task-context-routing.md`.
 2. Select the technical context profile from `AGENT-HUB.md`.
 3. Read only the matching implementation skill and repo rules.
 4. Implement the smallest verifiable slice first.

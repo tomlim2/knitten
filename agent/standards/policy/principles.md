@@ -29,7 +29,7 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`. This
 **validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
 <!-- generated:validator-checks -->
-Validator checks: **27**.
+Validator checks: **28**.
 
 - `banned-terms`
 - `terminology`
@@ -43,6 +43,7 @@ Validator checks: **27**.
 - `standards-redirects`
 - `platform-metadata`
 - `taxonomy`
+- `managed-paths`
 - `artifact-inventory`
 - `skill-root-shape`
 - `skill-command-mechanics`
@@ -260,8 +261,8 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 **Why discovered:** The Skills & commands table in `CLAUDE.md` duplicated content already in three triggered rules (`naming.md`, `command-frontmatter.md`, `tool-permissions.md`) and one standard (`slash-commands.md`). Same rules in two places — when one updates, the other rots.
 
 **Example:**
-- ✅ `rules/index.md` lists 21 rules with one-line scope. `CLAUDE.md` doesn't repeat the list.
-- ❌ "Authoring rules" appears as a table in CLAUDE.md AND in rules/index.md AND in README.md.
+- ✅ `agent/rules/index.md` lists 21 rules with one-line scope. `CLAUDE.md` doesn't repeat the list.
+- ❌ "Authoring rules" appears as a table in CLAUDE.md AND in agent/rules/index.md AND in README.md.
 
 **Enforced by:** `validate-llm-first.mjs` `inventory-counts` check (README counts must match `ls`). For body content: garden review section 3.
 
