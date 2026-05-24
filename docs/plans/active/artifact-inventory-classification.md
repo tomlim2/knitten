@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-20
-updated: 2026-05-20
+updated: 2026-05-24
 owner: agent-hub
 milestone: agent-artifact-pack-system
 intake: docs/briefings/specs/artifact-inventory-classification.md
@@ -163,7 +163,7 @@ different row shapes and produce incompatible migration batches.
 - [x] `thin-skill-guide-boundary` points to this spec as the inventory schema owner.
 - [x] Generator creates `agent/config/artifact-inventory.json`.
 - [x] Pilot classification covers at least five representative skills.
-- [ ] Validator checks enforce row ids, parent links, enum values, and extraction counts.
+- [x] Validator checks enforce row ids, parent links, enum values, and extraction counts.
 
 ## Open Decisions
 

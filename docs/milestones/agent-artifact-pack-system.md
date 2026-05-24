@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-21
+updated: 2026-05-24
 owner: agent-hub
 target-date:
 ---
@@ -49,6 +49,7 @@ copying everything into the core repository.
 | [design-plan-template-skill-adoption.md](../plans/proposed/design-plan-template-skill-adoption.md) | proposed | Route spec creation and review skills to the canonical Design Plan template while keeping domain-specific constraints in skills. |
 | [document-template-consumption-phases.md](../plans/proposed/document-template-consumption-phases.md) | proposed | Split document template review policy into internal-consumption and vault-assetization phases after adding the Design Plan template. |
 | [context-standards-redirect-validation.md](../plans/proposed/context-standards-redirect-validation.md) | proposed | Validate `context-standards` paths through standards redirect stubs and canonical replacement targets. |
+| [managed-path-registry-validation.md](../plans/proposed/managed-path-registry-validation.md) | proposed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
@@ -67,7 +68,7 @@ copying everything into the core repository.
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
-| Inventory and classification | active | Schema contract, generated inventory output, and five-skill pilot classification exist; validator checks are next. |
+| Inventory and classification | active | Schema contract, generated inventory output, five-skill pilot classification, and validator checks exist; inventory review is next. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | Skill lifecycle manager | todo | Add a dedicated spec for skill CRUD/lifecycle management. |
@@ -81,6 +82,7 @@ copying everything into the core repository.
 | Discovery and routing | not started | Depends on the manifest contract. |
 | Install and link flow | not started | Depends on the manifest contract and current harness link behavior. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
+| Managed path registry | proposed | `docs/plans/proposed/managed-path-registry-validation.md` records the registry and CI validation plan. |
 | Validation gates | not started | Depends on finalized manifest fields and public-safety policy. |
 | Example pack | not started | Depends on manifest contract and resolver behavior. |
 

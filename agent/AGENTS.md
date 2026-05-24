@@ -13,6 +13,15 @@ System terms: [`docs/reference/system-glossary.md`](../docs/reference/system-glo
 4. Read every auto rule listed by `agent/rules/index.md`.
 5. Read triggered rules, standards, skills, and commands when the task matches them.
 
+## Shared Layer Paths
+
+| Shorthand | Repo path |
+|-----------|-----------|
+| `rules/` | `agent/rules/` |
+| `standards/` | `agent/standards/` |
+| `skills/` | `agent/skills/` |
+| `commands/` | `agent/commands/` |
+
 ## Codex Adapter
 
 Shared rules, standards, skills, and commands are binding repository conventions for Codex unless they depend on another harness's runtime features.

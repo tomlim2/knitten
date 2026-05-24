@@ -79,7 +79,7 @@ related: docs/plans/completed/agent-symlink-followup.md
 | T7: Link agent-hub skills | for each `$AGENT_HUB/agent/skills/<skill>/SKILL.md`, create `"$CODEX_HOME/skills/<skill>" -> "$AGENT_HUB/agent/skills/<skill>"` | `.system` remains and agent-hub skills resolve |
 | T8: Update shim | edit `$CODEX_HOME/AGENTS.md` so the first shared-policy read is `SYSTEM.md`, then keep the existing personal queue rules below it | file keeps queue rules and names `SYSTEM.md` first |
 | T9: Verify reads | `sed -n '1,80p' "$CODEX_HOME/AGENTS.md"` and `sed -n '1,20p' "$CODEX_HOME/SYSTEM.md"` | output shows shim, load order, and canonical policy |
-| T10: Verify links | `readlink "$CODEX_HOME/SYSTEM.md"`; `readlink "$CODEX_HOME/AGENT-HUB.md"`; `readlink "$CODEX_HOME/agent"`; `readlink "$CODEX_HOME/docs"`; `readlink "$CODEX_HOME/rules"`; `readlink "$CODEX_HOME/standards"`; `readlink "$CODEX_HOME/commands"` | each target is under `agent-hub` |
+| T10: Verify links | `readlink "$CODEX_HOME/SYSTEM.md"`; `readlink "$CODEX_HOME/AGENT-HUB.md"`; `readlink "$CODEX_HOME/agent"`; `readlink "$CODEX_HOME/docs"`; `readlink "$CODEX_HOME/rules"`; `readlink "$CODEX_HOME/standards"`; `readlink "$CODEX_HOME/commands"` | each target is under the agent-hub checkout |
 | T11: Verify skills | `test -d "$CODEX_HOME/skills/.system"` and `find -L "$CODEX_HOME/skills" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l` | `.system` exists and agent-hub skills are discoverable |
 | T12: Verify startup behavior | start a fresh Codex session and ask whether `SYSTEM.md`, auto rules, task context routing, and agent-hub skills loaded | answer identifies `SYSTEM.md`, `rules/index.md`, `rules/task-context-routing.md`, and at least one agent-hub skill |
 
@@ -98,15 +98,15 @@ System terms: [docs/reference/system-glossary.md](docs/reference/system-glossary
 
 1. Read `SYSTEM.md`.
 2. Read `docs/reference/system-glossary.md` when editing system policy, entry documents, plans, manifests, or validators.
-3. Read `rules/index.md`.
-4. Read every auto rule listed by `rules/index.md`.
+3. Read `agent/rules/index.md`.
+4. Read every auto rule listed by `agent/rules/index.md`.
 5. Read triggered rules, standards, skills, and commands when the task matches them.
 
 ## Task Context Routing
 
 Before loading route-domain skills, standards, commands, rules, or references:
 
-1. Read `rules/task-context-routing.md`.
+1. Read `agent/rules/task-context-routing.md`.
 2. Classify the task with user words, cwd, repo key, file extensions, named skill, command name, and frontmatter.
 3. Use routing axes and profiles from `agent/config/context-routing.json`.
 4. Load only artifacts whose routing metadata matches the task route.
@@ -114,16 +114,16 @@ Before loading route-domain skills, standards, commands, rules, or references:
 
 ## Shared Layers
 
-Top-level shared-layer paths resolve to agent-hub:
+Shared layer shorthand paths resolve under `agent/` in this checkout:
 
-- `rules/`
-- `standards/`
-- `skills/`
-- `commands/`
+- `rules/` => `agent/rules/`
+- `standards/` => `agent/standards/`
+- `skills/` => `agent/skills/`
+- `commands/` => `agent/commands/`
 
 Compact routing index resolves through `AGENT-HUB.md`.
 
-Use `skills/<name>/SKILL.md` when a user names a skill or the task matches that skill's description.
+Use `agent/skills/<name>/SKILL.md` when a user names a skill or the task matches that skill's description.
 
 <existing Personal Codex Rules content stays below this line>
 ```

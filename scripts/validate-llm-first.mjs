@@ -2549,6 +2549,222 @@ async function checkTaxonomy() {
   return { name: "taxonomy", violations };
 }
 
+const ARTIFACT_INVENTORY_ENUMS = {
+  rowTypes: new Set(["artifact", "skill", "extraction-item"]),
+  artifactTypes: new Set(["skill", "command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  nonSkillArtifactTypes: new Set(["command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  ownerDomains: new Set(["core", "repo", "company", "personal", "domain", "experiment", "unknown"]),
+  privacyRisks: new Set(["public-safe", "needs-scrub", "private-only", "unknown"]),
+  proposedDestinations: new Set(["knitten-core", "knitten-private-pack", "domain-pack", "deprecated", "migrate-later", "undecided"]),
+  compatibilityNeeds: new Set(["alias", "shim", "redirect", "old-path-mapping", "none", "unknown"]),
+  classificationStages: new Set(["undecided", "core-candidate", "pack-candidate", "deprecated", "migrate-later"]),
+  reviewStates: new Set(["pending", "accepted", "blocked", "moved"]),
+  skillSizes: new Set(["tiny", "small", "medium", "large", "huge"]),
+  skillKinds: new Set(["workflow-only", "workflow-with-notes", "guide-heavy", "reference-heavy", "mixed-heavy", "unknown"]),
+  coreSkillRoles: new Set(["bootstrap", "router", "lifecycle", "domain", "repo-specific", "none"]),
+  splitReadiness: new Set(["none", "low", "ready", "blocked"]),
+  contentKinds: new Set(["judgment", "example", "output-body", "naming-policy", "lifecycle-policy", "domain-reference", "machine-checkable-contract"]),
+  artifactSubkinds: new Set(["guide", "reference", "document-template", "validator-check", "rubric", "example", "none"]),
+  triState: new Set(["yes", "no", "unknown"]),
+};
+
+function inventoryViolation(violations, message) {
+  violations.push({ file: "agent/config/artifact-inventory.json", line: 1, message });
+}
+
+function hasUnsafeInventoryPath(value) {
+  return (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    path.isAbsolute(value) ||
+    value.startsWith("../") ||
+    value.includes("/../") ||
+    /^([A-Za-z]:\\|\/Users\/)/.test(value)
+  );
+}
+
+function requireInventoryFields(violations, row, fields) {
+  for (const field of fields) {
+    if (row[field] === undefined) {
+      inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} missing ${field}`);
+    }
+  }
+}
+
+function checkInventoryEnum(violations, row, field, allowed) {
+  if (!allowed.has(row[field])) {
+    inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} invalid ${field}: ${JSON.stringify(row[field])}`);
+  }
+}
+
+function checkInventoryPathField(violations, row, field, { allowUndecided = false, mustExist = false } = {}) {
+  const value = row[field];
+  if (allowUndecided && value === "undecided") return;
+  if (hasUnsafeInventoryPath(value)) {
+    inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} invalid ${field}: ${JSON.stringify(value)}`);
+    return;
+  }
+  if (mustExist && !existsSync(path.join(REPO_ROOT, value))) {
+    inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} ${field} does not exist: ${value}`);
+  }
+}
+
+async function checkArtifactInventory() {
+  const violations = [];
+  const file = "agent/config/artifact-inventory.json";
+  let inventory;
+  try {
+    inventory = await readJsonRel(file);
+  } catch (err) {
+    inventoryViolation(violations, `cannot read artifact inventory: ${err.message}`);
+    return { name: "artifact-inventory", violations };
+  }
+
+  if (inventory["schema-version"] !== 1) {
+    inventoryViolation(violations, `schema-version must be 1, got ${JSON.stringify(inventory["schema-version"])}`);
+  }
+  if (!Array.isArray(inventory.rows)) {
+    inventoryViolation(violations, "rows must be an array");
+    return { name: "artifact-inventory", violations };
+  }
+
+  const rowIds = new Set();
+  const skillRows = new Map();
+  const extractionRowsByParent = new Map();
+  const extractionIdsByParent = new Map();
+  const commonFields = [
+    "row-id",
+    "row-type",
+    "source-artifact-path",
+    "artifact-type",
+    "owner-domain",
+    "privacy-risk",
+    "dependencies",
+    "proposed-destination",
+    "compatibility-need",
+    "classification-stage",
+    "review-state",
+  ];
+
+  for (const row of inventory.rows) {
+    requireInventoryFields(violations, row, commonFields);
+    if (typeof row["row-id"] !== "string") continue;
+    if (rowIds.has(row["row-id"])) {
+      inventoryViolation(violations, `duplicate row-id: ${row["row-id"]}`);
+    }
+    rowIds.add(row["row-id"]);
+
+    checkInventoryEnum(violations, row, "row-type", ARTIFACT_INVENTORY_ENUMS.rowTypes);
+    checkInventoryEnum(violations, row, "artifact-type", ARTIFACT_INVENTORY_ENUMS.artifactTypes);
+    checkInventoryEnum(violations, row, "owner-domain", ARTIFACT_INVENTORY_ENUMS.ownerDomains);
+    checkInventoryEnum(violations, row, "privacy-risk", ARTIFACT_INVENTORY_ENUMS.privacyRisks);
+    checkInventoryEnum(violations, row, "proposed-destination", ARTIFACT_INVENTORY_ENUMS.proposedDestinations);
+    checkInventoryEnum(violations, row, "compatibility-need", ARTIFACT_INVENTORY_ENUMS.compatibilityNeeds);
+    checkInventoryEnum(violations, row, "classification-stage", ARTIFACT_INVENTORY_ENUMS.classificationStages);
+    checkInventoryEnum(violations, row, "review-state", ARTIFACT_INVENTORY_ENUMS.reviewStates);
+    checkInventoryPathField(violations, row, "source-artifact-path", { mustExist: true });
+
+    if (!Array.isArray(row.dependencies)) {
+      inventoryViolation(violations, `${row["row-id"]} dependencies must be an array`);
+    } else {
+      if (hasDuplicates(row.dependencies)) {
+        inventoryViolation(violations, `${row["row-id"]} dependencies must not contain duplicates`);
+      }
+      for (const dependency of row.dependencies) {
+        if (hasUnsafeInventoryPath(dependency) && !/^(artifact|skill|extraction):/.test(String(dependency))) {
+          inventoryViolation(violations, `${row["row-id"]} invalid dependency: ${JSON.stringify(dependency)}`);
+        }
+      }
+    }
+
+    if (row["row-type"] === "artifact") {
+      if (row["row-id"] !== `artifact:${row["source-artifact-path"]}`) {
+        inventoryViolation(violations, `${row["row-id"]} must equal artifact:${row["source-artifact-path"]}`);
+      }
+      checkInventoryEnum(violations, row, "artifact-type", ARTIFACT_INVENTORY_ENUMS.nonSkillArtifactTypes);
+    } else if (row["row-type"] === "skill") {
+      if (row["row-id"] !== `skill:${row["source-artifact-path"]}`) {
+        inventoryViolation(violations, `${row["row-id"]} must equal skill:${row["source-artifact-path"]}`);
+      }
+      requireInventoryFields(violations, row, ["skill-size", "skill-kind", "core-skill-role", "extraction-count", "split-readiness"]);
+      if (row["artifact-type"] !== "skill") inventoryViolation(violations, `${row["row-id"]} artifact-type must be skill`);
+      checkInventoryEnum(violations, row, "skill-size", ARTIFACT_INVENTORY_ENUMS.skillSizes);
+      checkInventoryEnum(violations, row, "skill-kind", ARTIFACT_INVENTORY_ENUMS.skillKinds);
+      checkInventoryEnum(violations, row, "core-skill-role", ARTIFACT_INVENTORY_ENUMS.coreSkillRoles);
+      checkInventoryEnum(violations, row, "split-readiness", ARTIFACT_INVENTORY_ENUMS.splitReadiness);
+      if (!Number.isInteger(row["extraction-count"]) || row["extraction-count"] < 0) {
+        inventoryViolation(violations, `${row["row-id"]} extraction-count must be a non-negative integer`);
+      }
+      skillRows.set(row["row-id"], row);
+    } else if (row["row-type"] === "extraction-item") {
+      requireInventoryFields(violations, row, [
+        "parent-row-id",
+        "extraction-id",
+        "source-section",
+        "content-kind",
+        "extracted-artifact-type",
+        "artifact-subkind",
+        "target-path",
+        "required-at-runtime",
+        "validation-needed",
+      ]);
+      if (row["artifact-type"] !== "skill") inventoryViolation(violations, `${row["row-id"]} artifact-type must be skill`);
+      if (row["row-id"] !== `extraction:${row["source-artifact-path"]}#${row["extraction-id"]}`) {
+        inventoryViolation(violations, `${row["row-id"]} must equal extraction:${row["source-artifact-path"]}#${row["extraction-id"]}`);
+      }
+      checkInventoryEnum(violations, row, "content-kind", ARTIFACT_INVENTORY_ENUMS.contentKinds);
+      checkInventoryEnum(violations, row, "extracted-artifact-type", ARTIFACT_INVENTORY_ENUMS.artifactTypes);
+      checkInventoryEnum(violations, row, "artifact-subkind", ARTIFACT_INVENTORY_ENUMS.artifactSubkinds);
+      checkInventoryEnum(violations, row, "required-at-runtime", ARTIFACT_INVENTORY_ENUMS.triState);
+      checkInventoryEnum(violations, row, "validation-needed", ARTIFACT_INVENTORY_ENUMS.triState);
+      if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(String(row["extraction-id"]))) {
+        inventoryViolation(violations, `${row["row-id"]} extraction-id must be kebab-case`);
+      }
+      checkInventoryPathField(violations, row, "target-path", { allowUndecided: true });
+      const expectedParentRowId = `skill:${row["source-artifact-path"]}`;
+      if (row["parent-row-id"] !== expectedParentRowId) {
+        inventoryViolation(violations, `${row["row-id"]} parent-row-id must equal ${expectedParentRowId}`);
+      }
+
+      const parent = row["parent-row-id"];
+      if (!extractionRowsByParent.has(parent)) extractionRowsByParent.set(parent, []);
+      extractionRowsByParent.get(parent).push(row);
+      if (!extractionIdsByParent.has(parent)) extractionIdsByParent.set(parent, new Set());
+      const parentExtractionIds = extractionIdsByParent.get(parent);
+      if (parentExtractionIds.has(row["extraction-id"])) {
+        inventoryViolation(violations, `${parent} duplicate extraction-id: ${row["extraction-id"]}`);
+      }
+      parentExtractionIds.add(row["extraction-id"]);
+    }
+  }
+
+  for (const [parentRowId, extractionRows] of extractionRowsByParent.entries()) {
+    if (!skillRows.has(parentRowId)) {
+      inventoryViolation(violations, `${parentRowId} missing parent skill row for ${extractionRows.length} extraction rows`);
+      continue;
+    }
+    const skillRow = skillRows.get(parentRowId);
+    if (skillRow["extraction-count"] !== extractionRows.length) {
+      inventoryViolation(
+        violations,
+        `${parentRowId} extraction-count ${skillRow["extraction-count"]} does not match linked extraction rows ${extractionRows.length}`,
+      );
+    }
+  }
+
+  for (const [skillRowId, skillRow] of skillRows.entries()) {
+    const linkedCount = extractionRowsByParent.get(skillRowId)?.length || 0;
+    if (skillRow["extraction-count"] !== linkedCount) {
+      inventoryViolation(
+        violations,
+        `${skillRowId} extraction-count ${skillRow["extraction-count"]} does not match linked extraction rows ${linkedCount}`,
+      );
+    }
+  }
+
+  return { name: "artifact-inventory", violations };
+}
+
 async function checkEntryDocuments() {
   const violations = [];
   for (const rootEntry of ["CLAUDE.md", "AGENTS.md"]) {
@@ -3313,6 +3529,7 @@ const CHECKS = [
   { name: "standards-redirects", fn: checkStandardsRedirects },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
+  { name: "artifact-inventory", fn: checkArtifactInventory },
   { name: "skill-root-shape", fn: checkSkillRootShape },
   { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },
   { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },
