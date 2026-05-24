@@ -75,7 +75,7 @@ copying everything into the core repository.
 | Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
 | Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | active | Five-skill pilot classification exists; pilot extraction is next. |
+| Thin skill / guide boundary | active | Five-skill pilot classification and first extraction pilot exist; rollout rule is next. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |

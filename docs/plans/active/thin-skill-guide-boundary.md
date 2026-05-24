@@ -447,13 +447,17 @@ Done: initial generated inventory covers 5 representative skills:
 
 ### Batch E: Pilot Extraction
 
-1. Pick one low-risk `workflow-with-notes`, `guide-heavy`, or
+1. Done: Pick one low-risk `workflow-with-notes`, `guide-heavy`, or
    `reference-heavy` skill with `split-readiness: ready`.
-2. Move durable guidance to the selected target home.
-3. Record before/after decision-quality metrics.
-4. Keep the skill executable through frontmatter, required reads, workflow, and
+   Evidence: `shotloom-review-before-pr`.
+2. Done: Move durable guidance to the selected target home.
+   Evidence: `docs/plans/reports/artifact-inventory-classification/pilot-extraction-shotloom-review-before-pr-2026-05-24.md`.
+3. Done: Record before/after decision-quality metrics.
+   Evidence: pilot extraction report.
+4. Done: Keep the skill executable through frontmatter, required reads, workflow, and
    validation.
-5. Run validators and review cold-start readability.
+5. Done: Run validators and review cold-start readability.
+   Evidence: `node scripts/validate-llm-first.mjs`.
 
 ### Batch F: Rollout Rule
 

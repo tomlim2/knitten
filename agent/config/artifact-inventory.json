@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-24T09:59:06.501Z",
-  "source-commit": "bc397962a7e4531299cffb75a2f10de4bff6c4da",
+  "generated-at": "2026-05-24T10:06:56.842Z",
+  "source-commit": "776d7238f2e9119b699ecf83170e547ef74a7a76",
   "rows": [
     {
       "row-id": "artifact:.github/pull_request_template.md",
@@ -5717,6 +5717,19 @@
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/reports/artifact-inventory-classification/pilot-extraction-shotloom-review-before-pr-2026-05-24.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/reports/artifact-inventory-classification/pilot-extraction-shotloom-review-before-pr-2026-05-24.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
       "dependencies": [],
       "proposed-destination": "undecided",
       "compatibility-need": "unknown",

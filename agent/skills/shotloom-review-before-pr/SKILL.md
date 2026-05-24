@@ -75,8 +75,8 @@ Refuse if `HEAD` is `main`, the branch has zero commits ahead of
 
 ### Step 2: Review Mode Decision
 
-Gather diff evidence plus large-boundary trigger rows, then choose
-`review_mode=single` or `review_mode=triad` from `references/REVIEW_MODE.md`.
+Read `references/REVIEW_MODE.md`, gather its required evidence, and choose
+`review_mode=single` or `review_mode=triad`.
 
 ```bash
 git diff --shortstat origin/main...HEAD
@@ -84,12 +84,8 @@ git diff --name-only origin/main...HEAD
 git diff --name-status origin/main...HEAD
 ```
 
-Use `references/LARGE_BOUNDARY_PR_LENSES.md` → `Trigger` while deciding
-`triad triggers`; Step 5 uses the same trigger count to select batches.
-
-Honor `force single`, `force standard`, or `force triad` only when the user
-explicitly wrote that override. Render the Review Mode Decision template before
-launching review agents.
+Render the Review Mode Decision template from `REVIEW_MODE.md` before launching
+review agents.
 
 ### Step 3: Selected Main Review Pass A
 
@@ -110,7 +106,7 @@ If `review_mode=triad`:
 
 1. Dispatch the three role subagents from `references/TRIAD_REVIEW.md`.
 2. Render each under `## Pre-PR review - branch <branch> - triad pass A - <role>`.
-3. Apply the Triad Merge Rules.
+3. Apply `TRIAD_REVIEW.md` → `Merge Rules`.
 4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
 5. Set `main_review_mode=triad`.
 6. Compute `triad_fixes_applied` by comparing `HEAD` to `head_step1`.
