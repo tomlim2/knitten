@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
@@ -168,11 +169,15 @@ async function appendInboxRow(root, args, report) {
 }
 
 function changedFiles(root) {
-  const result = tryGit(["status", "--porcelain"], { cwd: root });
-  if (!result.ok) return [];
-  return result.stdout
-    .split("\n")
-    .map((line) => line.slice(3).trim())
+  const output = execFileSync("git", ["status", "--porcelain=v1", "-z"], {
+    cwd: root,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  return output
+    .split("\0")
+    .filter(Boolean)
+    .map((entry) => entry.slice(3).trim())
     .filter(Boolean);
 }
 
@@ -195,7 +200,13 @@ async function capture(args) {
   }
 
   if (!args.dryRun) {
-    runGit(["pull", "--ff-only"], { cwd: root, stdio: "inherit" });
+    const upstream = tryGit(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], { cwd: root });
+    if (upstream.ok) {
+      if (upstream.stdout !== `origin/${FINDINGS_BRANCH}`) {
+        throw new Error(`findings branch upstream must be origin/${FINDINGS_BRANCH}, got ${upstream.stdout}`);
+      }
+      runGit(["pull", "--ff-only"], { cwd: root, stdio: "inherit" });
+    }
   }
   const title = titleFromArgs(args);
   const report = await resolveReportPath(root, title, { dryRun: args.dryRun });
@@ -217,7 +228,7 @@ async function capture(args) {
     cwd: root,
     stdio: "inherit",
   });
-  runGit(["push"], { cwd: root, stdio: "inherit" });
+  runGit(["push", "-u", "origin", `HEAD:${FINDINGS_BRANCH}`], { cwd: root, stdio: "inherit" });
   const commit = runGit(["rev-parse", "--short", "HEAD"], { cwd: root });
   console.log(`report: ${report.repoRelative}`);
   console.log(`commit: ${commit}`);
