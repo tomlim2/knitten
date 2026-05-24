@@ -423,7 +423,8 @@ Potential checks:
    `artifact-inventory-classification`.
 3. Done: Add the initial inventory generator and generated JSON output through
    `artifact-inventory-classification`.
-4. Pending: Validate pilot skill classifications without reading chat history.
+4. Done: Validate pilot skill classifications without reading chat history.
+   Evidence: `docs/plans/reports/artifact-inventory-classification/pilot-classification-review-2026-05-24.md`.
 
 ### Batch D: Pilot Classification
 
@@ -441,7 +442,8 @@ Done: initial generated inventory covers 5 representative skills:
    `core-skill-role`, `extraction-count`, and `split-readiness`.
 3. Done: Add extraction item rows for source sections that can leave the pilot
    skills.
-4. Pending: Review blockers where no existing target home fits.
+4. Done: Review blockers where no existing target home fits.
+   Evidence: blocked pilot rows in `agent/config/artifact-inventory.json`.
 
 ### Batch E: Pilot Extraction
 

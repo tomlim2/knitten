@@ -2802,6 +2802,21 @@ function checkInventoryPathField(violations, row, field, { allowUndecided = fals
   }
 }
 
+async function checkInventorySourceSection(violations, row) {
+  const sourcePath = row["source-artifact-path"];
+  const section = row["source-section"];
+  if (hasUnsafeInventoryPath(sourcePath) || typeof section !== "string" || section.length === 0) return;
+  let text;
+  try {
+    text = await readFile(path.join(REPO_ROOT, sourcePath), "utf8");
+  } catch {
+    return;
+  }
+  if (!text.includes(section)) {
+    inventoryViolation(violations, `${row["row-id"]} source-section not found in ${sourcePath}: ${JSON.stringify(section)}`);
+  }
+}
+
 async function checkArtifactInventory() {
   const violations = [];
   const file = "agent/config/artifact-inventory.json";
@@ -2918,6 +2933,7 @@ async function checkArtifactInventory() {
       if (row["parent-row-id"] !== expectedParentRowId) {
         inventoryViolation(violations, `${row["row-id"]} parent-row-id must equal ${expectedParentRowId}`);
       }
+      await checkInventorySourceSection(violations, row);
 
       const parent = row["parent-row-id"];
       if (!extractionRowsByParent.has(parent)) extractionRowsByParent.set(parent, []);

@@ -68,7 +68,7 @@ copying everything into the core repository.
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
-| Inventory and classification | active | Schema contract, generated inventory output, five-skill pilot classification, and validator checks exist; inventory review is next. |
+| Inventory and classification | active | Schema contract, generated inventory output, pilot classification review, and validator checks exist; pilot extraction is next. |
 | Core/external boundary | not started | Depends on inventory and classification criteria. |
 | Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |

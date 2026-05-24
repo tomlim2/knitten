@@ -44,37 +44,38 @@ const PILOT_SKILL_CLASSIFICATIONS = {
   'ah-manage-spec': {
     skillKind: 'workflow-with-notes',
     extractions: [
-      extraction('review-checklist', '## Review Workflow', 'judgment', 'standard', 'rubric', 'agent/standards/authoring/spec-review.md', 'no', 'unknown'),
-      extraction('archive-delete-policy', '## Archive And Delete', 'lifecycle-policy', 'standard', 'guide', 'agent/standards/policy/spec-lifecycle.md', 'yes', 'unknown'),
+      extraction('review-checklist', '## Review Workflow', 'judgment', 'standard', 'rubric', 'agent/standards/authoring/spec-review.md', 'no', 'unknown', 'blocked'),
+      extraction('archive-delete-policy', '## Archive And Delete', 'lifecycle-policy', 'standard', 'guide', 'agent/standards/policy/spec-lifecycle.md', 'yes', 'unknown', 'blocked'),
     ],
   },
   'ah-route-plan': {
     skillKind: 'workflow-only',
+    reviewState: 'accepted',
     extractions: [],
   },
   'shotloom-review-before-pr': {
-    skillKind: 'guide-heavy',
+    skillKind: 'workflow-with-notes',
+    reviewState: 'accepted',
     extractions: [
-      extraction('review-mode-decision', '## Review Shape / ### Review Mode', 'judgment', 'skill', 'reference', 'agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md', 'yes', 'yes'),
-      extraction('triad-review-rubric', '### Step 3b: Triad Pass A', 'judgment', 'skill', 'rubric', 'agent/skills/shotloom-review-before-pr/references/TRIAD_REVIEW.md', 'yes', 'yes'),
-      extraction('binding-rules', '## Binding Rules', 'machine-checkable-contract', 'standard', 'validator-check', 'undecided', 'yes', 'yes'),
+      extraction('review-mode-decision', '### Step 2: Review Mode Decision', 'judgment', 'skill', 'reference', 'agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md', 'yes', 'yes', 'accepted'),
+      extraction('triad-review-rubric', '### Step 3: Selected Main Review Pass A', 'judgment', 'skill', 'rubric', 'agent/skills/shotloom-review-before-pr/references/TRIAD_REVIEW.md', 'yes', 'yes', 'accepted'),
     ],
   },
   'obsidian-obsidian-markdown': {
     skillKind: 'reference-heavy',
     extractions: [
-      extraction('wikilink-syntax', '## Internal Links (Wikilinks)', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown'),
-      extraction('embed-syntax', '## Embeds', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/EMBEDS.md', 'no', 'unknown'),
-      extraction('complete-example', '## Complete Example', 'example', 'skill', 'example', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown'),
+      extraction('wikilink-syntax', '## Internal Links (Wikilinks)', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown', 'accepted'),
+      extraction('embed-syntax', '## Embeds', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/EMBEDS.md', 'no', 'unknown', 'blocked'),
+      extraction('complete-example', '## Complete Example', 'example', 'skill', 'example', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown', 'accepted'),
     ],
   },
   'hatch-pet': {
     skillKind: 'guide-heavy',
     extractions: [
-      extraction('storage-controls', '## Storage Controls', 'lifecycle-policy', 'skill', 'guide', 'agent/skills/hatch-pet/references/STORAGE-CONTROLS.md', 'yes', 'unknown'),
-      extraction('brand-discovery', '## Brand Discovery', 'judgment', 'skill', 'guide', 'agent/skills/hatch-pet/references/BRAND-DISCOVERY.md', 'no', 'unknown'),
-      extraction('pet-safe-styles', '## Pet-Safe Styles', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/PET-SAFE-STYLES.md', 'yes', 'unknown'),
-      extraction('transparency-effects', '## Transparency And Effects', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/TRANSPARENCY-EFFECTS.md', 'yes', 'yes'),
+      extraction('storage-controls', '## Storage Controls', 'lifecycle-policy', 'skill', 'guide', 'agent/skills/hatch-pet/references/STORAGE-CONTROLS.md', 'yes', 'unknown', 'blocked'),
+      extraction('brand-discovery', '## Brand Discovery', 'judgment', 'skill', 'guide', 'agent/skills/hatch-pet/references/BRAND-DISCOVERY.md', 'no', 'unknown', 'blocked'),
+      extraction('pet-safe-styles', '## Pet-Safe Styles', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/PET-SAFE-STYLES.md', 'yes', 'unknown', 'blocked'),
+      extraction('transparency-effects', '## Transparency And Effects', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/TRANSPARENCY-EFFECTS.md', 'yes', 'yes', 'blocked'),
     ],
   },
 };
@@ -144,7 +145,7 @@ async function makeSkillRow(file, skillName) {
   const pilot = PILOT_SKILL_CLASSIFICATIONS[skillName];
   const extractionCount = pilot?.extractions.length || 0;
   return {
-    ...commonRow(`skill:${file}`, 'skill', file, 'skill'),
+    ...commonRow(`skill:${file}`, 'skill', file, 'skill', { reviewState: pilotReviewState(pilot) }),
     'skill-size': classifySkillSize(text),
     'skill-kind': pilot?.skillKind || classifySkillKind(text),
     'core-skill-role': classifyCoreSkillRole(skillName),
@@ -162,7 +163,7 @@ function makePilotExtractionRows(file, skillName) {
   if (!pilot) return [];
   const parentRowId = `skill:${file}`;
   return pilot.extractions.map((item) => ({
-    ...commonRow(`extraction:${file}#${item.id}`, 'extraction-item', file, 'skill'),
+    ...commonRow(`extraction:${file}#${item.id}`, 'extraction-item', file, 'skill', { reviewState: item.reviewState }),
     'parent-row-id': parentRowId,
     'extraction-id': item.id,
     'source-section': item.sourceSection,
@@ -175,7 +176,7 @@ function makePilotExtractionRows(file, skillName) {
   }));
 }
 
-function commonRow(rowId, rowType, sourcePath, artifactType) {
+function commonRow(rowId, rowType, sourcePath, artifactType, options = {}) {
   return {
     'row-id': rowId,
     'row-type': rowType,
@@ -187,8 +188,16 @@ function commonRow(rowId, rowType, sourcePath, artifactType) {
     'proposed-destination': 'undecided',
     'compatibility-need': 'unknown',
     'classification-stage': 'undecided',
-    'review-state': 'pending',
+    'review-state': options.reviewState || 'pending',
   };
+}
+
+function pilotReviewState(pilot) {
+  if (!pilot) return 'pending';
+  if (pilot.reviewState) return pilot.reviewState;
+  if (pilot.extractions.some((item) => item.reviewState === 'blocked')) return 'blocked';
+  if (pilot.extractions.some((item) => item.reviewState === 'accepted')) return 'accepted';
+  return 'pending';
 }
 
 function artifactTypeFor(file) {
@@ -276,6 +285,7 @@ function extraction(
   targetPath,
   requiredAtRuntime,
   validationNeeded,
+  reviewState = 'pending',
 ) {
   return {
     id,
@@ -286,6 +296,7 @@ function extraction(
     targetPath,
     requiredAtRuntime,
     validationNeeded,
+    reviewState,
   };
 }
 
