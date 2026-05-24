@@ -42,6 +42,7 @@ copying everything into the core repository.
 | [artifact-pack-vocabulary.md](../plans/completed/artifact-pack-vocabulary.md) | completed | Define shared terms for artifacts, packs, manifests, and resolvers. |
 | [artifact-inventory-classification.md](../plans/active/artifact-inventory-classification.md) | active | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
 | [core-artifact-boundary.md](../plans/active/core-artifact-boundary.md) | active | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
+| [bootstrap-skill-definition-selection.md](../plans/active/bootstrap-skill-definition-selection.md) | active | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
 | [skill-lifecycle-manager.md](../plans/completed/skill-lifecycle-manager.md) | completed | Define skill CRUD and lifecycle management before broad skill inventory edits. |
@@ -50,6 +51,7 @@ copying everything into the core repository.
 | [document-template-consumption-phases.md](../plans/proposed/document-template-consumption-phases.md) | proposed | Split document template review policy into internal-consumption and vault-assetization phases after adding the Design Plan template. |
 | [context-standards-redirect-validation.md](../plans/proposed/context-standards-redirect-validation.md) | proposed | Validate `context-standards` paths through standards redirect stubs and canonical replacement targets. |
 | [managed-path-registry-validation.md](../plans/completed/managed-path-registry-validation.md) | completed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
+| `artifact-inventory-provenance-validation` | proposed | Validate generated inventory provenance fields and define dirty-worktree generation behavior. |
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
@@ -70,7 +72,7 @@ copying everything into the core repository.
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
 | Inventory and classification | active | Schema contract, generated inventory output, pilot classification review, pilot extraction report, rollout rule, and validator checks exist. |
 | Core/external boundary | active | `docs/plans/active/core-artifact-boundary.md` defines the first boundary rule and first core-owned batch report. |
-| Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
+| Bootstrap skill definition and selection | active | `docs/plans/active/bootstrap-skill-definition-selection.md` defines role criteria and the first core-owned skill decision table. |
 | Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |
 | Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
 | Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
@@ -83,6 +85,7 @@ copying everything into the core repository.
 | Install and link flow | not started | Depends on the manifest contract and current harness link behavior. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
 | Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
+| Artifact inventory provenance | proposed | Future validator checks `generated-at`, `source-commit`, and dirty-worktree generation semantics. |
 | Validation gates | not started | Depends on finalized manifest fields and public-safety policy. |
 | Example pack | not started | Depends on manifest contract and resolver behavior. |
 

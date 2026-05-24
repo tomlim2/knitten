@@ -80,6 +80,43 @@ const PILOT_SKILL_CLASSIFICATIONS = {
   },
 };
 
+const REVIEWED_CORE_SKILL_ROLES = {
+  'ah-setup-harness': 'bootstrap',
+  'ah-resolve-doc-path': 'bootstrap',
+  'ah-route-plan': 'router',
+  'ah-route-review': 'router',
+  'ah-route-implementation': 'router',
+  'ah-report-finding': 'router',
+  'ah-manage-artifact': 'lifecycle',
+  'ah-manage-config': 'lifecycle',
+  'ah-manage-document-template': 'lifecycle',
+  'ah-manage-milestone': 'lifecycle',
+  'ah-manage-skill': 'lifecycle',
+  'ah-make-rule': 'lifecycle',
+  'ah-make-skill': 'lifecycle',
+  'ah-make-standard': 'lifecycle',
+  'ah-update-skill': 'lifecycle',
+  'ah-edit-skill': 'lifecycle',
+  'ah-delete-skill': 'lifecycle',
+  'ah-audit-skill': 'lifecycle',
+  'ah-review-implementation': 'lifecycle',
+  'ah-brief-today': 'none',
+  'ah-browse-commands': 'none',
+  'ah-browse-standards': 'none',
+  'ah-grant-perms': 'none',
+  'ah-revoke-perms': 'none',
+  'ah-guide-private': 'none',
+  'ah-log-postmortem': 'none',
+  'ah-show-patterns': 'none',
+  'ah-make-command': 'lifecycle',
+  'ah-manage-spec': 'lifecycle',
+};
+
+const MIGRATE_LATER_SKILL_NAMES = new Set([
+  'ah-make-command',
+  'ah-manage-spec',
+]);
+
 async function main() {
   const files = await listRepoFiles();
   const rows = [];
@@ -144,8 +181,12 @@ async function makeSkillRow(file, skillName) {
   const text = await fs.readFile(path.join(REPO_ROOT, file), 'utf8');
   const pilot = PILOT_SKILL_CLASSIFICATIONS[skillName];
   const extractionCount = pilot?.extractions.length || 0;
+  const migrateLater = MIGRATE_LATER_SKILL_NAMES.has(skillName);
   return {
-    ...commonRow(`skill:${file}`, 'skill', file, 'skill', { reviewState: pilotReviewState(pilot) }),
+    ...commonRow(`skill:${file}`, 'skill', file, 'skill', {
+      reviewState: pilotReviewState(pilot),
+      migrateLater,
+    }),
     'skill-size': classifySkillSize(text),
     'skill-kind': pilot?.skillKind || classifySkillKind(text),
     'core-skill-role': classifyCoreSkillRole(skillName),
@@ -163,7 +204,10 @@ function makePilotExtractionRows(file, skillName) {
   if (!pilot) return [];
   const parentRowId = `skill:${file}`;
   return pilot.extractions.map((item) => ({
-    ...commonRow(`extraction:${file}#${item.id}`, 'extraction-item', file, 'skill', { reviewState: item.reviewState }),
+    ...commonRow(`extraction:${file}#${item.id}`, 'extraction-item', file, 'skill', {
+      reviewState: item.reviewState,
+      migrateLater: skillName === 'ah-manage-spec' && item.reviewState === 'blocked',
+    }),
     'parent-row-id': parentRowId,
     'extraction-id': item.id,
     'source-section': item.sourceSection,
@@ -177,6 +221,8 @@ function makePilotExtractionRows(file, skillName) {
 }
 
 function commonRow(rowId, rowType, sourcePath, artifactType, options = {}) {
+  const classificationStage = options.migrateLater ? 'migrate-later' : 'undecided';
+  const proposedDestination = options.migrateLater ? 'migrate-later' : 'undecided';
   return {
     'row-id': rowId,
     'row-type': rowType,
@@ -185,9 +231,9 @@ function commonRow(rowId, rowType, sourcePath, artifactType, options = {}) {
     'owner-domain': ownerDomainFor(sourcePath),
     'privacy-risk': privacyRiskFor(sourcePath),
     dependencies: [],
-    'proposed-destination': 'undecided',
+    'proposed-destination': proposedDestination,
     'compatibility-need': 'unknown',
-    'classification-stage': 'undecided',
+    'classification-stage': classificationStage,
     'review-state': options.reviewState || 'pending',
   };
 }
@@ -231,11 +277,8 @@ function privacyRiskFor(file) {
 }
 
 function classifyCoreSkillRole(skillName) {
-  if (skillName.startsWith('ah-route-')) return 'router';
-  if (skillName.startsWith('ah-manage-') || skillName.startsWith('ah-make-') || skillName.startsWith('ah-update-')) {
-    return 'lifecycle';
-  }
-  if (skillName.startsWith('ah-')) return 'bootstrap';
+  if (REVIEWED_CORE_SKILL_ROLES[skillName]) return REVIEWED_CORE_SKILL_ROLES[skillName];
+  if (skillName.startsWith('ah-')) return 'none';
   if (skillName.startsWith('shotloom-')) return 'repo-specific';
   if (DOMAIN_PREFIXES.some((prefix) => skillName.startsWith(prefix))) return 'domain';
   return 'none';
