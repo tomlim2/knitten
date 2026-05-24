@@ -29,7 +29,7 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 
 | Goal | Acceptance |
 |---|---|
-| Fresh isolation per execution | Each starter invocation creates a new worktree and a new `codex/` branch. |
+| Fresh isolation per execution | Each starter invocation creates a new worktree and a new task-typed branch. |
 | Repo opt-in enforcement | Worktree-first applies only to repositories whose repo config has `worktreePolicy.enabled: true`. |
 | Main checkout protection | Commit and push from the main checkout fail with a clear message except for an explicitly scoped small chore lane. |
 | Lightweight branch lane | Small docs-only and CI/CD-only changes can use a primary-checkout feature branch when explicitly enabled. |
@@ -82,7 +82,7 @@ Repo config entry shape:
     "worktreePolicy": {
       "enabled": true,
       "worktreeRoot": "../knitten-worktrees",
-      "branchPrefix": "codex/",
+      "branchPrefix": "feat/",
       "requireFreshPerExecution": true,
       "blockMainCommit": true,
       "blockMainPush": true,
@@ -106,7 +106,7 @@ Repo config entry shape:
     "worktreePolicy": {
       "enabled": true,
       "worktreeRoot": "../story-previz-worktrees",
-      "branchPrefix": "codex/",
+      "branchPrefix": "feat/",
       "requireFreshPerExecution": true,
       "blockMainCommit": true,
       "blockMainPush": true
@@ -168,7 +168,7 @@ Use the lightweight branch lane only when every condition matches:
 |---|---|
 | Repo config | `worktreePolicy.allowMainFeatureBranch: true` |
 | Checkout | Primary checkout is on a feature branch, not `main`. |
-| Branch name | Uses the configured `branchPrefix`, normally `codex/`. |
+| Branch name | Uses a task-type prefix: `feat/`, `fix/`, `docs/`, or `chore/`. |
 | Change type | `.github/**`, PR templates, release notes, changelog entries, or narrow docs-only policy wording. |
 | Change scope | Single ownership boundary and low conflict risk. |
 | PR | Suggested after push; create only when the user asks for PR or merge publication. |
@@ -207,7 +207,7 @@ Starter behavior:
 | 6 | Refuse to continue if the main checkout has uncommitted changes. |
 | 7 | Generate `slug` from the user task or explicit argument. |
 | 8 | Generate `stamp` as `YYYYMMDD-HHMMSS`. |
-| 9 | Create branch `<branchPrefix><stamp>-<task-slug>` from `origin/main`. |
+| 9 | Create branch `<type>/<stamp>-<task-slug>` from `origin/main`; default type is `feat`. |
 | 10 | Create worktree at `<worktreeRoot>/<stamp>-<task-slug>`. |
 | 11 | Print the absolute worktree path and branch name. |
 
@@ -221,7 +221,7 @@ Naming rules:
 | Use timestamp first | `20260518-102544-worktree-first` |
 | Use 2-5 word kebab-case task slug | `worktree-first` |
 | Do not repeat the repository name in the leaf path | Use `../knitten-worktrees/20260518-102544-worktree-first`, not `../knitten-worktrees/20260518-102544-knitten-worktree-first`. |
-| Keep branch body and worktree directory body identical | `codex/20260518-102544-worktree-first` maps to `../knitten-worktrees/20260518-102544-worktree-first`. |
+| Keep branch body and worktree directory body identical | `feat/20260518-102544-worktree-first` maps to `../knitten-worktrees/20260518-102544-worktree-first`. |
 | Do not include status words | Omit `draft`, `active`, `final`, and similar status terms. |
 
 ### Main Checkout Guard
@@ -368,7 +368,7 @@ node scripts/worktree-clean.mjs --local-only --apply --yes
 | Surface | Naming rule |
 |---|---|
 | Worktree directory | `<stamp>-<task-slug>` |
-| Branch | `codex/<stamp>-<task-slug>` |
+| Branch | `<type>/<stamp>-<task-slug>`, where type is `feat`, `fix`, `docs`, or `chore`; default is `feat`. |
 | Commit subject | Meaning-first conventional commit; no timestamp required. |
 | PR title | Meaning-first title; no timestamp required. |
 | Active spec frontmatter | May include `worktree:` and `branch:` while implementation is active. |
@@ -474,7 +474,7 @@ state.
 - [ ] Repositories without enabled `worktreePolicy` do not use worktree-first enforcement.
 - [ ] Repeated starter invocations with the same slug produce distinct paths and branches.
 - [ ] Test-mode starter invocations leave no worktrees or branches after cleanup.
-- [ ] Generated branches use the `codex/` prefix.
+- [ ] Generated branches use the task-type prefix, defaulting to `feat/`.
 - [ ] `scripts/worktree-guard.mjs` fails in the main Knitten checkout.
 - [ ] `scripts/worktree-guard.mjs` passes in a primary-checkout feature branch when `allowMainFeatureBranch` is true.
 - [ ] `scripts/worktree-guard.mjs` passes in a generated Knitten worktree.
@@ -498,9 +498,9 @@ state.
 | Decision | Default |
 |---|---|
 | Worktree root | `../knitten-worktrees/` |
-| Branch prefix | `codex/` |
+| Branch prefix | `feat/` by default; `--type fix`, `--type docs`, or `--type chore` when the task shape is clearer. |
 | Worktree name pattern | `<stamp>-<task-slug>` |
-| Branch name pattern | `codex/<stamp>-<task-slug>` |
+| Branch name pattern | `<type>/<stamp>-<task-slug>` |
 | Status script | Include in first implementation. |
 | Cleanup behavior | Dry-run by default; apply only with explicit approval. |
 | Existing worktree reuse | Disallowed unless the user names the worktree explicitly. |

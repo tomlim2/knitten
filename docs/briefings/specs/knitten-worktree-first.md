@@ -40,7 +40,7 @@ commit or push time when an agent attempts to use the main checkout.
 ## Known Decisions
 
 - Every Knitten write-session starter invocation creates a fresh worktree and a
-  fresh `codex/` branch.
+  fresh task-typed branch such as `feat/`, `fix/`, `docs/`, or `chore/`.
 - Worktree-first is opt-in per repository. Lightweight projects stay outside
   enforcement unless their repo config entry has `worktreePolicy.enabled:
   true`.

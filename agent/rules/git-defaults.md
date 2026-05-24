@@ -10,7 +10,7 @@ Default-counter rules. The harness biases toward each opposite; these counter at
 - **Worktree-first repos** — For write-capable work in a repo whose machine
   repo config has `worktreePolicy.enabled: true`, start with
   `node scripts/worktree-start.mjs <task-slug>`. New write-capable requests
-  create a fresh worktree even if another task worktree exists.
+  create a fresh worktree even if another task worktree exists. Default branch type is `feat/`; use `--type fix|docs|chore` when clearer.
 - **Lightweight branch exception** — In a worktree-first repo, small docs-only
   or CI/CD-only changes can use a feature branch in the primary checkout when
   `worktreePolicy.allowMainFeatureBranch: true`. Allowed scope: `.github/**`,
