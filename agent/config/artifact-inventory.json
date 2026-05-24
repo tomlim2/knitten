@@ -1,7 +1,8 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-24T14:46:40.140Z",
-  "source-commit": "bf3edfee062b23c9fba3de21acc1ee1910e8efcf",
+  "generated-at": "2026-05-24T15:08:12.553Z",
+  "source-commit": "ad2bf92ea98828a0662c8edcadf9e959c7539bb7",
+  "source-dirty": true,
   "rows": [
     {
       "row-id": "artifact:.github/pull_request_template.md",
@@ -4622,6 +4623,19 @@
       "row-id": "artifact:docs/plans/completed/ah-review-implementation.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/completed/ah-review-implementation.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/completed/artifact-inventory-provenance-validation.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/completed/artifact-inventory-provenance-validation.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",

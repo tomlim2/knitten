@@ -140,6 +140,7 @@ async function main() {
     'schema-version': 1,
     'generated-at': process.env.ARTIFACT_INVENTORY_GENERATED_AT || new Date().toISOString(),
     'source-commit': await sourceCommit(),
+    'source-dirty': await sourceDirty(),
     rows,
   };
 
@@ -159,6 +160,11 @@ async function listRepoFiles() {
 async function sourceCommit() {
   const { stdout } = await execFileAsync('git', ['rev-parse', 'HEAD'], { cwd: REPO_ROOT });
   return stdout.trim();
+}
+
+async function sourceDirty() {
+  const { stdout } = await execFileAsync('git', ['status', '--porcelain', '--untracked-files=normal'], { cwd: REPO_ROOT });
+  return stdout.trim().length > 0;
 }
 
 function shouldSkip(file) {

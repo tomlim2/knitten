@@ -2765,6 +2765,25 @@ function inventoryViolation(violations, message) {
   violations.push({ file: "agent/config/artifact-inventory.json", line: 1, message });
 }
 
+function checkInventoryProvenance(violations, inventory) {
+  const isoDateTimePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+  const parsedGeneratedAt = new Date(inventory["generated-at"]);
+  if (
+    typeof inventory["generated-at"] !== "string" ||
+    !isoDateTimePattern.test(inventory["generated-at"]) ||
+    Number.isNaN(parsedGeneratedAt.getTime()) ||
+    parsedGeneratedAt.toISOString() !== inventory["generated-at"]
+  ) {
+    inventoryViolation(violations, `generated-at must match Date.toISOString(), got ${JSON.stringify(inventory["generated-at"])}`);
+  }
+  if (typeof inventory["source-commit"] !== "string" || !/^[0-9a-f]{7,40}$/.test(inventory["source-commit"])) {
+    inventoryViolation(violations, `source-commit must be a git commit hash, got ${JSON.stringify(inventory["source-commit"])}`);
+  }
+  if (typeof inventory["source-dirty"] !== "boolean") {
+    inventoryViolation(violations, `source-dirty must be a boolean, got ${JSON.stringify(inventory["source-dirty"])}`);
+  }
+}
+
 function hasUnsafeInventoryPath(value) {
   return (
     typeof value !== "string" ||
@@ -2831,6 +2850,7 @@ async function checkArtifactInventory() {
   if (inventory["schema-version"] !== 1) {
     inventoryViolation(violations, `schema-version must be 1, got ${JSON.stringify(inventory["schema-version"])}`);
   }
+  checkInventoryProvenance(violations, inventory);
   if (!Array.isArray(inventory.rows)) {
     inventoryViolation(violations, "rows must be an array");
     return { name: "artifact-inventory", violations };

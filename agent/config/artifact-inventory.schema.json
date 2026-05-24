@@ -2,18 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Agent artifact inventory",
   "type": "object",
-  "required": ["schema-version", "rows"],
+  "required": ["schema-version", "generated-at", "source-commit", "source-dirty", "rows"],
   "properties": {
     "schema-version": {
       "const": 1
     },
     "generated-at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
     },
     "source-commit": {
       "type": "string",
       "pattern": "^[0-9a-f]{7,40}$"
+    },
+    "source-dirty": {
+      "type": "boolean"
     },
     "rows": {
       "type": "array",
