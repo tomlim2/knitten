@@ -14,9 +14,9 @@ Static code audit checklist for detecting UX writing issues by reading HTML, JS,
 - `REVIEW-UX.md` — UX/UI code audit checklist
 - `../review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` — JS coding standards checklist
 - `../review-audit-web/references/REVIEW-CODE-CSS.md` — CSS coding standards checklist
-- `review-template.md` — Output format (for **structuring** review feedback)
+- `agent/document-templates/review/code-review.md` — Output format (for **structuring** review feedback)
 
-This document defines **what to check** from a UX writing perspective. Use `review-template.md` for how to format findings.
+This document defines **what to check** from a UX writing perspective. Use `agent/document-templates/review/code-review.md` for how to format findings.
 
 ---
 

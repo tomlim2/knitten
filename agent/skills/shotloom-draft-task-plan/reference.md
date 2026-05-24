@@ -49,28 +49,10 @@ or user-facing workflow ownership.
 
 ## Step 4 - Design Plan Stage I/O Contract
 
-Every Design Plan stage uses this block:
+Every Design Plan stage follows
+`agent/document-templates/agent-hub/design-plan.md`.
 
-```md
-S<N> - <stage name>
-
-Input:
-- <typed data, existing function, command payload, file, or artifact consumed>
-
-Output:
-- <state, file, event, diagnostic, test, or artifact produced>
-
-Non-output:
-- <state, file, event, side effect, or scope this stage must not produce>
-
-Failure:
-- <reject, skip, rollback, stop-and-ask, or diagnostic behavior>
-
-Proof:
-- <test, gate, manual repro, diff check, or post-state assertion>
-```
-
-Rules:
+Shotloom-specific rules:
 
 - Name concrete paths, symbols, command payloads, model types, and event names.
 - Use `None` only when the stage has no input, output, forbidden output,
@@ -95,7 +77,7 @@ Rules:
 | `## Risk Map` | Defect-class table with evidence, plan response, and test proof for each applicable risk. |
 | `## Locked Decisions` | Numbered decisions with `Rationale:` and `Rejected alternatives:`. |
 | `## Non-Goals` | Explicit adjacent exclusions. |
-| `## Design Plan` | Ordered implementation stages from smallest proof to broader updates. First stage is S0 baseline re-check. Every stage uses the Design Plan Stage I/O Contract. |
+| `## Design Plan` | Ordered implementation stages from smallest proof to broader updates. First stage is S0 baseline re-check. Every stage uses `agent/document-templates/agent-hub/design-plan.md`. |
 | `## Acceptance Criteria` | Checklist tied to remaining work. |
 | `## Verification` | Focused gates, broad gates, manual repro per diagnostic or rejection code. |
 | `## Traps` | Defensive warnings against false implementation paths, including partial mutation traps for coupled artifacts. |

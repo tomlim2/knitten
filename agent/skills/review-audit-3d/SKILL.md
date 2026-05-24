@@ -48,7 +48,8 @@ Detect rendering performance issues by reading JavaScript, WGSL, GLSL, and HTML 
 | Animation | 4 | `review-3d-rendering.md` §9 |
 | Profiling & Diagnostics | 4 | `review-3d-rendering.md` §10 |
 
-Output follows `review-template.md` format.
+Output follows the internal-consumption review template:
+`agent/document-templates/review/code-review.md`.
 
 ---
 
@@ -99,7 +100,8 @@ For each finding, record:
 
 ### Step 6: Output
 
-Follow the output format defined in `~/.claude/standards/review/review-template.md`.
+Follow the output format defined in
+`agent/document-templates/review/code-review.md`.
 
 - Use **Standards Applied**: `review-3d-rendering.md` (3D Rendering Performance)
 - **Standards Compliance** section shows pass/fail per category (§1–§10)
@@ -112,6 +114,6 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 - `references/REVIEW-3D-RENDERING.md` — 3D rendering performance checklist (55+ items)
 - `references/REVIEW-CODE-TSL.md` — Three.js TSL review checklist
 - `../frontend-design/references/THREE-SHADER-LANGUAGE.md` — TSL coding standards
-- `standards/review/review-template.md` — Review output format
+- `agent/document-templates/review/code-review.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS)
 - `skills/review-audit-ux/SKILL.md` — UX/UI review

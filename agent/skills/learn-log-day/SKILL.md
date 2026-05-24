@@ -57,6 +57,9 @@ Read `RESOLVED_PATH` from output. If real project's folder doesn't exist → run
 ## Step 2 — Sub-command bodies
 
 Pick the section. Each one points at one template under `agent/document-templates/obsidian/`. Templates carry the canonical frontmatter and inline LLM fill-in instructions — read the template once before each write so frontmatter stays current.
+These templates are vault-assetization artifacts. They preserve devlogs,
+learnings, and topics for later retrieval; active work items stay in separate
+internal-consumption specs, reports, issues, or PR bodies.
 
 ### `devlog` — project day log
 

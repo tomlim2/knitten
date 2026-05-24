@@ -11,33 +11,54 @@ canonical owner, then update any command, skill, or redirect that references it.
 
 ## Inventory
 
-| Template | Canonical owner | Used by |
-|----------|-----------------|---------|
-| Pull request body | `agent/document-templates/github/pull-request.md` | GitHub PR creation in this repo |
-| Shotloom Linear issue | `agent/document-templates/linear/shotloom-issue.md` | `agent/commands/shotloom-linear-create-issue.md` |
-| CCI Linear issue | `agent/document-templates/linear/cci-issue.md` | `agent/commands/cci-linear-create-issue.md` |
-| Agent-hub spec | `agent/document-templates/agent-hub/spec.md` | `agent/skills/ah-manage-spec/SKILL.md` |
-| Milestone | `agent/document-templates/agent-hub/milestone.md` | `agent/skills/ah-manage-milestone/SKILL.md` |
-| Generated technical spec | `agent/document-templates/agent-hub/technical-spec.md` | `agent/skills/dev-generate-spec/SKILL.md` |
-| Code review output | `agent/document-templates/review/code-review.md` | review standards and `review-audit-*` skills |
-| Devlog day | `agent/document-templates/obsidian/devlog-day.md` | `learn-log-day` and devlog workflows |
-| Cross-project learning | `agent/document-templates/obsidian/cross-project-learning.md` | `learn-log-day _cross-project learning` |
-| Project learning index | `agent/document-templates/obsidian/learning-index.md` | project-bound learning logs |
-| Devlog hub | `agent/document-templates/obsidian/devlog-hub.md` | project devlog hub files |
-| Topic note | `agent/document-templates/obsidian/topic-reference.md` | project resource/topic notes |
+| Template | Phase | Canonical owner | Used by |
+|----------|-------|-----------------|---------|
+| Pull request body | internal-consumption | `agent/document-templates/github/pull-request.md` | GitHub PR creation in this repo |
+| Shotloom Linear issue | internal-consumption | `agent/document-templates/linear/shotloom-issue.md` | `agent/commands/shotloom-linear-create-issue.md` |
+| CCI Linear issue | internal-consumption | `agent/document-templates/linear/cci-issue.md` | `agent/commands/cci-linear-create-issue.md` |
+| Agent-hub spec | internal-consumption | `agent/document-templates/agent-hub/spec.md` | `agent/skills/ah-manage-spec/SKILL.md` |
+| Milestone | internal-consumption | `agent/document-templates/agent-hub/milestone.md` | `agent/skills/ah-manage-milestone/SKILL.md` |
+| Design plan | internal-consumption | `agent/document-templates/agent-hub/design-plan.md` | specs and task-plan skills that need implementation-order stages |
+| Generated technical spec | internal-consumption | `agent/document-templates/agent-hub/technical-spec.md` | `agent/skills/dev-generate-spec/SKILL.md` |
+| Operational finding report | internal-consumption | `agent/document-templates/agent-hub/operational-finding-report.md` | future `ah-report-finding` |
+| Code review output | internal-consumption | `agent/document-templates/review/code-review.md` | review standards and `review-audit-*` skills |
+| Devlog day | vault-assetization | `agent/document-templates/obsidian/devlog-day.md` | `learn-log-day` and devlog workflows |
+| Cross-project learning | vault-assetization | `agent/document-templates/obsidian/cross-project-learning.md` | `learn-log-day _cross-project learning` |
+| Project learning index | vault-assetization | `agent/document-templates/obsidian/learning-index.md` | project-bound learning logs |
+| Devlog hub | vault-assetization | `agent/document-templates/obsidian/devlog-hub.md` | project devlog hub files |
+| Topic note | vault-assetization | `agent/document-templates/obsidian/topic-reference.md` | project resource/topic notes |
+| Consulting company record | vault-assetization | `agent/document-templates/consulting/company-history.md` | `consulting-log-session` |
+| Project record | vault-assetization | `agent/document-templates/project/project-record.md` | private project records |
+| Daily note | vault-assetization | `agent/document-templates/obsidian/daily-note.md` | generic note creation |
+| Inbox note | vault-assetization | `agent/document-templates/obsidian/inbox-note.md` | generic inbox capture |
+| Generic note | vault-assetization | `agent/document-templates/obsidian/generic-note.md` | generic note creation |
+
+## Support Contracts
+
+These rows are not document body templates. They stay here because template
+review depends on them.
+
+| Support contract | Canonical owner | Used by |
+|------------------|-----------------|---------|
 | Obsidian format contract | `agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md` | all Obsidian vault Markdown templates |
 | Obsidian tag taxonomy | `agent/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md` | all Obsidian frontmatter `tags` |
 | Obsidian audience policy | `agent/skills/obsidian-obsidian-markdown/references/VAULT-AUDIENCE.md` | vault folder README and style decisions |
 | Obsidian project folder shape | `agent/skills/obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md` | project-root and role-folder placement |
 | Obsidian note inspection | `agent/skills/obsidian-fix-format/references/NOTE-INSPECTION-CHECKLIST.md` | manual review or bulk cleanup of vault notes |
-| Consulting company record | `agent/document-templates/consulting/company-history.md` | `consulting-log-session` |
-| Project record | `agent/document-templates/project/project-record.md` | private project records |
-| Daily note | `agent/document-templates/obsidian/daily-note.md` | generic note creation |
-| Inbox note | `agent/document-templates/obsidian/inbox-note.md` | generic inbox capture |
-| Generic note | `agent/document-templates/obsidian/generic-note.md` | generic note creation |
 | Machine path config | `agent/skills/ah-manage-config/machine-paths.template.json` | `ah-manage-config` |
 | Repo path config | `agent/skills/ah-manage-config/repo-paths.template.json` | `ah-manage-config` |
 | Slack config example | `agent/config/slack.json.example` | Slack config setup |
+
+## Consumption Phases
+
+| Phase | Use for | Review emphasis |
+|-------|---------|-----------------|
+| internal-consumption | PR bodies, Linear issues, specs, milestones, design plans, reviews, operational reports | scriptability, canonical status/source fields, consumer format, low operator burden |
+| vault-assetization | Obsidian notes, learnings, topics, project records, consulting records | retrieval, tags, wikilinks, frontmatter, durable reading value |
+
+Do not make one template serve both phases. If an internal-consumption artifact
+becomes worth keeping as knowledge, create or update a vault-assetization note in
+a separate step.
 
 ## Ownership Rules
 

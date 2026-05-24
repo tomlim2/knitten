@@ -47,10 +47,22 @@ Before editing, read:
 |------|-----|
 | `agent/standards/authoring/document-templates.md` | ownership and inventory |
 | `agent/document-templates/README.md` | consumer format contract |
-| `agent/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md` | note tag axes for Obsidian, consulting, project templates |
+| `agent/skills/obsidian-obsidian-markdown/references/TAG-TAXONOMY.md` | read only for vault-assetization templates |
 
 Read only the consumer-specific skill, command, or standard when the target
 template family names one.
+
+## Phase Rule
+
+Classify the target before create, update, or review:
+
+| Phase | Families | Rule |
+|-------|----------|------|
+| `internal-consumption` | `agent-hub/`, `github/`, `linear/`, `review/` | Optimize for scriptability, status/source fields, and consumer format. |
+| `vault-assetization` | `obsidian/`, `consulting/`, `project/` | Optimize for retrieval, tags, wikilinks, frontmatter, and durable reading value. |
+
+Do not make one template serve both phases. If an internal-consumption artifact
+becomes durable knowledge, create or update a separate vault-assetization note.
 
 ## Modes
 
@@ -64,8 +76,11 @@ template family names one.
 
 ## Create Workflow
 
-1. Resolve the family from `agent/document-templates/README.md`.
-2. Classify the source content:
+1. Resolve the family and phase from `agent/document-templates/README.md`.
+2. For vault-assetization templates, read the Obsidian tag taxonomy before
+   writing frontmatter. For internal-consumption templates, skip vault-only
+   tag checks.
+3. Classify the source content:
 
 | Source content | Action |
 |----------------|--------|
@@ -75,23 +90,23 @@ template family names one.
 | executable workflow | keep in or route to a skill |
 | validator contract | route to standard plus validator |
 
-3. Search for existing templates and consumers:
+4. Search for existing templates and consumers:
 
 ```bash
 rg -n "<slug>|<template-name>" agent docs .github scripts
 ```
 
-4. Create the template under the canonical family folder.
-5. Add or update the inventory row in
+5. Create the template under the canonical family folder.
+6. Add or update the inventory row in
    `agent/standards/authoring/document-templates.md`.
-6. Add validator coverage when the family or consumer contract is new.
-7. Add runtime mirror handling when the consumer requires a fixed path.
-8. Update the source skill or command so it links the template instead of
+7. Add validator coverage when the family or consumer contract is new.
+8. Add runtime mirror handling when the consumer requires a fixed path.
+9. Update the source skill or command so it links the template instead of
    embedding the reusable body.
 
 ## Update Workflow
 
-1. Read the template and its consumer contract.
+1. Read the template, phase, and consumer contract.
 2. Patch the canonical template first.
 3. Update consumers that embed or load the old body shape.
 4. Update runtime mirrors after canonical changes.
@@ -104,6 +119,7 @@ Lead with findings. Check:
 | Area | Check |
 |------|-------|
 | canonical owner | template lives under `agent/document-templates/` |
+| phase | template has exactly one phase and uses that phase's review lens |
 | consumer contract | family-specific format is valid |
 | Markdown fences | nested examples do not close an outer fence early |
 | Obsidian tags | axes exist in taxonomy; max five tags |

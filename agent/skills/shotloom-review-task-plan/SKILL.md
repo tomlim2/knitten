@@ -217,8 +217,8 @@ Before landing, verify:
 - `## Design Plan` starts with baseline re-check or includes one. Existing
   specs with `## Implementation Spec` pass this floor when that section starts
   with baseline re-check or includes one.
-- Every new or rewritten Design Plan stage states `Input`, `Output`,
-  `Non-output`, `Failure`, and `Proof`. For unchanged legacy
+- Every new or rewritten Design Plan stage follows
+  `agent/document-templates/agent-hub/design-plan.md`. For unchanged legacy
   `## Implementation Spec` sections, patch only when missing I/O hides a
   `P1`/`P2` ambiguity.
 - Every Design Plan stage maps to at least one requirement and verification

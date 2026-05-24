@@ -46,6 +46,9 @@ copying everything into the core repository.
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
 | `skill-lifecycle-manager` | todo | Define skill CRUD and lifecycle management before broad skill inventory edits. |
 | [operational-findings-pipeline.md](../plans/proposed/operational-findings-pipeline.md) | proposed | Define one Knitten-wide findings intake, promotion, and reporting lifecycle for operational issues and lessons; periodic consolidation stays manual-first. |
+| [design-plan-template-skill-adoption.md](../plans/proposed/design-plan-template-skill-adoption.md) | proposed | Route spec creation and review skills to the canonical Design Plan template while keeping domain-specific constraints in skills. |
+| [document-template-consumption-phases.md](../plans/proposed/document-template-consumption-phases.md) | proposed | Split document template review policy into internal-consumption and vault-assetization phases after adding the Design Plan template. |
+| [context-standards-redirect-validation.md](../plans/proposed/context-standards-redirect-validation.md) | proposed | Validate `context-standards` paths through standards redirect stubs and canonical replacement targets. |
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |

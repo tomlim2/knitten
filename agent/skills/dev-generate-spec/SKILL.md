@@ -9,6 +9,8 @@ Technical specification document generator for Claude Code.
 ## Purpose
 
 Analyzes code (plugin, module, or directory) and generates a technical specification document following `agent/document-templates/agent-hub/technical-spec.md`.
+The generated document is an internal-consumption artifact: it supports code
+understanding and implementation work, not Obsidian vault assetization.
 
 **Note:** This is an agent-driven workflow skill with no standalone script. It is invoked exclusively via the `/spec` command.
 

@@ -59,7 +59,8 @@ Detect UX/UI issues by reading HTML, CSS, and JavaScript source files without ru
 | Performance UX | 6 | `review-ux.md` §9 |
 | Forms & Input UX | 8 | `review-ux.md` §10 |
 
-Output follows `review-template.md` format.
+Output follows the internal-consumption review template:
+`agent/document-templates/review/code-review.md`.
 
 ---
 
@@ -97,7 +98,8 @@ For each finding, record:
 
 ### Step 5: Output
 
-Follow the output format defined in `~/.claude/standards/review/review-template.md`.
+Follow the output format defined in
+`agent/document-templates/review/code-review.md`.
 
 - Use **Standards Applied**: `review-ux.md` (UX/UI Audit)
 - **Standards Compliance** section shows pass/fail per category (§1–§10)
@@ -109,5 +111,5 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 
 - `references/REVIEW-UX.md` — UX/UI audit checklist (70+ items)
 - `references/REVIEW-UX-WRITING.md` — UX writing checklist
-- `standards/review/review-template.md` — Review output format
+- `agent/document-templates/review/code-review.md` — Review output format
 - `skills/review-audit-web/SKILL.md` — Code quality review (JS + CSS standards)

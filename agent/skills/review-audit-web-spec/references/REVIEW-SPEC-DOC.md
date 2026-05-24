@@ -13,9 +13,9 @@ Static review checklist for auditing technical specifications, PRDs, and website
 
 - `../review-audit-ux/references/REVIEW-UX.md` — UX/UI code audit checklist
 - `../review-audit-web/references/REVIEW-CODE-JAVASCRIPT.md` — JS coding standards checklist
-- `review-template.md` — Output format (for **structuring** review feedback)
+- `agent/document-templates/review/code-review.md` — Output format (for **structuring** review feedback)
 
-This document defines **what to check** from engineering, design, brand, audience, and document quality perspectives. Use `review-template.md` for how to format findings.
+This document defines **what to check** from engineering, design, brand, audience, and document quality perspectives. Use `agent/document-templates/review/code-review.md` for how to format findings.
 
 ---
 

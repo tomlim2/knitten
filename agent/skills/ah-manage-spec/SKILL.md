@@ -79,10 +79,14 @@ rg -n "<slug>|<main-term>" docs/plans docs/milestones docs/briefings
 
 6. Read only required evidence and selected route references.
 7. Draft using [`agent/document-templates/agent-hub/spec.md`](../../document-templates/agent-hub/spec.md).
-8. Review the draft for missing evidence, unclear decisions, impossible
+8. If the spec needs ordered implementation stages, add a Design Plan using
+   [`agent/document-templates/agent-hub/design-plan.md`](../../document-templates/agent-hub/design-plan.md).
+   Specs are internal-consumption artifacts; preserve durable knowledge in a
+   separate vault-assetization note.
+9. Review the draft for missing evidence, unclear decisions, impossible
    validation, and unsafe operations.
-9. Write the spec; write intake if required.
-10. Run validation.
+10. Write the spec; write intake if required.
+11. Run validation.
 
 If the slug collides with an existing spec, read it first. Switch to update mode
 only when the request clearly matches the existing spec.
@@ -162,6 +166,7 @@ report the exact blocker and still run `git diff --check`.
 | `references/SPEC-INTAKE.md` | intake artifact template and rules |
 | `references/SPEC-LIFECYCLE.md` | status/archive/delete rules |
 | `../../document-templates/agent-hub/spec.md` | direct spec templates |
+| `../../document-templates/agent-hub/design-plan.md` | optional implementation-order stage template |
 | `references/SPEC-ROUTING.md` | route matrix and existing skill reuse |
 
 ## Related
