@@ -62,6 +62,7 @@ backlog items.
 | Review-pattern promotion | `agent/skills/shotloom-promote-review-patterns/SKILL.md` | Manual and useful, but aimed at one catalog lane. |
 | Direct user report | chat only | No durable shared intake contract. |
 | Report template | `agent/document-templates/agent-hub/operational-finding-report.md` | Exists; implementation should verify/update it, not create a duplicate. |
+| Prepare script | `scripts/operational-findings-worktree.mjs` | Exists; prepares or verifies the dedicated findings worktree. |
 
 ## Proposed Design
 
@@ -168,7 +169,7 @@ Canonical index table:
 ```markdown
 | Date | Report | Initial Source | Area | Context | Summary | Status |
 |------|--------|----------------|------|---------|---------|--------|
-| YYYY-MM-DD | `reports/YYYYMMDD-short-slug.md` | user-report | unknown | <context> | <rough summary> | captured |
+| YYYY-MM-DD | `operational-findings/reports/YYYYMMDD-short-slug.md` | user-report | unknown | <context> | <rough summary> | captured |
 ```
 
 Report files use the template and are the place for:
@@ -203,7 +204,8 @@ File naming:
 - agent-generated slug by default;
 - if the user provides a usable title, reuse or adapt it;
 - one file = one report context, not one atomic finding.
-- default path shape is `reports/YYYYMMDD-<slug>.md`;
+- default path shape is
+  `docs/briefings/operational-findings/reports/YYYYMMDD-<slug>.md`;
 - if the path already exists, append `-2`, `-3`, and so on rather than
   overwriting.
 
@@ -325,6 +327,16 @@ git diff --check
 node scripts/validate-llm-first.mjs
 git status --short --branch
 ```
+
+Prepare-script smoke checks:
+
+```bash
+node scripts/operational-findings-worktree.mjs status
+node scripts/operational-findings-worktree.mjs prepare --dry-run
+node scripts/operational-findings-worktree.mjs prepare --branch codex/operational-findings --dry-run
+```
+
+The final command must fail with the `codex/` prefix rejection.
 
 When implementation lands, validate at least:
 
