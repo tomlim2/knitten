@@ -55,7 +55,7 @@ copying everything into the core repository.
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
-| `artifact-pack-manifest-contract` | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
+| [artifact-pack-manifest-contract.md](../plans/proposed/artifact-pack-manifest-contract.md) | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
 | `artifact-pack-discovery-routing` | proposed | Define how core discovers artifact packs and lets routers select them. |
 | `artifact-pack-install-link-flow` | proposed | Define safe local install, symlink/link, update, and uninstall behavior. |
 | `artifact-compatibility-shims` | proposed | Define old path mappings, aliases, deprecation windows, and removal criteria. |
@@ -80,7 +80,7 @@ copying everything into the core repository.
 | Thin skill / guide boundary | active | Five-skill pilot classification, first extraction pilot, and extraction rollout rule exist. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
-| Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |
+| Manifest contract | proposed | Contract spec exists; schema and validator implementation are not started. |
 | Discovery and routing | not started | Depends on the manifest contract. |
 | Install and link flow | not started | Depends on the manifest contract and current harness link behavior. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
