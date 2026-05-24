@@ -70,19 +70,42 @@ Maintain one Knitten worktree dedicated to findings intake and promotion.
 
 | Field | Value |
 |-------|-------|
-| Branch | `codex/operational-findings` |
+| Branch | `operational-findings` |
 | Preferred worktree | `<knitten-root>/.worktrees/operational-findings` |
 | Canonical intake index | `docs/briefings/operational-findings-inbox.md` |
+| Report directory | `docs/briefings/operational-findings/reports/` |
 | Report template | `agent/document-templates/agent-hub/operational-finding-report.md` |
+| Fast-track manual | `docs/briefings/operational-findings/fast-track-manual.md` |
 
 Rules:
 
 - Do not create date-specific worktrees.
 - The worktree is a shared queue, not a per-PR or per-day artifact.
+- The branch is long-lived operating state. Do not delete it as a stale task
+  branch.
 - Findings worktree policy is commit-first: any accepted report write must end
   in a commit and push from the findings branch.
+- Report files live under `docs/briefings/operational-findings/reports/` and
+  use agent-generated slugs unless the user provides a usable title.
 - If the preferred worktree is unavailable or unsafe to prepare, capture should
   report `skipped` and avoid blocking the primary task wrapup.
+
+Failure handling:
+
+| Condition | Action |
+|-----------|--------|
+| worktree is dirty before capture | skip capture; report the dirty files and leave them untouched |
+| branch is not `operational-findings` | skip capture; report the actual branch |
+| remote is ahead and worktree is clean | run `pull --ff-only`, then retry once |
+| push is rejected after commit | fetch, attempt `pull --ff-only` if clean, then retry once |
+| merge conflict or non-ff pull | stop; report manual repair needed |
+| files outside the intake index/report paths changed | stop; do not commit |
+| network failure prevents push | leave the commit in the findings worktree and report the exact push failure |
+
+Script feedback:
+
+- on success, report only the created/updated report path and pushed commit;
+- on failure, analyze the failed condition and report the next safe action.
 
 ### 2. Capture lane
 
@@ -114,11 +137,11 @@ Index rows must record:
 |-------|---------|
 | `Date` | capture date |
 | `Report` | report file path or slug |
-| `Source` | `wrapup-task`, `user-report`, `ci`, `rule`, or similar |
-| `Area` | skill, rule, standard, validator, docs, config, workflow, or routing |
+| `Initial Source` | first report channel, such as `user-report`, `wrapup-task`, `ci`, `rule`, or similar |
+| `Area` | skill, rule, standard, validator, docs, config, workflow, routing, ux, other, or unknown |
 | `Context` | report-context label |
 | `Summary` | one-line rough description |
-| `Status` | `inbox`, `promoted`, `merged`, `parked`, `discarded` |
+| `Status` | `captured`, `triaged`, `promoted`, `merged`, `parked`, `discarded` |
 
 Report files use the template and are the place for:
 
@@ -131,11 +154,38 @@ Report files use the template and are the place for:
 Capture does not require fully clarified issue statements. The purpose is to
 preserve a useful report that can be strengthened later.
 
+Initial capture vs later classification:
+
+- preserve what the first report said, even when later triage discovers the real
+  target is different;
+- `Initial Source` records where the report came from, not the final root cause;
+- `Area` and `promotion-target` may start as `unknown` or a rough guess;
+- later triage may reclassify the report from A to B, but should keep the
+  original observation visible in the report body.
+
+Report status:
+
+- frontmatter `status` is canonical for scripts, indexes, and promotion;
+- body `## Status` is a human-readable reflection of the same state;
+- if the two diverge, tooling and agents must trust frontmatter first and repair
+  the body during the next edit.
+
 File naming:
 
 - agent-generated slug by default;
 - if the user provides a usable title, reuse or adapt it;
 - one file = one report context, not one atomic finding.
+
+Status vocabulary:
+
+| Status | Meaning |
+|--------|---------|
+| `captured` | saved for later clarification; default capture state |
+| `triaged` | reviewed and routed, but not yet fully resolved |
+| `promoted` | converted into a durable artifact change or accepted follow-up |
+| `merged` | folded into another report or existing artifact |
+| `parked` | kept for more evidence |
+| `discarded` | closed as too specific, stale, or not worth codifying |
 
 ### 4. Triage and promotion lane
 
@@ -151,7 +201,8 @@ Triggers:
 Fast-track exception:
 
 - if the user explicitly says the finding needs urgent handling, skip the normal
-  batch preference and route it through an urgent handling manual.
+  batch preference and route it through
+  `docs/briefings/operational-findings/fast-track-manual.md`.
 
 Triage decisions:
 
@@ -161,6 +212,18 @@ Triage decisions:
 | `merge` | fold into an existing finding or existing permanent artifact |
 | `park` | keep for more evidence |
 | `discard` | too specific, stale, or not worth codifying |
+
+Promotion routing guide:
+
+| Finding shape after triage | Likely target |
+|----------------------------|---------------|
+| missing or confusing repeatable workflow step | skill |
+| missing behavior constraint | rule |
+| durable judgment, policy, or template convention | standard |
+| mechanically checkable drift | validator |
+| multi-step implementation or migration | spec |
+| broad future work or cross-cutting backlog | milestone |
+| unclear, early, or one-off signal | parked |
 
 Promotion targets:
 
@@ -178,12 +241,17 @@ The current Shotloom review-pattern path is a useful seed, but it becomes one
 specialized sub-lane inside the broader Knitten-wide operational findings
 pipeline.
 
-Migration direction:
+Canonical ownership:
 
-1. preserve current review-pattern behavior while the broader intake doc lands;
-2. decide whether review-pattern inbox entries remain separate or become a typed
-   slice of the broader findings inbox;
-3. keep promotion tooling compatible during transition.
+1. `docs/briefings/operational-findings-inbox.md` is the canonical Knitten-wide
+   findings index.
+2. Shotloom review findings are a typed source/lane within that canonical
+   pipeline.
+3. `docs/briefings/shotloom/review-finding-patterns-inbox.md` is compatibility
+   storage until the Shotloom review-pattern lane is migrated or explicitly kept
+   as a specialized downstream artifact.
+4. New general operational findings should not write first to the Shotloom-only
+   inbox.
 
 ### 6. Ownership split
 
@@ -200,19 +268,19 @@ Migration direction:
 1. Create `docs/briefings/operational-findings-inbox.md` with the accepted
    thin index shape.
 2. Define the dedicated findings branch/worktree contract.
-3. Add `agent/document-templates/agent-hub/operational-finding-report.md` and
+3. Create `docs/briefings/operational-findings/reports/` and
+   `docs/briefings/operational-findings/fast-track-manual.md`.
+4. Add `agent/document-templates/agent-hub/operational-finding-report.md` and
    keep report creation aligned to that template.
-4. Update `shotloom-wrapup-task` so it can append findings to the dedicated
+5. Update `shotloom-wrapup-task` so it can append findings to the dedicated
    worktree and push safely.
-5. Add one manual reporting path for user-submitted findings under the name
+6. Add one manual reporting path for user-submitted findings under the name
    `ah-report-finding`.
-6. Decide whether the existing Shotloom review-pattern inbox is:
-   - kept separate;
-   - mirrored;
-   - or migrated into the broader inbox.
-7. Define or update the promotion workflow so periodic consolidation can target
+7. Update the existing Shotloom review-pattern lane to respect the canonical
+   operational findings index.
+8. Define or update the promotion workflow so periodic consolidation can target
    skills, rules, standards, specs, validators, and milestone items.
-8. Add validation or grep checks that protect the intake doc shape and prevent
+9. Add validation or grep checks that protect the intake doc shape and prevent
    accidental private-link drift where needed.
 
 ## Validation
@@ -232,6 +300,8 @@ When implementation lands, validate at least:
   touching unrelated files;
 - intake commit/push only mutates the findings branch/worktree;
 - manual user-report flow can add one entry without requiring PR context;
+- index and report status values use the same vocabulary;
+- fast-track requests have a documented manual path;
 - promotion workflow can classify entries into promote / merge / park / discard.
 
 ## Risks
@@ -242,7 +312,7 @@ When implementation lands, validate at least:
 | Capture blocks task wrapup | Worktree/setup issues should not block main cleanup | Allow safe skip with explicit report. |
 | Scope stays too Shotloom-specific | The pipeline should serve broader Knitten usage | Use operational vocabulary from the start. |
 | Promotion gets postponed forever | Queue grows without durable improvements | Add periodic review expectation and milestone visibility. |
-| Duplicate sources diverge | Separate review-only and general inboxes can drift | Decide transition path early and document canonical owner. |
+| Duplicate sources diverge | Separate review-only and general inboxes can drift | Canonical index is Knitten-wide; Shotloom inbox is compatibility storage until migration. |
 
 ## Acceptance Criteria
 
@@ -262,13 +332,16 @@ When implementation lands, validate at least:
 9. The spec defines whether capture may skip safely without blocking primary
    cleanup work.
 10. Existing Shotloom review-pattern handling has a documented relationship to
-   the broader pipeline.
+    the broader pipeline.
+11. Report directory and fast-track manual paths are explicitly assigned.
+12. Index and report status values use one shared lifecycle vocabulary.
 
 ## Open Decisions
 
-1. Should `docs/briefings/shotloom/review-finding-patterns-inbox.md` stay as a
-   separate specialized inbox or merge into `operational-findings-inbox.md`?
-2. Periodic consolidation stays manual-only for now. If automation is added
+1. Periodic consolidation stays manual-only for now. If automation is added
    later, which trigger should justify it?
-3. Does the broader findings intake belong under the current milestone, or
+2. Does the broader findings intake belong under the current milestone, or
    should it get a dedicated milestone once implementation starts?
+3. Should the Shotloom review-pattern compatibility inbox eventually be deleted,
+   kept as downstream promoted-pattern evidence, or migrated fully into the
+   canonical Knitten-wide report directory?

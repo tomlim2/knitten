@@ -71,8 +71,10 @@ If more than one path exists, stop and report duplicate lifecycle state.
 1. Resolve slug and ensure the file does not already exist.
 2. Create `docs/milestones/` if missing.
 3. Write the template from [`agent/document-templates/agent-hub/milestone.md`](../../document-templates/agent-hub/milestone.md).
-4. Add or update the row in `docs/milestones/index.md`.
-5. Run validation.
+4. Treat the milestone as an internal-consumption artifact: it tracks work
+   grouping and progress, not long-term vault knowledge.
+5. Add or update the row in `docs/milestones/index.md`.
+6. Run validation.
 
 If the milestone exists, switch to update mode only when the user request clearly
 targets the existing milestone.

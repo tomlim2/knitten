@@ -16,6 +16,8 @@ Log technical consulting sessions and build per-company history.
 ## Purpose
 
 Record technical consulting sessions for specific companies. Each company gets a dedicated file where sessions accumulate over time, building a complete consulting history.
+The company file uses a vault-assetization template:
+`agent/document-templates/consulting/company-history.md`.
 
 ---
 

@@ -22,9 +22,9 @@ exclude-when: unreal,obsidian
 **Review checklist** for CSS code reviews. This is a companion to:
 
 - `../../frontend-design/references/CSS.md` — Coding standards (for **generating** code)
-- `review-template.md` — Output format (for **structuring** review feedback)
+- `agent/document-templates/review/code-review.md` — Output format (for **structuring** review feedback)
 
-This document defines **what to check**. Use `review-template.md` for how to format findings.
+This document defines **what to check**. Use `agent/document-templates/review/code-review.md` for how to format findings.
 
 ---
 

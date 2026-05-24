@@ -143,8 +143,10 @@ promotion/demotion, or user-facing workflow ownership.
 Write `## Design Plan` as the implementation-order section in new specs.
 Existing specs that already use `## Implementation Spec` remain valid during
 updates; do not rename the section unless the spec is already being rewritten.
-Each Design Plan stage must state input, output, forbidden output, failure
-handling, and proof. Use the I/O block in [reference.md](reference.md).
+Each Design Plan stage must follow
+[`agent/document-templates/agent-hub/design-plan.md`](../../document-templates/agent-hub/design-plan.md).
+Use [reference.md](reference.md) for Shotloom-specific baseline, risk, Linear,
+validator, and compatibility rules.
 
 The spec must answer these questions before any Design Plan stage appears:
 

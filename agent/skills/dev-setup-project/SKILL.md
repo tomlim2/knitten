@@ -52,12 +52,14 @@ Usage: /dev-setup-project <project-name> [repo-path]
 
 1. `ah-resolve-doc-path`로 `devlog`, `learning`, `topic` 목적지를 확인
 2. resolver가 반환한 프로젝트 문서 디렉토리 생성
-3. `obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`를 따른 기본 구조 생성:
+3. Treat these folders as vault-assetization roles; active work tracking stays
+   in separate internal-consumption specs, reports, issues, or PR bodies.
+4. `obsidian-obsidian-markdown/references/PROJECT-DOCS-STRUCTURE.md`를 따른 기본 구조 생성:
    - `README.md` — project map, audience, folder routing
    - `days/` — dated work records
    - `learnings/` — reusable lessons
    - `topics/` — references and analysis
-4. Do not create root `devlog.md` or `learnings-index.md`; those are legacy migration hubs.
+5. Do not create root `devlog.md` or `learnings-index.md`; those are legacy migration hubs.
 
 ### Step 6: 결과 요약
 

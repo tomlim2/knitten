@@ -46,7 +46,8 @@ Most freelancers and small teams review specs from a single engineering perspect
 | Target Audience Review | 6 | `review-spec-doc.md` §4 |
 | Document Quality | 5 | `review-spec-doc.md` §5 |
 
-Output follows `review-template.md` format.
+Output follows the internal-consumption review template:
+`agent/document-templates/review/code-review.md`.
 
 ---
 
@@ -95,7 +96,8 @@ For each finding, record:
 
 ### Step 5: Output
 
-Follow the output format defined in `~/.claude/standards/review/review-template.md`.
+Follow the output format defined in
+`agent/document-templates/review/code-review.md`.
 
 - Use **Standards Applied**: `review-spec-doc.md` (Spec Document Audit)
 - **Standards Compliance** section shows pass/fail per category (§1–§5)
@@ -106,6 +108,6 @@ Follow the output format defined in `~/.claude/standards/review/review-template.
 ## Related
 
 - `references/REVIEW-SPEC-DOC.md` — Spec document audit checklist (32 items)
-- `standards/review/review-template.md` — Review output format
+- `agent/document-templates/review/code-review.md` — Review output format
 - `skills/review-audit-ux/SKILL.md` — UX/UI code audit
 - `skills/review-audit-web/SKILL.md` — JS/CSS code quality review

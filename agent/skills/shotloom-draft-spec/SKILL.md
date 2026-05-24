@@ -41,7 +41,7 @@ rules on top:
    | Research | Live code, ADR, spec, sibling issue/PR audit. |
    | Options | Plausible approaches and chosen direction for boundary-heavy work. |
    | Spec Contract | Requirements, locked decisions, non-goals, invariants, acceptance. |
-   | Design Plan | File/module implementation sequence with per-stage input, output, failure handling, and proof. |
+   | Design Plan | File/module implementation sequence using `agent/document-templates/agent-hub/design-plan.md` plus Shotloom-specific constraints from the compatibility workflow. |
    | Implementation | Source edits after the user gives a separate go-ahead. |
 
 4. After the direct spec lands, immediately run the review gate named in the

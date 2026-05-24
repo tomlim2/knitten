@@ -16,13 +16,28 @@ and execution steps only.
 
 | Folder | Owns |
 |--------|------|
-| `agent-hub/` | specs, milestones, generated technical specs |
+| `agent-hub/` | specs, milestones, design plans, generated technical specs |
 | `consulting/` | consulting history records |
 | `github/` | GitHub pull request body templates |
 | `linear/` | Linear issue body templates |
 | `obsidian/` | Obsidian vault note templates |
 | `project/` | project record templates |
 | `review/` | review output templates |
+
+## Consumption Phase
+
+Templates split by the phase that consumes them. This is a review and routing
+classification only; current folder paths remain stable until a separate
+migration spec moves files.
+
+| Phase | Purpose | Families |
+|-------|---------|----------|
+| internal-consumption | Agent, workflow, tracker, PR, review, design plan, or spec output used to run work. Optimize for scriptability, status, and consumer fit. | `agent-hub/`, `github/`, `linear/`, `review/` |
+| vault-assetization | Obsidian-facing notes meant for later retrieval, learning, or durable personal/project records. Optimize for tags, links, frontmatter, and search. | `obsidian/`, `consulting/`, `project/` |
+
+If a workflow starts as internal-consumption and later becomes knowledge worth
+keeping, create or update a vault-assetization note in a separate step instead
+of making the operational template carry both purposes.
 
 ## Caller Contract
 
@@ -45,6 +60,13 @@ and execution steps only.
 | `agent-hub/*.md` | agent-hub docs skill | has `status:` frontmatter; contains fenced generated-body examples |
 | `review/*.md` | review-output formatter | has `status:` frontmatter; contains review output sections |
 | `README.md` | LLM template index | has `status:` frontmatter; lists folders and consumer contract |
+
+## Review Lens
+
+| Phase | Primary checks |
+|-------|----------------|
+| internal-consumption | canonical status/source fields, index mapping, low capture burden, deterministic script behavior, external consumer format |
+| vault-assetization | valid Obsidian frontmatter, tag taxonomy, wikilink/retrieval value, one H1, long-term readability |
 
 ## Runtime Mirrors
 

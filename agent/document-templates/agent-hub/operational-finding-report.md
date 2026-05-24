@@ -19,10 +19,10 @@ findings pipeline.
 status: captured
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-source: wrapup-task
-area: skill
+initial-source: user-report
+area: unknown
 contexts:
-  - shotloom-pr-388
+  - <report-context>
 promotion-target: unknown
 urgent: false
 ---
@@ -68,6 +68,7 @@ Rules:
 - Multiple observations are allowed when they share one report context.
 - Do not force perfect classification during capture.
 - Prefer useful rough evidence over polished conclusions.
+- Preserve the initial report even if later triage reclassifies the issue.
 
 ## Suggested Follow-up
 
@@ -75,6 +76,9 @@ Rules:
 ## Suggested Follow-up
 
 - Next pass should clarify: <question / ambiguity / routing choice>
+- Problem: <rough problem statement, optional>
+- Likely Scope: <skill / docs / workflow / validator / other, optional>
+- Done When: <rough done signal, optional>
 - Possible destination: <skill | rule | standard | validator | spec | docs | config | workflow | routing | ux | other | unknown>
 ```
 
@@ -83,15 +87,17 @@ Rules:
 ```markdown
 ## Status
 
-- Capture State: captured
-- Triage State: pending
+- Current State: captured
 - Fast Track: no
 ```
 
 Rules:
 
-- Default to `captured` / `pending` / `no`.
+- Frontmatter `status` is canonical for scripts and indexes.
+- Default to `Current State: captured` and `Fast Track: no`.
 - If the user explicitly says this needs urgent handling, set `Fast Track: yes`.
+- Use the shared lifecycle vocabulary:
+  `captured`, `triaged`, `promoted`, `merged`, `parked`, `discarded`.
 
 ## Notes
 

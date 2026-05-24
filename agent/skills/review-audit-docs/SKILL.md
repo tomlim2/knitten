@@ -7,6 +7,8 @@ allowed-tools: Bash(git:*), Bash(rg:*), Bash(grep:*), Bash(ls:*), Bash(find:*), 
 # review-audit-docs
 
 Read-only audit pass focused on **documentation and comments** in a code change. Dispatches an Explore subagent with a structured prompt, then verifies each finding against the live tree before presenting. Does not modify files.
+The report is an internal-consumption review artifact. Do not write Obsidian
+vault notes from this skill.
 
 Pairs naturally with code-quality reviews (e.g. `/shotloom-review-before-pr`) — the code review checks logic; this checks the prose.
 

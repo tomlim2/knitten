@@ -24,7 +24,7 @@ exclude-when: unreal,obsidian
 
 - `REVIEW-CODE-JAVASCRIPT.md` — for plain JS/TS files in `src/lib/`, `src/pages/api/`
 - `REVIEW-CODE-CSS.md` — for `<style>` blocks and global CSS
-- `review-template.md` — output format
+- `agent/document-templates/review/code-review.md` — output format
 
 This document defines **what to check that is Astro-specific**. For generic JS/TS rules, defer to `REVIEW-CODE-JAVASCRIPT.md`.
 

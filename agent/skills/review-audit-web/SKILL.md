@@ -51,7 +51,8 @@ Unified web code review command that applies both JavaScript and CSS checklists 
 | `.js`, `.jsx`, `.ts`, `.tsx` | `REVIEW-CODE-JAVASCRIPT.md` |
 | `.css`, `.scss`, `.less` | `REVIEW-CODE-CSS.md` |
 
-Output follows `review-template.md` format.
+Output follows the internal-consumption review template:
+`agent/document-templates/review/code-review.md`.
 
 ---
 
@@ -61,4 +62,4 @@ Output follows `review-template.md` format.
 - `references/REVIEW-CODE-JAVASCRIPT.md` — JS review checklist
 - `references/REVIEW-CODE-CSS.md` — CSS review checklist
 - `references/REVIEW-CODE-ASTRO.md` — Astro review checklist
-- `standards/review/review-template.md` — Review output format
+- `agent/document-templates/review/code-review.md` — Review output format
