@@ -92,6 +92,14 @@ copying everything into the core repository.
 | Validation gates | done | `docs/plans/completed/artifact-pack-validation-gates.md` defines and implements artifact pack manifest validation gates. |
 | Example pack | not started | Depends on manifest contract and resolver behavior. |
 
+## Priority Queue
+
+| Priority | Work | Reason |
+|----------|------|--------|
+| very-high | `artifact-pack-manifest-contract` | Pack exports need one manifest contract before discovery, routing, migration, and example-pack work can converge. |
+| very-high | `artifact-pack-discovery-routing` | Pack artifacts need resolver routing before externalized skills can load without copying back into core. |
+| very-high | `example-artifact-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |
+
 ## Acceptance Criteria
 
 1. Knitten has a documented core/artifact-pack boundary.
