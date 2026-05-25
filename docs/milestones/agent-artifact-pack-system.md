@@ -55,8 +55,8 @@ copying everything into the core repository.
 | `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
-| [artifact-pack-manifest-contract.md](../plans/proposed/artifact-pack-manifest-contract.md) | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
-| `artifact-pack-discovery-routing` | proposed | Define how core discovers artifact packs and lets routers select them. |
+| [artifact-pack-manifest-contract.md](../plans/completed/artifact-pack-manifest-contract.md) | completed | Define the manifest schema, exported artifact model, and compatibility fields. |
+| [artifact-pack-discovery-routing.md](../plans/completed/artifact-pack-discovery-routing.md) | completed | Define and implement how core discovers artifact packs and lets routers select them. |
 | [installed-pack-lifecycle.md](../plans/proposed/installed-pack-lifecycle.md) | proposed | Define safe local installed-pack lifecycle, mount, update, disable, recover, and uninstall behavior. |
 | [installed-pack-lifecycle-test-contract.md](../plans/proposed/installed-pack-lifecycle-test-contract.md) | proposed | Define executable fixtures, temp harness setup, JSON examples, and practical lifecycle assertions. |
 | [installed-pack-lifecycle-recovery-hardening.md](../plans/completed/installed-pack-lifecycle-recovery-hardening.md) | completed | Track durable journals, real recovery, manifest-set prevalidation, and full update reconciliation follow-up work. |
@@ -83,8 +83,8 @@ copying everything into the core repository.
 | Thin skill / guide boundary | active | Five-skill pilot classification, first extraction pilot, and extraction rollout rule exist. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
-| Manifest contract | proposed | Contract spec exists; schema and validator implementation are not started. |
-| Discovery and routing | not started | Depends on the manifest contract. |
+| Manifest contract | done | `agent/config/artifact-pack.schema.json`, `agent/config/artifact-pack-core-capabilities.json`, fixtures, and artifact-pack validator gates exist and pass. |
+| Discovery and routing | done | `scripts/resolve-artifact-route.mjs`, `tests/artifact-pack-discovery-routing.test.mjs`, and `artifact-pack-discovery-routing` validator check implement resolver inputs, result envelope, candidate rows, load guards, and fixtures. |
 | Installed pack lifecycle | active | PR #63 merged the first installer slice; PR #64 merged recovery hardening; PR #65 merged fsync durability and validation-failed journals. Parent lifecycle and test-contract specs remain proposed. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
 | Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
@@ -96,8 +96,8 @@ copying everything into the core repository.
 
 | Priority | Work | Reason |
 |----------|------|--------|
-| very-high | `artifact-pack-manifest-contract` | Pack exports need one manifest contract before discovery, routing, migration, and example-pack work can converge. |
-| very-high | `artifact-pack-discovery-routing` | Pack artifacts need resolver routing before externalized skills can load without copying back into core. |
+| done | `artifact-pack-manifest-contract` | Manifest schema, validator gates, core capability registry, and fixtures exist. |
+| done | `artifact-pack-discovery-routing` | Resolver module, fixtures, and validator check exist. |
 | very-high | `example-artifact-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |
 
 ## Acceptance Criteria
@@ -130,8 +130,8 @@ copying everything into the core repository.
     standards, guides, references, templates, or validators.
 16. Pack discovery improves LLM decision quality by exposing compact route
     metadata before loading skill, reference, template, or domain bodies.
-17. Pilot migrations record decision-quality metrics: candidate count, loaded
-    skill bodies, loaded context bytes, must-not-load violations, canonical
+17. Pilot migrations record decision-quality metrics: emitted candidate count,
+    loaded skill bodies, loaded context bytes, exclusion body loads, canonical
     owner conflicts, and secondary route count.
 
 ## Inventory Contract
@@ -228,10 +228,10 @@ Decision-quality gates:
 
 | Metric | Pass gate |
 |--------|-----------|
-| pre-route candidate count | `<= 5` and one primary route |
+| emitted candidate count | `<= 5` and one primary candidate |
 | pre-route skill body count | `<= 1` router body |
 | loaded context bytes | `<= context-profile.maxBytes` |
-| must-not-load violations | `0` |
+| exclusion body loads | `0` |
 | canonical owner conflicts | `0` |
 | secondary route count | `<= 2`, each with evidence |
 

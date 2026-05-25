@@ -42,7 +42,7 @@ resolver, installer, migration, or release work depends on pack validation.
 | template | `agent/document-templates/agent-hub/spec.md` | Spec body structure. |
 | template | `agent/document-templates/agent-hub/design-plan.md` | Implementation-order stage structure. |
 | spec | `docs/plans/completed/artifact-pack-vocabulary.md` | Artifact-pack vocabulary dependency. |
-| spec | `docs/plans/proposed/artifact-pack-manifest-contract.md` | Manifest fields and named validator gates. |
+| spec | `docs/plans/completed/artifact-pack-manifest-contract.md` | Manifest fields and named validator gates. |
 | spec | `docs/plans/completed/managed-path-registry-validation.md` | Existing validator pattern for registry-backed checks. |
 | spec | `docs/plans/completed/artifact-inventory-provenance-validation.md` | Existing validator pattern for generated metadata checks. |
 | script | `scripts/validate-llm-first.mjs` | Current validator entry points and check naming. |
@@ -53,10 +53,10 @@ resolver, installer, migration, or release work depends on pack validation.
 
 | Decision | Source |
 |----------|--------|
-| Manifest filename is `artifact-pack.json`. | `docs/plans/proposed/artifact-pack-manifest-contract.md` |
-| Manifest schema path is `agent/config/artifact-pack.schema.json`. | `docs/plans/proposed/artifact-pack-manifest-contract.md` |
-| Validator gates are named `manifest-shape`, `manifest-paths`, `manifest-exports`, `manifest-dependencies`, `manifest-routing`, `manifest-visibility`, and `manifest-compatibility`. | `docs/plans/proposed/artifact-pack-manifest-contract.md` |
-| `core:<capability-id>` values need an owning registry. | `docs/plans/proposed/artifact-pack-manifest-contract.md` |
+| Manifest filename is `artifact-pack.json`. | `docs/plans/completed/artifact-pack-manifest-contract.md` |
+| Manifest schema path is `agent/config/artifact-pack.schema.json`. | `docs/plans/completed/artifact-pack-manifest-contract.md` |
+| Validator gates are named `manifest-shape`, `manifest-paths`, `manifest-exports`, `manifest-dependencies`, `manifest-routing`, `manifest-visibility`, and `manifest-compatibility`. | `docs/plans/completed/artifact-pack-manifest-contract.md` |
+| `core:<capability-id>` values need an owning registry. | `docs/plans/completed/artifact-pack-manifest-contract.md` |
 | Validation infrastructure stays in core. | `docs/milestones/agent-artifact-pack-system.md` |
 
 ## Open Questions

@@ -53,7 +53,7 @@ duplicate exports, stale paths, invalid route metadata, or unresolved
 | Surface | Fact | Evidence |
 |---------|------|----------|
 | Vocabulary | Artifact-pack terms are defined and completed. | `docs/plans/completed/artifact-pack-vocabulary.md` |
-| Manifest contract | Manifest filename, root fields, export fields, dependencies, route fields, visibility fields, compatibility aliases, and gate names are proposed. | `docs/plans/proposed/artifact-pack-manifest-contract.md` |
+| Manifest contract | Manifest filename, root fields, export fields, dependencies, route fields, visibility fields, compatibility aliases, and gate names are completed. | `docs/plans/completed/artifact-pack-manifest-contract.md` |
 | Validator framework | `scripts/validate-llm-first.mjs` supports named checks through `--check`. | `scripts/validate-llm-first.mjs` |
 | Context routing | Route profiles, domains, repo keys, task types, languages, frameworks, and work modes are registry-backed. | `agent/config/context-routing.json` |
 | Inventory | Existing artifacts use artifact type, privacy risk, destination, and compatibility vocabulary. | `agent/config/artifact-inventory.json` |
@@ -213,7 +213,7 @@ implementation work starts.
 S0 - Baseline re-check
 
 Input:
-- `docs/plans/proposed/artifact-pack-manifest-contract.md`
+- `docs/plans/completed/artifact-pack-manifest-contract.md`
 - `docs/milestones/agent-artifact-pack-system.md`
 - `scripts/validate-llm-first.mjs`
 
@@ -227,7 +227,7 @@ Failure:
 - Stop and record the conflicting upstream field or missing validator entry point.
 
 Proof:
-- `rg -n "manifest-shape|artifact-pack|--check" docs/plans/proposed/artifact-pack-manifest-contract.md scripts/validate-llm-first.mjs`
+- `rg -n "manifest-shape|artifact-pack|--check" docs/plans/completed/artifact-pack-manifest-contract.md scripts/validate-llm-first.mjs`
 
 S1 - Validator check skeleton
 

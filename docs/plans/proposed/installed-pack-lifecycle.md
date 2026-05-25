@@ -71,7 +71,7 @@ Without this spec, implementers can accidentally:
 | Surface | Fact | Evidence |
 |---------|------|----------|
 | Vocabulary | `pack install` means registering a pack for core resolution; it includes link, clone, pin, enable, disable, update, and uninstall flows. | `docs/plans/completed/artifact-pack-vocabulary.md` |
-| Manifest contract | Exports declare `mount.layer`, `mount.target`, and `mount.mode` as `link`, `copy`, or `virtual`. | `docs/plans/proposed/artifact-pack-manifest-contract.md` |
+| Manifest contract | Exports declare `mount.layer`, `mount.target`, and `mount.mode` as `link`, `copy`, or `virtual`. | `docs/plans/completed/artifact-pack-manifest-contract.md` |
 | Validation gates | Explicit pack roots and manifest sets can be validated before install registry lookup exists. | `docs/plans/completed/artifact-pack-validation-gates.md` |
 | Harness config | `agent/config/agent-hub.json` lists harness deploy targets, shared layers, registries, and link methods. | `agent/config/agent-hub.json` |
 | Deploy target policy | `~/.claude/` is a Claude Code harness runtime path, not canonical source or server deployment. | `SYSTEM.md` |
@@ -714,7 +714,7 @@ the CLI and state contract; the test contract owns executable examples.
 S0 - Baseline re-check
 
 Input:
-- `docs/plans/proposed/artifact-pack-manifest-contract.md`
+- `docs/plans/completed/artifact-pack-manifest-contract.md`
 - `docs/plans/completed/artifact-pack-validation-gates.md`
 - `agent/config/agent-hub.json`
 - `scripts/link-harnesses.mjs`
@@ -731,7 +731,7 @@ Failure:
   definitions conflict.
 
 Proof:
-- `rg -n "mount|mode|artifact-pack|deployTarget|linkMethod" docs/plans/proposed/artifact-pack-manifest-contract.md docs/plans/completed/artifact-pack-validation-gates.md agent/config/agent-hub.json scripts/link-harnesses.mjs`
+- `rg -n "mount|mode|artifact-pack|deployTarget|linkMethod" docs/plans/completed/artifact-pack-manifest-contract.md docs/plans/completed/artifact-pack-validation-gates.md agent/config/agent-hub.json scripts/link-harnesses.mjs`
 
 S1 - Machine-local registry contract
 

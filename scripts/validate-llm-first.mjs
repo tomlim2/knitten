@@ -4434,6 +4434,24 @@ async function checkDocumentTemplates() {
   return { name: "document-templates", violations };
 }
 
+async function checkArtifactPackDiscoveryRouting() {
+  const violations = [];
+  try {
+    await execFileAsync(process.execPath, ["--test", "tests/artifact-pack-discovery-routing.test.mjs"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+    });
+  } catch (err) {
+    violations.push({
+      file: "tests/artifact-pack-discovery-routing.test.mjs",
+      line: 1,
+      message: `artifact pack discovery routing tests failed: ${(err.stdout || err.stderr || err.message).trim()}`,
+    });
+  }
+  return { name: "artifact-pack-discovery-routing", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
@@ -4459,6 +4477,7 @@ const CHECKS = [
   { name: "artifact-pack:manifest-routing", fn: (args) => checkArtifactPack("manifest-routing", args.artifactPackInputs), full: false },
   { name: "artifact-pack:manifest-visibility", fn: (args) => checkArtifactPack("manifest-visibility", args.artifactPackInputs), full: false },
   { name: "artifact-pack:manifest-compatibility", fn: (args) => checkArtifactPack("manifest-compatibility", args.artifactPackInputs), full: false },
+  { name: "artifact-pack-discovery-routing", fn: checkArtifactPackDiscoveryRouting },
   { name: "skill-root-shape", fn: checkSkillRootShape },
   { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },
   { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },

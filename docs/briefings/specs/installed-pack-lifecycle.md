@@ -43,7 +43,7 @@ avoids hardcoded user paths.
 | file | `docs/reference/system-glossary.md` | Defines artifact-pack, pack install, deploy target, and resolver terms. |
 | file | `docs/milestones/agent-artifact-pack-system.md` | Owns the milestone row and install/link acceptance criteria. |
 | file | `docs/plans/completed/artifact-pack-vocabulary.md` | Defines `pack install` and downstream dependencies. |
-| file | `docs/plans/proposed/artifact-pack-manifest-contract.md` | Defines manifest mount modes, fields, and dependency refs. |
+| file | `docs/plans/completed/artifact-pack-manifest-contract.md` | Defines manifest mount modes, fields, and dependency refs. |
 | file | `docs/plans/completed/artifact-pack-validation-gates.md` | Defines validator behavior before installer work consumes manifests. |
 | file | `agent/config/agent-hub.json` | Lists harness deploy targets, shared layers, registries, and link methods. |
 | file | `scripts/link-harnesses.mjs` | Current harness link behavior and symlink handling. |

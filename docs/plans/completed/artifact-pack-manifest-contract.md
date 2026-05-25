@@ -1,26 +1,27 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-25
 updated: 2026-05-25
 owner: agent-hub
 milestone: agent-artifact-pack-system
+completed: 2026-05-25
 ---
 
 # Artifact Pack Manifest Contract
 
 ## Purpose
 
-Define the artifact pack manifest schema before discovery, routing, install,
-validation, migration, compatibility shims, or example packs depend on it.
+Define the artifact pack manifest schema that discovery, routing, install,
+validation, migration, compatibility shims, and example packs consume.
 
 ## Problem
 
-Knitten has artifact-pack vocabulary, inventory rows, and core/pack boundary
-criteria. It does not yet have a machine-readable pack manifest contract.
+Knitten has artifact-pack vocabulary, inventory rows, core/pack boundary
+criteria, a machine-readable manifest schema, artifact-pack validator gates,
+and manifest fixtures.
 
-Without one manifest contract, downstream specs can invent incompatible fields
-for pack identity, exported artifacts, dependencies, routing metadata,
-compatibility aliases, and public-safety gates.
+Downstream specs consume this contract for pack identity, exported artifacts,
+dependencies, routing metadata, compatibility aliases, and public-safety gates.
 
 ## Goals
 
@@ -54,8 +55,12 @@ compatibility aliases, and public-safety gates.
 | Core boundary | Manifest schema, resolver, installer, and validation infrastructure stay in core. | `docs/milestones/agent-artifact-pack-system.md` |
 | Public transition target | Proposed `knitten-core` keeps core lifecycle, routing, validation, resolver, installer, and safety infrastructure. | `docs/plans/proposed/knitten-core-public-transition.md` |
 | Managed paths | Shared path drift is already checked through a registry and validator. | `agent/config/managed-paths.json` |
+| Manifest schema | `artifact-pack.schema.json` implements the root, export, mount, route, dependency, and compatibility alias contract. | `agent/config/artifact-pack.schema.json` |
+| Core capabilities | `core:<capability-id>` dependencies validate against a core capability registry. | `agent/config/artifact-pack-core-capabilities.json` |
+| Validator gates | All artifact-pack manifest gates pass against current fixtures. | `node scripts/validate-llm-first.mjs --check artifact-pack` |
+| Fixtures | Pass and fail fixtures cover manifest shape, paths, exports, dependencies, routing, visibility, and compatibility. | `tests/fixtures/artifact-packs/`, `tests/fixtures/artifact-pack-sets/` |
 
-## Proposed Design
+## Design
 
 ### Manifest File
 
@@ -167,7 +172,7 @@ Preload guard:
 
 | If | Then |
 |----|------|
-| `load: route-selected` | Resolver may inspect manifest metadata before route selection, but must not load artifact body until route evidence matches. |
+| `load: route-selected` | Resolver can inspect manifest metadata before route selection, but must not load artifact body until route evidence matches. |
 | `route.context-profile` exists | Validator checks the id against `agent/config/context-routing.json`. |
 | Any route axis exists | Validator checks values against `agent/config/context-routing.json` or the repo-key registry. |
 | `route.max-context-bytes` exists | Resolver must cap pre-body context below that value. |
@@ -178,8 +183,8 @@ Preload guard:
 | If | Then |
 |----|------|
 | `visibility: public` | Every export must have `privacy-risk: public-safe`. |
-| `visibility: company` | Exports may have `public-safe` or `needs-scrub`; public release stays blocked. |
-| `visibility: private` or `local` | Exports may have any `privacy-risk`, but install must stay local/private. |
+| `visibility: company` | Exports can use `public-safe` or `needs-scrub`; public release stays blocked. |
+| `visibility: private` or `local` | Exports can use any `privacy-risk`, but install must stay local/private. |
 
 ### Compatibility Alias Fields
 
@@ -242,14 +247,13 @@ Input:
 - Baseline evidence from S0.
 
 Output:
-- `docs/plans/proposed/artifact-pack-manifest-contract.md` defines root fields, export fields, route fields, aliases, validation gates, risks, and open decisions.
+- `docs/plans/completed/artifact-pack-manifest-contract.md` defines root fields, export fields, route fields, aliases, validation gates, risks, and open decisions.
 
 Non-output:
-- No executable schema file.
-- No generated manifest file.
+- No resolver, installer, migration, or pack movement.
 
 Failure:
-- Leave spec proposed and mark unresolved fields in Open Decisions.
+- Leave unresolved fields in Open Decisions.
 
 Proof:
 - `node scripts/validate-llm-first.mjs --check spec-lifecycle`
@@ -257,12 +261,12 @@ Proof:
 S2 - Milestone link
 
 Input:
-- Proposed manifest contract spec.
+- Completed manifest contract spec.
 - `docs/milestones/agent-artifact-pack-system.md`
 
 Output:
-- Milestone specs table links the proposed manifest contract spec.
-- Milestone progress marks the contract proposed and schema/validator implementation not started.
+- Milestone specs table links the completed manifest contract spec.
+- Milestone progress marks schema and validator gates done.
 
 Non-output:
 - No downstream spec status changes.
@@ -271,7 +275,7 @@ Failure:
 - Keep milestone string entry unchanged and report the link conflict.
 
 Proof:
-- `rg -n "artifact-pack-manifest-contract" docs/milestones/agent-artifact-pack-system.md docs/plans/proposed/artifact-pack-manifest-contract.md`
+- `rg -n "artifact-pack-manifest-contract" docs/milestones/agent-artifact-pack-system.md docs/plans/completed/artifact-pack-manifest-contract.md`
 
 S3 - Review and validation
 
@@ -298,10 +302,12 @@ Proof:
 
 | Check | Command |
 |-------|---------|
+| Manifest validator | `node scripts/validate-llm-first.mjs --check artifact-pack` |
+| Manifest gates | `node scripts/validate-llm-first.mjs --check artifact-pack:manifest-shape` and sibling gate checks |
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 | Full validator | `node scripts/validate-llm-first.mjs` |
 | Patch whitespace | `git diff --check` |
-| Scope guard | `git status --short` contains this spec and milestone link only. |
+| Scope guard | `git status --short` contains the completed manifest spec, discovery-routing spec, milestone link update, and stale-reference fixes only. |
 | Contract smoke | Inspect this spec for `pack:`, `artifact:`, `core:`, `manifest-routing`, `mount`, and `visibility: public` rules. |
 
 ## Risks
@@ -316,17 +322,17 @@ Proof:
 
 ## Acceptance Criteria
 
-- [ ] Manifest filename and location are decided.
-- [ ] Root manifest fields are defined.
-- [ ] Export fields are defined.
-- [ ] Route metadata fields are defined.
-- [ ] Compatibility alias fields are defined.
-- [ ] Dependency reference grammar is defined.
-- [ ] Install mount fields are defined.
-- [ ] Route-selected preload guards are defined.
-- [ ] Validator gates are named for the implementation follow-up.
-- [ ] Milestone links this proposed spec.
-- [ ] No resolver, installer, migration, or physical artifact move is included.
+- [x] Manifest filename and location are decided.
+- [x] Root manifest fields are defined.
+- [x] Export fields are defined.
+- [x] Route metadata fields are defined.
+- [x] Compatibility alias fields are defined.
+- [x] Dependency reference grammar is defined.
+- [x] Install mount fields are defined.
+- [x] Route-selected preload guards are defined.
+- [x] Validator gates are implemented and runnable.
+- [x] Milestone links this completed spec.
+- [x] No resolver, installer, migration, or physical artifact move is included.
 
 ## Accepted Defaults
 
@@ -335,11 +341,11 @@ Proof:
 | Manifest filename | `artifact-pack.json`. |
 | Pack version field | Required semver core `version`, `^\d+\.\d+\.\d+$`. |
 | Schema path | `agent/config/artifact-pack.schema.json`. |
-| First implementation step | Add JSON schema and validator check in a later implementation branch. |
+| First implementation step | Done: JSON schema and validator checks exist. |
 
 ## Open Decisions
 
 | Decision | Default |
 |----------|---------|
-| Core capability registry | Defined by `docs/plans/completed/artifact-pack-validation-gates.md`. |
+| Core capability registry | Done in `agent/config/artifact-pack-core-capabilities.json`. |
 | Pack root registry | Define installed pack root discovery in `installed-pack-lifecycle`. |
