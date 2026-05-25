@@ -42,7 +42,7 @@ duplicate exports, stale paths, invalid route metadata, or unresolved
 | Non-Goal | Owner |
 |----------|-------|
 | Do not implement pack discovery or route ranking. | `artifact-pack-discovery-routing` |
-| Do not implement pack install, link, update, or uninstall. | `artifact-pack-install-link-flow` |
+| Do not implement installed-pack lifecycle, mount, update, or uninstall. | `installed-pack-lifecycle` |
 | Do not move artifacts into packs. | `artifact-repo-migration-plan` |
 | Do not scan artifact body content for secrets or private data. | `public-safety-scrub-gates` |
 | Do not define shim removal windows. | `artifact-compatibility-shims` |

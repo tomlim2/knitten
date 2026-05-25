@@ -1,0 +1,10 @@
+{
+  "transaction-id": "tx-stale",
+  "verb": "update",
+  "registry-digest-before": "fixture-digest-before",
+  "registry-digest-planned": "fixture-digest-planned",
+  "previous-row": null,
+  "planned-row": null,
+  "planned-actions": [],
+  "status": "applying"
+}

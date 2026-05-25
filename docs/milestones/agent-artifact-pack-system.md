@@ -30,7 +30,7 @@ copying everything into the core repository.
 | Migration plan | Move eligible skills, commands, rules, and standards into artifact packs without breaking current routing. |
 | Knitten role transition | Define when current `knitten` stops acting as core and becomes a private artifact pack plus integration overlay. |
 | Discovery and routing | Resolve pack-provided artifacts from repo, task type, domain, and work mode. |
-| Install and link flow | Link local artifact pack folders or repos into the active harness without hardcoded user paths. |
+| Installed pack lifecycle | Register, inspect, update, mount, disable, recover, and uninstall local artifact pack folders or repos without hardcoded user paths. |
 | Compatibility | Keep old paths, aliases, or deprecation mappings until pack routing is proven. |
 | Validation and release gates | Check manifest shape, naming, duplicate exports, missing paths, routing conflicts, public-safety, and release readiness. |
 | LLM decision quality | Reduce wrong route selection, duplicate policy conflicts, and accidental domain-context loading. |
@@ -57,7 +57,8 @@ copying everything into the core repository.
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
 | [artifact-pack-manifest-contract.md](../plans/proposed/artifact-pack-manifest-contract.md) | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
 | `artifact-pack-discovery-routing` | proposed | Define how core discovers artifact packs and lets routers select them. |
-| `artifact-pack-install-link-flow` | proposed | Define safe local install, symlink/link, update, and uninstall behavior. |
+| [installed-pack-lifecycle.md](../plans/proposed/installed-pack-lifecycle.md) | proposed | Define safe local installed-pack lifecycle, mount, update, disable, recover, and uninstall behavior. |
+| [installed-pack-lifecycle-test-contract.md](../plans/proposed/installed-pack-lifecycle-test-contract.md) | proposed | Define executable fixtures, temp harness setup, JSON examples, and practical lifecycle assertions. |
 | `artifact-compatibility-shims` | proposed | Define old path mappings, aliases, deprecation windows, and removal criteria. |
 | [artifact-pack-validation-gates.md](../plans/completed/artifact-pack-validation-gates.md) | completed | Define validator checks for manifest integrity and route conflicts. |
 | `public-safety-scrub-gates` | proposed | Define public-safe checks for secrets, private paths, personal data, and company-only context. |
@@ -82,7 +83,7 @@ copying everything into the core repository.
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | proposed | Contract spec exists; schema and validator implementation are not started. |
 | Discovery and routing | not started | Depends on the manifest contract. |
-| Install and link flow | not started | Depends on the manifest contract and current harness link behavior. |
+| Installed pack lifecycle | proposed | `docs/plans/proposed/installed-pack-lifecycle.md` defines registry, read, mount, update, disable, recover, and uninstall behavior; `docs/plans/proposed/installed-pack-lifecycle-test-contract.md` owns practical fixture and command contracts; implementation not started. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
 | Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
 | Artifact inventory provenance | done | Validator checks `generated-at`, `source-commit`, and `source-dirty` metadata shape. |

@@ -39,7 +39,7 @@ compatibility aliases, and public-safety gates.
 | Non-Goal | Owner |
 |----------|-------|
 | Do not implement artifact discovery or resolver behavior. | `artifact-pack-discovery-routing` |
-| Do not implement pack install, link, update, or uninstall commands. | `artifact-pack-install-link-flow` |
+| Do not implement installed-pack lifecycle, mount, update, or uninstall commands. | `installed-pack-lifecycle` |
 | Do not move current artifacts into packs. | `artifact-repo-migration-plan` |
 | Do not define public-safety scrub rules in detail. | `public-safety-scrub-gates` |
 | Do not define old-path shim removal workflow in detail. | `artifact-compatibility-shims` |
@@ -342,4 +342,4 @@ Proof:
 | Decision | Default |
 |----------|---------|
 | Core capability registry | Defined by `docs/plans/completed/artifact-pack-validation-gates.md`. |
-| Pack root registry | Define installed pack root discovery in `artifact-pack-install-link-flow`. |
+| Pack root registry | Define installed pack root discovery in `installed-pack-lifecycle`. |

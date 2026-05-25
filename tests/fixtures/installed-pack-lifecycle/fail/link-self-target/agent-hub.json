@@ -1,0 +1,17 @@
+{
+  "harnesses": [
+    {
+      "id": "codex-test",
+      "deployTarget": "__PACK_SOURCE__",
+      "mappings": {
+        "skills": "agent/skills"
+      }
+    }
+  ],
+  "sharedLayers": [
+    {
+      "id": "skills",
+      "path": "agent/skills"
+    }
+  ]
+}
