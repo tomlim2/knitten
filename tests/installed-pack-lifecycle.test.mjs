@@ -608,6 +608,10 @@ test("recover restores previous links after partial update rollback", async () =
   assert.equal(recovered.json.recovery.decision, "rollback-planned-links");
   assert.equal(await fs.readlink(linkPath), previousRow.links[0]["link-target"]);
   await assert.rejects(fs.lstat(path.join(root, "journals", "fixture-pack.tx-update-partial.update.json")), { code: "ENOENT" });
+
+  const disabled = await runInstaller(["disable", "--pack-id", "fixture-pack", "--registry", registry]);
+  assert.equal(disabled.code, 0);
+  await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
 });
 
 test("unsafe link target under pack source is blocked", async () => {

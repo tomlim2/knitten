@@ -1278,7 +1278,12 @@ async function commandRecover(verb, args, registryPath) {
         })));
       }
       const latest = await readRegistry(registryPath, "recover");
+      if (journal.verb === "update" && journal["previous-row"]) {
+        upsertRow(latest, journal["previous-row"]);
+      }
       if (removeJournalRegistryRow(latest, journal, journal["planned-row"])) {
+        await writeRegistry(registryPath, latest);
+      } else if (journal.verb === "update" && journal["previous-row"]) {
         await writeRegistry(registryPath, latest);
       }
       journal.status = "recovered";
