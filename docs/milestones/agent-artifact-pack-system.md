@@ -59,8 +59,8 @@ copying everything into the core repository.
 | `artifact-pack-discovery-routing` | proposed | Define how core discovers artifact packs and lets routers select them. |
 | [installed-pack-lifecycle.md](../plans/proposed/installed-pack-lifecycle.md) | proposed | Define safe local installed-pack lifecycle, mount, update, disable, recover, and uninstall behavior. |
 | [installed-pack-lifecycle-test-contract.md](../plans/proposed/installed-pack-lifecycle-test-contract.md) | proposed | Define executable fixtures, temp harness setup, JSON examples, and practical lifecycle assertions. |
-| [installed-pack-lifecycle-recovery-hardening.md](../plans/proposed/installed-pack-lifecycle-recovery-hardening.md) | proposed | Track durable journals, real recovery, manifest-set prevalidation, and full update reconciliation follow-up work. |
-| [installed-pack-durability-validation-policy.md](../plans/proposed/installed-pack-durability-validation-policy.md) | proposed | Define fsync-level writes and validation-failed journal policy. |
+| [installed-pack-lifecycle-recovery-hardening.md](../plans/completed/installed-pack-lifecycle-recovery-hardening.md) | completed | Track durable journals, real recovery, manifest-set prevalidation, and full update reconciliation follow-up work. |
+| [installed-pack-durability-validation-policy.md](../plans/completed/installed-pack-durability-validation-policy.md) | completed | Define fsync-level writes and validation-failed journal policy. |
 | `artifact-compatibility-shims` | proposed | Define old path mappings, aliases, deprecation windows, and removal criteria. |
 | [artifact-pack-validation-gates.md](../plans/completed/artifact-pack-validation-gates.md) | completed | Define validator checks for manifest integrity and route conflicts. |
 | `public-safety-scrub-gates` | proposed | Define public-safe checks for secrets, private paths, personal data, and company-only context. |
@@ -85,7 +85,7 @@ copying everything into the core repository.
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
 | Manifest contract | proposed | Contract spec exists; schema and validator implementation are not started. |
 | Discovery and routing | not started | Depends on the manifest contract. |
-| Installed pack lifecycle | proposed | First installer slice merged in PR #63; recovery hardening merged in PR #64; `docs/plans/proposed/installed-pack-durability-validation-policy.md` tracks fsync and failed-validation journal follow-up work. |
+| Installed pack lifecycle | active | PR #63 merged the first installer slice; PR #64 merged recovery hardening; PR #65 merged fsync durability and validation-failed journals. Parent lifecycle and test-contract specs remain proposed. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
 | Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
 | Artifact inventory provenance | done | Validator checks `generated-at`, `source-commit`, and `source-dirty` metadata shape. |
