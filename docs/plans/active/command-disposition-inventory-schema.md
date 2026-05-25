@@ -11,7 +11,8 @@ milestone: agent-artifact-pack-system
 ## Purpose
 
 Add reviewed command-retirement fields to artifact inventory so command rows can
-leave generic `migrate-later` state only after a documented disposition exists.
+leave generic `migrate-later` state only after command content is assigned to a
+non-command owner or deletion proof exists.
 
 ## Problem
 
@@ -21,8 +22,8 @@ As a result, command rows can only express broad artifact status through
 `classification-stage`, `proposed-destination`, `compatibility-need`, and
 `review-state`.
 
-That is not enough to distinguish a compatibility wrapper from a domain-pack
-candidate, a rewrite-needed command, or a deletion candidate.
+That is not enough to distinguish command content that must be absorbed into a
+skill, standard, template, reference, or deleted.
 
 ## Goals
 
@@ -59,20 +60,19 @@ Add these fields only when `artifact-type: command`.
 
 | Field | Values | Required when |
 |-------|--------|---------------|
-| `command-disposition` | `skill-owned-wrapper`, `router-owned-alias`, `rewrite-needed`, `pack-owned-candidate`, `shim-or-delete`, `deletion-candidate`, `unreviewed` | every command row |
+| `command-disposition` | `absorb-into-skill`, `absorb-into-standard`, `absorb-into-template`, `absorb-into-reference`, `deletion-candidate`, `unreviewed` | every command row |
 | `command-owner` | artifact id, skill name, pack owner label, or `unknown` | every command row |
-| `command-final-state` | `skill-owned-wrapper`, `alias-shim`, `pack-owned`, `rewritten-as-skill`, `deleted`, `undecided` | every command row |
+| `command-final-state` | `absorbed-into-skill`, `absorbed-into-standard`, `absorbed-into-template`, `absorbed-into-reference`, `deleted`, `pending-absorption` | every command row |
 | `command-review-batch` | `A`, `B`, `C`, `D`, `E`, `F`, `G`, `H`, or `unbatched` | every command row |
 
 Mapping rules:
 
 | Disposition | Classification stage | Proposed destination | Compatibility need |
 |-------------|----------------------|----------------------|--------------------|
-| `skill-owned-wrapper` | `migrate-later` | `migrate-later` | `shim` |
-| `router-owned-alias` | `migrate-later` | `migrate-later` | `alias` |
-| `rewrite-needed` | `migrate-later` | `migrate-later` | `unknown` |
-| `pack-owned-candidate` | `pack-candidate` | `domain-pack` or `knitten-private-pack` | `unknown` |
-| `shim-or-delete` | `migrate-later` | `migrate-later` | `shim` |
+| `absorb-into-skill` | `migrate-later` | `migrate-later` | `old-path-mapping` |
+| `absorb-into-standard` | `migrate-later` | `migrate-later` | `old-path-mapping` |
+| `absorb-into-template` | `migrate-later` | `migrate-later` | `old-path-mapping` |
+| `absorb-into-reference` | `migrate-later` | `migrate-later` | `old-path-mapping` |
 | `deletion-candidate` | `deprecated` | `deprecated` | `none` |
 | `unreviewed` | `migrate-later` | `migrate-later` | `unknown` |
 
@@ -86,10 +86,10 @@ Do not infer dispositions from command names alone.
 
 | Batch | Generator output |
 |-------|------------------|
-| A | explicit `skill-owned-wrapper` rows with owning CCI skills |
-| B | explicit `rewrite-needed` or `router-owned-alias` rows after manual review |
-| C | explicit `rewrite-needed` rows after manual review |
-| D-H | `pack-owned-candidate` rows only after pack owner label is accepted |
+| A | explicit `absorb-into-skill` rows with owning CCI skills |
+| B | explicit absorb rows after manual review |
+| C | explicit `absorb-into-skill` rows after manual review |
+| D-H | explicit absorb rows only after non-command owner artifact is accepted |
 | unreviewed commands | `unreviewed` and `migrate-later` |
 
 ## Design Plan
@@ -215,5 +215,5 @@ Proof:
 | Decision | Default |
 |----------|---------|
 | Command owner encoding | Use skill name or pack owner label until artifact ids are stable. |
-| Batch B split | Manual review decides which rows are `rewrite-needed` versus `router-owned-alias`. |
-| Domain pack destination | Use `knitten-private-pack` for private/company commands until public-safety gates say otherwise. |
+| Batch B split | Manual review decides which non-command artifact absorbs each row. |
+| Domain pack destination | Use non-command pack artifacts, not pack-owned command files. |

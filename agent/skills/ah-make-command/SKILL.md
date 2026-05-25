@@ -1,10 +1,11 @@
 ---
-description: "Naming rules and templates for creating agent-hub commands and skills. Use when creating new commands or skills."
+description: "Route legacy command authoring requests away from agent-hub commands and into skills, standards, templates, or references."
 ---
 
 # ah-make-command
 
-Command and skill creation generator with comprehensive naming rules.
+Legacy command authoring router. Shared `agent/commands/` creation is
+forbidden.
 
 ## Skill-owned standards
 
@@ -15,17 +16,16 @@ Read these references only when needed:
 
 ## Purpose
 
-This skill helps create new agent-hub commands and skills following the standardized naming convention and structure. It serves as the authoritative rulebook for command/skill creation.
+This skill redirects command requests to durable artifact owners. Commands are
+migration sources, not a durable shared artifact class.
 
 ---
 
 ## Command Creation Gate
 
-Commands are user-facing invocation wrappers. They do not own durable policy,
-long examples, reusable output bodies, or route-only delegation that an existing
-router already owns.
+Do not create new files under `agent/commands/`.
 
-Before creating a command, run:
+Before changing legacy command behavior, run:
 
 ```bash
 rg -n "<slug>|<route words>|<subject>" agent/commands agent/skills agent/standards agent/document-templates
@@ -33,23 +33,27 @@ rg -n "<slug>|<route words>|<subject>" agent/commands agent/skills agent/standar
 
 | Existing owner | Action |
 |----------------|--------|
-| same command | update that command |
-| same skill | update the skill or create a thin command wrapper only when the user needs slash-style invocation |
+| same command | retire, absorb, or delete that command through `command-retirement-plan` |
+| same skill | update the skill or skill-local reference |
 | router skill | update the router instead of adding a parallel command |
-| standard | link the command to the standard; do not duplicate policy |
-| document template | link the command to the template; do not embed the body |
+| standard | update the standard; do not duplicate policy |
+| document template | update the template; do not embed the body elsewhere |
 
-If the requested content is not an invocation wrapper, route it:
+Route requested content:
 
 | Requested content | Route |
 |-------------------|-------|
 | task workflow | `ah-make-skill` |
 | cross-skill criteria or policy | `ah-make-standard` |
 | reusable output body | `ah-manage-document-template` |
-| long examples | owning command `agent/commands/references/<slug>.md` or owning authoring skill `references/` file |
+| long examples | owning skill `references/` file |
 | exact allowed values or path contract | standard plus validator |
+| slash-command compatibility | external harness adapter or pack-local compatibility, not shared `agent/commands/` |
 
-Source contract: `thin-skill-guide-boundary` entry in `docs/milestones/agent-artifact-pack-system.md`.
+Source contracts:
+
+- `docs/plans/active/command-retirement-plan.md`
+- `docs/plans/active/thin-skill-guide-boundary.md`
 
 ---
 
@@ -109,7 +113,7 @@ When authoring a command or skill:
 
 ## Frontmatter Quick Reference
 
-**Core field order for simple commands:** `description` → `argument-hint` → `allowed-tools`
+**Core field order for legacy command inspection only:** `description` → `argument-hint` → `allowed-tools`
 
 **NEVER use bare `Bash`** — Always use specific patterns: `Bash(git:*)`, `Bash(python:*)`, and similar.
 
@@ -150,13 +154,14 @@ When authoring a command or skill:
 
 ## Special Case: Unreal Engine
 
-For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the skill AND command automatically.
+For `ue-*` requests, create or update UE skills only. Do not create matching
+commands.
 
 ## Routing Workflow
 
 1. Pass the Command Creation Gate.
 2. Read `agent/config/context-routing.json`.
-3. If the artifact matches an existing context profile, add the routing frontmatter fields.
+3. If the target artifact matches an existing context profile, add the routing frontmatter fields.
 4. If no profile fits but the artifact is high-cost or domain-specific, stop and add the profile or an explicit `metadataExemptions` entry in the same change.
 5. Run `node scripts/validate-llm-first.mjs --check context-routing` from the agent-hub repo root.
 
@@ -165,9 +170,8 @@ For `ue-*` commands, use `/ue-make-skill <verb> <noun>` which creates both the s
 ## Related Files
 
 - `skills/ah-manage-artifact/SKILL.md` - CRUD router for shared artifacts
-- `commands/ah-make-command.md` - Command wrapper for this skill
 - `skills/ah-make-skill/SKILL.md` - Skill structure rules (use for creating skills)
-- `commands/ue-make-skill.md` - UE-specific skill/command generator
+- `docs/plans/active/command-retirement-plan.md` - command layer removal plan
 
 ## Additional Resources
 

@@ -20,7 +20,6 @@ plans, and manifests.
 | skill | `agent/skills/<name>/SKILL.md` |
 | command | `agent/commands/<name>.md` |
 | skill reference | `agent/skills/<skill>/references/<slug>.md` |
-| command reference | `agent/commands/references/<slug>.md` |
 | rule | `agent/rules/<name>.md` |
 | standard | `agent/standards/<group>/<name>.md` |
 | document template | `agent/document-templates/<family>/<name>.md` |
@@ -34,9 +33,8 @@ plans, and manifests.
 | Operation | Skill / doc |
 |-----------|-------------|
 | Manage skill lifecycle | `agent/skills/ah-manage-skill/SKILL.md` |
-| Create command | `agent/skills/ah-make-command/SKILL.md` |
+| Retire or absorb command | `agent/skills/ah-make-command/SKILL.md` |
 | Create skill reference | owning skill `agent/skills/<skill>/references/`; update the owner skill link |
-| Create command reference | `agent/commands/references/<slug>.md`; update the owner command link |
 | Create rule | `agent/skills/ah-make-rule/SKILL.md` |
 | Create standard | `agent/skills/ah-make-standard/SKILL.md` |
 | Manage document template lifecycle | `agent/skills/ah-manage-document-template/SKILL.md` |
@@ -48,7 +46,7 @@ plans, and manifests.
 
 | User intent | Action |
 |-------------|--------|
-| "create", "make", "new", "add" | Use the create row for the artifact class. |
+| "create", "make", "new", "add" | Use the create row for the artifact class. For commands, route away from command creation through `ah-make-command`. |
 | "read", "show", "browse", "list", "where" | Use `LOOKUP.md`, `README.md`, or a browse/show skill before loading bodies. |
 | "small edit", "wording", "path fix", "frontmatter fix" | Patch the target artifact only. Use `ah-edit-skill` for skills. |
 | "refresh", "modernize", "align policy", "validator drift", "refactor" | Do a broad update. Use `ah-update-skill` for skills. |

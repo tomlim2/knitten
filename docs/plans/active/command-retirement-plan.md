@@ -10,8 +10,9 @@ milestone: agent-artifact-pack-system
 
 ## Purpose
 
-Define how legacy `agent/commands/*.md` files are converted to skills, aliases,
-compatibility shims, pack-owned commands, or deletion candidates.
+Define how legacy `agent/commands/*.md` files are absorbed into skills,
+standards, templates, references, or deletion reports until the command layer is
+removed.
 
 Commands are migration sources. Skills, routers, templates, standards, and
 artifact-pack manifests own durable workflow and policy.
@@ -23,27 +24,27 @@ delegate to skills, or encode domain-specific workflows that should eventually
 live behind artifact-pack routing.
 
 This blocks the artifact-pack milestone because command rows remain
-`migrate-later`, command adapter behavior is undecided, and old slash-command
-paths cannot be removed safely.
+`migrate-later`, command adapter behavior is undecided, and the command layer
+still appears to be an active artifact class.
 
 ## Goals
 
-1. Classify every current command as skill-owned, alias/shim, pack-owned,
-   rewrite-needed, or deletion-candidate.
+1. Classify every current command as absorbed into an owner artifact or
+   deletion-candidate.
 2. Define deletion gates for old command paths.
-3. Define when a command wrapper is allowed to remain.
-4. Define adapter behavior for Claude slash commands and Codex skill routing.
+3. Forbid new command creation in shared agent-hub source.
+4. Define adapter behavior while Claude slash-command compatibility is retired.
 5. Unblock inventory rows currently marked `migrate-later` because of command
    ambiguity.
+6. Remove `agent/commands/` after all command content is absorbed or deleted.
 
 ## Non-Goals
 
-1. Do not delete command files in this spec.
-2. Do not move commands into artifact packs yet.
+1. Do not preserve commands as a durable guide layer.
+2. Do not move commands into artifact packs as commands.
 3. Do not rewrite large domain workflows in one batch.
 4. Do not remove Claude slash-command compatibility before reference scans pass.
-5. Do not create new command wrappers unless a user-facing slash route is still
-   required.
+5. Do not create new command wrappers.
 
 ## Current State
 
@@ -52,7 +53,7 @@ paths cannot be removed safely.
 | Command corpus | Started with 45 command files; 40 remain after deletion batch 0. | `agent/commands/*.md`, `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md` |
 | Exact skill duplicates | No command has an exact same-name skill. | 2026-05-26 local inspection |
 | Command rows | Command rows are held at `migrate-later`. | `docs/plans/reports/core-artifact-boundary/core-owned-classification-2026-05-24.md` |
-| Creation gate | New commands are rejected when an existing skill or router owns the route. | `agent/skills/ah-make-command/SKILL.md` |
+| Creation gate | New shared commands are forbidden; requests route to skills, standards, templates, or references. | `agent/skills/ah-make-command/SKILL.md` |
 | Lifecycle router | `ah-manage-artifact` can route command creation, but no command lifecycle owner exists. | `agent/skills/ah-manage-artifact/SKILL.md` |
 
 ## Retirement Model
@@ -61,31 +62,32 @@ Apply the first matching disposition.
 
 | Priority | Condition | Disposition | Action |
 |----------|-----------|-------------|--------|
-| 1 | Command only imports or delegates to one skill. | `skill-owned-wrapper` | Keep temporarily as compatibility shim; route durable behavior to the skill. |
-| 2 | Command duplicates a router skill or lifecycle skill. | `router-owned-alias` | Replace body with thin alias or delete after references move. |
-| 3 | Command owns reusable workflow with no matching skill. | `rewrite-needed` | Create or update a skill first; keep command until the skill validates. |
-| 4 | Command is repo, company, personal, or domain-specific. | `pack-owned-candidate` | Keep until artifact-pack manifest and compatibility shim exist. |
-| 5 | Command only opens a local tool or runs a one-shot utility. | `shim-or-delete` | Keep only if user-facing invocation is still useful. |
-| 6 | Command has no active references and no unique workflow. | `deletion-candidate` | Delete after reference scan and adapter check pass. |
+| 1 | Command only imports or delegates to one skill. | `absorb-into-skill` | Move any missing instruction into the skill or skill-local reference, then delete the command. |
+| 2 | Command duplicates a router skill or lifecycle skill. | `absorb-into-skill` | Update router wording if needed, then delete the command. |
+| 3 | Command owns reusable workflow with no matching skill. | `absorb-into-skill` | Create or update a skill first, then delete the command. |
+| 4 | Command owns policy, criteria, or naming rules. | `absorb-into-standard` | Move durable policy to a standard, then delete the command. |
+| 5 | Command owns reusable output body. | `absorb-into-template` | Move the body to a document template, then delete the command. |
+| 6 | Command owns examples or historical procedure only. | `absorb-into-reference` | Move only necessary detail to the owning skill reference, then delete the command. |
+| 7 | Command has no active references and no unique workflow. | `deletion-candidate` | Delete after reference scan and adapter check pass. |
 
 Allowed final states:
 
 | Final state | Meaning |
 |-------------|---------|
-| `skill-owned-wrapper` | Command remains as a thin compatibility wrapper around a skill. |
-| `alias-shim` | Command gives a deprecation note and points to the new skill or route. |
-| `pack-owned` | Command moves behind pack metadata or becomes a pack-local adapter. |
-| `rewritten-as-skill` | Durable workflow now lives in `agent/skills/<skill>/SKILL.md`. |
+| `absorbed-into-skill` | Durable workflow now lives in `agent/skills/<skill>/SKILL.md` or its references. |
+| `absorbed-into-standard` | Durable policy now lives in `agent/standards/`. |
+| `absorbed-into-template` | Reusable output body now lives in `agent/document-templates/`. |
+| `absorbed-into-reference` | Necessary example or historical detail now lives under the owning artifact's references. |
 | `deleted` | Command file removed after compatibility gates pass. |
 
 ## Adapter Rules
 
 | Harness | Rule |
 |---------|------|
-| Claude slash command | Keep compatibility wrappers until slash users have a named replacement or the command has no active references. |
+| Claude slash command | Retire shared slash commands; temporary compatibility belongs outside `agent/commands/` or in pack-local adapters. |
 | Codex skill routing | Prefer skill routes and app/plugin tools; do not create command-only behavior for Codex. |
 | Shared inventory | Treat commands as legacy artifacts until a row has final state evidence. |
-| Artifact packs | Export pack-local commands only when the pack manifest names the adapter behavior. |
+| Artifact packs | Export skills, references, templates, and standards; pack-local command adapters are optional compatibility, not shared core artifacts. |
 
 ## Deletion Gate
 
@@ -123,14 +125,14 @@ This table is a starting queue, not deletion approval.
 
 | Batch | Commands | Initial disposition | Owner |
 |-------|----------|---------------------|-------|
-| A | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch`, `cci-art-send-merge-notice`, `cci-art-send-merge-result` | `skill-owned-wrapper` | `cci-manage-art-branch`, `cci-art-send-notice` |
-| B | `ah-review-skills`, `ah-update-docs`, `ah-check-updates`, `ah-sync-vendors` | `rewrite-needed` or `router-owned-alias` | `ah-manage-artifact`, `ah-manage-skill`, vendor sync owner |
-| C | `ah-consult-codebase`, `ah-research-light`, `ah-research-rules`, `ah-research-web`, `ah-work-ultra` | `rewrite-needed` | planning, research, and implementation routers |
-| D | `cci-*` local tool, Linear, Slack, MR, review, and summary commands | `pack-owned-candidate` | future CINEV/private pack |
-| E | `dev-*`, `git-make-message`, `learn-add-log`, `writing-apply-voice` | `rewrite-needed` or `skill-owned-wrapper` | existing `dev-*`, `git-*`, `learn-*`, and `writing-*` skills |
-| F | `shotloom-linear-create-issue` | `pack-owned-candidate` | Shotloom pack or Linear issue-authoring skill |
-| G | `tutoring-mark-paid`, `tutoring-open-invoice` | `pack-owned-candidate` | tutoring/private pack |
-| H | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` | `pack-owned-candidate` | Unreal pack or UE skill family |
+| A | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch`, `cci-art-send-merge-notice`, `cci-art-send-merge-result` | `absorb-into-skill` | `cci-manage-art-branch`, `cci-art-send-notice` |
+| B | `ah-review-skills`, `ah-update-docs`, `ah-check-updates`, `ah-sync-vendors` | `absorb-into-skill` | `ah-manage-artifact`, `ah-manage-skill`, vendor sync owner |
+| C | `ah-consult-codebase`, `ah-research-light`, `ah-research-rules`, `ah-research-web`, `ah-work-ultra` | `absorb-into-skill` | planning, research, and implementation routers |
+| D | `cci-*` local tool, Linear, Slack, MR, review, and summary commands | `absorb-into-skill` or `absorb-into-reference` | future CINEV/private pack artifacts |
+| E | `dev-*`, `git-make-message`, `learn-add-log`, `writing-apply-voice` | `absorb-into-skill` | existing `dev-*`, `git-*`, `learn-*`, and `writing-*` skills |
+| F | `shotloom-linear-create-issue` | `absorb-into-template` or `absorb-into-skill` | Shotloom pack or Linear issue-authoring skill |
+| G | `tutoring-mark-paid`, `tutoring-open-invoice` | `absorb-into-skill` or `absorb-into-template` | tutoring/private pack artifacts |
+| H | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` | `absorb-into-skill` | Unreal skill family |
 
 ## Deletion Batches
 
@@ -144,10 +146,10 @@ This table is a starting queue, not deletion approval.
 |-------|--------|--------|
 | S0 | Record the 45-command baseline and current owner candidates. | This spec and generated inventory update. |
 | S1 | Implement [command-disposition-inventory-schema.md](command-disposition-inventory-schema.md). | Command rows can leave generic `migrate-later` only after reviewed disposition fields exist. |
-| S2 | Review Batch A wrappers and convert any pure delegating command to an alias shim. | Thin wrappers name their owning skill. |
-| S3 | Review Batch B and C `ah-*` commands. | Core command wrappers become skill routes, aliases, or deletion candidates. |
-| S4 | Classify domain batches D through H by future pack owner. | Pack migration specs get command inputs. |
-| S5 | Delete only commands whose deletion gate passes. | Validation and reference scan prove no active breakage. |
+| S2 | Review Batch A wrappers and absorb missing instructions into owning skills or references. | Batch A commands deleted. |
+| S3 | Review Batch B and C `ah-*` commands. | Core command content is absorbed into skills, standards, templates, or deleted. |
+| S4 | Classify domain batches D through H by absorbing owner. | Pack migration specs get non-command artifacts as inputs. |
+| S5 | Remove `agent/commands/` after every command is absorbed or deleted. | Command count reaches 0 and validators pass. |
 
 ## Validation
 
@@ -167,12 +169,13 @@ This table is a starting queue, not deletion approval.
 - [x] The spec defines deletion gates.
 - [x] The spec records the 45-command baseline and current 40-command state.
 - [x] The spec records an initial batch classification queue.
+- [x] New shared command creation is forbidden.
 - [ ] Inventory rows can represent reviewed command dispositions.
-- [ ] Batch A wrappers are reviewed and converted to aliases or retained with
-  owner evidence.
+- [ ] Batch A wrappers are reviewed, absorbed into owner artifacts, and deleted.
 - [ ] Core `ah-*` commands are reviewed before domain command batches.
 - [ ] Domain command batches have pack-owner decisions.
 - [x] At least one deletion candidate is removed after the deletion gate passes.
+- [ ] `agent/commands/` is removed.
 
 ## Open Decisions
 
@@ -181,4 +184,4 @@ This table is a starting queue, not deletion approval.
 | Inventory field shape | Add reviewed command disposition fields only after S1 defines schema impact. |
 | Claude slash compatibility window | Keep alias shims until reference scans show no active slash-command dependency. |
 | CINEV command destination | Treat as private pack candidates until public-safety and company-context gates decide otherwise. |
-| Command creation future | Keep `ah-make-command` as a compatibility authoring skill until command creation is either forbidden or pack-local. |
+| Command creation future | Forbid shared command creation; keep `ah-make-command` only as a migration router until command retirement completes. |
