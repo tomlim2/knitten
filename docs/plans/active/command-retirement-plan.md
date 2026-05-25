@@ -18,7 +18,7 @@ artifact-pack manifests own durable workflow and policy.
 
 ## Problem
 
-Knitten still has 45 command files. Many commands duplicate skill routes,
+Knitten started this plan with 45 command files and now has 40. Many commands duplicate skill routes,
 delegate to skills, or encode domain-specific workflows that should eventually
 live behind artifact-pack routing.
 
@@ -49,7 +49,7 @@ paths cannot be removed safely.
 
 | Surface | Current state | Evidence |
 |---------|---------------|----------|
-| Command corpus | 45 command files exist. | `agent/commands/*.md` |
+| Command corpus | Started with 45 command files; 40 remain after deletion batch 0. | `agent/commands/*.md`, `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md` |
 | Exact skill duplicates | No command has an exact same-name skill. | 2026-05-26 local inspection |
 | Command rows | Command rows are held at `migrate-later`. | `docs/plans/reports/core-artifact-boundary/core-owned-classification-2026-05-24.md` |
 | Creation gate | New commands are rejected when an existing skill or router owns the route. | `agent/skills/ah-make-command/SKILL.md` |
@@ -124,13 +124,19 @@ This table is a starting queue, not deletion approval.
 | Batch | Commands | Initial disposition | Owner |
 |-------|----------|---------------------|-------|
 | A | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch`, `cci-art-send-merge-notice`, `cci-art-send-merge-result` | `skill-owned-wrapper` | `cci-manage-art-branch`, `cci-art-send-notice` |
-| B | `ah-review-skills`, `ah-update-docs`, `ah-generate-sitemap`, `ah-check-updates`, `ah-sync-vendors` | `rewrite-needed` or `router-owned-alias` | `ah-manage-artifact`, `ah-manage-skill`, vendor sync owner |
-| C | `ah-consult-codebase`, `ah-explore-codebase`, `ah-research-light`, `ah-research-rules`, `ah-research-web`, `ah-work-ultra` | `rewrite-needed` | planning, research, and implementation routers |
+| B | `ah-review-skills`, `ah-update-docs`, `ah-check-updates`, `ah-sync-vendors` | `rewrite-needed` or `router-owned-alias` | `ah-manage-artifact`, `ah-manage-skill`, vendor sync owner |
+| C | `ah-consult-codebase`, `ah-research-light`, `ah-research-rules`, `ah-research-web`, `ah-work-ultra` | `rewrite-needed` | planning, research, and implementation routers |
 | D | `cci-*` local tool, Linear, Slack, MR, review, and summary commands | `pack-owned-candidate` | future CINEV/private pack |
 | E | `dev-*`, `git-make-message`, `learn-add-log`, `writing-apply-voice` | `rewrite-needed` or `skill-owned-wrapper` | existing `dev-*`, `git-*`, `learn-*`, and `writing-*` skills |
 | F | `shotloom-linear-create-issue` | `pack-owned-candidate` | Shotloom pack or Linear issue-authoring skill |
 | G | `tutoring-mark-paid`, `tutoring-open-invoice` | `pack-owned-candidate` | tutoring/private pack |
 | H | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` | `pack-owned-candidate` | Unreal pack or UE skill family |
+
+## Deletion Batches
+
+| Batch | Commands deleted | Evidence |
+|-------|------------------|----------|
+| 0 | `ah-explore-codebase`, `ah-generate-sitemap`, `cci-format-comment`, `cci-open-creator-vroid`, `cci-slack-send-message` | `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md` |
 
 ## Execution Plan
 
@@ -159,14 +165,14 @@ This table is a starting queue, not deletion approval.
 - [x] The milestone links this active spec.
 - [x] The spec defines allowed command retirement final states.
 - [x] The spec defines deletion gates.
-- [x] The spec records the 45-command baseline.
+- [x] The spec records the 45-command baseline and current 40-command state.
 - [x] The spec records an initial batch classification queue.
 - [ ] Inventory rows can represent reviewed command dispositions.
 - [ ] Batch A wrappers are reviewed and converted to aliases or retained with
   owner evidence.
 - [ ] Core `ah-*` commands are reviewed before domain command batches.
 - [ ] Domain command batches have pack-owner decisions.
-- [ ] At least one deletion candidate is removed after the deletion gate passes.
+- [x] At least one deletion candidate is removed after the deletion gate passes.
 
 ## Open Decisions
 

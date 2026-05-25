@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-25T23:38:43.451Z",
-  "source-commit": "ac776ab51f6525e5e9c1f107cf282b923028d407",
+  "generated-at": "2026-05-25T23:44:33.347Z",
+  "source-commit": "f45ed227f54d862eba24ea0ecdab7cd33dac0399",
   "source-dirty": true,
   "rows": [
     {
@@ -99,32 +99,6 @@
       "row-id": "artifact:agent/commands/ah-consult-codebase.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/commands/ah-consult-codebase.md",
-      "artifact-type": "command",
-      "owner-domain": "core",
-      "privacy-risk": "public-safe",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:agent/commands/ah-explore-codebase.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/ah-explore-codebase.md",
-      "artifact-type": "command",
-      "owner-domain": "core",
-      "privacy-risk": "public-safe",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:agent/commands/ah-generate-sitemap.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/ah-generate-sitemap.md",
       "artifact-type": "command",
       "owner-domain": "core",
       "privacy-risk": "public-safe",
@@ -330,19 +304,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/commands/cci-format-comment.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/cci-format-comment.md",
-      "artifact-type": "command",
-      "owner-domain": "company",
-      "privacy-risk": "needs-scrub",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:agent/commands/cci-linear-create-issue.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/commands/cci-linear-create-issue.md",
@@ -408,19 +369,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/commands/cci-open-creator-vroid.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/cci-open-creator-vroid.md",
-      "artifact-type": "command",
-      "owner-domain": "company",
-      "privacy-risk": "needs-scrub",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:agent/commands/cci-open-project.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/commands/cci-open-project.md",
@@ -463,19 +411,6 @@
       "row-id": "artifact:agent/commands/cci-review-cpp.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/commands/cci-review-cpp.md",
-      "artifact-type": "command",
-      "owner-domain": "company",
-      "privacy-risk": "needs-scrub",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:agent/commands/cci-slack-send-message.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/cci-slack-send-message.md",
       "artifact-type": "command",
       "owner-domain": "company",
       "privacy-risk": "needs-scrub",
@@ -5965,6 +5900,19 @@
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
       "dependencies": [],
       "proposed-destination": "undecided",
       "compatibility-need": "unknown",
