@@ -109,7 +109,7 @@ create incompatible manifest fields, or move core bootstrap files into packs.
 | `artifact-compatibility-shims` | `compatibility shim`, canonical target id, removal criteria. |
 | `artifact-pack-validation-gates` | Every vocabulary term in this spec. |
 | `public-safety-scrub-gates` | `artifact type`, `pack artifact`, `core artifact`, pack visibility. |
-| `example-artifact-pack` | `artifact pack`, `artifact manifest`, `artifact resolver`, `pack install`. |
+| `example-skill-pack` | `artifact pack`, `artifact manifest`, `artifact resolver`, `pack install`. |
 
 ## Execution Plan
 
@@ -153,5 +153,5 @@ create incompatible manifest fields, or move core bootstrap files into packs.
 |----------|---------|
 | Glossary update timing | Done in this PR. |
 | Manifest filename | Decide in `artifact-pack-manifest-contract`. |
-| First example pack id | Decide in `example-artifact-pack`. |
+| First example skill pack id | Decide in `example-skill-pack`. |
 | Pack versioning field | Decide in `artifact-pack-manifest-contract`. |

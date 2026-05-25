@@ -65,7 +65,7 @@ copying everything into the core repository.
 | [artifact-pack-validation-gates.md](../plans/completed/artifact-pack-validation-gates.md) | completed | Define validator checks for manifest integrity and route conflicts. |
 | `public-safety-scrub-gates` | proposed | Define public-safe checks for secrets, private paths, personal data, and company-only context. |
 | `core-release-validation` | proposed | Define CI, PR, release, versioning, changelog, and public-readiness gates for `knitten-core`. |
-| `example-artifact-pack` | proposed | Provide a public-safe sample pack that proves manifest, resolver, install, and validation behavior. |
+| [example-skill-pack.md](../plans/completed/example-skill-pack.md) | completed | Provide a public-safe sample pack that proves manifest, resolver, install, and validation behavior. |
 
 ## Progress
 
@@ -90,7 +90,7 @@ copying everything into the core repository.
 | Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
 | Artifact inventory provenance | done | Validator checks `generated-at`, `source-commit`, and `source-dirty` metadata shape. |
 | Validation gates | done | `docs/plans/completed/artifact-pack-validation-gates.md` defines and implements artifact pack manifest validation gates. |
-| Example pack | not started | Depends on manifest contract and resolver behavior. |
+| Example skill pack | done | `examples/artifact-packs/example-skill-pack/`, `tests/example-skill-pack.test.mjs`, and `example-skill-pack` validator check prove the pack contract end to end. |
 
 ## Priority Queue
 
@@ -98,7 +98,7 @@ copying everything into the core repository.
 |----------|------|--------|
 | done | `artifact-pack-manifest-contract` | Manifest schema, validator gates, core capability registry, and fixtures exist. |
 | done | `artifact-pack-discovery-routing` | Resolver module, fixtures, and validator check exist. |
-| very-high | `example-artifact-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |
+| done | `example-skill-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |
 
 ## Acceptance Criteria
 
@@ -122,7 +122,7 @@ copying everything into the core repository.
 10. Validators catch missing pack paths, duplicate names, and routing conflicts.
 11. Install, update, and uninstall flows are explicit and reversible.
 12. Public `knitten-core` release is blocked by public-safety and release gates.
-13. A public-safe example artifact pack proves the pack contract end to end.
+13. A public-safe example skill pack proves the pack contract end to end.
 14. Compatibility shims have documented removal criteria before any old path is
     deleted.
 15. Skill bodies have a documented boundary: executable workflow stays in
@@ -314,7 +314,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Versioning | Core version, changelog, and release notes are prepared. |
 | License | Public license decision is recorded before external visibility. |
 | README | Install, validate, create pack, and link pack workflows are documented. |
-| Example pack | Public-safe sample pack proves install, resolver, routing, and validation. |
+| Example skill pack | Public-safe sample pack proves install, resolver, routing, and validation. |
 
 ## Open Decisions
 

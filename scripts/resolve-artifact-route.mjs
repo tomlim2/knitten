@@ -83,12 +83,13 @@ function visibilityMatches(visibility, workMode) {
 function exactNameMatches(candidate, request) {
   const named = asArray(request.namedArtifact).filter(Boolean);
   const text = request.requestText || "";
-  const names = [
-    candidate["artifact-id"],
-    candidate["candidate-id"],
-    candidate["compatibility-alias-id"],
-    candidate["matched-compatibility-input"],
-  ].filter(Boolean);
+  const names = candidate["compatibility-need"] === "none"
+    ? [candidate["artifact-id"], candidate["candidate-id"]].filter(Boolean)
+    : [
+        candidate["candidate-id"],
+        candidate["compatibility-alias-id"],
+        candidate["matched-compatibility-input"],
+      ].filter(Boolean);
   return names.some((name) => named.includes(name) || textHasNameToken(text, name));
 }
 
@@ -210,6 +211,7 @@ function compareCandidates(a, b) {
 }
 
 function isSelectable(candidate) {
+  if (candidate["compatibility-need"] !== "none") return candidate.exactMatch;
   if (candidate.load === "manual") return candidate.exactMatch;
   return candidate.exactMatch || candidate["route-score"] >= (candidate.route?.["min-evidence"] || 1);
 }

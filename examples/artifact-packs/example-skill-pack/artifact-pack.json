@@ -1,0 +1,48 @@
+{
+  "schema-version": 1,
+  "pack-id": "example-skill-pack",
+  "display-name": "Example Skill Pack",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Public-safe example pack that exports one web review skill.",
+  "exports": [
+    {
+      "artifact-id": "demo-web-review",
+      "artifact-type": "skill",
+      "path": "skills/demo-web-review",
+      "shape": "directory",
+      "mount": {
+        "layer": "skills",
+        "target": "demo-web-review",
+        "mode": "virtual"
+      },
+      "entrypoint": "skills/demo-web-review/SKILL.md",
+      "load": "route-selected",
+      "route": {
+        "domains": ["web"],
+        "task-types": ["review"],
+        "languages": ["markdown"],
+        "work-modes": ["personal"],
+        "min-evidence": 1,
+        "priority": 1
+      },
+      "dependencies": [
+        "core:manifest-schema",
+        "core:artifact-pack-validation",
+        "core:context-routing"
+      ],
+      "privacy-risk": "public-safe",
+      "platforms": ["all"]
+    }
+  ],
+  "compatibility-aliases": [
+    {
+      "alias-id": "old-demo-web-review",
+      "target-artifact-id": "demo-web-review",
+      "compatibility-need": "alias",
+      "old-name": "old-demo-web-review",
+      "removal-criteria": "Remove after reference scan finds no old-demo-web-review use."
+    }
+  ]
+}

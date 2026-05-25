@@ -46,7 +46,7 @@ duplicate exports, stale paths, invalid route metadata, or unresolved
 | Do not move artifacts into packs. | `artifact-repo-migration-plan` |
 | Do not scan artifact body content for secrets or private data. | `public-safety-scrub-gates` |
 | Do not define shim removal windows. | `artifact-compatibility-shims` |
-| Do not create the public example pack. | `example-artifact-pack` |
+| Do not create the public example pack. | `example-skill-pack` |
 
 ## Current State
 
@@ -119,7 +119,7 @@ First implementation uses errors only.
 | Context routing registry | `agent/config/context-routing.json`. |
 | Test fixtures | `tests/fixtures/artifact-packs/**/artifact-pack.json`. |
 | Test fixture sets | `tests/fixtures/artifact-pack-sets/**/artifact-pack.json`. |
-| Optional repo example | `examples/artifact-packs/**/artifact-pack.json` after `example-artifact-pack` exists. |
+| Optional repo example | `examples/artifact-packs/**/artifact-pack.json` after `example-skill-pack` exists. |
 | Explicit validator input | `--artifact-pack <path>` accepts a pack root, an `artifact-pack.json` file, or a directory containing nested manifest files. |
 
 Use a manifest set directory when validating `pack:<id>` dependencies before an

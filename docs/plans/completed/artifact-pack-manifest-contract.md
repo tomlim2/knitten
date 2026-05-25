@@ -44,7 +44,7 @@ dependencies, routing metadata, compatibility aliases, and public-safety gates.
 | Do not move current artifacts into packs. | `artifact-repo-migration-plan` |
 | Do not define public-safety scrub rules in detail. | `public-safety-scrub-gates` |
 | Do not define old-path shim removal workflow in detail. | `artifact-compatibility-shims` |
-| Do not build an example pack. | `example-artifact-pack` |
+| Do not build an example pack. | `example-skill-pack` |
 
 ## Current State
 

@@ -44,7 +44,7 @@ non-deterministic duplicate candidates, and compatibility alias drift.
 | Do not change artifact-pack validator gates. | `artifact-pack-validation-gates` |
 | Do not install, update, disable, or uninstall packs. | `installed-pack-lifecycle` |
 | Do not migrate existing artifacts into packs. | `artifact-repo-migration-plan` |
-| Do not build the public-safe example pack. | `example-artifact-pack` |
+| Do not build the public-safe example pack. | `example-skill-pack` |
 
 ## Current State
 

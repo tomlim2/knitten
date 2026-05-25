@@ -303,6 +303,45 @@ test("compatibility alias emits canonical artifact with alias provenance", () =>
   assert.equal(candidate["matched-compatibility-input"], "old-review");
 });
 
+test("compatibility alias is not route-selected unless old name matches", () => {
+  const pack = manifest({
+    "compatibility-aliases": [{
+      "alias-id": "old-review-name",
+      "target-artifact-id": "review-skill",
+      "compatibility-need": "alias",
+      "old-name": "old-review",
+      "removal-criteria": "Reference scan returns zero matches.",
+    }],
+  });
+
+  const result = resolve(pack, { request: { requestText: "please do web review" } });
+  const aliasCandidate = result.candidates.find((item) => item["compatibility-need"] === "alias");
+
+  assert.equal(result["result-kind"], "primary");
+  assert.notEqual(result["primary-candidate-id"], aliasCandidate["candidate-id"]);
+  assert.equal(aliasCandidate["load-state"], "metadata-only");
+});
+
+test("canonical artifact name does not select compatibility alias candidate", () => {
+  const pack = manifest({
+    "compatibility-aliases": [{
+      "alias-id": "old-review-name",
+      "target-artifact-id": "review-skill",
+      "compatibility-need": "alias",
+      "old-name": "old-review",
+      "removal-criteria": "Reference scan returns zero matches.",
+    }],
+  });
+
+  const result = resolve(pack, { request: { requestText: "use review-skill", namedArtifact: ["review-skill"] } });
+  const aliasCandidate = result.candidates.find((item) => item["compatibility-need"] === "alias");
+
+  assert.equal(result["result-kind"], "primary");
+  assert.match(result["primary-candidate-id"], /review-skill:none:none$/);
+  assert.notEqual(result["primary-candidate-id"], aliasCandidate["candidate-id"]);
+  assert.equal(aliasCandidate.exactMatch, false);
+});
+
 test("compatibility shim points to shim path", () => {
   const pack = manifest({
     "compatibility-aliases": [{

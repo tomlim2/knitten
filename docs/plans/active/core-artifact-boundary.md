@@ -291,4 +291,4 @@ Proof:
 | First reviewed batch | Core-owned rows before domain rows. |
 | Generator update timing | After at least one reviewed classification report. |
 | Command handling | Mark duplicate commands `migrate-later` until `command-retirement-plan` lands. |
-| Public-safe example material | Decide in `example-artifact-pack` and public-safety specs. |
+| Public-safe example material | Decide in `example-skill-pack` and public-safety specs. |

@@ -78,7 +78,7 @@ resolver, installer, migration, or release work depends on pack validation.
 | Pack root install registry | `installed-pack-lifecycle` |
 | Deep public/private content scrub | `public-safety-scrub-gates` |
 | Compatibility shim deletion lifecycle | `artifact-compatibility-shims` |
-| Example pack implementation | `example-artifact-pack` |
+| Example skill pack implementation | `example-skill-pack` |
 
 ## Validation Expected
 
