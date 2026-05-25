@@ -91,6 +91,18 @@ async function writeHarnessConfig(root, harnessTarget = path.join(root, "harness
   return { harnessConfig, harnessTarget };
 }
 
+async function readJournalFiles(root) {
+  const dir = path.join(root, "journals");
+  const files = await fs.readdir(dir).catch((err) => {
+    if (err.code === "ENOENT") return [];
+    throw err;
+  });
+  return Promise.all(files.filter((file) => file.endsWith(".json")).sort().map(async (file) => ({
+    file,
+    data: JSON.parse(await fs.readFile(path.join(dir, file), "utf8")),
+  })));
+}
+
 test("virtual pack install lifecycle writes registry state transitions", async () => {
   const root = await makeTempRoot("virtual");
   const registry = path.join(root, "registry.json");
@@ -216,12 +228,21 @@ test("install prevalidates active manifest set before registry visibility", asyn
   assert.equal(blocked.code, 1);
   assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
   assert.doesNotMatch(blocked.stdout, new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  const journals = await readJournalFiles(root);
+  assert.equal(journals.length, 1);
+  assert.equal(journals[0].data.status, "validation-failed");
+  assert.equal(journals[0].data["failure-gate"], "active-manifest-set");
 
   const list = await runInstaller(["list", "--registry", registry]);
   assert.equal(list.code, 0);
   assert.equal(list.json["row-count"], 1);
   assert.equal(list.json.rows[0]["pack-id"], "first-route-pack");
   assert.equal(list.json.rows[0].state, "active");
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "validation-failed");
+  assert.deepEqual(await readJournalFiles(root), []);
 });
 
 test("install prevalidation blocks link exposure before mount apply", async () => {
@@ -276,10 +297,17 @@ test("update prevalidates active manifest set before replacing candidates", asyn
   const blocked = await runInstaller(["update", "--pack-id", "second-route-pack", "--registry", registry]);
   assert.equal(blocked.code, 1);
   assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+  const journals = await readJournalFiles(root);
+  assert.equal(journals.length, 1);
+  assert.equal(journals[0].data.status, "validation-failed");
 
   const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry, "--verbose"]);
   assert.equal(status.code, 0);
   assert.equal(status.json.rows[0]["candidate-index"][0].route.priority, 2);
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "validation-failed");
 });
 
 test("enable prevalidates active manifest set before restoring visibility", async () => {
@@ -300,10 +328,17 @@ test("enable prevalidates active manifest set before restoring visibility", asyn
   const blocked = await runInstaller(["enable", "--pack-id", "second-route-pack", "--registry", registry]);
   assert.equal(blocked.code, 1);
   assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+  const journals = await readJournalFiles(root);
+  assert.equal(journals.length, 1);
+  assert.equal(journals[0].data.status, "validation-failed");
 
   const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry]);
   assert.equal(status.code, 0);
   assert.equal(status.json.rows[0].state, "disabled");
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "validation-failed");
 });
 
 test("update reconciles added removed and changed installer-owned links", async () => {
