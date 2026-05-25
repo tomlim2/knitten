@@ -78,6 +78,19 @@ async function makeRouteSelectedPack(root, packId, priority = null, fixture = "v
   return pack;
 }
 
+async function writeHarnessConfig(root, harnessTarget = path.join(root, "harness-target")) {
+  const harnessConfig = path.join(root, "agent-hub.json");
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+  return { harnessConfig, harnessTarget };
+}
+
 test("virtual pack install lifecycle writes registry state transitions", async () => {
   const root = await makeTempRoot("virtual");
   const registry = path.join(root, "registry.json");
@@ -291,6 +304,164 @@ test("enable prevalidates active manifest set before restoring visibility", asyn
   const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry]);
   assert.equal(status.code, 0);
   assert.equal(status.json.rows[0].state, "disabled");
+});
+
+test("update reconciles added removed and changed installer-owned links", async () => {
+  const root = await makeTempRoot("update-reconcile");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+  const beforeDigest = install.json["planned-state"]["manifest-digest"];
+
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  await fs.mkdir(path.join(pack, "skills", "demo-skill-v2"), { recursive: true });
+  await fs.writeFile(path.join(pack, "skills", "demo-skill-v2", "SKILL.md"), "---\ndescription: Updated fixture skill.\n---\n\n# demo-skill-v2\n");
+  await fs.mkdir(path.join(pack, "skills", "extra-skill"), { recursive: true });
+  await fs.writeFile(path.join(pack, "skills", "extra-skill", "SKILL.md"), "---\ndescription: Extra fixture skill.\n---\n\n# extra-skill\n");
+  manifest.exports[0].path = "skills/demo-skill-v2";
+  manifest.exports[0].entrypoint = "skills/demo-skill-v2/SKILL.md";
+  manifest.exports.push({
+    ...manifest.exports[0],
+    "artifact-id": "extra-skill",
+    path: "skills/extra-skill",
+    mount: { ...manifest.exports[0].mount, target: "extra-skill" },
+    entrypoint: "skills/extra-skill/SKILL.md",
+  });
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const update = await runInstaller([
+    "update",
+    "--pack-id",
+    "fixture-pack",
+    "--registry",
+    registry,
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(update.code, 0);
+  assert.notEqual(update.json["planned-state"]["manifest-digest"], beforeDigest);
+  assert.equal(update.json["planned-state"]["candidate-count"], 2);
+  assert.equal(update.json["planned-state"]["link-count"], 2);
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-remove" && entry["artifact-id"] === "demo-skill"));
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-create" && entry["artifact-id"] === "demo-skill"));
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-create" && entry["artifact-id"] === "extra-skill"));
+
+  const demoLink = path.join(harnessTarget, "skills", "demo-skill");
+  const extraLink = path.join(harnessTarget, "skills", "extra-skill");
+  assert.equal(await fs.readlink(demoLink), await fs.realpath(path.join(pack, "skills", "demo-skill-v2")));
+  assert.equal(await fs.readlink(extraLink), await fs.realpath(path.join(pack, "skills", "extra-skill")));
+  assert.equal((await fs.lstat(path.join(pack, "skills", "demo-skill"))).isDirectory(), true);
+});
+
+test("update removes obsolete owned links and keeps pack source untouched", async () => {
+  const root = await makeTempRoot("update-remove");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest.exports[0].mount.mode = "virtual";
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const update = await runInstaller([
+    "update",
+    "--pack-id",
+    "fixture-pack",
+    "--registry",
+    registry,
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(update.code, 0);
+  assert.equal(update.json["planned-state"]["candidate-count"], 1);
+  assert.equal(update.json["planned-state"]["link-count"], 0);
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-remove" && entry["artifact-id"] === "demo-skill"));
+  await assert.rejects(fs.lstat(path.join(harnessTarget, "skills", "demo-skill")), { code: "ENOENT" });
+  assert.equal((await fs.lstat(path.join(pack, "skills", "demo-skill"))).isDirectory(), true);
+});
+
+test("update reports non-owned conflict and leaves previous links visible", async () => {
+  const root = await makeTempRoot("update-conflict");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const linkPath = path.join(harnessTarget, "skills", "demo-skill");
+  const payload = await fs.readlink(linkPath);
+  await fs.unlink(linkPath);
+  await fs.symlink(payload, linkPath);
+  const ownershipPath = path.join(root, "ownership-map.json");
+  const ownership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  ownership[linkPath]["created-lstat"].ino += 1;
+  await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
+
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest.exports[0].mount.mode = "virtual";
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const update = await runInstaller([
+    "update",
+    "--pack-id",
+    "fixture-pack",
+    "--registry",
+    registry,
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(update.code, 1);
+  assert.equal(update.json.recovery.decision, "manual-conflict");
+  assert.equal(update.json.conflicts[0].gate, "existing-path-ownership");
+  assert.equal((await fs.lstat(linkPath)).isSymbolicLink(), true);
+
+  const status = await runInstaller(["status", "--pack-id", "fixture-pack", "--registry", registry]);
+  assert.equal(status.code, 0);
+  assert.equal(status.json.rows[0]["candidate-count"], 1);
+  assert.equal(status.json.rows[0]["link-count"], 1);
 });
 
 test("recover rolls back only journal-owned partial install links", async () => {

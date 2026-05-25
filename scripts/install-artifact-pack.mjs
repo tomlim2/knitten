@@ -478,6 +478,33 @@ function conflictId(link, gate) {
   })}`;
 }
 
+function linkActionFromRecord(kind, link, status, reason, gate = null) {
+  return {
+    kind,
+    "pack-id": link["pack-id"],
+    "artifact-id": link["artifact-id"],
+    "harness-id": link["harness-id"],
+    layer: link.layer,
+    "mount-mode": "link",
+    gate,
+    status,
+    reason,
+  };
+}
+
+function linkConflict(link) {
+  return {
+    "conflict-id": conflictId(link, "existing-path-ownership"),
+    "pack-id": link["pack-id"],
+    "artifact-id": link["artifact-id"],
+    "harness-id": link["harness-id"],
+    layer: link.layer,
+    target: "<target>",
+    gate: "existing-path-ownership",
+    status: "blocked",
+  };
+}
+
 async function linkConflicts(row, registryPath) {
   const ownership = await loadOwnershipMap(registryPath);
   const conflicts = [];
@@ -496,16 +523,7 @@ async function linkConflicts(row, registryPath) {
       if (err.code !== "ENOENT") throw err;
     }
     if (blocked) {
-      conflicts.push({
-        "conflict-id": conflictId(link, "existing-path-ownership"),
-        "pack-id": link["pack-id"],
-        "artifact-id": link["artifact-id"],
-        "harness-id": link["harness-id"],
-        layer: link.layer,
-        target: "<target>",
-        gate: "existing-path-ownership",
-        status: "blocked",
-      });
+      conflicts.push(linkConflict(link));
     }
   }
   return conflicts;
@@ -532,6 +550,83 @@ function ownedLinkIdentityMatches(ownership, link, payload, st) {
   const owned = ownership[link["target-path"]];
   if (!ownedLinkMatches(ownership, link, payload)) return false;
   return lstatIdentityMatches(owned["created-lstat"], st) && lstatIdentityMatches(link["created-lstat"], st);
+}
+
+function sameLinkMount(a, b) {
+  return a["target-path"] === b["target-path"] &&
+    a["link-target"] === b["link-target"] &&
+    a["ownership-token"] === b["ownership-token"];
+}
+
+async function removalState(link, ownership) {
+  let exists = true;
+  let removable = false;
+  try {
+    const st = await fs.lstat(link["target-path"]);
+    if (st.isSymbolicLink()) {
+      const payload = await fs.readlink(link["target-path"]);
+      removable = payload === link["link-target"] && ownedLinkIdentityMatches(ownership, link, payload, st);
+    }
+  } catch (err) {
+    if (err.code === "ENOENT") exists = false;
+    else throw err;
+  }
+  return { exists, removable };
+}
+
+async function linkCreateConflict(link, ownership, removedTargets) {
+  if (removedTargets.has(link["target-path"])) return null;
+  try {
+    const st = await fs.lstat(link["target-path"]);
+    if (st.isSymbolicLink()) {
+      const payload = await fs.readlink(link["target-path"]);
+      if (payload === link["link-target"] && ownedLinkIdentityMatches(ownership, link, payload, st)) return null;
+    }
+    return linkConflict(link);
+  } catch (err) {
+    if (err.code === "ENOENT") return null;
+    throw err;
+  }
+}
+
+async function planLinkReconciliation(previousLinks, plannedLinks, registryPath) {
+  const ownership = await loadOwnershipMap(registryPath);
+  const unchanged = [];
+  const linksToRemove = [];
+  const linksToCreate = [];
+
+  for (const previous of previousLinks) {
+    const planned = plannedLinks.find((candidate) => sameLinkMount(previous, candidate));
+    if (planned) {
+      unchanged.push({ ...planned, "created-lstat": previous["created-lstat"], "last-status": previous["last-status"] });
+    } else {
+      linksToRemove.push(previous);
+    }
+  }
+
+  for (const planned of plannedLinks) {
+    if (!previousLinks.some((previous) => sameLinkMount(previous, planned))) linksToCreate.push(planned);
+  }
+
+  const conflicts = [];
+  const removedTargets = new Set();
+  for (const link of linksToRemove) {
+    const state = await removalState(link, ownership);
+    if (state.exists && !state.removable) conflicts.push(linkConflict(link));
+    else removedTargets.add(link["target-path"]);
+  }
+  for (const link of linksToCreate) {
+    const conflict = await linkCreateConflict(link, ownership, removedTargets);
+    if (conflict) conflicts.push(conflict);
+  }
+
+  return {
+    unchanged,
+    linksToRemove,
+    linksToCreate,
+    nextLinks: plannedLinks.map((planned) => unchanged.find((link) => sameLinkMount(link, planned)) || planned),
+    conflicts,
+  };
 }
 
 async function applyLinks(links, args, registryPath, transactionId) {
@@ -580,30 +675,14 @@ async function removeOwnedLinks(row, args, registryPath) {
   const actions = [];
   for (const link of row.links || []) {
     const target = link["target-path"];
-    let exists = true;
-    let removable = false;
-    try {
-      const st = await fs.lstat(target);
-      if (st.isSymbolicLink()) {
-        const payload = await fs.readlink(target);
-        removable = payload === link["link-target"] && ownedLinkIdentityMatches(ownership, link, payload, st);
-      }
-    } catch (err) {
-      if (err.code === "ENOENT") exists = false;
-      else throw err;
-    }
+    const { exists, removable } = await removalState(link, ownership);
     if (exists && !removable) continue;
-    actions.push({
-      kind: "link-remove",
-      "pack-id": link["pack-id"],
-      "artifact-id": link["artifact-id"],
-      "harness-id": link["harness-id"],
-      layer: link.layer,
-      "mount-mode": "link",
-      gate: null,
-      status: args["dry-run"] ? "planned" : "applied",
-      reason: exists ? "installer-owned link removed" : "installer-owned link already absent",
-    });
+    actions.push(linkActionFromRecord(
+      "link-remove",
+      link,
+      args["dry-run"] ? "planned" : "applied",
+      exists ? "installer-owned link removed" : "installer-owned link already absent",
+    ));
     if (!args["dry-run"]) {
       if (exists) await fs.unlink(target);
       delete ownership[target];
@@ -893,17 +972,7 @@ async function commandStateChange(verb, args, registryPath, nextState) {
         actions: [],
       };
       for (const conflict of conflicts) {
-        report.actions.push({
-          kind: "link-remove",
-          "pack-id": conflict["pack-id"],
-          "artifact-id": conflict["artifact-id"],
-          "harness-id": conflict["harness-id"],
-          layer: conflict.layer,
-          "mount-mode": "link",
-          gate: conflict.gate,
-          status: "blocked",
-          reason: "target is not installer-owned",
-        });
+        report.actions.push(linkActionFromRecord("link-remove", conflict, "blocked", "target is not installer-owned", conflict.gate));
       }
       if (verb === "uninstall" && !args.force) {
         printReport(report, args, 1);
@@ -924,15 +993,8 @@ async function commandStateChange(verb, args, registryPath, nextState) {
       fail(report, args, err.gate || "active-manifest-set", err.message, err.code || 1, { "pack-id": row["pack-id"], kind: "validate" });
     }
     report.actions.push(...(row.links || []).map((link) => ({
-      kind: "link-create",
-      "pack-id": link["pack-id"],
-      "artifact-id": link["artifact-id"],
-      "harness-id": link["harness-id"],
-      layer: link.layer,
-      "mount-mode": "link",
+      ...linkActionFromRecord("link-create", link, args["dry-run"] ? "planned" : "applied", "installer-owned link active"),
       gate: null,
-      status: args["dry-run"] ? "planned" : "applied",
-      reason: "installer-owned link active",
     })));
   }
   report.actions.push(action("registry-write", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", `state set to ${nextState}`));
@@ -1008,9 +1070,14 @@ async function commandUpdate(verb, args, registryPath) {
   await validateArtifactPack(row["source-path"]);
   const manifest = await readJsonFile(row["manifest-path"]);
   assertSupportedMountModes(manifest);
+  const scopedHarnesses = row.scope?.["harness-ids"] || [];
+  const linkArgs = !args.harness && scopedHarnesses.length === 1 ? { ...args, harness: scopedHarnesses[0] } : args;
+  const plannedLinks = await planLinks(manifest, row["source-path"], linkArgs, registryPath);
+  const linkPlan = await planLinkReconciliation(row.links || [], plannedLinks.links, registryPath);
   const next = {
     ...row,
     "manifest-digest": digest(manifest),
+    links: linkPlan.nextLinks,
     "candidate-index": candidateRows(manifest),
     "updated-at": isoNow(),
     "transaction-id": `tx-${Date.now()}`,
@@ -1018,6 +1085,19 @@ async function commandUpdate(verb, args, registryPath) {
   report["previous-state"] = summarizeRow(row, args.verbose);
   report["planned-state"] = summarizeRow(next, args.verbose);
   report.actions.push(action("validate", row["pack-id"], null, null, "applied", "manifest validation passed", "artifact-pack"));
+  if (linkPlan.conflicts.length > 0) {
+    report.conflicts = linkPlan.conflicts;
+    report.recovery = {
+      decision: "manual-conflict",
+      gate: "existing-path-ownership",
+      actions: [],
+    };
+    for (const conflict of linkPlan.conflicts) {
+      report.actions.push(linkActionFromRecord("link-remove", conflict, "blocked", "target is not installer-owned", conflict.gate));
+    }
+    printReport(report, args, 1);
+    return;
+  }
   if (next.state === "active") {
     try {
       report["manifest-set-path"] = redactPath(await validateActiveManifestSet(plannedRegistryWithRow(registry, next), args), args.verbose, "<temp-manifest-set>");
@@ -1026,7 +1106,20 @@ async function commandUpdate(verb, args, registryPath) {
       fail(report, args, err.gate || "active-manifest-set", err.message, err.code || 1, { "pack-id": row["pack-id"], kind: "validate" });
     }
   }
-  report.actions.push(action("registry-write", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", "metadata refreshed"));
+  report.actions.push(...linkPlan.linksToRemove.map((link) => linkActionFromRecord(
+    "link-remove",
+    link,
+    args["dry-run"] ? "planned" : "applied",
+    "obsolete installer-owned link removed",
+  )));
+  report.actions.push(...linkPlan.linksToCreate.map((link) => linkActionFromRecord(
+    "link-create",
+    link,
+    args["dry-run"] ? "planned" : "applied",
+    "installer-owned link active",
+  )));
+  report.actions.push(action("candidate-index", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", "candidate rows refreshed"));
+  report.actions.push(action("registry-write", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", "installed pack row refreshed"));
   if (!args["dry-run"]) {
     const plannedRegistry = cloneJson(registry);
     upsertRow(plannedRegistry, next);
@@ -1039,7 +1132,9 @@ async function commandUpdate(verb, args, registryPath) {
       "previous-row": cloneJson(row),
       "planned-row": cloneJson(next),
       "planned-actions": cloneJson(report.actions),
-      "ownership-metadata": { "link-targets": (row.links || []).map((link) => link["target-path"]) },
+      "ownership-metadata": {
+        "link-targets": [...new Set([...(row.links || []), ...linkPlan.linksToCreate].map((link) => link["target-path"]))],
+      },
       status: "planned",
       "created-at": isoNow(),
       "updated-at": isoNow(),
@@ -1052,7 +1147,15 @@ async function commandUpdate(verb, args, registryPath) {
     if (digest(latest) !== journal["registry-digest-before"]) {
       throw Object.assign(new Error("registry changed after planning"), { gate: "registry-digest-changed", code: 1 });
     }
+    await removeOwnedLinks({ links: linkPlan.linksToRemove }, args, registryPath);
+    await applyLinks(linkPlan.linksToCreate, args, registryPath, next["transaction-id"]);
+    next.links = linkPlan.nextLinks.map((link) => linkPlan.linksToCreate.find((created) => sameLinkMount(created, link)) || link);
     upsertRow(latest, next);
+    journal["planned-row"] = cloneJson(next);
+    journal["registry-digest-planned"] = digest(latest);
+    journal["planned-actions"] = cloneJson(report.actions);
+    journal["updated-at"] = isoNow();
+    await writeJournal(registryPath, journal);
     await writeRegistry(registryPath, latest);
     journal.status = "committed";
     journal["updated-at"] = isoNow();
