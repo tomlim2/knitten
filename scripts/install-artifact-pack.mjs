@@ -192,6 +192,7 @@ async function readRegistry(registryPath, missingMode = "missing") {
   } catch (err) {
     if (err.code === "ENOENT") {
       if (missingMode === "empty") return { "schema-version": 1, "installed-packs": [] };
+      if (missingMode === "recover") return { "schema-version": 1, "installed-packs": [] };
       throw Object.assign(new Error("registry is missing"), { gate: missingMode === "recover" ? "registry-missing" : "registry-missing-row", code: 1 });
     }
     if (err instanceof SyntaxError) {
@@ -450,6 +451,56 @@ async function planLinks(manifest, sourceRoot, args, registryPath) {
     }
   }
   await ensureHarnessConfigAllowed(args, registryPath);
+  return { links, actions };
+}
+
+function mountedTargetRoot(link) {
+  return String(link.target || "")
+    .split("/")
+    .filter(Boolean)
+    .reduce((root) => path.dirname(root), link["target-path"]);
+}
+
+async function planLinksFromInstalledRow(manifest, sourceRoot, previousLinks) {
+  const links = [];
+  const actions = [];
+  const linkExports = (manifest.exports || []).filter((entry) => entry.mount?.mode === "link");
+  if (linkExports.length === 0) return { links, actions };
+
+  const roots = new Map();
+  for (const link of previousLinks || []) {
+    roots.set(`${link["harness-id"]}:${link.layer}`, mountedTargetRoot(link));
+  }
+  for (const entry of linkExports) {
+    const layer = entry.mount?.layer;
+    for (const [key, targetRoot] of roots) {
+      const [harnessId, rootLayer] = key.split(":");
+      if (rootLayer !== layer) continue;
+      const sourcePath = path.join(sourceRoot, entry.path);
+      const sourceReal = await realpathMaybe(sourcePath);
+      const targetPath = path.join(targetRoot, entry.mount.target);
+      const targetParentReal = await realpathMaybe(path.dirname(targetPath));
+      links.push({
+        "pack-id": manifest["pack-id"],
+        "artifact-id": entry["artifact-id"],
+        "harness-id": harnessId,
+        layer,
+        target: entry.mount.target,
+        "source-realpath": sourceReal,
+        "target-path": targetPath,
+        "target-realpath-parent": targetParentReal,
+        "link-target": sourceReal,
+        "ownership-token": digest(`${manifest["pack-id"]}:${entry["artifact-id"]}:${harnessId}:${targetPath}`),
+        "created-by": SCRIPT_ID,
+        "created-lstat": null,
+        "last-status": "planned",
+      });
+      actions.push(action("link-create", manifest["pack-id"], entry, harnessId, "planned", "link mount planned"));
+    }
+  }
+  if (links.length === 0 && linkExports.length > 0) {
+    throw Object.assign(new Error("update link planning requires previous link roots or harness config"), { gate: "harness-mapping-missing", code: 1 });
+  }
   return { links, actions };
 }
 
@@ -935,7 +986,6 @@ async function commandInstall(verb, args, registryPath) {
     journal["updated-at"] = isoNow();
     await writeJournal(safeRegistryPath, journal);
     await writeRegistry(safeRegistryPath, latest);
-    report["manifest-set-path"] = redactPath(await materializeManifestSet(latest, args), args.verbose, "<temp-manifest-set>");
     journal.status = "committed";
     journal["updated-at"] = isoNow();
     await writeJournal(safeRegistryPath, journal);
@@ -1072,7 +1122,9 @@ async function commandUpdate(verb, args, registryPath) {
   assertSupportedMountModes(manifest);
   const scopedHarnesses = row.scope?.["harness-ids"] || [];
   const linkArgs = !args.harness && scopedHarnesses.length === 1 ? { ...args, harness: scopedHarnesses[0] } : args;
-  const plannedLinks = await planLinks(manifest, row["source-path"], linkArgs, registryPath);
+  const plannedLinks = args["harness-config"] || (row.links || []).length === 0
+    ? await planLinks(manifest, row["source-path"], linkArgs, registryPath)
+    : await planLinksFromInstalledRow(manifest, row["source-path"], row.links || []);
   const linkPlan = await planLinkReconciliation(row.links || [], plannedLinks.links, registryPath);
   const next = {
     ...row,
@@ -1217,6 +1269,13 @@ async function commandRecover(verb, args, registryPath) {
         gate = "existing-path-ownership";
         exitCode = 1;
         continue;
+      }
+      if (journal.verb === "update" && (journal["previous-row"]?.links || []).length > 0) {
+        await applyLinks(journal["previous-row"].links, args, registryPath, journal["transaction-id"]);
+        recoveryActions.push(...journal["previous-row"].links.map((link) => ({
+          ...linkActionFromRecord("link-create", link, "applied", "previous installer-owned link restored"),
+          journal: file,
+        })));
       }
       const latest = await readRegistry(registryPath, "recover");
       if (removeJournalRegistryRow(latest, journal, journal["planned-row"])) {

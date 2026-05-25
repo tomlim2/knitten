@@ -350,8 +350,6 @@ test("update reconciles added removed and changed installer-owned links", async 
     "fixture-pack",
     "--registry",
     registry,
-    "--harness-config",
-    harnessConfig,
   ]);
   assert.equal(update.code, 0);
   assert.notEqual(update.json["planned-state"]["manifest-digest"], beforeDigest);
@@ -366,6 +364,31 @@ test("update reconciles added removed and changed installer-owned links", async 
   assert.equal(await fs.readlink(demoLink), await fs.realpath(path.join(pack, "skills", "demo-skill-v2")));
   assert.equal(await fs.readlink(extraLink), await fs.realpath(path.join(pack, "skills", "extra-skill")));
   assert.equal((await fs.lstat(path.join(pack, "skills", "demo-skill"))).isDirectory(), true);
+});
+
+test("update reuses installed link roots when harness config is omitted", async () => {
+  const root = await makeTempRoot("update-link-root");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const dryRun = await runInstaller(["update", "--pack-id", "fixture-pack", "--registry", registry, "--dry-run", "--verbose"]);
+  assert.equal(dryRun.code, 0);
+  assert.equal(dryRun.json["planned-state"].links[0]["target-path"], path.join(harnessTarget, "skills", "demo-skill"));
 });
 
 test("update removes obsolete owned links and keeps pack source untouched", async () => {
@@ -504,7 +527,7 @@ test("recover rolls back only journal-owned partial install links", async () => 
   await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
 
   const emptyRegistry = { "schema-version": 1, "installed-packs": [] };
-  await fs.writeFile(registry, `${JSON.stringify(emptyRegistry, null, 2)}\n`);
+  await fs.rm(registry, { force: true });
   const plannedRegistry = { "schema-version": 1, "installed-packs": [row] };
   const journal = {
     "transaction-id": "tx-partial",
@@ -533,6 +556,58 @@ test("recover rolls back only journal-owned partial install links", async () => 
   const finalOwnership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
   assert.equal(finalOwnership[linkPath], undefined);
   await assert.rejects(fs.lstat(path.join(root, "journals", "fixture-pack.tx-partial.install.json")), { code: "ENOENT" });
+});
+
+test("recover restores previous links after partial update rollback", async () => {
+  const root = await makeTempRoot("partial-update");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  const pack = path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe");
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const installedRegistry = JSON.parse(await fs.readFile(registry, "utf8"));
+  const previousRow = installedRegistry["installed-packs"][0];
+  const nextRow = { ...previousRow, links: [], "transaction-id": "tx-update-partial", "updated-at": new Date().toISOString() };
+  const linkPath = path.join(harnessTarget, "skills", "demo-skill");
+  await fs.unlink(linkPath);
+  const ownershipPath = path.join(root, "ownership-map.json");
+  const ownership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  delete ownership[linkPath];
+  await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
+
+  const plannedRegistry = { "schema-version": 1, "installed-packs": [nextRow] };
+  const journal = {
+    "transaction-id": "tx-update-partial",
+    "pack-id": "fixture-pack",
+    verb: "update",
+    "registry-digest-before": digest(installedRegistry),
+    "registry-digest-planned": digest(plannedRegistry),
+    "previous-row": previousRow,
+    "planned-row": nextRow,
+    "planned-actions": [],
+    "ownership-metadata": { "link-targets": previousRow.links.map((link) => link["target-path"]) },
+    status: "applying",
+  };
+  await fs.mkdir(path.join(root, "journals"), { recursive: true });
+  await fs.writeFile(path.join(root, "journals", "fixture-pack.tx-update-partial.update.json"), `${JSON.stringify(journal, null, 2)}\n`);
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "rollback-planned-links");
+  assert.equal(await fs.readlink(linkPath), previousRow.links[0]["link-target"]);
+  await assert.rejects(fs.lstat(path.join(root, "journals", "fixture-pack.tx-update-partial.update.json")), { code: "ENOENT" });
 });
 
 test("unsafe link target under pack source is blocked", async () => {
