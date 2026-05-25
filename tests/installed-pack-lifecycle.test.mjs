@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -11,6 +12,18 @@ const execFileAsync = promisify(execFile);
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const installer = path.join(repoRoot, "scripts/install-artifact-pack.mjs");
 const fixtureRewriter = path.join(repoRoot, "scripts/rewrite-installed-pack-fixture.mjs");
+
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function digest(value) {
+  return crypto.createHash("sha256").update(typeof value === "string" ? value : stableJson(value)).digest("hex");
+}
 
 async function runInstaller(args, options = {}) {
   try {
@@ -44,6 +57,38 @@ async function copyAndRewriteFixture(fixturePath) {
     maxBuffer: 20 * 1024 * 1024,
   });
   return root;
+}
+
+async function makeRouteSelectedPack(root, packId, priority = null, fixture = "virtual-minimal") {
+  const pack = path.join(root, packId);
+  await fs.cp(path.join(repoRoot, `tests/fixtures/installed-pack-lifecycle/pass/${fixture}`), pack, { recursive: true });
+  const skillPath = path.join(pack, "skills/demo-skill/SKILL.md");
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest["pack-id"] = packId;
+  manifest["display-name"] = packId;
+  manifest.exports[0].load = "route-selected";
+  manifest.exports[0].route = {
+    domains: ["agent-hub"],
+    "task-types": ["implementation"],
+    ...(priority === null ? {} : { priority }),
+  };
+  await fs.writeFile(skillPath, "---\ndescription: Test fixture skill.\n---\n\n# Test Fixture\n");
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  return pack;
+}
+
+async function writeHarnessConfig(root, harnessTarget = path.join(root, "harness-target")) {
+  const harnessConfig = path.join(root, "agent-hub.json");
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+  return { harnessConfig, harnessTarget };
 }
 
 test("virtual pack install lifecycle writes registry state transitions", async () => {
@@ -120,6 +165,452 @@ test("link install creates a harness symlink and ownership map", async () => {
 
   const uninstall = await runInstaller(["uninstall", "--pack-id", "fixture-pack", "--registry", registry]);
   assert.equal(uninstall.code, 0);
+  await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
+});
+
+test("write verbs retire durable journals after successful completion", async () => {
+  const root = await makeTempRoot("journal-retire");
+  const registry = path.join(root, "registry.json");
+  const harnessTarget = path.join(root, "harness-target");
+  const harnessConfig = path.join(root, "agent-hub.json");
+  const pack = path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe");
+
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+
+  const commands = [
+    ["install", "--artifact-pack", pack, "--registry", registry, "--harness", "codex-test", "--harness-config", harnessConfig],
+    ["update", "--pack-id", "fixture-pack", "--registry", registry],
+    ["disable", "--pack-id", "fixture-pack", "--registry", registry],
+    ["enable", "--pack-id", "fixture-pack", "--registry", registry],
+    ["uninstall", "--pack-id", "fixture-pack", "--registry", registry],
+  ];
+  for (const command of commands) {
+    const result = await runInstaller(command);
+    assert.equal(result.code, 0, result.stdout);
+    const journalDir = path.join(root, "journals");
+    const journals = await fs.readdir(journalDir).catch((err) => {
+      if (err.code === "ENOENT") return [];
+      throw err;
+    });
+    assert.deepEqual(journals, []);
+  }
+});
+
+test("install prevalidates active manifest set before registry visibility", async () => {
+  const root = await makeTempRoot("active-set-install");
+  const registry = path.join(root, "registry.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack");
+  const secondPack = await makeRouteSelectedPack(root, "second-route-pack");
+
+  const firstInstall = await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry]);
+  assert.equal(firstInstall.code, 0);
+
+  const blocked = await runInstaller(["install", "--artifact-pack", secondPack, "--registry", registry]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+  assert.doesNotMatch(blocked.stdout, new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  const list = await runInstaller(["list", "--registry", registry]);
+  assert.equal(list.code, 0);
+  assert.equal(list.json["row-count"], 1);
+  assert.equal(list.json.rows[0]["pack-id"], "first-route-pack");
+  assert.equal(list.json.rows[0].state, "active");
+});
+
+test("install prevalidation blocks link exposure before mount apply", async () => {
+  const root = await makeTempRoot("active-set-link");
+  const registry = path.join(root, "registry.json");
+  const harnessTarget = path.join(root, "harness-target");
+  const harnessConfig = path.join(root, "agent-hub.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack");
+  const linkPack = await makeRouteSelectedPack(root, "link-route-pack", null, "link-safe");
+  const linkPath = path.join(harnessTarget, "skills", "demo-skill");
+
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+
+  assert.equal((await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry])).code, 0);
+  const blocked = await runInstaller([
+    "install",
+    "--artifact-pack",
+    linkPack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+  await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
+});
+
+test("update prevalidates active manifest set before replacing candidates", async () => {
+  const root = await makeTempRoot("active-set-update");
+  const registry = path.join(root, "registry.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack", 1);
+  const secondPack = await makeRouteSelectedPack(root, "second-route-pack", 2);
+
+  assert.equal((await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry])).code, 0);
+  assert.equal((await runInstaller(["install", "--artifact-pack", secondPack, "--registry", registry])).code, 0);
+
+  const manifestPath = path.join(secondPack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  delete manifest.exports[0].route.priority;
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const blocked = await runInstaller(["update", "--pack-id", "second-route-pack", "--registry", registry]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+
+  const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry, "--verbose"]);
+  assert.equal(status.code, 0);
+  assert.equal(status.json.rows[0]["candidate-index"][0].route.priority, 2);
+});
+
+test("enable prevalidates active manifest set before restoring visibility", async () => {
+  const root = await makeTempRoot("active-set-enable");
+  const registry = path.join(root, "registry.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack", 1);
+  const secondPack = await makeRouteSelectedPack(root, "second-route-pack", 2);
+
+  assert.equal((await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry])).code, 0);
+  assert.equal((await runInstaller(["install", "--artifact-pack", secondPack, "--registry", registry])).code, 0);
+  assert.equal((await runInstaller(["disable", "--pack-id", "second-route-pack", "--registry", registry])).code, 0);
+
+  const manifestPath = path.join(secondPack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  delete manifest.exports[0].route.priority;
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const blocked = await runInstaller(["enable", "--pack-id", "second-route-pack", "--registry", registry]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+
+  const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry]);
+  assert.equal(status.code, 0);
+  assert.equal(status.json.rows[0].state, "disabled");
+});
+
+test("update reconciles added removed and changed installer-owned links", async () => {
+  const root = await makeTempRoot("update-reconcile");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+  const beforeDigest = install.json["planned-state"]["manifest-digest"];
+
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  await fs.mkdir(path.join(pack, "skills", "demo-skill-v2"), { recursive: true });
+  await fs.writeFile(path.join(pack, "skills", "demo-skill-v2", "SKILL.md"), "---\ndescription: Updated fixture skill.\n---\n\n# demo-skill-v2\n");
+  await fs.mkdir(path.join(pack, "skills", "extra-skill"), { recursive: true });
+  await fs.writeFile(path.join(pack, "skills", "extra-skill", "SKILL.md"), "---\ndescription: Extra fixture skill.\n---\n\n# extra-skill\n");
+  manifest.exports[0].path = "skills/demo-skill-v2";
+  manifest.exports[0].entrypoint = "skills/demo-skill-v2/SKILL.md";
+  manifest.exports.push({
+    ...manifest.exports[0],
+    "artifact-id": "extra-skill",
+    path: "skills/extra-skill",
+    mount: { ...manifest.exports[0].mount, target: "extra-skill" },
+    entrypoint: "skills/extra-skill/SKILL.md",
+  });
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const update = await runInstaller([
+    "update",
+    "--pack-id",
+    "fixture-pack",
+    "--registry",
+    registry,
+  ]);
+  assert.equal(update.code, 0);
+  assert.notEqual(update.json["planned-state"]["manifest-digest"], beforeDigest);
+  assert.equal(update.json["planned-state"]["candidate-count"], 2);
+  assert.equal(update.json["planned-state"]["link-count"], 2);
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-remove" && entry["artifact-id"] === "demo-skill"));
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-create" && entry["artifact-id"] === "demo-skill"));
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-create" && entry["artifact-id"] === "extra-skill"));
+
+  const demoLink = path.join(harnessTarget, "skills", "demo-skill");
+  const extraLink = path.join(harnessTarget, "skills", "extra-skill");
+  assert.equal(await fs.readlink(demoLink), await fs.realpath(path.join(pack, "skills", "demo-skill-v2")));
+  assert.equal(await fs.readlink(extraLink), await fs.realpath(path.join(pack, "skills", "extra-skill")));
+  assert.equal((await fs.lstat(path.join(pack, "skills", "demo-skill"))).isDirectory(), true);
+});
+
+test("update reuses installed link roots when harness config is omitted", async () => {
+  const root = await makeTempRoot("update-link-root");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const dryRun = await runInstaller(["update", "--pack-id", "fixture-pack", "--registry", registry, "--dry-run", "--verbose"]);
+  assert.equal(dryRun.code, 0);
+  assert.equal(dryRun.json["planned-state"].links[0]["target-path"], path.join(harnessTarget, "skills", "demo-skill"));
+});
+
+test("update removes obsolete owned links and keeps pack source untouched", async () => {
+  const root = await makeTempRoot("update-remove");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest.exports[0].mount.mode = "virtual";
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const update = await runInstaller([
+    "update",
+    "--pack-id",
+    "fixture-pack",
+    "--registry",
+    registry,
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(update.code, 0);
+  assert.equal(update.json["planned-state"]["candidate-count"], 1);
+  assert.equal(update.json["planned-state"]["link-count"], 0);
+  assert.ok(update.json.actions.some((entry) => entry.kind === "link-remove" && entry["artifact-id"] === "demo-skill"));
+  await assert.rejects(fs.lstat(path.join(harnessTarget, "skills", "demo-skill")), { code: "ENOENT" });
+  assert.equal((await fs.lstat(path.join(pack, "skills", "demo-skill"))).isDirectory(), true);
+});
+
+test("update reports non-owned conflict and leaves previous links visible", async () => {
+  const root = await makeTempRoot("update-conflict");
+  const pack = path.join(root, "pack");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  await fs.cp(path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe"), pack, { recursive: true });
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const linkPath = path.join(harnessTarget, "skills", "demo-skill");
+  const payload = await fs.readlink(linkPath);
+  await fs.unlink(linkPath);
+  await fs.symlink(payload, linkPath);
+  const ownershipPath = path.join(root, "ownership-map.json");
+  const ownership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  ownership[linkPath]["created-lstat"].ino += 1;
+  await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
+
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest.exports[0].mount.mode = "virtual";
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const update = await runInstaller([
+    "update",
+    "--pack-id",
+    "fixture-pack",
+    "--registry",
+    registry,
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(update.code, 1);
+  assert.equal(update.json.recovery.decision, "manual-conflict");
+  assert.equal(update.json.conflicts[0].gate, "existing-path-ownership");
+  assert.equal((await fs.lstat(linkPath)).isSymbolicLink(), true);
+
+  const status = await runInstaller(["status", "--pack-id", "fixture-pack", "--registry", registry]);
+  assert.equal(status.code, 0);
+  assert.equal(status.json.rows[0]["candidate-count"], 1);
+  assert.equal(status.json.rows[0]["link-count"], 1);
+});
+
+test("recover rolls back only journal-owned partial install links", async () => {
+  const root = await makeTempRoot("partial-install");
+  const registry = path.join(root, "registry.json");
+  const harnessTarget = path.join(root, "harness-target");
+  const harnessConfig = path.join(root, "agent-hub.json");
+  const pack = path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe");
+
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const installedRegistry = JSON.parse(await fs.readFile(registry, "utf8"));
+  const row = installedRegistry["installed-packs"][0];
+  row["transaction-id"] = "tx-partial";
+  row.links[0]["last-status"] = "active";
+  const linkPath = row.links[0]["target-path"];
+  const ownershipPath = path.join(root, "ownership-map.json");
+  const ownership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  ownership[linkPath]["transaction-id"] = "tx-partial";
+  await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
+
+  const emptyRegistry = { "schema-version": 1, "installed-packs": [] };
+  await fs.rm(registry, { force: true });
+  const plannedRegistry = { "schema-version": 1, "installed-packs": [row] };
+  const journal = {
+    "transaction-id": "tx-partial",
+    "pack-id": "fixture-pack",
+    verb: "install",
+    "registry-digest-before": digest(emptyRegistry),
+    "registry-digest-planned": digest(plannedRegistry),
+    "previous-row": null,
+    "planned-row": row,
+    "planned-actions": [],
+    "ownership-metadata": { "link-targets": [linkPath] },
+    status: "applying",
+  };
+  await fs.mkdir(path.join(root, "journals"), { recursive: true });
+  await fs.writeFile(path.join(root, "journals", "fixture-pack.tx-partial.install.json"), `${JSON.stringify(journal, null, 2)}\n`);
+
+  const dryRun = await runInstaller(["recover", "--dry-run", "--registry", registry]);
+  assert.equal(dryRun.code, 0);
+  assert.equal(dryRun.json.recovery.decision, "rollback-planned-links");
+  assert.equal((await fs.lstat(linkPath)).isSymbolicLink(), true);
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "rollback-planned-links");
+  await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
+  const finalOwnership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  assert.equal(finalOwnership[linkPath], undefined);
+  await assert.rejects(fs.lstat(path.join(root, "journals", "fixture-pack.tx-partial.install.json")), { code: "ENOENT" });
+});
+
+test("recover restores previous links after partial update rollback", async () => {
+  const root = await makeTempRoot("partial-update");
+  const registry = path.join(root, "registry.json");
+  const { harnessConfig, harnessTarget } = await writeHarnessConfig(root);
+  const pack = path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe");
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const installedRegistry = JSON.parse(await fs.readFile(registry, "utf8"));
+  const previousRow = installedRegistry["installed-packs"][0];
+  const nextRow = { ...previousRow, links: [], "transaction-id": "tx-update-partial", "updated-at": new Date().toISOString() };
+  const linkPath = path.join(harnessTarget, "skills", "demo-skill");
+  await fs.unlink(linkPath);
+  const ownershipPath = path.join(root, "ownership-map.json");
+  const ownership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  delete ownership[linkPath];
+  await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
+
+  const plannedRegistry = { "schema-version": 1, "installed-packs": [nextRow] };
+  const journal = {
+    "transaction-id": "tx-update-partial",
+    "pack-id": "fixture-pack",
+    verb: "update",
+    "registry-digest-before": digest(installedRegistry),
+    "registry-digest-planned": digest(plannedRegistry),
+    "previous-row": previousRow,
+    "planned-row": nextRow,
+    "planned-actions": [],
+    "ownership-metadata": { "link-targets": previousRow.links.map((link) => link["target-path"]) },
+    status: "applying",
+  };
+  await fs.mkdir(path.join(root, "journals"), { recursive: true });
+  await fs.writeFile(path.join(root, "journals", "fixture-pack.tx-update-partial.update.json"), `${JSON.stringify(journal, null, 2)}\n`);
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "rollback-planned-links");
+  assert.equal(await fs.readlink(linkPath), previousRow.links[0]["link-target"]);
+  await assert.rejects(fs.lstat(path.join(root, "journals", "fixture-pack.tx-update-partial.update.json")), { code: "ENOENT" });
+
+  const disabled = await runInstaller(["disable", "--pack-id", "fixture-pack", "--registry", registry]);
+  assert.equal(disabled.code, 0);
   await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
 });
 
