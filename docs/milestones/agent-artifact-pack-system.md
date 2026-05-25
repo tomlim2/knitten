@@ -53,6 +53,7 @@ copying everything into the core repository.
 | [managed-path-registry-validation.md](../plans/completed/managed-path-registry-validation.md) | completed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
 | [artifact-inventory-provenance-validation.md](../plans/completed/artifact-inventory-provenance-validation.md) | completed | Validate generated inventory provenance fields and record dirty-worktree generation metadata. |
 | [command-retirement-plan.md](../plans/active/command-retirement-plan.md) | active | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
+| [command-disposition-inventory-schema.md](../plans/active/command-disposition-inventory-schema.md) | active | Add reviewed command-retirement fields to artifact inventory before command rows leave `migrate-later`. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
 | [artifact-pack-manifest-contract.md](../plans/completed/artifact-pack-manifest-contract.md) | completed | Define the manifest schema, exported artifact model, and compatibility fields. |
@@ -96,7 +97,7 @@ copying everything into the core repository.
 
 | Priority | Work | Reason |
 |----------|------|--------|
-| next | `command-retirement-plan` S1 | Command rows are still held at `migrate-later`; reviewed dispositions must exist before command deletion, skill exposure reduction, or pack migration. |
+| next | `command-disposition-inventory-schema` | Command rows are still held at `migrate-later`; reviewed dispositions must exist before command deletion, skill exposure reduction, or pack migration. |
 | done | `artifact-pack-manifest-contract` | Manifest schema, validator gates, core capability registry, and fixtures exist. |
 | done | `artifact-pack-discovery-routing` | Resolver module, fixtures, and validator check exist. |
 | done | `example-skill-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |

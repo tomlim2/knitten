@@ -137,7 +137,7 @@ This table is a starting queue, not deletion approval.
 | Batch | Action | Output |
 |-------|--------|--------|
 | S0 | Record the 45-command baseline and current owner candidates. | This spec and generated inventory update. |
-| S1 | Add final-state fields or reviewed command disposition rows to artifact inventory. | Command rows can leave generic `migrate-later`. |
+| S1 | Implement [command-disposition-inventory-schema.md](command-disposition-inventory-schema.md). | Command rows can leave generic `migrate-later` only after reviewed disposition fields exist. |
 | S2 | Review Batch A wrappers and convert any pure delegating command to an alias shim. | Thin wrappers name their owning skill. |
 | S3 | Review Batch B and C `ah-*` commands. | Core command wrappers become skill routes, aliases, or deletion candidates. |
 | S4 | Classify domain batches D through H by future pack owner. | Pack migration specs get command inputs. |

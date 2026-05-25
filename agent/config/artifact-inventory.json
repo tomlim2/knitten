@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-25T23:34:10.642Z",
-  "source-commit": "63cd003127557ca9fd9afc42af708e4cedd76b2c",
+  "generated-at": "2026-05-25T23:38:43.451Z",
+  "source-commit": "ac776ab51f6525e5e9c1f107cf282b923028d407",
   "source-dirty": true,
   "rows": [
     {
@@ -4516,6 +4516,19 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:docs/plans/active/command-disposition-inventory-schema.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/active/command-disposition-inventory-schema.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:docs/plans/active/command-retirement-plan.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/active/command-retirement-plan.md",
@@ -5952,6 +5965,19 @@
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/reports/command-retirement-plan/spec-review-2026-05-26.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/reports/command-retirement-plan/spec-review-2026-05-26.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
       "dependencies": [],
       "proposed-destination": "undecided",
       "compatibility-need": "unknown",
