@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-25
+updated: 2026-05-26
 owner: agent-hub
 target-date:
 ---
@@ -52,7 +52,7 @@ copying everything into the core repository.
 | [context-standards-redirect-validation.md](../plans/proposed/context-standards-redirect-validation.md) | proposed | Validate `context-standards` paths through standards redirect stubs and canonical replacement targets. |
 | [managed-path-registry-validation.md](../plans/completed/managed-path-registry-validation.md) | completed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
 | [artifact-inventory-provenance-validation.md](../plans/completed/artifact-inventory-provenance-validation.md) | completed | Validate generated inventory provenance fields and record dirty-worktree generation metadata. |
-| `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
+| [command-retirement-plan.md](../plans/active/command-retirement-plan.md) | active | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
 | [artifact-pack-manifest-contract.md](../plans/completed/artifact-pack-manifest-contract.md) | completed | Define the manifest schema, exported artifact model, and compatibility fields. |
@@ -77,8 +77,8 @@ copying everything into the core repository.
 | Core/external boundary | active | `docs/plans/active/core-artifact-boundary.md` defines the first boundary rule and first core-owned batch report. |
 | Bootstrap skill definition and selection | active | `docs/plans/active/bootstrap-skill-definition-selection.md` defines role criteria and the first core-owned skill decision table. |
 | Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |
-| Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
-| Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
+| Command retirement | active | `docs/plans/active/command-retirement-plan.md` records the 45-command baseline, final states, deletion gates, and first classification queue. |
+| Command retirement spec | active | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
 | Thin skill / guide boundary | active | Five-skill pilot classification, first extraction pilot, and extraction rollout rule exist. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
@@ -96,6 +96,7 @@ copying everything into the core repository.
 
 | Priority | Work | Reason |
 |----------|------|--------|
+| next | `command-retirement-plan` S1 | Command rows are still held at `migrate-later`; reviewed dispositions must exist before command deletion, skill exposure reduction, or pack migration. |
 | done | `artifact-pack-manifest-contract` | Manifest schema, validator gates, core capability registry, and fixtures exist. |
 | done | `artifact-pack-discovery-routing` | Resolver module, fixtures, and validator check exist. |
 | done | `example-skill-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |

@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-25T13:20:18.963Z",
-  "source-commit": "7a9d20e0df6af79902974b13e9bf6f9e5e838256",
+  "generated-at": "2026-05-25T23:34:10.642Z",
+  "source-commit": "63cd003127557ca9fd9afc42af708e4cedd76b2c",
   "source-dirty": true,
   "rows": [
     {
@@ -4243,6 +4243,19 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:docs/briefings/specs/example-skill-pack.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/specs/example-skill-pack.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:docs/briefings/specs/installed-pack-lifecycle.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/briefings/specs/installed-pack-lifecycle.md",
@@ -4493,6 +4506,19 @@
       "row-id": "artifact:docs/plans/active/bootstrap-skill-definition-selection.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/active/bootstrap-skill-definition-selection.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/active/command-retirement-plan.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/active/command-retirement-plan.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
@@ -4857,6 +4883,19 @@
       "row-id": "artifact:docs/plans/completed/engine-reuse-debug-cube-assets.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/completed/engine-reuse-debug-cube-assets.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/completed/example-skill-pack.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/completed/example-skill-pack.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
@@ -6505,6 +6544,32 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:examples/artifact-packs/example-skill-pack/artifact-pack.json",
+      "row-type": "artifact",
+      "source-artifact-path": "examples/artifact-packs/example-skill-pack/artifact-pack.json",
+      "artifact-type": "config",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:examples/artifact-packs/example-skill-pack/skills/demo-web-review/SKILL.md",
+      "row-type": "artifact",
+      "source-artifact-path": "examples/artifact-packs/example-skill-pack/skills/demo-web-review/SKILL.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:hyperframes/AGENTS.md",
       "row-type": "artifact",
       "source-artifact-path": "hyperframes/AGENTS.md",
@@ -6898,6 +6963,19 @@
       "row-id": "artifact:tests/artifact-pack-discovery-routing.test.mjs",
       "row-type": "artifact",
       "source-artifact-path": "tests/artifact-pack-discovery-routing.test.mjs",
+      "artifact-type": "fixture",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:tests/example-skill-pack.test.mjs",
+      "row-type": "artifact",
+      "source-artifact-path": "tests/example-skill-pack.test.mjs",
       "artifact-type": "fixture",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
