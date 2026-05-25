@@ -57,6 +57,10 @@ function digest(value) {
   return crypto.createHash("sha256").update(typeof value === "string" ? value : stableJson(value)).digest("hex");
 }
 
+function cloneJson(value) {
+  return value == null ? value : JSON.parse(JSON.stringify(value));
+}
+
 function isoNow() {
   return new Date().toISOString();
 }
@@ -202,6 +206,55 @@ async function writeRegistry(registryPath, registry) {
   const tmp = `${registryPath}.tmp.${process.pid}`;
   await fs.writeFile(tmp, `${JSON.stringify(registry, null, 2)}\n`);
   await fs.rename(tmp, registryPath);
+}
+
+function journalDir(registryPath) {
+  return path.join(path.dirname(registryPath), "journals");
+}
+
+function journalBasename(packId, transactionId, verb) {
+  return `${packId}.${transactionId}.${verb}.json`;
+}
+
+function journalPath(registryPath, packId, transactionId, verb) {
+  return path.join(journalDir(registryPath), journalBasename(packId, transactionId, verb));
+}
+
+async function writeJournal(registryPath, journal) {
+  await fs.mkdir(journalDir(registryPath), { recursive: true });
+  const file = journalPath(registryPath, journal["pack-id"], journal["transaction-id"], journal.verb);
+  const tmp = `${file}.tmp.${process.pid}`;
+  await fs.writeFile(tmp, `${JSON.stringify(journal, null, 2)}\n`);
+  await fs.rename(tmp, file);
+  return file;
+}
+
+async function removeJournal(registryPath, journal) {
+  await fs.rm(journalPath(registryPath, journal["pack-id"], journal["transaction-id"], journal.verb), { force: true });
+}
+
+async function readJournals(registryPath) {
+  const dir = journalDir(registryPath);
+  let files = [];
+  try {
+    files = (await fs.readdir(dir)).filter((file) => file.endsWith(".json")).sort();
+  } catch (err) {
+    if (err.code !== "ENOENT") throw err;
+  }
+  const journals = [];
+  for (const file of files) {
+    const data = await readJsonFile(path.join(dir, file));
+    journals.push({ file, data });
+  }
+  return journals;
+}
+
+async function assertNoActiveJournal(registryPath, packId) {
+  for (const { file, data } of await readJournals(registryPath)) {
+    if (data["pack-id"] === packId && !["committed", "recovered"].includes(data.status)) {
+      throw Object.assign(new Error(`unfinished journal exists: ${file}`), { gate: "journal-active", code: 1 });
+    }
+  }
 }
 
 async function acquireRegistryLock(registryPath) {
@@ -560,6 +613,68 @@ async function removeOwnedLinks(row, args, registryPath) {
   return actions;
 }
 
+async function removeJournalOwnedLinks(links, transactionId, args, registryPath) {
+  const ownership = await loadOwnershipMap(registryPath);
+  const actions = [];
+  for (const link of links || []) {
+    const target = link["target-path"];
+    const owned = ownership[target];
+    const baseAction = {
+      kind: "link-remove",
+      "pack-id": link["pack-id"],
+      "artifact-id": link["artifact-id"],
+      "harness-id": link["harness-id"],
+      layer: link.layer,
+      "mount-mode": "link",
+      gate: null,
+      status: args["dry-run"] ? "planned" : "applied",
+      reason: "journal-owned link removed",
+    };
+    if (
+      !owned ||
+      owned["transaction-id"] !== transactionId ||
+      owned["ownership-token"] !== link["ownership-token"] ||
+      owned["link-payload"] !== link["link-target"]
+    ) {
+      actions.push({ ...baseAction, gate: "ownership-mismatch", status: "skipped", reason: "link ownership does not match journal" });
+      continue;
+    }
+    let exists = true;
+    let removable = false;
+    try {
+      const st = await fs.lstat(target);
+      if (st.isSymbolicLink()) {
+        const payload = await fs.readlink(target);
+        removable = payload === link["link-target"] && lstatIdentityMatches(owned["created-lstat"], st);
+      }
+    } catch (err) {
+      if (err.code === "ENOENT") exists = false;
+      else throw err;
+    }
+    if (exists && !removable) {
+      actions.push({ ...baseAction, gate: "existing-path-ownership", status: "skipped", reason: "target is not journal-owned" });
+      continue;
+    }
+    actions.push({ ...baseAction, reason: exists ? "journal-owned link removed" : "journal-owned link already absent" });
+    if (!args["dry-run"]) {
+      if (exists) await fs.unlink(target);
+      delete ownership[target];
+    }
+  }
+  if (!args["dry-run"]) await writeOwnershipMap(registryPath, ownership);
+  return actions;
+}
+
+function removeJournalRegistryRow(registry, journal, row) {
+  if (!row) return false;
+  const before = registry["installed-packs"].length;
+  registry["installed-packs"] = registry["installed-packs"].filter((candidate) => !(
+    candidate["pack-id"] === row["pack-id"] &&
+    candidate["transaction-id"] === journal["transaction-id"]
+  ));
+  return before !== registry["installed-packs"].length;
+}
+
 async function materializeManifestSet(registry, args) {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "installed-pack-manifest-set-"));
   for (const row of registry["installed-packs"].filter((candidate) => candidate.state === "active")) {
@@ -651,10 +766,10 @@ async function commandInstall(verb, args, registryPath) {
   if (activeRow(registry, loaded.manifest["pack-id"]) && !args.replace) {
     fail(report, args, "duplicate-pack-id", "active pack-id already exists", 1, { "pack-id": loaded.manifest["pack-id"], kind: "registry-write" });
   }
+  if (!args["dry-run"]) await assertNoActiveJournal(safeRegistryPath, loaded.manifest["pack-id"]);
   const plannedLinks = await planLinks(loaded.manifest, loaded.sourceRoot, args, safeRegistryPath);
   const now = isoNow();
   const transactionId = `tx-${Date.now()}`;
-  await applyLinks(plannedLinks.links, args, safeRegistryPath, transactionId);
   const row = {
     "pack-id": loaded.manifest["pack-id"],
     "source-kind": "local-folder",
@@ -669,15 +784,48 @@ async function commandInstall(verb, args, registryPath) {
     "installed-at": now,
     "updated-at": now,
   };
-  report["previous-state"] = summarizeRow(findNewestRow(registry, row["pack-id"]), args.verbose);
+  const previousRow = findNewestRow(registry, row["pack-id"]);
+  report["previous-state"] = summarizeRow(previousRow, args.verbose);
   report["planned-state"] = summarizeRow(row, args.verbose);
   report.actions.push(action("validate", row["pack-id"], null, null, "applied", "manifest validation passed", "artifact-pack"));
   report.actions.push(...plannedLinks.actions.map((entry) => ({ ...entry, status: args["dry-run"] ? "planned" : "applied" })));
   if (!args["dry-run"]) {
+    const journal = {
+      "transaction-id": transactionId,
+      "pack-id": row["pack-id"],
+      verb,
+      "registry-digest-before": digest(registry),
+      "registry-digest-planned": null,
+      "previous-row": cloneJson(previousRow),
+      "planned-row": cloneJson(row),
+      "planned-actions": cloneJson(report.actions),
+      "ownership-metadata": { "link-targets": plannedLinks.links.map((link) => link["target-path"]) },
+      status: "planned",
+      "created-at": now,
+      "updated-at": now,
+    };
+    await writeJournal(safeRegistryPath, journal);
+    journal.status = "applying";
+    journal["updated-at"] = isoNow();
+    await writeJournal(safeRegistryPath, journal);
+    const latest = await readRegistry(safeRegistryPath, "empty");
+    if (digest(latest) !== journal["registry-digest-before"]) {
+      throw Object.assign(new Error("registry changed after planning"), { gate: "registry-digest-changed", code: 1 });
+    }
+    await applyLinks(plannedLinks.links, args, safeRegistryPath, transactionId);
     row.state = "active";
-    upsertRow(registry, row);
-    await writeRegistry(safeRegistryPath, registry);
-    report["manifest-set-path"] = redactPath(await materializeManifestSet(registry, args), args.verbose, "<temp-manifest-set>");
+    upsertRow(latest, row);
+    journal["planned-row"] = cloneJson(row);
+    journal["registry-digest-planned"] = digest(latest);
+    journal["planned-actions"] = cloneJson(report.actions);
+    journal["updated-at"] = isoNow();
+    await writeJournal(safeRegistryPath, journal);
+    await writeRegistry(safeRegistryPath, latest);
+    report["manifest-set-path"] = redactPath(await materializeManifestSet(latest, args), args.verbose, "<temp-manifest-set>");
+    journal.status = "committed";
+    journal["updated-at"] = isoNow();
+    await writeJournal(safeRegistryPath, journal);
+    await removeJournal(safeRegistryPath, journal);
   }
   printReport(report, args);
 }
@@ -699,6 +847,7 @@ async function commandStateChange(verb, args, registryPath, nextState) {
   report["previous-state"] = summarizeRow(row, args.verbose);
   const next = { ...row, state: nextState, "updated-at": isoNow(), "transaction-id": `tx-${Date.now()}` };
   report["planned-state"] = summarizeRow(next, args.verbose);
+  if (!args["dry-run"]) await assertNoActiveJournal(registryPath, row["pack-id"]);
   if (verb === "uninstall" || verb === "disable") {
     const conflicts = await linkConflicts(row, registryPath);
     if (conflicts.length > 0) {
@@ -733,7 +882,6 @@ async function commandStateChange(verb, args, registryPath, nextState) {
     assertSupportedMountModes(manifest);
     next["manifest-digest"] = digest(manifest);
     next["candidate-index"] = candidateRows(manifest);
-    await applyLinks(row.links || [], args, registryPath, next["transaction-id"]);
     report.actions.push(...(row.links || []).map((link) => ({
       kind: "link-create",
       "pack-id": link["pack-id"],
@@ -748,11 +896,64 @@ async function commandStateChange(verb, args, registryPath, nextState) {
   }
   report.actions.push(action("registry-write", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", `state set to ${nextState}`));
   if (!args["dry-run"]) {
-    upsertRow(registry, next);
-    await writeRegistry(registryPath, registry);
+    const plannedRegistry = cloneJson(registry);
+    upsertRow(plannedRegistry, next);
+    const journal = {
+      "transaction-id": next["transaction-id"],
+      "pack-id": row["pack-id"],
+      verb,
+      "registry-digest-before": digest(registry),
+      "registry-digest-planned": digest(plannedRegistry),
+      "previous-row": cloneJson(row),
+      "planned-row": cloneJson(next),
+      "planned-actions": cloneJson(report.actions),
+      "ownership-metadata": { "link-targets": (row.links || []).map((link) => link["target-path"]) },
+      status: "planned",
+      "created-at": isoNow(),
+      "updated-at": isoNow(),
+    };
+    await writeJournal(registryPath, journal);
+    journal.status = "applying";
+    journal["updated-at"] = isoNow();
+    await writeJournal(registryPath, journal);
+    const latest = await readRegistry(registryPath, "missing-row");
+    if (digest(latest) !== journal["registry-digest-before"]) {
+      throw Object.assign(new Error("registry changed after planning"), { gate: "registry-digest-changed", code: 1 });
+    }
+    if (verb === "enable") {
+      await applyLinks(row.links || [], args, registryPath, next["transaction-id"]);
+      const freshNext = cloneJson(next);
+      upsertRow(latest, freshNext);
+      journal["planned-row"] = cloneJson(freshNext);
+      journal["registry-digest-planned"] = digest(latest);
+      journal["updated-at"] = isoNow();
+      await writeJournal(registryPath, journal);
+    } else {
+      upsertRow(latest, next);
+    }
+    await writeRegistry(registryPath, latest);
+    registry["installed-packs"] = latest["installed-packs"];
   }
   if (verb === "uninstall" || verb === "disable") {
     report.actions.push(...(await removeOwnedLinks(row, args, registryPath)));
+  }
+  if (!args["dry-run"]) {
+    const journal = {
+      "transaction-id": next["transaction-id"],
+      "pack-id": row["pack-id"],
+      verb,
+    };
+    const current = await readJournals(registryPath);
+    const activeJournal = current.find(({ data }) => data["transaction-id"] === next["transaction-id"] && data["pack-id"] === row["pack-id"]);
+    if (activeJournal) {
+      activeJournal.data.status = "committed";
+      activeJournal.data["planned-actions"] = cloneJson(report.actions);
+      activeJournal.data["updated-at"] = isoNow();
+      await writeJournal(registryPath, activeJournal.data);
+      await removeJournal(registryPath, activeJournal.data);
+    } else {
+      await removeJournal(registryPath, journal);
+    }
   }
   printReport(report, args);
 }
@@ -762,6 +963,7 @@ async function commandUpdate(verb, args, registryPath) {
   const registry = await readRegistry(registryPath, "missing-row");
   const row = findNewestRow(registry, args["pack-id"]);
   if (!row) fail(report, args, "registry-missing-row", "no registry row matches pack-id", 1, { "pack-id": args["pack-id"] });
+  if (!args["dry-run"]) await assertNoActiveJournal(registryPath, row["pack-id"]);
   await validateArtifactPack(row["source-path"]);
   const manifest = await readJsonFile(row["manifest-path"]);
   assertSupportedMountModes(manifest);
@@ -775,9 +977,38 @@ async function commandUpdate(verb, args, registryPath) {
   report["previous-state"] = summarizeRow(row, args.verbose);
   report["planned-state"] = summarizeRow(next, args.verbose);
   report.actions.push(action("validate", row["pack-id"], null, null, "applied", "manifest validation passed", "artifact-pack"));
+  report.actions.push(action("registry-write", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", "metadata refreshed"));
   if (!args["dry-run"]) {
-    upsertRow(registry, next);
-    await writeRegistry(registryPath, registry);
+    const plannedRegistry = cloneJson(registry);
+    upsertRow(plannedRegistry, next);
+    const journal = {
+      "transaction-id": next["transaction-id"],
+      "pack-id": row["pack-id"],
+      verb,
+      "registry-digest-before": digest(registry),
+      "registry-digest-planned": digest(plannedRegistry),
+      "previous-row": cloneJson(row),
+      "planned-row": cloneJson(next),
+      "planned-actions": cloneJson(report.actions),
+      "ownership-metadata": { "link-targets": (row.links || []).map((link) => link["target-path"]) },
+      status: "planned",
+      "created-at": isoNow(),
+      "updated-at": isoNow(),
+    };
+    await writeJournal(registryPath, journal);
+    journal.status = "applying";
+    journal["updated-at"] = isoNow();
+    await writeJournal(registryPath, journal);
+    const latest = await readRegistry(registryPath, "missing-row");
+    if (digest(latest) !== journal["registry-digest-before"]) {
+      throw Object.assign(new Error("registry changed after planning"), { gate: "registry-digest-changed", code: 1 });
+    }
+    upsertRow(latest, next);
+    await writeRegistry(registryPath, latest);
+    journal.status = "committed";
+    journal["updated-at"] = isoNow();
+    await writeJournal(registryPath, journal);
+    await removeJournal(registryPath, journal);
   }
   printReport(report, args);
 }
@@ -789,21 +1020,85 @@ async function commandRecover(verb, args, registryPath) {
     report.recovery = { decision: "locked", gate: "registry-locked", actions: [] };
     fail(report, args, "registry-locked", "registry lock is active", 3, { kind: "recover" });
   }
-  await readRegistry(registryPath, "recover");
-  const journalDir = path.join(dir, "journals");
-  let journals = [];
-  try {
-    journals = (await fs.readdir(journalDir)).filter((file) => file.endsWith(".json"));
-  } catch (err) {
-    if (err.code !== "ENOENT") throw err;
+  if (!args["dry-run"]) await acquireRegistryLock(registryPath);
+  const registry = await readRegistry(registryPath, "recover");
+  const journals = await readJournals(registryPath);
+  const currentDigest = digest(registry);
+  const recoveryActions = [];
+  let decision = "none";
+  let gate = null;
+  let exitCode = 0;
+  for (const { file, data } of journals) {
+    const journal = {
+      ...data,
+      "pack-id": data["pack-id"] || file.split(".")[0],
+    };
+    const plannedDigest = journal["registry-digest-planned"];
+    const beforeDigest = journal["registry-digest-before"];
+    let journalDecision = "digest-changed";
+    if (journal.status === "committed") {
+      journalDecision = "cleanup-committed";
+    } else if (beforeDigest === currentDigest || !journal["planned-row"]) {
+      journalDecision = "rollback-planned-links";
+    } else if (plannedDigest && plannedDigest === currentDigest) {
+      journalDecision = "finish-commit";
+    }
+    if (journalDecision === "digest-changed") {
+      gate = "registry-digest-changed";
+      exitCode = 1;
+    }
+    recoveryActions.push({
+      kind: "recover",
+      journal: file,
+      verb: journal.verb,
+      "pack-id": journal["pack-id"],
+      "transaction-id": journal["transaction-id"],
+      decision: journalDecision,
+      status: args["dry-run"] ? "planned" : "applied",
+    });
+    if (args["dry-run"] || journalDecision === "digest-changed") continue;
+
+    if (journalDecision === "rollback-planned-links") {
+      const linkActions = await removeJournalOwnedLinks(journal["planned-row"]?.links || [], journal["transaction-id"], args, registryPath);
+      recoveryActions.push(...linkActions.map((entry) => ({ ...entry, journal: file })));
+      if (linkActions.some((entry) => entry.status === "skipped" && entry.gate)) {
+        gate = "existing-path-ownership";
+        exitCode = 1;
+        continue;
+      }
+      const latest = await readRegistry(registryPath, "recover");
+      if (removeJournalRegistryRow(latest, journal, journal["planned-row"])) {
+        await writeRegistry(registryPath, latest);
+      }
+      journal.status = "recovered";
+      journal["updated-at"] = isoNow();
+      await writeJournal(registryPath, journal);
+      await removeJournal(registryPath, journal);
+    }
+    if (journalDecision === "finish-commit" || journalDecision === "cleanup-committed") {
+      if (["disable", "uninstall"].includes(journal.verb)) {
+        const linkActions = await removeOwnedLinks(journal["previous-row"] || { links: [] }, args, registryPath);
+        recoveryActions.push(...linkActions.map((entry) => ({ ...entry, journal: file })));
+      }
+      journal.status = "recovered";
+      journal["updated-at"] = isoNow();
+      await writeJournal(registryPath, journal);
+      await removeJournal(registryPath, journal);
+    }
+  }
+  if (recoveryActions.length > 0) {
+    if (recoveryActions.some((entry) => entry.decision === "digest-changed")) decision = "digest-changed";
+    else if (recoveryActions.some((entry) => entry.decision === "finish-commit")) decision = "finish-commit";
+    else if (recoveryActions.some((entry) => entry.decision === "cleanup-committed")) decision = "cleanup-committed";
+    else decision = "rollback-planned-links";
   }
   report.recovery = {
-    decision: journals.length > 0 ? "rollback-planned-links" : "none",
-    gate: null,
-    actions: journals.map((file) => ({ kind: "recover", journal: file, status: "planned" })),
+    decision,
+    gate,
+    actions: recoveryActions,
   };
-  report.actions.push(action("recover", null, null, null, "planned", journals.length > 0 ? "journal recovery planned" : "no journals found"));
-  printReport(report, args);
+  report.actions.push(action("recover", null, null, null, args["dry-run"] ? "planned" : "applied", journals.length > 0 ? "journal recovery planned" : "no journals found", gate));
+  printReport(report, args, exitCode);
 }
 
 async function main() {

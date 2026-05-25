@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import { execFile } from "node:child_process";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -11,6 +12,18 @@ const execFileAsync = promisify(execFile);
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const installer = path.join(repoRoot, "scripts/install-artifact-pack.mjs");
 const fixtureRewriter = path.join(repoRoot, "scripts/rewrite-installed-pack-fixture.mjs");
+
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function digest(value) {
+  return crypto.createHash("sha256").update(typeof value === "string" ? value : stableJson(value)).digest("hex");
+}
 
 async function runInstaller(args, options = {}) {
   try {
@@ -121,6 +134,112 @@ test("link install creates a harness symlink and ownership map", async () => {
   const uninstall = await runInstaller(["uninstall", "--pack-id", "fixture-pack", "--registry", registry]);
   assert.equal(uninstall.code, 0);
   await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
+});
+
+test("write verbs retire durable journals after successful completion", async () => {
+  const root = await makeTempRoot("journal-retire");
+  const registry = path.join(root, "registry.json");
+  const harnessTarget = path.join(root, "harness-target");
+  const harnessConfig = path.join(root, "agent-hub.json");
+  const pack = path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe");
+
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+
+  const commands = [
+    ["install", "--artifact-pack", pack, "--registry", registry, "--harness", "codex-test", "--harness-config", harnessConfig],
+    ["update", "--pack-id", "fixture-pack", "--registry", registry],
+    ["disable", "--pack-id", "fixture-pack", "--registry", registry],
+    ["enable", "--pack-id", "fixture-pack", "--registry", registry],
+    ["uninstall", "--pack-id", "fixture-pack", "--registry", registry],
+  ];
+  for (const command of commands) {
+    const result = await runInstaller(command);
+    assert.equal(result.code, 0, result.stdout);
+    const journalDir = path.join(root, "journals");
+    const journals = await fs.readdir(journalDir).catch((err) => {
+      if (err.code === "ENOENT") return [];
+      throw err;
+    });
+    assert.deepEqual(journals, []);
+  }
+});
+
+test("recover rolls back only journal-owned partial install links", async () => {
+  const root = await makeTempRoot("partial-install");
+  const registry = path.join(root, "registry.json");
+  const harnessTarget = path.join(root, "harness-target");
+  const harnessConfig = path.join(root, "agent-hub.json");
+  const pack = path.join(repoRoot, "tests/fixtures/installed-pack-lifecycle/pass/link-safe");
+
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+
+  const install = await runInstaller([
+    "install",
+    "--artifact-pack",
+    pack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(install.code, 0);
+
+  const installedRegistry = JSON.parse(await fs.readFile(registry, "utf8"));
+  const row = installedRegistry["installed-packs"][0];
+  row["transaction-id"] = "tx-partial";
+  row.links[0]["last-status"] = "active";
+  const linkPath = row.links[0]["target-path"];
+  const ownershipPath = path.join(root, "ownership-map.json");
+  const ownership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  ownership[linkPath]["transaction-id"] = "tx-partial";
+  await fs.writeFile(ownershipPath, `${JSON.stringify(ownership, null, 2)}\n`);
+
+  const emptyRegistry = { "schema-version": 1, "installed-packs": [] };
+  await fs.writeFile(registry, `${JSON.stringify(emptyRegistry, null, 2)}\n`);
+  const plannedRegistry = { "schema-version": 1, "installed-packs": [row] };
+  const journal = {
+    "transaction-id": "tx-partial",
+    "pack-id": "fixture-pack",
+    verb: "install",
+    "registry-digest-before": digest(emptyRegistry),
+    "registry-digest-planned": digest(plannedRegistry),
+    "previous-row": null,
+    "planned-row": row,
+    "planned-actions": [],
+    "ownership-metadata": { "link-targets": [linkPath] },
+    status: "applying",
+  };
+  await fs.mkdir(path.join(root, "journals"), { recursive: true });
+  await fs.writeFile(path.join(root, "journals", "fixture-pack.tx-partial.install.json"), `${JSON.stringify(journal, null, 2)}\n`);
+
+  const dryRun = await runInstaller(["recover", "--dry-run", "--registry", registry]);
+  assert.equal(dryRun.code, 0);
+  assert.equal(dryRun.json.recovery.decision, "rollback-planned-links");
+  assert.equal((await fs.lstat(linkPath)).isSymbolicLink(), true);
+
+  const recovered = await runInstaller(["recover", "--registry", registry]);
+  assert.equal(recovered.code, 0);
+  assert.equal(recovered.json.recovery.decision, "rollback-planned-links");
+  await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
+  const finalOwnership = JSON.parse(await fs.readFile(ownershipPath, "utf8"));
+  assert.equal(finalOwnership[linkPath], undefined);
+  await assert.rejects(fs.lstat(path.join(root, "journals", "fixture-pack.tx-partial.install.json")), { code: "ENOENT" });
 });
 
 test("unsafe link target under pack source is blocked", async () => {
