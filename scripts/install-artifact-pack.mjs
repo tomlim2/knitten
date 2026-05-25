@@ -693,10 +693,38 @@ async function materializeManifestSet(registry, args) {
       }
     }
   }
-  if (!args["keep-temp"]) {
-    await fs.rm(tempDir, { recursive: true, force: true });
-  }
   return tempDir;
+}
+
+function plannedRegistryWithRow(registry, nextRow) {
+  const planned = {
+    ...registry,
+    "installed-packs": registry["installed-packs"].map((row) => ({ ...row })),
+  };
+  upsertRow(planned, nextRow);
+  return planned;
+}
+
+async function validateActiveManifestSet(registry, args) {
+  const tempDir = await materializeManifestSet(registry, args);
+  try {
+    await execFileAsync(process.execPath, [
+      "scripts/validate-llm-first.mjs",
+      "--check",
+      "artifact-pack",
+      "--artifact-pack",
+      tempDir,
+    ], { cwd: REPO_ROOT, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 });
+    return tempDir;
+  } catch (err) {
+    const detail = [err.stdout, err.stderr, err.message].filter(Boolean).join("\n").trim();
+    throw Object.assign(new Error(`active manifest-set validation failed${detail ? `: ${detail}` : ""}`), {
+      gate: "active-manifest-set",
+      code: 1,
+    });
+  } finally {
+    if (!args["keep-temp"]) await fs.rm(tempDir, { recursive: true, force: true });
+  }
 }
 
 async function loadOwnershipMap(registryPath) {
@@ -789,6 +817,13 @@ async function commandInstall(verb, args, registryPath) {
   report["planned-state"] = summarizeRow(row, args.verbose);
   report.actions.push(action("validate", row["pack-id"], null, null, "applied", "manifest validation passed", "artifact-pack"));
   report.actions.push(...plannedLinks.actions.map((entry) => ({ ...entry, status: args["dry-run"] ? "planned" : "applied" })));
+  const plannedRegistry = plannedRegistryWithRow(registry, { ...row, state: "active" });
+  try {
+    report["manifest-set-path"] = redactPath(await validateActiveManifestSet(plannedRegistry, args), args.verbose, "<temp-manifest-set>");
+    report.actions.push(action("validate", row["pack-id"], null, null, "applied", "active manifest-set validation passed", "active-manifest-set"));
+  } catch (err) {
+    fail(report, args, err.gate || "active-manifest-set", err.message, err.code || 1, { "pack-id": row["pack-id"], kind: "validate" });
+  }
   if (!args["dry-run"]) {
     const journal = {
       "transaction-id": transactionId,
@@ -882,6 +917,12 @@ async function commandStateChange(verb, args, registryPath, nextState) {
     assertSupportedMountModes(manifest);
     next["manifest-digest"] = digest(manifest);
     next["candidate-index"] = candidateRows(manifest);
+    try {
+      report["manifest-set-path"] = redactPath(await validateActiveManifestSet(plannedRegistryWithRow(registry, next), args), args.verbose, "<temp-manifest-set>");
+      report.actions.push(action("validate", row["pack-id"], null, null, "applied", "active manifest-set validation passed", "active-manifest-set"));
+    } catch (err) {
+      fail(report, args, err.gate || "active-manifest-set", err.message, err.code || 1, { "pack-id": row["pack-id"], kind: "validate" });
+    }
     report.actions.push(...(row.links || []).map((link) => ({
       kind: "link-create",
       "pack-id": link["pack-id"],
@@ -977,6 +1018,14 @@ async function commandUpdate(verb, args, registryPath) {
   report["previous-state"] = summarizeRow(row, args.verbose);
   report["planned-state"] = summarizeRow(next, args.verbose);
   report.actions.push(action("validate", row["pack-id"], null, null, "applied", "manifest validation passed", "artifact-pack"));
+  if (next.state === "active") {
+    try {
+      report["manifest-set-path"] = redactPath(await validateActiveManifestSet(plannedRegistryWithRow(registry, next), args), args.verbose, "<temp-manifest-set>");
+      report.actions.push(action("validate", row["pack-id"], null, null, "applied", "active manifest-set validation passed", "active-manifest-set"));
+    } catch (err) {
+      fail(report, args, err.gate || "active-manifest-set", err.message, err.code || 1, { "pack-id": row["pack-id"], kind: "validate" });
+    }
+  }
   report.actions.push(action("registry-write", row["pack-id"], null, null, args["dry-run"] ? "planned" : "applied", "metadata refreshed"));
   if (!args["dry-run"]) {
     const plannedRegistry = cloneJson(registry);

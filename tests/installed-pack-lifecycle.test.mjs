@@ -59,6 +59,25 @@ async function copyAndRewriteFixture(fixturePath) {
   return root;
 }
 
+async function makeRouteSelectedPack(root, packId, priority = null, fixture = "virtual-minimal") {
+  const pack = path.join(root, packId);
+  await fs.cp(path.join(repoRoot, `tests/fixtures/installed-pack-lifecycle/pass/${fixture}`), pack, { recursive: true });
+  const skillPath = path.join(pack, "skills/demo-skill/SKILL.md");
+  const manifestPath = path.join(pack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  manifest["pack-id"] = packId;
+  manifest["display-name"] = packId;
+  manifest.exports[0].load = "route-selected";
+  manifest.exports[0].route = {
+    domains: ["agent-hub"],
+    "task-types": ["implementation"],
+    ...(priority === null ? {} : { priority }),
+  };
+  await fs.writeFile(skillPath, "---\ndescription: Test fixture skill.\n---\n\n# Test Fixture\n");
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  return pack;
+}
+
 test("virtual pack install lifecycle writes registry state transitions", async () => {
   const root = await makeTempRoot("virtual");
   const registry = path.join(root, "registry.json");
@@ -169,6 +188,109 @@ test("write verbs retire durable journals after successful completion", async ()
     });
     assert.deepEqual(journals, []);
   }
+});
+
+test("install prevalidates active manifest set before registry visibility", async () => {
+  const root = await makeTempRoot("active-set-install");
+  const registry = path.join(root, "registry.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack");
+  const secondPack = await makeRouteSelectedPack(root, "second-route-pack");
+
+  const firstInstall = await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry]);
+  assert.equal(firstInstall.code, 0);
+
+  const blocked = await runInstaller(["install", "--artifact-pack", secondPack, "--registry", registry]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+  assert.doesNotMatch(blocked.stdout, new RegExp(root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  const list = await runInstaller(["list", "--registry", registry]);
+  assert.equal(list.code, 0);
+  assert.equal(list.json["row-count"], 1);
+  assert.equal(list.json.rows[0]["pack-id"], "first-route-pack");
+  assert.equal(list.json.rows[0].state, "active");
+});
+
+test("install prevalidation blocks link exposure before mount apply", async () => {
+  const root = await makeTempRoot("active-set-link");
+  const registry = path.join(root, "registry.json");
+  const harnessTarget = path.join(root, "harness-target");
+  const harnessConfig = path.join(root, "agent-hub.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack");
+  const linkPack = await makeRouteSelectedPack(root, "link-route-pack", null, "link-safe");
+  const linkPath = path.join(harnessTarget, "skills", "demo-skill");
+
+  await fs.writeFile(harnessConfig, `${JSON.stringify({
+    harnesses: [{
+      id: "codex-test",
+      deployTarget: harnessTarget,
+      mappings: { skills: "agent/skills" },
+    }],
+    sharedLayers: [{ id: "skills", path: "agent/skills" }],
+  }, null, 2)}\n`);
+
+  assert.equal((await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry])).code, 0);
+  const blocked = await runInstaller([
+    "install",
+    "--artifact-pack",
+    linkPack,
+    "--registry",
+    registry,
+    "--harness",
+    "codex-test",
+    "--harness-config",
+    harnessConfig,
+  ]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+  await assert.rejects(fs.lstat(linkPath), { code: "ENOENT" });
+});
+
+test("update prevalidates active manifest set before replacing candidates", async () => {
+  const root = await makeTempRoot("active-set-update");
+  const registry = path.join(root, "registry.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack", 1);
+  const secondPack = await makeRouteSelectedPack(root, "second-route-pack", 2);
+
+  assert.equal((await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry])).code, 0);
+  assert.equal((await runInstaller(["install", "--artifact-pack", secondPack, "--registry", registry])).code, 0);
+
+  const manifestPath = path.join(secondPack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  delete manifest.exports[0].route.priority;
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const blocked = await runInstaller(["update", "--pack-id", "second-route-pack", "--registry", registry]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+
+  const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry, "--verbose"]);
+  assert.equal(status.code, 0);
+  assert.equal(status.json.rows[0]["candidate-index"][0].route.priority, 2);
+});
+
+test("enable prevalidates active manifest set before restoring visibility", async () => {
+  const root = await makeTempRoot("active-set-enable");
+  const registry = path.join(root, "registry.json");
+  const firstPack = await makeRouteSelectedPack(root, "first-route-pack", 1);
+  const secondPack = await makeRouteSelectedPack(root, "second-route-pack", 2);
+
+  assert.equal((await runInstaller(["install", "--artifact-pack", firstPack, "--registry", registry])).code, 0);
+  assert.equal((await runInstaller(["install", "--artifact-pack", secondPack, "--registry", registry])).code, 0);
+  assert.equal((await runInstaller(["disable", "--pack-id", "second-route-pack", "--registry", registry])).code, 0);
+
+  const manifestPath = path.join(secondPack, "artifact-pack.json");
+  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+  delete manifest.exports[0].route.priority;
+  await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+
+  const blocked = await runInstaller(["enable", "--pack-id", "second-route-pack", "--registry", registry]);
+  assert.equal(blocked.code, 1);
+  assert.equal(blocked.json.actions.at(-1).gate, "active-manifest-set");
+
+  const status = await runInstaller(["status", "--pack-id", "second-route-pack", "--registry", registry]);
+  assert.equal(status.code, 0);
+  assert.equal(status.json.rows[0].state, "disabled");
 });
 
 test("recover rolls back only journal-owned partial install links", async () => {
