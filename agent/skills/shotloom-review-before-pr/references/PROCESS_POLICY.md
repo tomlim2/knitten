@@ -10,6 +10,8 @@ Operational policy for `shotloom-review-before-pr`.
 
 | Phase | Owns | Does not own |
 |---|---|---|
+| Review brief | Source-cited diff inventory, surface map, risk questions, evidence ledger, and verifier. | Defect verdicts, safety claims, or replacing raw diff review. |
+| Review quality | P0-P2 contract, refute pass, feedback log. | Original defect discovery or code edits. |
 | Single code | Small, low-risk code review with the `shotloom-review-code` checklist. | Triad roles, exhaustive boundary mirror checks. |
 | Triad | Broad defect discovery for large or risky diffs across runtime/contract, QA, and maintainer/product roles. | Sequential boundary batch execution or final prose polish. |
 | Large boundary | Cross-surface contract, state, runtime, fixture, and contract-doc consistency when multiple boundary surfaces changed. | General code review, broad docs review, PR merge readiness. |
@@ -24,6 +26,8 @@ Run phases in this order:
 2. Large-boundary batches only when triggered.
 3. Targeted docs pass.
 4. `shotloom-make-pr`, unless `review only` / `no make-pr` is active.
+
+Run the Review Brief after Review Mode Decision and before phase 1.
 
 Each phase starts with pass A. Run verification passes B, C, ... only when fixes
 changed `HEAD` and P0-P2 findings remain. Do not loop only for P3/nit findings.
@@ -54,6 +58,9 @@ explicit approval before `gh pr create`.
 ## Binding Rules
 
 - Always print the Review Mode Decision before launching review agents.
+- Always print the Review Brief and Brief Verifier before launching review
+  agents.
+- Always run `REVIEW_QUALITY.md` before `Finding Handling` for every pass.
 - Always run one selected main review before docs.
 - In Single mode, run code pass A only.
 - In Triad mode, run triad pass A only; never run code pass A in the same chain.

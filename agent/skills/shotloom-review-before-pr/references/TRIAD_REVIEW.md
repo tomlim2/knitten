@@ -41,9 +41,11 @@ after fixes change `HEAD`.
 
 ```text
 Read `<skill-dir>/references/TRIAD_REVIEW.md`.
+Read the caller-provided Review Brief and matching role slice.
 Review current `HEAD` as Role: <role>.
 Use the Shared Checklist exactly; do not add private checklist categories.
 Use `git diff origin/main...HEAD` as the reviewed diff.
+Treat the Review Brief as a navigation index, not as finding evidence.
 Report only P0-P3 findings grounded in changed or directly adjacent surfaces.
 Render the Role Report Template from the reference.
 Do not edit files, stage, commit, push, post comments, or change Linear.

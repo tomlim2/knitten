@@ -25,6 +25,8 @@ Read first:
 |---|---|
 | `references/PROCESS_POLICY.md` | Phase boundary, finding handling, handoff, binding rules. |
 | `references/REVIEW_MODE.md` | Single/Triad selection. |
+| `references/REVIEW_BRIEF.md` | Source-cited multi-view review brief and verifier. |
+| `references/REVIEW_QUALITY.md` | P0-P2 finding contract, refute pass, feedback log. |
 | `references/TRIAD_REVIEW.md` | Triad roles and merge rules. |
 | `references/LARGE_BOUNDARY_PR_LENSES.md` | Boundary trigger and batch lenses. |
 | `references/PRE_PR_PROMPTS.md` | Verification and docs prompts. |
@@ -70,10 +72,11 @@ git status --short
 ```
 
 Refuse if `HEAD` is `main`, the branch has zero commits ahead of
-`origin/main`, or cwd is not a Shotloom worktree. Record
+`origin/main`, cwd is not a Shotloom worktree, or the initial worktree is dirty.
+This skill reviews committed branch diff only. Record
 `head_step1=$(git rev-parse HEAD)`.
 
-### Step 2: Review Mode Decision
+### Step 2: Review Mode Decision And Brief
 
 Read `references/REVIEW_MODE.md`, gather its required evidence, and choose
 `review_mode=single` or `review_mode=triad`.
@@ -87,7 +90,13 @@ git diff --name-status origin/main...HEAD
 Render the Review Mode Decision template from `REVIEW_MODE.md` before launching
 review agents.
 
+Render `REVIEW_BRIEF.md` → `Review Brief` and `Brief Verifier`. Repair failed
+verifier rows before Step 3; the raw diff remains finding authority.
+
 ### Step 3: Selected Main Review Pass A
+
+After every pass, apply `REVIEW_QUALITY.md` → `Finding Quality Gate` before
+`PROCESS_POLICY.md` handles findings.
 
 If `review_mode=single`:
 
@@ -96,7 +105,8 @@ If `review_mode=single`:
    `agent/skills/shotloom-review-code/SKILL.md`. Extract only the fenced
    `Subagent brief (copy verbatim)` block under Step 3; substitute
    `<worktree>`, `<pwd>`, and `<branch>`. Do not pass wrapper instructions that
-   tell the caller to invoke another Agent.
+   tell the caller to invoke another Agent. Provide the Step 2 Review Brief as a
+   navigation index. Require raw-diff evidence for every finding.
 3. Render under `## Pre-PR review - branch <branch> - code pass A`.
 4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
 5. Set `main_review_mode=single`.
@@ -104,7 +114,8 @@ If `review_mode=single`:
 
 If `review_mode=triad`:
 
-1. Dispatch the three role subagents from `references/TRIAD_REVIEW.md`.
+1. Dispatch the three role subagents from `references/TRIAD_REVIEW.md`; include
+   the Step 2 Review Brief and the matching role slice in each prompt.
 2. Render each under `## Pre-PR review - branch <branch> - triad pass A - <role>`.
 3. Apply `TRIAD_REVIEW.md` → `Merge Rules`.
 4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
@@ -175,17 +186,10 @@ nit-only.
 
 ### Step 8: Make-PR Handoff
 
+Render `REVIEW_QUALITY.md` → `Feedback Log`.
+
 Apply `PROCESS_POLICY.md` → `Handoff`. If the current harness cannot invoke
 another local skill directly, report:
 `Ready to /shotloom-make-pr — run it next in this same worktree`.
 
 Add one short Korean paragraph only if findings were non-clean.
-
-## Related
-
-- `shotloom-review-code` - code-quality leaf.
-- `shotloom-review-docs` - standalone docs review catalog; Step 6 uses its
-  reference through `PRE_PR_PROMPTS.md`.
-- `shotloom-make-pr` - next step after a clean report.
-- `docs/guidelines/review-rust.md` - Rust review spec.
-- `docs/guidelines/code-review-guideline.md` - review priorities.
