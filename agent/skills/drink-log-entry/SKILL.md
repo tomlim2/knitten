@@ -53,5 +53,5 @@ Reads from: `!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc drinks`/
 
 ## Related Files
 
-- Command: `~/.claude/commands/drink-log-entry.md`
+- Skill: `~/.claude/skills/drink-log-entry/SKILL.md`
 - Data: `!`bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh doc drinks`/drinks.json`

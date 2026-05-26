@@ -82,8 +82,8 @@ Use JSON for configuration:
 ### By Purpose
 
 **Agent Hub Tools** (`ah-*`)
-- Create and manage commands/skills
-- Examples: `ah-make-command`, `ah-make-skill`
+- Create and manage shared artifacts/skills
+- Examples: `ah-manage-artifact`, `ah-make-skill`
 
 **Git Tools** (`git-*`)
 - Git operations and analysis
@@ -276,7 +276,7 @@ Example: `skill-server`
 Skill contains templates/rules -> Command prompts user -> Generates files
 ```
 
-Example: `ah-make-command`
+Example: `ah-make-skill`
 - Skill: Contains all naming rules
 - Command: Generates new command files
 
@@ -581,7 +581,7 @@ This writes `codebase-map.html` and opens it in the default browser.
 
 Script location: `${CLAUDE_SKILL_DIR}/scripts/visualize.py`. The script generates a self-contained HTML file (inline CSS + JS, no external deps) and calls `webbrowser.open(...)`.
 
-For a full worked example including a Python script that emits an interactive HTML tree view, see the official docs: <https://code.claude.com/docs/en/skills#generate-visual-output>. This pattern pairs well with the existing `ah-browse-commands` skill (web dashboard of installed commands).
+For a full worked example including a Python script that emits an interactive HTML tree view, see the official docs: <https://code.claude.com/docs/en/skills#generate-visual-output>.
 
 ---
 

@@ -67,9 +67,7 @@ skills/{category}-{verb}-{subject}/
 
 ---
 
-## Skill vs Command Precedence
-
-If skill `skills/foo/SKILL.md` and command `commands/foo.md` share a name, **the skill wins**.
+## Skill Priority
 
 Location priority when the same skill appears in multiple scopes:
 ```
@@ -82,7 +80,7 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ## Naming Convention (MANDATORY)
 
-**`{category}-{verb}-{subject}` pattern** — same as commands. See `ah-make-command` for complete rules.
+**`{category}-{verb}-{subject}` pattern**.
 
 - Lowercase only, no camelCase
 - Hyphens as separators, never underscores
@@ -277,4 +275,4 @@ Full template in [reference.md](reference.md).
 
 For the full SKILL.md template, detailed frontmatter examples (user-only deploy, forked agent, monorepo `paths`), String Substitutions worked examples, Dynamic Shell Injection patterns, UE-skill rationale, and subagent/visual-output patterns, see [reference.md](reference.md).
 
-Canonical docs: <https://code.claude.com/docs/en/skills>. Slash-command patterns: `~/.claude/skills/ah-make-command/references/SLASH-COMMANDS.md`.
+Canonical docs: <https://code.claude.com/docs/en/skills>.

@@ -1,5 +1,5 @@
 ---
-description: "Route lifecycle work for agent-hub shared artifacts: skills, rules, standards, commands, plans, and entry docs."
+description: "Route lifecycle work for agent-hub shared artifacts: skills, rules, standards, plans, and entry docs."
 ---
 
 # ah-manage-artifact
@@ -10,7 +10,7 @@ Lifecycle router for agent-hub shared artifacts.
 
 Use this before creating, inspecting, editing, updating, deleting, renaming, or moving a shared artifact under `agent/`, deploy entry templates, or managed docs.
 
-This skill prevents lifecycle drift across skills, rules, standards, commands,
+This skill prevents lifecycle drift across skills, rules, standards,
 plans, and manifests.
 
 ## Artifact Classes
@@ -18,9 +18,7 @@ plans, and manifests.
 | Class | Path |
 |-------|------|
 | skill | `agent/skills/<name>/SKILL.md` |
-| command | `agent/commands/<name>.md` |
 | skill reference | `agent/skills/<skill>/references/<slug>.md` |
-| command reference | `agent/commands/references/<slug>.md` |
 | rule | `agent/rules/<name>.md` |
 | standard | `agent/standards/<group>/<name>.md` |
 | document template | `agent/document-templates/<family>/<name>.md` |
@@ -34,21 +32,18 @@ plans, and manifests.
 | Operation | Skill / doc |
 |-----------|-------------|
 | Manage skill lifecycle | `agent/skills/ah-manage-skill/SKILL.md` |
-| Create command | `agent/skills/ah-make-command/SKILL.md` |
 | Create skill reference | owning skill `agent/skills/<skill>/references/`; update the owner skill link |
-| Create command reference | `agent/commands/references/<slug>.md`; update the owner command link |
 | Create rule | `agent/skills/ah-make-rule/SKILL.md` |
 | Create standard | `agent/skills/ah-make-standard/SKILL.md` |
 | Manage document template lifecycle | `agent/skills/ah-manage-document-template/SKILL.md` |
 | Inspect patterns | `agent/skills/ah-show-patterns/SKILL.md` |
-| Browse commands | `agent/skills/ah-browse-commands/SKILL.md` |
 | Browse standards | `agent/skills/ah-browse-standards/SKILL.md` |
 
 ## Lifecycle Decision
 
 | User intent | Action |
 |-------------|--------|
-| "create", "make", "new", "add" | Use the create row for the artifact class. |
+| "create", "make", "new", "add" | Use the create row for the artifact class. Route workflow requests into skills, standards, templates, or references owned by the current shared layer. |
 | "read", "show", "browse", "list", "where" | Use `LOOKUP.md`, `README.md`, or a browse/show skill before loading bodies. |
 | "small edit", "wording", "path fix", "frontmatter fix" | Patch the target artifact only. Use `ah-edit-skill` for skills. |
 | "refresh", "modernize", "align policy", "validator drift", "refactor" | Do a broad update. Use `ah-update-skill` for skills. |
@@ -109,4 +104,3 @@ Return:
 - `agent/skills/ah-delete-skill/SKILL.md`
 - `agent/skills/ah-make-rule/SKILL.md`
 - `agent/skills/ah-make-standard/SKILL.md`
-- `agent/skills/ah-make-command/SKILL.md`

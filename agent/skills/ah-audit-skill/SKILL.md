@@ -1,6 +1,6 @@
 ---
-description: "Depth-first audit of a single skill or command against LLM-first standards and workflow logic gaps."
-argument-hint: "<skill-or-command-name|path>"
+description: "Depth-first audit of a single skill or shared artifact against LLM-first standards and workflow logic gaps."
+argument-hint: "<skill-name|artifact-path>"
 allowed-tools: Read, Bash(bash:*), Bash(jq:*), Bash(grep:*), Bash(git:*), Bash(rg:*), Bash(test:*), Bash(ls:*), Bash(wc:*), Glob
 platforms: all
 portability: adapter
@@ -8,13 +8,13 @@ portability: adapter
 
 # ah-audit-skill
 
-Depth-first audit of one named skill or command against the LLM-first stack and
+Depth-first audit of one named skill or shared artifact against the LLM-first stack and
 workflow-logic gaps that batch reviewers miss. Reports defects; does not
 auto-fix.
 
 ## Arguments
 
-- `<skill-or-command-name|path>` — skill folder name, command stem, or direct file path.
+- `<skill-name|artifact-path>` — skill folder name or direct file path.
 
 **If no argument provided, show usage and stop. NEVER auto-execute.**
 
@@ -44,15 +44,13 @@ case "$input" in
   ./*|../*|*/*) candidates=("$input" "$repo/$input") ;;
   *) candidates=(
     "$repo/agent/skills/$input/SKILL.md"
-    "$repo/agent/commands/$input.md"
     "$HOME/.claude/skills/$input/SKILL.md"
-    "$HOME/.claude/commands/$input.md"
   ) ;;
 esac
 for candidate in "${candidates[@]}"; do
   [ -f "$candidate" ] && { printf '%s\n' "$candidate"; exit 0; }
 done
-echo "ERROR: $input not found as a file, repo-local skill/command, or installed skill/command" >&2
+echo "ERROR: $input not found as a file, repo-local skill, or installed skill" >&2
 exit 1
 ```
 

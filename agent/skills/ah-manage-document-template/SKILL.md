@@ -86,7 +86,7 @@ becomes durable knowledge, create or update a separate vault-assetization note.
 |----------------|--------|
 | reusable output body | create or update a document template |
 | cross-skill criteria | route to `ah-make-standard` |
-| long example set | route to the owning skill reference, `agent/commands/references/<slug>.md`, or future pack blocker row |
+| long example set | route to the owning skill reference, a standard, or future pack blocker row |
 | executable workflow | keep in or route to a skill |
 | validator contract | route to standard plus validator |
 

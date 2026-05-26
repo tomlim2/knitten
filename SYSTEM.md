@@ -14,7 +14,7 @@ Entry documents:
 | `agent/AGENTS.md` | Codex | Deploy entry template linked to `~/.codex/AGENTS.md`; directs Codex to read this file before Codex-specific behavior |
 | `SYSTEM.md` | Pi Coding Agent | Configured as Pi's first shared-policy instruction |
 
-Do not add shared policy to an entry document. Put shared policy here, `agent/rules/`, `agent/standards/`, `agent/skills/`, or `agent/commands/`.
+Do not add shared policy to an entry document. Put shared policy here, `agent/rules/`, `agent/standards/`, or `agent/skills/`.
 
 ---
 
@@ -26,8 +26,7 @@ Shared artifacts define intent. Entry documents and harness-specific wrappers tr
 |----------------|----------------|-----------------|
 | Rules | Behavioral constraints and load semantics | Harness-specific read/import mechanics |
 | Standards | Reference policy, templates, and decision tables | Platform notes only when a standard names one platform |
-| Skills | Repeatable procedure and required inputs/outputs | Tool names, approval mechanics, slash-command syntax |
-| Commands | User-facing invocation wrapper | Claude Code slash command details |
+| Skills | Repeatable procedure and required inputs/outputs | Tool names, approval mechanics, invocation syntax |
 
 Compatibility metadata uses `platforms:` and `portability:` frontmatter. The contract and values live in `agent/standards/policy/platform-adapters.md`.
 
@@ -109,7 +108,7 @@ The intentional asymmetry:
 
 | Path | Canonical | Notes |
 |------|-----------|-------|
-| `skills/`, `rules/`, `standards/`, `commands/`, `lib/`, `config/` | agent-hub | shared via APFS clone or hard-link; edits propagate |
+| `skills/`, `rules/`, `standards/`, `lib/`, `config/` | agent-hub | shared via APFS clone or hard-link; edits propagate |
 | `agent/CLAUDE.md`, `agent/AGENTS.md` | agent-hub | canonical deploy entry templates; installers link them into harness deploy targets |
 | `repo-registry.json` | agent-hub | durable repository registry for harness helpers |
 | `hooks/` | agent-hub must hold these | durable harness scripts deployed to `~/.claude/hooks/` |
@@ -136,4 +135,3 @@ brand-new top-level entry; create those entries under `<agent-hub-checkout>/agen
 | Triggered rules | `agent/rules/*.md` with `load: triggered` | Load when the trigger fires |
 | Standards | `agent/standards/index.md` | Read on demand |
 | Skills | `agent/skills/*/SKILL.md` | Read when task matches the skill |
-| Commands | `agent/commands/*.md` | Read when invoking or translating the command |

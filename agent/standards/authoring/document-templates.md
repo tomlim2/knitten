@@ -7,15 +7,15 @@ status: accepted
 ## Rule
 
 Use this inventory before changing a document template in Knitten. Edit the
-canonical owner, then update any command, skill, or redirect that references it.
+canonical owner, then update any skill or redirect that references it.
 
 ## Inventory
 
 | Template | Phase | Canonical owner | Used by |
 |----------|-------|-----------------|---------|
 | Pull request body | internal-consumption | `agent/document-templates/github/pull-request.md` | GitHub PR creation in this repo |
-| Shotloom Linear issue | internal-consumption | `agent/document-templates/linear/shotloom-issue.md` | `agent/commands/shotloom-linear-create-issue.md` |
-| CCI Linear issue | internal-consumption | `agent/document-templates/linear/cci-issue.md` | `agent/commands/cci-linear-create-issue.md` |
+| Shotloom Linear issue | internal-consumption | `agent/document-templates/linear/shotloom-issue.md` | linear issue workflows and Shotloom planning docs |
+| CCI Linear issue | internal-consumption | `agent/document-templates/linear/cci-issue.md` | CCI issue-authoring workflows |
 | Agent-hub spec | internal-consumption | `agent/document-templates/agent-hub/spec.md` | `agent/skills/ah-manage-spec/SKILL.md` |
 | Milestone | internal-consumption | `agent/document-templates/agent-hub/milestone.md` | `agent/skills/ah-manage-milestone/SKILL.md` |
 | Design plan | internal-consumption | `agent/document-templates/agent-hub/design-plan.md` | specs and task-plan skills that need implementation-order stages |
@@ -64,7 +64,6 @@ a separate step.
 
 | If changing | Then |
 |-------------|------|
-| command body template | put long reusable template text in `agent/document-templates/` |
 | skill-managed template | put reusable body templates in `agent/document-templates/`; keep skill-specific lifecycle rules in the skill's `references/` folder |
 | repo-wide output format | put reusable body templates in `agent/document-templates/`; keep policy/checklists in `agent/standards/` |
 | vault or personal note scaffold | keep it under `agent/document-templates/obsidian/` |
