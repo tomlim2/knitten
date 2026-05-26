@@ -160,3 +160,58 @@ Status: promoted to `agent/skills/shotloom-review-code/reference-promoted.md` on
   the shared-helper smoke-test assumption explicit and test representative input
   classes.
 - Source Evidence: PR 388; reviewer; `crates/shotloom-engine/src/bridge/tests/stage.rs`.
+
+## PR 391
+
+### Pattern: Store reducer APIs should only expose live contract surface
+
+- Finding: The reviewer pointed out that Stage mirror store actions and
+  parameters were added without live callers, including a bulk-write action that
+  could bypass provider-level shot guards.
+- Why It Was Right: Store actions are an API surface. Dead actions and dead
+  parameters invite future writes through the wrong layer and make readers
+  believe there is a supported control flow that does not exist.
+- General Rule: Add reducer/store actions only when the same diff wires a live
+  caller or test-documented contract; otherwise delete the action until the
+  caller exists.
+- Trigger: A diff adds Zustand/Redux/store reducer actions, optional parameters,
+  bulk setters, or bypass paths while most writes are supposed to flow through a
+  scoped provider or bridge event reducer.
+- Fix Shape: Remove unused actions/parameters, or add a targeted comment and
+  direct unit test proving the intended external contract.
+- Source Evidence: PR 391; reviewer; `apps/editor/src/state/bundleStore.ts`.
+
+### Pattern: Event-family guards need family-shaped regression tests
+
+- Finding: The reviewer noted that only one Stage success event branch had a
+  foreign-shot no-op test even though every new Stage lifecycle/edit event
+  branch carried the same `shot_id` short-circuit.
+- Why It Was Right: Shared-looking guards can drift independently when each
+  event branch is hand-coded. Testing only the first branch proves the idea, not
+  the public event-family contract.
+- General Rule: When a family of bridge/editor events shares an identity guard,
+  terminal-state rule, or nullable contract semantic, test every public branch
+  through a table or explicit case.
+- Trigger: A diff adds multiple event branches with repeated `shot_id`,
+  `command_id`, active-id, or terminal-state guards.
+- Fix Shape: Parameterize one regression across the whole event family, or add
+  one explicit no-op/clear/preserve test per branch.
+- Source Evidence: PR 391; reviewer; `apps/editor/src/state/__tests__/BundleStateProvider.test.tsx`.
+
+### Pattern: Optional collection and nullable mirror semantics need sparse fixtures
+
+- Finding: The reviewer called out that `stage_deleted.active_stage_id: null`
+  and optional `elements` / `renderables` collections were permitted by the
+  contract but only populated or non-null fixtures were tested.
+- Why It Was Right: TypeScript mirror code often distinguishes `null`,
+  `undefined`, and populated arrays. Happy-path fixtures do not prove preserve,
+  clear, or absent-field semantics.
+- General Rule: When bridge/editor mirror code uses `null`, `undefined`, or
+  `?? []` guards to preserve contract semantics, include sparse fixtures that
+  exercise those exact values.
+- Trigger: A diff adds mirror reducers around optional arrays, nullable ids,
+  fallback ids, or `undefined` sentinels.
+- Fix Shape: Add tests for non-null fallback and null clear, plus absent-field
+  collection cases that assert no throw and the expected unchanged or cleared
+  state.
+- Source Evidence: PR 391; reviewer; `apps/editor/src/state/__tests__/BundleStateProvider.test.tsx`.
