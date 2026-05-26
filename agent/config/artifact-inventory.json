@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-26T00:20:40.042Z",
-  "source-commit": "53c91f90a19e30b7c96f73e06780c8a47273b34d",
+  "generated-at": "2026-05-26T00:28:39.591Z",
+  "source-commit": "9ab3673c7a4438ce5441d5057869ac2113c002a5",
   "source-dirty": true,
   "rows": [
     {
@@ -5900,6 +5900,19 @@
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/reference/command-layer-history.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/reference/command-layer-history.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
       "dependencies": [],
       "proposed-destination": "undecided",
       "compatibility-need": "unknown",

@@ -208,7 +208,6 @@ Authoring integration:
 | Owner | Required update |
 |-------|-----------------|
 | `ah-make-skill` | apply this gate before creating a skill; redirect non-workflow content to standard, template, reference, or validator work |
-| `command-retirement-plan` | record the command-creation ban and route legacy command content into skills, standards, or templates |
 | `ah-make-standard` | receive cross-skill decision criteria and long policy extracted from skills |
 | `ah-manage-document-template` | receive reusable output bodies extracted from skills |
 | `scripts/validate-llm-first.mjs` | fail new high-cost skills without routing metadata, context manifest, or exemption after rollout |
@@ -231,7 +230,6 @@ Before writing a `reference` extraction target, assign one owning consumer.
 | Reference scope | Owner | Target path |
 |-----------------|-------|-------------|
 | one existing skill consumes it after route selection | owning skill | `agent/skills/<skill>/references/<slug>.md` |
-| legacy command content needs preservation | owning skill or standard | `agent/skills/<skill>/references/<slug>.md` or `agent/standards/<domain>/<slug>.md` |
 | command authoring or skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
 | cross-skill decision criteria or policy | standard owner | not a reference; route to `agent/standards/<domain>/` |
 | reusable generated body | template owner | not a reference; route to `agent/document-templates/` |

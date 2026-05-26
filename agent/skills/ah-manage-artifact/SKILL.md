@@ -32,7 +32,6 @@ plans, and manifests.
 | Operation | Skill / doc |
 |-----------|-------------|
 | Manage skill lifecycle | `agent/skills/ah-manage-skill/SKILL.md` |
-| Retire a legacy command reference | `docs/plans/active/command-retirement-plan.md` |
 | Create skill reference | owning skill `agent/skills/<skill>/references/`; update the owner skill link |
 | Create rule | `agent/skills/ah-make-rule/SKILL.md` |
 | Create standard | `agent/skills/ah-make-standard/SKILL.md` |
@@ -44,7 +43,7 @@ plans, and manifests.
 
 | User intent | Action |
 |-------------|--------|
-| "create", "make", "new", "add" | Use the create row for the artifact class. For retired command requests, route to `command-retirement-plan` evidence and absorb into skills, standards, or templates. |
+| "create", "make", "new", "add" | Use the create row for the artifact class. Route workflow requests into skills, standards, templates, or references owned by the current shared layer. |
 | "read", "show", "browse", "list", "where" | Use `LOOKUP.md`, `README.md`, or a browse/show skill before loading bodies. |
 | "small edit", "wording", "path fix", "frontmatter fix" | Patch the target artifact only. Use `ah-edit-skill` for skills. |
 | "refresh", "modernize", "align policy", "validator drift", "refactor" | Do a broad update. Use `ah-update-skill` for skills. |

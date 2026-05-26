@@ -19,7 +19,7 @@ The artifact inventory exists, but every row still has
 `classification-stage: undecided` and `proposed-destination: undecided`.
 Migration specs cannot decide what to move until the boundary rule exists.
 
-Without one boundary rule, later specs can treat the same skill, command, rule,
+Without one boundary rule, later specs can treat the same skill, rule,
 standard, config, script, doc, fixture, generated view, or shim as both a core
 artifact and a pack artifact.
 
@@ -32,7 +32,7 @@ artifact and a pack artifact.
 | Define staged outcomes. | Each inventory row can map to one classification stage and proposed destination. |
 | Preserve bootstrap safety. | Artifacts required before pack loading stay in core. |
 | Defer physical moves. | Migration files stay unchanged until migration specs consume reviewed rows. |
-| Preserve compatibility. | Any old path, command, or route that can be used by a harness gets shim criteria before deletion. |
+| Preserve compatibility. | Any old path or route that can be used by a harness gets shim criteria before deletion. |
 
 ## Non-Goals
 
@@ -42,7 +42,6 @@ artifact and a pack artifact.
 | Do not define artifact manifest schema. | `artifact-pack-manifest-contract` |
 | Do not implement resolver behavior. | `artifact-pack-discovery-routing` |
 | Do not publish `knitten-core`. | `core-release-validation` |
-| Do not retire commands. | `command-retirement-plan` |
 | Do not scrub public safety. | `public-safety-scrub-gates` |
 
 ## Current State
@@ -81,14 +80,9 @@ Apply the first matching rule. If two same-priority rules match, keep
 | 3 | artifact vocabulary, inventory schema, managed path registry, manifest schema, resolver, installer, or pack validation | `core-candidate` | `knitten-core` |
 | 4 | agent-hub lifecycle management for specs, milestones, artifacts, document templates, config, or skills | `core-candidate` | `knitten-core` |
 | 5 | one repo, company, domain, personal workflow, or high-churn experiment after route selection | `pack-candidate` | `domain-pack` or `knitten-private-pack` |
-| 6 | command workflow that duplicates a skill or router before `command-retirement-plan` lands | `migrate-later` | `migrate-later` |
 | 7 | compatibility alias, redirect, old path mapping, or deprecation notice | `core-candidate` until resolver shims exist | `knitten-core` |
 | 8 | generated view whose generator is core | `core-candidate` | `knitten-core` |
 | 9 | generated view whose generator belongs to a pack | `pack-candidate` | same pack as generator |
-
-After `command-retirement-plan` lands, command rows can become `deprecated`
-only when that spec names the compatibility alias, adapter behavior, reference
-scan, and deletion gate.
 
 ## Destination Matrix
 
@@ -110,7 +104,6 @@ scan, and deletion gate.
 | Artifact type | Core when | Pack when |
 |---------------|-----------|-----------|
 | `skill` | bootstrap, router, lifecycle, installer, validator, resolver, or safety workflow | repo, company, personal, optional domain, or experiment workflow |
-| `command` | compatibility shim needed by a harness before command retirement | duplicates a skill and command retirement can replace it |
 | `rule` | auto rule, routing rule, safety rule, git/PR/worktree rule, path policy | domain-only or repo-only behavior after route selection |
 | `standard` | policy, schema, lifecycle, routing, authoring, validator, or public release criteria | domain-specific format, rubric, example set, or repo-specific policy |
 | `config` | schema, manifest, taxonomy, route profile, managed path registry, or validator input | pack-local config with no bootstrap dependency |
@@ -185,7 +178,6 @@ Non-output:
 
 Failure:
 - Keep rows `undecided` when a rule conflict exists.
-- Defer command decisions to `command-retirement-plan`.
 
 Proof:
 - `node scripts/validate-llm-first.mjs --check spec-lifecycle`
@@ -290,5 +282,4 @@ Proof:
 |----------|---------|
 | First reviewed batch | Core-owned rows before domain rows. |
 | Generator update timing | After at least one reviewed classification report. |
-| Command handling | Mark duplicate commands `migrate-later` until `command-retirement-plan` lands. |
 | Public-safe example material | Decide in `example-skill-pack` and public-safety specs. |

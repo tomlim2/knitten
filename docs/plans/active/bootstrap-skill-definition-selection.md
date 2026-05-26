@@ -41,7 +41,7 @@ lifecycle, router, support, and private workflow skills.
 |----------|-------|
 | Do not manually edit `agent/config/artifact-inventory.json`. | generated output only |
 | Do not move skills into packs. | `artifact-repo-migration-plan` |
-| Do not retire commands. | `command-retirement-plan` |
+| Do not split skill bodies. | `thin-skill-guide-boundary` |
 | Do not split skill bodies. | `thin-skill-guide-boundary` |
 | Do not define artifact manifests. | `artifact-pack-manifest-contract` |
 
@@ -196,7 +196,6 @@ Path prefix: `agent/skills/`.
 | New router skill required | none |
 | New lifecycle skill required | none |
 | Blocked lifecycle replacement | Resolve `ah-manage-spec` split-ready body before generator migration. |
-| Command creation replacement | Decide in `command-retirement-plan`. |
 
 ## Generator Change Contract
 
@@ -296,7 +295,6 @@ Proof:
 | Bootstrap becomes too small. | Harness setup and routing skills stay bootstrap or router. |
 | Support skills move before resolver exists. | This spec records decisions only; migration specs move files later. |
 | Generator emits unsupported enum values. | `support` and `pack` stay reviewed labels; generator maps them to existing enum values. |
-| Command workflow remains ambiguous. | Command creation stays `migrate-later`; `command-retirement-plan` owns the replacement. |
 
 ## Acceptance Criteria
 
@@ -316,4 +314,3 @@ Proof:
 | `support` inventory enum | Map support decisions to `core-skill-role: none`. |
 | Inventory provenance validation | Follow up in `artifact-inventory-provenance-validation`. |
 | `ah-manage-spec` role | Keep `migrate-later`; resolve blocked review-state and split-ready body before generator migration. |
-| Command creation skill | Defer to `command-retirement-plan`. |
