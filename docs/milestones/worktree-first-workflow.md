@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-19
+updated: 2026-05-26
 owner: agent-hub
 target-date:
 ---
@@ -27,7 +27,7 @@ the task is finished.
 | Spec | Status | Role |
 |------|--------|------|
 | [knitten-worktree-first.md](../plans/active/knitten-worktree-first.md) | active | Define and implement worktree-first repo isolation. |
-| [solo-pr-review-flow.md](../plans/active/solo-pr-review-flow.md) | active | Define solo PR review evidence and check-based merge flow. |
+| [solo-pr-review-flow.md](../plans/completed/solo-pr-review-flow.md) | completed | Define solo PR review evidence and check-based merge flow. |
 | [auto-pr-review.md](../plans/proposed/auto-pr-review.md) | proposed | Define safe automatic LLM PR review evidence after PR creation or update. |
 
 ## Progress

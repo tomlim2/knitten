@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-26T01:49:56.461Z",
-  "source-commit": "eedab32b1a5354df170af2f97c25575cb21933d4",
+  "generated-at": "2026-05-26T04:05:55.460Z",
+  "source-commit": "a6171d1054e17258b9c3891353116a9869a0fc3e",
   "source-dirty": true,
   "rows": [
     {
@@ -3879,19 +3879,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:docs/plans/active/solo-pr-review-flow.md",
-      "row-type": "artifact",
-      "source-artifact-path": "docs/plans/active/solo-pr-review-flow.md",
-      "artifact-type": "doc",
-      "owner-domain": "unknown",
-      "privacy-risk": "unknown",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:docs/plans/active/thin-skill-guide-boundary.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/active/thin-skill-guide-boundary.md",
@@ -4636,6 +4623,19 @@
       "row-id": "artifact:docs/plans/completed/skill-path-hardcoding-cleanup.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/completed/skill-path-hardcoding-cleanup.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/completed/solo-pr-review-flow.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/completed/solo-pr-review-flow.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
