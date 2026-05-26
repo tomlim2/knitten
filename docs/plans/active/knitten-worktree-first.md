@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-19
+updated: 2026-05-26
 owner: agent-hub
 milestone: worktree-first-workflow
 repo: agent-hub
@@ -57,11 +57,19 @@ Force Knitten write-capable agent work through task-specific git worktrees.
 
 | Surface | Current state | Evidence |
 |---|---|---|
-| Main checkout | `repo-paths.json:agent-hub.path` is the current primary `main` worktree for Knitten | `git worktree list --porcelain` |
-| Stale worktree | One stale old `caol-ila/.claude/worktrees/...` entry exists | `git worktree list --porcelain` |
-| Git rules | `agent/rules/git-defaults.md` bans auto-push but does not require Knitten worktrees | `agent/rules/git-defaults.md` |
-| Worktree precedent | Shotloom has worktree-specific rules and cleanup skills | `agent/rules/shotloom.md`, `agent/skills/shotloom-start-task/SKILL.md` |
-| Hooks | Knitten has tracked harness hooks but no repo-local git hook installer for this policy | `agent/hooks/`, `rg "pre-commit\|pre-push"` |
+| Worktree scripts | Starter, guard, status, cleanup, installer, and shared library exist. | `scripts/worktree-start.mjs`, `scripts/worktree-guard.mjs`, `scripts/worktree-status.mjs`, `scripts/worktree-clean.mjs`, `scripts/worktree-install-hooks.mjs`, `scripts/worktree-lib.mjs` |
+| Repo config schema | Tracked schema and validator know `worktreePolicy`. | `agent/config/repo-policy.schema.json`, `scripts/validate-llm-first.mjs` |
+| Git rules | Auto rule requires fresh worktrees for enabled repos and documents the lightweight branch exception. | `agent/rules/git-defaults.md` |
+| Main chore lane | Narrow primary-checkout lane exists for small scoped chores only. | `agent/rules/main-chore-lane.md` |
+| Hook installer | Repo-local hook path and guard hooks exist. | `scripts/worktree-install-hooks.mjs`, `scripts/git-hooks/pre-commit`, `scripts/git-hooks/pre-push` |
+| Operational visibility | Status command reports local worktrees and cleanup candidates from live git state. | `node scripts/worktree-status.mjs` |
+| Spec closure | Acceptance criteria remain unchecked until each row has proof or explicit remaining-work notes. | `## Acceptance Criteria` |
+
+## Closure Rule
+
+Do not move this spec to `completed/` only because the implementation files
+exist. Close it only after every acceptance criterion has either proof evidence
+or a documented remaining-work split.
 
 ## Scope Model
 
@@ -467,31 +475,58 @@ state.
 
 ## Acceptance Criteria
 
-- [ ] `scripts/worktree-start.mjs` creates a fresh worktree on every invocation.
-- [ ] `repo-paths.json` can resolve Knitten through `knitten` or a deterministic `agent-hub` alias.
-- [ ] Repo config entries for `knitten`, `shotloom`, and `story-previz` have `worktreePolicy.enabled: true`.
-- [ ] `shotloom` enforcement defers to existing Shotloom worktree workflow when that workflow is available.
-- [ ] Repositories without enabled `worktreePolicy` do not use worktree-first enforcement.
-- [ ] Repeated starter invocations with the same slug produce distinct paths and branches.
-- [ ] Test-mode starter invocations leave no worktrees or branches after cleanup.
-- [ ] Generated branches use the task-type prefix, defaulting to `feat/`.
-- [ ] `scripts/worktree-guard.mjs` fails in the main Knitten checkout.
+| Evidence ID | Command Or File | Result |
+|---|---|---|
+| E1 | `node scripts/worktree-start.mjs acceptance-proof --dry-run` from main checkout | Prints `feat/<stamp>-acceptance-proof` branch and matching worktree path without mutation. |
+| E2 | Machine repo config inspection | `knitten`, `shotloom`, and `story-previz` have `worktreePolicy.enabled: true`; `shotloom` has `deferToRepoWorkflow: true`. |
+| E3 | `node scripts/worktree-start.mjs acceptance-proof --repo shotloom --dry-run` | Prints `shotloom policy: use the repo-specific worktree starter.` and `Suggested command: shotloom-start-task`. |
+| E4 | `node scripts/worktree-start.mjs acceptance-proof --repo unlisted-fixture --dry-run` | Exits 1 with `worktree policy: current repository is not registered in repo config`. |
+| E5 | `node scripts/worktree-guard.mjs` from main checkout | Exits 1 with `knitten policy: use a task worktree for commit and push.` |
+| E6 | `node scripts/worktree-guard.mjs` from current task worktree | Exits 0. |
+| E7 | `git config --local --get core.hooksPath` from main checkout and linked worktree | Both return `scripts/git-hooks`. |
+| E8 | `ls -l scripts/git-hooks/pre-commit scripts/git-hooks/pre-push scripts/git-hooks/commit-msg` | Hook files exist and are executable. |
+| E9 | `node scripts/worktree-status.mjs` | Prints `path`, `branch`, `dirty`, `ahead`, `age`, and `cleanup` columns with current worktrees. |
+| E10 | `node scripts/worktree-clean.mjs --local-only` | Prints cleanup candidates and `dry-run only; pass --apply --yes to remove candidates`. |
+| E11 | `node scripts/worktree-clean.mjs --local-only --apply` | Exits 1 with `--apply requires --yes after user approval`; no deletion occurs. |
+| E12 | `agent/rules/git-defaults.md` | Auto rule tells agents to start enabled repo write work with `node scripts/worktree-start.mjs <task-slug>`. |
+| E13 | `node scripts/worktree-start.mjs real-use-check --test-mode` run three times from main checkout | Creates three distinct `codex/test/<stamp>-real-use-check` branches and `.test/<stamp>-real-use-check` worktrees. |
+| E14 | `node scripts/worktree-clean.mjs --cleanup-test-artifacts` | Deletes all three `codex/test/*` branches and removes the `.test` worktree root. |
+| E15 | `git diff --check` | Exits 0. |
+| E16 | `node scripts/validate-llm-first.mjs` | Passes all 31 checks. |
+
+- [x] `scripts/worktree-start.mjs` creates a fresh worktree on every invocation. Evidence: E13.
+- [x] `repo-paths.json` can resolve Knitten through `knitten` or a deterministic `agent-hub` alias. Evidence: E2.
+- [x] Repo config entries for `knitten`, `shotloom`, and `story-previz` have `worktreePolicy.enabled: true`. Evidence: E2.
+- [x] `shotloom` enforcement defers to existing Shotloom worktree workflow when that workflow is available. Evidence: E2, E3.
+- [x] Repositories without enabled `worktreePolicy` do not use worktree-first enforcement. Evidence: E4.
+- [x] Repeated starter invocations with the same slug produce distinct paths and branches. Evidence: E13.
+- [x] Test-mode starter invocations leave no worktrees or branches after cleanup. Evidence: E14.
+- [x] Generated branches use the task-type prefix, defaulting to `feat/`. Evidence: E1.
+- [x] `scripts/worktree-guard.mjs` fails in the main Knitten checkout. Evidence: E5.
 - [ ] `scripts/worktree-guard.mjs` passes in a primary-checkout feature branch when `allowMainFeatureBranch` is true.
-- [ ] `scripts/worktree-guard.mjs` passes in a generated Knitten worktree.
-- [ ] `scripts/worktree-install-hooks.mjs` configures repo-local `core.hooksPath` and installs `pre-commit` and `pre-push` guards.
-- [ ] `core.hooksPath` is visible from the main checkout and a linked worktree.
+- [x] `scripts/worktree-guard.mjs` passes in a generated Knitten worktree. Evidence: E6.
+- [x] `scripts/worktree-install-hooks.mjs` configures repo-local `core.hooksPath` and installs `pre-commit` and `pre-push` guards. Evidence: E7, E8.
+- [x] `core.hooksPath` is visible from the main checkout and a linked worktree. Evidence: E7.
 - [ ] Main checkout `git commit` fails through `pre-commit`.
 - [ ] Main checkout `git push --dry-run` fails through `pre-push`.
-- [ ] `scripts/worktree-status.mjs` lists active worktrees with path, branch, dirty state, ahead state, and age.
-- [ ] `scripts/worktree-clean.mjs --dry-run` lists cleanup candidates and deletes nothing.
-- [ ] `scripts/worktree-clean.mjs --apply` requires explicit user approval before deletion.
-- [ ] Cleanup candidates require clean status, merged state, and absent remote feature branch.
+- [x] `scripts/worktree-status.mjs` lists active worktrees with path, branch, dirty state, ahead state, and age. Evidence: E9.
+- [x] `scripts/worktree-clean.mjs --dry-run` lists cleanup candidates and deletes nothing. Evidence: E10.
+- [x] `scripts/worktree-clean.mjs --apply` requires explicit user approval before deletion. Evidence: E11.
+- [x] Cleanup candidates require clean status, merged state, and absent remote feature branch. Evidence: `scripts/worktree-clean.mjs`.
 - [ ] Main checkout commit and push attempts fail after hook installation.
 - [ ] Worktree commit and push attempts are not blocked by the Knitten guard.
 - [ ] Lightweight docs-only or CI/CD-only work can use a primary-checkout feature branch without allowing direct `main` commits.
-- [ ] `agent/rules/git-defaults.md` instructs agents to create a fresh Knitten worktree before write-capable work.
-- [ ] `git diff --check` passes.
-- [ ] `node scripts/validate-llm-first.mjs` passes.
+- [x] `agent/rules/git-defaults.md` instructs agents to create a fresh Knitten worktree before write-capable work. Evidence: E12.
+- [x] `git diff --check` passes. Evidence: E15.
+- [x] `node scripts/validate-llm-first.mjs` passes. Evidence: E16.
+
+## Remaining Verification
+
+| Item | Reason Not Closed In This Pass |
+|---|---|
+| Main checkout commit and push hook tests | Requires deliberate failing commit/push attempts; run only in a dedicated validation pass. |
+| Primary-checkout feature branch allowance | Requires switching the primary checkout branch; avoid while other task worktrees are active. |
+| Worktree commit and push hook tests | Requires a temporary branch mutation; guard-level proof exists, full hook proof remains open. |
 
 ## Open Decisions
 

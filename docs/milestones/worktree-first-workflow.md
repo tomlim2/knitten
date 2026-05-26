@@ -37,6 +37,7 @@ the task is finished.
 | PR template | done | `.github/pull_request_template.md` has review evidence fields. |
 | Validation workflow | done | `.github/workflows/validate.yml` runs repository validation. |
 | Worktree-first implementation | done | PR #3 landed starter, guard, status, installer, cleanup, and policy validation. |
+| Worktree-first spec closure | active | `docs/plans/active/knitten-worktree-first.md` still needs item-by-item acceptance proof before archival. |
 | Lightweight branch exception | done | `agent/rules/git-defaults.md` documents the allowed scope and `scripts/worktree-guard.mjs` allows primary-checkout feature branches when configured. |
 | PR after push suggestion | done | `agent/rules/git-defaults.md` tells agents to suggest a PR after committing and pushing from a worktree-first repo. |
 | Automatic LLM PR review | proposed | `docs/plans/proposed/auto-pr-review.md` defines report-only review automation before any PR-visible posting. |
@@ -57,7 +58,8 @@ the task is finished.
 
 | Decision | Default |
 |----------|---------|
-| Automatic LLM reviewer implementation | Separate future spec after worktree-first is merged. |
+| Knitten worktree-first spec closure | Complete or split `docs/plans/active/knitten-worktree-first.md` only after acceptance evidence is reviewed. |
+| Automatic LLM reviewer implementation | Proposed in `docs/plans/proposed/auto-pr-review.md`; do not implement until accepted. |
 | Lightweight branch lane | Allowed only for small docs-only or CI/CD-only changes; code, validator, routing, schema, migration, and multi-boundary work still uses a task worktree. |
 
 ## Blockers
