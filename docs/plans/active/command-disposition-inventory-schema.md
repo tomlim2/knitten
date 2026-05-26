@@ -46,7 +46,7 @@ skill, standard, template, reference, or deleted.
 
 | Surface | Current state | Evidence |
 |---------|---------------|----------|
-| Command count | 40 command files exist after command retirement deletion batch 0. | `find agent/commands -maxdepth 1 -type f -name '*.md' \| wc -l` |
+| Command count | 0 command files exist after command retirement deletion batches 0 and 1. | `find agent/commands -maxdepth 1 -type f -name '*.md' \| wc -l` |
 | Inventory schema | Artifact rows have no command-specific fields. | `agent/config/artifact-inventory.schema.json` |
 | Generator | Commands are emitted as generic artifact rows. | `scripts/generate-artifact-inventory.mjs` |
 | Validator | Artifact inventory check validates common fields but no command disposition fields. | `scripts/validate-llm-first.mjs` |

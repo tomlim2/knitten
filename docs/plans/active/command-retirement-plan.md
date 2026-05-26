@@ -19,7 +19,7 @@ artifact-pack manifests own durable workflow and policy.
 
 ## Problem
 
-Knitten started this plan with 45 command files and now has 40. Many commands duplicate skill routes,
+Knitten started this plan with 45 command files and now has 0. Many commands duplicated skill routes,
 delegate to skills, or encode domain-specific workflows that should eventually
 live behind artifact-pack routing.
 
@@ -50,7 +50,7 @@ still appears to be an active artifact class.
 
 | Surface | Current state | Evidence |
 |---------|---------------|----------|
-| Command corpus | Started with 45 command files; 40 remain after deletion batch 0. | `agent/commands/*.md`, `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md` |
+| Command corpus | Started with 45 command files; 0 remain after deletion batches 0 and 1. | `agent/commands/`, `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md`, `docs/plans/reports/command-retirement-plan/deletion-batch-1-2026-05-26.md` |
 | Exact skill duplicates | No command has an exact same-name skill. | 2026-05-26 local inspection |
 | Command rows | Command rows are held at `migrate-later`. | `docs/plans/reports/core-artifact-boundary/core-owned-classification-2026-05-24.md` |
 | Creation gate | New shared commands are forbidden; requests route to skills, standards, templates, or references. | `agent/skills/ah-make-command/SKILL.md` |
@@ -139,6 +139,7 @@ This table is a starting queue, not deletion approval.
 | Batch | Commands deleted | Evidence |
 |-------|------------------|----------|
 | 0 | `ah-explore-codebase`, `ah-generate-sitemap`, `cci-format-comment`, `cci-open-creator-vroid`, `cci-slack-send-message` | `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md` |
+| 1 | remaining 40 shared command files under `agent/commands/` | `docs/plans/reports/command-retirement-plan/deletion-batch-1-2026-05-26.md` |
 
 ## Execution Plan
 
@@ -167,7 +168,7 @@ This table is a starting queue, not deletion approval.
 - [x] The milestone links this active spec.
 - [x] The spec defines allowed command retirement final states.
 - [x] The spec defines deletion gates.
-- [x] The spec records the 45-command baseline and current 40-command state.
+- [x] The spec records the 45-command baseline and current 0-command state.
 - [x] The spec records an initial batch classification queue.
 - [x] New shared command creation is forbidden.
 - [ ] Inventory rows can represent reviewed command dispositions.
@@ -175,7 +176,7 @@ This table is a starting queue, not deletion approval.
 - [ ] Core `ah-*` commands are reviewed before domain command batches.
 - [ ] Domain command batches have pack-owner decisions.
 - [x] At least one deletion candidate is removed after the deletion gate passes.
-- [ ] `agent/commands/` is removed.
+- [x] `agent/commands/` is removed or left empty with no shared command files.
 
 ## Open Decisions
 

@@ -68,19 +68,10 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 ---
 
 <!-- generated:readme-inventory -->
-## Commands (40)
+## Commands (0)
 
 | Category | Count | Examples |
 |----------|------:|----------|
-| `cci-*` | 15 | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch` |
-| `ah-*` | 13 | `ah-check-status`, `ah-check-updates`, `ah-consult-codebase` |
-| `dev-*` | 3 | `dev-fix-bug`, `dev-open-pmx2vrm`, `dev-sync-design` |
-| `ue-*` | 3 | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` |
-| `tutoring-*` | 2 | `tutoring-mark-paid`, `tutoring-open-invoice` |
-| `git-*` | 1 | `git-make-message` |
-| `learn-*` | 1 | `learn-add-log` |
-| `shotloom-*` | 1 | `shotloom-linear-create-issue` |
-| `writing-*` | 1 | `writing-apply-voice` |
 
 ---
 
