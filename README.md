@@ -67,13 +67,6 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 ---
 
 <!-- generated:readme-inventory -->
-## Commands (0)
-
-| Category | Count | Examples |
-|----------|------:|----------|
-
----
-
 ## Skills (145)
 
 | Category | Count |

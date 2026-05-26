@@ -135,4 +135,3 @@ brand-new top-level entry; create those entries under `<agent-hub-checkout>/agen
 | Triggered rules | `agent/rules/*.md` with `load: triggered` | Load when the trigger fires |
 | Standards | `agent/standards/index.md` | Read on demand |
 | Skills | `agent/skills/*/SKILL.md` | Read when task matches the skill |
-| Skills | `agent/skills/*/SKILL.md` | Read when the task matches the skill |

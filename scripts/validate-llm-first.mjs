@@ -227,33 +227,12 @@ async function ruleRows() {
 }
 
 async function generateReadmeInventory() {
-  const commands = await commandNames();
   const skills = await skillNames();
-  const commandCounts = countByPrefix(commands);
   const skillCounts = countByPrefix(skills);
-  const commandExamples = new Map();
-  for (const command of commands) {
-    const prefix = command.split("-")[0];
-    if (!commandExamples.has(prefix)) commandExamples.set(prefix, []);
-    const examples = commandExamples.get(prefix);
-    if (examples.length < 3) examples.push(command);
-  }
   const standards = await standardRows();
   const rules = await ruleRows();
 
   const sections = [];
-  sections.push(`## Commands (${commands.length})`);
-  sections.push("");
-  sections.push("| Category | Count | Examples |");
-  sections.push("|----------|------:|----------|");
-  for (const row of commandCounts) {
-    sections.push(
-      `| \`${row.name}-*\` | ${row.count} | ${inlineCodeList(commandExamples.get(row.name) || [])} |`
-    );
-  }
-  sections.push("");
-  sections.push("---");
-  sections.push("");
   sections.push(`## Skills (${skills.length})`);
   sections.push("");
   sections.push("| Category | Count |");
@@ -772,15 +751,13 @@ async function checkInventoryCounts() {
   const actual = {
     standards: await countMdRecursive("standards"),
     rules: await countFiles("rules"),
-    commands: await countFiles("commands"),
     skills: await countDirs("skills"),
   };
-  // Look for "## Standards (N)", "## Rules ... (N)", "## Commands (N)", "## Skills (N)".
+  // Look for "## Standards (N)", "## Rules ... (N)", "## Skills (N)".
   const lines = text.split("\n");
   const patterns = [
     { key: "standards", re: /^##\s+Standards\b[^\n]*\((\d+)\)/i },
     { key: "rules", re: /^##\s+Rules\b[^\n]*\((\d+)\)/i },
-    { key: "commands", re: /^##\s+Commands\b[^\n]*\((\d+)\)/i },
     { key: "skills", re: /^##\s+Skills\b[^\n]*\((\d+)\)/i },
   ];
   const found = {};
