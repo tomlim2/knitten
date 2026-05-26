@@ -44,7 +44,7 @@ surrounding instruction endorses the bad wording.
 
 | ID | Check |
 |----|-------|
-| B1 | Validator-backed length budget for rules, standards, skills, and commands. |
+| B1 | Validator-backed length budget for rules, standards, and skills. |
 
 If the target exceeds budget, recommend splitting detail to a reference file or
 moving it down a layer.

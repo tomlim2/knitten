@@ -93,7 +93,7 @@ Current identifiers:
 | Identifier | Use |
 |------------|-----|
 | `agent-hub` | repository key, route domain, and system identity |
-| `ah-*` | agent-hub-owned command and skill namespace |
+| `ah-*` | agent-hub-owned skill and workflow namespace |
 | `agent-hub-config` | private machine config directory |
 
 When editing shared artifacts, land the change in `<agent-hub-checkout>/agent/<area>/`,
