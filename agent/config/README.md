@@ -10,7 +10,7 @@ Shared JSON registries and public service configuration.
 | `context-routing.json` | Task route axes, context profiles, pilot files, generated block markers, and fixture path | committed |
 | `doc-budgets.json` | Document length budgets consumed by `validate-llm-first.mjs` | committed |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata file list | committed |
-| `taxonomy.json` | Skill/command categories, standard groups, naming regexes | committed |
+| `taxonomy.json` | Skill categories, standard groups, naming regexes | committed |
 | `managed-paths.json` | Canonical shared-layer paths, deploy aliases, and path drift policy | committed |
 | `managed-paths.schema.json` | Schema for managed shared path registry rows | committed |
 | `audit-policy.json` | Garden/audit thresholds and severity tiers | committed |

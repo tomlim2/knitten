@@ -92,7 +92,7 @@ dependencies, routing metadata, compatibility aliases, and public-safety gates.
 | Field | Required | Rule |
 |-------|----------|------|
 | `artifact-id` | yes | Pack-local id, unique within the pack. |
-| `artifact-type` | yes | Inventory artifact type: `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim`. |
+| `artifact-type` | yes | Inventory artifact type: `skill`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim`. |
 | `path` | yes | Repo-relative path inside the pack; absolute paths are invalid. |
 | `shape` | yes | `file` or `directory`. |
 | `mount` | yes | Install target object. |

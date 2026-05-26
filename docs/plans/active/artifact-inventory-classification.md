@@ -40,7 +40,7 @@ different row shapes and produce incompatible migration batches.
 |-------------------------|-------|
 | Do not generate complete inventory rows in this schema slice. | Generator implementation batch |
 | Do not classify every artifact as core or pack. | `core-artifact-boundary` |
-| Do not move skills, commands, rules, standards, docs, scripts, or config files. | `artifact-repo-migration-plan` |
+| Do not move skills, rules, standards, docs, scripts, or config files. | `artifact-repo-migration-plan` |
 | Do not enforce fail-only validator checks in the schema-contract PR. | Batch D after pilot rows |
 | Do not define artifact pack manifest exports. | `artifact-pack-manifest-contract` |
 

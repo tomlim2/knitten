@@ -63,7 +63,7 @@ Pattern: `{category}-{verb}-{subject}`
 
 - **Internal:** `{category}-{verb}-{subject}` (e.g. `cci-validate-vrm`, `ah-make-rule`)
 - **External wrapper:** `{category}-{repo}-{verb}-{subject}` (e.g. `design-huashu-make-prototype`)
-- **Categories:** canonical list lives in `agent/config/taxonomy.json` key `skillCommandCategories`
+- **Categories:** canonical list lives in `agent/config/taxonomy.json` key `skillCategories`
 - **Verbs:** keep simple — `make` not `generate`, `add` not `append`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`

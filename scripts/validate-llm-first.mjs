@@ -1304,7 +1304,7 @@ async function checkRegistryIntegrity() {
   pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "platformValues", schema.platformValues);
   pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "portabilityValues", schema.portabilityValues);
   pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "platformMetadataPilotFiles", schema.platformMetadataPilotFiles);
-  pushArrayViolations(violations, "agent/config/taxonomy.json", "skillCommandCategories", taxonomy.skillCommandCategories, { sorted: true });
+  pushArrayViolations(violations, "agent/config/taxonomy.json", "skillCategories", taxonomy.skillCategories, { sorted: true });
   pushArrayViolations(violations, "agent/config/taxonomy.json", "standardGroups", taxonomy.standardGroups, { sorted: true });
   pushArrayViolations(violations, "agent/config/taxonomy.json", "universalAbbreviations", taxonomy.universalAbbreviations, { sorted: true });
   pushArrayViolations(violations, "agent/config/audit-policy.json", "severityTiers", auditPolicy.severityTiers);
@@ -1961,7 +1961,7 @@ const ROUTING_METADATA_FIELDS = [
 ];
 
 const TASK_TYPE_EVIDENCE = {
-  authoring: ["author", "make command", "make rule", "make skill", "milestone", "plan", "planning", "spec", "write skill"],
+  authoring: ["author", "make rule", "make skill", "milestone", "plan", "planning", "spec", "write skill"],
   deploy: ["deploy", "rollout", "ship"],
   git: ["branch", "commit", "merge", "pull", "push", "rebase"],
   implementation: ["build", "code", "ecs", "fix", "implement", "material"],
@@ -2608,7 +2608,7 @@ async function checkContextRouting() {
 async function checkTaxonomy() {
   const violations = [];
   const taxonomy = await readJsonConfig("taxonomy.json");
-  const categories = new Set(taxonomy.skillCommandCategories);
+  const categories = new Set(taxonomy.skillCategories);
   const skillEntries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   for (const entry of skillEntries) {
     if (!entry.isDirectory()) continue;

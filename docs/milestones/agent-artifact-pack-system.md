@@ -232,7 +232,6 @@ Decision-quality gates:
 |-----------------------|------|
 | Old paths | Preserve through aliases, shims, or manifest redirects until no active references remain. |
 | Router names | Keep stable public names; route to moved pack artifacts through resolver metadata. |
-| Commands | Convert to skills, aliases, or shims first; remove only after reference scans and adapter decisions pass. |
 | Skills | Provide clear deprecation messages before removal. |
 | Rules and standards | Keep redirects or replacement links when old docs move. |
 | Removal | Delete old compatibility paths only after validator and reference scan both pass. |
@@ -291,7 +290,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Batch migration | Move domain packs in small PRs, validating after every batch. |
 | Cleanup | Remove compatibility links only after routing and validation prove no active references remain. |
 | Rollback | Keep each migration batch reversible by preserving source commit, manifest version, and old path mapping. |
-| Documentation | Record final core inventory, pack inventory, and install/update/uninstall commands. |
+| Documentation | Record final core inventory, pack inventory, and install/update/uninstall procedures. |
 
 ## Public Release Gates
 

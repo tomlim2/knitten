@@ -154,7 +154,7 @@ active tier selects a primary route or the route evidence gate passes.
 | Priority | Tier | Exposed before route selection |
 |----------|------|--------------------------------|
 | 1 | bootstrap | `SYSTEM.md`, entry document, auto rules, rule index, compact routing index |
-| 2 | user-named artifact | exact skill, command, spec, PR, issue, file, or pack named by the user |
+| 2 | user-named artifact | exact skill, spec, PR, issue, file, or pack named by the user |
 | 3 | task-type router | one of plan, review, implementation, git, authoring, ops, research, deploy |
 | 4 | lifecycle router | spec, milestone, artifact, template, config, worktree, PR, or release lifecycle router |
 | 5 | domain or repo router | router matching repo key plus route domain or task type |
@@ -171,7 +171,7 @@ one gate passes.
 
 | Gate | Required evidence |
 |------|-------------------|
-| direct user naming | user names the skill, command, pack, PR, issue, file, or route domain |
+| direct user naming | user names the skill, pack, PR, issue, file, or route domain |
 | repo task match | repo key matches current cwd and task type matches user intent |
 | domain task match | route domain plus task type plus file extension, language, framework, or domain term match |
 | router decision | higher-priority router returns one primary route with at least two evidence fields |
@@ -230,7 +230,7 @@ Before writing a `reference` extraction target, assign one owning consumer.
 | Reference scope | Owner | Target path |
 |-----------------|-------|-------------|
 | one existing skill consumes it after route selection | owning skill | `agent/skills/<skill>/references/<slug>.md` |
-| command authoring or skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
+| skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
 | cross-skill decision criteria or policy | standard owner | not a reference; route to `agent/standards/<domain>/` |
 | reusable generated body | template owner | not a reference; route to `agent/document-templates/` |
 | domain-pack detail with no current core owner | artifact-pack manifest | inventory row with `target-path: undecided` until the manifest contract selects a path |
@@ -256,7 +256,7 @@ Common row fields:
 | `row-id` | stable unique id |
 | `row-type` | `artifact`, `skill`, or `extraction-item` |
 | `source-artifact-path` | current tracked path |
-| `artifact-type` | `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim` |
+| `artifact-type` | `skill`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim` |
 | `owner-domain` | core, repo, company, personal, domain, experiment, or unknown |
 | `privacy-risk` | `public-safe`, `needs-scrub`, `private-only`, or `unknown` |
 | `dependencies` | referenced artifacts, scripts, config files, or `none` |
@@ -446,7 +446,7 @@ Validator rollout stays fail-only and narrow:
 
 1. Done: Update `ah-make-skill` to run the skill creation gate before writing a new
    skill.
-2. Done: Add a command-creation ban and route duplicates into existing skill owners
+2. Done: Keep new repeatable procedures in skills and route duplicates into existing skill owners
    or routers.
 3. Done: Update `ah-make-standard` and `ah-manage-document-template` handoff wording
    so extracted criteria and reusable bodies have canonical homes.

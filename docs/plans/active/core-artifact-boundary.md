@@ -263,7 +263,7 @@ Proof:
 | Core grows too large. | Core requires pre-pack bootstrap, safety, lifecycle, validation, or resolver evidence. |
 | Domain artifacts move too early. | Physical moves stay in migration specs after reviewed classification batches. |
 | Company or personal material enters public core. | `privacy-risk: needs-scrub` and `private-only` block `knitten-core` until scrub gates pass. |
-| Commands disappear before adapters exist. | Command rows use `migrate-later` or shim criteria until command retirement lands. |
+| Compatibility paths disappear before adapters exist. | Alias, redirect, and shim rows use `migrate-later` criteria until resolver compatibility lands. |
 | Generated inventory becomes trusted without review. | Generator updates wait until reviewed batch reports exist. |
 
 ## Acceptance Criteria

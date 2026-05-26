@@ -153,7 +153,7 @@ Manage with `/ah-manage-config` (subcommands: `show`, `validate`, `add`, `remove
 | `context-routing.json` | Task route axes, context profiles, pilot files, and routing fixtures |
 | `doc-budgets.json` | Document length budgets used by validator checks |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata files |
-| `taxonomy.json` | Skill/command categories, standard groups, naming patterns |
+| `taxonomy.json` | Skill categories, standard groups, naming patterns |
 | `audit-policy.json` | Garden review thresholds and severity tiers |
 | `exceptions.json` | Grandfathered exceptions with reason, decision, review date |
 

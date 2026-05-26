@@ -14,7 +14,7 @@ Applies to shared skill creation and closely related artifact edits. Command cre
 - **Lowercase only** — no capitals, no camelCase, no underscores, no spaces.
 - **Hyphens** as separators; multi-word subjects use hyphens (`creator-launcher`).
 - **Max length** — see `~/.claude/config/taxonomy.json` key `maxArtifactNameChars`.
-- **Categories** — see `~/.claude/config/taxonomy.json` key `skillCommandCategories`.
+- **Categories** — see `~/.claude/config/taxonomy.json` key `skillCategories`.
 - **Be specific** — `tutoring-open-invoice`, not `open-invoice`.
 - **Simple verbs** — `make` not `generate`, `add` not `append`.
 - **Avoid redundancy** — `git-make-message`, not `git-make-commit-message`.

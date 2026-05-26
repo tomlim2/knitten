@@ -99,13 +99,13 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ## Category Registry
 
-Canonical command and skill categories live in `agent/config/taxonomy.json` under `skillCommandCategories`.
+Canonical skill categories live in `agent/config/taxonomy.json` under `skillCategories`.
 
 When creating a skill:
 
 1. Pass the Creation Gate.
 2. Extract the category prefix before the first hyphen.
-3. Reuse an existing prefix from `skillCommandCategories`.
+3. Reuse an existing prefix from `skillCategories`.
 4. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
 5. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the agent-hub repo root.
 
