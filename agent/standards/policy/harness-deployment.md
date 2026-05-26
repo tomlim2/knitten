@@ -39,7 +39,6 @@ For every link-based harness, `agent/config/agent-hub.json` `mappings` must incl
 | `rules` | `agent/rules` |
 | `standards` | `agent/standards` |
 | `skills` | `agent/skills` |
-| `commands` | `agent/commands` |
 
 Omitting one of these mappings is an install blocker. Fix the registry before running the installer, then validate with `node scripts/validate-llm-first.mjs`.
 

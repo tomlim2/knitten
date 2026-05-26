@@ -74,7 +74,7 @@ Read `references/AUDIT-CHECKS.md`.
 For each class (W, B, F, N, A, L, D):
 
 1. Run validator-backed sweeps first: `banned-terms`, `length-caps`,
-   `skill-command-mechanics`, `taxonomy`, and `tracked-user-paths`; if the
+   `skill-mechanics`, `taxonomy`, and `tracked-user-paths`; if the
    target is outside validator scope, use the reference sweeps instead.
 2. Run only the listed manual sweeps for checks not covered by validators.
 3. Semantically judge hits before creating findings.

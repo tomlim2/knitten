@@ -314,9 +314,8 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Thin skill boundary | Define before inventory classification so every skill row can be classified by the same rule. |
 | Skill lifecycle manager shape | Default to one lifecycle skill that routes to specialized references before splitting create/update/delete into separate skills. |
 | Pack storage | Support local folders and git worktrees first; remote registries later. |
-| Artifact types | Skills, rules, standards, and legacy commands as migration sources. |
+| Artifact types | Skills, rules, standards, config, scripts, docs, fixtures, generated views, and shims as migration sources. |
 | Harness support | Preserve Codex/Claude adapters instead of binding the architecture to one harness. |
-| Command adapter behavior | Decide per agent later how Claude slash-command aliases, Codex skill routing, and other harness command paths map to skills or disappear. |
 | Migration style | Small reversible batches; no big-bang move. |
 | `knitten` final role | Private artifact pack monorepo plus integration overlay. |
 | License | Undecided; required before public release. |

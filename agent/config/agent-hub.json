@@ -12,7 +12,6 @@
       "mappings": {
         "CLAUDE.md": "agent/CLAUDE.md",
         "SYSTEM.md": "SYSTEM.md",
-        "commands": "agent/commands",
         "rules": "agent/rules",
         "skills": "agent/skills",
         "standards": "agent/standards",
@@ -39,8 +38,7 @@
         "docs": "docs",
         "rules": "agent/rules",
         "standards": "agent/standards",
-        "skills": "agent/skills",
-        "commands": "agent/commands"
+        "skills": "agent/skills"
       }
     },
     {
@@ -54,9 +52,6 @@
       "configFormat": {
         "skills": [
           "$AGENT_HUB_ROOT/agent/skills"
-        ],
-        "prompts": [
-          "$AGENT_HUB_ROOT/agent/commands"
         ],
         "instructions": [
           "$AGENT_HUB_ROOT/SYSTEM.md"
@@ -88,14 +83,6 @@
       "loadMode": "triggered",
       "inventorySource": "README.md",
       "deployTarget": "~/.claude/skills"
-    },
-    {
-      "id": "commands",
-      "path": "agent/commands",
-      "kind": "commands",
-      "loadMode": "invoked",
-      "inventorySource": "README.md",
-      "deployTarget": "~/.claude/commands"
     },
     {
       "id": "lib",
@@ -217,7 +204,7 @@
       "id": "readme-inventory",
       "path": "README.md",
       "marker": "readme-inventory",
-      "source": "agent commands, skills, standards, and rules",
+      "source": "agent skills, standards, and rules",
       "mode": "generated-block",
       "validator": "generated-blocks"
     },
@@ -291,7 +278,7 @@
     },
     {
       "id": "shared-deploy-tree",
-      "pathPattern": "~/.claude/{rules,standards,skills,commands,lib,config}",
+      "pathPattern": "~/.claude/{rules,standards,skills,lib,config}",
       "owner": "agent-hub",
       "gitPolicy": "tracked",
       "secretPolicy": "no-secrets",
@@ -400,7 +387,7 @@
       "script": "scripts/validate-llm-first.mjs",
       "listedCheck": "taxonomy",
       "covers": [
-        "skill and command categories",
+        "skill categories",
         "managed document naming"
       ]
     },
@@ -432,11 +419,11 @@
       ]
     },
     {
-      "id": "skill-command-mechanics",
+      "id": "skill-mechanics",
       "script": "scripts/validate-llm-first.mjs",
-      "listedCheck": "skill-command-mechanics",
+      "listedCheck": "skill-mechanics",
       "covers": [
-        "skill and command mechanical shape"
+        "skill mechanical shape"
       ]
     },
     {

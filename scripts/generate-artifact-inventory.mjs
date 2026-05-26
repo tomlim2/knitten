@@ -101,19 +101,16 @@ const REVIEWED_CORE_SKILL_ROLES = {
   'ah-audit-skill': 'lifecycle',
   'ah-review-implementation': 'lifecycle',
   'ah-brief-today': 'none',
-  'ah-browse-commands': 'none',
   'ah-browse-standards': 'none',
   'ah-grant-perms': 'none',
   'ah-revoke-perms': 'none',
   'ah-guide-private': 'none',
   'ah-log-postmortem': 'none',
   'ah-show-patterns': 'none',
-  'ah-make-command': 'lifecycle',
   'ah-manage-spec': 'lifecycle',
 };
 
 const MIGRATE_LATER_SKILL_NAMES = new Set([
-  'ah-make-command',
   'ah-manage-spec',
 ]);
 
@@ -150,11 +147,21 @@ async function main() {
 
 async function listRepoFiles() {
   const { stdout } = await execFileAsync('git', TRACKED_OR_NEW_ARGS, { cwd: REPO_ROOT });
-  return stdout
+  const files = stdout
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)
     .sort();
+  const existing = [];
+  for (const file of files) {
+    try {
+      await fs.access(path.join(REPO_ROOT, file));
+      existing.push(file);
+    } catch {
+      // Deleted-but-still-tracked files remain in git ls-files before staging.
+    }
+  }
+  return existing;
 }
 
 async function sourceCommit() {
@@ -253,7 +260,6 @@ function pilotReviewState(pilot) {
 }
 
 function artifactTypeFor(file) {
-  if (file.startsWith('agent/commands/') && file.endsWith('.md')) return 'command';
   if (file.startsWith('agent/rules/') && file.endsWith('.md')) return 'rule';
   if (file.startsWith('agent/standards/') && file.endsWith('.md')) return 'standard';
   if (file.startsWith('agent/config/')) return 'config';
@@ -267,7 +273,7 @@ function artifactTypeFor(file) {
 
 function ownerDomainFor(file) {
   if (CORE_PATH_PREFIXES.some((prefix) => file.startsWith(prefix))) return 'core';
-  if (file.startsWith('agent/skills/ah-') || file.startsWith('agent/commands/ah-')) return 'core';
+  if (file.startsWith('agent/skills/ah-')) return 'core';
   if (file.includes('/shotloom/') || file.includes('shotloom-')) return 'repo';
   if (file.includes('/cinev/') || file.includes('cci-')) return 'company';
   if (file.startsWith('drinks/') || file.includes('/obsidian-') || file.includes('/ue-')) return 'domain';

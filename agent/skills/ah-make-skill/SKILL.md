@@ -41,7 +41,7 @@ creation and route to the owning artifact workflow.
 Before writing files, run:
 
 ```bash
-rg -n "<slug>|<route words>|<subject>" agent/skills agent/commands agent/standards agent/document-templates
+rg -n "<slug>|<route words>|<subject>" agent/skills agent/standards agent/document-templates
 ```
 
 If an existing router, lifecycle skill, or standard owns the route, update that

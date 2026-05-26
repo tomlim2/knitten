@@ -56,7 +56,7 @@ Validator checks: **38**.
 - `artifact-pack-discovery-routing`
 - `example-skill-pack`
 - `skill-root-shape`
-- `skill-command-mechanics`
+- `skill-mechanics`
 - `tracked-runtime-paths`
 - `tracked-user-paths`
 - `entry-documents`
@@ -268,7 +268,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 **Statement:** A fact lives in exactly one file. Other files reference it by path, never by duplication. Indexes are generated or validated against the source.
 
-**Why discovered:** The Skills & commands table in `CLAUDE.md` duplicated content already in three triggered rules (`naming.md`, `command-frontmatter.md`, `tool-permissions.md`) and one standard (`slash-commands.md`). Same rules in two places — when one updates, the other rots.
+**Why discovered:** A runtime entry table duplicated content already owned by triggered rules and standards. Same rules in two places — when one updates, the other rots.
 
 **Example:**
 - ✅ `agent/rules/index.md` lists 21 rules with one-line scope. `CLAUDE.md` doesn't repeat the list.

@@ -140,15 +140,15 @@ Run focused checks when relevant:
 | taxonomy changed | `node scripts/validate-llm-first.mjs --check taxonomy` |
 | spec or milestone links changed | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 
-For shared-layer edits under `agent/skills`, `agent/rules`, `agent/standards`,
-or `agent/commands`, verify the affected deploy target exists and matches when
+For shared-layer edits under `agent/skills`, `agent/rules`, or `agent/standards`,
+verify the affected deploy target exists and matches when
 the matching `~/.claude` path exists:
 
 ```bash
 diff -rq ~/.claude/skills/<name> agent/skills/<name>
 ```
 
-Use the corresponding top-level folder for rules, standards, and commands.
+Use the corresponding top-level folder for rules and standards.
 
 ### Step 5: Review Contract
 

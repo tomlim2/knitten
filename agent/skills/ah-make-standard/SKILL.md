@@ -129,7 +129,7 @@ Structural rules:
 3. Check `agent/standards/<group>/{name}.md` does not already exist. Abort if it does.
 4. Ask the user:
    - One-line purpose
-   - Which `standards/index.md` group it belongs to (Command Authoring, Multi-Agent, Research, Web, UE, Review, CINEV, Docs/System, or new group)
+   - Which `standards/index.md` group it belongs to (Policy, Multi-Agent, Research, Web, UE, Review, CINEV, Docs/System, or new group)
    - When-to-read hint for the index table
    - Which context profile applies, or why this standard needs a `metadataExemptions` entry
 5. Write the file from the template, filling in `{Title}` and `{One-line purpose}`.

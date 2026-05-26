@@ -59,7 +59,7 @@ If there are uncommitted changes:
 
 ## Scope
 
-This standard applies to ALL skills and commands that perform git operations on CINEV projects:
+This standard applies to ALL skills and scripts that perform git operations on CINEV projects:
 
 - `cci-art-prepare-merge`
 - `cci-art-create-branch`

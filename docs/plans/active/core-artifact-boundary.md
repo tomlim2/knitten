@@ -269,7 +269,7 @@ Proof:
 ## Acceptance Criteria
 
 - [x] The milestone links this active spec.
-- [x] Boundary rules classify core artifacts, pack artifacts, deprecated commands, shims, and migrate-later rows.
+- [x] Boundary rules classify core artifacts, pack artifacts, deprecated artifacts, shims, and migrate-later rows.
 - [x] The spec defers physical moves to migration specs.
 - [x] The spec names the report path for reviewed classification batches.
 - [x] The spec defines when inventory generator updates are allowed.

@@ -152,14 +152,6 @@ function sortInventoryFiles(a, b) {
   return a.localeCompare(b);
 }
 
-async function commandNames() {
-  const entries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
-  return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
-    .map((entry) => entry.name.slice(0, -".md".length))
-    .sort(sortInventoryFiles);
-}
-
 async function skillNames() {
   const entries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   return entries
@@ -399,7 +391,6 @@ async function llmFirstFiles() {
   const files = [];
   files.push(...(await walk(path.join(AGENT_ROOT, "rules"), (f) => f.endsWith(".md"))));
   files.push(...(await walk(path.join(AGENT_ROOT, "standards"), (f) => f.endsWith(".md"))));
-  files.push(...(await walk(path.join(AGENT_ROOT, "commands"), (f) => f.endsWith(".md"))));
   files.push(
     ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => path.basename(f) === "SKILL.md"))
   );
@@ -666,7 +657,6 @@ async function checkRepoPathReads() {
   const violations = [];
   const files = [
     ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => f.endsWith(".md") || f.endsWith(".sh"))),
-    ...(await walk(path.join(AGENT_ROOT, "commands"), (f) => f.endsWith(".md") || f.endsWith(".sh"))),
   ];
   const directReadRe =
     /\bjq\s+-r[e]?\s+(['"])(\.(?:[A-Za-z0-9_-]+|"[^"]+"|\["[^"]+"\]))\1[^\n]*repo-paths\.json/;
@@ -825,7 +815,6 @@ async function checkLengthCaps() {
   const budgets = docBudgets.lineBudgets;
   const standardLengthGrandfathered = exceptionPathSet(exceptions, "standardLengthGrandfathered");
   const skillLengthGrandfathered = exceptionPathSet(exceptions, "skillLengthGrandfathered");
-  const commandLengthGrandfathered = exceptionPathSet(exceptions, "commandLengthGrandfathered");
   const ruleDir = path.join(AGENT_ROOT, "rules");
   const ruleFiles = await walk(ruleDir, (f) => f.endsWith(".md"));
   for (const f of ruleFiles) {
@@ -871,23 +860,6 @@ async function checkLengthCaps() {
         file: relPath,
         line: 1,
         message: `skill body ${lines} lines exceeds cap ${budgets.skillTotal} — move reference, rubric, template, or example detail below SKILL.md`,
-      });
-    }
-  }
-  const commandDir = path.join(AGENT_ROOT, "commands");
-  const commandEntries = await listDirOnce(commandDir);
-  for (const entry of commandEntries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const f = path.join(commandDir, entry.name);
-    const relPath = rel(f);
-    if (commandLengthGrandfathered.has(relPath)) continue;
-    const text = await readFile(f, "utf8");
-    const lines = bodyLineCount(text);
-    if (lines > budgets.commandTotal) {
-      violations.push({
-        file: relPath,
-        line: 1,
-        message: `command body ${lines} lines exceeds cap ${budgets.commandTotal} — convert to a skill, alias, or shim before command retirement`,
       });
     }
   }
@@ -1129,17 +1101,6 @@ async function checkSkillCommandMechanics() {
       kind: "skill",
     });
   }
-  const commandEntries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
-  for (const entry of commandEntries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    targets.push({
-      name: entry.name.slice(0, -".md".length),
-      file: `agent/commands/${entry.name}`,
-      fullPath: path.join(AGENT_ROOT, "commands", entry.name),
-      kind: "command",
-    });
-  }
-
   for (const target of targets) {
     if (!namePattern.test(target.name)) {
       violations.push({
@@ -1175,7 +1136,7 @@ async function checkSkillCommandMechanics() {
     }
   }
 
-  return { name: "skill-command-mechanics", violations };
+  return { name: "skill-mechanics", violations };
 }
 
 function isTrackedRuntimePath(file) {
@@ -1462,7 +1423,6 @@ async function checkRegistryIntegrity() {
   for (const key of [
     "standardLengthGrandfathered",
     "skillLengthGrandfathered",
-    "commandLengthGrandfathered",
   ]) {
     if (exceptions[key] !== undefined && !Array.isArray(exceptions[key])) {
       violations.push({
@@ -1514,7 +1474,7 @@ async function checkRegistryIntegrity() {
 }
 
 const AGENT_HUB_ALLOWED = {
-  sharedLayerKinds: new Set(["rules", "standards", "skills", "commands", "lib", "config"]),
+  sharedLayerKinds: new Set(["rules", "standards", "skills", "lib", "config"]),
   loadModes: new Set(["entry", "auto", "triggered", "on-demand", "invoked", "library", "config"]),
   registryFormats: new Set(["json"]),
   registrySecretPolicies: new Set(["no-secrets", "template-only", "private-values"]),
@@ -1643,7 +1603,7 @@ function isContextFrontmatterAliasUse(text, index) {
   const lineStart = text.lastIndexOf("\n", index) + 1;
   const lineEnd = text.indexOf("\n", index);
   const line = text.slice(lineStart, lineEnd === -1 ? text.length : lineEnd);
-  return /^context-(rules|standards|skills|commands):/.test(line.trim());
+  return /^context-(rules|standards|skills):/.test(line.trim());
 }
 
 async function checkManagedPaths() {
@@ -1772,7 +1732,7 @@ function collectManifestStrings(value, out = []) {
   return out;
 }
 
-const REQUIRED_SYMLINK_LAYER_MAPPINGS = ["rules", "standards", "skills", "commands"];
+const REQUIRED_SYMLINK_LAYER_MAPPINGS = ["rules", "standards", "skills"];
 
 async function checkAgentHubManifest() {
   const violations = [];
@@ -2662,20 +2622,6 @@ async function checkTaxonomy() {
       });
     }
   }
-  const commandEntries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
-  for (const entry of commandEntries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const stem = entry.name.slice(0, -".md".length);
-    const prefix = stem.split("-")[0];
-    if (!categories.has(prefix)) {
-      violations.push({
-        file: `agent/commands/${entry.name}`,
-        line: 0,
-        message: `command category ${JSON.stringify(prefix)} missing from agent/config/taxonomy.json`,
-      });
-    }
-  }
-
   const standardGroups = new Set(taxonomy.standardGroups);
   const standardEntries = await listDirOnce(path.join(AGENT_ROOT, "standards"));
   for (const entry of standardEntries) {
@@ -2720,8 +2666,8 @@ async function checkTaxonomy() {
 
 const ARTIFACT_INVENTORY_ENUMS = {
   rowTypes: new Set(["artifact", "skill", "extraction-item"]),
-  artifactTypes: new Set(["skill", "command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
-  nonSkillArtifactTypes: new Set(["command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  artifactTypes: new Set(["skill", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  nonSkillArtifactTypes: new Set(["rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
   ownerDomains: new Set(["core", "repo", "company", "personal", "domain", "experiment", "unknown"]),
   privacyRisks: new Set(["public-safe", "needs-scrub", "private-only", "unknown"]),
   proposedDestinations: new Set(["knitten-core", "knitten-private-pack", "domain-pack", "deprecated", "migrate-later", "undecided"]),
@@ -2981,9 +2927,9 @@ const ARTIFACT_PACK_GATES = new Set([
 ]);
 
 const ARTIFACT_PACK_ENUMS = {
-  artifactTypes: new Set(["skill", "command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  artifactTypes: new Set(["skill", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
   compatibilityNeeds: new Set(["alias", "shim", "redirect", "old-path-mapping"]),
-  layers: new Set(["skills", "commands", "rules", "standards", "config", "scripts", "docs", "fixtures", "generated-views", "shims"]),
+  layers: new Set(["skills", "rules", "standards", "config", "scripts", "docs", "fixtures", "generated-views", "shims"]),
   loads: new Set(["on-demand", "manual", "route-selected"]),
   modes: new Set(["link", "copy", "virtual"]),
   ownerDomains: new Set(["core", "repo", "company", "personal", "domain", "experiment"]),
@@ -3703,7 +3649,7 @@ async function checkEntryDocuments() {
       continue;
     }
     const before = text.slice(0, idx);
-    if (/@~?\/?\.?claude\//.test(before) || /claude\/(rules|standards|skills|commands)\//.test(before)) {
+    if (/@~?\/?\.?claude\//.test(before) || /claude\/(rules|standards|skills)\//.test(before)) {
       violations.push({
         file: entry.path,
         line: 1,
@@ -3711,7 +3657,7 @@ async function checkEntryDocuments() {
       });
     }
     if (entry.harness?.adapter === "claude") {
-      const importRe = /^@~\/\.claude\/(rules|standards|skills|commands)\/(.+)$/gm;
+      const importRe = /^@~\/\.claude\/(rules|standards|skills)\/(.+)$/gm;
       let m;
       while ((m = importRe.exec(text)) !== null) {
         const importPath = `${m[1]}/${m[2].trim()}`;
@@ -4383,7 +4329,6 @@ async function checkDocumentTemplates() {
 
   const consumerRoots = [
     path.join(AGENT_ROOT, "skills"),
-    path.join(AGENT_ROOT, "commands"),
     path.join(AGENT_ROOT, "standards"),
     path.join(REPO_ROOT, ".github"),
     path.join(REPO_ROOT, "scripts"),
@@ -4474,7 +4419,7 @@ const CHECKS = [
   { name: "artifact-pack-discovery-routing", fn: checkArtifactPackDiscoveryRouting },
   { name: "example-skill-pack", fn: checkExampleSkillPack },
   { name: "skill-root-shape", fn: checkSkillRootShape },
-  { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },
+  { name: "skill-mechanics", fn: checkSkillCommandMechanics },
   { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },
   { name: "tracked-user-paths", fn: checkTrackedUserAbsolutePaths },
   { name: "entry-documents", fn: checkEntryDocuments },

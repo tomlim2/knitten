@@ -88,7 +88,7 @@
           "$ref": "#/$defs/slug"
         },
         "artifact-type": {
-          "enum": ["skill", "command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]
+          "enum": ["skill", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]
         },
         "path": {
           "$ref": "#/$defs/relativePath"
@@ -135,7 +135,7 @@
       "required": ["layer", "target", "mode"],
       "properties": {
         "layer": {
-          "enum": ["skills", "commands", "rules", "standards", "config", "scripts", "docs", "fixtures", "generated-views", "shims"]
+          "enum": ["skills", "rules", "standards", "config", "scripts", "docs", "fixtures", "generated-views", "shims"]
         },
         "target": {
           "$ref": "#/$defs/relativePath"

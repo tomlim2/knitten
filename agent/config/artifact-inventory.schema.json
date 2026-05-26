@@ -236,10 +236,10 @@
       "unevaluatedProperties": false
     },
     "artifactType": {
-      "enum": ["skill", "command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]
+      "enum": ["skill", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]
     },
     "nonSkillArtifactType": {
-      "enum": ["command", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]
+      "enum": ["rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]
     }
   }
 }

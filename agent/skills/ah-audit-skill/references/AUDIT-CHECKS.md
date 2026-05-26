@@ -11,7 +11,7 @@ scope:
 |-----------|-----------|
 | W1, W2 | `node scripts/validate-llm-first.mjs --check banned-terms` |
 | B1 | `node scripts/validate-llm-first.mjs --check length-caps` |
-| F1, F3, F4, N2 | `node scripts/validate-llm-first.mjs --check skill-command-mechanics` |
+| F1, F3, F4, N2 | `node scripts/validate-llm-first.mjs --check skill-mechanics` |
 | N3 | `node scripts/validate-llm-first.mjs --check taxonomy` |
 | D5 | `node scripts/validate-llm-first.mjs --check tracked-user-paths` |
 

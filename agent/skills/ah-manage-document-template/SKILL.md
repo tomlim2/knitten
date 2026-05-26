@@ -172,7 +172,7 @@ git diff --check
 For Obsidian, consulting, or project templates, also scan:
 
 ```bash
-rg -n "tool/|agent[/]templates|~/.claude[/]templates" agent/document-templates agent/skills agent/commands agent/standards
+rg -n "tool/|agent[/]templates|~/.claude[/]templates" agent/document-templates agent/skills agent/standards
 ```
 
 ## Report

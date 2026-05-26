@@ -92,7 +92,7 @@ Pattern: `{noun-phrase}.md` describing the subject — no verbs.
 | Standard kind | Naming pattern | Examples |
 |---------------|----------------|----------|
 | Policy | `{topic}-policy.md` or descriptive | `llm-first-policy.md`, `garden-review.md`, `principles.md` |
-| Authoring | `{thing}.md` | `slash-commands.md`, `command-skill-reference.md` |
+| Authoring | `{thing}.md` | `skill-authoring.md`, `artifact-lifecycle.md` |
 | Reference catalog | `{topic}-reference.md` or `{topic}.md` | `javascript-reference.md`, `css-reference.md`, `arp-skeleton.md` |
 | Code review | `review-{target}.md` | `review-template.md`, `review-code-rust.md`, `review-ux.md` |
 | Workflow | `{topic}-workflow.md` | `cinev-git-workflow.md`, `agent-workflow.md` |

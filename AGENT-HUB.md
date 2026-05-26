@@ -12,7 +12,7 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | Area | Count | Canonical owner |
 |------|------:|-----------------|
 | Harnesses | 3 | `agent/config/agent-hub.json` `harnesses` |
-| Shared layers | 6 | `agent/config/agent-hub.json` `sharedLayers` |
+| Shared layers | 5 | `agent/config/agent-hub.json` `sharedLayers` |
 | Registries | 12 | `agent/config/agent-hub.json` `registries` |
 | Generated documents | 5 | `agent/config/agent-hub.json` `generatedDocuments` |
 | Runtime path policies | 8 | `agent/config/agent-hub.json` `runtimePathPolicies` |
@@ -33,7 +33,6 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | `rules` | `agent/rules` | `entry` |
 | `standards` | `agent/standards` | `on-demand` |
 | `skills` | `agent/skills` | `triggered` |
-| `commands` | `agent/commands` | `invoked` |
 | `lib` | `agent/lib` | `library` |
 | `config` | `agent/config` | `config` |
 

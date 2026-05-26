@@ -71,7 +71,7 @@ Structural rules:
 3. Ask the user:
    - Short scope description (for `agent/rules/index.md`)
    - The bullets themselves (or confirm the user will fill them in after)
-   - Which index group: Core, Command Authoring, or Domain-specific
+   - Which index group: Core, Authoring, or Domain-specific
    - Which standard (if any) backs this rule
 4. Write the file from the template.
 5. Update `agent/rules/index.md` — add a code-span row to the chosen group. Do not use Markdown links in the rules index.

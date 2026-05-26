@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-26T01:32:13.986Z",
-  "source-commit": "eabd7eb3c052d4fe4a9293390fbd8c6bddd98ea0",
+  "generated-at": "2026-05-26T01:49:56.461Z",
+  "source-commit": "eedab32b1a5354df170af2f97c25575cb21933d4",
   "source-dirty": true,
   "rows": [
     {
@@ -63,32 +63,6 @@
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:agent/commands/references/cci-linear-issue-template.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/references/cci-linear-issue-template.md",
-      "artifact-type": "command",
-      "owner-domain": "company",
-      "privacy-risk": "needs-scrub",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:agent/commands/references/shotloom-linear-issue-template.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/commands/references/shotloom-linear-issue-template.md",
-      "artifact-type": "command",
-      "owner-domain": "repo",
-      "privacy-risk": "needs-scrub",
       "dependencies": [],
       "proposed-destination": "undecided",
       "compatibility-need": "unknown",

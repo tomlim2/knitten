@@ -10,17 +10,6 @@
       "canonical": "agent/config/artifact-inventory.schema.json"
     },
     {
-      "id": "commands-root",
-      "canonical": "agent/commands/",
-      "aliases": [
-        {
-          "value": "commands/",
-          "contexts": ["deploy-target", "context-frontmatter", "historical-doc"]
-        }
-      ],
-      "deploy-targets": ["~/.claude/commands", "~/.codex/commands"]
-    },
-    {
       "id": "rules-index",
       "canonical": "agent/rules/index.md",
       "aliases": [

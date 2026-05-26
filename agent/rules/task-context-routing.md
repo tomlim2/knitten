@@ -1,6 +1,6 @@
 ---
 load: triggered
-trigger: selecting task-specific context or loading route-domain skills, standards, commands, rules, or references
+trigger: selecting task-specific context or loading route-domain skills, standards, rules, or references
 ---
 
 # Task Context Routing
@@ -11,7 +11,7 @@ Use this rule before loading a high-cost route-domain body.
 
 | Step | Action |
 |------|--------|
-| Classify | Use user words, cwd, repo key, file extensions, named skill, command name, and frontmatter. |
+| Classify | Use user words, cwd, repo key, file extensions, named skill, referenced file, and frontmatter. |
 | Confirm | If confidence is low, read only the `AGENT-HUB.md` routing block or ask one short question. |
 | Select | Load only artifacts whose routing metadata matches the task route. |
 | Exclude | Do not load sibling route-domain bodies named in `exclude-when`. |

@@ -67,7 +67,7 @@ The `agent-hub` validator checks that manifest harnesses point to existing entry
 
 ## Migration rule
 
-Classify before moving. Do not move `agent/rules`, `agent/standards`, `agent/skills`, or `agent/commands` into a neutral folder until:
+Classify before moving. Do not move `agent/rules`, `agent/standards`, or `agent/skills` into a neutral folder until:
 
 1. The artifact has `platforms:` and `portability:` metadata.
 2. Every internal reference has a replacement path or compatibility shim.
