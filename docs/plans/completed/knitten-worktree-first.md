@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-18
 updated: 2026-05-26
 owner: agent-hub
@@ -7,7 +7,6 @@ milestone: worktree-first-workflow
 repo: agent-hub
 standard: agent/standards/policy/llm-first-docs.md
 intake: docs/briefings/specs/knitten-worktree-first.md
-branch: codex/20260518-102544-worktree-first
 ---
 
 # Knitten Worktree First
@@ -493,6 +492,12 @@ state.
 | E14 | `node scripts/worktree-clean.mjs --cleanup-test-artifacts` | Deletes all three `codex/test/*` branches and removes the `.test` worktree root. |
 | E15 | `git diff --check` | Exits 0. |
 | E16 | `node scripts/validate-llm-first.mjs` | Passes all 31 checks. |
+| E17 | Primary checkout branch `docs/20260526-primary-guard-check` plus `node scripts/worktree-guard.mjs` | Exits 0, then switches back to `main` and deletes the temporary branch. |
+| E18 | `git commit --allow-empty -m "test: blocked main checkout commit"` from main checkout | Exits 1 through `pre-commit` with `knitten policy: use a task worktree for commit and push.`; no commit created. |
+| E19 | `git push --dry-run origin HEAD` from main checkout | Exits 1 through `pre-push` with `knitten policy: use a task worktree for commit and push.`; no push occurs. |
+| E20 | Test-mode worktree `codex/test/20260526-140747-guard-push-check` plus empty commit | Exits 0; branch becomes one commit ahead in the test worktree. |
+| E21 | `git push --dry-run origin HEAD` from the test-mode worktree | Exits 0 and reports a dry-run new branch push. |
+| E22 | `node scripts/worktree-clean.mjs --cleanup-test-artifacts` after E20-E21 | Deletes the test branch and removes `.test`; no `codex/test/*` branches remain. |
 
 - [x] `scripts/worktree-start.mjs` creates a fresh worktree on every invocation. Evidence: E13.
 - [x] `repo-paths.json` can resolve Knitten through `knitten` or a deterministic `agent-hub` alias. Evidence: E2.
@@ -503,30 +508,26 @@ state.
 - [x] Test-mode starter invocations leave no worktrees or branches after cleanup. Evidence: E14.
 - [x] Generated branches use the task-type prefix, defaulting to `feat/`. Evidence: E1.
 - [x] `scripts/worktree-guard.mjs` fails in the main Knitten checkout. Evidence: E5.
-- [ ] `scripts/worktree-guard.mjs` passes in a primary-checkout feature branch when `allowMainFeatureBranch` is true.
+- [x] `scripts/worktree-guard.mjs` passes in a primary-checkout feature branch when `allowMainFeatureBranch` is true. Evidence: E17.
 - [x] `scripts/worktree-guard.mjs` passes in a generated Knitten worktree. Evidence: E6.
 - [x] `scripts/worktree-install-hooks.mjs` configures repo-local `core.hooksPath` and installs `pre-commit` and `pre-push` guards. Evidence: E7, E8.
 - [x] `core.hooksPath` is visible from the main checkout and a linked worktree. Evidence: E7.
-- [ ] Main checkout `git commit` fails through `pre-commit`.
-- [ ] Main checkout `git push --dry-run` fails through `pre-push`.
+- [x] Main checkout `git commit` fails through `pre-commit`. Evidence: E18.
+- [x] Main checkout `git push --dry-run` fails through `pre-push`. Evidence: E19.
 - [x] `scripts/worktree-status.mjs` lists active worktrees with path, branch, dirty state, ahead state, and age. Evidence: E9.
 - [x] `scripts/worktree-clean.mjs --dry-run` lists cleanup candidates and deletes nothing. Evidence: E10.
 - [x] `scripts/worktree-clean.mjs --apply` requires explicit user approval before deletion. Evidence: E11.
 - [x] Cleanup candidates require clean status, merged state, and absent remote feature branch. Evidence: `scripts/worktree-clean.mjs`.
-- [ ] Main checkout commit and push attempts fail after hook installation.
-- [ ] Worktree commit and push attempts are not blocked by the Knitten guard.
-- [ ] Lightweight docs-only or CI/CD-only work can use a primary-checkout feature branch without allowing direct `main` commits.
+- [x] Main checkout commit and push attempts fail after hook installation. Evidence: E18, E19.
+- [x] Worktree commit and push attempts are not blocked by the Knitten guard. Evidence: E20, E21.
+- [x] Lightweight docs-only or CI/CD-only work can use a primary-checkout feature branch without allowing direct `main` commits. Evidence: E17, E18, E19.
 - [x] `agent/rules/git-defaults.md` instructs agents to create a fresh Knitten worktree before write-capable work. Evidence: E12.
 - [x] `git diff --check` passes. Evidence: E15.
 - [x] `node scripts/validate-llm-first.mjs` passes. Evidence: E16.
 
 ## Remaining Verification
 
-| Item | Reason Not Closed In This Pass |
-|---|---|
-| Main checkout commit and push hook tests | Requires deliberate failing commit/push attempts; run only in a dedicated validation pass. |
-| Primary-checkout feature branch allowance | Requires switching the primary checkout branch; avoid while other task worktrees are active. |
-| Worktree commit and push hook tests | Requires a temporary branch mutation; guard-level proof exists, full hook proof remains open. |
+None.
 
 ## Open Decisions
 

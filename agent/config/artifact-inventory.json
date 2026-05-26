@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-26T04:05:55.460Z",
-  "source-commit": "a6171d1054e17258b9c3891353116a9869a0fc3e",
+  "generated-at": "2026-05-26T05:09:38.911Z",
+  "source-commit": "d066c6faf10aaabba11c619dce26ea61f8ca5d23",
   "source-dirty": true,
   "rows": [
     {
@@ -3853,19 +3853,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:docs/plans/active/knitten-worktree-first.md",
-      "row-type": "artifact",
-      "source-artifact-path": "docs/plans/active/knitten-worktree-first.md",
-      "artifact-type": "doc",
-      "owner-domain": "unknown",
-      "privacy-risk": "unknown",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:docs/plans/active/skill-oriented-context-loading.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/active/skill-oriented-context-loading.md",
@@ -4363,6 +4350,19 @@
       "row-id": "artifact:docs/plans/completed/installed-pack-lifecycle-recovery-hardening.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/completed/installed-pack-lifecycle-recovery-hardening.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/completed/knitten-worktree-first.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/completed/knitten-worktree-first.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",

@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-18
 updated: 2026-05-18
 owner: agent-hub
-spec: docs/plans/active/knitten-worktree-first.md
+spec: docs/plans/completed/knitten-worktree-first.md
 ---
 
 # Spec Intake: knitten-worktree-first

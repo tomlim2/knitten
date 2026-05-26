@@ -12,7 +12,7 @@ Knitten lane requirements:
 | Field | Rule |
 |-------|------|
 | file count | `<= 8` changed files |
-| path scope | `.gitignore`, `.github/**`, `agent/rules/**`, `docs/briefings/specs/knitten-worktree-first.md`, `docs/milestones/worktree-first-workflow.md`, `docs/plans/active/knitten-worktree-first.md`, `scripts/git-hooks/**`, `scripts/worktree-guard.mjs` |
+| path scope | `.gitignore`, `.github/**`, `agent/rules/**`, `docs/briefings/specs/knitten-worktree-first.md`, `docs/milestones/worktree-first-workflow.md`, `docs/plans/completed/knitten-worktree-first.md`, `scripts/git-hooks/**`, `scripts/worktree-guard.mjs` |
 | commit subject | starts with `chore:` |
 | push history | every commit in `origin/main..HEAD` starts with `chore:` |
 
