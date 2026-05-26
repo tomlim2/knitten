@@ -40,6 +40,7 @@ copying everything into the core repository.
 |------|--------|------|
 | [artifact-pack-vocabulary.md](../plans/completed/artifact-pack-vocabulary.md) | completed | Define shared terms for artifacts, packs, manifests, and resolvers. |
 | [artifact-inventory-classification.md](../plans/active/artifact-inventory-classification.md) | active | Generate and review the full inventory of skills, rules, standards, configs, docs, and scripts. |
+| [artifact-inventory-reviewed-decision-application.md](../plans/proposed/artifact-inventory-reviewed-decision-application.md) | proposed | Apply reviewed core-owned classification decisions to generated inventory output. |
 | [core-artifact-boundary.md](../plans/active/core-artifact-boundary.md) | active | Define stay-in-core vs move-to-pack criteria for skills, rules, and standards. |
 | [bootstrap-skill-definition-selection.md](../plans/active/bootstrap-skill-definition-selection.md) | active | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
@@ -72,6 +73,7 @@ copying everything into the core repository.
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
 | Inventory and classification | active | Schema contract, generated inventory output, pilot classification review, pilot extraction report, rollout rule, and validator checks exist. |
+| Reviewed decision application | proposed | `docs/plans/proposed/artifact-inventory-reviewed-decision-application.md` scopes applying the first reviewed core-owned classification report to generated inventory. |
 | Core/external boundary | active | `docs/plans/active/core-artifact-boundary.md` defines the first boundary rule and first core-owned batch report. |
 | Bootstrap skill definition and selection | active | `docs/plans/active/bootstrap-skill-definition-selection.md` defines role criteria and the first core-owned skill decision table. |
 | Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |
@@ -95,6 +97,7 @@ copying everything into the core repository.
 | done | `artifact-pack-manifest-contract` | Manifest schema, validator gates, core capability registry, and fixtures exist. |
 | done | `artifact-pack-discovery-routing` | Resolver module, fixtures, and validator check exist. |
 | done | `example-skill-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |
+| next | `artifact-inventory-reviewed-decision-application` | Reviewed core-owned decisions exist but generated inventory still emits most rows as `undecided`. |
 
 ## Acceptance Criteria
 
