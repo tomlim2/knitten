@@ -53,7 +53,7 @@ still appears to be an active artifact class.
 | Command corpus | Started with 45 command files; 0 remain after deletion batches 0 and 1. | `agent/commands/`, `docs/plans/reports/command-retirement-plan/deletion-batch-0-2026-05-26.md`, `docs/plans/reports/command-retirement-plan/deletion-batch-1-2026-05-26.md` |
 | Exact skill duplicates | No command has an exact same-name skill. | 2026-05-26 local inspection |
 | Command rows | Command rows are held at `migrate-later`. | `docs/plans/reports/core-artifact-boundary/core-owned-classification-2026-05-24.md` |
-| Creation gate | New shared commands are forbidden; requests route to skills, standards, templates, or references. | `agent/skills/ah-make-command/SKILL.md` |
+| Creation gate | New shared commands are forbidden; requests route to skills, standards, templates, or references. | this spec plus `agent/skills/ah-manage-artifact/SKILL.md` |
 | Lifecycle router | `ah-manage-artifact` can route command creation, but no command lifecycle owner exists. | `agent/skills/ah-manage-artifact/SKILL.md` |
 
 ## Retirement Model
@@ -185,4 +185,4 @@ This table is a starting queue, not deletion approval.
 | Inventory field shape | Add reviewed command disposition fields only after S1 defines schema impact. |
 | Claude slash compatibility window | Keep alias shims until reference scans show no active slash-command dependency. |
 | CINEV command destination | Treat as private pack candidates until public-safety and company-context gates decide otherwise. |
-| Command creation future | Forbid shared command creation; keep `ah-make-command` only as a migration router until command retirement completes. |
+| Command creation future | Forbid shared command creation and route all residual requests through `ah-manage-artifact` plus this spec. |

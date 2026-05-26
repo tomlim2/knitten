@@ -208,7 +208,7 @@ Authoring integration:
 | Owner | Required update |
 |-------|-----------------|
 | `ah-make-skill` | apply this gate before creating a skill; redirect non-workflow content to standard, template, reference, or validator work |
-| `ah-make-command` | reject command creation when an existing skill or router owns the route |
+| `command-retirement-plan` | record the command-creation ban and route legacy command content into skills, standards, or templates |
 | `ah-make-standard` | receive cross-skill decision criteria and long policy extracted from skills |
 | `ah-manage-document-template` | receive reusable output bodies extracted from skills |
 | `scripts/validate-llm-first.mjs` | fail new high-cost skills without routing metadata, context manifest, or exemption after rollout |
@@ -231,7 +231,7 @@ Before writing a `reference` extraction target, assign one owning consumer.
 | Reference scope | Owner | Target path |
 |-----------------|-------|-------------|
 | one existing skill consumes it after route selection | owning skill | `agent/skills/<skill>/references/<slug>.md` |
-| one existing command consumes it after invocation | owning command | `agent/commands/references/<slug>.md` |
+| legacy command content needs preservation | owning skill or standard | `agent/skills/<skill>/references/<slug>.md` or `agent/standards/<domain>/<slug>.md` |
 | command authoring or skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
 | cross-skill decision criteria or policy | standard owner | not a reference; route to `agent/standards/<domain>/` |
 | reusable generated body | template owner | not a reference; route to `agent/document-templates/` |
@@ -448,7 +448,7 @@ Validator rollout stays fail-only and narrow:
 
 1. Done: Update `ah-make-skill` to run the skill creation gate before writing a new
    skill.
-2. Done: Update `ah-make-command` to reject route duplicates already owned by skills
+2. Done: Add a command-creation ban and route duplicates into existing skill owners
    or routers.
 3. Done: Update `ah-make-standard` and `ah-manage-document-template` handoff wording
    so extracted criteria and reusable bodies have canonical homes.
@@ -572,7 +572,7 @@ rg -l "^domains:|^repo-keys:|^task-types:|^work-modes:" agent/skills/*/SKILL.md 
 11. Router priority and route evidence gates block domain, repo, pack,
     reference, template, and leaf skill bodies before matching evidence exists.
 12. Skill creation gate wiring is assigned to `ah-make-skill`,
-    `ah-make-command`, `ah-make-standard`, `ah-manage-document-template`, and
+    `ah-make-standard`, `ah-manage-document-template`, and
     `scripts/validate-llm-first.mjs`.
 
 ## Open Decisions

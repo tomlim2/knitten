@@ -1,15 +1,15 @@
 ---
 load: triggered
-trigger: creating a command or skill
+trigger: creating or updating a shared skill artifact
 ---
 
 # Authoring rules — naming, frontmatter, permissions
 
-Applies to any new slash command or skill. Three concerns, single trigger.
+Applies to shared skill creation and closely related artifact edits. Command creation is retired.
 
 ## Naming
 
-- **Internal skills/commands** — `{category}-{verb}-{subject}` (MANDATORY).
+- **Internal skills** — `{category}-{verb}-{subject}` (MANDATORY).
 - **External wrappers** — `{category}-{repo}-{verb}-{subject}`; the `{repo}` token marks an upstream source hosted in `~/.claude/vendor/`.
 - **Lowercase only** — no capitals, no camelCase, no underscores, no spaces.
 - **Hyphens** as separators; multi-word subjects use hyphens (`creator-launcher`).
@@ -31,20 +31,20 @@ Applies to any new slash command or skill. Three concerns, single trigger.
 
 When multiple similar skills exist (e.g. many `design-*`), every `description` must carry a unique keyword. Wrappers should include a `when_to_use:` frontmatter field with `NO when:` negative conditions pointing to sibling skills.
 
-Full rationale + examples: `~/.claude/skills/ah-make-command/SKILL.md`.
+Full rationale + examples: `~/.claude/skills/ah-make-skill/SKILL.md`.
 
-Naming for **rules / standards / plans / vault notes** (not commands/skills): `~/.claude/standards/policy/naming.md`.
+Naming for **rules / standards / plans / vault notes** (not skills): `~/.claude/standards/policy/naming.md`.
 
-## Frontmatter (commands)
+## Frontmatter (skills)
 
 - **Required:** `description`, `allowed-tools`.
-- **Optional:** `argument-hint` (if the command takes arguments).
+- **Optional:** `argument-hint` (if the skill takes arguments).
 - **Field order:** `description` → `argument-hint` → `allowed-tools`.
-- **Routing metadata** — domain-specific or repo-specific commands should add `context-profile` fields from `~/.claude/config/context-routing.json`.
-- **Argument validation** — if the command accepts arguments, it MUST validate them. If no argument is given, show usage and ask. **NEVER auto-execute.**
+- **Routing metadata** — domain-specific or repo-specific skills should add `context-profile` fields from `~/.claude/config/context-routing.json`.
+- **Argument validation** — if the skill accepts arguments, it MUST validate them. If no argument is given, show usage and ask. **NEVER auto-execute.**
 - **Required sections:** frontmatter, H1 title, Arguments (if applicable), Workflow.
 
-Full authoring guide: `~/.claude/skills/ah-make-command/references/SLASH-COMMANDS.md`.
+Full authoring guide: `~/.claude/skills/ah-make-skill/SKILL.md`.
 
 ## Permissions
 
@@ -52,4 +52,4 @@ Full authoring guide: `~/.claude/skills/ah-make-command/references/SLASH-COMMAND
 - **Pattern examples:** `Bash(git:*)`, `Bash(python:*)`, `Bash(npm:*)`, `Bash(open:*)`, `Bash(mv:*), Bash(ls:*)`.
 - **Principle:** grant the minimum permission that lets the command work.
 
-Full frontmatter reference: `~/.claude/skills/ah-make-command/references/SLASH-COMMANDS.md`.
+Full frontmatter reference: `~/.claude/skills/ah-make-skill/SKILL.md`.

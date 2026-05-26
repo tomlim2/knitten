@@ -24,7 +24,7 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`. This
 
 **standard** — Long reference doc. On-demand load. Body cap: 500 lines (3 grandfathered catalogs over). Lives in `agent/standards/<topic>/`.
 
-**skill / command** — Executable unit invoked by name. Lives in `agent/skills/<name>/SKILL.md` or `agent/commands/<name>.md`.
+**skill** — Executable unit invoked by name. Lives in `agent/skills/<name>/SKILL.md`.
 
 **validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
@@ -234,7 +234,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 **Why discovered:** Manual self-audits drift. The v3.0 → v3.1 migration involved a banned-term sweep that should have been mechanical from the start. The validator now catches what manual review used to miss.
 
 **Example:**
-- ✅ "No `etc.` in standards/rules/commands/skills" — grep-able.
+- ✅ "No `etc.` in standards/rules/skills" — grep-able.
 - ❌ "Be specific" — judgment-dependent. Reword to a checkable form ("Include at least one example, one counter-example, one expected output").
 
 **Enforced by:** `validate-llm-first.mjs` checks. Use `node scripts/validate-llm-first.mjs --list` for the current list. Garden review checklist asks "is there a check the validator missed?".

@@ -118,5 +118,5 @@ python run_in_editor.py --list-nodes       # List running UE instances
 
 - Export script: `~/.claude/skills/ue-analyze-material/export_material_data.py`
 - Remote sender: `~/.claude/skills/ue-analyze-material/run_in_editor.py`
-- Command: `~/.claude/commands/ue-analyze-material.md`
+- Skill: `~/.claude/skills/ue-analyze-material/SKILL.md`
 - Output: `~/.claude/private/unreal/material-analyze/`

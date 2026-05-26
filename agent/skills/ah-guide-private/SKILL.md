@@ -8,7 +8,7 @@ Complete guide to using the private/ folder for personal data storage in Claude 
 
 ## Purpose
 
-The `private/` directory is your **personal data vault** for Claude Code. This guide explains what belongs in private/, how to structure it, and how to access it from commands and skills.
+The `private/` directory is your **personal data vault** for Claude Code. This guide explains what belongs in private/, how to structure it, and how to access it from skills.
 
 ---
 
@@ -56,7 +56,6 @@ The `private/` directory is your **personal data vault** for Claude Code. This g
 - Not in ~/.claude/private/
 
 **Shared Configuration:**
-- Commands → `~/.claude/commands/`
 - Skills → `~/.claude/skills/`
 - Standards → `~/.claude/standards/`
 
@@ -108,12 +107,12 @@ private/
 
 ### Category-Based Organization
 
-**By skill/command category:**
-- `commits/` → git-*  commands/skills
-- `unreal/` → ue-* commands/skills
-- `tutoring/` → tutoring-* commands/skills
-- `learnings/` → learn-* commands/skills
-- `drinks/` → drink-* commands/skills
+**By skill category:**
+- `commits/` → git-* skills
+- `unreal/` → ue-* skills
+- `tutoring/` → tutoring-* skills
+- `learnings/` → learn-* skills
+- `drinks/` → drink-* skills
 
 **By data type:**
 - JSON files for structured data

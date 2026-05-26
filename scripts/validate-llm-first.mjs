@@ -2077,7 +2077,6 @@ const ROUTE_VALUE_EVIDENCE = {
 };
 
 const AUTHORING_ROUTING_FILES = [
-  "agent/skills/ah-make-command/SKILL.md",
   "agent/skills/ah-make-skill/SKILL.md",
   "agent/skills/ah-make-standard/SKILL.md",
   "agent/rules/author.md",

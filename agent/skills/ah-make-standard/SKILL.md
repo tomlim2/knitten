@@ -152,5 +152,4 @@ Structural rules:
 - `ah-manage-artifact` — CRUD router for shared artifacts
 - `ah-make-rule` — short enforcement rules (one-liners)
 - `ah-make-skill` — reusable skills
-- `ah-make-command` — slash commands
 - `standards/index.md` — full index

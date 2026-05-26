@@ -157,7 +157,6 @@ Path prefix: `agent/skills/`.
 | Skill | Current role | Reviewed decision | Disposition | Reason |
 |-------|--------------|-------------------|-------------|--------|
 | `ah-brief-today` | `bootstrap` | `support` | `exclude` | Human-facing daily briefing, not pre-pack bootstrap. |
-| `ah-browse-commands` | `bootstrap` | `support` | `exclude` | Discovery UX for commands. |
 | `ah-browse-standards` | `bootstrap` | `support` | `exclude` | Discovery UX for standards. |
 | `ah-grant-perms` | `bootstrap` | `support` | `exclude` | Permission convenience, not required to load packs. |
 | `ah-revoke-perms` | `bootstrap` | `support` | `exclude` | Permission convenience, not required to load packs. |
@@ -175,7 +174,6 @@ Path prefix: `agent/skills/`.
 
 | Row id | Current role | Reviewed decision | Disposition | Reason |
 |--------|--------------|-------------------|-------------|--------|
-| `skill:agent/skills/ah-make-command/SKILL.md` | `lifecycle` | `migrate-later` | `undecided` | `command-retirement-plan` owns command creation behavior. |
 | `extraction:agent/skills/ah-manage-spec/SKILL.md#archive-delete-policy` | missing | `migrate-later` | `undecided` | Blocked extraction row; do not add `core-skill-role`. |
 | `extraction:agent/skills/ah-manage-spec/SKILL.md#review-checklist` | missing | `migrate-later` | `undecided` | Blocked extraction row; do not add `core-skill-role`. |
 

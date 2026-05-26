@@ -1,7 +1,7 @@
 # Agent Hub
 
 **LLM-first agent hub.** System docs, config, routing, skills, rules, and
-standards use `agent-hub`. Agent configuration — commands, skills, standards,
+standards use `agent-hub`. Agent configuration — skills, standards,
 rules, and machine config — is optimized for LLM efficiency, accuracy, and
 clarity. Harness install scripts link deploy targets to this checkout.
 
@@ -26,7 +26,6 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 │   ├── AGENTS.md             # Codex deploy entry template
 │   ├── rules/                # Always-applied constraints
 │   ├── standards/            # Reference docs, on-demand
-│   ├── commands/             # Slash command .md files
 │   ├── skills/               # Skill directories with SKILL.md
 │   ├── config/               # Shared registries and service config
 │   └── private/              # Gitignored — machine config, secrets
@@ -75,12 +74,12 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Skills (147)
+## Skills (145)
 
 | Category | Count |
 |----------|------:|
-| `ah-*` | 29 |
 | `shotloom-*` | 29 |
+| `ah-*` | 27 |
 | `dev-*` | 24 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
@@ -107,13 +106,13 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Standards (49)
+## Standards (47)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 | Group | Count | Files |
 |-------|------:|-------|
-| `authoring/` | 3 | `command-skill-reference.md`, `document-templates.md`, `slash-commands.md` |
+| `authoring/` | 1 | `document-templates.md` |
 | `cinev/` | 4 | `cci-slack.md`, `cinev-character-asset-naming.md`, `cinev-git-workflow.md`, `cinev-vrm-shading.md` |
 | `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
 | `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |
@@ -167,4 +166,4 @@ Manage with `/ah-manage-config` (subcommands: `show`, `validate`, `add`, `remove
 
 ---
 
-For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/ah-make-command/SKILL.md` or `agent/skills/ah-make-skill/SKILL.md`.
+For authoring new shared skills and related artifacts, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/ah-manage-artifact/SKILL.md` and `agent/skills/ah-make-skill/SKILL.md`.

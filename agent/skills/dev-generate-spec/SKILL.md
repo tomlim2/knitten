@@ -86,6 +86,6 @@ Naming convention:
 
 ## Related Files
 
-- Command: `~/.claude/commands/spec.md`
+- Skill: `~/.claude/skills/dev-generate-spec/SKILL.md`
 - Template: `agent/document-templates/agent-hub/technical-spec.md`
 - Output: `~/.claude/private/specs/`

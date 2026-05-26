@@ -57,7 +57,7 @@ When working in another repo, follow that repo's naming rules. This standard doe
 
 ## Per-artifact rules
 
-### Commands & skills (`agent/commands/*.md`, `agent/skills/*/SKILL.md`)
+### Skills (`agent/skills/*/SKILL.md`)
 
 Pattern: `{category}-{verb}-{subject}`
 

@@ -9,7 +9,7 @@ Operational standard implementing the agent-hub LLM-first charter (see `SYSTEM.m
 
 Applies unless one of three switches fires (see below). Non-exhaustive list of LLM-first artifacts:
 
-- `SYSTEM.md`, `agent/AGENTS.md`, `agent/CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
+- `SYSTEM.md`, `agent/AGENTS.md`, `agent/CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `standards/*.md`
 - Every agent-to-agent handoff: `asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts
 - Repo `README.md` (yes — even README), `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
 - PR bodies, commit messages, code comments, issue descriptions
@@ -93,7 +93,7 @@ If the same rule lives in two files, the LLM may follow whichever it sees and mi
 
 Banned: motivation, marketing, decoration, philosophical asides.
 
-- Banned: "Every command is a guardrail. Every skill is accumulated experience."
+- Banned: "Every skill is a guardrail. Every standard is accumulated experience."
 - Banned: `"Carefully consider the implications…"`
 - Banned: emoji, decorative dividers, ascii art.
 
@@ -149,7 +149,6 @@ Avoid:
 | `rules/*.md` (auto, body) | ≤ 40 lines | Always in cold-start context — every line costs every turn |
 | `rules/*.md` (triggered, body) | ≤ 120 lines | Loads only on declared trigger — more room for detail |
 | `skills/*/SKILL.md` | ≤ 200 lines | Loaded when invoked; push reference detail to `reference.md` |
-| `commands/*.md` | ≤ 100 lines | Loaded when invoked; thin orchestration only |
 | `standards/*.md` | ≤ 500 lines | On-demand layer 4 reference; split when reading the whole file is the bottleneck |
 
 `rules/*.md` body excludes frontmatter. The auto-vs-triggered split is declared by the rule's `load:` frontmatter field; see `agent/rules/index.md`.
