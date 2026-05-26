@@ -1,6 +1,6 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-26T00:28:39.591Z",
+  "generated-at": "2026-05-26T00:29:02.245Z",
   "source-commit": "9ab3673c7a4438ce5441d5057869ac2113c002a5",
   "source-dirty": true,
   "rows": [
@@ -3856,32 +3856,6 @@
       "row-id": "artifact:docs/plans/active/bootstrap-skill-definition-selection.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/active/bootstrap-skill-definition-selection.md",
-      "artifact-type": "doc",
-      "owner-domain": "unknown",
-      "privacy-risk": "unknown",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:docs/plans/active/command-disposition-inventory-schema.md",
-      "row-type": "artifact",
-      "source-artifact-path": "docs/plans/active/command-disposition-inventory-schema.md",
-      "artifact-type": "doc",
-      "owner-domain": "unknown",
-      "privacy-risk": "unknown",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
-      "row-id": "artifact:docs/plans/active/command-retirement-plan.md",
-      "row-type": "artifact",
-      "source-artifact-path": "docs/plans/active/command-retirement-plan.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
