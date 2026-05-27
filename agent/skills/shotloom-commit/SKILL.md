@@ -31,9 +31,14 @@ git log -1 --format="%an <%ae>"
 
 ### Step 2: Run gates
 
-Unless `--skip-gates` provided, delegate to `/shotloom-check-gates` (default = full bundle: fmt + clippy + check + **test** + doc-paths). If any gate fails, stop — do not attempt the commit. Report which gate and where.
+Unless `--skip-gates` is provided, delegate to `/shotloom-check-gates --full`.
+If any gate fails, stop and do not commit. Report the failing gate and command.
 
-The earlier convention split "fast for commit / full for push" produced PRs where commit-time gates passed and CI-equivalent push-time gates surfaced test regressions. The Shotloom canonical bundle now runs the same set every time so CI parity is a build-time guarantee, not a per-skill flag. If the user wants to skip tests for a docs-only commit, pass `/shotloom-commit --skip-gates` and explain in the commit body.
+Commit-time gates are the full bundle: fmt, clippy, check, test, doc-paths, and
+available markdown gates. `/shotloom-check-gates` defaults to `--fast` for
+manual iteration; `shotloom-commit` always selects `--full`. If the user wants
+to skip gates for a docs-only commit, pass `/shotloom-commit --skip-gates` and
+record the reason in the commit body.
 
 ### Step 3: Draft commit message
 

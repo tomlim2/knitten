@@ -1,17 +1,18 @@
 ---
-description: Run all Shotloom CI-equivalent gates in parallel — fmt, clippy, check, test, doc-paths
+description: Run Shotloom local gates in parallel — fast by default, full when requested
 argument-hint: "[--fast|--full]"
 allowed-tools: Bash(cargo:*), Bash(node:*), Bash(pnpm:*), Bash(git:*)
 ---
 
 # shotloom-check-gates
 
-Run every local gate that Shotloom CI (or pre-commit hook) enforces, in parallel. Use before committing, before pushing, or when debugging a CI red.
+Run Shotloom local validation gates in parallel. Use `--fast` during manual
+iteration. Use `--full` before commit, before push, or when debugging a CI red.
 
 ## Arguments
 
-- `[--fast]` — skip `cargo test` (fmt/clippy/check/doc-paths only). Default.
-- `[--full]` — include `cargo test --workspace --exclude shotloom-desktop` (slow).
+- `[--fast]` — skip `cargo test` and run fmt, clippy, check, doc-paths, and available markdown gates. Default.
+- `[--full]` — run `--fast` plus `cargo test --workspace --exclude shotloom-desktop`.
 
 Usage: `/shotloom-check-gates` or `/shotloom-check-gates --full`
 
@@ -25,7 +26,7 @@ Usage: `/shotloom-check-gates` or `/shotloom-check-gates --full`
 
 Launch all gates in a single message with multiple Bash tool calls. Use `run_in_background: true` for the slow ones only if using `--full`.
 
-Default (`--fast`):
+Default manual gate set (`--fast`):
 ```bash
 cargo fmt --check
 cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
@@ -40,7 +41,7 @@ pnpm check:md 2>/dev/null || true
 pnpm validate:mermaid 2>/dev/null || true
 ```
 
-With `--full`, add:
+Full gate set (`--full`) adds:
 ```bash
 cargo test --workspace --exclude shotloom-desktop
 ```
@@ -70,4 +71,6 @@ For any failure: include the first 20 lines of error output inline, followed by 
 
 - Build gate MUST use `--exclude shotloom-desktop` per `~/.claude/rules/shotloom.md` (Tauri icon.png pre-existing issue).
 - `cargo clippy -- -D warnings` is what CI runs — any warning is a block.
+- `/shotloom-commit` calls this skill with `--full`; do not treat bare
+  `/shotloom-check-gates` as the commit gate.
 - If on a worktree and binaries live in shared `target/`, first run may trigger rebuild. Subsequent runs are incremental.
