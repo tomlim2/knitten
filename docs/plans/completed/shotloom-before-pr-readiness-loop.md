@@ -1,12 +1,18 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-27
 updated: 2026-05-28
+completed: 2026-05-28
 owner: agent-hub
 milestone:
 ---
 
 # Shotloom Before-PR Readiness Loop
+
+## Completion
+
+Implemented and merged in [PR #78](https://github.com/tomlim2/knitten/pull/78).
+Merge commit: `99ac978`.
 
 ## Purpose
 

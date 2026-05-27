@@ -1,12 +1,18 @@
 ---
-status: intake
+status: accepted
 created: 2026-05-27
 updated: 2026-05-28
 owner: agent-hub
-spec: docs/plans/proposed/shotloom-before-pr-readiness-loop.md
+spec: docs/plans/completed/shotloom-before-pr-readiness-loop.md
 ---
 
 # Spec Intake: shotloom-before-pr-readiness-loop
+
+## Completion
+
+Implemented and merged in [PR #78](https://github.com/tomlim2/knitten/pull/78).
+The completed spec is
+`docs/plans/completed/shotloom-before-pr-readiness-loop.md`.
 
 ## User Request
 
