@@ -23,6 +23,8 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/ah-resolve-doc-path/r
 ## Approval-gate exceptions
 Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). Other repos (CINEV, agent-hub, personal) follow the strict approval flow in `~/.claude/rules/git-defaults.md`.
 
+**PR/issue actor ownership guard:** Before any Shotloom PR or issue response flow mutates code, posts a reply, refreshes a PR body, or re-requests reviewers, verify the target PR/issue is assigned to `tomlim2`. If `tomlim2` is not an assignee, stop. Do not commit, push, comment, reply, edit PR body, re-request review, or start auto-pr.
+
 **Commit/push guideline source:** Use Shotloom repo `AGENTS.md`, `CONTRIBUTING.md`, and `docs/guidelines/` for the current commit and push gate policy. This harness rule does not own the gate list.
 
 **Harness extra gates:** A skill can require additional evidence gates for its own workflow. Extra gates are additive only: they do not replace, weaken, or redefine Shotloom repo guidance. Each skill's `reference.md` records the real failure or guideline leak that justifies the extra gate. If a local helper is needed, use `/shotloom-check-gates --full` and treat its output as helper evidence.
@@ -118,5 +120,4 @@ Each subfolder has a `README.md` declaring its audience, style, and mutability. 
 3. Do NOT apply an Option-A/B/C workaround (single-file standard invention) to smuggle the pattern in. That recreates the defect class the AC was trying to enforce against and round-1 review will P2-Block it.
 
 **Why:** PR #208 (STL-247) — AC #2 cited "ADR template Usage Notes canonical amendment style" not actually in `adr-template.md`; Option-A workaround forced a P2 revert.
-
 **Full enforcement:** `/shotloom-start-task` Step 5b.

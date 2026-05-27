@@ -14,7 +14,7 @@ This skill does not own Shotloom gate policy. Treat it as a delivery wrapper for
 |------|--------|
 | Draft and create a commit | Use this skill. |
 | Run local gates | Follow Shotloom repo guidance. Use `/shotloom-check-gates` only when the repo guidance or user asks for local helper evidence. |
-| Need push/PR evidence | Run `/shotloom-check-gates --full` before push or PR creation. |
+| Need push/PR evidence | Follow Shotloom repo guidance first. Run `/shotloom-check-gates --full` only when repo guidance, the active workflow, or the user asks for helper evidence. |
 
 ## Arguments
 
@@ -43,8 +43,8 @@ Print the current gate checklist before drafting:
 | Moment | Required local evidence |
 |--------|-------------------------|
 | Before commit | Follow Shotloom repo guidance. If it requires local evidence, run the requested helper. |
-| Before push | Run `/shotloom-check-gates --full`. |
-| Before PR | Run `/shotloom-check-gates --full` or report why local gates were skipped. |
+| Before push | Follow Shotloom repo guidance. If it asks for helper evidence, run `/shotloom-check-gates --full`. |
+| Before PR | Follow Shotloom repo guidance and the active PR workflow. If helper evidence is required, run `/shotloom-check-gates --full`; otherwise report the evidence source used. |
 
 ### Step 3: Draft commit message
 
@@ -98,7 +98,11 @@ No `--no-verify`. No `-f`. No Co-Authored-By trailer.
 ✅ Committed <sha-short> on <branch>
   <subject line>
 
-Next: push with `git push` or continue local work.
+Next:
+- If this commit belongs to an active workflow, return to that workflow for push.
+- If this is standalone Shotloom work, follow Shotloom repo guidance before
+  `git push`.
+- If more local edits remain, continue without pushing.
 ```
 
 If the pre-commit hook failed at Step 5 (possible if repo hook is stricter than `shotloom-check-gates` knows), report the hook output and stop — do NOT amend. Let the user fix and re-run.

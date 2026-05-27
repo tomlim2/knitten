@@ -23,7 +23,7 @@ Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing noth
 
 ## Approval exemption
 
-This skill is exempt from the per-PR-comment / per-PR-action approval gate that `~/.claude/rules/git-defaults.md` and `~/.claude/rules/shotloom.md` impose. Authorized 2026-04-21 (user). Mirrored in `~/.claude/rules/shotloom.md` "Approval-gate exceptions" table.
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `agent/rules/git-defaults.md` and `agent/rules/shotloom.md` impose. Authorized 2026-04-21 (user). Mirrored in `agent/rules/shotloom.md` "Approval-gate exceptions" table.
 
 **Auto-approved inside the react cycle:**
 
@@ -33,7 +33,7 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 - reviewer re-request (`POST /pulls/<N>/requested_reviewers`)
 - PR body refresh (`gh pr edit <N> --body <content>`) — body content only, no state mutation
 
-**Still requires explicit per-action user approval, even inside auto-pr:** any `gh pr` state-changing flag (create / merge / close / reopen / ready / `edit --base|--title|--draft|--label` / `update-branch`), top-level PR comments, non-`COMMENT` reviews, thread resolution. Canonical list in `~/.claude/rules/shotloom.md` "Approval-gate exceptions" table.
+**Still requires explicit per-action user approval, even inside auto-pr:** any `gh pr` state-changing flag (create / merge / close / reopen / ready / `edit --base|--title|--draft|--label` / `update-branch`), top-level PR comments, non-`COMMENT` reviews, thread resolution. Canonical list in `agent/rules/shotloom.md` "Approval-gate exceptions" table.
 
 The ready-to-merge report below is logged, not invoked.
 
@@ -50,10 +50,15 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
 
 1. Pre-flight: confirm the active login per `rules/shotloom.md`; `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
 2. Resolve PR number. If no arg: `gh pr view --json number -q .number`.
-3. `chmod +x ~/.claude/skills/shotloom-auto-pr/{watch,start,stop}.sh` if needed.
-4. Run `~/.claude/skills/shotloom-auto-pr/start.sh <N>`.
-5. `start.sh` spawns a `nohup` background loop running `watch.sh <N>` every 120s by default (`start.sh <N> 180` overrides).
-6. Report: "watcher PID <pid> for PR #<N>. logs: ~/.claude/ops/pr-<N>/{watcher,react}.log"
+3. Confirm PR is assigned to `tomlim2`:
+   ```bash
+   gh pr view "<N>" --json assignees --jq '.assignees[].login' | grep -qx 'tomlim2'
+   ```
+   If this check fails, stop. Do not start the watcher.
+4. `chmod +x ~/.claude/skills/shotloom-auto-pr/{watch,start,stop}.sh` if needed.
+5. Run `~/.claude/skills/shotloom-auto-pr/start.sh <N>`.
+6. `start.sh` spawns a `nohup` background loop running `watch.sh <N>` every 120s by default (`start.sh <N> 180` overrides).
+7. Report: "watcher PID <pid> for PR #<N>. logs: ~/.claude/ops/pr-<N>/{watcher,react}.log"
 
 ## Stop workflow
 
@@ -159,6 +164,13 @@ delete `watcher.paused` manually or rerun `/shotloom-auto-pr start <N>`.
 
 Dispatch by event type:
 
+- Before processing any event, confirm PR is assigned to `tomlim2`:
+  ```bash
+  gh pr view "$PR" --json assignees --jq '.assignees[].login' | grep -qx 'tomlim2'
+  ```
+  If this check fails, stop the react cycle. Do not commit, push, reply,
+  refresh the PR body, or re-request review.
+
 - **`fail_checks` non-empty (set diff against prior tick — sha change resets the diff so post-push failures count as new)** → CI auto-fix:
   - `last-event.json`'s `fail_checks` is an array of **objects** `{name, workflow, link}` written by `watch.sh`. Use `link` as the canonical lookup key — it is the github.com URL to the failing check run and embeds both `run_id` and (when single-job) `job_id`. Name-based matching against `gh run list` is unreliable: multi-job workflows have one check per job whose `name` differs from the workflow's `name`, so `gh run list` filtered by check name can miss the run entirely.
 
@@ -214,7 +226,7 @@ Dispatch by event type:
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
   - red / ambiguous: log "needs human" in `log.md`, exit without comment
 
-- **`new_comments` or `new_reviews` non-empty** → review auto-respond per the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md`:
+- **`new_comments` or `new_reviews` non-empty** → review auto-respond per the PR-scope policy in `reference.md`:
   - **bot-authored feedback is not discarded by default** — only self-authored
     reactor replies are excluded by the watcher. For every new bot-authored
     comment or review body, classify it first:
@@ -284,12 +296,12 @@ This is the architectural decision recorded as P0 from the 2026-04-25 skill audi
 
 ## Reference (state schema, journal template, nohup rationale, common failures)
 
-See `~/.claude/skills/shotloom-auto-pr/reference.md` — "Guideline Leak Fixes", "State file shapes", "Journal on terminal", "Why nohup not launchd", "Common failures".
+See `reference.md` — "Guideline Leak Fixes", "State file shapes", "Journal on terminal", "Why nohup not launchd", "Common failures".
 
 ## Related
 
-- `~/.claude/skills/shotloom-respond-pr/SKILL.md` — manual review response (with approval gate)
-- `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation
-- the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — in-scope classification
+- `agent/skills/shotloom-respond-pr/SKILL.md` — manual review response (with approval gate)
+- `agent/skills/shotloom-make-pr/SKILL.md` — PR creation
+- the PR-scope policy in `reference.md` — in-scope classification
 - `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec
-- `~/.claude/rules/shotloom.md` — pre-PR gates
+- `agent/rules/shotloom.md` — pre-PR gates

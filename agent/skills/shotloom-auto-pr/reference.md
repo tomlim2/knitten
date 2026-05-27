@@ -14,6 +14,7 @@ after real failures escaped the repo-guideline flow.
 |---|---|---|
 | Auto-pr used a per-skill subset that drifted from other PR helpers and let test regressions surface only in CI | Before auto-pr commits a fix, follow Shotloom repo guidance, then run `/shotloom-check-gates --full` | 2026-04-25 skill audit |
 | CI failure fixing can tempt a narrow rerun of only the failed command | Do not cherry-pick a subset for the auto-pr extra evidence gate; use `/shotloom-check-gates --full` after the fix | 2026-04-25 skill audit |
+| Auto-pr can mutate an unassigned PR if started or kept running after assignment changes | Confirm PR assignees include `tomlim2` before starting the watcher and before every react cycle | 2026-05-27 unassigned PR response finding |
 
 The extra gate is additive. It does not replace, weaken, or redefine Shotloom
 repo guidance.

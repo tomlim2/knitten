@@ -53,7 +53,19 @@ fi
 # handled by the react policy instead of being dropped at the watcher layer.
 BOT_LOGIN=$(gh api user --jq '.login' 2>/dev/null || echo "")
 
-PR_VIEW=$(gh pr view "$PR" --repo "$REPO" --json state,reviewDecision,headRefOid,mergeable,mergeStateStatus,isDraft,title,headRefName,baseRefName)
+PR_VIEW=$(gh pr view "$PR" --repo "$REPO" --json state,reviewDecision,headRefOid,mergeable,mergeStateStatus,isDraft,title,headRefName,baseRefName,assignees)
+if ! jq -e '.assignees | map(.login) | index("tomlim2")' <<<"$PR_VIEW" >/dev/null; then
+  if [[ ! -f "$PAUSE" ]]; then
+    {
+      echo ""
+      echo "## $(date -u +%Y-%m-%dT%H:%M:%SZ) — watcher paused"
+      echo "- reason: PR is not assigned to tomlim2"
+      echo "- action: no react cycle, commit, push, reply, PR body refresh, or reviewer re-request"
+    } >> "$LOG"
+  fi
+  touch "$PAUSE"
+  exit 0
+fi
 COMMENT_IDS=$(gh api "repos/$REPO/pulls/$PR/comments" \
   --jq "[.[] | select(.user.login != \"$BOT_LOGIN\") | .id] | sort")
 REVIEW_IDS=$(gh api "repos/$REPO/pulls/$PR/reviews" \
