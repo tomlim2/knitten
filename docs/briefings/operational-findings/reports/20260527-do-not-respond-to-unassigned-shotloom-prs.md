@@ -1,5 +1,5 @@
 ---
-status: captured
+status: done
 created: 2026-05-27
 updated: 2026-05-27
 initial-source: user-report
@@ -37,5 +37,16 @@ urgent: false
 
 ## Status
 
-- Current State: captured
+- Current State: done
 - Fast Track: no
+
+## Resolution
+
+Done by [PR #77](https://github.com/tomlim2/knitten/pull/77), merged
+2026-05-27.
+
+| Evidence | Value |
+|---|---|
+| Merge commit | `2903def0565ced5719e6693fecf8392b566cae87` |
+| Scope | `agent/rules/shotloom.md`, `agent/skills/shotloom-respond-pr/SKILL.md`, `agent/skills/shotloom-auto-pr/SKILL.md`, and GitHub PR helper scripts |
+| Outcome | Shotloom PR/issue response flows now require a `tomlim2` assignee guard before comments, edits, commits, pushes, PR body refreshes, or reviewer re-requests. |

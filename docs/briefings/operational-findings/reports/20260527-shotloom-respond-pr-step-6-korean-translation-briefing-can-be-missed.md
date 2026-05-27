@@ -1,5 +1,5 @@
 ---
-status: captured
+status: done
 created: 2026-05-27
 updated: 2026-05-27
 initial-source: user-report
@@ -37,5 +37,16 @@ shotloom-respond-pr 리포팅 점검: 한글 완역 블록 요구는 Step 9에 �
 
 ## Status
 
-- Current State: captured
+- Current State: done
 - Fast Track: no
+
+## Resolution
+
+Done by [PR #77](https://github.com/tomlim2/knitten/pull/77), merged
+2026-05-27.
+
+| Evidence | Value |
+|---|---|
+| Merge commit | `2903def0565ced5719e6693fecf8392b566cae87` |
+| Scope | `agent/skills/shotloom-respond-pr/SKILL.md` |
+| Outcome | The Korean user briefing is now a final reporting frame rather than a GitHub reply translation audit block, reducing approval-batch drift while preserving Korean user-facing summaries. |

@@ -1,5 +1,5 @@
 ---
-status: captured
+status: done
 created: 2026-05-27
 updated: 2026-05-27
 initial-source: user-report
@@ -37,5 +37,16 @@ shotloom-respond-pr 응대 후에도 REST comments와 GraphQL reviewThreads 표�
 
 ## Status
 
-- Current State: captured
+- Current State: done
 - Fast Track: no
+
+## Resolution
+
+Done by [PR #77](https://github.com/tomlim2/knitten/pull/77), merged
+2026-05-27.
+
+| Evidence | Value |
+|---|---|
+| Merge commit | `2903def0565ced5719e6693fecf8392b566cae87` |
+| Scope | `agent/skills/shotloom-respond-pr/SKILL.md`, `agent/skills/shotloom-respond-pr/reference.md`, and `agent/lib/github-pr-review-snapshot.mjs` |
+| Outcome | The response workflow now includes post-response verification before the final summary, including reply attachment, fresh review items, expected unresolved threads, and CI/check state. |
