@@ -4,6 +4,22 @@ Supplementary to [SKILL.md](SKILL.md). Holds the PR review reply classification 
 
 ---
 
+## Guideline Leak Fixes
+
+Shotloom repo guidelines are the first source of commit, push, and PR policy.
+This reference records auto-pr local leak fixes: extra evidence gates added
+after real failures escaped the repo-guideline flow.
+
+| Leak / failure mode | Extra gate | Evidence source |
+|---|---|---|
+| Auto-pr used a per-skill subset that drifted from other PR helpers and let test regressions surface only in CI | Before auto-pr commits a fix, follow Shotloom repo guidance, then run `/shotloom-check-gates --full` | 2026-04-25 skill audit |
+| CI failure fixing can tempt a narrow rerun of only the failed command | Do not cherry-pick a subset for the auto-pr extra evidence gate; use `/shotloom-check-gates --full` after the fix | 2026-04-25 skill audit |
+
+The extra gate is additive. It does not replace, weaken, or redefine Shotloom
+repo guidance.
+
+---
+
 ## PR review reply scope policy
 
 Goal: keep PRs focused. Don't grow scope inside the current PR. Split clearly-separate work into new Linear issues. Stop and ask only when genuinely ambiguous.

@@ -210,7 +210,7 @@ Dispatch by event type:
 
     Footgun constraints in reference.md "fail_checks resolution constraints".
   - classify: fmt / clippy / test / doc-paths / complex
-  - apply fix, re-run the **canonical gate bundle** by delegating to `/shotloom-check-gates` (full). Do NOT cherry-pick a subset here — drift between auto-pr's gate set and the make-pr / commit / respond-pr bundle is exactly the fault the 2026-04-25 audit flagged.
+  - apply fix, follow Shotloom repo guidance, then run the auto-pr extra evidence gate from `reference.md` by delegating to `/shotloom-check-gates --full`. Do NOT cherry-pick a subset for this extra gate.
   - green: commit `fix(ci): address <check> on PR #<N>`, `git push`
   - red / ambiguous: log "needs human" in `log.md`, exit without comment
 
@@ -251,7 +251,7 @@ Protocol details (same as the pre-split skill):
 - MANDATORY: re-request review from PR roster union (`reviewRequests` + anyone in `/reviews` REST, dedup, drop author).
 - Commits: conventional, imperative, ≤80 char subject, no Co-Authored-By.
 - `git add` by filename; never `-A` / `-f`.
-- **Run the canonical Shotloom gate bundle** before commit: delegate to `/shotloom-check-gates` (full — fmt + clippy + check + **test** + doc-paths). The earlier per-skill subset (fmt/clippy/check/doc-paths only, no test) drifted from the bundle and let test regressions ship to CI. Tests are part of the gate, not optional.
+- **Run the auto-pr extra evidence gate** before commit: follow Shotloom repo guidance, then run the gate defined in `reference.md` by delegating to `/shotloom-check-gates --full`.
 
 ## Ready-to-merge report (NOT auto-merge)
 
@@ -284,7 +284,7 @@ This is the architectural decision recorded as P0 from the 2026-04-25 skill audi
 
 ## Reference (state schema, journal template, nohup rationale, common failures)
 
-See `~/.claude/skills/shotloom-auto-pr/reference.md` — "State file shapes", "Journal on terminal", "Why nohup not launchd", "Common failures".
+See `~/.claude/skills/shotloom-auto-pr/reference.md` — "Guideline Leak Fixes", "State file shapes", "Journal on terminal", "Why nohup not launchd", "Common failures".
 
 ## Related
 

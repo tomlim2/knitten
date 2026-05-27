@@ -6,8 +6,11 @@ allowed-tools: Bash(cargo:*), Bash(node:*), Bash(pnpm:*), Bash(git:*)
 
 # shotloom-check-gates
 
-Run Shotloom local validation gates in parallel. Use `--fast` during manual
-iteration. Use `--full` before commit, before push, or when debugging a CI red.
+Run Shotloom local validation helper gates in parallel. Use `--fast` during manual
+iteration. Use `--full` before push, before PR, or when debugging a CI red.
+
+This skill is a helper, not the source of Shotloom gate policy. The helper set
+and guideline-leak rationale live in [reference.md](reference.md).
 
 ## Arguments
 
@@ -71,6 +74,7 @@ For any failure: include the first 20 lines of error output inline, followed by 
 
 - Build gate MUST use `--exclude shotloom-desktop` per `~/.claude/rules/shotloom.md` (Tauri icon.png pre-existing issue).
 - `cargo clippy -- -D warnings` is what CI runs — any warning is a block.
-- `/shotloom-commit` calls this skill with `--full`; do not treat bare
-  `/shotloom-check-gates` as the commit gate.
+- `/shotloom-commit` does not call this skill by default. It delivers the
+  checklist and drafts the commit.
+- Helper-set rationale lives in [reference.md](reference.md).
 - If on a worktree and binaries live in shared `target/`, first run may trigger rebuild. Subsequent runs are incremental.

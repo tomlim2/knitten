@@ -222,9 +222,9 @@ Every resolved finding from Step 4 must appear in this block. **Step 5 (Validate
 
 ### Step 5: Validate + commit + push + refresh PR body
 
-Order matters: gates first, then commit, then push, then PR body. Updating the PR description before gates pass leaves the body claiming a state the branch hasn't reached — when a gate then fails the body and the branch contradict each other.
+Order matters: Shotloom repo guidance and review-response extra evidence gate first, then commit, then push, then PR body. Updating the PR description before evidence passes leaves the body claiming a state the branch hasn't reached; if evidence fails, the body and branch contradict each other.
 
-1. Run the canonical Shotloom gate bundle by delegating to `/shotloom-check-gates` (full, default):
+1. Follow Shotloom repo guidance, then run the review-response extra evidence gate from `reference.md` by delegating to `/shotloom-check-gates --full`:
    ```
    cargo fmt --check
    cargo clippy --workspace --exclude shotloom-desktop -- -D warnings
@@ -232,7 +232,7 @@ Order matters: gates first, then commit, then push, then PR body. Updating the P
    cargo test --workspace --exclude shotloom-desktop
    node scripts/validate-doc-paths.mjs
    ```
-   `shotloom-desktop` is excluded per `~/.claude/rules/shotloom.md`. **Do not** substitute crate-specific `cargo test -p` lines — review-response pushes must validate against the same workspace test set as pre-PR pushes, otherwise regressions in unrelated crates surface only after CI fails. Targeted `cargo test -p <crate> --lib` invocations are fine as **additive diagnostics** when narrowing a failing test, but they never replace the workspace bundle.
+   `shotloom-desktop` is excluded per `~/.claude/rules/shotloom.md`. Do not substitute crate-specific `cargo test -p` lines for this extra evidence gate. Targeted `cargo test -p <crate> --lib` invocations are fine as additive diagnostics when narrowing a failing test, but they never replace the workspace helper set.
 
 2. Fix failing tests before proceeding. Broken tests block the PR.
 
@@ -530,4 +530,4 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 
 ## Additional Resources
 
-For the graphql thread-resolution queries, detailed reply templates, and the Pattern-capture filter rationale, see [reference.md](reference.md).
+For guideline leak fixes, graphql thread-resolution queries, detailed reply templates, and the Pattern-capture filter rationale, see [reference.md](reference.md).

@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-26T05:09:38.911Z",
-  "source-commit": "d066c6faf10aaabba11c619dce26ea61f8ca5d23",
+  "generated-at": "2026-05-27T03:03:44.753Z",
+  "source-commit": "0272ee161cd563918676b3a7ff788c4392a3611e",
   "source-dirty": true,
   "rows": [
     {
@@ -2098,6 +2098,32 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:agent/skills/shotloom-check-gates/reference.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-check-gates/reference.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/skills/shotloom-commit/reference.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-commit/reference.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:agent/skills/shotloom-draft-task-plan/reference.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-draft-task-plan/reference.md",
@@ -2189,9 +2215,35 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:agent/skills/shotloom-review-before-pr/references/REVIEW_BRIEF.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-review-before-pr/references/REVIEW_BRIEF.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/skills/shotloom-review-before-pr/references/REVIEW_QUALITY.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-review-before-pr/references/REVIEW_QUALITY.md",
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
@@ -3502,6 +3554,19 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:docs/briefings/specs/artifact-inventory-reviewed-decision-application.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/specs/artifact-inventory-reviewed-decision-application.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:docs/briefings/specs/artifact-pack-validation-gates.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/briefings/specs/artifact-pack-validation-gates.md",
@@ -4792,6 +4857,19 @@
       "row-id": "artifact:docs/plans/proposed/adr-record-stage-entity-model.md",
       "row-type": "artifact",
       "source-artifact-path": "docs/plans/proposed/adr-record-stage-entity-model.md",
+      "artifact-type": "doc",
+      "owner-domain": "unknown",
+      "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/plans/proposed/artifact-inventory-reviewed-decision-application.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/plans/proposed/artifact-inventory-reviewed-decision-application.md",
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
@@ -9133,7 +9211,7 @@
       "compatibility-need": "unknown",
       "classification-stage": "undecided",
       "review-state": "pending",
-      "skill-size": "tiny",
+      "skill-size": "small",
       "skill-kind": "workflow-only",
       "core-skill-role": "repo-specific",
       "extraction-count": 0,

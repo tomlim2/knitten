@@ -4,6 +4,22 @@ Detail for the shotloom-respond-pr skill. SKILL.md holds the happy path and crit
 
 ---
 
+## Guideline Leak Fixes
+
+Shotloom repo guidelines are the first source of commit, push, and PR policy.
+This reference records review-response local leak fixes: extra evidence gates
+added after real failures escaped the repo-guideline flow.
+
+| Leak / failure mode | Extra gate | Evidence source |
+|---|---|---|
+| Review-response fixes can update the PR body before the branch has matching evidence | Run Shotloom repo guidance and `/shotloom-check-gates --full` before commit, push, and PR body refresh | Prior review-response ordering defect |
+| Narrow crate tests can pass while workspace regressions surface only after CI | Do not substitute crate-specific tests for the review-response extra evidence gate; use `/shotloom-check-gates --full` | Review-response gate drift |
+
+The extra gate is additive. It does not replace, weaken, or redefine Shotloom
+repo guidance.
+
+---
+
 ## Step 3 — feedback item table (example)
 
 ```

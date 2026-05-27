@@ -23,12 +23,14 @@ Resolve the shotloom repo path with `bash ~/.claude/skills/ah-resolve-doc-path/r
 ## Approval-gate exceptions
 Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). Other repos (CINEV, agent-hub, personal) follow the strict approval flow in `~/.claude/rules/git-defaults.md`.
 
-**Pre-commit gates (NEVER skip):** `cargo fmt --check`, `cargo clippy`, `cargo check`, `cargo test`, `node scripts/validate-doc-paths.mjs`, `node scripts/validate-ci-rust-coverage.mjs`.
+**Commit/push guideline source:** Use Shotloom repo `AGENTS.md`, `CONTRIBUTING.md`, and `docs/guidelines/` for the current commit and push gate policy. This harness rule does not own the gate list.
+
+**Harness extra gates:** A skill can require additional evidence gates for its own workflow. Extra gates are additive only: they do not replace, weaken, or redefine Shotloom repo guidance. Each skill's `reference.md` records the real failure or guideline leak that justifies the extra gate. If a local helper is needed, use `/shotloom-check-gates --full` and treat its output as helper evidence.
 
 | Operation | Approval needed? | Context |
 |-----------|------------------|---------|
-| `git commit` after gates pass | **No** | Draft message, briefly show, then commit |
-| `git push` after gates pass | **No** | Same as commit |
+| `git commit` after following Shotloom repo commit guidance and any skill-local extra gates | **No** | Draft message, briefly show, then commit |
+| `git push` after following Shotloom repo push guidance and any skill-local extra gates | **No** | Same as commit |
 | `gh pr create` / `merge` / `close` / `reopen` / `ready` | **Yes** | Per-PR approval — never auto |
 | `gh pr edit --base` / `--title` / `--draft` / `--label` | **Yes** | |
 | `gh pr update-branch` | **Yes** | |
@@ -46,7 +48,7 @@ Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). 
 
 - **After every `git push` from a Shotloom worktree, immediately run `/shotloom-review-before-pr` in the same turn.** Do not ask first.
 - **Before `/shotloom-make-pr`, `gh pr create`, or declaring implementation done, run `/shotloom-review-before-pr` on the latest diff.**
-- Fixed order: gates pass → commit → push → `/shotloom-review-before-pr` → report findings → ask before PR creation.
+- Fixed order: follow Shotloom repo commit/push guidance plus skill-local extra gates → commit → push → `/shotloom-review-before-pr` → report findings → ask before PR creation.
 - Skip only when the user explicitly says `skip review` for that specific PR.
 - Doc-only and workflow-only branches still run the review skill; it marks Rust/TS checks N/A and runs the applicable repo/docs passes.
 
