@@ -46,7 +46,7 @@ stash/commit/proceed choices.
 Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body
 `Related to STL-NN` on the current branch. Do **not** parse the branch name for
 an STL prefix — Shotloom branches use `feat/<description>` per
-`~/.claude/rules/shotloom.md` and never carry an STL ID.
+`agent/rules/shotloom.md` and never carry an STL ID.
 
 If an identifier is found, use the currently available Linear connector to
 fetch the issue. If no Linear `get_issue` tool is visible, discover it with a
@@ -64,7 +64,7 @@ detection.
 ### Step 2.5: Create worktree for the Linear issue
 
 Skip this step if no Linear issue was resolved. Before deriving a branch, read
-`CONTRIBUTING.md` Branch Naming Policy and `~/.claude/rules/shotloom.md`
+`CONTRIBUTING.md` Branch Naming Policy and `agent/rules/shotloom.md`
 Worktree dir naming.
 
 Derive the canonical branch from the Linear title. If the current branch equals

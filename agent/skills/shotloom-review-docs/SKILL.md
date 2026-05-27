@@ -15,7 +15,7 @@ exclude-when: unreal,obsidian
 
 Standalone cold-start docs / wording / markup review for a Shotloom branch.
 
-This skill owns one leaf contract:
+Output contract:
 
 ```text
 Shotloom guidance + accumulated docs references + branch diff -> findings JSON

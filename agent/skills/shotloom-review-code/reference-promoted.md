@@ -153,7 +153,7 @@ U2: <crate>/src/<file>.rs +pub <kind> <symbol> - no out-of-crate consumer.
 ```
 
 Tie-in: this is the "speculative public API" defect class - the more general
-form of `~/.claude/rules/code-write.md` "Start small, prove, then grow".
+form of `agent/rules/code-write.md` "Start small, prove, then grow".
 
 ## Pattern J — TypeScript defensive-shape patterns
 

@@ -15,7 +15,7 @@ exclude-when: unreal,obsidian
 
 Cold-start code-quality review for a Shotloom branch.
 
-This skill owns one leaf contract:
+Output contract:
 
 ```text
 Shotloom guidance + accumulated review references + branch diff -> findings JSON
@@ -179,7 +179,7 @@ Print the subagent report without re-summarizing the findings.
 - **Default invocation is cold-start.** Use the Explore subagent for the review.
 - **Read-only by contract.** The Explore subagent type is read-only.
 - **Read standards inside the subagent.** Main session does not need to load Shotloom guidelines directly.
-- **Leaf contract:** this skill returns findings only; implementation routing
+- **Output boundary:** this skill returns findings only; implementation routing
   belongs to `shotloom-review-before-pr`.
 - **Sibling skill split:** docs/wording discipline lives in `shotloom-review-docs`.
   This skill only covers Rust/TS code quality patterns + test coverage.
@@ -188,7 +188,6 @@ Print the subagent report without re-summarizing the findings.
 
 - `shotloom-review-docs` — paired skill for docs / comment / markup discipline.
 - `shotloom-review-before-pr` — router invoking code first, then docs.
-- `~/.claude/rules/test-write.md` — unit test requirement (Pattern T enforces).
 
 ## Additional Resources
 
