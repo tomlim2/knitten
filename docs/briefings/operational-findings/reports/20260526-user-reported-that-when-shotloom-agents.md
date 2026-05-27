@@ -5,7 +5,7 @@ updated: 2026-05-26
 initial-source: user-report
 area: workflow
 contexts:
-  - shotloom-review-before-pr on CINEV/shotloom PR #397; worktree /Users/younsoolim/Desktop/www/shotloom/.worktrees/respond-pr-397
+  - shotloom-review-before-pr on CINEV/shotloom PR #397; worktree <shotloom-worktree>/respond-pr-397
 promotion-target: unknown
 urgent: false
 ---
@@ -20,7 +20,7 @@ User reported that when Shotloom AGENTS.md asks Codex to read SYSTEM.md and agen
 
 ### 1. Initial capture
 
-- Observed In: shotloom-review-before-pr on CINEV/shotloom PR #397; worktree /Users/younsoolim/Desktop/www/shotloom/.worktrees/respond-pr-397
+- Observed In: shotloom-review-before-pr on CINEV/shotloom PR #397; worktree <shotloom-worktree>/respond-pr-397
 - Rough Finding: User reported that when Shotloom AGENTS.md asks Codex to read SYSTEM.md and agent/rules/index.md, but the current worktree lacks those files, raw read errors like 'sed: SYSTEM.md: No such file or directory' surfaced during shotloom-review-before-pr. This should not happen; the bootstrap/preflight path should either resolve the shared policy location, clearly mark it optional/fallback, or report a structured missing-policy condition instead of leaking raw shell errors.
 - Why It Matters: <clarify during triage>
 - Evidence: <add evidence during triage>

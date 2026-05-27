@@ -1,5 +1,5 @@
 ---
-status: captured
+status: resolved
 created: 2026-05-27
 updated: 2026-05-27
 initial-source: user-report
@@ -37,5 +37,15 @@ shotloom-commit states that its default gate bundle includes fmt, clippy, check,
 
 ## Status
 
-- Current State: captured
+- Current State: resolved
 - Fast Track: no
+
+## Resolution
+
+Resolved by [PR #76](https://github.com/tomlim2/knitten/pull/76), merged 2026-05-27.
+
+| Evidence | Value |
+|---|---|
+| Merge commit | `e55cf301011a866aea2a7609c383278a46dd51a3` |
+| Scope | `shotloom-commit`, `shotloom-check-gates`, `shotloom-auto-pr`, `shotloom-respond-pr`, and `shotloom.md` |
+| Outcome | Shotloom repo guidelines are the first policy source. Skill-local extra evidence gates are additive only and recorded in each skill's `reference.md`. `shotloom-commit` no longer owns gate policy or exposes a commit-local gate flag. |
