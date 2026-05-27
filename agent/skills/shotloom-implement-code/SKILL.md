@@ -43,25 +43,16 @@ findings JSON path, or slug. Do not infer from chat memory.
 Run from the Shotloom worktree:
 
 ```bash
-toplevel=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "ERROR: not in git repo"; exit 1; }
-remote=$(git -C "$toplevel" remote get-url origin 2>/dev/null || true)
-case "$remote" in
-  *CINEV/shotloom*|*CINEV/shotloom.git) ;;
-  *) echo "ERROR: cwd is not a shotloom worktree (origin: $remote)"; exit 1 ;;
-esac
-cd "$toplevel"
-branch=$(git rev-parse --abbrev-ref HEAD)
-[ "$branch" = "main" ] && { echo "ERROR: HEAD is main"; exit 1; }
-git status --short
-git diff --name-only origin/main...HEAD
+knitten_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+node "$knitten_root/agent/lib/shotloom-worktree-sanity.mjs" --allow-dirty
 ```
 
 If the worktree is dirty before implementation, list the dirty paths and ask
 whether they are user changes, current-task changes, or abort-worthy state.
 Never overwrite unknown dirty changes.
 
-If this sanity check cannot locate a `CINEV/shotloom` checkout, stop and report
-that Shotloom must be cloned or registered before using this skill.
+If this helper cannot locate a non-main `CINEV/shotloom` checkout, stop and
+report that Shotloom must be cloned or registered before using this skill.
 
 ### Step 2: Load Shotloom Guidance
 

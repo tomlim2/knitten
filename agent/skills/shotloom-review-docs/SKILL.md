@@ -36,24 +36,16 @@ current working-tree changes produced by that loop.
 
 ## Workflow
 
-### Step 1: cwd + branch sanity
+### Step 1: Worktree Sanity
 
 ```bash
-toplevel=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "ERROR: not in git repo"; exit 1; }
-remote=$(git -C "$toplevel" remote get-url origin 2>/dev/null || true)
-case "$remote" in
-  *CINEV/shotloom*|*CINEV/shotloom.git) ;;
-  *) echo "ERROR: cwd is not a shotloom worktree (origin: $remote)"; exit 1 ;;
-esac
-cd "$toplevel"
-pwd
-branch=$(git rev-parse --abbrev-ref HEAD); echo "$branch"
-[ "$branch" = "main" ] && { echo "ERROR: HEAD is main"; exit 1; }
-git log --oneline origin/main..HEAD
-git status --short
+knitten_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+node "$knitten_root/agent/lib/shotloom-worktree-sanity.mjs" --require-ahead --allow-dirty
 ```
 
-Refuse if HEAD is `main`, branch has zero commits ahead of `origin/main`, or cwd is not a shotloom worktree.
+If this helper fails, stop. It verifies the current checkout is a non-main
+`CINEV/shotloom` worktree with commits ahead of `origin/main`, then reports
+dirty files and changed files.
 
 ### Step 2: Resolve Guidance First
 
