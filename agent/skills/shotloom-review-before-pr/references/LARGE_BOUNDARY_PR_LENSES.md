@@ -8,8 +8,7 @@ Use this reference from `shotloom-review-before-pr` when a Shotloom PR crosses
 bridge, model, runtime, editor, fixture, and contract-doc boundaries.
 
 Large-boundary batches own cross-surface consistency only. They do not perform
-general code review, broad docs review, PR body review, or merge readiness
-checks; those belong to Triad, Docs, `shotloom-make-pr`, or PR monitoring.
+general code review, broad docs review, PR body review, or release checks.
 
 ## Trigger
 
@@ -31,10 +30,10 @@ Run large boundary lens batching when the diff touches two or more rows:
 | Batch | Lenses | Stop Condition |
 |---|---|---|
 | A Shape | Surface Map, Diff Risk Classification, Contract Mirror | Stop if mirror mismatch or undocumented public field exists. |
-| B Behavior | Negative Path Coverage, Atomicity/Rollback, Ownership Boundary | Stop if data loss, partial mutation, or missing P0-P2 rejection coverage exists. |
+| B Behavior | Negative Path Coverage, Atomicity/Rollback, Ownership Boundary | Stop if data loss, partial mutation, or missing blocker rejection coverage exists. |
 | C Runtime/UI | Event Sequencing, State Sync, TS/Editor Consumer | Stop if UI cannot observe state transition or stale state can remain. |
 | D Contract Docs | Docs-As-Contract, Existing Contract Section Drift | Stop if contract docs describe a false wire shape or omit a new public contract field. |
-| E Boundary Verify | Prior Boundary Finding Verification, Boundary Regression Scan | Stop if a prior boundary P0-P2 finding is not directly verified on current `HEAD`. |
+| E Boundary Verify | Prior Boundary Finding Verification, Boundary Regression Scan | Stop if a prior boundary blocker is not directly verified on current `HEAD`. |
 
 ## Trigger-To-Batch Map
 
@@ -67,7 +66,7 @@ Run large boundary lens batching when the diff touches two or more rows:
 | TS/Editor Consumer | Verify optional/required fields and discriminants match Rust wire semantics. |
 | Docs-As-Contract | Verify command matrix, event payloads, rejection catalog, and contract sections match current code. |
 | Existing Contract Section Drift | Search contract docs for changed field/event/code names and update nearby stale contract prose. |
-| Prior Boundary Finding Verification | Re-open every previous boundary P0-P2 finding and cite the exact current evidence that fixes it. |
+| Prior Boundary Finding Verification | Re-open every previous boundary blocker and cite the exact current evidence that fixes it. |
 | Boundary Regression Scan | Inspect files touched by boundary fixes for new cross-surface mismatches. |
 
 ## Result Template
@@ -90,8 +89,6 @@ Run large boundary lens batching when the diff touches two or more rows:
 ## Rules
 
 - Run only matching batches.
-- Stop between batches when P0-P2 findings exist.
-- Fix or explicitly accept findings before the next batch.
-- Run targeted checks after fixes before resuming.
-- Resume the next batch from current `HEAD`.
+- Stop between batches when blocker findings exist.
+- Resume any later batch from current `HEAD`.
 - Do not run all lenses in one broad pass.

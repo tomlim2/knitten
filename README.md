@@ -67,11 +67,11 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 ---
 
 <!-- generated:readme-inventory -->
-## Skills (145)
+## Skills (148)
 
 | Category | Count |
 |----------|------:|
-| `shotloom-*` | 29 |
+| `shotloom-*` | 32 |
 | `ah-*` | 27 |
 | `dev-*` | 24 |
 | `cci-*` | 10 |

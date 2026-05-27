@@ -19,13 +19,13 @@ finding.
 | Surface map | every changed file mapped to one or more review surfaces | Use `REVIEW_MODE.md` surface rows and direct paths. |
 | Risk trigger map | trigger to reviewer question rows | Use `REVIEW_MODE.md` and `LARGE_BOUNDARY_PR_LENSES.md`; write questions, not safety claims. |
 | Evidence ledger | goal, acceptance criteria, tests run, non-goals, unknowns | Cite issue, spec, commit, command output, or path. |
-| Role slices | Triad role-specific 300-500 token slices | Required only when `review_mode=triad`; use only rows already present in the brief. |
+| Role slices | Triad role-specific 300-500 token slices | Required only when `needsTriad=true`; use only rows already present in the brief. |
 
 ## Source Citation Rules
 
 | Claim type | Allowed source | If source is missing |
 |---|---|---|
-| Goal | Linear issue, task spec, PR body, branch name, commit subject | Write `not found`; do not infer. |
+| Goal | Linear issue, task spec, branch name, commit subject | Write `not found` when absent. |
 | Acceptance criteria | Linear issue, task spec, checklist in changed docs | Write `not found`; do not invent. |
 | Test result | Command plus observed result | Write `not run`; do not assume. |
 | Non-goal | Explicit issue/spec/PR text or user instruction | Move to `Unknowns`; do not infer. |
@@ -66,7 +66,7 @@ symbols, commands, events, DTOs, rejection codes, and file names.
 | contract | Rust bridge, TypeScript mirror, schemas, IPC docs, DTOs, events, commands |
 | model | validators, model collections, persistence, import, export, migrate, hydrate |
 | test | unit, integration, fixture, snapshot, assertion, test helper |
-| docs | markdown docs, comments, rustdoc, PR-ready prose |
+| docs | markdown docs, comments, rustdoc |
 | fixture | snapshots, assets, manifests, generated examples |
 | UI | editor UI, bridge consumers, user-visible state |
 | infra | build scripts, CI config, package metadata, workspace manifests |
@@ -82,7 +82,7 @@ symbols, commands, events, DTOs, rejection codes, and file names.
 | Raw diff | `git diff origin/main...HEAD` |
 | Initial status | clean |
 | Brief role | source-cited index only |
-| Review mode | single/triad |
+| needsTriad | true/false |
 
 ### Diff Inventory
 | Item | Value |
@@ -99,7 +99,7 @@ symbols, commands, events, DTOs, rejection codes, and file names.
 ### Excluded Changed Files
 | File | Reason |
 |---|---|
-| N/A | N/A |
+| none | none |
 
 ### Risk Trigger Map
 | Trigger | Reviewer question | Evidence |
@@ -120,8 +120,8 @@ symbols, commands, events, DTOs, rejection codes, and file names.
 |---|---|
 | Runtime/Contract Engineer | <contract/runtime/event/order rows only> |
 | QA/Test Automation Engineer | <tests/negative/no-mutation/fixture rows only> |
-| Maintainer/Product Engineer | <scope/handoff/non-goal/support-cost rows only> |
-| N/A | `review_mode=single` |
+| Maintainer/Product Engineer | <scope/readiness-evidence/non-goal/support-cost rows only> |
+| none | `needsTriad=false` |
 ```
 
 ## Brief Verifier
@@ -138,11 +138,11 @@ Run this check before launching review agents:
 | Risk rows are questions, not defect claims | pass/fail | <row refs> |
 | Tests list command and result or `not run` | pass/fail | <row refs> |
 | Unsupported verdict words are absent | pass/fail | <row refs> |
-| Role slices use only brief rows or are N/A in Single mode | pass/fail | <row refs> |
+| Role slices use only brief rows or are empty in Single mode | pass/fail | <row refs> |
 
 Result: pass/fail
 Fix before agents:
-- <rows to repair, or N/A>
+- <rows to repair, or none>
 ```
 
 If any verifier row fails, repair the Review Brief before launching agents. If a

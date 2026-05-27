@@ -1,7 +1,7 @@
 ---
-description: Run Shotloom pre-PR review with auto Single/Triad mode, then hand off to shotloom-make-pr when clean
-argument-hint: "[force single|force standard|force triad] [review only|no make-pr]"
-allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd)
+description: Run the Shotloom pre-PR review/fix loop and return prReady true/false.
+argument-hint: ""
+allowed-tools: Read, Write, Bash(git:*), Bash(pwd)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -14,42 +14,28 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-before-pr
 
-Run pre-PR self-review on the current Shotloom branch. This skill is an
-orchestrator: it reads references, dispatches read-only review agents, applies
-in-scope fixes, verifies changed `HEAD`, and hands off to `shotloom-make-pr`
-when clean.
+Run the pre-PR review/fix loop for the current Shotloom branch.
 
-Read first:
+Contract:
 
-| Reference | Owns |
-|---|---|
-| `references/PROCESS_POLICY.md` | Phase boundary, finding handling, handoff, binding rules. |
-| `references/REVIEW_MODE.md` | Single/Triad selection. |
-| `references/REVIEW_BRIEF.md` | Source-cited multi-view review brief and verifier. |
-| `references/REVIEW_QUALITY.md` | P0-P2 finding contract, refute pass, feedback log. |
-| `references/TRIAD_REVIEW.md` | Triad roles and merge rules. |
-| `references/LARGE_BOUNDARY_PR_LENSES.md` | Boundary trigger and batch lenses. |
-| `references/PRE_PR_PROMPTS.md` | Verification and docs prompts. |
+```text
+implemented branch code -> review findings -> implement blockers -> prReady true|false
+```
 
-## Delegation Authorization
+This skill does not create PRs, decide mergeability, run broad CI-equivalent
+gates, push commits, or mutate GitHub state.
 
-Invoking this skill authorizes read-only review subagents. Subagents may inspect
-the worktree and report findings. They must not edit, stage, commit, push, post
-GitHub comments, change Linear, or run destructive commands. If subagents are
-unavailable, report that the pre-PR review gate is blocked.
+This skill is a router. Review child skills produce findings. This skill sends
+blocker findings to [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
+and repeats review until blockers are gone or implementation needs user input.
 
 ## Arguments
 
-Optional natural-language overrides:
+No arguments. Review `git diff origin/main...HEAD` from the current Shotloom
+worktree.
 
-| User phrase | Effect |
-|---|---|
-| `force single` or `force standard` | Use Single mode after Step 1 evidence. |
-| `force triad` | Use Triad mode after Step 1 evidence. |
-| `review only` or `no make-pr` | Stop after the final review report; do not hand off to `shotloom-make-pr`. |
-
-By default, review `git diff origin/main...HEAD` from the current Shotloom
-worktree. Use the three-dot diff because branches can be behind `origin/main`.
+Mode overrides belong to
+[`../shotloom-decide-review-mode/SKILL.md`](../shotloom-decide-review-mode/SKILL.md).
 
 ## Workflow
 
@@ -73,123 +59,79 @@ git status --short
 
 Refuse if `HEAD` is `main`, the branch has zero commits ahead of
 `origin/main`, cwd is not a Shotloom worktree, or the initial worktree is dirty.
-This skill reviews committed branch diff only. Record
-`head_step1=$(git rev-parse HEAD)`.
+After `shotloom-implement-code` runs inside this loop, review child skills may
+include the current-loop working-tree changes in their next pass.
 
-### Step 2: Review Mode Decision And Brief
+### Step 2: Review Mode Decision
 
-Read `references/REVIEW_MODE.md`, gather its required evidence, and choose
-`review_mode=single` or `review_mode=triad`.
+Run [`../shotloom-decide-review-mode/SKILL.md`](../shotloom-decide-review-mode/SKILL.md)
+and record its JSON output.
 
-```bash
-git diff --shortstat origin/main...HEAD
-git diff --name-only origin/main...HEAD
-git diff --name-status origin/main...HEAD
+### Step 3: Selected Main Review
+
+If `needsTriad=false`:
+
+1. Run [`../shotloom-review-code/SKILL.md`](../shotloom-review-code/SKILL.md).
+2. Capture its findings.
+
+If `needsTriad=true`:
+
+1. Run [`../shotloom-review-triad/SKILL.md`](../shotloom-review-triad/SKILL.md).
+2. Capture its merged findings.
+
+### Step 4: Handle Code Blockers
+
+Read `references/PROCESS_POLICY.md` -> `Finding JSON Schema`.
+Normalize code or triad findings into the schema.
+
+If any finding has `blocker=true`:
+
+1. Write the normalized blocker findings to
+   `/tmp/shotloom-before-pr-code-blockers.json`.
+2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
+   with that JSON path.
+3. Re-run Step 3 on the updated branch.
+4. If implementation stops for missing input or a product/design question,
+   render `Readiness JSON` with `prReady=false` and `phase="code-review"`.
+5. Otherwise repeat until code blockers are zero.
+
+If no code blocker exists, continue to Step 5.
+
+### Step 5: Docs Review
+
+Run [`../shotloom-review-docs/SKILL.md`](../shotloom-review-docs/SKILL.md).
+Capture its findings.
+
+### Step 6: Handle Docs Blockers
+
+If any docs finding has `blocker=true`:
+
+1. Write the normalized blocker findings to
+   `/tmp/shotloom-before-pr-docs-blockers.json`.
+2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
+   with that JSON path.
+3. Re-run Step 5 on the updated branch.
+4. If implementation stops for missing input or a product/design question,
+   render `Readiness JSON` with `prReady=false` and `phase="docs-review"`.
+5. Otherwise repeat until docs blockers are zero.
+
+Non-blocking docs findings do not change readiness. Include them in the output
+findings list.
+
+If no blocker remains, continue to Step 7.
+
+### Step 7: Readiness Summary
+
+Apply `PROCESS_POLICY.md` -> `Readiness JSON` and `Review Summary`.
+
+If no blocker remains, output:
+
+```json
+{
+  "prReady": true,
+  "phase": "complete",
+  "needsTriad": "<Step 2 needsTriad>",
+  "blockersRemaining": 0,
+  "findings": []
+}
 ```
-
-Render the Review Mode Decision template from `REVIEW_MODE.md` before launching
-review agents.
-
-Render `REVIEW_BRIEF.md` → `Review Brief` and `Brief Verifier`. Repair failed
-verifier rows before Step 3; the raw diff remains finding authority.
-
-### Step 3: Selected Main Review Pass A
-
-After every pass, apply `REVIEW_QUALITY.md` → `Finding Quality Gate` before
-`PROCESS_POLICY.md` handles findings.
-
-If `review_mode=single`:
-
-1. Dispatch one read-only Explore subagent.
-2. Prompt: read installed `shotloom-review-code/SKILL.md`; if unavailable, read
-   `agent/skills/shotloom-review-code/SKILL.md`. Extract only the fenced
-   `Subagent brief (copy verbatim)` block under Step 3; substitute
-   `<worktree>`, `<pwd>`, and `<branch>`. Do not pass wrapper instructions that
-   tell the caller to invoke another Agent. Provide the Step 2 Review Brief as a
-   navigation index. Require raw-diff evidence for every finding.
-3. Render under `## Pre-PR review - branch <branch> - code pass A`.
-4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
-5. Set `main_review_mode=single`.
-6. Compute `code_fixes_applied` by comparing `HEAD` to `head_step1`.
-
-If `review_mode=triad`:
-
-1. Dispatch the three role subagents from `references/TRIAD_REVIEW.md`; include
-   the Step 2 Review Brief and the matching role slice in each prompt.
-2. Render each under `## Pre-PR review - branch <branch> - triad pass A - <role>`.
-3. Apply `TRIAD_REVIEW.md` → `Merge Rules`.
-4. Apply `PROCESS_POLICY.md` → `Finding Handling`.
-5. Set `main_review_mode=triad`.
-6. Compute `triad_fixes_applied` by comparing `HEAD` to `head_step1`.
-
-### Step 4: Main Review Verification
-
-If no main-review fixes changed `HEAD`, set
-`head_after_main=$(git rev-parse HEAD)` and continue to Step 5.
-
-If Single fixes changed `HEAD`, run code verification with
-`PRE_PR_PROMPTS.md` → `Single Code Verification Preamble`. Render under
-`## Pre-PR review - branch <branch> - code pass <letter> (verify)`.
-
-If Triad fixes changed `HEAD`, run Triad verification for roles that reported
-P0-P2 or whose owned surface changed. Use `TRIAD_REVIEW.md` → `Verification
-Pass`. Render under
-`## Pre-PR review - branch <branch> - triad pass <letter> (verify) - <role>`.
-
-After each verification pass, apply `PROCESS_POLICY.md` → `Finding Handling`.
-If fixes changed `HEAD`, run the next verification pass letter. Stop when the
-latest pass is clean or nit-only, then set `head_after_main=$(git rev-parse HEAD)`.
-
-### Step 5: Large Boundary Lens Batches
-
-If `references/LARGE_BOUNDARY_PR_LENSES.md` does not trigger, skip to Step 6.
-
-If it triggers:
-
-1. Select matching batches from the Trigger-To-Batch Map.
-2. Dispatch one read-only Explore subagent per selected batch.
-3. Prompt: read the same reference, review current `HEAD` for Batch `<batch>`
-   only, use `git diff origin/main...HEAD`, render the Result Template, and do
-   not mutate files or external systems.
-4. Stop between batches when P0-P2 findings exist.
-5. Apply `PROCESS_POLICY.md` → `Finding Handling`.
-6. Run targeted checks for the changed surface: choose the smallest relevant
-   local package/test command or `shotloom-check-gates`; report commands run.
-7. Resume with the next matching batch from current `HEAD`.
-
-If boundary fixes changed `HEAD`, run the selected main-review verification
-path before docs.
-
-### Step 6: Targeted Docs Pass A
-
-Record `head_before_docs=$(git rev-parse HEAD)`.
-
-Dispatch one read-only Explore subagent with `PRE_PR_PROMPTS.md` →
-`Targeted Docs Brief`, substituting `<worktree>` and `<branch>`. Render under
-`## Pre-PR review - branch <branch> - docs pass A (targeted)`.
-
-Apply `PROCESS_POLICY.md` → `Finding Handling`. Compute `docs_fixes_applied` by
-comparing `HEAD` to `head_before_docs`.
-
-### Step 7: Docs Verification
-
-If docs fixes did not change `HEAD`, continue to Step 8.
-
-If docs fixes changed `HEAD`, dispatch one read-only Explore subagent with the
-same targeted docs brief plus `PRE_PR_PROMPTS.md` → `Docs Verification
-Preamble`. Render under
-`## Pre-PR review - branch <branch> - docs pass <letter> (verify)`.
-
-Apply `PROCESS_POLICY.md` → `Finding Handling`. If fixes changed `HEAD`, run
-the next docs verification pass letter. Stop when the latest pass is clean or
-nit-only.
-
-### Step 8: Make-PR Handoff
-
-Render `REVIEW_QUALITY.md` → `Feedback Log`.
-
-Apply `PROCESS_POLICY.md` → `Handoff`. If the current harness cannot invoke
-another local skill directly, report:
-`Ready to /shotloom-make-pr — run it next in this same worktree`.
-
-Add one short Korean paragraph only if findings were non-clean.

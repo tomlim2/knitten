@@ -121,6 +121,9 @@ Read only files needed to answer the review contract:
 
 Do not scan broad sibling domains when the changed files do not touch them.
 
+Read `references/IMPLEMENTATION_FIT.md` when the diff changes a function,
+skill, module, or workflow boundary.
+
 ### Step 4: Run Checks
 
 Always run:
@@ -173,6 +176,8 @@ Check:
    available.
 8. Shared-layer deploy target matches for edited subtrees.
 9. No push, external mutation, or destructive operation happened during review.
+10. Changed functions, skills, modules, and workflows match their stated
+    purpose. Use `references/IMPLEMENTATION_FIT.md`.
 
 Verify each finding against the live tree before reporting.
 

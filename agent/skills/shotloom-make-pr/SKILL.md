@@ -1,5 +1,5 @@
 ---
-description: Draft and open a Shotloom PR per repo guideline, with local gates and approval before `gh pr create`
+description: Draft and open a Shotloom PR after prReady=true, per repo guideline, with local gates and approval before `gh pr create`
 argument-hint: "[pr-number-to-supersede]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*)
 domains: rust
@@ -14,9 +14,10 @@ exclude-when: unreal,obsidian
 
 # shotloom-make-pr
 
-Open a PR against `CINEV/shotloom`: gather context, run local gates,
-draft title/body per `docs/guidelines/pr-guideline.md`, present the
-draft for user approval, then run `gh pr create`.
+Open a PR against `CINEV/shotloom`: require current
+`/shotloom-review-before-pr` output with `prReady=true`, gather context, run
+local gates, draft title/body per `docs/guidelines/pr-guideline.md`, present
+the draft for user approval, then run `gh pr create`.
 
 If invoked with a prior PR number, include `Supersedes #N` in the new
 PR body and ask before posting any redirect comment.
@@ -119,7 +120,28 @@ devlogs, sibling PR descriptions, or reviewer comments.
 
 If a fact you want to write doesn't come from `pr-guideline.md` (template) or the `git diff` (content), DROP it. No exceptions, no "but this is useful context" — if it didn't make it into the diff it doesn't belong in the body.
 
-### Step 3: Local CI-equivalent gates
+### Step 3: Require before-PR readiness
+
+`shotloom-review-before-pr` owns pre-PR code/docs readiness.
+`shotloom-make-pr` owns local CI-equivalent gates and PR creation approval.
+
+Require a current `/shotloom-review-before-pr` JSON result for this branch:
+
+```json
+{
+  "prReady": true,
+  "blockersRemaining": 0
+}
+```
+
+If no current result exists, run `/shotloom-review-before-pr` now. If the
+current harness cannot invoke another skill directly, stop and tell the user to
+run `/shotloom-review-before-pr` first.
+
+If `prReady=false`, stop and route the findings to
+`/shotloom-implement-code <findings-json>`.
+
+### Step 4: Local CI-equivalent gates
 
 Any failure blocks PR.
 
@@ -132,28 +154,6 @@ node scripts/validate-doc-paths.mjs
 ```
 
 If no tests in a changed crate, do NOT skip — that violates `rules/test-write.md`. Add tests first.
-
-### Step 4: Trigger `/shotloom-review-before-pr`
-
-`shotloom-make-pr` does NOT inline pattern-based review. That's
-`/shotloom-review-before-pr`'s job.
-
-If this skill was invoked directly by `shotloom-review-before-pr` in the same
-session after code and docs passes reported clean or nit-only, treat the review
-gate as already satisfied and continue to Step 5. Do not ask the user to confirm
-the gate again.
-
-Ask:
-> Did you run `/shotloom-review-before-pr` on this branch and resolve all findings? (y/n)
-
-- **yes** → continue.
-- **no** → trigger `/shotloom-review-before-pr` now if the current harness can
-  invoke local skills from this session. After it reports `Ready to
-  /shotloom-make-pr`, resume this skill from Step 5. If the harness cannot
-  invoke another skill directly, stop and instruct the user to run
-  `/shotloom-review-before-pr` first. Do not draft or create a PR before the
-  review skill has run.
-- **skip on insistence** → record `- [ ] /shotloom-review-before-pr — SKIPPED on user request` in Test plan so reviewers see it.
 
 ### Step 5: Draft title + body
 

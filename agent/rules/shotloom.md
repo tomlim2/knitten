@@ -46,13 +46,13 @@ Applies to **shotloom worktrees only** (`.worktrees/*`, `.claude/worktrees/*`). 
 
 `/shotloom-auto-pr` is invoked by the user typing `/shotloom-auto-pr <N>` directly, or by accepting the offer at the end of `/shotloom-make-pr`.
 
-## Post-push self-review
+## Post-push before-PR readiness
 
-- **After every `git push` from a Shotloom worktree, immediately run `/shotloom-review-before-pr` in the same turn.** Do not ask first.
-- **Before `/shotloom-make-pr`, `gh pr create`, or declaring implementation done, run `/shotloom-review-before-pr` on the latest diff.**
-- Fixed order: follow Shotloom repo commit/push guidance plus skill-local extra gates → commit → push → `/shotloom-review-before-pr` → report findings → ask before PR creation.
-- Skip only when the user explicitly says `skip review` for that specific PR.
-- Doc-only and workflow-only branches still run the review skill; it marks Rust/TS checks N/A and runs the applicable repo/docs passes.
+- After a Shotloom worktree push, `/shotloom-review-before-pr` is the default readiness loop.
+- The loop reports `prReady: true | false` for the latest committed branch diff.
+- `prReady=false` means blocker findings remain. Route those findings to `/shotloom-implement-code`, then rerun `/shotloom-review-before-pr`.
+- `prReady=true` means no blocker findings remain. Next command: `/shotloom-make-pr`.
+- `/shotloom-make-pr` owns local CI-equivalent gates, PR body, PR creation approval, and GitHub mutation.
 
 ## Knitten Shotloom docs lane
 

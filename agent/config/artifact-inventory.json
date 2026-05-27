@@ -2189,19 +2189,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/skills/shotloom-review-before-pr/references/PRE_PR_PROMPTS.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/skills/shotloom-review-before-pr/references/PRE_PR_PROMPTS.md",
-      "artifact-type": "doc",
-      "owner-domain": "repo",
-      "privacy-risk": "needs-scrub",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:agent/skills/shotloom-review-before-pr/references/PROCESS_POLICY.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-review-before-pr/references/PROCESS_POLICY.md",
@@ -7427,7 +7414,7 @@
       "review-state": "accepted",
       "parent-row-id": "skill:agent/skills/shotloom-review-before-pr/SKILL.md",
       "extraction-id": "triad-review-rubric",
-      "source-section": "### Step 3: Selected Main Review Pass A",
+      "source-section": "### Step 3: Selected Main Review",
       "content-kind": "judgment",
       "extracted-artifact-type": "skill",
       "artifact-subkind": "rubric",
