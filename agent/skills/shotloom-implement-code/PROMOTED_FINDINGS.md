@@ -17,3 +17,15 @@ use matching entries as implementation constraints.
   name the broader gate point instead of repeatedly running the whole suite for
   tiny edits.
 - Status: active
+
+### Execute proof obligations before implementation handoff
+
+- Source: recent approved Shotloom PR layer analysis, 2026-05-28.
+- Trigger: implementation consumes a spec or review finding that names tests,
+  fixtures, validators, matrix rows, or acceptance checks.
+- Check: build a proof ledger before editing and verify each row is passed,
+  failed, or explicitly `not-run` with reason and owner before reporting done.
+- Fix Shape: run targeted proof commands or add the missing fixture/check; if a
+  high-risk surface has no proof obligation, route back to spec review instead
+  of implementing from intent.
+- Status: active

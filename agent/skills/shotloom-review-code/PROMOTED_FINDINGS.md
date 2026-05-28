@@ -45,10 +45,12 @@ additional review lenses.
 - Source: `docs/briefings/operational-findings/reports/20260528-shotloom-ui-primitives-need-contract-matrix.md`
 - Trigger: a PR adds or changes shared editor UI primitives.
 - Check: verify each primitive states controlled versus uncontrolled behavior,
-  callback/value semantics, disabled/title precedence, owned ARIA props, native
-  input constraints, token/icon provenance, and required tests.
+  callback/value semantics, disabled/title precedence, owned ARIA props,
+  native input constraints, TypeScript public prop contracts, inherited native
+  prop omissions, token/icon provenance, and required tests.
 - Fix Shape: add a small primitive contract matrix before merge and make tests
-  follow that matrix instead of one-off edge cases.
+  follow that matrix instead of one-off edge cases. Include type-level negative
+  fixtures when a contract must reject an invalid prop combination.
 - Status: active
 
 ### Review bridge command families as a matrix
@@ -81,4 +83,30 @@ additional review lenses.
   silent-skip paths, multi-entity scenarios, and active-state flip regressions.
 - Fix Shape: add transition-focused tests and telemetry or diagnostics for
   intentionally silent branches.
+- Status: active
+
+### Review Node script process lifecycle paths
+
+- Source: recent approved Shotloom PR dry-run, 2026-05-28.
+- Trigger: a PR adds or changes a Node or TypeScript script that supervises
+  child processes, dev servers, test runners, or long-lived subprocesses.
+- Check: verify spawn errors, child exit, descendant cleanup, POSIX process
+  groups, Windows termination paths, and already-exited children have explicit
+  behavior and focused coverage.
+- Fix Shape: make process lifecycle states fatal or intentionally ignored with
+  tests for spawn failure, child exit cleanup, and platform-specific shutdown
+  branches.
+- Status: active
+
+### Reject unknown asset and output validation branches
+
+- Source: recent approved Shotloom PR dry-run, 2026-05-28.
+- Trigger: a PR adds or changes asset import, hosted output, content-addressed
+  paths, catalog materialization, overlay cleanup, or filesystem output guards.
+- Check: verify unknown prefixes, local or loopback URLs, symlink/output paths,
+  digest mismatches, missing catalog identity, and cleanup keys fail closed or
+  have documented non-leak behavior.
+- Fix Shape: add negative fixtures or validators for unsupported path prefixes,
+  privacy-sensitive URL fields, digest/catalog mismatch, and cleanup-key
+  collisions before durable output is written.
 - Status: active

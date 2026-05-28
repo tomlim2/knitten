@@ -91,6 +91,8 @@ For a spec, extract:
 - implementation surfaces
 - acceptance checks
 - tests or fixtures
+- proof obligations from `Proof Obligation Matrix`, `Validator Contract Matrix`,
+  `Risk Map`, and verification sections
 
 For findings JSON, extract:
 
@@ -103,6 +105,16 @@ For findings JSON, extract:
 
 If required input is missing or contradictory, stop and ask. Do not implement
 from unstated intent.
+
+Before editing, build a proof ledger:
+
+| Input | Proof ledger rows |
+|---|---|
+| Spec | one row per proof obligation, with requirement, surface, expected failing proof, target command or fixture, and implementation stage |
+| Findings JSON | one row per finding, with `id`, `requiredAction`, `acceptanceCheck`, and touched file |
+
+If a spec changes a high-risk surface but has no matching proof obligation,
+stop and route back to `/shotloom-review-task-plan`.
 
 ### Step 4: Implement
 
@@ -131,6 +143,11 @@ to the caller workflow.
 
 Run the validation named by the active input or loaded Shotloom guidance.
 
+| Input | Minimum proof |
+|---|---|
+| Spec | Run every locally runnable proof ledger row and acceptance check named by the spec. If a proof is not runnable in the current worktree, report it as `not-run` with the reason and follow-up owner. |
+| Findings JSON | Execute or verify each supplied finding's `acceptanceCheck`. If a finding lacks one, stop and ask the caller to normalize the finding. |
+
 Always run:
 
 ```bash
@@ -147,6 +164,7 @@ Report:
 - implementation input
 - requirements or findings addressed
 - files changed
+- proof ledger rows with `passed`, `failed`, or `not-run`
 - validation commands and results
 
 ## Related

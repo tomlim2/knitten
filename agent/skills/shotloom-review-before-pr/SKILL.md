@@ -19,7 +19,7 @@ Run the pre-PR review/fix loop for the current Shotloom branch.
 Contract:
 
 ```text
-implemented branch code -> review findings -> implement blockers -> prReady true|false
+implemented branch code -> review findings -> implement blockers -> commit blocker fixes -> prReady true|false
 ```
 
 This skill does not create PRs, decide mergeability, run broad CI-equivalent
@@ -93,7 +93,11 @@ If any finding has `blocker=true`:
 3. Re-run Step 3 on the updated branch.
 4. If implementation stops for missing input or a product/design question,
    render `Readiness JSON` with `prReady=false` and `phase="code-review"`.
-5. Otherwise repeat until code blockers are zero.
+5. If code blockers reach zero and the worktree has fixes from this loop,
+   stage only those files and run [`../shotloom-commit/SKILL.md`](../shotloom-commit/SKILL.md).
+   If commit approval, hook failure, or missing staged files stops the commit,
+   render `Readiness JSON` with `prReady=false` and `phase="commit-handoff"`.
+6. Otherwise repeat until code blockers are zero.
 
 If no code blocker exists, continue to Step 5.
 
@@ -113,7 +117,11 @@ If any docs finding has `blocker=true`:
 3. Re-run Step 5 on the updated branch.
 4. If implementation stops for missing input or a product/design question,
    render `Readiness JSON` with `prReady=false` and `phase="docs-review"`.
-5. Otherwise repeat until docs blockers are zero.
+5. If docs blockers reach zero and the worktree has fixes from this loop,
+   stage only those files and run [`../shotloom-commit/SKILL.md`](../shotloom-commit/SKILL.md).
+   If commit approval, hook failure, or missing staged files stops the commit,
+   render `Readiness JSON` with `prReady=false` and `phase="commit-handoff"`.
+6. Otherwise repeat until docs blockers are zero.
 
 Non-blocking docs findings do not change readiness. Include them in the output
 findings list.
@@ -123,6 +131,12 @@ If no blocker remains, continue to Step 7.
 ### Step 7: Readiness Summary
 
 Apply `PROCESS_POLICY.md` -> `Readiness JSON` and `Review Summary`.
+Before printing the final JSON, write the same object to:
+
+```bash
+safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
+result_path="/tmp/shotloom-before-pr-${safe_branch}-readiness.json"
+```
 
 If no blocker remains, output:
 
@@ -130,6 +144,10 @@ If no blocker remains, output:
 {
   "prReady": true,
   "phase": "complete",
+  "branch": "<branch>",
+  "headSha": "<git rev-parse HEAD>",
+  "dirty": false,
+  "resultPath": "/tmp/shotloom-before-pr-<branch>-readiness.json",
   "needsTriad": "<Step 2 needsTriad>",
   "blockersRemaining": 0,
   "findings": []

@@ -17,8 +17,9 @@ urgent: false
 Merged PR review findings on the editor UI primitive layer repeatedly clustered
 around implicit component contracts: controlled versus uncontrolled behavior,
 draft versus committed values, native-safe values for composite inputs, owned
-ARIA props, disabled explanation precedence, token/icon provenance, and required
-tests. Future UI primitive work should start from a contract matrix instead of
+ARIA props, TypeScript public prop types, inherited native prop omissions,
+disabled explanation precedence, token/icon provenance, and required tests.
+Future UI primitive work should start from a contract matrix instead of
 discovering each edge case through review follow-ups.
 
 ## Observations
@@ -34,8 +35,10 @@ discovering each edge case through review follow-ups.
   contracts produce repeated review loops and fragile downstream usage.
 - Evidence: Review comments covered controlled/uncontrolled behavior, native
   range/color input safety, disabledReason title precedence, listbox semantics,
-  focus-visible styling, icon-only labeling, owned ARIA state, third-party
-  notice linkage, and matrix-style tests.
+  focus-visible styling, icon-only labeling, owned ARIA state, inherited native
+  props such as `defaultValue`, omitted owned props such as `aria-pressed` and
+  `aria-busy`, type-level icon-label requirements, type-negative fixtures,
+  third-party notice linkage, and matrix-style tests.
 - Follow-up Guess: Promote to review ledger as a pre-PR lens for editor UI
   primitive changes.
 - Needs Clarification: no
@@ -44,7 +47,8 @@ discovering each edge case through review follow-ups.
 
 - Problem: UI primitive diffs can pass local tests while leaving contract gaps
   that only emerge under controlled, uncontrolled, native input, or accessibility
-  edge cases.
+  edge cases. In TypeScript, those gaps often appear when the exported prop type
+  allows a state the component does not actually support.
 - Likely Scope: review
 - Done When: future UI primitive PRs include an explicit contract matrix or the
   review asks for one before merge.

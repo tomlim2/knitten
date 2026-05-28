@@ -163,24 +163,44 @@ Step 3 consumes `<workDir>/context.json`.
 Record only planning inputs and open questions:
 - linked Linear parent/related issue summaries when available;
 - linked docs, specs, design notes, PRDs, or planning artifacts;
+- relevant Shotloom ADRs, guidelines, CI/CD workflow docs, workflow YAML, and
+  repo convention docs found by the planning-source sweep;
 - local planning/briefing documents whose slug or content clearly matches;
 - unresolved questions the user must answer before the next planning step.
 
 Do not collect codebase implementation context in this skill. If planning
 context is ambiguous, ask the user a focused question and stop with `ok: false`.
 
-### Step 3: Write briefing and JSON output
+### Step 2.5: Run planning-source sweep
 
 Before writing the briefing, read [`PROMOTED_FINDINGS.md`](PROMOTED_FINDINGS.md)
-and apply entries that match the current intake, branch setup, planning, or
-handoff. Include concrete handoff instructions when an active entry requires
+and apply entries that match planning context. For Shotloom development work,
+verify that Step 2 considered the relevant durable docs, not only the Linear
+body:
+
+```bash
+repo_root="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom)"
+rg --files "$repo_root" \
+  | rg '(^|/)(AGENTS|CONTRIBUTING|WORKFLOW|MAP)\.md$|docs/(adr|decisions|guidelines|arch|ipc)/|\.github/workflows/'
+```
+
+Read only files that match the issue's scope, acceptance criteria, labels, or
+search terms. At minimum, record whether matching ADRs, guidelines, workflow
+docs, CI/CD workflow files, and repo conventions were found or not. If an issue
+clearly touches CI/CD, release, deploy, asset publishing, IPC, ADR-governed
+architecture, or editor primitives and the sweep finds no durable source, mark
+that as an open question instead of silently proceeding.
+
+### Step 3: Write briefing and JSON output
+
+Apply concrete handoff instructions when an active promoted finding requires
 them.
 
 Resolve a slug from the Linear title. Write a compact briefing markdown file to
 the Knitten checkout:
 
 ```text
-<knitten_root>/docs/briefings/linear/<slug>.md
+<knitten_root>/docs/briefings/shotloom/<slug>.md
 ```
 
 Create the directory before writing.
@@ -188,6 +208,9 @@ Create the directory before writing.
 The briefing file contains:
 - Linear issue key, title, URL, state, assignee, labels, and body summary;
 - related planning/materials gathered in Step 2;
+- planning-source sweep result, including relevant Shotloom ADRs/guidelines,
+  CI/CD docs, workflow files, and repo convention docs read or intentionally
+  skipped;
 - open questions;
 - suggested next action.
 
@@ -198,12 +221,13 @@ Final chat output is JSON only:
   "ok": true,
   "issueKey": "STL-NN",
   "slug": "<slug>",
-  "briefingPath": "/absolute/path/docs/briefings/linear/<slug>.md",
+  "briefingPath": "/absolute/path/docs/briefings/shotloom/<slug>.md",
   "workDir": "<workDir>",
   "contextPath": "<workDir>/context.json",
   "cleanupPaths": ["<workDir>"],
   "relatedContextCount": 0,
   "openQuestions": [],
+  "handoffCommand": "/shotloom-draft-spec <slug>",
   "next": "ask-user"
 }
 ```

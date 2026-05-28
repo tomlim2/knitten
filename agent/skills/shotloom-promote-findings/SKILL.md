@@ -1,5 +1,5 @@
 ---
-description: Promote Shotloom operational findings into layer-specific promoted-finding ledgers.
+description: Promote Shotloom operational findings into executable validation targets or layer-specific promoted-finding ledgers.
 argument-hint: "[--dry-run]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(node:*), Bash(date:*)
 domains: rust,typescript
@@ -13,7 +13,7 @@ exclude-when: unreal
 # shotloom-promote-findings
 
 Promote Shotloom operational findings into the layer that consumes them next:
-review, task start, local gates, or completed-asset archival.
+repo validation, review, task start, local gates, or completed-asset archival.
 
 This skill is the Shotloom-specific bridge after `/ah-report-finding`. It does
 not replace the operational findings inbox, delete reports, mutate Obsidian, or
@@ -24,10 +24,11 @@ rewrite Shotloom source code.
 - No arguments: process qualifying Shotloom findings and edit ledgers.
 - `--dry-run`: classify and report proposed destinations without editing.
 
-## Promotion Ledgers
+## Promotion Targets
 
-| Layer | Consuming skill | Ledger |
+| Target | Owner | Destination |
 |---|---|---|
+| Executable validation | Shotloom repo | test, fixture, validator, package script, or CI workflow follow-up |
 | Planning and task intake | `shotloom-start-task` | `agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md` |
 | Implementation | `shotloom-implement-code` | `agent/skills/shotloom-implement-code/PROMOTED_FINDINGS.md` |
 | Code review | `shotloom-review-code` | `agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md` |
@@ -62,13 +63,34 @@ the Knitten-wide operational findings pipeline.
 
 ### Step 3: Classify Each Finding
 
+Classify by the earliest layer that should have prevented the issue, not by the
+layer that discovered it. A review comment can promote to planning,
+implementation, or executable validation when those layers are the first
+reliable prevention point.
+
+First decide whether the finding belongs in executable Shotloom validation:
+
+| Evidence | Promotion target |
+|---|---|
+| deterministic bad input or unsupported prop combination | type-level negative fixture, unit test, or validator fixture |
+| Rust/TypeScript DTO drift | shared fixture, snapshot, or code/docs cross-check |
+| command family inconsistency | table-driven command matrix test |
+| docs, ADR, or PR-template drift | doc validator or markdown check |
+| CI-only failure class | CI workflow or local helper gate |
+| reviewer-only judgment | layer-specific promoted finding |
+
+If a deterministic validator/test target exists, do not stop at a skill ledger.
+Record the executable target in the finding report as `promotion-target`. Add a
+skill-ledger entry only when future agents must remember to demand or design
+that executable proof.
+
 Use the narrowest destination:
 
 | Destination | Promote when |
 |---|---|
-| Planning ledger | the task intake, branch setup, handoff, or implementation plan needs a reusable check |
-| Implementation ledger | the coding/editing/validation loop needs a reusable constraint |
-| Review ledger | future reviewers can catch the issue by reading a diff, PR surface, or documented workflow evidence |
+| Planning ledger | task intake, proof obligations, matrix design, branch setup, handoff, or implementation plan should prevent the issue before code edits |
+| Implementation ledger | the coding/editing/validation loop should prevent the issue while changing code |
+| Review ledger | no earlier layer can reliably prevent it, but reviewers can catch it from diff, PR surface, or documented workflow evidence |
 | This skill ledger | the finding improves the promotion loop itself |
 | Obsidian asset | the issue is resolved and only historical context remains |
 
@@ -96,6 +118,24 @@ Add compact entries with this shape:
 
 Keep entries grep-catchable. Do not include private Shotloom PR URLs, bare
 GitHub issue tags, or full report text.
+
+### Step 4.5: Lossiness Check
+
+Before marking a finding promoted, compare the ledger entry with the source
+report and preserve every reusable mechanism that caused the original miss:
+
+| Source evidence contains | Ledger entry must keep |
+|---|---|
+| type/API surface mismatch | public contract / prop-type check |
+| inherited native prop leak | inherited-prop omission or support rule |
+| invalid state allowed by types | type-level negative fixture |
+| runtime state split | draft / committed / native-safe value rule |
+| workflow status-function risk | exact status-function check |
+| repeated one-off review fixes | matrix/checklist rule that prevents another case-by-case loop |
+
+If a single umbrella entry hides one of these mechanisms, either expand the
+entry or split out a second promoted finding. Do not treat broad words such as
+"contract", "matrix", or "quality" as enough by themselves.
 
 ### Step 5: Update Finding Status
 

@@ -117,16 +117,27 @@ Require a current `/shotloom-review-before-pr` JSON result for this branch:
 ```json
 {
   "prReady": true,
+  "branch": "<current branch>",
+  "headSha": "<current HEAD>",
+  "dirty": false,
   "blockersRemaining": 0
 }
 ```
 
-If no current result exists, run `/shotloom-review-before-pr` now. If the
-current harness cannot invoke another skill directly, stop and tell the user to
-run `/shotloom-review-before-pr` first.
+Resolve the result file before trusting readiness:
 
-If `prReady=false`, stop and route the findings to
-`/shotloom-implement-code <findings-json>`.
+```bash
+safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
+result_path="/tmp/shotloom-before-pr-${safe_branch}-readiness.json"
+```
+
+If the file is missing, stale, for another branch, for another `HEAD`, has
+`dirty=true`, or has `prReady=false`, run `/shotloom-review-before-pr` now. If
+the current harness cannot invoke another skill directly, stop and tell the user
+to run `/shotloom-review-before-pr` first.
+
+If `prReady=false` after the rerun, stop. Let `/shotloom-review-before-pr` own
+the blocker-to-implementation loop; do not bypass it from PR creation.
 
 ### Step 4: Local CI-equivalent gates
 

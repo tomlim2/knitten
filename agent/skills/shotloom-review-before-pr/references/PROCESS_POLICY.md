@@ -14,7 +14,7 @@ Operational policy for `shotloom-review-before-pr`.
 | Review quality | Blocker contract, refute pass, calibration notes. | Original defect discovery or code edits. |
 | Single code | Small, low-risk code review with the `shotloom-review-code` checklist. | Triad roles, exhaustive boundary mirror checks. |
 | Triad | Broad defect discovery for large or risky diffs across runtime/contract, QA, and maintainer/product roles. | Sequential boundary batch execution or final prose polish. |
-| Implement blockers | Writing normalized blocker findings to a temporary JSON handoff file, passing that file to `shotloom-implement-code`, and re-running the owning review phase. | Finding discovery, PR creation, broad release gates. |
+| Implement blockers | Writing normalized blocker findings to a temporary JSON handoff file, passing that file to `shotloom-implement-code`, re-running the owning review phase, and committing loop fixes before `prReady=true`. | Finding discovery, PR creation, broad release gates, push. |
 | Docs | Final changed prose/comment/rustdoc and evidence clarity after code review settles. | Re-reviewing code behavior already owned by Single/Triad. |
 
 ## Phase Order
@@ -25,9 +25,11 @@ Run phases in this order:
 2. Selected main review: Single code or Triad.
 3. Code blocker handling: implement blocker findings, then repeat the selected
    main review until code blockers are zero or implementation needs user input.
+   Commit loop fixes before continuing to docs review.
 4. Docs review.
 5. Docs blocker handling: implement blocker findings, then repeat docs review
-   until docs blockers are zero or implementation needs user input.
+   until docs blockers are zero or implementation needs user input. Commit loop
+   fixes before returning `prReady=true`.
 6. Readiness summary.
 
 If implementation needs missing input or product/design judgment, stop with
@@ -94,12 +96,18 @@ Normalize supported findings before readiness output.
 
 ## Readiness JSON
 
-Every run ends with one JSON block.
+Every run writes one result file and prints the same JSON block. The result file
+path is `/tmp/shotloom-before-pr-<safe-branch>-readiness.json`, where
+`<safe-branch>` maps slash and whitespace to `-`.
 
 ```json
 {
   "prReady": false,
   "phase": "code-review",
+  "branch": "feat/example",
+  "headSha": "abc1234",
+  "dirty": true,
+  "resultPath": "/tmp/shotloom-before-pr-feat-example-readiness.json",
   "needsTriad": false,
   "blockersRemaining": 1,
   "findings": [
@@ -121,6 +129,8 @@ Every run ends with one JSON block.
 ```
 
 Set `prReady=true` when `blockersRemaining=0`.
+Set `dirty=false` only after blocker fixes are committed or no worktree changes
+were produced by this run.
 
 ## Review Summary
 

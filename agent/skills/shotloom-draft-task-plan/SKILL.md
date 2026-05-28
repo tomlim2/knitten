@@ -159,6 +159,20 @@ The spec must answer these questions before any Design Plan stage appears:
 | How is it built? | Design Plan stages with file/module boundaries, I/O blocks, and risk rows. |
 | How is it proven? | Verification gates, manual repro, and failure-path evidence. |
 
+If the spec touches a surface below, add a `Proof Obligation Matrix` before
+Design Plan stages:
+
+| Surface | Required proof |
+|---|---|
+| Public API, DTO, serde, TS mirror, or documented key list | Fixture, snapshot, type check, or docs/code cross-check that fails on drift. |
+| Shared UI primitive | Controlled/uncontrolled tests, native prop omission or support proof, ARIA/title precedence proof, and type-negative fixture for invalid prop combinations. |
+| Bridge command, runtime event, or state transition | Rejection matrix, event ordering proof, and post-state assertion. |
+| Provider or external payload adapter | Malformed item fixture, count/range bound, payload-size bound, and oversized well-shaped response test. |
+| Workflow, CI job, smoke test, cache, or package script | Zero-test rejection, exact smoke expectation, permission surface, cache exposure, and cancellation semantics proof. |
+| Node process supervisor | Spawn failure, child exit, descendant cleanup, POSIX process group, and Windows termination proof. |
+| Asset, path, catalog, digest, or filesystem output | Unknown-prefix, traversal, symlink, local URL, digest mismatch, and cleanup-key collision fixture. |
+| Durable docs, ADR, schema, or persisted metadata | ADR/schema/example/rejection-semantics cross-check. |
+
 If the spec adds or changes a validator, manifest, package script, file IO path,
 asset importer, or path resolver, add a `Validator Contract Matrix` before
 Design Plan stages:
