@@ -39,4 +39,4 @@ Default-counter rules. The harness biases toward each opposite; these counter at
   evidence in the PR body.
 - **Main chore lane** — Load `main-chore-lane.md` before committing or pushing from the primary `main` checkout in a worktree-first repo.
 
-PR-phase rules: `pr-mutate.md`, `pr-comment.md`, `pr-create.md`. Repo-specific overrides: `shotloom.md`, `cinev-git.md`.
+PR-phase rules: `pr-mutate.md`, `pr-comment.md`, `pr-create.md`. Repo-specific override: `cinev-git.md`.

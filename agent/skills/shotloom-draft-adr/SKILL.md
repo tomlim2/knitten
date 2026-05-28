@@ -94,4 +94,4 @@ Next steps:
 - ADR status values: Proposed → Accepted → Superseded. Never skip Proposed.
 - Filename format is enforced by `scripts/validate-doc-paths.mjs` — `adr-NNNN-kebab-title.md`.
 - If the decision is small enough to fit in a commit message or PR description, it may not warrant an ADR. Ask the user if unsure.
-- Per `~/.claude/rules/shotloom.md`, ADR additions require `docs/adr/README.md` update in the same PR.
+- ADR additions require `docs/adr/README.md` update in the same PR.

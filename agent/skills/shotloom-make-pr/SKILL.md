@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/git-defaults.md,rules/shotloom.md,rules/test-write.md
+context-rules: rules/git-defaults.md,rules/test-write.md
 exclude-when: unreal,obsidian
 ---
 
@@ -31,8 +31,7 @@ PR body and ask before posting any redirect comment.
 ## Binding rules (CRITICAL)
 
 - **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git-defaults.md`.)
-- **Use `tomlim2` account only.** Follow the active-login check in `rules/shotloom.md`; do not treat inactive secondary-account noise in `gh auth status` as a blocker by itself.
-- **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort.
+- **Use `tomlim2` account and commit identity only.** Run `agent/lib/shotloom-github-guard.mjs --require-git-author`.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
 - **All PR body text in English** (Shotloom convention).
 - **Assign every PR to `@me`.** This applies to both draft and ready-for-review PRs.
@@ -67,20 +66,8 @@ git fetch origin main
 status=$(git status --short)
 [ -z "$status" ] || { echo "ERROR: working tree is not clean"; git status --short; exit 1; }
 
-identity="$(git config user.name) <$(git config user.email)>"
-[ "$identity" = "tomlim2 <deemo@vonvon.me>" ] || {
-  echo "ERROR: git identity must be tomlim2 <deemo@vonvon.me> (got: $identity)"
-  exit 1
-}
-
-gh_login=$(gh api user --jq .login 2>/dev/null) || {
-  echo "ERROR: unable to read active GitHub login"
-  exit 1
-}
-[ "$gh_login" = "tomlim2" ] || {
-  echo "ERROR: active GitHub login must be tomlim2 (got: $gh_login)"
-  exit 1
-}
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author
 
 default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
 default_branch="${default_branch#origin/}"

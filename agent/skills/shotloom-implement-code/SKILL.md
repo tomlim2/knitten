@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: implementation
 context-profile: rust-bevy
-context-rules: rules/shotloom.md,rules/code-write.md,rules/test-write.md
+context-rules: rules/code-write.md,rules/test-write.md
 exclude-when: unreal,obsidian
 ---
 
@@ -43,7 +43,7 @@ findings JSON path, or slug. Do not infer from chat memory.
 Run from the Shotloom worktree:
 
 ```bash
-knitten_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 node "$knitten_root/agent/lib/shotloom-worktree-sanity.mjs" --allow-dirty
 ```
 

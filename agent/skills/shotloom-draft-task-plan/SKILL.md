@@ -2,7 +2,7 @@
 description: Compatibility entry for Shotloom task specs; prefer shotloom-draft-spec for user-facing flows
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
-context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
+context-rules: rules/shotloom-docs-lane.md
 ---
 
 # shotloom-draft-task-plan

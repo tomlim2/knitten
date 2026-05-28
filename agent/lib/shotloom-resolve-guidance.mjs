@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import path from "node:path";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
 function argValue(name) {
   const prefix = `${name}=`;
@@ -24,15 +27,16 @@ function runGit(args, cwd) {
 function configuredShotloomRoot() {
   try {
     const output = execFileSync(
-      "bash",
-      ["-lc", "~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom"],
+      "node",
+      [path.join(scriptDir, "resolve-repo-path.mjs"), "shotloom"],
       {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "ignore"],
       },
     ).trim();
     const match = output.match(/^RESOLVED_PATH=(.+)$/m);
-    return match ? path.resolve(match[1]) : "";
+    const resolved = match ? match[1] : output.split(/\r?\n/).find(Boolean);
+    return resolved ? path.resolve(resolved) : "";
   } catch {
     return "";
   }

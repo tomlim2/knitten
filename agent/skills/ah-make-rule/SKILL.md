@@ -42,7 +42,7 @@ File name: `{topic}.md` in `agent/rules/`.
 
 - Lowercase, hyphen-separated, short (1-3 words).
 - Scope prefix if domain-specific: `cinev-*`.
-- Examples: `git-defaults.md`, `author.md`, `cinev-git.md`, `shotloom.md`.
+- Examples: `git-defaults.md`, `author.md`, `cinev-git.md`, `pr-create.md`.
 
 ---
 

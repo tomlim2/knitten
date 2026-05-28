@@ -143,4 +143,4 @@ This skill is read-only. If the user asks to fix, that's a separate turn — do 
 
 - `~/.claude/skills/shotloom-review-before-pr/SKILL.md` — code-quality review pass; complementary, runs first
 - `~/.claude/skills/shotloom-make-pr/SKILL.md` — PR creation; this skill should run before that
-- `~/.claude/rules/shotloom.md` — repo-specific Pattern H/I/T context (loaded automatically when audit runs in a shotloom worktree)
+- `agent/skills/shotloom-review-code/reference.md` — repo-specific Pattern H/I/T context

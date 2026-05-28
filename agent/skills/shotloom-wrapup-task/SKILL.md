@@ -58,8 +58,7 @@ fi
 
 # Resolve STL-NN from (in order):
 #   1. $ARGUMENTS
-#   2. PR body `Related to STL-NN` (NOT "Resolves STL-NN" in commits — that
-#      string only appears in PR descriptions per ~/.claude/rules/shotloom.md)
+#   2. PR body `Related to STL-NN` (NOT "Resolves STL-NN" in commits)
 #   3. recent commit body on the branch (Related to STL-NN footer)
 #   4. (do NOT parse branch name — Shotloom branches never carry STL-NN)
 ```

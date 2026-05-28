@@ -119,14 +119,14 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 ---
 
-## Rules (25)
+## Rules (24)
 
 Rules in `agent/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
 | Load | Count | Files |
 |------|------:|-------|
 | `auto` | 7 | `ambiguity-scoring.md`, `behavior.md`, `canonical-first.md`, `git-defaults.md`, `security.md`, `session-start.md`, `verify-before-report.md` |
-| `triggered` | 17 | `author.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `main-chore-lane.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom-docs-lane.md`, `shotloom.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
+| `triggered` | 16 | `author.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `main-chore-lane.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom-docs-lane.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
 | `index` | 1 | `index.md` |
 <!-- /generated:readme-inventory -->
 

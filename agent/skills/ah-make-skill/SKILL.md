@@ -137,7 +137,7 @@ comma-separated scalar fields so the lightweight frontmatter parser can validate
 them without loading a YAML library:
 
 ```yaml
-context-rules: rules/shotloom.md,rules/test-write.md
+context-rules: rules/code-write.md,rules/test-write.md
 context-standards: standards/review/review-template.md
 context-repo-docs: repo:docs/guidelines/review-rust.md
 context-references: reference.md,references/CHECKLIST.md

@@ -39,7 +39,6 @@ For "what exists in this repo?" use [`README.md`](README.md). For system terms s
 
 | Goal | Read |
 |------|------|
-| Work in shotloom repo | [`agent/rules/shotloom.md`](agent/rules/shotloom.md) |
 | Git op in a CINEV repo | [`agent/rules/cinev-git.md`](agent/rules/cinev-git.md) → [`agent/skills/cci-manage-art-branch/SKILL.md`](agent/skills/cci-manage-art-branch/SKILL.md) → `references/CINEV-GIT-WORKFLOW.md` |
 | Validate UE asset names | [`agent/skills/ue-validate-asset-name/SKILL.md`](agent/skills/ue-validate-asset-name/SKILL.md) → `references/UNREAL-ENGINE-ASSET.md` |
 | Set up a new machine | [`README.md`](README.md) "Setup" section |

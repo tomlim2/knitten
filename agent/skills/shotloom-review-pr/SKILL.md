@@ -97,7 +97,7 @@ Read fresh in the worktree:
 - `docs/guidelines/documentation-standard.md` when docs/comments changed
 - `docs/guidelines/pr-guideline.md`
 
-Also read `~/.claude/rules/pr-comment.md` and `~/.claude/rules/shotloom.md`
+Also read `agent/rules/pr-comment.md` and `agent/rules/git-defaults.md`
 for approval gates.
 
 ### Step 4: Inspect Diff

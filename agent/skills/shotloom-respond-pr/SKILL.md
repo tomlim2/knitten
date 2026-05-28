@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/git-defaults.md,rules/shotloom.md
+context-rules: rules/git-defaults.md
 exclude-when: unreal,obsidian
 ---
 
@@ -22,10 +22,11 @@ deferred-reply evidence, not this skill's owned work queue.
 
 ## Mandatory First Gate
 
-Before any other command, confirm the PR is assigned to `tomlim2`:
+Before any other command, confirm the active GitHub login, git identity, and PR assignment:
 
 ```bash
-node agent/lib/github-pr-assignee-guard.mjs "$ARGUMENTS"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author --pr "$ARGUMENTS"
 ```
 
 If this check fails, stop. Do not read comments, checkout, edit, commit, push,
@@ -45,14 +46,9 @@ Usage: `/shotloom-respond-pr <pr-number>`
 ### Step 1: Sanity check
 
 1. Validate `$ARGUMENTS` is a PR number.
-2. `gh auth status` — confirm `tomlim2` is the active account.
-   - If `gh auth status` exits nonzero only because an inactive secondary
-     account has an invalid token, continue when the active account is
-     `tomlim2`.
-   - If the active account is not `tomlim2`, stop and switch accounts.
-3. `git log -1 --format="%an <%ae>"` — confirm `tomlim2 <deemo@vonvon.me>`.
-4. Confirm repo is `CINEV/shotloom`.
-5. Resolve the PR branch before reading review comments or editing:
+2. Run `node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author --pr "$ARGUMENTS"`.
+3. Confirm repo is `CINEV/shotloom`.
+4. Resolve the PR branch before reading review comments or editing:
 
    ```bash
    HEAD_REF=$(gh pr view "$ARGUMENTS" --repo CINEV/shotloom --json headRefName --jq '.headRefName')
@@ -447,12 +443,12 @@ means for the PR without reading every comment verbatim.
 
 Invoking this skill is blanket authorization for the workflow. **Do NOT pause for per-step approval.** The following actions are auto-approved inside the skill:
 
-- File edits, targeted staging, `/shotloom-commit`, and `git push` (per `agent/rules/shotloom.md` auto-commit exemption).
+- File edits, targeted staging, `/shotloom-commit`, and `git push`.
 - `gh pr edit "$ARGUMENTS" --body-file "$BODY_FILE"` in Step 6 item 5 — **body-only** edit, scoped to refreshing Summary / Validation / fix log so the PR description matches the now-pushed branch. This is not a state-changing PR mutation; it cannot affect mergeability, base, title, draft state, or labels. Only stop on CI failure or genuinely unexpected event.
 
 **EXCEPTION (still requires explicit per-action approval, even inside this skill):**
 
-- Step 8 (executing the Step 7 reply plan, suppressed-item review-level summary, thread resolution, and reviewer re-request roster) — show the plan and wait for explicit user OK per `agent/rules/shotloom.md` and `agent/rules/git-defaults.md`. The auto-commit/auto-push exemption covers commits and pushes only — any GitHub-visible comment, review submission, or reviewer-roster mutation by this skill stays gated.
+- Step 8 (executing the Step 7 reply plan, suppressed-item review-level summary, thread resolution, and reviewer re-request roster) — show the plan and wait for explicit user OK per this skill and `agent/rules/git-defaults.md`. Commits and pushes are covered by this skill; GitHub-visible comments, review submissions, and reviewer-roster mutations stay gated.
 - `gh pr edit --base`, `--title`, `--draft`, label changes — never done by this skill; if they were, they would still need approval.
 - `gh pr edit --body` without `--body-file` — never done by this skill.
 - `gh pr merge`, `gh pr close`, `gh pr reopen`, `gh pr ready`, `gh pr update-branch`, `gh pr review --approve`/`--request-changes`, top-level PR comments via `/issues/<N>/comments` — never done by this skill.
@@ -470,7 +466,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 
 ## Binding Rules
 
-- **Repo-specific rule wins.** `agent/rules/shotloom.md` is the primary source for this skill (auto-commit/auto-push exemption, gh account, identity, gate set). `agent/rules/git-defaults.md` is supplementary — it applies only where shotloom-git.md does not override.
+- **Skill-local GitHub policy wins.** This skill owns its auto-commit, push, reply, and approval gates.
 - **GitHub-to-GitHub scope.** This skill does not own issue triage, product
   decisions, or non-GitHub follow-up execution. It may create or link STL
   issues only as evidence for deferred GitHub review replies.
@@ -494,7 +490,7 @@ Main thread orchestrates: gather results, stage, commit, post replies.
 ## Related
 
 - `agent/skills/shotloom-review-before-pr/SKILL.md`
-- `agent/rules/git-defaults.md`, `agent/rules/shotloom.md`
+- `agent/rules/git-defaults.md`
 - `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec
 
 ## Additional Resources

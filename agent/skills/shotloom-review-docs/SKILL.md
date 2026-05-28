@@ -7,7 +7,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/shotloom.md
+context-references: reference.md
 exclude-when: unreal,obsidian
 ---
 
@@ -39,7 +39,7 @@ current working-tree changes produced by that loop.
 ### Step 1: Worktree Sanity
 
 ```bash
-knitten_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 node "$knitten_root/agent/lib/shotloom-worktree-sanity.mjs" --require-ahead --allow-dirty
 ```
 

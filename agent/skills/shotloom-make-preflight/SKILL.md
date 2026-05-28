@@ -7,7 +7,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/shotloom.md
+context-rules: rules/reread-repo-conventions.md
 exclude-when: unreal,obsidian
 ---
 
@@ -65,7 +65,7 @@ Then enumerate and read every file under:
 From `agent/` (canonical shared artifacts — in-repo `docs/guidelines/` is canonical for Shotloom writing/review rules and is loaded in Step 2):
 
 - the PR-scope policy in `agent/skills/shotloom-auto-pr/reference.md` — PR scope classification policy
-- `agent/rules/shotloom.md` — hub rule, gh auth, auto-commit, CI exclude flags
+- `agent/lib/shotloom-github-guard.mjs` — Shotloom GitHub identity
 
 ### Step 4: Read ADR index entries
 
@@ -82,7 +82,7 @@ Emit:
 **shotloom HEAD:** <short-sha>
 **Loaded:**
 - Repo: AGENTS, CONTRIBUTING, CLAUDE, ADR index, N guideline files, M .agent files
-- Agent-hub: agent/rules/shotloom.md, agent/skills/shotloom-auto-pr/reference.md (PR-scope policy)
+- Agent-hub: agent/lib/shotloom-github-guard.mjs, agent/skills/shotloom-auto-pr/reference.md (PR-scope policy)
 - ADR titles indexed: <count>
 
 **Fork this session for each work task.**
@@ -110,4 +110,4 @@ If the user asks to work on code in this session, refuse and tell them to fork f
 ## Related
 
 - [`shotloom-start-task`](../shotloom-start-task/SKILL.md) — run inside the forked session for per-task setup (Linear fetch, worktree, category detect)
-- `agent/rules/shotloom.md` — hub
+- `agent/lib/shotloom-github-guard.mjs` — hub GitHub guard

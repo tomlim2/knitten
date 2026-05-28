@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/git-defaults.md,rules/shotloom.md
+context-rules: rules/git-defaults.md
 exclude-when: unreal,obsidian
 ---
 
@@ -23,7 +23,7 @@ Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing noth
 
 ## Approval exemption
 
-This skill is exempt from the per-PR-comment / per-PR-action approval gate that `agent/rules/git-defaults.md` and `agent/rules/shotloom.md` impose. Authorized 2026-04-21 (user). Mirrored in `agent/rules/shotloom.md` "Approval-gate exceptions" table.
+This skill is exempt from the per-PR-comment / per-PR-action approval gate that `agent/rules/git-defaults.md` imposes. Authorized 2026-04-21 (user). This skill owns the exemption list below.
 
 **Auto-approved inside the react cycle:**
 
@@ -33,7 +33,7 @@ This skill is exempt from the per-PR-comment / per-PR-action approval gate that 
 - reviewer re-request (`POST /pulls/<N>/requested_reviewers`)
 - PR body refresh (`gh pr edit <N> --body <content>`) — body content only, no state mutation
 
-**Still requires explicit per-action user approval, even inside auto-pr:** any `gh pr` state-changing flag (create / merge / close / reopen / ready / `edit --base|--title|--draft|--label` / `update-branch`), top-level PR comments, non-`COMMENT` reviews, thread resolution. Canonical list in `agent/rules/shotloom.md` "Approval-gate exceptions" table.
+**Still requires explicit per-action user approval, even inside auto-pr:** any `gh pr` state-changing flag (create / merge / close / reopen / ready / `edit --base|--title|--draft|--label` / `update-branch`), top-level PR comments, non-`COMMENT` reviews, thread resolution.
 
 The ready-to-merge report below is logged, not invoked.
 
@@ -48,7 +48,7 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
 
 ## Start workflow
 
-1. Pre-flight: confirm the active login per `rules/shotloom.md`; `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
+1. Pre-flight: run `agent/lib/shotloom-github-guard.mjs`; `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
 2. Resolve PR number. If no arg: `gh pr view --json number -q .number`.
 3. Confirm PR is assigned to `tomlim2`:
    ```bash
@@ -304,4 +304,4 @@ See `reference.md` — "Guideline Leak Fixes", "State file shapes", "Journal on 
 - `agent/skills/shotloom-make-pr/SKILL.md` — PR creation
 - the PR-scope policy in `reference.md` — in-scope classification
 - `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec
-- `agent/rules/shotloom.md` — pre-PR gates
+- `agent/lib/shotloom-github-guard.mjs` — Shotloom GitHub identity

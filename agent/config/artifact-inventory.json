@@ -954,19 +954,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/rules/shotloom.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/rules/shotloom.md",
-      "artifact-type": "rule",
-      "owner-domain": "core",
-      "privacy-risk": "public-safe",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:agent/rules/slack.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/rules/slack.md",

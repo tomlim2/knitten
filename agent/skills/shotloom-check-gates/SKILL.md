@@ -72,7 +72,7 @@ For any failure: include the first 20 lines of error output inline, followed by 
 
 ## Notes
 
-- Build gate MUST use `--exclude shotloom-desktop` per `~/.claude/rules/shotloom.md` (Tauri icon.png pre-existing issue).
+- Build gate MUST use `--exclude shotloom-desktop`; helper rationale lives in [reference.md](reference.md).
 - `cargo clippy -- -D warnings` is what CI runs — any warning is a block.
 - `/shotloom-commit` does not call this skill by default. It delivers the
   checklist and drafts the commit.

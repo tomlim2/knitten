@@ -2,7 +2,7 @@
 description: Pre-write gate for Shotloom coding - Linear fetch, worktree setup, convention re-read, persisted briefing, spec-risk handoff
 argument-hint: "[STL-NN | linear-url | category]"
 allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
-context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
+context-rules: rules/shotloom-docs-lane.md
 ---
 
 # shotloom-start-task
@@ -30,7 +30,8 @@ git config user.name
 git config user.email
 git status --short
 git remote get-url origin
-bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom
 ```
 
 Verify: resolver returns the Shotloom main checkout path; cwd is Shotloom by
@@ -46,7 +47,7 @@ stash/commit/proceed choices.
 Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body
 `Related to STL-NN` on the current branch. Do **not** parse the branch name for
 an STL prefix — Shotloom branches use `feat/<description>` per
-`agent/rules/shotloom.md` and never carry an STL ID.
+`CONTRIBUTING.md` and never carry an STL ID.
 
 If an identifier is found, use the currently available Linear connector to
 fetch the issue. If no Linear `get_issue` tool is visible, discover it with a
@@ -64,8 +65,7 @@ detection.
 ### Step 2.5: Create worktree for the Linear issue
 
 Skip this step if no Linear issue was resolved. Before deriving a branch, read
-`CONTRIBUTING.md` Branch Naming Policy and `agent/rules/shotloom.md`
-Worktree dir naming.
+`CONTRIBUTING.md` Branch Naming Policy.
 
 Derive the canonical branch from the Linear title. If the current branch equals
 that derived branch, stay in the current checkout or worktree. Otherwise create
