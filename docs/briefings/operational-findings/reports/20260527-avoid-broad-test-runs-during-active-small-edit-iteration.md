@@ -6,7 +6,7 @@ initial-source: user-report
 area: workflow
 contexts:
   - Shotloom /dev/ui stickerbook iteration; user asked whether to document this in Knitten report
-promotion-target: agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md
+promotion-target: agent/skills/shotloom-implement-code/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

@@ -59,6 +59,9 @@ reply plans, replies, thread resolution, or reviewer re-request.
 
 ### Step 2: Read PR + build start context
 
+Read [`PROMOTED_FINDINGS.md`](PROMOTED_FINDINGS.md) before fetching the PR
+snapshot. Apply matching entries as response-round checks.
+
 Save each fetch to a per-PR cache file so later steps can re-read without re-fetching:
 
 ```bash

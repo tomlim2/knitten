@@ -26,13 +26,3 @@ branch setup, planning, and handoff checks. Read it during
   warn on mismatch before PR creation, and avoid `codex/` for Shotloom task
   branches unless the user explicitly requests it.
 - Status: active
-
-### Defer broad tests during small-edit iteration
-
-- Source: `docs/briefings/operational-findings/reports/20260527-avoid-broad-test-runs-during-active-small-edit-iteration.md`
-- Trigger: a task is in active small-edit UI, copy, or style iteration.
-- Check: verify the plan uses targeted validation during iteration and reserves
-  broad gates for commit, review-before-pr, make-pr, or explicit user request.
-- Fix Shape: write the briefing or handoff with targeted checks first, then name
-  the broader gate point.
-- Status: active

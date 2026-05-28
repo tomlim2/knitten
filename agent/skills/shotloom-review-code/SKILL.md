@@ -61,6 +61,7 @@ Read:
 
 - `reference.md`
 - `reference-promoted.md`
+- `PROMOTED_FINDINGS.md`
 
 These files contain recurring findings and review patterns that are not already
 owned by the Shotloom repo guidance.
@@ -96,6 +97,8 @@ as claims to verify.
 2. `reference.md` — recurring review findings and stable sweep catalog.
 3. `reference-promoted.md` — promoted review patterns generalized from
    actual Shotloom PR findings.
+4. `PROMOTED_FINDINGS.md` — active operational findings promoted into this
+   code review layer.
 
 ## Diff under review
 
@@ -116,10 +119,11 @@ guideline is the authority for what counts as a defect.
 
 ### Accumulated review references
 
-Run only the triggered checks from `reference.md` and `reference-promoted.md`.
-These references may add grep-catchable sweeps or promoted defect patterns that
-are not already covered by the resolver-loaded Shotloom guidance. Shotloom
-guideline priorities remain authoritative.
+Run only the triggered checks from `reference.md`, `reference-promoted.md`, and
+`PROMOTED_FINDINGS.md`. These references may add grep-catchable sweeps,
+promoted defect patterns, or active operational review lenses that are not
+already covered by the resolver-loaded Shotloom guidance. Shotloom guideline
+priorities remain authoritative.
 
 Triage taxonomy (both phases):
 - **defect** — cite the rule (in-repo §-section, directly related ADR, or skill-side pattern) it violates.
@@ -185,3 +189,4 @@ Print the subagent report without re-summarizing the findings.
 
 [reference.md](reference.md) — stable bash command catalog.
 [reference-promoted.md](reference-promoted.md) — review-derived promoted patterns loaded after the stable catalog.
+[PROMOTED_FINDINGS.md](PROMOTED_FINDINGS.md) — active operational findings promoted into code review.

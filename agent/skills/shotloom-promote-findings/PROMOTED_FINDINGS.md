@@ -7,9 +7,10 @@ layer that consumes them. Use it with `/shotloom-promote-findings`.
 
 | Layer | Destination | Use when |
 |---|---|---|
-| Review | `agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md` | the lesson belongs in pre-PR review or code review judgement |
-| Task start | `agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md` | the lesson affects issue intake, worktree setup, branch policy, or handoff |
-| Gates | `agent/skills/shotloom-check-gates/PROMOTED_FINDINGS.md` | the lesson is mechanically checkable or a validator candidate |
+| Planning and task intake | `agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md` | the lesson affects issue intake, worktree setup, branch policy, or handoff |
+| Implementation | `agent/skills/shotloom-implement-code/PROMOTED_FINDINGS.md` | the lesson affects coding, editing, or validation while implementing |
+| Code review | `agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md` | the lesson belongs in Rust, TypeScript, frontend, or test-quality review |
+| Docs and workflow review | `agent/skills/shotloom-review-docs/PROMOTED_FINDINGS.md` | the lesson belongs in docs, markup, workflow YAML, or prose-contract review |
 | Obsidian | operational-finding completion policy | the reusable action is complete and only historical context remains |
 
 ## Promotion Shape
@@ -23,6 +24,10 @@ Each promoted entry names:
 - Status.
 
 Prefer one concrete trigger and one concrete check over narrative summary.
+
+Do not create a promoted-finding ledger for `shotloom-check-gates`. A mechanical
+validator idea stays in the owning review ledger until an actual helper or gate
+implements it.
 
 ## Promotion Loop
 

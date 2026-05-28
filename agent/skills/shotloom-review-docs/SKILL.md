@@ -7,7 +7,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-references: reference.md
+context-references: reference.md,PROMOTED_FINDINGS.md
 exclude-when: unreal,obsidian
 ---
 
@@ -100,6 +100,8 @@ evidence. Treat commit and PR text as claims to verify.
 1. The guidance resolver output from Step 2. Read every existing Shotloom file
    listed in `read[]`.
 2. `reference.md` — supplementary sweep catalog for Patterns G + H + I + M + S.
+3. `PROMOTED_FINDINGS.md` — active operational findings promoted into docs,
+   markup, and workflow review.
 
 ## Diff under review
 
@@ -120,8 +122,9 @@ priority. The resolver-loaded in-repo guideline is the authority.
 
 ### Phase 2 — Skill-side supplemental review
 
-Run the triggered G/H/I/M/S checks from `reference.md`. Resolver-loaded
-Shotloom guidance remains authoritative.
+Run the triggered G/H/I/M/S checks from `reference.md` and matching active
+entries from `PROMOTED_FINDINGS.md`. Resolver-loaded Shotloom guidance remains
+authoritative.
 
 Triage taxonomy (both phases):
 - **defect** — cite the rule (in-repo §-section, ADR, or skill-side pattern) it violates.

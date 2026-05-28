@@ -28,9 +28,10 @@ rewrite Shotloom source code.
 
 | Layer | Consuming skill | Ledger |
 |---|---|---|
-| Review and pre-PR readiness | `shotloom-review-before-pr` | `agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md` |
-| Task intake and implementation handoff | `shotloom-start-task` | `agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md` |
-| Local gate / validator candidates | `shotloom-check-gates` | `agent/skills/shotloom-check-gates/PROMOTED_FINDINGS.md` |
+| Planning and task intake | `shotloom-start-task` | `agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md` |
+| Implementation | `shotloom-implement-code` | `agent/skills/shotloom-implement-code/PROMOTED_FINDINGS.md` |
+| Code review | `shotloom-review-code` | `agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md` |
+| Docs and workflow review | `shotloom-review-docs` | `agent/skills/shotloom-review-docs/PROMOTED_FINDINGS.md` |
 | Promotion routing policy | this skill | `agent/skills/shotloom-promote-findings/PROMOTED_FINDINGS.md` |
 
 ## Workflow
@@ -65,11 +66,16 @@ Use the narrowest destination:
 
 | Destination | Promote when |
 |---|---|
+| Planning ledger | the task intake, branch setup, handoff, or implementation plan needs a reusable check |
+| Implementation ledger | the coding/editing/validation loop needs a reusable constraint |
 | Review ledger | future reviewers can catch the issue by reading a diff, PR surface, or documented workflow evidence |
-| Start-task ledger | the task intake, branch setup, handoff, or implementation plan needs a reusable check |
-| Gate ledger | the finding is mechanically checkable, or it defines a candidate command/helper to add later |
 | This skill ledger | the finding improves the promotion loop itself |
 | Obsidian asset | the issue is resolved and only historical context remains |
+
+Do not create a `PROMOTED_FINDINGS.md` ledger for `shotloom-check-gates`.
+Mechanical checks belong there only after an actual gate/helper exists. Until
+then, keep the reusable pattern in the owning review ledger and leave validator
+implementation as a follow-up.
 
 Skip findings that are too vague, already covered in the target ledger, or tied
 to one non-repeatable incident.

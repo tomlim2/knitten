@@ -6,7 +6,7 @@ initial-source: user-report
 area: skill
 contexts:
   - Shotloom commit workflow review during editor UI stickerbook work; user asked whether commit or push should run gates and where this is specified
-promotion-target: agent/skills/shotloom-check-gates/PROMOTED_FINDINGS.md
+promotion-target: agent/skills/shotloom-check-gates/reference.md
 urgent: false
 ---
 

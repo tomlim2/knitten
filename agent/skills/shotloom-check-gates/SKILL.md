@@ -11,8 +11,6 @@ iteration. Use `--full` before push, before PR, or when debugging a CI red.
 
 This skill is a helper, not the source of Shotloom gate policy. The helper set
 and guideline-leak rationale live in [reference.md](reference.md).
-Promoted validator candidates live in [PROMOTED_FINDINGS.md](PROMOTED_FINDINGS.md);
-read that ledger before changing gate behavior.
 
 ## Arguments
 

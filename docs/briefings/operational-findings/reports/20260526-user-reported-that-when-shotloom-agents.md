@@ -6,7 +6,7 @@ initial-source: user-report
 area: workflow
 contexts:
   - shotloom-review-before-pr on CINEV/shotloom PR #397; worktree <shotloom-worktree>/respond-pr-397
-promotion-target: agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md
+promotion-target: agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

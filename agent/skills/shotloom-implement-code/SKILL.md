@@ -106,6 +106,9 @@ from unstated intent.
 
 ### Step 4: Implement
 
+Before editing source, read [`PROMOTED_FINDINGS.md`](PROMOTED_FINDINGS.md) and
+apply entries that match the active implementation surface or validation loop.
+
 Apply the smallest source changes that satisfy the loaded spec or supplied
 findings.
 

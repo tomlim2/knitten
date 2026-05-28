@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-28T11:26:22.749Z",
-  "source-commit": "718b6b23d095eb5d107b9da11fece7e56feb1a42",
+  "generated-at": "2026-05-28T12:04:00.801Z",
+  "source-commit": "b44061c5649e268ddd82324dd04d7a6697673e64",
   "source-dirty": true,
   "rows": [
     {
@@ -2098,19 +2098,6 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/skills/shotloom-check-gates/PROMOTED_FINDINGS.md",
-      "row-type": "artifact",
-      "source-artifact-path": "agent/skills/shotloom-check-gates/PROMOTED_FINDINGS.md",
-      "artifact-type": "doc",
-      "owner-domain": "repo",
-      "privacy-risk": "needs-scrub",
-      "dependencies": [],
-      "proposed-destination": "undecided",
-      "compatibility-need": "unknown",
-      "classification-stage": "undecided",
-      "review-state": "pending"
-    },
-    {
       "row-id": "artifact:agent/skills/shotloom-check-gates/reference.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-check-gates/reference.md",
@@ -2140,6 +2127,19 @@
       "row-id": "artifact:agent/skills/shotloom-draft-task-plan/reference.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-draft-task-plan/reference.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/skills/shotloom-implement-code/PROMOTED_FINDINGS.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-implement-code/PROMOTED_FINDINGS.md",
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
@@ -2189,9 +2189,9 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/skills/shotloom-respond-pr/reference.md",
+      "row-id": "artifact:agent/skills/shotloom-respond-pr/PROMOTED_FINDINGS.md",
       "row-type": "artifact",
-      "source-artifact-path": "agent/skills/shotloom-respond-pr/reference.md",
+      "source-artifact-path": "agent/skills/shotloom-respond-pr/PROMOTED_FINDINGS.md",
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
@@ -2202,9 +2202,9 @@
       "review-state": "pending"
     },
     {
-      "row-id": "artifact:agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md",
+      "row-id": "artifact:agent/skills/shotloom-respond-pr/reference.md",
       "row-type": "artifact",
-      "source-artifact-path": "agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md",
+      "source-artifact-path": "agent/skills/shotloom-respond-pr/reference.md",
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
@@ -2293,6 +2293,19 @@
       "review-state": "pending"
     },
     {
+      "row-id": "artifact:agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
       "row-id": "artifact:agent/skills/shotloom-review-code/reference-promoted.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-review-code/reference-promoted.md",
@@ -2309,6 +2322,19 @@
       "row-id": "artifact:agent/skills/shotloom-review-code/reference.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/skills/shotloom-review-code/reference.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/skills/shotloom-review-docs/PROMOTED_FINDINGS.md",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/skills/shotloom-review-docs/PROMOTED_FINDINGS.md",
       "artifact-type": "doc",
       "owner-domain": "repo",
       "privacy-risk": "needs-scrub",
@@ -3339,6 +3365,71 @@
       "artifact-type": "doc",
       "owner-domain": "unknown",
       "privacy-risk": "unknown",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/briefings/operational-findings/reports/20260528-shotloom-bridge-stage-commands-need-contract-matrix.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/operational-findings/reports/20260528-shotloom-bridge-stage-commands-need-contract-matrix.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/briefings/operational-findings/reports/20260528-shotloom-compact-editor-errors-must-not-be-hidden.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/operational-findings/reports/20260528-shotloom-compact-editor-errors-must-not-be-hidden.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/briefings/operational-findings/reports/20260528-shotloom-release-workflows-need-exact-safety-gates.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/operational-findings/reports/20260528-shotloom-release-workflows-need-exact-safety-gates.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/briefings/operational-findings/reports/20260528-shotloom-stage-runtime-sync-needs-symmetric-observable-transitions.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/operational-findings/reports/20260528-shotloom-stage-runtime-sync-needs-symmetric-observable-transitions.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:docs/briefings/operational-findings/reports/20260528-shotloom-ui-primitives-need-contract-matrix.md",
+      "row-type": "artifact",
+      "source-artifact-path": "docs/briefings/operational-findings/reports/20260528-shotloom-ui-primitives-need-contract-matrix.md",
+      "artifact-type": "doc",
+      "owner-domain": "repo",
+      "privacy-risk": "needs-scrub",
       "dependencies": [],
       "proposed-destination": "undecided",
       "compatibility-need": "unknown",
