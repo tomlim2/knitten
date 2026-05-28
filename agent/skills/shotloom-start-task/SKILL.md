@@ -19,28 +19,19 @@ Accepts optional `STL-NN`, Linear URL, or category (`rust` / `ts` / `bridge` /
 
 ### Step 1: Pre-flight (MANDATORY — never skip)
 
-Run in parallel:
+Run:
 
 ```bash
-gh auth status
-git rev-parse --show-toplevel
-git rev-parse --git-common-dir
-git rev-parse --abbrev-ref HEAD
-git config user.name
-git config user.email
-git status --short
-git remote get-url origin
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom
+node "$knitten_root/agent/lib/shotloom-preflight.mjs" --allow-dirty
 ```
 
-Verify: resolver returns the Shotloom main checkout path; cwd is Shotloom by
-toplevel, git-common-dir, or origin URL; active `gh` user is `tomlim2` per
-`gh api user --jq .login`; Shotloom repo git identity matches `agent/rules/shotloom-docs-lane.md`
-(`tomlim2 <deemo@vonvon.me>`, warn only); dirty changes are reported with
-stash/commit/proceed choices.
+Machine contract: exit `0` means pass; nonzero means stop. For structured
+output, add `--print-json` and read `ok: true|false`.
 
 **Hard stop on wrong repo or wrong gh user.**
+If dirty, report the dirty paths and offer stash / commit / proceed choices.
+Warn when git identity differs from `tomlim2 <deemo@vonvon.me>`.
 
 ### Step 2: Resolve Linear issue
 

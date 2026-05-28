@@ -20,19 +20,6 @@ Scope: GitHub PR review response only. Input starts from GitHub PR review
 state; output returns to GitHub PR review surfaces. Linear/STL links are
 deferred-reply evidence, not this skill's owned work queue.
 
-## Mandatory First Gate
-
-Before any other command, confirm the active GitHub login, git identity, and PR assignment:
-
-```bash
-knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author --pr "$ARGUMENTS"
-```
-
-If this check fails, stop. Do not read comments, checkout, edit, commit, push,
-refresh the PR body, build a reply plan, post replies, resolve threads, or
-re-request review.
-
 ## Arguments
 
 - `<pr-number>` - GitHub PR number (e.g., 85)
@@ -43,32 +30,32 @@ Usage: `/shotloom-respond-pr <pr-number>`
 
 ## Workflow
 
-### Step 1: Sanity check
+### Step 1: Pre-flight
 
 1. Validate `$ARGUMENTS` is a PR number.
-2. Run `node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author --pr "$ARGUMENTS"`.
-3. Confirm repo is `CINEV/shotloom`.
-4. Resolve the PR branch before reading review comments or editing:
+2. Run preflight and resolve the PR branch before reading review comments or editing:
 
    ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+   node "$knitten_root/agent/lib/shotloom-preflight.mjs" --require-git-author --pr "$ARGUMENTS"
+
    HEAD_REF=$(gh pr view "$ARGUMENTS" --repo CINEV/shotloom --json headRefName --jq '.headRefName')
    CURRENT_BRANCH=$(git branch --show-current)
 
    if [ "$CURRENT_BRANCH" != "$HEAD_REF" ]; then
-     test -z "$(git status --porcelain)" || {
-       echo "Working tree is dirty; stop before switching to $HEAD_REF."
-       exit 1
-     }
      git fetch origin "$HEAD_REF"
      git checkout "$HEAD_REF"
      git pull --ff-only
    fi
    ```
-6. Treat author type as metadata only. Do not discard a finding because it was
+3. Treat author type as metadata only. Do not discard a finding because it was
    written by a bot, app, or human. Do not treat any author type as
    authoritative. Route every finding by content and evidence.
 
-Stop on any failure.
+Machine contract: exit `0` means pass; nonzero means stop. For structured
+output, add `--print-json` and read `ok: true|false`. If preflight fails, stop
+before reading comments, checkout, edits, commits, pushes, PR body refreshes,
+reply plans, replies, thread resolution, or reviewer re-request.
 
 ### Step 2: Read PR + build start context
 
