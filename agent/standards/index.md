@@ -20,6 +20,7 @@ Use active standards as policy. Use redirect stubs only to find the skill-owned 
 | [`policy/naming.md`](policy/naming.md) | accepted | naming a new rule, standard, skill, plan, or vault file |
 | [`policy/platform-adapters.md`](policy/platform-adapters.md) | accepted | classifying artifacts for multiple harnesses |
 | [`policy/principles.md`](policy/principles.md) | accepted | checking whether a pattern fits the layer model |
+| [`policy/temporary-runtime-files.md`](policy/temporary-runtime-files.md) | accepted | writing temporary runtime files that wrapup must clean |
 | [`authoring/document-templates.md`](authoring/document-templates.md) | accepted | changing a document template or finding its canonical owner |
 | [`research/research-methodology.md`](research/research-methodology.md) | accepted | doing research |
 | [`review/review-code-unreal-cpp.md`](review/review-code-unreal-cpp.md) | accepted | reviewing UE C++ code |

@@ -96,8 +96,6 @@ const resolver = join(scriptDir, "resolve-repo-path.mjs");
 const topLevel = requireRun("git toplevel", "git", ["rev-parse", "--show-toplevel"]);
 const gitCommonDir = requireRun("git common dir", "git", ["rev-parse", "--git-common-dir"]);
 const branch = requireRun("git branch", "git", ["rev-parse", "--abbrev-ref", "HEAD"]);
-const gitUserName = requireRun("git user.name", "git", ["config", "user.name"]);
-const gitUserEmail = requireRun("git user.email", "git", ["config", "user.email"]);
 const status = requireRun("git status", "git", ["status", "--short"]);
 const remote = requireRun("origin remote", "git", ["remote", "get-url", "origin"]);
 
@@ -118,34 +116,15 @@ const shotloomRoot = requireRun(
 );
 const resolvedShotloomRoot = resolve(shotloomRoot);
 
-const ghLogin = requireRun("active GitHub login", "gh", ["api", "user", "--jq", ".login"]);
-if (ghLogin !== "tomlim2") {
-  fail("active GitHub login must be tomlim2", `got: ${ghLogin}`);
-}
-
-const gitIdentity = `${gitUserName} <${gitUserEmail}>`;
-if (args.requireGitAuthor && gitIdentity !== "tomlim2 <deemo@vonvon.me>") {
-  fail("git author identity must be tomlim2 <deemo@vonvon.me>", `got: ${gitIdentity}`);
-}
-
-let assignees = [];
-if (args.pr) {
-  const view = requireRun("PR assignees", "gh", [
-    "pr",
-    "view",
-    args.pr,
-    "--repo",
-    "CINEV/shotloom",
-    "--json",
-    "assignees",
-  ]);
-  assignees = (JSON.parse(view).assignees || []).map((item) => item.login);
-  if (!assignees.includes("tomlim2")) {
-    fail(
-      `PR #${args.pr} in CINEV/shotloom is not assigned to tomlim2`,
-      `current assignees: ${assignees.join(", ") || "(none)"}`,
-    );
-  }
+const githubGuardArgs = [join(scriptDir, "shotloom-github-guard.mjs"), "--print-json"];
+if (args.requireGitAuthor) githubGuardArgs.push("--require-git-author");
+if (args.pr) githubGuardArgs.push("--pr", args.pr);
+const githubGuard = requireRun("Shotloom GitHub guard", "node", githubGuardArgs);
+let github;
+try {
+  github = JSON.parse(githubGuard);
+} catch (error) {
+  fail("unable to parse Shotloom GitHub guard JSON", error.message);
 }
 
 const summary = {
@@ -155,12 +134,13 @@ const summary = {
   "branch": branch,
   "origin": remote,
   "configured-shotloom-root": resolvedShotloomRoot,
-  "gh-login": ghLogin,
-  "git-identity": gitIdentity,
+  "gh-login": github["gh-login"],
+  "git-identity": github["git-identity"],
   "dirty": Boolean(status),
   "dirty-files": status ? status.split("\n") : [],
   "pr": args.pr || null,
-  "pr-assignees": assignees,
+  "pr-assignees": github["pr-assignees"] || [],
+  "github": github,
 };
 
 if (args.printJson) {
