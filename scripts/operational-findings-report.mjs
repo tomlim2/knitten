@@ -127,7 +127,7 @@ ${args.summary}
 - Next pass should clarify: root cause, owner, and promotion target.
 - Problem: <clarify during triage>
 - Likely Scope: ${args.area}
-- Done When: finding is promoted, merged, parked, or discarded.
+- Done When: finding is promoted, resolved, assetized, parked, or discarded.
 - Possible destination: unknown
 
 ## Status

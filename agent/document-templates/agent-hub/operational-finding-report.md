@@ -97,7 +97,48 @@ Rules:
 - Default to `Current State: captured` and `Fast Track: no`.
 - If the user explicitly says this needs urgent handling, set `Fast Track: yes`.
 - Use the shared lifecycle vocabulary:
-  `captured`, `triaged`, `promoted`, `merged`, `parked`, `discarded`.
+  `captured`, `triaged`, `promoted`, `merged`, `resolved`, `assetized`,
+  `parked`, `discarded`.
+
+## Completion Stub
+
+When the finding is complete and reusable context moves to Obsidian, replace
+the report details with this stub shape:
+
+```yaml
+---
+status: assetized
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+initial-source: user-report
+area: unknown
+contexts:
+  - <report-context>
+promotion-target: <skill|rule|standard|validator|spec|docs|config|workflow|routing|ux|other>
+urgent: false
+resolved-by: <PR-or-commit>
+resolved-at: YYYY-MM-DD
+moved-to: <Obsidian-note-path>
+---
+```
+
+```markdown
+# <short report title>
+
+## Resolution
+
+- Resolved By: <PR-or-commit>
+- Moved To: <Obsidian-note-path>
+- Active Queue: no
+```
+
+Rules:
+
+- Use `ah-resolve-doc-path doc learning agent-hub` to choose the Obsidian
+  destination before writing a completion note.
+- Keep only the stub in `reports/` after Obsidian owns the durable context.
+- Delete the report only when another durable artifact already owns the context
+  or the report was invalid.
 
 ## Notes
 
