@@ -62,13 +62,15 @@ reply plans, replies, thread resolution, or reviewer re-request.
 Save each fetch to a per-PR cache file so later steps can re-read without re-fetching:
 
 ```bash
-node agent/lib/github-pr-review-snapshot.mjs "$ARGUMENTS"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS"
 ```
 
 Then build the start-context JSON:
 
 ```bash
-node agent/lib/github-pr-respond-start-context.mjs "$ARGUMENTS" --write
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/github-pr-respond-start-context.mjs" "$ARGUMENTS" --write
 ```
 
 `/tmp/pr<N>-respond-start.json` is the workflow intake contract:
@@ -235,8 +237,9 @@ after Step 2, so the original review snapshot may be stale.
 Right before building the reply plan, run:
 
 ```bash
-node agent/lib/github-pr-review-snapshot.mjs "$ARGUMENTS"
-node agent/lib/github-pr-respond-start-context.mjs "$ARGUMENTS" --write
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS"
+node "$knitten_root/agent/lib/github-pr-respond-start-context.mjs" "$ARGUMENTS" --write
 ```
 
 Compare the refreshed `reviewItems[]` to the Step 3 classification table. Any
@@ -303,7 +306,8 @@ After drafting the JSON, let the helper compute routing fields from the cached
 review state and item metadata:
 
 ```bash
-node agent/lib/github-pr-approved-state-plan.mjs "$ARGUMENTS" \
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/github-pr-approved-state-plan.mjs" "$ARGUMENTS" \
   --plan /tmp/pr${ARGUMENTS}-reply-plan.json \
   --write
 ```
@@ -344,7 +348,8 @@ Use this exactly once per cycle even when there are multiple suppressed items â€
 When `RESPOND_PR_RESOLVE_THREADS=1` is set, resolve threads through the helper:
 
 ```bash
-node agent/lib/github-pr-resolve-review-threads.mjs "$ARGUMENTS" \
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/github-pr-resolve-review-threads.mjs" "$ARGUMENTS" \
   --plan /tmp/pr${ARGUMENTS}-reply-plan.json \
   --yes
 ```
@@ -392,7 +397,8 @@ Run after Step 8 reply execution and Step 9 re-request complete, before the fina
 summary:
 
 ```bash
-node agent/lib/github-pr-review-snapshot.mjs "$ARGUMENTS" --prefix post --threads
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS" --prefix post --threads
 gh pr checks "$ARGUMENTS" --watch=false
 ```
 
