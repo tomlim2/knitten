@@ -301,9 +301,27 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 ### Step 9: GitHub Release + Slack 결과 알림 (for-real only)
 
 ```bash
-release_url=$(gh release create "$version" --generate-notes --title "$version" \
-  ${prev_tag:+--notes-start-tag "$prev_tag"})
+notes_file="$(mktemp /tmp/shotloom-release-notes.XXXXXX.md)"
+if [[ -n "$prev_tag" ]]; then
+  gh api repos/CINEV/shotloom/releases/generate-notes \
+    -f tag_name="$version" \
+    -f previous_tag_name="$prev_tag" \
+    --jq '.body' \
+    | sed -E 's/ by @[^ ]+ in / in /g' > "$notes_file"
+else
+  gh api repos/CINEV/shotloom/releases/generate-notes \
+    -f tag_name="$version" \
+    --jq '.body' \
+    | sed -E 's/ by @[^ ]+ in / in /g' > "$notes_file"
+fi
+
+release_url=$(gh release create "$version" --title "$version" \
+  --notes-file "$notes_file")
 ```
+
+Release notes should stay PR-centered. Strip GitHub's generated contributor
+attribution (`by @user`) before creating the release; do not include a separate
+contributors section.
 
 Then delegate the thread-reply to `/shotloom-send-deploy-status success` — same canonical template, same per-message approval gate, same `cci-send-alert` underneath. Use this only when Step 7 returned `start_ts`.
 
