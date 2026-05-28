@@ -90,6 +90,50 @@ command that stores Linear body content. Do not call `create`, `post`, or
 `delete` from this skill. Later steps read the intake file created by `get`
 instead of re-fetching Linear.
 
+### Step 1.5: Create task worktree after a clean gate
+
+Run this step only after Step 1 returns `ok: true` for every local and Linear
+gate. Start the task in a dedicated non-main Shotloom worktree before gathering
+planning context or writing the briefing.
+
+Derive the branch name from the Linear title using the pattern
+`<type>/<scope>-<verb>-<subject>`:
+
+- lowercase kebab-case;
+- no `STL-NN` prefix in branch or worktree paths;
+- keep the branch at or below 50 characters when practical;
+- map non-implementation title types such as `test` to the nearest task branch
+  type when the implementation touches source.
+
+Use the Shotloom worktree base from `reference.md`:
+
+```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+repo_root="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom)"
+if grep -qE '^\.worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
+  worktree_base="$repo_root/.worktrees"
+else
+  worktree_base="$(dirname "$repo_root")/shotloom-worktrees"
+  mkdir -p "$worktree_base"
+fi
+```
+
+Then create or attach the task worktree:
+
+```bash
+cd "$repo_root"
+git fetch origin main
+git worktree add "$worktree_base/<branch-body>" -b "<branch>" origin/main
+# If the branch already exists locally:
+git worktree add "$worktree_base/<branch-body>" "<branch>"
+```
+
+After creating the worktree, continue Steps 2-3 from that worktree. If a
+matching branch or worktree already exists, reuse it only when it is the same
+Linear task and the user has not asked for a fresh branch. If worktree creation
+fails because the branch is already checked out elsewhere, report that path and
+ask whether to continue there or create a differently named follow-up branch.
+
 ### Step 2: Gather related planning context
 
 Input: Linear body JSON from Step 1.

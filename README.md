@@ -99,7 +99,7 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Standards (47)
+## Standards (48)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
@@ -110,7 +110,7 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 | `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
 | `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |
 | `obsidian/` | 4 | `note-inspection-checklist.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `vault-audience.md` |
-| `policy/` | 9 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `metaphor-style.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
+| `policy/` | 10 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `metaphor-style.md`, `naming.md`, `platform-adapters.md`, `principles.md`, `temporary-runtime-files.md` |
 | `research/` | 2 | `research-methodology.md`, `tech-spec-template.md` |
 | `review/` | 13 | `review-3d-rendering.md`, `review-ai-motion.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-spec-doc.md`, `review-template.md`, `review-ux-python-gui.md`, `review-ux-writing.md`, `review-ux.md` |
 | `system/` | 1 | `repo-paths-keys.md` |
