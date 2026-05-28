@@ -176,18 +176,28 @@ const files = diffFiles(root);
 const surfaces = detectSurfaces(files, input, root);
 const surface =
   surfaces.length === 0 ? "unknown" : surfaces.length === 1 ? surfaces[0] : "mixed";
-const base = ["AGENTS.md", "CONTRIBUTING.md", "docs/adr/README.md"];
+const base = ["AGENTS.md", "CONTRIBUTING.md", "WORKFLOW.md", "docs/adr/README.md"];
 const profile = argValue("--profile");
 const profileGuidance = {
-  "review-code": ["docs/guidelines/code-review-guideline.md"],
+  "review-code": [
+    "docs/guidelines/code-review-guideline.md",
+    "docs/guidelines/pr-guideline.md",
+  ],
   "review-docs": [
     "docs/guidelines/pr-guideline.md",
     "docs/guidelines/commit-guideline.md",
     "docs/guidelines/documentation-standard.md",
     "docs/guidelines/adr-template.md",
     "docs/guidelines/code-review-guideline.md",
+    "docs/guidelines/review-typescript.md",
+    "package.json",
+    "apps/editor/package.json",
+    ".github/workflows/code.yml",
   ],
-  "review-triad": ["docs/guidelines/code-review-guideline.md"],
+  "review-triad": [
+    "docs/guidelines/code-review-guideline.md",
+    "docs/guidelines/pr-guideline.md",
+  ],
 };
 const reviewFindingGuidance = input.endsWith(".json")
   ? ["docs/guidelines/code-review-guideline.md"]
@@ -198,10 +208,20 @@ const bySurface = {
     "docs/guidelines/review-rust.md",
     ...relevantAdrs(root, files),
   ],
-  ts: ["docs/guidelines/review-typescript.md"],
+  ts: [
+    "docs/guidelines/review-typescript.md",
+    "package.json",
+    "apps/editor/package.json",
+    ".github/workflows/code.yml",
+  ],
   bridge: ["docs/ipc/bridge-contract.md", "docs/guidelines/review-typescript.md"],
   docs: ["docs/guidelines/documentation-standard.md"],
-  test: [],
+  test: [
+    "docs/guidelines/review-typescript.md",
+    "package.json",
+    "apps/editor/package.json",
+    ".github/workflows/code.yml",
+  ],
 };
 
 const surfaceList = surfaces.flatMap((item) => bySurface[item] ?? []);
