@@ -67,6 +67,12 @@ include the current-loop working-tree changes in their next pass.
 Run [`../shotloom-decide-review-mode/SKILL.md`](../shotloom-decide-review-mode/SKILL.md)
 and record its JSON output.
 
+### Step 2.5: Load Promoted Review Findings
+
+Read [`PROMOTED_FINDINGS.md`](PROMOTED_FINDINGS.md). Treat matching entries as
+additional review lenses for this run. Do not report a promoted finding unless
+the current diff, PR surface, or workflow evidence actually triggers it.
+
 ### Step 3: Selected Main Review
 
 If `needsTriad=false`:

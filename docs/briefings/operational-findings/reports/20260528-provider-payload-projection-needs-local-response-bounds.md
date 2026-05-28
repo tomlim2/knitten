@@ -6,7 +6,7 @@ initial-source: wrapup-task
 area: workflow
 contexts:
   - shotloom PR 423
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md, agent/skills/shotloom-check-gates/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

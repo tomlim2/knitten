@@ -6,7 +6,7 @@ initial-source: user-report
 area: ux
 contexts:
   - shotloom-start-task STL-531 handoff
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

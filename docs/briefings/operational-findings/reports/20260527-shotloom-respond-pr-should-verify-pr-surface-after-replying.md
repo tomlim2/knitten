@@ -6,7 +6,7 @@ initial-source: user-report
 area: skill
 contexts:
   - shotloom-respond-pr post-response verification
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-review-before-pr/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

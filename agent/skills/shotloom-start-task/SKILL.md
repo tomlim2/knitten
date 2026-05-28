@@ -171,6 +171,11 @@ context is ambiguous, ask the user a focused question and stop with `ok: false`.
 
 ### Step 3: Write briefing and JSON output
 
+Before writing the briefing, read [`PROMOTED_FINDINGS.md`](PROMOTED_FINDINGS.md)
+and apply entries that match the current intake, branch setup, planning, or
+handoff. Include concrete handoff instructions when an active entry requires
+them.
+
 Resolve a slug from the Linear title. Write a compact briefing markdown file to
 the Knitten checkout:
 

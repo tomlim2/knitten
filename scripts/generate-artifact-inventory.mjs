@@ -58,7 +58,7 @@ const PILOT_SKILL_CLASSIFICATIONS = {
     reviewState: 'accepted',
     extractions: [
       extraction('review-mode-decision', '### Step 2: Review Mode Decision', 'judgment', 'skill', 'reference', 'agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md', 'yes', 'yes', 'accepted'),
-      extraction('triad-review-rubric', '### Step 3: Selected Main Review Pass A', 'judgment', 'skill', 'rubric', 'agent/skills/shotloom-review-before-pr/references/TRIAD_REVIEW.md', 'yes', 'yes', 'accepted'),
+      extraction('triad-review-rubric', '### Step 3: Selected Main Review', 'judgment', 'skill', 'rubric', 'agent/skills/shotloom-review-before-pr/references/TRIAD_REVIEW.md', 'yes', 'yes', 'accepted'),
     ],
   },
   'obsidian-obsidian-markdown': {
