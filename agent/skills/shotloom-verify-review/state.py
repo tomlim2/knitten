@@ -11,15 +11,46 @@ Subcommands:
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import sys
 from pathlib import Path
 
 
-STATE_DIR = Path.home() / ".claude" / "ops" / "shotloom-verify-review"
+def repo_root_from_here() -> Path:
+    for parent in Path(__file__).resolve().parents:
+        if (parent / "SYSTEM.md").exists() and (parent / "agent/config/agent-hub.json").exists():
+            return parent
+    raise RuntimeError("unable to locate Knitten root from script path")
+
+
+def knitten_root() -> Path:
+    if "KNITTEN_ROOT" in os.environ:
+        return Path(os.environ["KNITTEN_ROOT"]).resolve()
+    return repo_root_from_here()
+
+
+def helper_path(helper_id: str) -> Path:
+    root = knitten_root()
+    resolver = root / "agent/lib/resolve-helper-path.mjs"
+    out = subprocess.run(
+        ["node", str(resolver), "--root", str(root), helper_id],
+        check=True, capture_output=True, text=True,
+    )
+    return Path(json.loads(out.stdout)["absolutePath"])
+
+
+def pr_state_dir(pr: str) -> Path:
+    resolver = helper_path("resolve-local-artifact-path")
+    out = subprocess.run(
+        ["node", str(resolver), "--root", str(knitten_root()), "--create", "shotloom", "pr", pr, "log"],
+        check=True, capture_output=True, text=True,
+    )
+    return Path(json.loads(out.stdout)["absoluteCleanupPath"])
 
 
 def state_path(pr: str, rid: str) -> Path:
-    return STATE_DIR / f"pr-{pr}-review-{rid}.json"
+    return pr_state_dir(pr) / f"review-{rid}.json"
 
 
 def load(pr: str, rid: str) -> dict:

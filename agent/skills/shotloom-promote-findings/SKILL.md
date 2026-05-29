@@ -53,8 +53,10 @@ contains `--dry-run`, do not edit files.
 
 Read:
 
-- `docs/briefings/operational-findings-inbox.md` when present;
-- `docs/briefings/operational-findings/reports/*.md`;
+- `.agent-local/ah/operational-findings/*/inbox.md` when present;
+- `.agent-local/ah/operational-findings/*/reports/*.md`;
+- legacy `docs/briefings/operational-findings-inbox.md` when present;
+- legacy `docs/briefings/operational-findings/reports/*.md`;
 - existing `PROMOTED_FINDINGS.md` ledgers listed above.
 
 Use `shotloom-promote-review-patterns` for the legacy compatibility inbox at
@@ -109,7 +111,7 @@ Add compact entries with this shape:
 ```md
 ### <short title>
 
-- Source: `docs/briefings/operational-findings/reports/<file>.md`
+- Source: `ah-of-YYYYMMDD-<slug>`
 - Trigger: <when the consuming layer notices this>
 - Check: <specific reviewer/implementer/gate action>
 - Fix Shape: <how future work resolves it>

@@ -8,7 +8,7 @@ const OPTIONAL_STATUSES = new Set(["optional", "non-blocking", "non_blocking", "
 
 function usage() {
   console.error(`Usage:
-  github-pr-approved-state-plan.mjs <pr> [--plan path] [--out-dir path] [--write] [--review-state-only]
+  github-pr-approved-state-plan.mjs <pr> --out-dir path [--plan path] [--write] [--review-state-only]
 
 Reads the Step 7 reply-plan JSON plus cached review files and computes whether
 the plan should use the APPROVED-state route. Defaults to a read-only JSON
@@ -21,14 +21,14 @@ Expected cache files:
   <out-dir>/pr<N>-reviews.json
 
 Examples:
-  github-pr-approved-state-plan.mjs 404 --review-state-only
-  github-pr-approved-state-plan.mjs 404 --plan /tmp/pr404-reply-plan.json
-  github-pr-approved-state-plan.mjs 404 --plan /tmp/pr404-reply-plan.json --write`);
+  github-pr-approved-state-plan.mjs 404 --out-dir .agent-local/shotloom/pr/404 --review-state-only
+  github-pr-approved-state-plan.mjs 404 --out-dir .agent-local/shotloom/pr/404 --plan .agent-local/shotloom/pr/404/reply-plan.json
+  github-pr-approved-state-plan.mjs 404 --out-dir .agent-local/shotloom/pr/404 --plan .agent-local/shotloom/pr/404/reply-plan.json --write`);
 }
 
 export function parseArgs(argv) {
   const args = {
-    outDir: "/tmp",
+    outDir: "",
     plan: null,
     write: false,
     reviewStateOnly: false,
@@ -56,6 +56,7 @@ export function parseArgs(argv) {
   if (
     args.positional.length !== 1 ||
     !/^[0-9]+$/.test(args.positional[0]) ||
+    !args.outDir ||
     (!args.plan && !args.reviewStateOnly) ||
     (args.write && args.reviewStateOnly)
   ) {

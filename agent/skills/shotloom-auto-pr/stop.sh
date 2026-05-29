@@ -4,7 +4,17 @@
 set -euo pipefail
 
 PR="${1:?usage: stop.sh <pr-number>}"
-OPS_DIR="$HOME/.claude/ops/pr-$PR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KNITTEN_ROOT="${KNITTEN_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)}"
+HELPER_RESOLVER="$KNITTEN_ROOT/agent/lib/resolve-helper-path.mjs"
+LOCAL_RESOLVER="$(
+  node "$HELPER_RESOLVER" --root "$KNITTEN_ROOT" resolve-local-artifact-path \
+    | jq -r '.absolutePath'
+)"
+OPS_DIR="$(
+  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" log \
+    | jq -r '.absoluteCleanupPath'
+)"
 PID_FILE="$OPS_DIR/watcher.pid"
 
 # Legacy launchd cleanup (in case a prior version loaded a plist)

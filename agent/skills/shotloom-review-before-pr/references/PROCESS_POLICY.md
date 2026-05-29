@@ -96,8 +96,15 @@ Normalize supported findings before readiness output.
 
 ## Readiness JSON
 
-Every run writes one result file and prints the same JSON block. The result file
-path is `/tmp/shotloom-before-pr-<safe-branch>-readiness.json`, where
+Every run writes one result file and prints the same JSON block. Resolve the
+result file with `resolve-local-artifact-path`:
+
+```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+resolve-local-artifact-path --create shotloom before-pr stl-<N> <safe-branch> readiness
+```
+
 `<safe-branch>` maps slash and whitespace to `-`.
 
 ```json
@@ -107,7 +114,7 @@ path is `/tmp/shotloom-before-pr-<safe-branch>-readiness.json`, where
   "branch": "feat/example",
   "headSha": "abc1234",
   "dirty": true,
-  "resultPath": "/tmp/shotloom-before-pr-feat-example-readiness.json",
+  "resultPath": ".agent-local/shotloom/before-pr/stl-123/feat-example/readiness.json",
   "needsTriad": false,
   "blockersRemaining": 1,
   "findings": [
@@ -153,9 +160,9 @@ explicit approval before `gh pr create`.
 - Run one selected main review before docs.
 - In Single mode, run code pass A only.
 - In Triad mode, run triad pass A only; never run code pass A in the same chain.
-- Write blocker findings to `/tmp/shotloom-before-pr-<phase>-blockers.json`
-  before invoking `shotloom-implement-code`; do not make review child skills own
-  implementation routing.
+- Write blocker findings to the resolver path for `code-blockers` or
+  `docs-blockers` before invoking `shotloom-implement-code`; do not make review
+  child skills own implementation routing.
 - Treat branch scope as a reviewable signal: when the diff combines multiple
   Linear scopes, the issue/spec evidence should name the combined boundary. If
   not, report a scope-control finding.

@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for start-task intake only. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "STL-NN | linear-url"
-allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*), Bash(shotloom-preflight:*), Bash(resolve-local-artifact-path:*)
 ---
 
 # shotloom-start-task
@@ -35,7 +35,8 @@ Run local gates and detect the Linear issue key:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/shotloom-preflight.mjs" --allow-dirty --print-json
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+shotloom-preflight --allow-dirty --print-json
 node "$knitten_root/agent/lib/shotloom-linear-intake.mjs" detect "$ARGUMENTS"
 ```
 
@@ -78,8 +79,8 @@ Output: true/false usability decision plus the fetched Linear body JSON.
 
 If either command exits nonzero or returns `ok: false`, output `ok: false` and
 stop before repo reads or briefing writes. If Linear `get_issue` fails, output
-`ok: false` and stop. `shotloom-preflight.mjs` delegates GitHub login / git
-author checks to `shotloom-github-guard.mjs --print-json`; consume `github.ok`
+`ok: false` and stop. `shotloom-preflight` delegates GitHub login / git
+author checks to `shotloom-github-guard --print-json`; consume `github.ok`
 as detail, not as a separate hand-written checklist.
 `shotloom-linear-intake.mjs detect` must return `issueKey`; do not infer issues
 from branch names, git state, recent commits, or free-form category names.
@@ -203,14 +204,17 @@ that as an open question instead of silently proceeding.
 Apply concrete handoff instructions when an active promoted finding requires
 them.
 
-Resolve a slug from the Linear title. Write a compact briefing markdown file to
-the Knitten checkout:
+Resolve a slug from the Linear title and an STL id from the Linear issue key.
+Write a compact briefing markdown file to the Knitten checkout through
+`resolve-local-artifact-path`:
 
-```text
-<knitten_root>/docs/briefings/shotloom/<slug>.md
+```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+resolve-local-artifact-path --create shotloom planning stl-<N> brief
 ```
 
-Create the directory before writing.
+Write to the returned `absolutePath`.
 
 The briefing file contains:
 - Linear issue key, title, URL, state, assignee, labels, and body summary;
@@ -228,7 +232,7 @@ Final chat output is JSON only:
   "ok": true,
   "issueKey": "STL-NN",
   "slug": "<slug>",
-  "briefingPath": "/absolute/path/docs/briefings/shotloom/<slug>.md",
+  "briefingPath": "/absolute/path/.agent-local/shotloom/planning/stl-<N>/brief.md",
   "workDir": "<workDir>",
   "contextPath": "<workDir>/context.json",
   "cleanupPaths": ["<workDir>"],

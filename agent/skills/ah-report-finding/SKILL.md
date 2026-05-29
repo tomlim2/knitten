@@ -1,5 +1,5 @@
 ---
-description: Capture a Knitten operational finding into the dedicated findings inbox. Use when the user says to report a Knitten issue, finding, workflow problem, skill problem, or operational lesson.
+description: Capture a Knitten operational finding into the local findings queue. Use when the user says to report a Knitten issue, finding, workflow problem, skill problem, or operational lesson.
 argument-hint: "<summary>"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(node:*), Bash(rg:*)
 domains: agent-hub
@@ -14,13 +14,17 @@ context-repo-docs: repo:docs/plans/proposed/operational-findings-pipeline.md
 
 # ah-report-finding
 
-Capture a Knitten operational finding into the dedicated findings inbox.
+Capture a Knitten operational finding into the local findings queue.
 
 ## Purpose
 
 Use this when the user says a Knitten problem, workflow issue, skill issue, or
 operational lesson should be reported. Capture first; precise diagnosis,
 promotion, and durable artifact edits can happen later.
+
+Raw captures are temporary local artifacts. Durable knowledge starts only after
+promotion into the owning skill, rule, standard, script, validator, spec, or
+decision.
 
 ## Inputs
 
@@ -36,44 +40,28 @@ promotion, and durable artifact edits can happen later.
 ## Workflow
 
 1. Preserve the user's wording as the initial report.
-2. Prepare the dedicated worktree and capture the absolute path:
+2. Run the capture script from the Knitten checkout:
 
 ```bash
-knitten_root=$(pwd)
-findings_worktree=$(
-  node scripts/operational-findings-worktree.mjs prepare \
-    | awk -F': ' '/^worktree:/ {print $2; exit}'
-)
-```
-
-3. Change into the prepared findings worktree:
-
-```bash
-cd "$findings_worktree"
-```
-
-4. In the prepared worktree, run the capture script:
-
-```bash
-node "$knitten_root/scripts/operational-findings-report.mjs" capture \
+node scripts/operational-findings-report.mjs capture \
   --summary "<rough finding>" \
   --context "<context>" \
   --source user-report \
   --area unknown
 ```
 
-5. If the user gave a title, add `--title "<title>"`.
-6. If the user explicitly said urgent, add `--urgent`.
-7. Report only the created report path and pushed commit on success.
-8. On failure, report the failed safety condition and next safe action.
+3. If the user gave a title, add `--title "<title>"`.
+4. If the user explicitly said urgent, add `--urgent`.
+5. Report only the created report path, daily inbox path, and finding ID on
+   success.
+6. On failure, report the failed safety condition and next safe action.
 
 ## Safety
 
-- Do not write findings from a dirty findings worktree.
-- Do not commit unrelated files.
 - Do not classify too aggressively during capture.
 - Do not edit the target skill, rule, standard, or validator from this skill
   unless the user asks to immediately fix the finding.
+- Do not commit or push from this skill.
 
 ## Completion Policy
 
@@ -93,9 +81,9 @@ If the user asks what to do with completed findings:
 
 | File | Purpose |
 |------|---------|
-| `docs/briefings/operational-findings-inbox.md` | Canonical thin index. |
-| `docs/briefings/operational-findings/reports/` | Report-context files. |
-| `docs/briefings/operational-findings/fast-track-manual.md` | Urgent handling route. |
+| `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md` | Local temporary thin index. |
+| `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/` | Local temporary report-context files. |
+| `docs/briefings/operational-findings/fast-track-manual.md` | Durable urgent handling reference. |
 | `agent/document-templates/agent-hub/operational-finding-report.md` | Report body template. |
-| `scripts/operational-findings-worktree.mjs` | Prepare or verify findings worktree. |
-| `scripts/operational-findings-report.mjs` | Capture report, update index, commit, and push. |
+| `agent/lib/resolve-local-artifact-path.mjs` | Resolve local artifact paths. |
+| `scripts/operational-findings-report.mjs` | Capture report and update local daily index. |

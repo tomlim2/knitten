@@ -1,14 +1,13 @@
 ---
 description: Leaf/component Shotloom skill for spec authoring after start-task. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "[slug]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(resolve-local-artifact-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: authoring,review
 context-profile: shotloom-review
-context-rules: rules/shotloom-docs-lane.md
 exclude-when: unreal,obsidian
 ---
 
@@ -64,22 +63,15 @@ rules on top:
 
 ## Output Contract
 
-- `docs/briefings/shotloom/<slug>.md` in Knitten
-- `docs/plans/proposed/<slug>.md` in Knitten
-- one direct-spec commit and push when the spec converges
-- optional review-spec commit and push when review patches the spec
-- one created or updated daily docs PR for the Knitten branch
+- `.agent-local/shotloom/planning/stl-<N>/brief.md` in Knitten
+- `.agent-local/shotloom/planning/stl-<N>/spec.md` in Knitten
+- `.agent-local/shotloom/planning/stl-<N>/design-plan.md` in Knitten
+- `.agent-local/shotloom/planning/stl-<N>/manifest.json` in Knitten
 - final user prompt: "이 스펙으로 구현 시작할까요?"
 
-## Branch Contract
+## Local Artifact Contract
 
-All Knitten docs written by this skill use the daily Shotloom docs lane from
-`agent/rules/shotloom-docs-lane.md`:
-
-```text
-codex/YYYYMMDD-shotloom-docs
-```
-
-Use the existing KST-date branch when it exists. Create it from `origin/main`
-only when neither the local nor remote branch exists. Do not create a per-STL
-Knitten branch for Shotloom specs.
+Resolve every planning artifact through
+`resolve-local-artifact-path`. Do not write raw planning outputs
+under tracked `docs/` paths unless a later promotion step explicitly turns a
+local artifact into durable knowledge.

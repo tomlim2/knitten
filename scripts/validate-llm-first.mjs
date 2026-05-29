@@ -1569,6 +1569,8 @@ function isHistoricalManagedPathFile(file) {
 function isRegistryOwnerManagedPathFile(file) {
   return (
     file === "agent/config/artifact-inventory.json" ||
+    file === "agent/config/local-helper-paths.json" ||
+    file === "agent/config/local-artifact-paths.json" ||
     file === "agent/config/managed-paths.json" ||
     file === "agent/config/managed-paths.schema.json" ||
     file === "docs/plans/proposed/managed-path-registry-validation.md"
@@ -1705,6 +1707,175 @@ async function checkManagedPaths() {
   }
 
   return { name: "managed-paths", violations };
+}
+
+function localArtifactViolation(violations, message) {
+  violations.push({ file: "agent/config/local-artifact-paths.json", line: 1, message });
+}
+
+function placeholdersInTemplate(template) {
+  return [...String(template || "").matchAll(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g)].map((match) => match[1]);
+}
+
+function isSafeLocalArtifactPath(value) {
+  if (typeof value !== "string" || !value.startsWith(".agent-local/")) return false;
+  const normalized = path.posix.normalize(value);
+  return normalized === value && !normalized.startsWith("../") && !normalized.includes("/../");
+}
+
+async function checkLocalArtifactPaths() {
+  const violations = [];
+  let registry;
+  try {
+    registry = await readJsonConfig("local-artifact-paths.json");
+  } catch (err) {
+    localArtifactViolation(violations, `cannot read local artifact path registry: ${err.message}`);
+    return { name: "local-artifact-paths", violations };
+  }
+
+  if (registry.schemaVersion !== 1) {
+    localArtifactViolation(violations, `schemaVersion must be 1, got ${JSON.stringify(registry.schemaVersion)}`);
+  }
+  if (registry.root !== ".agent-local") {
+    localArtifactViolation(violations, `root must be ".agent-local", got ${JSON.stringify(registry.root)}`);
+  }
+  if (!Array.isArray(registry.entries) || registry.entries.length === 0) {
+    localArtifactViolation(violations, "entries must be a non-empty array");
+    return { name: "local-artifact-paths", violations };
+  }
+
+  const identities = new Set();
+  for (const entry of registry.entries) {
+    if (!entry || typeof entry !== "object") {
+      localArtifactViolation(violations, "entries must be objects");
+      continue;
+    }
+    for (const field of ["owner", "artifactType", "item", "kind", "path", "cleanupPath"]) {
+      if (typeof entry[field] !== "string" || !entry[field]) {
+        localArtifactViolation(violations, `${entry.owner || "<unknown>"}/${entry.artifactType || "<unknown>"}/${entry.item || "<unknown>"} missing ${field}`);
+      }
+    }
+    const identity = `${entry.owner}/${entry.artifactType}/${entry.item}`;
+    if (identities.has(identity)) {
+      localArtifactViolation(violations, `duplicate entry identity: ${identity}`);
+    }
+    identities.add(identity);
+    if (!["file", "directory"].includes(entry.kind)) {
+      localArtifactViolation(violations, `${identity} invalid kind: ${JSON.stringify(entry.kind)}`);
+    }
+    if (!Array.isArray(entry.args)) {
+      localArtifactViolation(violations, `${identity} args must be an array`);
+      continue;
+    }
+    const argNames = [];
+    for (const arg of entry.args) {
+      if (!arg || typeof arg !== "object") {
+        localArtifactViolation(violations, `${identity} args entries must be objects`);
+        continue;
+      }
+      if (typeof arg.name !== "string" || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(arg.name)) {
+        localArtifactViolation(violations, `${identity} invalid arg name: ${JSON.stringify(arg.name)}`);
+      } else {
+        argNames.push(arg.name);
+      }
+      if (typeof arg.pattern !== "string" || !arg.pattern) {
+        localArtifactViolation(violations, `${identity} arg ${arg.name || "<unknown>"} missing pattern`);
+      } else {
+        try {
+          new RegExp(arg.pattern);
+        } catch (err) {
+          localArtifactViolation(violations, `${identity} arg ${arg.name || "<unknown>"} invalid pattern: ${err.message}`);
+        }
+      }
+      if (arg.normalize !== undefined && arg.normalize !== "lowercase") {
+        localArtifactViolation(violations, `${identity} arg ${arg.name || "<unknown>"} invalid normalize: ${JSON.stringify(arg.normalize)}`);
+      }
+      if (arg.position !== undefined && !["before-item", "after-item"].includes(arg.position)) {
+        localArtifactViolation(violations, `${identity} arg ${arg.name || "<unknown>"} invalid position: ${JSON.stringify(arg.position)}`);
+      }
+    }
+    if (hasDuplicates(argNames)) {
+      localArtifactViolation(violations, `${identity} args must not contain duplicate names`);
+    }
+    for (const [field, value] of [["path", entry.path], ["cleanupPath", entry.cleanupPath]]) {
+      if (!isSafeLocalArtifactPath(value)) {
+        localArtifactViolation(violations, `${identity} ${field} must be a safe .agent-local path`);
+      }
+    }
+    const declared = new Set(argNames);
+    const used = new Set([...placeholdersInTemplate(entry.path), ...placeholdersInTemplate(entry.cleanupPath)]);
+    for (const name of used) {
+      if (!declared.has(name)) {
+        localArtifactViolation(violations, `${identity} template references undeclared arg: ${name}`);
+      }
+    }
+    for (const name of declared) {
+      if (!used.has(name)) {
+        localArtifactViolation(violations, `${identity} declares unused arg: ${name}`);
+      }
+    }
+  }
+  return { name: "local-artifact-paths", violations };
+}
+
+function localHelperViolation(violations, message) {
+  violations.push({ file: "agent/config/local-helper-paths.json", line: 1, message });
+}
+
+function isSafeRepoRelativePath(value) {
+  if (typeof value !== "string" || !value || value.startsWith("/") || value.includes("..")) return false;
+  const normalized = path.posix.normalize(value);
+  return normalized === value && !normalized.startsWith("../") && !normalized.includes("/../");
+}
+
+async function checkLocalHelperPaths() {
+  const violations = [];
+  let registry;
+  try {
+    registry = await readJsonConfig("local-helper-paths.json");
+  } catch (err) {
+    localHelperViolation(violations, `cannot read local helper path registry: ${err.message}`);
+    return { name: "local-helper-paths", violations };
+  }
+
+  if (registry.schemaVersion !== 1) {
+    localHelperViolation(violations, `schemaVersion must be 1, got ${JSON.stringify(registry.schemaVersion)}`);
+  }
+  if (!Array.isArray(registry.entries) || registry.entries.length === 0) {
+    localHelperViolation(violations, "entries must be a non-empty array");
+    return { name: "local-helper-paths", violations };
+  }
+
+  const ids = [];
+  for (const entry of registry.entries) {
+    if (!entry || typeof entry !== "object") {
+      localHelperViolation(violations, "entries must be objects");
+      continue;
+    }
+    if (typeof entry.id !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.id)) {
+      localHelperViolation(violations, `invalid helper id: ${JSON.stringify(entry.id)}`);
+    } else {
+      ids.push(entry.id);
+    }
+    if (entry.kind !== "script") {
+      localHelperViolation(violations, `${entry.id || "<unknown>"} kind must be "script"`);
+    }
+    if (!isSafeRepoRelativePath(entry.path)) {
+      localHelperViolation(violations, `${entry.id || "<unknown>"} invalid path: ${JSON.stringify(entry.path)}`);
+    } else if (!existsSync(path.join(REPO_ROOT, entry.path))) {
+      localHelperViolation(violations, `${entry.id || "<unknown>"} path does not exist: ${entry.path}`);
+    }
+    if (entry.command !== undefined && (typeof entry.command !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.command))) {
+      localHelperViolation(violations, `${entry.id || "<unknown>"} invalid command: ${JSON.stringify(entry.command)}`);
+    }
+    if (entry.description !== undefined && typeof entry.description !== "string") {
+      localHelperViolation(violations, `${entry.id || "<unknown>"} description must be a string`);
+    }
+  }
+  if (hasDuplicates(ids)) {
+    localHelperViolation(violations, "helper ids must not contain duplicates");
+  }
+  return { name: "local-helper-paths", violations };
 }
 
 function pushManifestPathViolation(violations, field, value) {
@@ -4406,6 +4577,8 @@ const CHECKS = [
   { name: "standards-redirects", fn: checkStandardsRedirects },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
+  { name: "local-artifact-paths", fn: checkLocalArtifactPaths },
+  { name: "local-helper-paths", fn: checkLocalHelperPaths },
   { name: "managed-paths", fn: checkManagedPaths },
   { name: "artifact-inventory", fn: checkArtifactInventory },
   { name: "artifact-pack", fn: (args) => checkArtifactPack(null, args.artifactPackInputs) },

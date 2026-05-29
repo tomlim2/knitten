@@ -211,7 +211,7 @@ Gather context as if starting cold:
 git status --short
 rg -n "<linear id>|<title keywords>|<primary symbols>" crates apps docs contracts assets MAP.md
 rg -n "<diagnostic/code/cache/bridge/test keywords>" crates apps docs contracts
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="$(ah-resolve-doc-path repo knitten)"
 knitten="${knitten#RESOLVED_PATH=}"
 ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 ```
@@ -219,7 +219,7 @@ ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 Also inspect:
 
 - Linear issue body and related/parent issues when available.
-- Persisted briefing artifact at `docs/briefings/shotloom/<slug>.md`.
+- Local briefing artifact at `.agent-local/shotloom/planning/stl-<N>/brief.md`.
 - Current live code, not just the Ready briefing.
 - Current docs/specs/ADRs/cache notes relevant to the spec.
 - Sibling specs and recently deleted sibling specs.
@@ -337,7 +337,7 @@ The Ready briefing includes a sibling inventory. If the inventory is absent,
 run this scan from any cwd:
 
 ```bash
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="$(ah-resolve-doc-path repo knitten)"
 knitten="${knitten#RESOLVED_PATH=}"
 ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 ls "$knitten/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"

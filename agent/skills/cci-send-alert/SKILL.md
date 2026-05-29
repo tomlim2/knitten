@@ -2,7 +2,7 @@
 name: cci-send-alert
 description: Send automated alerts to CINEV team Slack via Arnyang — CI status, PR updates, deploy alerts. Not the art channel.
 argument-hint: "<message> [--thread-ts TS]"
-allowed-tools: Read, Bash(python3:*)
+allowed-tools: Read, Bash(python3:*), Bash(cci-send-alert:*)
 disable-model-invocation: true
 ---
 
@@ -12,7 +12,7 @@ Send automated alert messages to the CINEV team Slack channel via the Arnyang (�
 
 ## Skill-owned standards
 
-Read `~/.claude/skills/cci-serve-mcp/references/CCI-SLACK.md` only when changing Slack channel, token, username, or message delivery behavior.
+Read `agent/skills/cci-serve-mcp/references/CCI-SLACK.md` only when changing Slack channel, token, username, or message delivery behavior.
 
 ## Purpose
 
@@ -43,8 +43,8 @@ Usage:
 | Key | File | Purpose |
 |-----|------|---------|
 | `SLACK_BOT_TOKEN` | `~/.config/cinev/.env` | Bot OAuth token (required) |
-| `team_channel` | `~/.claude/config/slack.json` | Target channel ID |
-| `team_bot_username` | `~/.claude/config/slack.json` | Bot display name |
+| `team_channel` | `agent/config/slack.json` | Target channel ID |
+| `team_bot_username` | `agent/config/slack.json` | Bot display name |
 
 ## Workflow
 
@@ -56,10 +56,12 @@ If `$ARGUMENTS` is empty, show usage and exit without sending.
 
 Print the full message body and the target channel (from `slack.json`) to the user. Wait for explicit approval.
 
-### Step 3: Send via send.py
+### Step 3: Send
 
 ```bash
-python3 ~/.claude/skills/cci-send-alert/send.py "$MESSAGE" [--thread-ts "$TS"]
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+cci-send-alert "$MESSAGE" [--thread-ts "$TS"]
 ```
 
 The script prints a JSON result to stdout. Exit code 0 on success, 1 on failure.
@@ -72,5 +74,5 @@ On failure: print the Slack API error verbatim (`not_in_channel`, `invalid_auth`
 ## Related
 
 - `cci-art-send-notice` — art channel sender (threaded branch updates)
-- `~/.claude/config/slack.json` — channel + bot username config
+- `agent/config/slack.json` — channel + bot username config
 - `~/.config/cinev/.env` — bot token storage

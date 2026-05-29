@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for web deploy only. Prefer shotloom-router for full task workflows.
 argument-hint: "[--for-real] [--smoke] [--version vX.Y.Z]"
-allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*), Bash(mktemp:*), Bash(python3:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*), Bash(mktemp:*), Bash(python3:*), Bash(ah-resolve-doc-path:*), Bash(shotloom-github-guard:*), Bash(resolve-local-artifact-path:*)
 domains: rust,web
 repo-keys: shotloom
 languages: css,rust,typescript
@@ -45,27 +45,28 @@ If no argument: dry-run, no smoke, suggest next patch.
 
 ## Binding rules (CRITICAL)
 
-- **`--for-real` requires explicit per-invocation final approval.** Per `~/.claude/rules/git-defaults.md`, the skill stops one beat before `git push origin vX.Y.Z` and waits for `y`, even when `--for-real` is on the command line.
+- **`--for-real` requires explicit per-invocation final approval.** Per `agent/rules/git-defaults.md`, the skill stops one beat before `git push origin vX.Y.Z` and waits for `y`, even when `--for-real` is on the command line.
 - **No silent re-tag.** If a tag with the chosen version already exists locally or on origin, abort. Tags are immutable in GitOps.
-- **`gh` account must be `tomlim2`.** Run `agent/lib/shotloom-github-guard.mjs`; fail when the active login is not `tomlim2` or cannot be read.
+- **`gh` account must be `tomlim2`.** Run `shotloom-github-guard`; fail when the active login is not `tomlim2` or cannot be read.
 - **Working tree clean and on `main`.** Deploy from a feature branch is meaningless.
 - **Local `main` in sync with `origin/main`.** Auto-`git fetch`, then refuse if behind.
 - **HEAD's CI must be green.** Refuse to deploy a red SHA.
 - **Never claim cluster rollout health without cluster tooling.** ETag-based proxy verification confirms a roll happened — not that pods are healthy. State the partial signal plainly; "GitOps manifest updated" and "live URL returned 200" are the only honest claims this skill earns from `gh` + `curl` alone.
-- **Slack sends are per-message gated** per `~/.claude/rules/slack.md`. Draft + show + wait for explicit `y`. No bundled approval covers a second message.
+- **Slack sends are per-message gated** per `agent/rules/slack.md`. Draft + show + wait for explicit `y`. No bundled approval covers a second message.
 
 ## Workflow
 
 ### Step 1: Preflight (cwd, account, branch, sync, tree, baselines)
 
 ```bash
-cd "$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+cd "$(ah-resolve-doc-path repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 toplevel=$(git rev-parse --show-toplevel)
 remote=$(git -C "$toplevel" remote get-url origin)
 case "$remote" in *CINEV/shotloom*|*CINEV/shotloom.git) ;; *) abort ;; esac
 
-knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/shotloom-github-guard.mjs" || abort "Shotloom GitHub guard failed"
+shotloom-github-guard || abort "Shotloom GitHub guard failed"
 
 git rev-parse --abbrev-ref HEAD | grep -qx main || abort "must deploy from main"
 git status --porcelain | head -1 | grep -q . && abort "working tree not clean"
@@ -281,7 +282,12 @@ This is verification only — no retries, no auto-rollback, no paging. Surfaces 
 When Step 8a hits the known masking issue, the image IS in the registry but the manifest job aborted with `resolved empty image`. Build the image without touching the manifest only if Step 6a/6b workflow run already succeeded for the build-push job. Then update the manifest by hand:
 
 ```bash
-tmpdir="$(mktemp -d /private/tmp/shotloom-manifest.XXXXXX)"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+tmpdir="$(
+  resolve-local-artifact-path --create shotloom deploy "$version" manifest \
+    | jq -r '.absoluteCleanupPath'
+)"
 git clone https://github.com/CINEV/prototype-manifest.git "$tmpdir/prototype-manifest"
 cd "$tmpdir/prototype-manifest"
 
@@ -301,7 +307,12 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 ### Step 9: GitHub Release + Slack 결과 알림 (for-real only)
 
 ```bash
-notes_file="$(mktemp /tmp/shotloom-release-notes.XXXXXX.md)"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+notes_file="$(
+  resolve-local-artifact-path --create shotloom deploy "$version" release-notes \
+    | jq -r '.absolutePath'
+)"
 if [[ -n "$prev_tag" ]]; then
   gh api repos/CINEV/shotloom/releases/generate-notes \
     -f tag_name="$version" \
@@ -346,11 +357,8 @@ If `start_ts` is empty because Step 7 was skipped or failed, do **not** silently
 
 ### Step 10: Devlog append (Obsidian)
 
-```bash
-base=$(jq -re '.obsidian // .["obsidian-staging"]' \
-  ~/.claude/private/agent-hub-config/machine-paths.json)
-devlog="$base/projects/shotloom/days/$(date +%Y-%m-%d).md"
-```
+Use `/learn-log-day` for the deploy devlog. Do not read machine paths directly
+from this deploy skill.
 
 Bullets are the audit trail; one Korean paragraph above is fine. For dry-run vs for-real templates see reference (workflow URL, image URL, manifest commit, ETag transition or rollback, Release URL, manual smoke omission).
 
@@ -379,7 +387,12 @@ Honesty rules:
 Use when live traffic is broken or a new image cannot be proven good.
 
 ```bash
-tmpdir="$(mktemp -d /private/tmp/shotloom-rollback.XXXXXX)"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+tmpdir="$(
+  resolve-local-artifact-path --create shotloom deploy "$version" rollback \
+    | jq -r '.absoluteCleanupPath'
+)"
 git clone https://github.com/CINEV/prototype-manifest.git "$tmpdir/prototype-manifest"
 cd "$tmpdir/prototype-manifest"
 
@@ -462,4 +475,4 @@ When debugging suspected runtime failures, reproduce locally with a minimal `doc
 - `apps/editor/Containerfile`, `apps/editor/nginx.conf`
 - `CINEV/prototype-manifest` — GitOps canonical source (`shotloom/deployment.yaml`, `applications/shotloom-web.yaml`)
 - `agent/rules/git-defaults.md`, `agent/rules/slack.md`
-- `~/.claude/skills/cci-send-alert/` — Slack send tooling (`team_channel` from `~/.claude/config/slack.json`)
+- `cci-send-alert` — Slack send tooling (`team_channel` from `agent/config/slack.json`)

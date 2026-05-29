@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Start a nohup background watcher for a single PR.
-# Uses a plain bash sleep-loop (not launchd) to avoid macOS TCC restrictions
-# on ~/.claude/. Dies on reboot; user must re-run after boot.
+# Uses a plain bash sleep-loop. Dies on reboot; user must re-run after boot.
 #
 # Usage: start.sh <pr-number> [interval-seconds]
 set -euo pipefail
@@ -9,8 +8,21 @@ set -euo pipefail
 PR="${1:?usage: start.sh <pr-number> [interval-seconds]}"
 INTERVAL="${2:-120}"
 REPO="CINEV/shotloom"
-SKILL_DIR="$HOME/.claude/skills/shotloom-auto-pr"
-OPS_DIR="$HOME/.claude/ops/pr-$PR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KNITTEN_ROOT="${KNITTEN_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)}"
+HELPER_RESOLVER="$KNITTEN_ROOT/agent/lib/resolve-helper-path.mjs"
+LOCAL_RESOLVER="$(
+  node "$HELPER_RESOLVER" --root "$KNITTEN_ROOT" resolve-local-artifact-path \
+    | jq -r '.absolutePath'
+)"
+WATCH_SCRIPT="$(
+  node "$HELPER_RESOLVER" --root "$KNITTEN_ROOT" shotloom-auto-pr-watch \
+    | jq -r '.absolutePath'
+)"
+OPS_DIR="$(
+  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" log \
+    | jq -r '.absoluteCleanupPath'
+)"
 PID_FILE="$OPS_DIR/watcher.pid"
 LOOP_LOG="$OPS_DIR/watcher.log"
 MKDIR_LOCK="$OPS_DIR/watch.lock.d"
@@ -40,7 +52,7 @@ rmdir "$MKDIR_LOCK" 2>/dev/null || true
 # launch loop in background, fully detached
 nohup bash -c "
   while true; do
-    bash '$SKILL_DIR/watch.sh' '$PR' >> '$LOOP_LOG' 2>&1 || true
+    bash '$WATCH_SCRIPT' '$PR' >> '$LOOP_LOG' 2>&1 || true
     # If bootstrap failed before state.json was written, keep the watcher alive
     # and retry on the next tick instead of silently disabling auto-pr.
     if [[ ! -f '$OPS_DIR/state.json' ]]; then

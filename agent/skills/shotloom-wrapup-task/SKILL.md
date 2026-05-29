@@ -151,10 +151,7 @@ Unless mode is `paused`, stop the background watcher for this PR so it doesn't k
 
 ```bash
 if [ -n "$pr_number" ] && [ "$mode" != "paused" ]; then
-  pid_file="$HOME/.claude/ops/pr-$pr_number/watcher.pid"
-  if [ -f "$pid_file" ]; then
-    bash ~/.claude/skills/shotloom-auto-pr/stop.sh "$pr_number"
-  fi
+  shotloom-auto-pr-stop "$pr_number"
 fi
 ```
 
@@ -198,7 +195,7 @@ Linear move skipped.
 
 - **Never force** (`-D`, `--force`) without explicit user confirmation. Uncommitted changes or unmerged branches are signals — pause and ask.
 - **Clean the used local task worktree only after moving to the main checkout.** `cd $shotloom_root` before `git worktree remove`; do not remove a worktree from inside itself.
-- **Day-log path is not `~/.claude/ops/`.** That directory is per-PR transient state. Durable records go through `/learn-log-day`, which resolves `machine-paths.json → obsidian` with `obsidian-staging` fallback.
+- **Day-log path is not `.agent-local/shotloom/`.** That directory is per-PR transient state. Durable records go through `/learn-log-day`, which resolves `machine-paths.json → obsidian` with `obsidian-staging` fallback.
 - **Pattern candidates live in Knitten, not the Obsidian day log.** Day logs preserve retrospective context; `docs/briefings/operational-findings-inbox.md` is the canonical Knitten-wide findings index. `docs/briefings/shotloom/review-finding-patterns-inbox.md` is legacy compatibility storage only.
 - **PR-level lifecycle is `/shotloom-auto-pr`'s job when running.** This skill is the manual equivalent — if auto-pr already did the Linear move and worktree cleanup on MERGE, this skill detects that and only appends the day log.
 - **Abandoned PRs** — worktree removal still requires the branch to be pushed or user-approved discard.

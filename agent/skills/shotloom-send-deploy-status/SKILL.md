@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for deploy status notices only. Prefer shotloom-router for full deploy workflows.
 argument-hint: "<start|success> --version vX.Y.Z [field flags]"
-allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*)
+allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*), Bash(cci-send-alert:*)
 domains: rust,web
 repo-keys: shotloom
 languages: css,rust,typescript
@@ -47,10 +47,10 @@ Common flags:
 
 ## Binding rules
 
-- **Per-message approval** per `~/.claude/rules/slack.md`. Show all drafts in a phase together, get one `y` before sending any. One approval = one phase (covers all messages in that phase).
+- **Per-message approval** per `agent/rules/slack.md`. Show all drafts in a phase together, get one `y` before sending any. One approval = one phase (covers all messages in that phase).
 - **Never auto-send.**
 - **Korean dry tone**: no emoji, no qualitative adjectives, no future-tense filler.
-- **Channel fixed** to `team_channel` from `~/.claude/config/slack.json`.
+- **Channel fixed** to `team_channel` from `agent/config/slack.json`.
 
 ## Workflow
 
@@ -168,20 +168,24 @@ B:
 
 ### Step 5: Send
 
-`start` Message 1 — top-level via send.py (no `--thread-ts`):
+`start` Message 1 — top-level via `cci-send-alert` (no `--thread-ts`):
 
 ```bash
-resp=$(python3 ~/.claude/skills/cci-send-alert/send.py "$MSG_1")
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+resp=$(cci-send-alert "$MSG_1")
 START_TS=$(echo "$resp" | python3 -c "import json,sys; print(json.load(sys.stdin)['ts'])")
 ```
 
-`start` Message 2 — thread reply via send.py:
+`start` Message 2 — thread reply via `cci-send-alert`:
 
 ```bash
-python3 ~/.claude/skills/cci-send-alert/send.py "$MSG_2" --thread-ts "$START_TS"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+cci-send-alert "$MSG_2" --thread-ts "$START_TS"
 ```
 
-`success` Message A — direct Slack API with `reply_broadcast: true` (send.py does not support this flag):
+`success` Message A — direct Slack API with `reply_broadcast: true` (`cci-send-alert` does not support this flag):
 
 ```python
 payload = {
@@ -196,10 +200,12 @@ payload = {
 # capture A_TS = result["ts"]
 ```
 
-`success` Message B — thread reply under A via send.py:
+`success` Message B — thread reply under A via `cci-send-alert`:
 
 ```bash
-python3 ~/.claude/skills/cci-send-alert/send.py "$MSG_B" --thread-ts "$A_TS"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+cci-send-alert "$MSG_B" --thread-ts "$A_TS"
 ```
 
 On any `ok=false`: surface Slack API error verbatim. Common errors:
@@ -244,7 +250,7 @@ Sent: phase=success  broadcast_ts=<A_ts>  detail_ts=<B_ts>  thread=<THREAD_TS>
 
 ## Related
 
-- `~/.claude/skills/cci-send-alert/SKILL.md` — underlying send mechanism (`team_channel`, `SLACK_BOT_TOKEN`)
-- `~/.claude/skills/shotloom-deploy-web/SKILL.md` — primary caller
-- `~/.claude/rules/slack.md` — per-message approval gate
-- `~/.claude/config/slack.json` — `team_channel`, `team_bot_username`
+- `cci-send-alert` — underlying send mechanism (`team_channel`, `SLACK_BOT_TOKEN`)
+- `shotloom-deploy-web` — primary caller
+- `agent/rules/slack.md` — per-message approval gate
+- `agent/config/slack.json` — `team_channel`, `team_bot_username`

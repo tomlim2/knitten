@@ -1,14 +1,13 @@
 ---
 description: "Run Shotloom task preparation end-to-end: start-task briefing, draft-spec, spec review, commit/push docs, then stop before implementation."
 argument-hint: "STL-NN | linear-url"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(rg:*), Bash(stat:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(rg:*), Bash(stat:*), Bash(test:*), Bash(resolve-local-artifact-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: authoring,review
 context-profile: shotloom-review
-context-rules: rules/shotloom-docs-lane.md
 exclude-when: unreal,obsidian
 ---
 
@@ -86,9 +85,7 @@ Let `/shotloom-draft-spec` own:
 
 - spec authoring
 - spec review gate
-- briefing + spec commits
-- pushes to the daily Knitten docs branch
-- daily docs PR creation or update
+- local planning artifacts under `.agent-local/shotloom/planning/stl-<N>/`
 - final reviewed spec path
 
 Keep repo responsibilities separate:
@@ -96,7 +93,7 @@ Keep repo responsibilities separate:
 | Repo | Owned by | Contract |
 |---|---|---|
 | Shotloom | `/shotloom-start-task` | Creates or attaches the task worktree. This skill does not commit source edits. |
-| Knitten | `/shotloom-draft-spec` | Writes briefing/spec docs on the daily Shotloom docs lane from `agent/rules/shotloom-docs-lane.md`. |
+| Knitten | `/shotloom-draft-spec` | Writes local planning artifacts through `resolve-local-artifact-path`. |
 
 If spec authoring or review asks a product/scope/trade-off question, stop and
 surface that question. Do not guess.
@@ -107,8 +104,7 @@ After `/shotloom-draft-spec` completes, report:
 
 - briefing path
 - reviewed spec path
-- commits pushed, if any
-- daily docs PR URL, if created or updated
+- local planning manifest path
 - remaining P3/nit notes, if any
 
 Then ask:
@@ -129,8 +125,7 @@ Implementation begins only after a separate user message such as `구현 시작`
 - Do not write Shotloom source files.
 - Do not open a Shotloom implementation PR.
 - Do not proceed past a child-skill blocker.
-- Preserve the daily Shotloom docs branch contract from
-  `agent/rules/shotloom-docs-lane.md`.
+- Preserve the local artifact resolver contract from `resolve-local-artifact-path`.
 
 ## Related
 

@@ -34,7 +34,7 @@ Accept exactly one input:
 
 | Input | Meaning |
 |---|---|
-| `docs/plans/proposed/<slug>.md` | Implement the approved task spec. |
+| `.agent-local/shotloom/planning/stl-<N>/manifest.json` | Implement the approved local planning bundle. |
 | `*.json` | Fix review findings from `/shotloom-review-before-pr`. |
 | `<slug>` | Resolve the matching Knitten spec and briefing, then implement. |
 

@@ -13,25 +13,19 @@ promoting them directly into the review catalog.
 
 | Field | Value |
 |---|---|
-| Branch | `operational-findings` |
-| Preferred worktree | `<knitten-root>/.worktrees/operational-findings` |
-| Inbox | `docs/briefings/operational-findings-inbox.md` |
-| Report directory | `docs/briefings/operational-findings/reports/` |
+| Local queue | `.agent-local/ah/operational-findings/YYYY-MM-DD/` |
+| Inbox | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md` |
+| Report directory | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/` |
 | Capture script | `scripts/operational-findings-report.mjs` |
 
-## Worktree Rules
+## Capture Rules
 
-1. Do not write this inbox from a dirty findings worktree.
-2. Resolve the Knitten checkout from agent-hub config before running scripts;
+1. Resolve the Knitten checkout from agent-hub config before running scripts;
    wrapup is usually invoked from a Shotloom worktree, not from Knitten.
-3. Prepare the preferred worktree with
-   `node "$knitten_root/scripts/operational-findings-worktree.mjs" prepare`
-   and use the returned absolute `worktree:` path.
-4. Capture through `scripts/operational-findings-report.mjs`; do not hand-edit
-   the index from the task worktree.
-5. If neither branch nor worktree can be prepared safely, skip this phase and
-   report the skip; do not block Linear or worktree cleanup.
-6. Commit and push only the index/report update from that branch.
+2. Capture through `scripts/operational-findings-report.mjs`; do not hand-edit
+   the local daily index.
+3. If capture fails, report the skip; do not block Linear or worktree cleanup.
+4. Do not commit or push raw finding captures.
 
 ## Entry Shape
 
@@ -81,12 +75,7 @@ if [ -z "$knitten_root" ]; then
   )
 fi
 
-findings_worktree=$(
-  node "$knitten_root/scripts/operational-findings-worktree.mjs" prepare \
-    | awk -F': ' '/^worktree:/ {print $2; exit}'
-)
-
-cd "$findings_worktree"
+cd "$knitten_root"
 node "$knitten_root/scripts/operational-findings-report.mjs" capture \
   --source wrapup-task \
   --context "shotloom PR 371" \
