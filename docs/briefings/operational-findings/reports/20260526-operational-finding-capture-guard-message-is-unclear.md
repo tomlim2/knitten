@@ -6,7 +6,7 @@ initial-source: user-report
 area: ux
 contexts:
   - ah-report-finding / operational-findings capture while reporting Shotloom review bootstrap issue
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-promote-findings/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

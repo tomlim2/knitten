@@ -6,7 +6,7 @@ initial-source: user-report
 area: workflow
 contexts:
   - shotloom-respond-pr CINEV/shotloom#430
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-respond-pr/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

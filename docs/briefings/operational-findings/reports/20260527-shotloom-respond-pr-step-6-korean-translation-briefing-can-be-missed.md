@@ -6,7 +6,7 @@ initial-source: user-report
 area: skill
 contexts:
   - shotloom-respond-pr Korean reporting flow audit
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-respond-pr/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

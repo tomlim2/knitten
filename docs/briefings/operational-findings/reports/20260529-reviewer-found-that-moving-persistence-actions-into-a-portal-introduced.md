@@ -6,7 +6,7 @@ initial-source: wrapup-task
 area: ux
 contexts:
   - shotloom PR 425
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-review-code/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

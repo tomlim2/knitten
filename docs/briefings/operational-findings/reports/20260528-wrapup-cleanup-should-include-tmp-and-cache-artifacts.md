@@ -6,7 +6,7 @@ initial-source: user-report
 area: workflow
 contexts:
   - wrapup cleanup
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-wrapup-task/SKILL.md
 urgent: false
 ---
 

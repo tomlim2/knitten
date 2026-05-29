@@ -6,7 +6,7 @@ initial-source: smoke-test
 area: validator
 contexts:
   - operational-findings smoke test 2026-05-24
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-promote-findings/PROMOTED_FINDINGS.md
 urgent: false
 ---
 

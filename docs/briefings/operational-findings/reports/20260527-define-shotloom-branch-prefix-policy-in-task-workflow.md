@@ -6,7 +6,7 @@ initial-source: user-report
 area: workflow
 contexts:
   - Shotloom editor UI stickerbook branch was named codex/editor-ui-stickerbook-guideline; user expected a Shotloom-specific prefix policy to exist
-promotion-target: unknown
+promotion-target: agent/skills/shotloom-start-task/PROMOTED_FINDINGS.md
 urgent: false
 ---
 
