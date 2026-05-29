@@ -1,5 +1,5 @@
 ---
-status: captured
+status: done
 created: 2026-05-29
 updated: 2026-05-29
 initial-source: wrapup-task
@@ -37,5 +37,5 @@ Reviewer found that ADR-0060 described Stage import map_id, document_id, and pla
 
 ## Status
 
-- Current State: captured
+- Current State: done
 - Fast Track: no

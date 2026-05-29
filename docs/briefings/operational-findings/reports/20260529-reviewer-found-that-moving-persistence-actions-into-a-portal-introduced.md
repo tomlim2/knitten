@@ -1,5 +1,5 @@
 ---
-status: captured
+status: done
 created: 2026-05-29
 updated: 2026-05-29
 initial-source: wrapup-task
@@ -37,5 +37,5 @@ Reviewer found that moving persistence actions into a portal introduced target l
 
 ## Status
 
-- Current State: captured
+- Current State: done
 - Fast Track: no
