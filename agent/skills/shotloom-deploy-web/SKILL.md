@@ -52,7 +52,7 @@ If no argument: dry-run, no smoke, suggest next patch.
 - **Local `main` in sync with `origin/main`.** Auto-`git fetch`, then refuse if behind.
 - **HEAD's CI must be green.** Refuse to deploy a red SHA.
 - **Never claim cluster rollout health without cluster tooling.** ETag-based proxy verification confirms a roll happened — not that pods are healthy. State the partial signal plainly; "GitOps manifest updated" and "live URL returned 200" are the only honest claims this skill earns from `gh` + `curl` alone.
-- **Slack sends are per-message gated** per `~/.claude/rules/slack.md`. Draft + show + wait for explicit `y`. No bundled approval covers a second message.
+- **Slack sends are per-message gated** per `agent/rules/slack.md`. Draft + show + wait for explicit `y`. No bundled approval covers a second message.
 
 ## Workflow
 
@@ -470,4 +470,4 @@ When debugging suspected runtime failures, reproduce locally with a minimal `doc
 - `apps/editor/Containerfile`, `apps/editor/nginx.conf`
 - `CINEV/prototype-manifest` — GitOps canonical source (`shotloom/deployment.yaml`, `applications/shotloom-web.yaml`)
 - `agent/rules/git-defaults.md`, `agent/rules/slack.md`
-- `cci-send-alert` — Slack send tooling (`team_channel` from `~/.claude/config/slack.json`)
+- `cci-send-alert` — Slack send tooling (`team_channel` from `agent/config/slack.json`)

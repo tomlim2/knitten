@@ -47,10 +47,10 @@ Common flags:
 
 ## Binding rules
 
-- **Per-message approval** per `~/.claude/rules/slack.md`. Show all drafts in a phase together, get one `y` before sending any. One approval = one phase (covers all messages in that phase).
+- **Per-message approval** per `agent/rules/slack.md`. Show all drafts in a phase together, get one `y` before sending any. One approval = one phase (covers all messages in that phase).
 - **Never auto-send.**
 - **Korean dry tone**: no emoji, no qualitative adjectives, no future-tense filler.
-- **Channel fixed** to `team_channel` from `~/.claude/config/slack.json`.
+- **Channel fixed** to `team_channel` from `agent/config/slack.json`.
 
 ## Workflow
 
@@ -244,7 +244,7 @@ Sent: phase=success  broadcast_ts=<A_ts>  detail_ts=<B_ts>  thread=<THREAD_TS>
 
 ## Related
 
-- `../cci-send-alert/SKILL.md` — underlying send mechanism (`team_channel`, `SLACK_BOT_TOKEN`)
-- `../shotloom-deploy-web/SKILL.md` — primary caller
+- `cci-send-alert` — underlying send mechanism (`team_channel`, `SLACK_BOT_TOKEN`)
+- `shotloom-deploy-web` — primary caller
 - `agent/rules/slack.md` — per-message approval gate
-- `~/.claude/config/slack.json` — `team_channel`, `team_bot_username`
+- `agent/config/slack.json` — `team_channel`, `team_bot_username`
