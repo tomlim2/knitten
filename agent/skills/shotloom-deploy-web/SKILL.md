@@ -45,7 +45,7 @@ If no argument: dry-run, no smoke, suggest next patch.
 
 ## Binding rules (CRITICAL)
 
-- **`--for-real` requires explicit per-invocation final approval.** Per `~/.claude/rules/git-defaults.md`, the skill stops one beat before `git push origin vX.Y.Z` and waits for `y`, even when `--for-real` is on the command line.
+- **`--for-real` requires explicit per-invocation final approval.** Per `agent/rules/git-defaults.md`, the skill stops one beat before `git push origin vX.Y.Z` and waits for `y`, even when `--for-real` is on the command line.
 - **No silent re-tag.** If a tag with the chosen version already exists locally or on origin, abort. Tags are immutable in GitOps.
 - **`gh` account must be `tomlim2`.** Run `shotloom-github-guard`; fail when the active login is not `tomlim2` or cannot be read.
 - **Working tree clean and on `main`.** Deploy from a feature branch is meaningless.
@@ -59,6 +59,8 @@ If no argument: dry-run, no smoke, suggest next patch.
 ### Step 1: Preflight (cwd, account, branch, sync, tree, baselines)
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cd "$(ah-resolve-doc-path repo shotloom | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')"
 toplevel=$(git rev-parse --show-toplevel)
 remote=$(git -C "$toplevel" remote get-url origin)
@@ -280,6 +282,8 @@ This is verification only — no retries, no auto-rollback, no paging. Surfaces 
 When Step 8a hits the known masking issue, the image IS in the registry but the manifest job aborted with `resolved empty image`. Build the image without touching the manifest only if Step 6a/6b workflow run already succeeded for the build-push job. Then update the manifest by hand:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 tmpdir="$(
   resolve-local-artifact-path --create shotloom deploy "$version" manifest \
     | jq -r '.absoluteCleanupPath'
@@ -303,6 +307,8 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 ### Step 9: GitHub Release + Slack 결과 알림 (for-real only)
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 notes_file="$(
   resolve-local-artifact-path --create shotloom deploy "$version" release-notes \
     | jq -r '.absolutePath'
@@ -351,11 +357,8 @@ If `start_ts` is empty because Step 7 was skipped or failed, do **not** silently
 
 ### Step 10: Devlog append (Obsidian)
 
-```bash
-base=$(jq -re '.obsidian // .["obsidian-staging"]' \
-  ~/.claude/private/agent-hub-config/machine-paths.json)
-devlog="$base/projects/shotloom/days/$(date +%Y-%m-%d).md"
-```
+Use `/learn-log-day` for the deploy devlog. Do not read machine paths directly
+from this deploy skill.
 
 Bullets are the audit trail; one Korean paragraph above is fine. For dry-run vs for-real templates see reference (workflow URL, image URL, manifest commit, ETag transition or rollback, Release URL, manual smoke omission).
 
@@ -384,6 +387,8 @@ Honesty rules:
 Use when live traffic is broken or a new image cannot be proven good.
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 tmpdir="$(
   resolve-local-artifact-path --create shotloom deploy "$version" rollback \
     | jq -r '.absoluteCleanupPath'

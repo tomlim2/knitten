@@ -58,6 +58,8 @@ Implementation. Full section rules: [reference.md](reference.md).
 ### Step 1: Resolve Inputs
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 branch="$(git rev-parse --abbrev-ref HEAD)"
 repo_root="$(git rev-parse --show-toplevel)"
 git_common="$(git rev-parse --git-common-dir)"

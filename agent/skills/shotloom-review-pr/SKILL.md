@@ -59,6 +59,8 @@ Verify:
 Fetch PR metadata:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$PR" log \
     | jq -r '.absoluteCleanupPath'

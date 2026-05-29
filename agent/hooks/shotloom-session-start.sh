@@ -9,20 +9,20 @@ set -euo pipefail
 input=$(cat)
 cwd=$(printf '%s' "$input" | /usr/bin/python3 -c 'import json,sys;print(json.load(sys.stdin).get("cwd",""))' 2>/dev/null || echo "")
 
+hook_path=$(/usr/bin/python3 -c 'import pathlib,sys;print(pathlib.Path(sys.argv[1]).resolve())' "$0" 2>/dev/null || echo "$0")
+agent_hub="${KNITTEN_ROOT:-$(git -C "$(dirname "$hook_path")/.." rev-parse --show-toplevel 2>/dev/null || echo "")}"
+if [ -n "$agent_hub" ] && [ -f "$agent_hub/agent/lib/prepare-local-bin.mjs" ]; then
+  node "$agent_hub/agent/lib/prepare-local-bin.mjs" --root "$agent_hub" >/dev/null 2>&1 || true
+fi
+
 case "$cwd" in
   */shotloom|*/shotloom-github|*/shotloom-github/*|*/shotloom/*) ;;
   *) exit 0 ;;
 esac
 
-repo=$("$HOME/.claude/skills/ah-resolve-doc-path/resolve.sh" repo shotloom 2>/dev/null \
-  | awk -F= '/^RESOLVED_PATH=/{print $2; exit}')
+[ -n "$agent_hub" ] || exit 0
+repo=$(node "$agent_hub/agent/lib/run-helper.mjs" --root "$agent_hub" resolve-repo-path -- shotloom 2>/dev/null || echo "")
 [ -d "$repo" ] || exit 0
-
-hook_path=$(/usr/bin/python3 -c 'import pathlib,sys;print(pathlib.Path(sys.argv[1]).resolve())' "$0" 2>/dev/null || echo "$0")
-agent_hub=$(git -C "$(dirname "$hook_path")/.." rev-parse --show-toplevel 2>/dev/null || echo "")
-if [ -n "$agent_hub" ] && [ -f "$agent_hub/agent/lib/prepare-local-bin.mjs" ]; then
-  node "$agent_hub/agent/lib/prepare-local-bin.mjs" --root "$agent_hub" >/dev/null 2>&1 || true
-fi
 
 # Pull a few quick reads. Errors go silent — this is advisory, not a gate.
 wt_count=$(git -C "$repo" worktree list 2>/dev/null | wc -l | tr -d ' ')
@@ -55,7 +55,7 @@ Shotloom session detected. Quick status:
 - Open PRs (mine): ${open_prs}
 
 Run \`/shotloom-status\` for the full dashboard.
-Helper commands live in \`.agent-local/bin\`; if the shell cannot find them, run \`source agent/lib/activate-local-bin.sh\`.
+Helper commands live in \`.agent-local/bin\`; skill command blocks source \`agent/lib/activate-local-bin.sh\` before use.
 Start new work with \`/shotloom-start-task STL-NN\` — the hook will also auto-trigger when you mention a Linear issue.
 </system-reminder>
 REMINDER

@@ -10,10 +10,10 @@ import urllib.request
 from pathlib import Path
 from typing import Optional
 
-ROOT_DIR = Path.home() / ".claude"
+KNITTEN_ROOT = Path(os.environ["KNITTEN_ROOT"]).resolve() if os.environ.get("KNITTEN_ROOT") else Path(__file__).resolve().parents[3]
 ENV_PATHS = [
     Path.home() / ".config" / "cinev" / ".env",
-    ROOT_DIR / "config" / ".env",
+    KNITTEN_ROOT / "agent" / "config" / ".env",
 ]
 
 
@@ -31,7 +31,7 @@ def load_env() -> None:
 
 
 def load_slack_config() -> dict:
-    path = ROOT_DIR / "config" / "slack.json"
+    path = KNITTEN_ROOT / "agent" / "config" / "slack.json"
     if not path.exists():
         return {}
     with open(path, "r", encoding="utf-8") as f:
@@ -53,7 +53,7 @@ def post_message(text: str, thread_ts: Optional[str] = None) -> dict:
     if not channel:
         return {
             "ok": False,
-            "error": "team_channel not set in ~/.claude/config/slack.json",
+            "error": "team_channel not set in agent/config/slack.json",
         }
 
     payload = {

@@ -55,7 +55,12 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
    gh pr view "<N>" --json assignees --jq '.assignees[].login' | grep -qx 'tomlim2'
    ```
    If this check fails, stop. Do not start the watcher.
-4. Run `shotloom-auto-pr-start <N>`.
+4. Activate local helpers, then run `shotloom-auto-pr-start <N>`:
+   ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+   source "$knitten_root/agent/lib/activate-local-bin.sh"
+   shotloom-auto-pr-start <N>
+   ```
 6. `start.sh` spawns a `nohup` background loop running `watch.sh <N>` every 120s by default (`start.sh <N> 180` overrides).
 7. Report: "watcher PID <pid> for PR #<N>. logs: .agent-local/shotloom/pr/<N>/{watcher,react}.log"
 

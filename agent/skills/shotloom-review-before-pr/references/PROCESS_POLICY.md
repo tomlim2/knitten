@@ -100,6 +100,8 @@ Every run writes one result file and prints the same JSON block. Resolve the
 result file with `resolve-local-artifact-path`:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 resolve-local-artifact-path --create shotloom before-pr stl-<N> <safe-branch> readiness
 ```
 

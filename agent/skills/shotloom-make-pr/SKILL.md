@@ -67,6 +67,7 @@ status=$(git status --short)
 [ -z "$status" ] || { echo "ERROR: working tree is not clean"; git status --short; exit 1; }
 
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 shotloom-github-guard --require-git-author
 
 default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
@@ -127,6 +128,8 @@ Require a current `/shotloom-review-before-pr` JSON result for this branch:
 Resolve the result file before trusting readiness:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
 result_path="$(
   resolve-local-artifact-path shotloom before-pr stl-<N> "$safe_branch" readiness \

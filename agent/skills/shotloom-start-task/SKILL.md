@@ -35,6 +35,7 @@ Run local gates and detect the Linear issue key:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 shotloom-preflight --allow-dirty --print-json
 node "$knitten_root/agent/lib/shotloom-linear-intake.mjs" detect "$ARGUMENTS"
 ```
@@ -208,6 +209,8 @@ Write a compact briefing markdown file to the Knitten checkout through
 `resolve-local-artifact-path`:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 resolve-local-artifact-path --create shotloom planning stl-<N> brief
 ```
 

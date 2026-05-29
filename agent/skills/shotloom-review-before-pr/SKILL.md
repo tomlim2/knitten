@@ -44,6 +44,13 @@ Mode overrides belong to
 
 ## Workflow
 
+Before running any local helper command in this skill, run:
+
+```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+```
+
 ### Step 1: Worktree Sanity
 
 ```bash

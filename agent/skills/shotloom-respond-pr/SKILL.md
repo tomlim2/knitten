@@ -41,6 +41,8 @@ Usage: `/shotloom-respond-pr <pr-number>`
 2. Run preflight and resolve the PR branch before reading review comments or editing:
 
    ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+   source "$knitten_root/agent/lib/activate-local-bin.sh"
    shotloom-preflight --require-git-author --pr "$ARGUMENTS"
 
    HEAD_REF=$(gh pr view "$ARGUMENTS" --repo CINEV/shotloom --json headRefName --jq '.headRefName')
@@ -69,6 +71,8 @@ snapshot. Apply matching entries as response-round checks.
 Save each fetch to a per-PR cache file so later steps can re-read without re-fetching:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
     | jq -r '.absoluteCleanupPath'
@@ -79,6 +83,8 @@ github-pr-review-snapshot "$ARGUMENTS" --out-dir "$cache_dir"
 Then build the start-context JSON:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
     | jq -r '.absoluteCleanupPath'
@@ -250,6 +256,8 @@ after Step 2, so the original review snapshot may be stale.
 Right before building the reply plan, run:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
     | jq -r '.absoluteCleanupPath'
@@ -277,6 +285,8 @@ Step 3 routes, and Step 4 evidence. This is the Step 7 execution contract.
 Step 8 and Step 9 read this file; they do not re-derive routing fields.
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 reply_plan="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" reply-plan \
     | jq -r '.absolutePath'
@@ -329,6 +339,8 @@ After drafting the JSON, let the helper compute routing fields from the cached
 review state and item metadata:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
     | jq -r '.absoluteCleanupPath'
@@ -376,6 +388,8 @@ Use this exactly once per cycle even when there are multiple suppressed items �
 When `RESPOND_PR_RESOLVE_THREADS=1` is set, resolve threads through the helper:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
     | jq -r '.absoluteCleanupPath'
@@ -396,6 +410,8 @@ Re-request is the signal that "I'm done with this round; please re-review." It r
 1. Identify reviewers to re-request from the cache files Step 2 saved. The two files have different shapes — view is an object, reviews is an array — so jq filters MUST run against the matching file. Mixing them in one `jq … fileA fileB` invocation crashes with `Cannot index array with string "reviewRequests"`.
 
    ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+   source "$knitten_root/agent/lib/activate-local-bin.sh"
    cache_dir="$(
      resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
        | jq -r '.absoluteCleanupPath'
@@ -432,6 +448,8 @@ Run after Step 8 reply execution and Step 9 re-request complete, before the fina
 summary:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
   resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
     | jq -r '.absoluteCleanupPath'

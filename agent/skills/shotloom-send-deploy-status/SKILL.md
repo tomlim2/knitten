@@ -171,6 +171,8 @@ B:
 `start` Message 1 — top-level via `cci-send-alert` (no `--thread-ts`):
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 resp=$(cci-send-alert "$MSG_1")
 START_TS=$(echo "$resp" | python3 -c "import json,sys; print(json.load(sys.stdin)['ts'])")
 ```
@@ -178,6 +180,8 @@ START_TS=$(echo "$resp" | python3 -c "import json,sys; print(json.load(sys.stdin
 `start` Message 2 — thread reply via `cci-send-alert`:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cci-send-alert "$MSG_2" --thread-ts "$START_TS"
 ```
 
@@ -199,6 +203,8 @@ payload = {
 `success` Message B — thread reply under A via `cci-send-alert`:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cci-send-alert "$MSG_B" --thread-ts "$A_TS"
 ```
 

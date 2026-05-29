@@ -59,6 +59,8 @@ Print the full message body and the target channel (from `slack.json`) to the us
 ### Step 3: Send
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 cci-send-alert "$MESSAGE" [--thread-ts "$TS"]
 ```
 

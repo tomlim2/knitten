@@ -51,6 +51,8 @@ When only `P3`/nit findings remain, land the spec and stop.
 Run:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
 shotloom_root="$(ah-resolve-doc-path repo shotloom)"
