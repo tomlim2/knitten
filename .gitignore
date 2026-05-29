@@ -85,6 +85,9 @@ Thumbs.db
 .claude/
 .worktrees/
 
+# Local agent handoff reports; never commit.
+.agent-local/
+
 # Hyperframes runtime
 hyperframes/node_modules/
 hyperframes/package-lock.json
