@@ -10,7 +10,7 @@ promotion-target: agent/skills/shotloom-review-docs/PROMOTED_FINDINGS.md
 urgent: false
 ---
 
-# Reviewer found that a durable persistence spec partially neutralized New Bundle 
+# Reviewer found that a durable persistence spec partially neutralized New Bundle
 
 ## Summary
 

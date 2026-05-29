@@ -10,7 +10,7 @@ promotion-target: agent/skills/shotloom-review-docs/PROMOTED_FINDINGS.md
 urgent: false
 ---
 
-# Reviewer found that import_stage_map documentation mentioned the 4096-placement 
+# Reviewer found that import_stage_map documentation mentioned the 4096-placement
 
 ## Summary
 
