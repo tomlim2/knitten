@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-19
+updated: 2026-05-26
 owner: agent-hub
 target-date:
 ---
@@ -26,8 +26,8 @@ the task is finished.
 
 | Spec | Status | Role |
 |------|--------|------|
-| [knitten-worktree-first.md](../plans/active/knitten-worktree-first.md) | active | Define and implement worktree-first repo isolation. |
-| [solo-pr-review-flow.md](../plans/active/solo-pr-review-flow.md) | active | Define solo PR review evidence and check-based merge flow. |
+| [knitten-worktree-first.md](../plans/completed/knitten-worktree-first.md) | completed | Define and implement worktree-first repo isolation. |
+| [solo-pr-review-flow.md](../plans/completed/solo-pr-review-flow.md) | completed | Define solo PR review evidence and check-based merge flow. |
 | [auto-pr-review.md](../plans/proposed/auto-pr-review.md) | proposed | Define safe automatic LLM PR review evidence after PR creation or update. |
 
 ## Progress
@@ -37,6 +37,7 @@ the task is finished.
 | PR template | done | `.github/pull_request_template.md` has review evidence fields. |
 | Validation workflow | done | `.github/workflows/validate.yml` runs repository validation. |
 | Worktree-first implementation | done | PR #3 landed starter, guard, status, installer, cleanup, and policy validation. |
+| Worktree-first spec closure | done | `docs/plans/completed/knitten-worktree-first.md` records item-by-item acceptance evidence and remaining verification is closed. |
 | Lightweight branch exception | done | `agent/rules/git-defaults.md` documents the allowed scope and `scripts/worktree-guard.mjs` allows primary-checkout feature branches when configured. |
 | PR after push suggestion | done | `agent/rules/git-defaults.md` tells agents to suggest a PR after committing and pushing from a worktree-first repo. |
 | Automatic LLM PR review | proposed | `docs/plans/proposed/auto-pr-review.md` defines report-only review automation before any PR-visible posting. |
@@ -57,7 +58,7 @@ the task is finished.
 
 | Decision | Default |
 |----------|---------|
-| Automatic LLM reviewer implementation | Separate future spec after worktree-first is merged. |
+| Automatic LLM reviewer implementation | Proposed in `docs/plans/proposed/auto-pr-review.md`; do not implement until accepted. |
 | Lightweight branch lane | Allowed only for small docs-only or CI/CD-only changes; code, validator, routing, schema, migration, and multi-boundary work still uses a task worktree. |
 
 ## Blockers

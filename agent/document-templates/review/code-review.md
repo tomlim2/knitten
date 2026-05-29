@@ -288,7 +288,6 @@ Use these standards based on file type and domain:
 | `review-code-css.md` | CSS code review checklist (detailed) |
 | `review-code-unreal-cpp.md` | C++ code review checklist (detailed) |
 | `review-code-unreal-python.md` | UE Python code review checklist |
-| `slash-commands.md` | Slash command files (.md in commands/) |
 | `delegation.md` | Project planning and task breakdown |
 | `tech-spec-template.md` | Technical specifications |
 

@@ -11,7 +11,7 @@ scope:
 |-----------|-----------|
 | W1, W2 | `node scripts/validate-llm-first.mjs --check banned-terms` |
 | B1 | `node scripts/validate-llm-first.mjs --check length-caps` |
-| F1, F3, F4, N2 | `node scripts/validate-llm-first.mjs --check skill-command-mechanics` |
+| F1, F3, F4, N2 | `node scripts/validate-llm-first.mjs --check skill-mechanics` |
 | N3 | `node scripts/validate-llm-first.mjs --check taxonomy` |
 | D5 | `node scripts/validate-llm-first.mjs --check tracked-user-paths` |
 
@@ -29,7 +29,7 @@ unless the target is outside validator scope or the validator result is skipped.
 | W5 | Paired examples | Boundary rules show Bad and Good examples |
 | W6 | No duplication | Content is not copied from an auto-loaded rule or standard |
 | W7 | No rhetoric | Candidate sweep W7 below |
-| W8 | Extreme-S writing | Candidate sweep W8 below |
+| W8 | Operational Writing | Candidate sweep W8 below |
 
 ```bash
 rg -nw -e powerful -e elegant -e comprehensive -e world-class -e seamless -e robust "$target"
@@ -44,7 +44,7 @@ surrounding instruction endorses the bad wording.
 
 | ID | Check |
 |----|-------|
-| B1 | Validator-backed length budget for rules, standards, skills, and commands. |
+| B1 | Validator-backed length budget for rules, standards, and skills. |
 
 If the target exceeds budget, recommend splitting detail to a reference file or
 moving it down a layer.

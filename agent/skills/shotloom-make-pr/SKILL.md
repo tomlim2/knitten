@@ -1,5 +1,5 @@
 ---
-description: Draft and open a Shotloom PR per repo guideline, with local gates and approval before `gh pr create`
+description: Leaf/component Shotloom skill for PR creation after prReady=true. Prefer shotloom-router or shotloom-review-before-pr before PR creation.
 argument-hint: "[pr-number-to-supersede]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*)
 domains: rust
@@ -8,15 +8,16 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/git-defaults.md,rules/shotloom.md,rules/test-write.md
+context-rules: rules/git-defaults.md,rules/test-write.md
 exclude-when: unreal,obsidian
 ---
 
 # shotloom-make-pr
 
-Open a PR against `CINEV/shotloom`: gather context, run local gates,
-draft title/body per `docs/guidelines/pr-guideline.md`, present the
-draft for user approval, then run `gh pr create`.
+Open a PR against `CINEV/shotloom`: require current
+`/shotloom-review-before-pr` output with `prReady=true`, gather context, run
+local gates, draft title/body per `docs/guidelines/pr-guideline.md`, present
+the draft for user approval, then run `gh pr create`.
 
 If invoked with a prior PR number, include `Supersedes #N` in the new
 PR body and ask before posting any redirect comment.
@@ -30,8 +31,7 @@ PR body and ask before posting any redirect comment.
 ## Binding rules (CRITICAL)
 
 - **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git-defaults.md`.)
-- **Use `tomlim2` account only.** Follow the active-login check in `rules/shotloom.md`; do not treat inactive secondary-account noise in `gh auth status` as a blocker by itself.
-- **Commit identity must be `tomlim2 <deemo@vonvon.me>`.** If wrong, abort.
+- **Use `tomlim2` account and commit identity only.** Run `agent/lib/shotloom-github-guard.mjs --require-git-author`.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
 - **All PR body text in English** (Shotloom convention).
 - **Assign every PR to `@me`.** This applies to both draft and ready-for-review PRs.
@@ -66,20 +66,8 @@ git fetch origin main
 status=$(git status --short)
 [ -z "$status" ] || { echo "ERROR: working tree is not clean"; git status --short; exit 1; }
 
-identity="$(git config user.name) <$(git config user.email)>"
-[ "$identity" = "tomlim2 <deemo@vonvon.me>" ] || {
-  echo "ERROR: git identity must be tomlim2 <deemo@vonvon.me> (got: $identity)"
-  exit 1
-}
-
-gh_login=$(gh api user --jq .login 2>/dev/null) || {
-  echo "ERROR: unable to read active GitHub login"
-  exit 1
-}
-[ "$gh_login" = "tomlim2" ] || {
-  echo "ERROR: active GitHub login must be tomlim2 (got: $gh_login)"
-  exit 1
-}
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author
 
 default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
 default_branch="${default_branch#origin/}"
@@ -119,7 +107,39 @@ devlogs, sibling PR descriptions, or reviewer comments.
 
 If a fact you want to write doesn't come from `pr-guideline.md` (template) or the `git diff` (content), DROP it. No exceptions, no "but this is useful context" — if it didn't make it into the diff it doesn't belong in the body.
 
-### Step 3: Local CI-equivalent gates
+### Step 3: Require before-PR readiness
+
+`shotloom-review-before-pr` owns pre-PR code/docs readiness.
+`shotloom-make-pr` owns local CI-equivalent gates and PR creation approval.
+
+Require a current `/shotloom-review-before-pr` JSON result for this branch:
+
+```json
+{
+  "prReady": true,
+  "branch": "<current branch>",
+  "headSha": "<current HEAD>",
+  "dirty": false,
+  "blockersRemaining": 0
+}
+```
+
+Resolve the result file before trusting readiness:
+
+```bash
+safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
+result_path="/tmp/shotloom-before-pr-${safe_branch}-readiness.json"
+```
+
+If the file is missing, stale, for another branch, for another `HEAD`, has
+`dirty=true`, or has `prReady=false`, run `/shotloom-review-before-pr` now. If
+the current harness cannot invoke another skill directly, stop and tell the user
+to run `/shotloom-review-before-pr` first.
+
+If `prReady=false` after the rerun, stop. Let `/shotloom-review-before-pr` own
+the blocker-to-implementation loop; do not bypass it from PR creation.
+
+### Step 4: Local CI-equivalent gates
 
 Any failure blocks PR.
 
@@ -132,28 +152,6 @@ node scripts/validate-doc-paths.mjs
 ```
 
 If no tests in a changed crate, do NOT skip — that violates `rules/test-write.md`. Add tests first.
-
-### Step 4: Trigger `/shotloom-review-before-pr`
-
-`shotloom-make-pr` does NOT inline pattern-based review. That's
-`/shotloom-review-before-pr`'s job.
-
-If this skill was invoked directly by `shotloom-review-before-pr` in the same
-session after code and docs passes reported clean or nit-only, treat the review
-gate as already satisfied and continue to Step 5. Do not ask the user to confirm
-the gate again.
-
-Ask:
-> Did you run `/shotloom-review-before-pr` on this branch and resolve all findings? (y/n)
-
-- **yes** → continue.
-- **no** → trigger `/shotloom-review-before-pr` now if the current harness can
-  invoke local skills from this session. After it reports `Ready to
-  /shotloom-make-pr`, resume this skill from Step 5. If the harness cannot
-  invoke another skill directly, stop and instruct the user to run
-  `/shotloom-review-before-pr` first. Do not draft or create a PR before the
-  review skill has run.
-- **skip on insistence** → record `- [ ] /shotloom-review-before-pr — SKIPPED on user request` in Test plan so reviewers see it.
 
 ### Step 5: Draft title + body
 

@@ -1,5 +1,5 @@
 ---
-description: Poll a Shotloom PR for check status, new comments, and state changes
+description: Leaf/component Shotloom skill for PR polling only. Prefer shotloom-router for full PR response workflows.
 argument-hint: "<pr-number-or-url>"
 allowed-tools: Bash(gh:*), Read, CronCreate, CronDelete, CronList
 domains: rust
@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/git-defaults.md,rules/shotloom.md
+context-rules: rules/git-defaults.md
 exclude-when: unreal,obsidian
 ---
 

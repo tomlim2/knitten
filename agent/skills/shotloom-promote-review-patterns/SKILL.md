@@ -1,5 +1,5 @@
 ---
-description: Manually promote Shotloom wrapup review-finding inbox entries into the reusable review catalog.
+description: Leaf/component Shotloom skill for promoting review patterns only. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[--dry-run]"
 allowed-tools: Read, Write, Edit, Bash(git:*), Bash(rg:*), Bash(sed:*), Bash(awk:*)
 domains: rust,typescript

@@ -1,5 +1,5 @@
 ---
-description: Launch shotloom web dev server (WASM build + Vite) and report the local URL
+description: Leaf/component Shotloom skill for launching the local web app only. Prefer shotloom-router for full task workflows.
 argument-hint: "[--port N]"
 allowed-tools: Read, Bash(pnpm:*), Bash(npx:*), Bash(cargo:*), Bash(node:*), Bash(which:*), Bash(ls:*), Bash(cd:*)
 ---

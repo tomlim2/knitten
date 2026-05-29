@@ -29,7 +29,7 @@ gates for PR comments, review state, or merges.
 | Type | Path or source | Reason |
 |------|----------------|--------|
 | file | `docs/milestones/worktree-first-workflow.md` | Owns the next task slot for automatic LLM PR review. |
-| file | `docs/plans/active/solo-pr-review-flow.md` | Defines current manual objective review evidence. |
+| file | `docs/plans/completed/solo-pr-review-flow.md` | Defines current manual objective review evidence. |
 | file | `.github/workflows/validate.yml` | Current automated PR validation surface. |
 | file | `.github/pull_request_template.md` | Current review evidence capture surface. |
 | rule | `agent/rules/pr-create.md` | PR creation approval and body transport gate. |

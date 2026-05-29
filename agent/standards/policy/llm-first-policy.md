@@ -3,9 +3,9 @@ status: accepted
 platforms: all
 portability: shared
 ---
-# Agent-First Policy
+# LLM-First Policy
 
-The meta-policy that governs every other agent-hub document, rule, skill, and command. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
+The meta-policy that governs every other agent-hub document, rule, and skill. The repository's primary operator is an autonomous agent, not a human reader. This file explains the layered enforcement that makes that real.
 
 For the vocabulary used here (`charter`, `default-counter`, `lifecycle phase`, `audience`, `mutability`, layer numbers) and the rationale behind each principle below — see `principles.md`.
 
@@ -41,7 +41,7 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 | 3. Always-applied rules | `rules/*.md` (auto-loaded subset) | Short enforceable directives loaded every session | Add when a behavior must fire without a trigger |
 | 4. On-demand standards | `standards/*.md` | Long reference docs, loaded when a triggering condition fires | Add when reference exceeds a rule's length budget |
 | 5. Triggered rules | `rules/*.md` (triggered subset) | Directives loaded only on declared triggers | Add when a constraint applies only to a narrow context |
-| 6. Skills / commands | `skills/*/SKILL.md`, `commands/*.md` | Executable units invoked by name | Add when a procedure must be repeatable |
+| 6. Skills | `skills/*/SKILL.md` | Executable units invoked by name | Add when a procedure must be repeatable |
 | 7. Anti-rot validators | `scripts/validate-*.{sh,mjs}` | Mechanical checks that prevent drift | Add when manual self-audit is the bottleneck |
 
 **Rule of precedence:** when two layers conflict, the lower layer wins. A skill that violates `llm-first-docs.md` is the skill's bug, not the standard's. A rule that contradicts the charter is the rule's bug.
@@ -74,10 +74,10 @@ The policy is enforced as a stack. Lower layers shape upper layers; upper layers
 | Signal | Add to layer |
 |--------|--------------|
 | "This must fire on every session, no exceptions" | 3 (always-applied rule) |
-| "This must fire only when condition X is true" | 5 (triggered rule) + register trigger in `rules/index.md` |
+| "This must fire only when condition X is true" | 5 (triggered rule) + register trigger in `agent/rules/index.md` |
 | "This is reference material; rule body is too short to hold it" | 4 (on-demand standard); rule links to it |
 | "Multiple files would each have the same paragraph" | 4 (standard) + delete duplicates; rules cite by path |
-| "I keep re-doing this procedure manually" | 6 (skill or command) |
+| "I keep re-doing this procedure manually" | 6 (skill) |
 | "I keep failing the self-audit on the same defect" | 7 (validator) — the audit becomes a script |
 | "A bullet in an existing rule has a more specific trigger than the rule it lives in" | Split — extract the bullet into its own triggered rule; cite by path from the original rule if needed |
 | "An auto-rule body is approaching the auto-rule cap (40 body lines)" | Split — push triggered content out of auto into new triggered rules |

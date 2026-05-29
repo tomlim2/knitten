@@ -44,40 +44,75 @@ const PILOT_SKILL_CLASSIFICATIONS = {
   'ah-manage-spec': {
     skillKind: 'workflow-with-notes',
     extractions: [
-      extraction('review-checklist', '## Review Workflow', 'judgment', 'standard', 'rubric', 'agent/standards/authoring/spec-review.md', 'no', 'unknown'),
-      extraction('archive-delete-policy', '## Archive And Delete', 'lifecycle-policy', 'standard', 'guide', 'agent/standards/policy/spec-lifecycle.md', 'yes', 'unknown'),
+      extraction('review-checklist', '## Review Workflow', 'judgment', 'standard', 'rubric', 'agent/standards/authoring/spec-review.md', 'no', 'unknown', 'blocked'),
+      extraction('archive-delete-policy', '## Archive And Delete', 'lifecycle-policy', 'standard', 'guide', 'agent/standards/policy/spec-lifecycle.md', 'yes', 'unknown', 'blocked'),
     ],
   },
   'ah-route-plan': {
     skillKind: 'workflow-only',
+    reviewState: 'accepted',
     extractions: [],
   },
   'shotloom-review-before-pr': {
-    skillKind: 'guide-heavy',
+    skillKind: 'workflow-with-notes',
+    reviewState: 'accepted',
     extractions: [
-      extraction('review-mode-decision', '## Review Shape / ### Review Mode', 'judgment', 'skill', 'reference', 'agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md', 'yes', 'yes'),
-      extraction('triad-review-rubric', '### Step 3b: Triad Pass A', 'judgment', 'skill', 'rubric', 'agent/skills/shotloom-review-before-pr/references/TRIAD_REVIEW.md', 'yes', 'yes'),
-      extraction('binding-rules', '## Binding Rules', 'machine-checkable-contract', 'standard', 'validator-check', 'undecided', 'yes', 'yes'),
+      extraction('review-mode-decision', '### Step 2: Review Mode Decision', 'judgment', 'skill', 'reference', 'agent/skills/shotloom-review-before-pr/references/REVIEW_MODE.md', 'yes', 'yes', 'accepted'),
+      extraction('triad-review-rubric', '### Step 3: Selected Main Review', 'judgment', 'skill', 'rubric', 'agent/skills/shotloom-review-before-pr/references/TRIAD_REVIEW.md', 'yes', 'yes', 'accepted'),
     ],
   },
   'obsidian-obsidian-markdown': {
     skillKind: 'reference-heavy',
     extractions: [
-      extraction('wikilink-syntax', '## Internal Links (Wikilinks)', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown'),
-      extraction('embed-syntax', '## Embeds', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/EMBEDS.md', 'no', 'unknown'),
-      extraction('complete-example', '## Complete Example', 'example', 'skill', 'example', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown'),
+      extraction('wikilink-syntax', '## Internal Links (Wikilinks)', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown', 'accepted'),
+      extraction('embed-syntax', '## Embeds', 'domain-reference', 'skill', 'reference', 'agent/skills/obsidian-obsidian-markdown/references/EMBEDS.md', 'no', 'unknown', 'blocked'),
+      extraction('complete-example', '## Complete Example', 'example', 'skill', 'example', 'agent/skills/obsidian-obsidian-markdown/references/OBSIDIAN-FORMAT.md', 'no', 'unknown', 'accepted'),
     ],
   },
   'hatch-pet': {
     skillKind: 'guide-heavy',
     extractions: [
-      extraction('storage-controls', '## Storage Controls', 'lifecycle-policy', 'skill', 'guide', 'agent/skills/hatch-pet/references/STORAGE-CONTROLS.md', 'yes', 'unknown'),
-      extraction('brand-discovery', '## Brand Discovery', 'judgment', 'skill', 'guide', 'agent/skills/hatch-pet/references/BRAND-DISCOVERY.md', 'no', 'unknown'),
-      extraction('pet-safe-styles', '## Pet-Safe Styles', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/PET-SAFE-STYLES.md', 'yes', 'unknown'),
-      extraction('transparency-effects', '## Transparency And Effects', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/TRANSPARENCY-EFFECTS.md', 'yes', 'yes'),
+      extraction('storage-controls', '## Storage Controls', 'lifecycle-policy', 'skill', 'guide', 'agent/skills/hatch-pet/references/STORAGE-CONTROLS.md', 'yes', 'unknown', 'blocked'),
+      extraction('brand-discovery', '## Brand Discovery', 'judgment', 'skill', 'guide', 'agent/skills/hatch-pet/references/BRAND-DISCOVERY.md', 'no', 'unknown', 'blocked'),
+      extraction('pet-safe-styles', '## Pet-Safe Styles', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/PET-SAFE-STYLES.md', 'yes', 'unknown', 'blocked'),
+      extraction('transparency-effects', '## Transparency And Effects', 'judgment', 'skill', 'rubric', 'agent/skills/hatch-pet/references/TRANSPARENCY-EFFECTS.md', 'yes', 'yes', 'blocked'),
     ],
   },
 };
+
+const REVIEWED_CORE_SKILL_ROLES = {
+  'ah-setup-harness': 'bootstrap',
+  'ah-resolve-doc-path': 'bootstrap',
+  'ah-route-plan': 'router',
+  'ah-route-review': 'router',
+  'ah-route-implementation': 'router',
+  'ah-report-finding': 'router',
+  'ah-manage-artifact': 'lifecycle',
+  'ah-manage-config': 'lifecycle',
+  'ah-manage-document-template': 'lifecycle',
+  'ah-manage-milestone': 'lifecycle',
+  'ah-manage-skill': 'lifecycle',
+  'ah-make-rule': 'lifecycle',
+  'ah-make-skill': 'lifecycle',
+  'ah-make-standard': 'lifecycle',
+  'ah-update-skill': 'lifecycle',
+  'ah-edit-skill': 'lifecycle',
+  'ah-delete-skill': 'lifecycle',
+  'ah-audit-skill': 'lifecycle',
+  'ah-review-implementation': 'lifecycle',
+  'ah-brief-today': 'none',
+  'ah-browse-standards': 'none',
+  'ah-grant-perms': 'none',
+  'ah-revoke-perms': 'none',
+  'ah-guide-private': 'none',
+  'ah-log-postmortem': 'none',
+  'ah-show-patterns': 'none',
+  'ah-manage-spec': 'lifecycle',
+};
+
+const MIGRATE_LATER_SKILL_NAMES = new Set([
+  'ah-manage-spec',
+]);
 
 async function main() {
   const files = await listRepoFiles();
@@ -102,6 +137,7 @@ async function main() {
     'schema-version': 1,
     'generated-at': process.env.ARTIFACT_INVENTORY_GENERATED_AT || new Date().toISOString(),
     'source-commit': await sourceCommit(),
+    'source-dirty': await sourceDirty(),
     rows,
   };
 
@@ -111,16 +147,31 @@ async function main() {
 
 async function listRepoFiles() {
   const { stdout } = await execFileAsync('git', TRACKED_OR_NEW_ARGS, { cwd: REPO_ROOT });
-  return stdout
+  const files = stdout
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)
     .sort();
+  const existing = [];
+  for (const file of files) {
+    try {
+      await fs.access(path.join(REPO_ROOT, file));
+      existing.push(file);
+    } catch {
+      // Deleted-but-still-tracked files remain in git ls-files before staging.
+    }
+  }
+  return existing;
 }
 
 async function sourceCommit() {
   const { stdout } = await execFileAsync('git', ['rev-parse', 'HEAD'], { cwd: REPO_ROOT });
   return stdout.trim();
+}
+
+async function sourceDirty() {
+  const { stdout } = await execFileAsync('git', ['status', '--porcelain', '--untracked-files=normal'], { cwd: REPO_ROOT });
+  return stdout.trim().length > 0;
 }
 
 function shouldSkip(file) {
@@ -143,8 +194,12 @@ async function makeSkillRow(file, skillName) {
   const text = await fs.readFile(path.join(REPO_ROOT, file), 'utf8');
   const pilot = PILOT_SKILL_CLASSIFICATIONS[skillName];
   const extractionCount = pilot?.extractions.length || 0;
+  const migrateLater = MIGRATE_LATER_SKILL_NAMES.has(skillName);
   return {
-    ...commonRow(`skill:${file}`, 'skill', file, 'skill'),
+    ...commonRow(`skill:${file}`, 'skill', file, 'skill', {
+      reviewState: pilotReviewState(pilot),
+      migrateLater,
+    }),
     'skill-size': classifySkillSize(text),
     'skill-kind': pilot?.skillKind || classifySkillKind(text),
     'core-skill-role': classifyCoreSkillRole(skillName),
@@ -162,7 +217,10 @@ function makePilotExtractionRows(file, skillName) {
   if (!pilot) return [];
   const parentRowId = `skill:${file}`;
   return pilot.extractions.map((item) => ({
-    ...commonRow(`extraction:${file}#${item.id}`, 'extraction-item', file, 'skill'),
+    ...commonRow(`extraction:${file}#${item.id}`, 'extraction-item', file, 'skill', {
+      reviewState: item.reviewState,
+      migrateLater: skillName === 'ah-manage-spec' && item.reviewState === 'blocked',
+    }),
     'parent-row-id': parentRowId,
     'extraction-id': item.id,
     'source-section': item.sourceSection,
@@ -175,7 +233,9 @@ function makePilotExtractionRows(file, skillName) {
   }));
 }
 
-function commonRow(rowId, rowType, sourcePath, artifactType) {
+function commonRow(rowId, rowType, sourcePath, artifactType, options = {}) {
+  const classificationStage = options.migrateLater ? 'migrate-later' : 'undecided';
+  const proposedDestination = options.migrateLater ? 'migrate-later' : 'undecided';
   return {
     'row-id': rowId,
     'row-type': rowType,
@@ -184,15 +244,22 @@ function commonRow(rowId, rowType, sourcePath, artifactType) {
     'owner-domain': ownerDomainFor(sourcePath),
     'privacy-risk': privacyRiskFor(sourcePath),
     dependencies: [],
-    'proposed-destination': 'undecided',
+    'proposed-destination': proposedDestination,
     'compatibility-need': 'unknown',
-    'classification-stage': 'undecided',
-    'review-state': 'pending',
+    'classification-stage': classificationStage,
+    'review-state': options.reviewState || 'pending',
   };
 }
 
+function pilotReviewState(pilot) {
+  if (!pilot) return 'pending';
+  if (pilot.reviewState) return pilot.reviewState;
+  if (pilot.extractions.some((item) => item.reviewState === 'blocked')) return 'blocked';
+  if (pilot.extractions.some((item) => item.reviewState === 'accepted')) return 'accepted';
+  return 'pending';
+}
+
 function artifactTypeFor(file) {
-  if (file.startsWith('agent/commands/') && file.endsWith('.md')) return 'command';
   if (file.startsWith('agent/rules/') && file.endsWith('.md')) return 'rule';
   if (file.startsWith('agent/standards/') && file.endsWith('.md')) return 'standard';
   if (file.startsWith('agent/config/')) return 'config';
@@ -206,7 +273,7 @@ function artifactTypeFor(file) {
 
 function ownerDomainFor(file) {
   if (CORE_PATH_PREFIXES.some((prefix) => file.startsWith(prefix))) return 'core';
-  if (file.startsWith('agent/skills/ah-') || file.startsWith('agent/commands/ah-')) return 'core';
+  if (file.startsWith('agent/skills/ah-')) return 'core';
   if (file.includes('/shotloom/') || file.includes('shotloom-')) return 'repo';
   if (file.includes('/cinev/') || file.includes('cci-')) return 'company';
   if (file.startsWith('drinks/') || file.includes('/obsidian-') || file.includes('/ue-')) return 'domain';
@@ -222,11 +289,8 @@ function privacyRiskFor(file) {
 }
 
 function classifyCoreSkillRole(skillName) {
-  if (skillName.startsWith('ah-route-')) return 'router';
-  if (skillName.startsWith('ah-manage-') || skillName.startsWith('ah-make-') || skillName.startsWith('ah-update-')) {
-    return 'lifecycle';
-  }
-  if (skillName.startsWith('ah-')) return 'bootstrap';
+  if (REVIEWED_CORE_SKILL_ROLES[skillName]) return REVIEWED_CORE_SKILL_ROLES[skillName];
+  if (skillName.startsWith('ah-')) return 'none';
   if (skillName.startsWith('shotloom-')) return 'repo-specific';
   if (DOMAIN_PREFIXES.some((prefix) => skillName.startsWith(prefix))) return 'domain';
   return 'none';
@@ -276,6 +340,7 @@ function extraction(
   targetPath,
   requiredAtRuntime,
   validationNeeded,
+  reviewState = 'pending',
 ) {
   return {
     id,
@@ -286,6 +351,7 @@ function extraction(
     targetPath,
     requiredAtRuntime,
     validationNeeded,
+    reviewState,
   };
 }
 

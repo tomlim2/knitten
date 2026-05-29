@@ -1,5 +1,5 @@
 ---
-description: List today's Shotloom Linear issues assigned to me — with worktree and PR cross-reference
+description: Leaf/component Shotloom skill for listing assigned Linear work. Prefer shotloom-router for choosing a full workflow.
 argument-hint: ""
 allowed-tools: Bash(gh:*), Bash(git:*)
 ---

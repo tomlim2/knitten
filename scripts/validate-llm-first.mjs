@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Mechanical anti-rot validator for the LLM-first / agent-first policy.
+// Mechanical anti-rot validator for the LLM-first policy.
 // Run from repo root: node scripts/validate-llm-first.mjs
 import { readdir, readFile, stat, access } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { execFile } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
@@ -152,14 +152,6 @@ function sortInventoryFiles(a, b) {
   return a.localeCompare(b);
 }
 
-async function commandNames() {
-  const entries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
-  return entries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
-    .map((entry) => entry.name.slice(0, -".md".length))
-    .sort(sortInventoryFiles);
-}
-
 async function skillNames() {
   const entries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   return entries
@@ -227,33 +219,12 @@ async function ruleRows() {
 }
 
 async function generateReadmeInventory() {
-  const commands = await commandNames();
   const skills = await skillNames();
-  const commandCounts = countByPrefix(commands);
   const skillCounts = countByPrefix(skills);
-  const commandExamples = new Map();
-  for (const command of commands) {
-    const prefix = command.split("-")[0];
-    if (!commandExamples.has(prefix)) commandExamples.set(prefix, []);
-    const examples = commandExamples.get(prefix);
-    if (examples.length < 3) examples.push(command);
-  }
   const standards = await standardRows();
   const rules = await ruleRows();
 
   const sections = [];
-  sections.push(`## Commands (${commands.length})`);
-  sections.push("");
-  sections.push("| Category | Count | Examples |");
-  sections.push("|----------|------:|----------|");
-  for (const row of commandCounts) {
-    sections.push(
-      `| \`${row.name}-*\` | ${row.count} | ${inlineCodeList(commandExamples.get(row.name) || [])} |`
-    );
-  }
-  sections.push("");
-  sections.push("---");
-  sections.push("");
   sections.push(`## Skills (${skills.length})`);
   sections.push("");
   sections.push("| Category | Count |");
@@ -420,7 +391,6 @@ async function llmFirstFiles() {
   const files = [];
   files.push(...(await walk(path.join(AGENT_ROOT, "rules"), (f) => f.endsWith(".md"))));
   files.push(...(await walk(path.join(AGENT_ROOT, "standards"), (f) => f.endsWith(".md"))));
-  files.push(...(await walk(path.join(AGENT_ROOT, "commands"), (f) => f.endsWith(".md"))));
   files.push(
     ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => path.basename(f) === "SKILL.md"))
   );
@@ -687,7 +657,6 @@ async function checkRepoPathReads() {
   const violations = [];
   const files = [
     ...(await walk(path.join(AGENT_ROOT, "skills"), (f) => f.endsWith(".md") || f.endsWith(".sh"))),
-    ...(await walk(path.join(AGENT_ROOT, "commands"), (f) => f.endsWith(".md") || f.endsWith(".sh"))),
   ];
   const directReadRe =
     /\bjq\s+-r[e]?\s+(['"])(\.(?:[A-Za-z0-9_-]+|"[^"]+"|\["[^"]+"\]))\1[^\n]*repo-paths\.json/;
@@ -772,15 +741,13 @@ async function checkInventoryCounts() {
   const actual = {
     standards: await countMdRecursive("standards"),
     rules: await countFiles("rules"),
-    commands: await countFiles("commands"),
     skills: await countDirs("skills"),
   };
-  // Look for "## Standards (N)", "## Rules ... (N)", "## Commands (N)", "## Skills (N)".
+  // Look for "## Standards (N)", "## Rules ... (N)", "## Skills (N)".
   const lines = text.split("\n");
   const patterns = [
     { key: "standards", re: /^##\s+Standards\b[^\n]*\((\d+)\)/i },
     { key: "rules", re: /^##\s+Rules\b[^\n]*\((\d+)\)/i },
-    { key: "commands", re: /^##\s+Commands\b[^\n]*\((\d+)\)/i },
     { key: "skills", re: /^##\s+Skills\b[^\n]*\((\d+)\)/i },
   ];
   const found = {};
@@ -848,7 +815,6 @@ async function checkLengthCaps() {
   const budgets = docBudgets.lineBudgets;
   const standardLengthGrandfathered = exceptionPathSet(exceptions, "standardLengthGrandfathered");
   const skillLengthGrandfathered = exceptionPathSet(exceptions, "skillLengthGrandfathered");
-  const commandLengthGrandfathered = exceptionPathSet(exceptions, "commandLengthGrandfathered");
   const ruleDir = path.join(AGENT_ROOT, "rules");
   const ruleFiles = await walk(ruleDir, (f) => f.endsWith(".md"));
   for (const f of ruleFiles) {
@@ -894,23 +860,6 @@ async function checkLengthCaps() {
         file: relPath,
         line: 1,
         message: `skill body ${lines} lines exceeds cap ${budgets.skillTotal} — move reference, rubric, template, or example detail below SKILL.md`,
-      });
-    }
-  }
-  const commandDir = path.join(AGENT_ROOT, "commands");
-  const commandEntries = await listDirOnce(commandDir);
-  for (const entry of commandEntries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const f = path.join(commandDir, entry.name);
-    const relPath = rel(f);
-    if (commandLengthGrandfathered.has(relPath)) continue;
-    const text = await readFile(f, "utf8");
-    const lines = bodyLineCount(text);
-    if (lines > budgets.commandTotal) {
-      violations.push({
-        file: relPath,
-        line: 1,
-        message: `command body ${lines} lines exceeds cap ${budgets.commandTotal} — convert to a skill, alias, or shim before command retirement`,
       });
     }
   }
@@ -1152,17 +1101,6 @@ async function checkSkillCommandMechanics() {
       kind: "skill",
     });
   }
-  const commandEntries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
-  for (const entry of commandEntries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    targets.push({
-      name: entry.name.slice(0, -".md".length),
-      file: `agent/commands/${entry.name}`,
-      fullPath: path.join(AGENT_ROOT, "commands", entry.name),
-      kind: "command",
-    });
-  }
-
   for (const target of targets) {
     if (!namePattern.test(target.name)) {
       violations.push({
@@ -1198,7 +1136,7 @@ async function checkSkillCommandMechanics() {
     }
   }
 
-  return { name: "skill-command-mechanics", violations };
+  return { name: "skill-mechanics", violations };
 }
 
 function isTrackedRuntimePath(file) {
@@ -1366,7 +1304,7 @@ async function checkRegistryIntegrity() {
   pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "platformValues", schema.platformValues);
   pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "portabilityValues", schema.portabilityValues);
   pushArrayViolations(violations, "agent/config/frontmatter-schema.json", "platformMetadataPilotFiles", schema.platformMetadataPilotFiles);
-  pushArrayViolations(violations, "agent/config/taxonomy.json", "skillCommandCategories", taxonomy.skillCommandCategories, { sorted: true });
+  pushArrayViolations(violations, "agent/config/taxonomy.json", "skillCategories", taxonomy.skillCategories, { sorted: true });
   pushArrayViolations(violations, "agent/config/taxonomy.json", "standardGroups", taxonomy.standardGroups, { sorted: true });
   pushArrayViolations(violations, "agent/config/taxonomy.json", "universalAbbreviations", taxonomy.universalAbbreviations, { sorted: true });
   pushArrayViolations(violations, "agent/config/audit-policy.json", "severityTiers", auditPolicy.severityTiers);
@@ -1485,7 +1423,6 @@ async function checkRegistryIntegrity() {
   for (const key of [
     "standardLengthGrandfathered",
     "skillLengthGrandfathered",
-    "commandLengthGrandfathered",
   ]) {
     if (exceptions[key] !== undefined && !Array.isArray(exceptions[key])) {
       violations.push({
@@ -1537,7 +1474,7 @@ async function checkRegistryIntegrity() {
 }
 
 const AGENT_HUB_ALLOWED = {
-  sharedLayerKinds: new Set(["rules", "standards", "skills", "commands", "lib", "config"]),
+  sharedLayerKinds: new Set(["rules", "standards", "skills", "lib", "config"]),
   loadModes: new Set(["entry", "auto", "triggered", "on-demand", "invoked", "library", "config"]),
   registryFormats: new Set(["json"]),
   registrySecretPolicies: new Set(["no-secrets", "template-only", "private-values"]),
@@ -1577,6 +1514,199 @@ function manifestPathExists(value) {
   return existsSync(path.join(REPO_ROOT, value));
 }
 
+function normalizeManagedPath(value) {
+  return String(value || "").replace(/\/+$/, "");
+}
+
+function isUnsafeManagedPath(value) {
+  return (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    path.isAbsolute(value) ||
+    value.startsWith("../") ||
+    value.includes("/../") ||
+    /^([A-Za-z]:\\|\/Users\/)/.test(value)
+  );
+}
+
+function lineNumberAt(text, index) {
+  return text.slice(0, index).split("\n").length;
+}
+
+function aliasHasHarnessMapping(aliasValue, canonical, manifest) {
+  const [aliasRoot, ...restParts] = aliasValue.split("/");
+  const aliasRest = restParts.join("/");
+  for (const harness of manifest.harnesses || []) {
+    if (harness.linkMethod !== "symlink") continue;
+    const mapped = harness.mappings?.[aliasRoot];
+    if (!mapped) continue;
+    const mappedCanonical = aliasRest ? `${mapped}/${aliasRest}` : mapped;
+    if (normalizeManagedPath(mappedCanonical) === normalizeManagedPath(canonical)) return true;
+  }
+  return false;
+}
+
+async function managedPathAlias(id, fallback) {
+  try {
+    const registry = await readJsonConfig("managed-paths.json");
+    const entry = (registry.paths || []).find((item) => item.id === id);
+    const alias = (entry?.aliases || []).find((item) => item.contexts?.includes("validator-adapter"));
+    return alias?.value || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function isHistoricalManagedPathFile(file) {
+  return (
+    file.startsWith("docs/plans/completed/") ||
+    file.startsWith("docs/plans/archive/") ||
+    file.startsWith("docs/briefings/") ||
+    file.startsWith("docs/decisions/")
+  );
+}
+
+function isRegistryOwnerManagedPathFile(file) {
+  return (
+    file === "agent/config/artifact-inventory.json" ||
+    file === "agent/config/managed-paths.json" ||
+    file === "agent/config/managed-paths.schema.json" ||
+    file === "docs/plans/proposed/managed-path-registry-validation.md"
+  );
+}
+
+function isCanonicalSubstringUse(text, index) {
+  return text.slice(Math.max(0, index - "agent/".length), index) === "agent/";
+}
+
+function isRelativeMarkdownLinkUse(text, index) {
+  return text.slice(Math.max(0, index - "../".length), index) === "../";
+}
+
+function isDeployTargetAliasUse(text, index) {
+  const prefix = text.slice(Math.max(0, index - 20), index);
+  return /~\/\.(claude|codex)\//.test(prefix);
+}
+
+function isValidatorAdapterAliasUse(file, text, index) {
+  if (file !== "scripts/validate-llm-first.mjs") return false;
+  const lineStart = text.lastIndexOf("\n", index) + 1;
+  const lineEnd = text.indexOf("\n", index);
+  const line = text.slice(lineStart, lineEnd === -1 ? text.length : lineEnd);
+  return line.includes('"rules/');
+}
+
+function isContextFrontmatterAliasUse(text, index) {
+  if (!text.startsWith("---\n")) return false;
+  const frontmatterEnd = text.indexOf("\n---\n", 4);
+  if (frontmatterEnd === -1 || index > frontmatterEnd) return false;
+  const lineStart = text.lastIndexOf("\n", index) + 1;
+  const lineEnd = text.indexOf("\n", index);
+  const line = text.slice(lineStart, lineEnd === -1 ? text.length : lineEnd);
+  return /^context-(rules|standards|skills):/.test(line.trim());
+}
+
+async function checkManagedPaths() {
+  const violations = [];
+  const file = "agent/config/managed-paths.json";
+  let registry;
+  let manifest;
+  try {
+    registry = await readJsonConfig("managed-paths.json");
+    manifest = await readJsonConfig("agent-hub.json");
+  } catch (err) {
+    return { name: "managed-paths", violations: [{ file, line: 1, message: `cannot read managed path registry: ${err.message}` }] };
+  }
+
+  if (registry["schema-version"] !== 1) {
+    violations.push({ file, line: 1, message: `schema-version must be 1, got ${JSON.stringify(registry["schema-version"])}` });
+  }
+  if (!Array.isArray(registry.paths)) {
+    violations.push({ file, line: 1, message: "paths must be an array" });
+    return { name: "managed-paths", violations };
+  }
+
+  const ids = [];
+  const canonicals = [];
+  const enforcedAliases = [];
+  const allowedContexts = new Set(["deploy-target", "context-frontmatter", "historical-doc", "registry-owner", "validator-adapter"]);
+  for (const entry of registry.paths) {
+    if (!entry || typeof entry !== "object") {
+      violations.push({ file, line: 1, message: "paths entries must be objects" });
+      continue;
+    }
+    if (!entry.id || typeof entry.id !== "string") {
+      violations.push({ file, line: 1, message: "paths entry missing id" });
+    } else {
+      ids.push(entry.id);
+    }
+    if (isUnsafeManagedPath(entry.canonical)) {
+      violations.push({ file, line: 1, message: `${entry.id || "<unknown>"} invalid canonical path: ${JSON.stringify(entry.canonical)}` });
+    } else {
+      canonicals.push(entry.canonical);
+      if (!existsSync(path.join(REPO_ROOT, entry.canonical))) {
+        violations.push({ file, line: 1, message: `${entry.id} canonical path does not exist: ${entry.canonical}` });
+      }
+    }
+    for (const alias of entry.aliases || []) {
+      if (!alias || typeof alias !== "object" || isUnsafeManagedPath(alias.value)) {
+        violations.push({ file, line: 1, message: `${entry.id || "<unknown>"} invalid alias value: ${JSON.stringify(alias?.value)}` });
+        continue;
+      }
+      if (!Array.isArray(alias.contexts) || alias.contexts.length === 0) {
+        violations.push({ file, line: 1, message: `${entry.id} alias ${alias.value} contexts must be non-empty` });
+      } else {
+        for (const context of alias.contexts) {
+          if (!allowedContexts.has(context)) {
+            violations.push({ file, line: 1, message: `${entry.id} alias ${alias.value} has unknown context ${JSON.stringify(context)}` });
+          }
+        }
+      }
+      if (alias.contexts?.includes("deploy-target") && !aliasHasHarnessMapping(alias.value, entry.canonical, manifest)) {
+        violations.push({ file, line: 1, message: `${entry.id} alias ${alias.value} does not map to ${entry.canonical} through a symlink harness` });
+      }
+      if (alias["enforce-canonical"]) enforcedAliases.push({ entry, alias });
+    }
+  }
+  if (hasDuplicates(ids)) violations.push({ file, line: 1, message: "path ids must not contain duplicates" });
+  if (hasDuplicates(canonicals)) violations.push({ file, line: 1, message: "canonical paths must not contain duplicates" });
+
+  const files = (await trackedFiles()).filter((f) => isTextAuditTarget(f));
+  for (const targetFile of files) {
+    if (isRegistryOwnerManagedPathFile(targetFile)) continue;
+    const historical = isHistoricalManagedPathFile(targetFile);
+    let text;
+    try {
+      text = await readFile(path.join(REPO_ROOT, targetFile), "utf8");
+    } catch {
+      continue;
+    }
+    for (const { entry, alias } of enforcedAliases) {
+      let index = text.indexOf(alias.value);
+      while (index !== -1) {
+        const contexts = new Set(alias.contexts || []);
+        const allowed =
+          isCanonicalSubstringUse(text, index) ||
+          isRelativeMarkdownLinkUse(text, index) ||
+          (historical && contexts.has("historical-doc")) ||
+          (contexts.has("deploy-target") && isDeployTargetAliasUse(text, index)) ||
+          (contexts.has("context-frontmatter") && isContextFrontmatterAliasUse(text, index)) ||
+          (contexts.has("validator-adapter") && isValidatorAdapterAliasUse(targetFile, text, index));
+        if (!allowed) {
+          violations.push({
+            file: targetFile,
+            line: lineNumberAt(text, index),
+            message: `use managed canonical path ${entry.canonical} instead of alias ${alias.value}`,
+          });
+        }
+        index = text.indexOf(alias.value, index + alias.value.length);
+      }
+    }
+  }
+
+  return { name: "managed-paths", violations };
+}
+
 function pushManifestPathViolation(violations, field, value) {
   if (!manifestPathExists(value)) {
     violations.push({
@@ -1602,7 +1732,7 @@ function collectManifestStrings(value, out = []) {
   return out;
 }
 
-const REQUIRED_SYMLINK_LAYER_MAPPINGS = ["rules", "standards", "skills", "commands"];
+const REQUIRED_SYMLINK_LAYER_MAPPINGS = ["rules", "standards", "skills"];
 
 async function checkAgentHubManifest() {
   const violations = [];
@@ -1831,7 +1961,7 @@ const ROUTING_METADATA_FIELDS = [
 ];
 
 const TASK_TYPE_EVIDENCE = {
-  authoring: ["author", "make command", "make rule", "make skill", "milestone", "plan", "planning", "spec", "write skill"],
+  authoring: ["author", "make rule", "make skill", "milestone", "plan", "planning", "spec", "write skill"],
   deploy: ["deploy", "rollout", "ship"],
   git: ["branch", "commit", "merge", "pull", "push", "rebase"],
   implementation: ["build", "code", "ecs", "fix", "implement", "material"],
@@ -1884,7 +2014,6 @@ const ROUTE_VALUE_EVIDENCE = {
 };
 
 const AUTHORING_ROUTING_FILES = [
-  "agent/skills/ah-make-command/SKILL.md",
   "agent/skills/ah-make-skill/SKILL.md",
   "agent/skills/ah-make-standard/SKILL.md",
   "agent/rules/author.md",
@@ -2479,7 +2608,7 @@ async function checkContextRouting() {
 async function checkTaxonomy() {
   const violations = [];
   const taxonomy = await readJsonConfig("taxonomy.json");
-  const categories = new Set(taxonomy.skillCommandCategories);
+  const categories = new Set(taxonomy.skillCategories);
   const skillEntries = await listDirOnce(path.join(AGENT_ROOT, "skills"));
   for (const entry of skillEntries) {
     if (!entry.isDirectory()) continue;
@@ -2493,20 +2622,6 @@ async function checkTaxonomy() {
       });
     }
   }
-  const commandEntries = await listDirOnce(path.join(AGENT_ROOT, "commands"));
-  for (const entry of commandEntries) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const stem = entry.name.slice(0, -".md".length);
-    const prefix = stem.split("-")[0];
-    if (!categories.has(prefix)) {
-      violations.push({
-        file: `agent/commands/${entry.name}`,
-        line: 0,
-        message: `command category ${JSON.stringify(prefix)} missing from agent/config/taxonomy.json`,
-      });
-    }
-  }
-
   const standardGroups = new Set(taxonomy.standardGroups);
   const standardEntries = await listDirOnce(path.join(AGENT_ROOT, "standards"));
   for (const entry of standardEntries) {
@@ -2549,6 +2664,948 @@ async function checkTaxonomy() {
   return { name: "taxonomy", violations };
 }
 
+const ARTIFACT_INVENTORY_ENUMS = {
+  rowTypes: new Set(["artifact", "skill", "extraction-item"]),
+  artifactTypes: new Set(["skill", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  nonSkillArtifactTypes: new Set(["rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  ownerDomains: new Set(["core", "repo", "company", "personal", "domain", "experiment", "unknown"]),
+  privacyRisks: new Set(["public-safe", "needs-scrub", "private-only", "unknown"]),
+  proposedDestinations: new Set(["knitten-core", "knitten-private-pack", "domain-pack", "deprecated", "migrate-later", "undecided"]),
+  compatibilityNeeds: new Set(["alias", "shim", "redirect", "old-path-mapping", "none", "unknown"]),
+  classificationStages: new Set(["undecided", "core-candidate", "pack-candidate", "deprecated", "migrate-later"]),
+  reviewStates: new Set(["pending", "accepted", "blocked", "moved"]),
+  skillSizes: new Set(["tiny", "small", "medium", "large", "huge"]),
+  skillKinds: new Set(["workflow-only", "workflow-with-notes", "guide-heavy", "reference-heavy", "mixed-heavy", "unknown"]),
+  coreSkillRoles: new Set(["bootstrap", "router", "lifecycle", "domain", "repo-specific", "none"]),
+  splitReadiness: new Set(["none", "low", "ready", "blocked"]),
+  contentKinds: new Set(["judgment", "example", "output-body", "naming-policy", "lifecycle-policy", "domain-reference", "machine-checkable-contract"]),
+  artifactSubkinds: new Set(["guide", "reference", "document-template", "validator-check", "rubric", "example", "none"]),
+  triState: new Set(["yes", "no", "unknown"]),
+};
+
+function inventoryViolation(violations, message) {
+  violations.push({ file: "agent/config/artifact-inventory.json", line: 1, message });
+}
+
+function checkInventoryProvenance(violations, inventory) {
+  const isoDateTimePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+  const parsedGeneratedAt = new Date(inventory["generated-at"]);
+  if (
+    typeof inventory["generated-at"] !== "string" ||
+    !isoDateTimePattern.test(inventory["generated-at"]) ||
+    Number.isNaN(parsedGeneratedAt.getTime()) ||
+    parsedGeneratedAt.toISOString() !== inventory["generated-at"]
+  ) {
+    inventoryViolation(violations, `generated-at must match Date.toISOString(), got ${JSON.stringify(inventory["generated-at"])}`);
+  }
+  if (typeof inventory["source-commit"] !== "string" || !/^[0-9a-f]{7,40}$/.test(inventory["source-commit"])) {
+    inventoryViolation(violations, `source-commit must be a git commit hash, got ${JSON.stringify(inventory["source-commit"])}`);
+  }
+  if (typeof inventory["source-dirty"] !== "boolean") {
+    inventoryViolation(violations, `source-dirty must be a boolean, got ${JSON.stringify(inventory["source-dirty"])}`);
+  }
+}
+
+function hasUnsafeInventoryPath(value) {
+  return (
+    typeof value !== "string" ||
+    value.length === 0 ||
+    path.isAbsolute(value) ||
+    value.startsWith("../") ||
+    value.includes("/../") ||
+    /^([A-Za-z]:\\|\/Users\/)/.test(value)
+  );
+}
+
+function requireInventoryFields(violations, row, fields) {
+  for (const field of fields) {
+    if (row[field] === undefined) {
+      inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} missing ${field}`);
+    }
+  }
+}
+
+function checkInventoryEnum(violations, row, field, allowed) {
+  if (!allowed.has(row[field])) {
+    inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} invalid ${field}: ${JSON.stringify(row[field])}`);
+  }
+}
+
+function checkInventoryPathField(violations, row, field, { allowUndecided = false, mustExist = false } = {}) {
+  const value = row[field];
+  if (allowUndecided && value === "undecided") return;
+  if (hasUnsafeInventoryPath(value)) {
+    inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} invalid ${field}: ${JSON.stringify(value)}`);
+    return;
+  }
+  if (mustExist && !existsSync(path.join(REPO_ROOT, value))) {
+    inventoryViolation(violations, `${row["row-id"] || "(missing row-id)"} ${field} does not exist: ${value}`);
+  }
+}
+
+async function checkInventorySourceSection(violations, row) {
+  const sourcePath = row["source-artifact-path"];
+  const section = row["source-section"];
+  if (hasUnsafeInventoryPath(sourcePath) || typeof section !== "string" || section.length === 0) return;
+  let text;
+  try {
+    text = await readFile(path.join(REPO_ROOT, sourcePath), "utf8");
+  } catch {
+    return;
+  }
+  if (!text.includes(section)) {
+    inventoryViolation(violations, `${row["row-id"]} source-section not found in ${sourcePath}: ${JSON.stringify(section)}`);
+  }
+}
+
+async function checkArtifactInventory() {
+  const violations = [];
+  const file = "agent/config/artifact-inventory.json";
+  let inventory;
+  try {
+    inventory = await readJsonRel(file);
+  } catch (err) {
+    inventoryViolation(violations, `cannot read artifact inventory: ${err.message}`);
+    return { name: "artifact-inventory", violations };
+  }
+
+  if (inventory["schema-version"] !== 1) {
+    inventoryViolation(violations, `schema-version must be 1, got ${JSON.stringify(inventory["schema-version"])}`);
+  }
+  checkInventoryProvenance(violations, inventory);
+  if (!Array.isArray(inventory.rows)) {
+    inventoryViolation(violations, "rows must be an array");
+    return { name: "artifact-inventory", violations };
+  }
+
+  const rowIds = new Set();
+  const skillRows = new Map();
+  const extractionRowsByParent = new Map();
+  const extractionIdsByParent = new Map();
+  const commonFields = [
+    "row-id",
+    "row-type",
+    "source-artifact-path",
+    "artifact-type",
+    "owner-domain",
+    "privacy-risk",
+    "dependencies",
+    "proposed-destination",
+    "compatibility-need",
+    "classification-stage",
+    "review-state",
+  ];
+
+  for (const row of inventory.rows) {
+    requireInventoryFields(violations, row, commonFields);
+    if (typeof row["row-id"] !== "string") continue;
+    if (rowIds.has(row["row-id"])) {
+      inventoryViolation(violations, `duplicate row-id: ${row["row-id"]}`);
+    }
+    rowIds.add(row["row-id"]);
+
+    checkInventoryEnum(violations, row, "row-type", ARTIFACT_INVENTORY_ENUMS.rowTypes);
+    checkInventoryEnum(violations, row, "artifact-type", ARTIFACT_INVENTORY_ENUMS.artifactTypes);
+    checkInventoryEnum(violations, row, "owner-domain", ARTIFACT_INVENTORY_ENUMS.ownerDomains);
+    checkInventoryEnum(violations, row, "privacy-risk", ARTIFACT_INVENTORY_ENUMS.privacyRisks);
+    checkInventoryEnum(violations, row, "proposed-destination", ARTIFACT_INVENTORY_ENUMS.proposedDestinations);
+    checkInventoryEnum(violations, row, "compatibility-need", ARTIFACT_INVENTORY_ENUMS.compatibilityNeeds);
+    checkInventoryEnum(violations, row, "classification-stage", ARTIFACT_INVENTORY_ENUMS.classificationStages);
+    checkInventoryEnum(violations, row, "review-state", ARTIFACT_INVENTORY_ENUMS.reviewStates);
+    checkInventoryPathField(violations, row, "source-artifact-path", { mustExist: true });
+
+    if (!Array.isArray(row.dependencies)) {
+      inventoryViolation(violations, `${row["row-id"]} dependencies must be an array`);
+    } else {
+      if (hasDuplicates(row.dependencies)) {
+        inventoryViolation(violations, `${row["row-id"]} dependencies must not contain duplicates`);
+      }
+      for (const dependency of row.dependencies) {
+        if (hasUnsafeInventoryPath(dependency) && !/^(artifact|skill|extraction):/.test(String(dependency))) {
+          inventoryViolation(violations, `${row["row-id"]} invalid dependency: ${JSON.stringify(dependency)}`);
+        }
+      }
+    }
+
+    if (row["row-type"] === "artifact") {
+      if (row["row-id"] !== `artifact:${row["source-artifact-path"]}`) {
+        inventoryViolation(violations, `${row["row-id"]} must equal artifact:${row["source-artifact-path"]}`);
+      }
+      checkInventoryEnum(violations, row, "artifact-type", ARTIFACT_INVENTORY_ENUMS.nonSkillArtifactTypes);
+    } else if (row["row-type"] === "skill") {
+      if (row["row-id"] !== `skill:${row["source-artifact-path"]}`) {
+        inventoryViolation(violations, `${row["row-id"]} must equal skill:${row["source-artifact-path"]}`);
+      }
+      requireInventoryFields(violations, row, ["skill-size", "skill-kind", "core-skill-role", "extraction-count", "split-readiness"]);
+      if (row["artifact-type"] !== "skill") inventoryViolation(violations, `${row["row-id"]} artifact-type must be skill`);
+      checkInventoryEnum(violations, row, "skill-size", ARTIFACT_INVENTORY_ENUMS.skillSizes);
+      checkInventoryEnum(violations, row, "skill-kind", ARTIFACT_INVENTORY_ENUMS.skillKinds);
+      checkInventoryEnum(violations, row, "core-skill-role", ARTIFACT_INVENTORY_ENUMS.coreSkillRoles);
+      checkInventoryEnum(violations, row, "split-readiness", ARTIFACT_INVENTORY_ENUMS.splitReadiness);
+      if (!Number.isInteger(row["extraction-count"]) || row["extraction-count"] < 0) {
+        inventoryViolation(violations, `${row["row-id"]} extraction-count must be a non-negative integer`);
+      }
+      skillRows.set(row["row-id"], row);
+    } else if (row["row-type"] === "extraction-item") {
+      requireInventoryFields(violations, row, [
+        "parent-row-id",
+        "extraction-id",
+        "source-section",
+        "content-kind",
+        "extracted-artifact-type",
+        "artifact-subkind",
+        "target-path",
+        "required-at-runtime",
+        "validation-needed",
+      ]);
+      if (row["artifact-type"] !== "skill") inventoryViolation(violations, `${row["row-id"]} artifact-type must be skill`);
+      if (row["row-id"] !== `extraction:${row["source-artifact-path"]}#${row["extraction-id"]}`) {
+        inventoryViolation(violations, `${row["row-id"]} must equal extraction:${row["source-artifact-path"]}#${row["extraction-id"]}`);
+      }
+      checkInventoryEnum(violations, row, "content-kind", ARTIFACT_INVENTORY_ENUMS.contentKinds);
+      checkInventoryEnum(violations, row, "extracted-artifact-type", ARTIFACT_INVENTORY_ENUMS.artifactTypes);
+      checkInventoryEnum(violations, row, "artifact-subkind", ARTIFACT_INVENTORY_ENUMS.artifactSubkinds);
+      checkInventoryEnum(violations, row, "required-at-runtime", ARTIFACT_INVENTORY_ENUMS.triState);
+      checkInventoryEnum(violations, row, "validation-needed", ARTIFACT_INVENTORY_ENUMS.triState);
+      if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(String(row["extraction-id"]))) {
+        inventoryViolation(violations, `${row["row-id"]} extraction-id must be kebab-case`);
+      }
+      checkInventoryPathField(violations, row, "target-path", { allowUndecided: true });
+      const expectedParentRowId = `skill:${row["source-artifact-path"]}`;
+      if (row["parent-row-id"] !== expectedParentRowId) {
+        inventoryViolation(violations, `${row["row-id"]} parent-row-id must equal ${expectedParentRowId}`);
+      }
+      await checkInventorySourceSection(violations, row);
+
+      const parent = row["parent-row-id"];
+      if (!extractionRowsByParent.has(parent)) extractionRowsByParent.set(parent, []);
+      extractionRowsByParent.get(parent).push(row);
+      if (!extractionIdsByParent.has(parent)) extractionIdsByParent.set(parent, new Set());
+      const parentExtractionIds = extractionIdsByParent.get(parent);
+      if (parentExtractionIds.has(row["extraction-id"])) {
+        inventoryViolation(violations, `${parent} duplicate extraction-id: ${row["extraction-id"]}`);
+      }
+      parentExtractionIds.add(row["extraction-id"]);
+    }
+  }
+
+  for (const [parentRowId, extractionRows] of extractionRowsByParent.entries()) {
+    if (!skillRows.has(parentRowId)) {
+      inventoryViolation(violations, `${parentRowId} missing parent skill row for ${extractionRows.length} extraction rows`);
+      continue;
+    }
+    const skillRow = skillRows.get(parentRowId);
+    if (skillRow["extraction-count"] !== extractionRows.length) {
+      inventoryViolation(
+        violations,
+        `${parentRowId} extraction-count ${skillRow["extraction-count"]} does not match linked extraction rows ${extractionRows.length}`,
+      );
+    }
+  }
+
+  for (const [skillRowId, skillRow] of skillRows.entries()) {
+    const linkedCount = extractionRowsByParent.get(skillRowId)?.length || 0;
+    if (skillRow["extraction-count"] !== linkedCount) {
+      inventoryViolation(
+        violations,
+        `${skillRowId} extraction-count ${skillRow["extraction-count"]} does not match linked extraction rows ${linkedCount}`,
+      );
+    }
+  }
+
+  return { name: "artifact-inventory", violations };
+}
+
+const ARTIFACT_PACK_GATES = new Set([
+  "manifest-shape",
+  "manifest-paths",
+  "manifest-exports",
+  "manifest-dependencies",
+  "manifest-routing",
+  "manifest-visibility",
+  "manifest-compatibility",
+]);
+
+const ARTIFACT_PACK_ENUMS = {
+  artifactTypes: new Set(["skill", "rule", "standard", "config", "script", "doc", "fixture", "generated-view", "shim"]),
+  compatibilityNeeds: new Set(["alias", "shim", "redirect", "old-path-mapping"]),
+  layers: new Set(["skills", "rules", "standards", "config", "scripts", "docs", "fixtures", "generated-views", "shims"]),
+  loads: new Set(["on-demand", "manual", "route-selected"]),
+  modes: new Set(["link", "copy", "virtual"]),
+  ownerDomains: new Set(["core", "repo", "company", "personal", "domain", "experiment"]),
+  privacyRisks: new Set(["public-safe", "needs-scrub", "private-only", "unknown"]),
+  shapes: new Set(["file", "directory"]),
+  visibility: new Set(["public", "private", "company", "local"]),
+};
+
+const ARTIFACT_PACK_ALLOWED_KEYS = {
+  root: new Set(["schema-version", "pack-id", "display-name", "version", "visibility", "owner-domain", "description", "exports", "dependencies", "compatibility-aliases"]),
+  export: new Set(["artifact-id", "artifact-type", "path", "shape", "mount", "entrypoint", "load", "route", "dependencies", "privacy-risk", "platforms"]),
+  mount: new Set(["layer", "target", "mode"]),
+  route: new Set(["context-profile", "domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes", "exclude-when", "min-evidence", "max-context-bytes", "priority"]),
+  compatibilityAlias: new Set(["alias-id", "target-artifact-id", "compatibility-need", "old-name", "old-path", "shim-path", "deprecation-date", "removal-criteria"]),
+};
+
+const ARTIFACT_PACK_FIXTURE_EXPECTED_MESSAGES = new Map([
+  ["absolute-export-path", "path must be repo-relative"],
+  ["company-unknown-export", "company pack export must be public-safe or needs-scrub"],
+  ["duplicate-artifact-id", "artifact-id values must be unique"],
+  ["duplicate-route-signature-in-set", "duplicate route signature"],
+  ["empty-removal-criteria", "removal-criteria must be non-empty"],
+  ["entrypoint-escapes-directory", "entrypoint must stay under path"],
+  ["invalid-dependency-ref", "invalid dependency ref"],
+  ["invalid-json", "invalid JSON"],
+  ["missing-compat-target", "target-artifact-id does not exist"],
+  ["missing-in-set-pack-dependency", "pack dependency not present"],
+  ["missing-required-root-field", "exports must be a non-empty array"],
+  ["non-array-compatibility-aliases", "compatibility-aliases must be an array"],
+  ["non-string-platform", "platforms values must be non-empty strings"],
+  ["public-private-export", "public pack export must be public-safe"],
+  ["route-selected-without-evidence", "requires positive route evidence"],
+  ["trailing-dotdot-path", "path must be repo-relative"],
+  ["file-shape-directory-path", "file export path must be a file"],
+  ["unknown-core-capability", "unknown core capability"],
+  ["unknown-root-field", "unknown root field"],
+  ["unknown-route-domain", "domains has unknown value"],
+]);
+
+function artifactPackViolation(out, gate, file, message) {
+  out.push({ gate, file, line: 1, message });
+}
+
+function isSlug(value) {
+  return typeof value === "string" && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value);
+}
+
+function isSemverCore(value) {
+  return typeof value === "string" && /^\d+\.\d+\.\d+$/.test(value);
+}
+
+function repoOrAbsolutePath(file) {
+  return path.isAbsolute(file) ? file : path.join(REPO_ROOT, file);
+}
+
+function isSafePackPath(value) {
+  if (typeof value !== "string" || value.length === 0) return false;
+  if (path.isAbsolute(value) || /^[A-Za-z]:[\\/]/.test(value) || value.includes("\\")) return false;
+  return value.split("/").every((part) => part !== "" && part !== "." && part !== "..");
+}
+
+function pathStaysUnder(parent, child) {
+  const relative = path.relative(parent, child);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+async function parseArtifactPackManifest(file) {
+  let text;
+  try {
+    text = await readFile(repoOrAbsolutePath(file), "utf8");
+  } catch (err) {
+    return {
+      file,
+      root: path.dirname(file),
+      manifest: null,
+      parseViolations: [{ gate: "manifest-shape", file, line: 1, message: `cannot read artifact pack manifest: ${err.message}` }],
+    };
+  }
+  try {
+    return {
+      file,
+      root: path.dirname(file),
+      manifest: JSON.parse(text),
+      parseViolations: [],
+    };
+  } catch (err) {
+    return {
+      file,
+      root: path.dirname(file),
+      manifest: null,
+      parseViolations: [{ gate: "manifest-shape", file, line: 1, message: `invalid JSON: ${err.message}` }],
+    };
+  }
+}
+
+function artifactPackFixtureCase(file) {
+  const parts = file.split("/");
+  const packsIndex = parts.indexOf("artifact-packs");
+  if (packsIndex !== -1) {
+    const mode = parts[packsIndex + 1];
+    if (mode === "pass") {
+      return { kind: "single", expectedGate: null, key: parts.slice(0, -1).join("/"), files: [file] };
+    }
+    if (mode === "fail") {
+      const expectedGate = parts[packsIndex + 2];
+      const key = parts.slice(0, -1).join("/");
+      return { kind: "single", expectedGate, key, files: [file] };
+    }
+  }
+  const setsIndex = parts.indexOf("artifact-pack-sets");
+  if (setsIndex !== -1) {
+    const mode = parts[setsIndex + 1];
+    if (mode === "pass") {
+      const key = parts.slice(0, setsIndex + 3).join("/");
+      return { kind: "set", expectedGate: null, key, files: [file] };
+    }
+    if (mode === "fail") {
+      const expectedGate = parts[setsIndex + 2];
+      const key = parts.slice(0, setsIndex + 4).join("/");
+      return { kind: "set", expectedGate, key, files: [file] };
+    }
+  }
+  return { kind: "single", expectedGate: null, key: path.dirname(file), files: [file] };
+}
+
+async function artifactPackFixtureCases(gate) {
+  const roots = [
+    path.join(REPO_ROOT, "tests/fixtures/artifact-packs"),
+    path.join(REPO_ROOT, "tests/fixtures/artifact-pack-sets"),
+    path.join(REPO_ROOT, "examples/artifact-packs"),
+  ];
+  const files = [];
+  for (const root of roots) {
+    files.push(...(await walk(root, (f) => path.basename(f) === "artifact-pack.json")).map(rel));
+  }
+  const grouped = new Map();
+  for (const file of files) {
+    const fixtureCase = artifactPackFixtureCase(file);
+    if (gate && fixtureCase.expectedGate && fixtureCase.expectedGate !== gate) continue;
+    if (!grouped.has(fixtureCase.key)) grouped.set(fixtureCase.key, { ...fixtureCase, files: [] });
+    grouped.get(fixtureCase.key).files.push(file);
+  }
+  return [...grouped.values()].map((fixtureCase) => ({
+    ...fixtureCase,
+    files: fixtureCase.files.sort(sortInventoryFiles),
+  })).sort((a, b) => a.key.localeCompare(b.key));
+}
+
+function artifactPackFixtureExpectedMessage(fixtureCase) {
+  return ARTIFACT_PACK_FIXTURE_EXPECTED_MESSAGES.get(path.basename(fixtureCase.key));
+}
+
+function pushUnknownKeyViolations(out, file, gate, label, obj, allowed) {
+  for (const key of Object.keys(obj)) {
+    if (!allowed.has(key)) artifactPackViolation(out, gate, file, `${label} unknown ${label === "root" ? "root field" : "field"} ${key}`);
+  }
+}
+
+function pushUniqueArrayViolation(out, file, gate, label, value) {
+  if (Array.isArray(value) && hasDuplicates(value)) artifactPackViolation(out, gate, file, `${label} values must be unique`);
+}
+
+function pushArtifactPackStringArrayViolations(out, file, gate, label, value) {
+  if (value === undefined || !Array.isArray(value)) return;
+  for (const item of value) {
+    if (typeof item !== "string" || item.length === 0) {
+      artifactPackViolation(out, gate, file, `${label} values must be non-empty strings`);
+      return;
+    }
+  }
+}
+
+function validateArtifactPackShape(ctx, out) {
+  const { file, manifest } = ctx;
+  if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
+    artifactPackViolation(out, "manifest-shape", file, "manifest must be an object");
+    return false;
+  }
+  pushUnknownKeyViolations(out, file, "manifest-shape", "root", manifest, ARTIFACT_PACK_ALLOWED_KEYS.root);
+  const required = ["schema-version", "pack-id", "display-name", "version", "visibility", "owner-domain", "description", "exports"];
+  for (const field of required) {
+    if (manifest[field] === undefined) artifactPackViolation(out, "manifest-shape", file, `missing root field ${field}`);
+  }
+  if (manifest["schema-version"] !== 1) artifactPackViolation(out, "manifest-shape", file, "schema-version must be 1");
+  if (!isSlug(manifest["pack-id"])) artifactPackViolation(out, "manifest-shape", file, "pack-id must be kebab-case");
+  if (!isSemverCore(manifest.version)) artifactPackViolation(out, "manifest-shape", file, "version must be semver core");
+  if (!ARTIFACT_PACK_ENUMS.visibility.has(manifest.visibility)) artifactPackViolation(out, "manifest-shape", file, "visibility has invalid value");
+  if (!ARTIFACT_PACK_ENUMS.ownerDomains.has(manifest["owner-domain"])) artifactPackViolation(out, "manifest-shape", file, "owner-domain has invalid value");
+  if (typeof manifest["display-name"] !== "string" || manifest["display-name"].length === 0) artifactPackViolation(out, "manifest-shape", file, "display-name must be non-empty");
+  if (typeof manifest.description !== "string" || manifest.description.length === 0) artifactPackViolation(out, "manifest-shape", file, "description must be non-empty");
+  if (!Array.isArray(manifest.exports) || manifest.exports.length === 0) {
+    artifactPackViolation(out, "manifest-shape", file, "exports must be a non-empty array");
+    return false;
+  }
+  for (const [index, entry] of manifest.exports.entries()) {
+    const label = `exports[${index}]`;
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      artifactPackViolation(out, "manifest-shape", file, `${label} must be an object`);
+      continue;
+    }
+    pushUnknownKeyViolations(out, file, "manifest-shape", label, entry, ARTIFACT_PACK_ALLOWED_KEYS.export);
+    for (const field of ["artifact-id", "artifact-type", "path", "shape", "mount", "load", "privacy-risk"]) {
+      if (entry[field] === undefined) artifactPackViolation(out, "manifest-shape", file, `${label} missing ${field}`);
+    }
+    if (!isSlug(entry["artifact-id"])) artifactPackViolation(out, "manifest-shape", file, `${label}.artifact-id must be kebab-case`);
+    if (!ARTIFACT_PACK_ENUMS.artifactTypes.has(entry["artifact-type"])) artifactPackViolation(out, "manifest-shape", file, `${label}.artifact-type has invalid value`);
+    if (typeof entry.path !== "string" || entry.path.length === 0) artifactPackViolation(out, "manifest-shape", file, `${label}.path must be non-empty`);
+    if (!ARTIFACT_PACK_ENUMS.shapes.has(entry.shape)) artifactPackViolation(out, "manifest-shape", file, `${label}.shape has invalid value`);
+    if (!ARTIFACT_PACK_ENUMS.loads.has(entry.load)) artifactPackViolation(out, "manifest-shape", file, `${label}.load has invalid value`);
+    if (!ARTIFACT_PACK_ENUMS.privacyRisks.has(entry["privacy-risk"])) artifactPackViolation(out, "manifest-shape", file, `${label}.privacy-risk has invalid value`);
+    if (!entry.mount || typeof entry.mount !== "object" || Array.isArray(entry.mount)) {
+      artifactPackViolation(out, "manifest-shape", file, `${label}.mount must be an object`);
+    } else {
+      pushUnknownKeyViolations(out, file, "manifest-shape", `${label}.mount`, entry.mount, ARTIFACT_PACK_ALLOWED_KEYS.mount);
+      if (!ARTIFACT_PACK_ENUMS.layers.has(entry.mount.layer)) artifactPackViolation(out, "manifest-shape", file, `${label}.mount.layer has invalid value`);
+      if (typeof entry.mount.target !== "string" || entry.mount.target.length === 0) artifactPackViolation(out, "manifest-shape", file, `${label}.mount.target must be non-empty`);
+      if (!ARTIFACT_PACK_ENUMS.modes.has(entry.mount.mode)) artifactPackViolation(out, "manifest-shape", file, `${label}.mount.mode has invalid value`);
+    }
+    if (entry.dependencies !== undefined && !Array.isArray(entry.dependencies)) artifactPackViolation(out, "manifest-shape", file, `${label}.dependencies must be an array`);
+    pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.dependencies`, entry.dependencies);
+    pushArtifactPackStringArrayViolations(out, file, "manifest-shape", `${label}.dependencies`, entry.dependencies);
+    pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.platforms`, entry.platforms);
+    pushArtifactPackStringArrayViolations(out, file, "manifest-shape", `${label}.platforms`, entry.platforms);
+    if (entry.platforms !== undefined && !Array.isArray(entry.platforms)) artifactPackViolation(out, "manifest-shape", file, `${label}.platforms must be an array`);
+    if (entry.route !== undefined && (!entry.route || typeof entry.route !== "object" || Array.isArray(entry.route))) artifactPackViolation(out, "manifest-shape", file, `${label}.route must be an object`);
+    if (entry.route && typeof entry.route === "object" && !Array.isArray(entry.route)) {
+      pushUnknownKeyViolations(out, file, "manifest-shape", `${label}.route`, entry.route, ARTIFACT_PACK_ALLOWED_KEYS.route);
+      for (const field of ["domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes", "exclude-when"]) {
+        pushUniqueArrayViolation(out, file, "manifest-shape", `${label}.route.${field}`, entry.route[field]);
+        pushArtifactPackStringArrayViolations(out, file, "manifest-shape", `${label}.route.${field}`, entry.route[field]);
+      }
+    }
+  }
+  if (manifest.dependencies !== undefined && !Array.isArray(manifest.dependencies)) artifactPackViolation(out, "manifest-shape", file, "dependencies must be an array");
+  pushUniqueArrayViolation(out, file, "manifest-shape", "dependencies", manifest.dependencies);
+  pushArtifactPackStringArrayViolations(out, file, "manifest-shape", "dependencies", manifest.dependencies);
+  if (manifest["compatibility-aliases"] !== undefined && !Array.isArray(manifest["compatibility-aliases"])) {
+    artifactPackViolation(out, "manifest-shape", file, "compatibility-aliases must be an array");
+  }
+  for (const [index, alias] of (Array.isArray(manifest["compatibility-aliases"]) ? manifest["compatibility-aliases"] : []).entries()) {
+    const label = `compatibility-aliases[${index}]`;
+    if (!alias || typeof alias !== "object" || Array.isArray(alias)) {
+      artifactPackViolation(out, "manifest-shape", file, `${label} must be an object`);
+      continue;
+    }
+    pushUnknownKeyViolations(out, file, "manifest-shape", label, alias, ARTIFACT_PACK_ALLOWED_KEYS.compatibilityAlias);
+    for (const field of ["alias-id", "target-artifact-id", "compatibility-need", "removal-criteria"]) {
+      if (alias[field] === undefined) artifactPackViolation(out, "manifest-shape", file, `${label} missing ${field}`);
+    }
+    if (!isSlug(alias["alias-id"])) artifactPackViolation(out, "manifest-shape", file, `${label}.alias-id must be kebab-case`);
+    if (!isSlug(alias["target-artifact-id"])) artifactPackViolation(out, "manifest-shape", file, `${label}.target-artifact-id must be kebab-case`);
+    if (!ARTIFACT_PACK_ENUMS.compatibilityNeeds.has(alias["compatibility-need"])) artifactPackViolation(out, "manifest-shape", file, `${label}.compatibility-need has invalid value`);
+    if (alias["deprecation-date"] !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(alias["deprecation-date"])) {
+      artifactPackViolation(out, "manifest-shape", file, `${label}.deprecation-date must be YYYY-MM-DD`);
+    }
+  }
+  return !out.some((violation) => violation.gate === "manifest-shape" && violation.file === file);
+}
+
+function validateArtifactPackPaths(ctx, out) {
+  const { file, root, manifest } = ctx;
+  const rootAbs = repoOrAbsolutePath(root);
+  for (const entry of manifest.exports || []) {
+    for (const [field, value] of [["path", entry.path], ["entrypoint", entry.entrypoint], ["mount.target", entry.mount?.target]]) {
+      if (value === undefined) continue;
+      if (!isSafePackPath(value)) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"] || "export"} ${field} must be repo-relative and stay inside the pack`);
+    }
+    if (!isSafePackPath(entry.path)) continue;
+    const exportAbs = path.join(rootAbs, entry.path);
+    if (!existsSync(exportAbs)) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} path does not exist: ${entry.path}`);
+    if (existsSync(exportAbs)) {
+      const exportStats = statSync(exportAbs);
+      if (entry.shape === "file" && !exportStats.isFile()) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} file export path must be a file`);
+      if (entry.shape === "directory" && !exportStats.isDirectory()) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} directory export path must be a directory`);
+    }
+    if (entry.shape === "directory") {
+      if (!existsSync(exportAbs) || !pathStaysUnder(rootAbs, exportAbs)) {
+        artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} directory path is invalid`);
+      }
+      if (!entry.entrypoint) {
+        artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} directory export requires entrypoint`);
+      } else if (isSafePackPath(entry.entrypoint)) {
+        const entrypointAbs = path.join(rootAbs, entry.entrypoint);
+        if (!pathStaysUnder(exportAbs, entrypointAbs)) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} entrypoint must stay under path`);
+        if (!existsSync(entrypointAbs)) artifactPackViolation(out, "manifest-paths", file, `${entry["artifact-id"]} entrypoint does not exist: ${entry.entrypoint}`);
+      }
+    }
+  }
+  for (const alias of manifest["compatibility-aliases"] || []) {
+    for (const field of ["old-path", "shim-path"]) {
+      if (alias[field] !== undefined && !isSafePackPath(alias[field])) {
+        artifactPackViolation(out, "manifest-paths", file, `${alias["alias-id"] || "alias"} ${field} must be repo-relative`);
+      }
+    }
+  }
+}
+
+function validateArtifactPackExports(ctx, out) {
+  const { file, manifest } = ctx;
+  const artifactIds = [];
+  const mountTargets = [];
+  for (const entry of manifest.exports || []) {
+    artifactIds.push(entry["artifact-id"]);
+    mountTargets.push(`${entry.mount?.layer || ""}:${entry.mount?.target || ""}`);
+    if (entry["artifact-type"] === "skill") {
+      if (entry.shape !== "directory") artifactPackViolation(out, "manifest-exports", file, `${entry["artifact-id"]} skill export must be a directory`);
+      if (!String(entry.entrypoint || "").endsWith("/SKILL.md")) artifactPackViolation(out, "manifest-exports", file, `${entry["artifact-id"]} skill entrypoint must end with /SKILL.md`);
+    }
+    if (entry.shape === "file" && entry.entrypoint !== undefined) artifactPackViolation(out, "manifest-exports", file, `${entry["artifact-id"]} file export must not declare entrypoint`);
+  }
+  if (hasDuplicates(artifactIds)) artifactPackViolation(out, "manifest-exports", file, "artifact-id values must be unique");
+  if (hasDuplicates(mountTargets)) artifactPackViolation(out, "manifest-exports", file, "mount targets must be unique unless compatibility rows preserve aliases");
+  const artifactIdSet = new Set(artifactIds);
+  for (const alias of manifest["compatibility-aliases"] || []) {
+    if (!artifactIdSet.has(alias["target-artifact-id"])) {
+      artifactPackViolation(out, "manifest-exports", file, `${alias["alias-id"]} target-artifact-id does not exist: ${alias["target-artifact-id"]}`);
+    }
+  }
+}
+
+function artifactPackDependencyRefs(manifest) {
+  const refs = [];
+  for (const ref of manifest.dependencies || []) refs.push(ref);
+  for (const entry of manifest.exports || []) {
+    for (const ref of entry.dependencies || []) refs.push(ref);
+  }
+  return refs;
+}
+
+function validateArtifactPackCoreCapabilityRegistry(registry, out) {
+  const file = "agent/config/artifact-pack-core-capabilities.json";
+  if (!registry || typeof registry !== "object" || Array.isArray(registry)) {
+    artifactPackViolation(out, "manifest-dependencies", file, "core capability registry must be an object");
+    return new Set();
+  }
+  if (registry["schema-version"] !== 1) artifactPackViolation(out, "manifest-dependencies", file, "core capability registry schema-version must be 1");
+  if (!Array.isArray(registry.capabilities) || registry.capabilities.length === 0) {
+    artifactPackViolation(out, "manifest-dependencies", file, "core capability registry capabilities must be a non-empty array");
+    return new Set();
+  }
+  const ids = [];
+  for (const [index, capability] of registry.capabilities.entries()) {
+    const label = `capabilities[${index}]`;
+    if (!capability || typeof capability !== "object" || Array.isArray(capability)) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label} must be an object`);
+      continue;
+    }
+    ids.push(capability.id);
+    if (!isSlug(capability.id)) artifactPackViolation(out, "manifest-dependencies", file, `${label}.id must be kebab-case`);
+    if (typeof capability.owner !== "string" || capability.owner.length === 0) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label}.owner must be non-empty`);
+    } else if (capability.owner.startsWith("scripts/validate-llm-first.mjs --check ")) {
+      const checkName = capability.owner.slice("scripts/validate-llm-first.mjs --check ".length);
+      if (!CHECKS.some((check) => check.name === checkName)) {
+        artifactPackViolation(out, "manifest-dependencies", file, `${label}.owner references unknown validator check: ${checkName}`);
+      }
+    } else if (!existsSync(path.join(REPO_ROOT, capability.owner))) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label}.owner path does not exist: ${capability.owner}`);
+    }
+    if (typeof capability.description !== "string" || capability.description.length === 0) {
+      artifactPackViolation(out, "manifest-dependencies", file, `${label}.description must be non-empty`);
+    }
+  }
+  if (hasDuplicates(ids)) artifactPackViolation(out, "manifest-dependencies", file, "core capability ids must be unique");
+  return new Set(ids.filter(isSlug));
+}
+
+function validateArtifactPackDependencies(contexts, coreCapabilityIds, out, setMode) {
+  const packIds = new Set(contexts.map((ctx) => ctx.manifest?.["pack-id"]).filter(Boolean));
+  const artifactIdsByPack = new Map();
+  for (const ctx of contexts) {
+    artifactIdsByPack.set(ctx.manifest["pack-id"], new Set((ctx.manifest.exports || []).map((entry) => entry["artifact-id"])));
+  }
+  for (const ctx of contexts) {
+    for (const ref of artifactPackDependencyRefs(ctx.manifest)) {
+      if (typeof ref !== "string") {
+        artifactPackViolation(out, "manifest-dependencies", ctx.file, "dependency refs must be strings");
+        continue;
+      }
+      const packMatch = ref.match(/^pack:([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+      const artifactMatch = ref.match(/^artifact:([a-z0-9]+(?:-[a-z0-9]+)*)\/([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+      const coreMatch = ref.match(/^core:([a-z0-9]+(?:-[a-z0-9]+)*)$/);
+      if (!packMatch && !artifactMatch && !coreMatch) {
+        artifactPackViolation(out, "manifest-dependencies", ctx.file, `invalid dependency ref: ${ref}`);
+        continue;
+      }
+      if (coreMatch && !coreCapabilityIds.has(coreMatch[1])) {
+        artifactPackViolation(out, "manifest-dependencies", ctx.file, `unknown core capability: ${coreMatch[1]}`);
+      }
+      if (packMatch && setMode && !packIds.has(packMatch[1])) {
+        artifactPackViolation(out, "manifest-dependencies", ctx.file, `pack dependency not present in manifest set: ${packMatch[1]}`);
+      }
+      if (artifactMatch) {
+        const [packId, artifactId] = [artifactMatch[1], artifactMatch[2]];
+        if ((setMode || packId === ctx.manifest["pack-id"]) && !artifactIdsByPack.get(packId)?.has(artifactId)) {
+          artifactPackViolation(out, "manifest-dependencies", ctx.file, `artifact dependency not present in manifest set: ${packId}/${artifactId}`);
+        }
+      }
+    }
+  }
+}
+
+function routeSignature(route) {
+  const fields = ["context-profile", "domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes", "exclude-when"];
+  const parts = [];
+  for (const field of fields) {
+    const value = route?.[field];
+    if (Array.isArray(value)) parts.push(`${field}=${[...value].sort().join(",")}`);
+    else if (value !== undefined) parts.push(`${field}=${value}`);
+    else parts.push(`${field}=`);
+  }
+  return parts.join("|");
+}
+
+async function artifactPackRoutingAllowedSets() {
+  const routing = await readJsonConfig("context-routing.json");
+  let repoPaths = {};
+  try {
+    repoPaths = await readJsonRel(routing.repoKeysSource);
+  } catch {
+    repoPaths = {};
+  }
+  return {
+    contextProfiles: new Set((routing.profiles || []).map((profile) => profile.id)),
+    domains: new Set(routing.axes?.domains || []),
+    repoKeys: new Set(Object.keys(repoPaths)),
+    taskTypes: new Set(routing.axes?.taskTypes || []),
+    languages: new Set(routing.axes?.languages || []),
+    frameworks: new Set(routing.axes?.frameworks || []),
+    workModes: new Set(routing.axes?.workModes || []),
+  };
+}
+
+function validateArtifactPackRouting(contexts, allowed, out) {
+  const signatures = new Map();
+  for (const ctx of contexts) {
+    for (const entry of ctx.manifest.exports || []) {
+      const route = entry.route || {};
+      if (entry.load === "route-selected") {
+        const positiveFields = ["context-profile", "domains", "repo-keys", "task-types", "languages", "frameworks", "work-modes"];
+        if (!positiveFields.some((field) => route[field] !== undefined && (!Array.isArray(route[field]) || route[field].length > 0))) {
+          artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} route-selected export requires positive route evidence`);
+        }
+      }
+      const scalarChecks = [["context-profile", "contextProfiles"]];
+      for (const [field, allowedKey] of scalarChecks) {
+        if (route[field] !== undefined && !allowed[allowedKey].has(route[field])) {
+          artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} ${field} has unknown value ${JSON.stringify(route[field])}`);
+        }
+      }
+      const arrayChecks = [
+        ["domains", "domains"],
+        ["repo-keys", "repoKeys"],
+        ["task-types", "taskTypes"],
+        ["languages", "languages"],
+        ["frameworks", "frameworks"],
+        ["work-modes", "workModes"],
+        ["exclude-when", "domains"],
+      ];
+      for (const [field, allowedKey] of arrayChecks) {
+        if (route[field] === undefined) continue;
+        if (!Array.isArray(route[field])) {
+          artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} ${field} must be an array`);
+          continue;
+        }
+        for (const value of route[field]) {
+          if (!allowed[allowedKey].has(value)) {
+            artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} ${field} has unknown value ${JSON.stringify(value)}`);
+          }
+        }
+      }
+      if (route["min-evidence"] !== undefined && (!Number.isInteger(route["min-evidence"]) || route["min-evidence"] < 1)) {
+        artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} min-evidence must be a positive integer`);
+      }
+      if (route["max-context-bytes"] !== undefined && (!Number.isInteger(route["max-context-bytes"]) || route["max-context-bytes"] < 1)) {
+        artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} max-context-bytes must be a positive integer`);
+      }
+      if (route.priority !== undefined && !Number.isInteger(route.priority)) {
+        artifactPackViolation(out, "manifest-routing", ctx.file, `${entry["artifact-id"]} route.priority must be an integer`);
+      }
+      if (entry.load === "route-selected") {
+        const signature = routeSignature(route);
+        if (!signatures.has(signature)) signatures.set(signature, []);
+        signatures.get(signature).push({ ctx, entry });
+      }
+    }
+  }
+  for (const rows of signatures.values()) {
+    if (rows.length < 2) continue;
+    const priorities = rows.map((row) => row.entry.route?.priority);
+    const distinctPriorities = new Set(priorities);
+    if (!priorities.every(Number.isInteger) || distinctPriorities.size !== priorities.length) {
+      for (const row of rows) {
+        artifactPackViolation(out, "manifest-routing", row.ctx.file, `${row.entry["artifact-id"]} duplicate route signature requires distinct route.priority`);
+      }
+    }
+  }
+}
+
+function validateArtifactPackVisibility(ctx, out) {
+  for (const entry of ctx.manifest.exports || []) {
+    if (ctx.manifest.visibility === "public" && entry["privacy-risk"] !== "public-safe") {
+      artifactPackViolation(out, "manifest-visibility", ctx.file, `${entry["artifact-id"]} public pack export must be public-safe`);
+    }
+    if (ctx.manifest.visibility === "company" && ["private-only", "unknown"].includes(entry["privacy-risk"])) {
+      artifactPackViolation(out, "manifest-visibility", ctx.file, `${entry["artifact-id"]} company pack export must be public-safe or needs-scrub`);
+    }
+  }
+}
+
+function validateArtifactPackCompatibility(ctx, out) {
+  const aliasIds = [];
+  for (const alias of ctx.manifest["compatibility-aliases"] || []) {
+    aliasIds.push(alias["alias-id"]);
+    if (alias["compatibility-need"] === "alias" && !alias["old-name"]) artifactPackViolation(out, "manifest-compatibility", ctx.file, `${alias["alias-id"]} alias requires old-name`);
+    if (["redirect", "old-path-mapping"].includes(alias["compatibility-need"]) && !alias["old-path"]) artifactPackViolation(out, "manifest-compatibility", ctx.file, `${alias["alias-id"]} ${alias["compatibility-need"]} requires old-path`);
+    if (alias["compatibility-need"] === "shim" && !alias["shim-path"]) artifactPackViolation(out, "manifest-compatibility", ctx.file, `${alias["alias-id"]} shim requires shim-path`);
+    if (typeof alias["removal-criteria"] !== "string" || alias["removal-criteria"].trim().length === 0) {
+      artifactPackViolation(out, "manifest-compatibility", ctx.file, `${alias["alias-id"]} removal-criteria must be non-empty`);
+    }
+  }
+  if (hasDuplicates(aliasIds)) artifactPackViolation(out, "manifest-compatibility", ctx.file, "alias-id values must be unique");
+}
+
+async function validateArtifactPackCase(files, gate, setMode = false) {
+  const out = [];
+  const contexts = [];
+  for (const file of files) {
+    const ctx = await parseArtifactPackManifest(file);
+    contexts.push(ctx);
+    out.push(...ctx.parseViolations);
+  }
+  if (gate && gate !== "manifest-shape") {
+    contexts.splice(0, contexts.length, ...contexts.filter((ctx) => ctx.manifest));
+  }
+  const semanticContexts = [];
+  for (const ctx of contexts) {
+    if (!ctx.manifest) continue;
+    let shapeOk = true;
+    if (!gate || gate === "manifest-shape") {
+      const before = out.length;
+      shapeOk = validateArtifactPackShape(ctx, out);
+      if (gate === "manifest-shape" && out.length > before) continue;
+    } else {
+      shapeOk = validateArtifactPackShape(ctx, []);
+    }
+    if (shapeOk) semanticContexts.push(ctx);
+  }
+  const runGate = (name) => !gate || gate === name;
+  if (runGate("manifest-paths")) {
+    for (const ctx of semanticContexts) validateArtifactPackPaths(ctx, out);
+  }
+  if (runGate("manifest-exports")) {
+    for (const ctx of semanticContexts) validateArtifactPackExports(ctx, out);
+  }
+  if (runGate("manifest-dependencies")) {
+    let registry;
+    try {
+      registry = await readJsonConfig("artifact-pack-core-capabilities.json");
+    } catch (err) {
+      artifactPackViolation(out, "manifest-dependencies", "agent/config/artifact-pack-core-capabilities.json", `cannot read core capability registry: ${err.message}`);
+      registry = { capabilities: [] };
+    }
+    const coreCapabilityIds = validateArtifactPackCoreCapabilityRegistry(registry, out);
+    validateArtifactPackDependencies(semanticContexts, coreCapabilityIds, out, setMode);
+  }
+  if (runGate("manifest-routing")) {
+    validateArtifactPackRouting(semanticContexts, await artifactPackRoutingAllowedSets(), out);
+  }
+  if (runGate("manifest-visibility")) {
+    for (const ctx of semanticContexts) validateArtifactPackVisibility(ctx, out);
+  }
+  if (runGate("manifest-compatibility")) {
+    for (const ctx of semanticContexts) validateArtifactPackCompatibility(ctx, out);
+  }
+  return out.filter((violation) => !gate || violation.gate === gate);
+}
+
+async function artifactPackInputCase(inputs) {
+  const files = [];
+  let setMode = inputs.length > 1;
+  for (const input of inputs) {
+    const absolute = path.resolve(REPO_ROOT, input);
+    const displayPath = absolute.startsWith(`${REPO_ROOT}${path.sep}`) ? rel(absolute) : absolute;
+    if (!existsSync(absolute)) {
+      throw new Error(`artifact pack input does not exist: ${input}`);
+    }
+    const inputStats = statSync(absolute);
+    if (inputStats.isFile()) {
+      if (path.basename(absolute) !== "artifact-pack.json") throw new Error(`artifact pack input file must be named artifact-pack.json: ${input}`);
+      files.push(displayPath);
+      continue;
+    }
+    if (!inputStats.isDirectory()) throw new Error(`artifact pack input must be a directory or artifact-pack.json file: ${input}`);
+    const rootManifest = path.join(absolute, "artifact-pack.json");
+    if (existsSync(rootManifest)) {
+      files.push(rootManifest.startsWith(`${REPO_ROOT}${path.sep}`) ? rel(rootManifest) : rootManifest);
+      continue;
+    }
+    const nested = (await walk(absolute, (f) => path.basename(f) === "artifact-pack.json")).map((file) => (
+      file.startsWith(`${REPO_ROOT}${path.sep}`) ? rel(file) : file
+    ));
+    if (nested.length === 0) throw new Error(`artifact pack input directory contains no artifact-pack.json files: ${input}`);
+    files.push(...nested);
+    setMode = true;
+  }
+  return { files: [...new Set(files)].sort(sortInventoryFiles), setMode };
+}
+
+async function checkArtifactPack(gate = null, inputs = []) {
+  const violations = [];
+  if (gate && !ARTIFACT_PACK_GATES.has(gate)) {
+    return { name: `artifact-pack:${gate}`, violations: [{ file: "scripts/validate-llm-first.mjs", line: 1, message: `unknown artifact pack gate: ${gate}` }] };
+  }
+  for (const required of ["artifact-pack.schema.json", "artifact-pack-core-capabilities.json"]) {
+    try {
+      await readJsonConfig(required);
+    } catch (err) {
+      violations.push({ file: `agent/config/${required}`, line: 1, message: `cannot read artifact pack registry: ${err.message}` });
+    }
+  }
+  if (inputs.length > 0) {
+    let inputCase;
+    try {
+      inputCase = await artifactPackInputCase(inputs);
+    } catch (err) {
+      return { name: gate ? `artifact-pack:${gate}` : "artifact-pack", violations: [{ file: "scripts/validate-llm-first.mjs", line: 1, message: err.message }] };
+    }
+    const actual = await validateArtifactPackCase(inputCase.files, null, inputCase.setMode);
+    const selectedActual = gate ? actual.filter((violation) => violation.gate === "manifest-shape" || violation.gate === gate) : actual;
+    violations.push(...selectedActual.map(({ gate: actualGate, file, line, message }) => ({
+      file,
+      line,
+      message: `${actualGate}: ${message}`,
+    })));
+    return { name: gate ? `artifact-pack:${gate}` : "artifact-pack", violations };
+  }
+  const cases = await artifactPackFixtureCases(gate);
+  for (const fixtureCase of cases) {
+    const actual = await validateArtifactPackCase(fixtureCase.files, gate, fixtureCase.kind === "set");
+    if (!fixtureCase.expectedGate) {
+      violations.push(...actual.map(({ gate: actualGate, file, line, message }) => ({
+        file,
+        line,
+        message: `${actualGate}: ${message}`,
+      })));
+      continue;
+    }
+    const expectedViolations = actual.filter((violation) => violation.gate === fixtureCase.expectedGate);
+    const unexpectedViolations = actual.filter((violation) => violation.gate !== fixtureCase.expectedGate);
+    if (expectedViolations.length === 0) {
+      violations.push({
+        file: fixtureCase.files[0],
+        line: 1,
+        message: `fixture expected ${fixtureCase.expectedGate} violation but none was reported`,
+      });
+    }
+    const expectedMessage = artifactPackFixtureExpectedMessage(fixtureCase);
+    if (expectedMessage && !expectedViolations.some((violation) => violation.message.includes(expectedMessage))) {
+      violations.push({
+        file: fixtureCase.files[0],
+        line: 1,
+        message: `fixture expected ${fixtureCase.expectedGate} violation containing ${JSON.stringify(expectedMessage)} but got: ${expectedViolations.map((violation) => violation.message).join("; ") || "none"}`,
+      });
+    }
+    for (const violation of unexpectedViolations) {
+      violations.push({
+        file: violation.file,
+        line: violation.line,
+        message: `fixture expected ${fixtureCase.expectedGate} but reported ${violation.gate}: ${violation.message}`,
+      });
+    }
+  }
+  return { name: gate ? `artifact-pack:${gate}` : "artifact-pack", violations };
+}
+
 async function checkEntryDocuments() {
   const violations = [];
   for (const rootEntry of ["CLAUDE.md", "AGENTS.md"]) {
@@ -2561,8 +3618,9 @@ async function checkEntryDocuments() {
     }
   }
   const entries = await harnessEntryDocuments();
+  const rulesIndexAdapterPath = await managedPathAlias("rules-index", "rules/index.md");
   const allowedClaudeRuleImports = new Set([
-    "rules/index.md",
+    rulesIndexAdapterPath,
     "rules/ambiguity-scoring.md",
     "rules/behavior.md",
     "rules/canonical-first.md",
@@ -2591,7 +3649,7 @@ async function checkEntryDocuments() {
       continue;
     }
     const before = text.slice(0, idx);
-    if (/@~?\/?\.?claude\//.test(before) || /claude\/(rules|standards|skills|commands)\//.test(before)) {
+    if (/@~?\/?\.?claude\//.test(before) || /claude\/(rules|standards|skills)\//.test(before)) {
       violations.push({
         file: entry.path,
         line: 1,
@@ -2599,7 +3657,7 @@ async function checkEntryDocuments() {
       });
     }
     if (entry.harness?.adapter === "claude") {
-      const importRe = /^@~\/\.claude\/(rules|standards|skills|commands)\/(.+)$/gm;
+      const importRe = /^@~\/\.claude\/(rules|standards|skills)\/(.+)$/gm;
       let m;
       while ((m = importRe.exec(text)) !== null) {
         const importPath = `${m[1]}/${m[2].trim()}`;
@@ -3271,7 +4329,6 @@ async function checkDocumentTemplates() {
 
   const consumerRoots = [
     path.join(AGENT_ROOT, "skills"),
-    path.join(AGENT_ROOT, "commands"),
     path.join(AGENT_ROOT, "standards"),
     path.join(REPO_ROOT, ".github"),
     path.join(REPO_ROOT, "scripts"),
@@ -3298,6 +4355,42 @@ async function checkDocumentTemplates() {
   return { name: "document-templates", violations };
 }
 
+async function checkArtifactPackDiscoveryRouting() {
+  const violations = [];
+  try {
+    await execFileAsync(process.execPath, ["--test", "tests/artifact-pack-discovery-routing.test.mjs"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+    });
+  } catch (err) {
+    violations.push({
+      file: "tests/artifact-pack-discovery-routing.test.mjs",
+      line: 1,
+      message: `artifact pack discovery routing tests failed: ${(err.stdout || err.stderr || err.message).trim()}`,
+    });
+  }
+  return { name: "artifact-pack-discovery-routing", violations };
+}
+
+async function checkExampleSkillPack() {
+  const violations = [];
+  try {
+    await execFileAsync(process.execPath, ["--test", "tests/example-skill-pack.test.mjs"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+    });
+  } catch (err) {
+    violations.push({
+      file: "tests/example-skill-pack.test.mjs",
+      line: 1,
+      message: `example skill pack tests failed: ${(err.stdout || err.stderr || err.message).trim()}`,
+    });
+  }
+  return { name: "example-skill-pack", violations };
+}
+
 // ---------- driver ----------
 
 const CHECKS = [
@@ -3313,8 +4406,20 @@ const CHECKS = [
   { name: "standards-redirects", fn: checkStandardsRedirects },
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
+  { name: "managed-paths", fn: checkManagedPaths },
+  { name: "artifact-inventory", fn: checkArtifactInventory },
+  { name: "artifact-pack", fn: (args) => checkArtifactPack(null, args.artifactPackInputs) },
+  { name: "artifact-pack:manifest-shape", fn: (args) => checkArtifactPack("manifest-shape", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-paths", fn: (args) => checkArtifactPack("manifest-paths", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-exports", fn: (args) => checkArtifactPack("manifest-exports", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-dependencies", fn: (args) => checkArtifactPack("manifest-dependencies", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-routing", fn: (args) => checkArtifactPack("manifest-routing", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-visibility", fn: (args) => checkArtifactPack("manifest-visibility", args.artifactPackInputs), full: false },
+  { name: "artifact-pack:manifest-compatibility", fn: (args) => checkArtifactPack("manifest-compatibility", args.artifactPackInputs), full: false },
+  { name: "artifact-pack-discovery-routing", fn: checkArtifactPackDiscoveryRouting },
+  { name: "example-skill-pack", fn: checkExampleSkillPack },
   { name: "skill-root-shape", fn: checkSkillRootShape },
-  { name: "skill-command-mechanics", fn: checkSkillCommandMechanics },
+  { name: "skill-mechanics", fn: checkSkillCommandMechanics },
   { name: "tracked-runtime-paths", fn: checkTrackedRuntimePaths },
   { name: "tracked-user-paths", fn: checkTrackedUserAbsolutePaths },
   { name: "entry-documents", fn: checkEntryDocuments },
@@ -3330,12 +4435,31 @@ const CHECKS = [
 ];
 
 function parseArgs(argv) {
-  const args = { check: null, list: false };
+  const args = { check: null, list: false, artifactPackInputs: [], unknown: [], errors: [] };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--list") args.list = true;
-    else if (a === "--check") args.check = argv[++i];
+    else if (a === "--check") {
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) {
+        args.errors.push("--check requires a check name");
+        if (value?.startsWith("--")) i--;
+      } else {
+        args.check = value;
+      }
+    }
     else if (a.startsWith("--check=")) args.check = a.slice("--check=".length);
+    else if (a === "--artifact-pack") {
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) {
+        args.errors.push("--artifact-pack requires a path");
+        if (value?.startsWith("--")) i--;
+      } else {
+        args.artifactPackInputs.push(value);
+      }
+    }
+    else if (a.startsWith("--artifact-pack=")) args.artifactPackInputs.push(a.slice("--artifact-pack=".length));
+    else args.unknown.push(a);
   }
   return args;
 }
@@ -3351,9 +4475,21 @@ async function main() {
     for (const c of CHECKS) console.log(c.name);
     process.exit(0);
   }
+  if (args.errors.length > 0) {
+    console.error(args.errors.join("\n"));
+    process.exit(2);
+  }
+  if (args.unknown.length > 0) {
+    console.error(`unknown argument(s): ${args.unknown.join(", ")}`);
+    process.exit(2);
+  }
+  if (args.artifactPackInputs.length > 0 && (!args.check || !args.check.startsWith("artifact-pack"))) {
+    console.error("--artifact-pack can only be used with --check artifact-pack or artifact-pack:<gate>");
+    process.exit(2);
+  }
   const selected = args.check
     ? CHECKS.filter((c) => c.name === args.check)
-    : CHECKS;
+    : CHECKS.filter((c) => c.full !== false);
   if (selected.length === 0) {
     console.error(`unknown check: ${args.check}`);
     console.error(`available: ${CHECKS.map((c) => c.name).join(", ")}`);
@@ -3363,7 +4499,7 @@ async function main() {
   let totalViolations = 0;
   const failingChecks = [];
   for (const c of selected) {
-    const result = await c.fn();
+    const result = await c.fn(args);
     if (result.violations.length === 0) continue;
     failingChecks.push(result);
     totalViolations += result.violations.length;

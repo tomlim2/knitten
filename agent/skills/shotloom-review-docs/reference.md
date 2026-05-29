@@ -1,8 +1,14 @@
 # shotloom-review-docs reference
 
-**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The canonical authorities are the in-repo `<shotloom>/docs/guidelines/` files (`pr-guideline.md`, `commit-guideline.md`, `documentation-standard.md`, `adr-template.md`), which the subagent walks first in Phase 1. The patterns below catch additional defect classes the in-repo guidelines do not directly enforce (mechanical doc/comment sweeps, PR-induced staleness, yaml/json sanity, load-bearing prose verification).
+**Supplementary catalog — runs in Phase 2 of the SKILL.md subagent brief.** The
+canonical authorities are the resolver-loaded Shotloom guidance files. The
+patterns below catch additional defect classes the in-repo guidelines do not
+directly enforce: mechanical doc/comment sweeps, PR-induced staleness,
+yaml/json sanity, and load-bearing prose verification.
 
-If a Pattern below already overlaps an in-repo guideline section, the Phase 1 finding is authoritative; this catalog adds the grep-catchable mechanical sweep on top. Pattern S (load-bearing prose claims) requires the subagent to open cited sources and verify literal text — the grep is mechanical, the verification is the subagent's main work.
+If a pattern below overlaps an in-repo guideline section, the Phase 1 finding is
+authoritative; this catalog adds the grep-catchable mechanical sweep on top.
+Pattern S verifies load-bearing prose claims against cited sources.
 
 ---
 
@@ -34,15 +40,6 @@ done
 # Also visually check imperative mood and no trailing period.
 ```
 
-### G3: PR title + body shape vs recent merged PRs
-
-```bash
-gh pr list --state merged --limit 5 --json number,title,body 2>/dev/null \
-  | python3 -c 'import json,sys; [print(f"--- PR #{p[\"number\"]}: {p[\"title\"]}"); print(p["body"][:400]) for p in json.load(sys.stdin)]' \
-  2>/dev/null
-# Compare section headings, footer shape, checkbox usage with draft body.
-```
-
 ### G4: branch name convention
 
 ```bash
@@ -61,7 +58,8 @@ git diff --name-only origin/main...HEAD -- 'crates/*/src/' 'crates/Cargo.toml' \
   | rg 'lib\.rs|mod\.rs' \
   && echo "Structure may have shifted — verify docs/adr/ or docs/tech-debt/ reflect it"
 git diff --name-only origin/main...HEAD -- 'docs/adr/' 'docs/tech-debt/' 'docs/adr/README.md' 'docs/tech-debt/README.md'
-# If crate structure changed but no ADR/tech-debt edit — justify in PR body or add one.
+# If crate structure changed but no ADR/tech-debt edit, record the rationale in
+# changed docs or leave it for the PR drafting step.
 ```
 
 ### G6: doc-paths validator + Rust comment path spot-check
@@ -97,7 +95,9 @@ done
 
 These catch doc/comment drift the in-repo `docs/guidelines/review-rust.md` does not enforce: speculative future-tense, stale status claims, broken cross-crate citations, naming-convention incoherence, ADR-prose discipline, Linear-ID rot, and overlong `//!` rationale that belongs in a per-crate README.
 
-Mindset: **doc must describe what IS, not what MIGHT BE.** A comment that promises future work without a concrete issue ID is a wish. A comment that claims "scaffold only" after the file gained 200 lines of logic is a lie. A "lives in `crate-x`" reference where `crate-x` does not exist breaks the next reader's grep. Default verdict on every H finding: rewrite to current-state-only, or cite a specific STL-NN that exists.
+Mindset: documentation describes current behavior. Future-work prose needs a
+specific open issue; stale status claims and broken crate references should be
+rewritten or removed.
 
 ### H1: future-tense / speculation in added prose
 
@@ -122,7 +122,8 @@ for f in $(git diff --name-only origin/main...HEAD -- 'crates/*/src/lib.rs' 'cra
 done
 ```
 
-For each hit verify against the current file's actual content; status word that no longer matches the code is a lie — rewrite or delete.
+For each hit, verify against the current file's actual content. Rewrite or
+delete stale status words that no longer match the code.
 
 ### H13: local absolute path exposure in durable files
 
@@ -134,7 +135,7 @@ git diff --name-only origin/main...HEAD \
 
 For each hit:
 - P1 if the local machine path appears in source, docs, manifests, fixtures,
-  generated examples, scripts, or PR-ready prose.
+  generated examples, scripts, or durable prose.
 - Replace with a repo-relative path, symbolic source name, resolver/config
   lookup, or `.gitignore`d private config.
 - Allow only intentionally local runtime config, private ignored files, and
@@ -157,7 +158,7 @@ For each hit verify the cited crate / module path exists and the symbol is actua
 # 1. New crate names
 git diff --name-only --diff-filter=A origin/main...HEAD -- 'crates/*/Cargo.toml' \
   | xargs -I{} dirname {} | xargs -I{} basename {}
-# Each MUST match shotloom-<domain>-<role>.
+# Check against the shotloom-<domain>-<role> naming shape.
 
 # 2. New public types / traits / fns in changed files
 git diff origin/main...HEAD -- 'crates/*/src/*.rs' \
@@ -254,7 +255,11 @@ for adr in $(git diff --name-only origin/main...HEAD -- 'docs/adr/*.md'); do
 done
 ```
 
-Material Decision-section edits to an Accepted ADR must bump Status to `Accepted (amended YYYY-MM-DD)` and add an Amendment block, not rewrite in place. Proposed ADRs may edit in place. Session-plan / port-plan prose is forbidden in any ADR body section. H10 hits where the PR's scope IS the ADR escalate to P1.
+Material Decision-section edits to an Accepted ADR should update Status to
+`Accepted (amended YYYY-MM-DD)` and add an Amendment block instead of rewriting
+in place. Proposed ADRs may edit in place. Session-plan / port-plan prose does
+not belong in ADR body sections. H10 hits where the PR's scope is the ADR
+escalate to P1.
 
 ### H11: long rationale in `//!` instead of crate README
 
@@ -397,7 +402,9 @@ wrote the prose can make a claim feel obvious on reread. Pattern S makes the
 subagent verify cited text directly; this section is the subagent's main work,
 not a grep sweep.
 
-The grep step below is just the **trigger check** — mechanical scan for added prose carrying S1/S2/S3 patterns. For every trigger hit, the subagent MUST open the cited source, paste the literal text into the report, and verify confirm | refute | unclear.
+The grep step below is the trigger check: a mechanical scan for added prose
+carrying S1/S2/S3 patterns. For each trigger hit, open the cited source, include
+a short evidence excerpt or citation, and verify confirm | refute | unclear.
 
 ### S1: cross-reference body accuracy
 
@@ -409,7 +416,9 @@ git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg -in '(ADR-[0-9]{4}|docs/[a-z/]+\.md|crates/[a-z-]+/README\.md)\s*§'
 ```
 
-Failure mode: section exists (H5 verifies), but the literal text says something weaker / different / about a sibling concern. Subagent opens the cited file, pastes the section text, verifies the prose's paraphrase matches.
+Failure mode: section exists (H5 verifies), but the cited text says something
+weaker, different, or about a sibling concern. Open the cited file and verify
+the prose's paraphrase matches.
 
 ### S2: sibling-crate state claim
 
@@ -422,7 +431,8 @@ git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg -i 'shotloom-[a-z-]+|shotloom_[a-z_]+'
 ```
 
-Subagent opens the named crate's `lib.rs` / `types.rs` / `Cargo.toml`, pastes a one-line evidence quote, confirms or refutes.
+Open the named crate's `lib.rs` / `types.rs` / `Cargo.toml`, include a short
+evidence excerpt or citation, then confirm or refute.
 
 ### S3: numeric / geometric claim about a constant
 
@@ -434,7 +444,8 @@ git diff origin/main...HEAD -- '*.rs' '*.md' \
   | rg -in '[0-9]+(\.[0-9]+)?\s+(is|=|→|->)\s+(forward|backward|left|right|up|down|wrist|elbow|shoulder|hip|toe|axis|ratio)'
 ```
 
-Subagent opens the code where the constant is used, derives the geometric meaning from arithmetic, confirms or refutes the prose.
+Open the code where the constant is used, derive the geometric meaning from
+arithmetic, then confirm or refute the prose.
 
 ### Subagent verification format
 
@@ -444,12 +455,12 @@ For each S1/S2/S3 hit:
 Pattern S<N> at `<path>:<line>`:
   Claim: "<paraphrased from diff>"
   Cited source: `<file>` §<section>
-  Literal text: "<verbatim excerpt>"
+  Evidence: "<short excerpt or citation>"
   Verdict: confirm | refute | unclear
   (If refute) Corrected wording: "<proposed rewrite>"
 ```
 
-Skip the dispatch only when the diff contains zero S1/S2/S3 triggers. The trigger check is mechanical; the verification is the subagent's main responsibility.
+When the diff contains zero S1/S2/S3 triggers, Pattern S has no extra work.
 
 ---
 
@@ -461,4 +472,5 @@ Skip the dispatch only when the diff contains zero S1/S2/S3 triggers. The trigge
 4. **M** (yaml / json) — markup / manifest sanity.
 5. **S** (load-bearing prose triggers) — open cited sources, verify literal text.
 
-Findings in H/I/M/S are typically nits or design-judgment, but accumulated drift is exactly what every later session has to wade through.
+Findings in H/I/M/S are typically nits or design-judgment, but they are useful
+when local and evidence-backed.

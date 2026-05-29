@@ -24,12 +24,12 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`. This
 
 **standard** — Long reference doc. On-demand load. Body cap: 500 lines (3 grandfathered catalogs over). Lives in `agent/standards/<topic>/`.
 
-**skill / command** — Executable unit invoked by name. Lives in `agent/skills/<name>/SKILL.md` or `agent/commands/<name>.md`.
+**skill** — Executable unit invoked by name. Lives in `agent/skills/<name>/SKILL.md`.
 
 **validator** — `scripts/validate-llm-first.mjs`. Mechanical anti-rot gate. Check list comes from `node scripts/validate-llm-first.mjs --list`. Runs in seconds.
 
 <!-- generated:validator-checks -->
-Validator checks: **26**.
+Validator checks: **38**.
 
 - `banned-terms`
 - `terminology`
@@ -43,8 +43,20 @@ Validator checks: **26**.
 - `standards-redirects`
 - `platform-metadata`
 - `taxonomy`
+- `managed-paths`
+- `artifact-inventory`
+- `artifact-pack`
+- `artifact-pack:manifest-shape`
+- `artifact-pack:manifest-paths`
+- `artifact-pack:manifest-exports`
+- `artifact-pack:manifest-dependencies`
+- `artifact-pack:manifest-routing`
+- `artifact-pack:manifest-visibility`
+- `artifact-pack:manifest-compatibility`
+- `artifact-pack-discovery-routing`
+- `example-skill-pack`
 - `skill-root-shape`
-- `skill-command-mechanics`
+- `skill-mechanics`
 - `tracked-runtime-paths`
 - `tracked-user-paths`
 - `entry-documents`
@@ -222,7 +234,7 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 **Why discovered:** Manual self-audits drift. The v3.0 → v3.1 migration involved a banned-term sweep that should have been mechanical from the start. The validator now catches what manual review used to miss.
 
 **Example:**
-- ✅ "No `etc.` in standards/rules/commands/skills" — grep-able.
+- ✅ "No `etc.` in standards/rules/skills" — grep-able.
 - ❌ "Be specific" — judgment-dependent. Reword to a checkable form ("Include at least one example, one counter-example, one expected output").
 
 **Enforced by:** `validate-llm-first.mjs` checks. Use `node scripts/validate-llm-first.mjs --list` for the current list. Garden review checklist asks "is there a check the validator missed?".
@@ -256,11 +268,11 @@ Lower layers shape upper layers; upper layers cannot override lower ones. When t
 
 **Statement:** A fact lives in exactly one file. Other files reference it by path, never by duplication. Indexes are generated or validated against the source.
 
-**Why discovered:** The Skills & commands table in `CLAUDE.md` duplicated content already in three triggered rules (`naming.md`, `command-frontmatter.md`, `tool-permissions.md`) and one standard (`slash-commands.md`). Same rules in two places — when one updates, the other rots.
+**Why discovered:** A runtime entry table duplicated content already owned by triggered rules and standards. Same rules in two places — when one updates, the other rots.
 
 **Example:**
-- ✅ `rules/index.md` lists 21 rules with one-line scope. `CLAUDE.md` doesn't repeat the list.
-- ❌ "Authoring rules" appears as a table in CLAUDE.md AND in rules/index.md AND in README.md.
+- ✅ `agent/rules/index.md` lists 21 rules with one-line scope. `CLAUDE.md` doesn't repeat the list.
+- ❌ "Authoring rules" appears as a table in CLAUDE.md AND in agent/rules/index.md AND in README.md.
 
 **Enforced by:** `validate-llm-first.mjs` `inventory-counts` check (README counts must match `ls`). For body content: garden review section 3.
 

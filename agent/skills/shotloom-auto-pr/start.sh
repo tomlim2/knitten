@@ -8,6 +8,7 @@ set -euo pipefail
 
 PR="${1:?usage: start.sh <pr-number> [interval-seconds]}"
 INTERVAL="${2:-120}"
+REPO="CINEV/shotloom"
 SKILL_DIR="$HOME/.claude/skills/shotloom-auto-pr"
 OPS_DIR="$HOME/.claude/ops/pr-$PR"
 PID_FILE="$OPS_DIR/watcher.pid"
@@ -15,6 +16,11 @@ LOOP_LOG="$OPS_DIR/watcher.log"
 MKDIR_LOCK="$OPS_DIR/watch.lock.d"
 
 mkdir -p "$OPS_DIR"
+
+if ! gh pr view "$PR" --repo "$REPO" --json assignees --jq '.assignees[].login' | grep -qx 'tomlim2'; then
+  echo "refusing to start watcher: PR #$PR is not assigned to tomlim2" >&2
+  exit 1
+fi
 
 # kill prior watcher if any
 if [[ -f "$PID_FILE" ]]; then

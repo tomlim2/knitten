@@ -71,6 +71,6 @@ Uses `run_in_editor.py` (same as ue-analyze-material) to send Python scripts to 
 
 ## Related Files
 
-- Command: `~/.claude/commands/ue-cleanup-assets.md`
+- Skill: `~/.claude/skills/ue-cleanup-assets/SKILL.md`
 - Output: `~/.claude/private/unreal/assets-cleanup/`
 - Original: `anju/python/asset_manager/find_no_reference_and_delete.py`

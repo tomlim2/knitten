@@ -1,7 +1,7 @@
 # Agent Hub
 
 **LLM-first agent hub.** System docs, config, routing, skills, rules, and
-standards use `agent-hub`. Agent configuration — commands, skills, standards,
+standards use `agent-hub`. Agent configuration — skills, standards,
 rules, and machine config — is optimized for LLM efficiency, accuracy, and
 clarity. Harness install scripts link deploy targets to this checkout.
 
@@ -26,7 +26,6 @@ Goal-to-doc lookup: [`LOOKUP.md`](LOOKUP.md). When the question is "where is X?"
 │   ├── AGENTS.md             # Codex deploy entry template
 │   ├── rules/                # Always-applied constraints
 │   ├── standards/            # Reference docs, on-demand
-│   ├── commands/             # Slash command .md files
 │   ├── skills/               # Skill directories with SKILL.md
 │   ├── config/               # Shared registries and service config
 │   └── private/              # Gitignored — machine config, secrets
@@ -68,28 +67,12 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 ---
 
 <!-- generated:readme-inventory -->
-## Commands (45)
-
-| Category | Count | Examples |
-|----------|------:|----------|
-| `cci-*` | 18 | `cci-art-create-branch`, `cci-art-prepare-merge`, `cci-art-remove-branch` |
-| `ah-*` | 15 | `ah-check-status`, `ah-check-updates`, `ah-consult-codebase` |
-| `dev-*` | 3 | `dev-fix-bug`, `dev-open-pmx2vrm`, `dev-sync-design` |
-| `ue-*` | 3 | `ue-make-skill`, `ue-restore-deleted`, `ue-write-cpp` |
-| `tutoring-*` | 2 | `tutoring-mark-paid`, `tutoring-open-invoice` |
-| `git-*` | 1 | `git-make-message` |
-| `learn-*` | 1 | `learn-add-log` |
-| `shotloom-*` | 1 | `shotloom-linear-create-issue` |
-| `writing-*` | 1 | `writing-apply-voice` |
-
----
-
-## Skills (148)
+## Skills (150)
 
 | Category | Count |
 |----------|------:|
-| `shotloom-*` | 31 |
-| `ah-*` | 28 |
+| `shotloom-*` | 34 |
+| `ah-*` | 27 |
 | `dev-*` | 24 |
 | `cci-*` | 10 |
 | `review-*` | 7 |
@@ -116,18 +99,18 @@ This populates `~/.claude/private/agent-hub-config/` from templates in `agent/sk
 
 ---
 
-## Standards (49)
+## Standards (48)
 
 Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 | Group | Count | Files |
 |-------|------:|-------|
-| `authoring/` | 3 | `command-skill-reference.md`, `document-templates.md`, `slash-commands.md` |
+| `authoring/` | 1 | `document-templates.md` |
 | `cinev/` | 4 | `cci-slack.md`, `cinev-character-asset-naming.md`, `cinev-git-workflow.md`, `cinev-vrm-shading.md` |
 | `language/` | 7 | `css-reference.md`, `css.md`, `design-system.md`, `javascript-reference.md`, `javascript.md`, `three-shader-language.md`, `ui-design.md` |
 | `multi-agent/` | 2 | `agent-workflow.md`, `delegation.md` |
 | `obsidian/` | 4 | `note-inspection-checklist.md`, `obsidian-format.md`, `obsidian-tag-taxonomy.md`, `vault-audience.md` |
-| `policy/` | 9 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `metaphor-style.md`, `naming.md`, `platform-adapters.md`, `principles.md` |
+| `policy/` | 10 | `garden-review.md`, `harness-deployment-plan.md`, `harness-deployment.md`, `llm-first-docs.md`, `llm-first-policy.md`, `metaphor-style.md`, `naming.md`, `platform-adapters.md`, `principles.md`, `temporary-runtime-files.md` |
 | `research/` | 2 | `research-methodology.md`, `tech-spec-template.md` |
 | `review/` | 13 | `review-3d-rendering.md`, `review-ai-motion.md`, `review-code-astro.md`, `review-code-css.md`, `review-code-javascript.md`, `review-code-tsl.md`, `review-code-unreal-cpp.md`, `review-code-unreal-python.md`, `review-spec-doc.md`, `review-template.md`, `review-ux-python-gui.md`, `review-ux-writing.md`, `review-ux.md` |
 | `system/` | 1 | `repo-paths-keys.md` |
@@ -136,14 +119,14 @@ Reference docs in `agent/standards/`. Loaded on-demand, never auto.
 
 ---
 
-## Rules (25)
+## Rules (24)
 
 Rules in `agent/rules/`. Auto rules load every session via entry documents; triggered rules load on demand.
 
 | Load | Count | Files |
 |------|------:|-------|
 | `auto` | 7 | `ambiguity-scoring.md`, `behavior.md`, `canonical-first.md`, `git-defaults.md`, `security.md`, `session-start.md`, `verify-before-report.md` |
-| `triggered` | 17 | `author.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `main-chore-lane.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom-docs-lane.md`, `shotloom.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
+| `triggered` | 16 | `author.md`, `cinev-git.md`, `code-write.md`, `doc-write.md`, `main-chore-lane.md`, `metaphor-style.md`, `obsidian.md`, `pr-comment.md`, `pr-create.md`, `pr-mutate.md`, `reread-repo-conventions.md`, `shotloom-docs-lane.md`, `slack.md`, `task-context-routing.md`, `test-write.md`, `writing-external.md` |
 | `index` | 1 | `index.md` |
 <!-- /generated:readme-inventory -->
 
@@ -170,10 +153,10 @@ Manage with `/ah-manage-config` (subcommands: `show`, `validate`, `add`, `remove
 | `context-routing.json` | Task route axes, context profiles, pilot files, and routing fixtures |
 | `doc-budgets.json` | Document length budgets used by validator checks |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata files |
-| `taxonomy.json` | Skill/command categories, standard groups, naming patterns |
+| `taxonomy.json` | Skill categories, standard groups, naming patterns |
 | `audit-policy.json` | Garden review thresholds and severity tiers |
 | `exceptions.json` | Grandfathered exceptions with reason, decision, review date |
 
 ---
 
-For authoring new commands and skills, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/ah-make-command/SKILL.md` or `agent/skills/ah-make-skill/SKILL.md`.
+For authoring new shared skills and related artifacts, start at [`SYSTEM.md`](SYSTEM.md), then read `agent/skills/ah-manage-artifact/SKILL.md` and `agent/skills/ah-make-skill/SKILL.md`.

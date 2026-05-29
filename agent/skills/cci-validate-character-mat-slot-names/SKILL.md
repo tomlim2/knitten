@@ -111,5 +111,5 @@ Edit `required_slots.json` to customize which material slots are required:
 
 ## Related Files
 
-- Command: `~/.claude/commands/cci-validate-character-mat-slot-names.md`
+- Skill: `~/.claude/skills/cci-validate-character-mat-slot-names/SKILL.md`
 - Output: `~/.claude/private/unreal/character-mat-slot-validate/`

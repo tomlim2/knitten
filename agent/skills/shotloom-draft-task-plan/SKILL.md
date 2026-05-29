@@ -1,8 +1,8 @@
 ---
-description: Compatibility entry for Shotloom task specs; prefer shotloom-draft-spec for user-facing flows
+description: Compatibility leaf/component Shotloom skill. Prefer shotloom-router, then shotloom-draft-spec for user-facing spec work.
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
-context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
+context-rules: rules/shotloom-docs-lane.md
 ---
 
 # shotloom-draft-task-plan
@@ -158,6 +158,20 @@ The spec must answer these questions before any Design Plan stage appears:
 | What is locked? | Decisions, rejected alternatives, non-goals, invariants, and ownership. |
 | How is it built? | Design Plan stages with file/module boundaries, I/O blocks, and risk rows. |
 | How is it proven? | Verification gates, manual repro, and failure-path evidence. |
+
+If the spec touches a surface below, add a `Proof Obligation Matrix` before
+Design Plan stages:
+
+| Surface | Required proof |
+|---|---|
+| Public API, DTO, serde, TS mirror, or documented key list | Fixture, snapshot, type check, or docs/code cross-check that fails on drift. |
+| Shared UI primitive | Controlled/uncontrolled tests, native prop omission or support proof, ARIA/title precedence proof, and type-negative fixture for invalid prop combinations. |
+| Bridge command, runtime event, or state transition | Rejection matrix, event ordering proof, and post-state assertion. |
+| Provider or external payload adapter | Malformed item fixture, count/range bound, payload-size bound, and oversized well-shaped response test. |
+| Workflow, CI job, smoke test, cache, or package script | Zero-test rejection, exact smoke expectation, permission surface, cache exposure, and cancellation semantics proof. |
+| Node process supervisor | Spawn failure, child exit, descendant cleanup, POSIX process group, and Windows termination proof. |
+| Asset, path, catalog, digest, or filesystem output | Unknown-prefix, traversal, symlink, local URL, digest mismatch, and cleanup-key collision fixture. |
+| Durable docs, ADR, schema, or persisted metadata | ADR/schema/example/rejection-semantics cross-check. |
 
 If the spec adds or changes a validator, manifest, package script, file IO path,
 asset importer, or path resolver, add a `Validator Contract Matrix` before

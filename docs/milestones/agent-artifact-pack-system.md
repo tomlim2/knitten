@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-18
-updated: 2026-05-21
+updated: 2026-05-26
 owner: agent-hub
 target-date:
 ---
@@ -24,13 +24,12 @@ copying everything into the core repository.
 | Bootstrap skill definition | Define what qualifies as a Knitten bootstrap skill and decide whether bootstrap-skill gaps are filled by keeping, rewriting, or creating skills. |
 | Skill lifecycle management | Define one workflow owner for skill create, read/review, update, archive/delete, rename, and compatibility handling. |
 | Skill/guide boundary | Define what remains in thin executable skills and what moves to standards, guides, references, templates, or validators. |
-| Command retirement | Treat commands as legacy migration sources; convert command workflows to skills, aliases, or shims before removal. |
 | Inventory and classification | Produce a complete artifact inventory before any move. |
-| Pack manifest | Define how an external artifact pack declares skills, rules, standards, commands, dependencies, and repo scope. |
-| Migration plan | Move eligible skills, commands, rules, and standards into artifact packs without breaking current routing. |
+| Pack manifest | Define how an external artifact pack declares skills, rules, standards, dependencies, and repo scope. |
+| Migration plan | Move eligible skills, rules, and standards into artifact packs without breaking current routing. |
 | Knitten role transition | Define when current `knitten` stops acting as core and becomes a private artifact pack plus integration overlay. |
 | Discovery and routing | Resolve pack-provided artifacts from repo, task type, domain, and work mode. |
-| Install and link flow | Link local artifact pack folders or repos into the active harness without hardcoded user paths. |
+| Installed pack lifecycle | Register, inspect, update, mount, disable, recover, and uninstall local artifact pack folders or repos without hardcoded user paths. |
 | Compatibility | Keep old paths, aliases, or deprecation mappings until pack routing is proven. |
 | Validation and release gates | Check manifest shape, naming, duplicate exports, missing paths, routing conflicts, public-safety, and release readiness. |
 | LLM decision quality | Reduce wrong route selection, duplicate policy conflicts, and accidental domain-context loading. |
@@ -40,26 +39,32 @@ copying everything into the core repository.
 | Spec | Status | Role |
 |------|--------|------|
 | [artifact-pack-vocabulary.md](../plans/completed/artifact-pack-vocabulary.md) | completed | Define shared terms for artifacts, packs, manifests, and resolvers. |
-| [artifact-inventory-classification.md](../plans/active/artifact-inventory-classification.md) | active | Generate and review the full inventory of skills, commands, rules, standards, configs, docs, and scripts. |
-| `core-artifact-boundary` | proposed | Define stay-in-core vs move-to-pack criteria for skills, commands, rules, and standards. |
+| [artifact-inventory-classification.md](../plans/active/artifact-inventory-classification.md) | active | Generate and review the full inventory of skills, rules, standards, configs, docs, and scripts. |
+| [artifact-inventory-reviewed-decision-application.md](../plans/proposed/artifact-inventory-reviewed-decision-application.md) | proposed | Apply reviewed core-owned classification decisions to generated inventory output. |
+| [core-artifact-boundary.md](../plans/active/core-artifact-boundary.md) | active | Define stay-in-core vs move-to-pack criteria for skills, rules, and standards. |
+| [bootstrap-skill-definition-selection.md](../plans/active/bootstrap-skill-definition-selection.md) | active | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
-| `skill-lifecycle-manager` | todo | Define skill CRUD and lifecycle management before broad skill inventory edits. |
+| [skill-lifecycle-manager.md](../plans/completed/skill-lifecycle-manager.md) | completed | Define skill CRUD and lifecycle management before broad skill inventory edits. |
 | [operational-findings-pipeline.md](../plans/proposed/operational-findings-pipeline.md) | proposed | Define one Knitten-wide findings intake, promotion, and reporting lifecycle for operational issues and lessons; periodic consolidation stays manual-first. |
 | [design-plan-template-skill-adoption.md](../plans/proposed/design-plan-template-skill-adoption.md) | proposed | Route spec creation and review skills to the canonical Design Plan template while keeping domain-specific constraints in skills. |
 | [document-template-consumption-phases.md](../plans/proposed/document-template-consumption-phases.md) | proposed | Split document template review policy into internal-consumption and vault-assetization phases after adding the Design Plan template. |
 | [context-standards-redirect-validation.md](../plans/proposed/context-standards-redirect-validation.md) | proposed | Validate `context-standards` paths through standards redirect stubs and canonical replacement targets. |
-| `command-retirement-plan` | proposed | Define command-to-skill conversion order, compatibility aliases, deletion gates, and per-agent adapter choices. |
+| [managed-path-registry-validation.md](../plans/completed/managed-path-registry-validation.md) | completed | Define canonical shared path registry and CI validator coverage for stale hardcoded path literals. |
+| [artifact-inventory-provenance-validation.md](../plans/completed/artifact-inventory-provenance-validation.md) | completed | Validate generated inventory provenance fields and record dirty-worktree generation metadata. |
 | `knitten-private-pack-transition` | proposed | Define the timing and gates for current `knitten` becoming a private artifact pack and integration overlay. |
 | `artifact-repo-migration-plan` | proposed | Plan the new artifact repository, migration order, compatibility shims, and rollback path. |
-| `artifact-pack-manifest-contract` | proposed | Define the manifest schema, exported artifact model, and compatibility fields. |
-| `artifact-pack-discovery-routing` | proposed | Define how core discovers artifact packs and lets routers select them. |
-| `artifact-pack-install-link-flow` | proposed | Define safe local install, symlink/link, update, and uninstall behavior. |
+| [artifact-pack-manifest-contract.md](../plans/completed/artifact-pack-manifest-contract.md) | completed | Define the manifest schema, exported artifact model, and compatibility fields. |
+| [artifact-pack-discovery-routing.md](../plans/completed/artifact-pack-discovery-routing.md) | completed | Define and implement how core discovers artifact packs and lets routers select them. |
+| [installed-pack-lifecycle.md](../plans/proposed/installed-pack-lifecycle.md) | proposed | Define safe local installed-pack lifecycle, mount, update, disable, recover, and uninstall behavior. |
+| [installed-pack-lifecycle-test-contract.md](../plans/proposed/installed-pack-lifecycle-test-contract.md) | proposed | Define executable fixtures, temp harness setup, JSON examples, and practical lifecycle assertions. |
+| [installed-pack-lifecycle-recovery-hardening.md](../plans/completed/installed-pack-lifecycle-recovery-hardening.md) | completed | Track durable journals, real recovery, manifest-set prevalidation, and full update reconciliation follow-up work. |
+| [installed-pack-durability-validation-policy.md](../plans/completed/installed-pack-durability-validation-policy.md) | completed | Define fsync-level writes and validation-failed journal policy. |
 | `artifact-compatibility-shims` | proposed | Define old path mappings, aliases, deprecation windows, and removal criteria. |
-| `artifact-pack-validation-gates` | proposed | Define validator checks for manifest integrity and route conflicts. |
+| [artifact-pack-validation-gates.md](../plans/completed/artifact-pack-validation-gates.md) | completed | Define validator checks for manifest integrity and route conflicts. |
 | `public-safety-scrub-gates` | proposed | Define public-safe checks for secrets, private paths, personal data, and company-only context. |
 | `core-release-validation` | proposed | Define CI, PR, release, versioning, changelog, and public-readiness gates for `knitten-core`. |
-| `example-artifact-pack` | proposed | Provide a public-safe sample pack that proves manifest, resolver, install, and validation behavior. |
+| [example-skill-pack.md](../plans/completed/example-skill-pack.md) | completed | Provide a public-safe sample pack that proves manifest, resolver, install, and validation behavior. |
 
 ## Progress
 
@@ -67,22 +72,32 @@ copying everything into the core repository.
 |-------|-------|----------|
 | Milestone record | done | `docs/milestones/agent-artifact-pack-system.md` exists. |
 | Vocabulary | done | `docs/plans/completed/artifact-pack-vocabulary.md` defines shared artifact-pack terms. |
-| Inventory and classification | active | Schema contract, generated inventory output, and five-skill pilot classification exist; validator checks are next. |
-| Core/external boundary | not started | Depends on inventory and classification criteria. |
-| Bootstrap skill definition and selection | proposed | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
-| Skill lifecycle manager | todo | Add a dedicated spec for skill CRUD/lifecycle management. |
-| Command retirement | proposed | Future architecture removes commands; current commands remain inventory inputs until each is converted or shimmed. |
-| Command retirement spec | proposed | Dedicated spec records conversion order, compatibility aliases, deletion gates, and per-agent adapter decisions. |
+| Inventory and classification | active | Schema contract, generated inventory output, pilot classification review, pilot extraction report, rollout rule, and validator checks exist. |
+| Reviewed decision application | proposed | `docs/plans/proposed/artifact-inventory-reviewed-decision-application.md` scopes applying the first reviewed core-owned classification report to generated inventory. |
+| Core/external boundary | active | `docs/plans/active/core-artifact-boundary.md` defines the first boundary rule and first core-owned batch report. |
+| Bootstrap skill definition and selection | active | `docs/plans/active/bootstrap-skill-definition-selection.md` defines role criteria and the first core-owned skill decision table. |
+| Skill lifecycle manager | done | `agent/skills/ah-manage-skill/SKILL.md` defines the skill-specific lifecycle router and destructive-operation gates. |
 | Public core transition | proposed | `docs/plans/proposed/knitten-core-public-transition.md` defines the public-readiness migration plan. |
-| Thin skill / guide boundary | active | Five-skill pilot classification exists; pilot extraction is next. |
+| Thin skill / guide boundary | active | Five-skill pilot classification, first extraction pilot, and extraction rollout rule exist. |
 | Private pack transition | proposed | Current `knitten` becomes a private artifact pack only after `knitten-core` works independently. |
 | Artifact repo migration | not started | Depends on the boundary and manifest contract. |
-| Manifest contract | not started | Depends on accepted vocabulary and boundary terms. |
-| Discovery and routing | not started | Depends on the manifest contract. |
-| Install and link flow | not started | Depends on the manifest contract and current harness link behavior. |
+| Manifest contract | done | `agent/config/artifact-pack.schema.json`, `agent/config/artifact-pack-core-capabilities.json`, fixtures, and artifact-pack validator gates exist and pass. |
+| Discovery and routing | done | `scripts/resolve-artifact-route.mjs`, `tests/artifact-pack-discovery-routing.test.mjs`, and `artifact-pack-discovery-routing` validator check implement resolver inputs, result envelope, candidate rows, load guards, and fixtures. |
+| Installed pack lifecycle | active | PR #63 merged the first installer slice; PR #64 merged recovery hardening; PR #65 merged fsync durability and validation-failed journals. Parent lifecycle and test-contract specs remain proposed. |
 | Compatibility shims | not started | Depends on inventory, boundary decisions, and old path mapping. |
-| Validation gates | not started | Depends on finalized manifest fields and public-safety policy. |
-| Example pack | not started | Depends on manifest contract and resolver behavior. |
+| Managed path registry | done | `agent/config/managed-paths.json` and `managed-paths` validator check enforce shared path drift. |
+| Artifact inventory provenance | done | Validator checks `generated-at`, `source-commit`, and `source-dirty` metadata shape. |
+| Validation gates | done | `docs/plans/completed/artifact-pack-validation-gates.md` defines and implements artifact pack manifest validation gates. |
+| Example skill pack | done | `examples/artifact-packs/example-skill-pack/`, `tests/example-skill-pack.test.mjs`, and `example-skill-pack` validator check prove the pack contract end to end. |
+
+## Priority Queue
+
+| Priority | Work | Reason |
+|----------|------|--------|
+| done | `artifact-pack-manifest-contract` | Manifest schema, validator gates, core capability registry, and fixtures exist. |
+| done | `artifact-pack-discovery-routing` | Resolver module, fixtures, and validator check exist. |
+| done | `example-skill-pack` | A public-safe pack proves manifest, installer, resolver, validation, and compatibility behavior together. |
+| next | `artifact-inventory-reviewed-decision-application` | Reviewed core-owned decisions exist but generated inventory still emits most rows as `undecided`. |
 
 ## Acceptance Criteria
 
@@ -90,32 +105,27 @@ copying everything into the core repository.
 2. Knitten bootstrap skills have a documented definition, and every bootstrap-skill
    candidate is marked keep, rewrite, create-new, exclude, or undecided.
 3. External artifact packs can declare their exported artifacts through one manifest.
-4. Commands have a retirement plan: each command is converted to a skill, kept
-   as a compatibility alias or shim, or scheduled for removal after reference
-   scans pass.
 5. Skill lifecycle management has one workflow owner for create, inspect/review,
    update, rename, archive/delete, compatibility mapping, and validation.
-6. Command adapter behavior is decided per agent before command paths are
-   removed.
-7. Every existing skill, command, rule, and standard has a staged
+6. Every existing skill, rule, and standard has a staged
    classification: `core-candidate`, `pack-candidate`, `deprecated`,
    `migrate-later`, or `undecided`.
-8. A new artifact repository migration plan defines order, compatibility shims,
+7. A new artifact repository migration plan defines order, compatibility shims,
    validation, rollback, and cleanup.
-9. Pack artifacts can be routed without duplicating them into Knitten core.
-10. Validators catch missing pack paths, duplicate names, and routing conflicts.
-11. Install, update, and uninstall flows are explicit and reversible.
-12. Public `knitten-core` release is blocked by public-safety and release gates.
-13. A public-safe example artifact pack proves the pack contract end to end.
-14. Compatibility shims have documented removal criteria before any old path is
+8. Pack artifacts can be routed without duplicating them into Knitten core.
+9. Validators catch missing pack paths, duplicate names, and routing conflicts.
+10. Install, update, and uninstall flows are explicit and reversible.
+11. Public `knitten-core` release is blocked by public-safety and release gates.
+12. A public-safe example skill pack proves the pack contract end to end.
+13. Compatibility shims have documented removal criteria before any old path is
     deleted.
-15. Skill bodies have a documented boundary: executable workflow stays in
+14. Skill bodies have a documented boundary: executable workflow stays in
     skills; durable judgment, examples, contracts, and format policy move to
     standards, guides, references, templates, or validators.
-16. Pack discovery improves LLM decision quality by exposing compact route
+15. Pack discovery improves LLM decision quality by exposing compact route
     metadata before loading skill, reference, template, or domain bodies.
-17. Pilot migrations record decision-quality metrics: candidate count, loaded
-    skill bodies, loaded context bytes, must-not-load violations, canonical
+16. Pilot migrations record decision-quality metrics: emitted candidate count,
+    loaded skill bodies, loaded context bytes, exclusion body loads, canonical
     owner conflicts, and secondary route count.
 
 ## Inventory Contract
@@ -142,7 +152,7 @@ Common fields:
 | Row ID | Stable unique id. |
 | Row type | `artifact`, `skill`, or `extraction-item`. |
 | Artifact path | Current tracked path. |
-| Artifact type | `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim`. |
+| Artifact type | `skill`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim`. |
 | Owner domain | Core, repo, company, personal, domain, or experiment owner. |
 | Privacy risk | `public-safe`, `needs-scrub`, `private-only`, or `unknown`. |
 | Dependencies | Other artifacts, scripts, config files, or harness assumptions. |
@@ -188,7 +198,7 @@ Classification stages:
 
 | Keep In Core | Move To Artifact Pack |
 |--------------|-----------------------|
-| Repository charter, entry documents, lifecycle rules, and validators. | Domain-specific skills and legacy commands until command retirement finishes. |
+| Repository charter, entry documents, lifecycle rules, and validators. | Domain-specific skills after route selection. |
 | Routing layers needed before plugin discovery works. | Repo-specific or company-specific workflows. |
 | Artifact vocabulary, manifest schema, resolver, and installer. | Design, media, UE, Shotloom, Obsidian, tutoring, drink, and other optional domains. |
 | Safety rules for git, PR, worktrees, permissions, and config. | Large reference catalogs that are only useful when that pack is selected. |
@@ -212,10 +222,10 @@ Decision-quality gates:
 
 | Metric | Pass gate |
 |--------|-----------|
-| pre-route candidate count | `<= 5` and one primary route |
+| emitted candidate count | `<= 5` and one primary candidate |
 | pre-route skill body count | `<= 1` router body |
 | loaded context bytes | `<= context-profile.maxBytes` |
-| must-not-load violations | `0` |
+| exclusion body loads | `0` |
 | canonical owner conflicts | `0` |
 | secondary route count | `<= 2`, each with evidence |
 
@@ -225,7 +235,6 @@ Decision-quality gates:
 |-----------------------|------|
 | Old paths | Preserve through aliases, shims, or manifest redirects until no active references remain. |
 | Router names | Keep stable public names; route to moved pack artifacts through resolver metadata. |
-| Commands | Convert to skills, aliases, or shims first; remove only after reference scans and adapter decisions pass. |
 | Skills | Provide clear deprecation messages before removal. |
 | Rules and standards | Keep redirects or replacement links when old docs move. |
 | Removal | Delete old compatibility paths only after validator and reference scan both pass. |
@@ -275,17 +284,16 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 
 | Phase | Goal |
 |-------|------|
-| Inventory | Produce a complete list of current skills, commands, rules, and standards with owner, domain, risk, and dependencies. |
+| Inventory | Produce a complete list of current skills, rules, and standards with owner, domain, risk, and dependencies. |
 | Classification | Mark each artifact as `core-candidate`, `pack-candidate`, `deprecated`, `migrate-later`, or `undecided`. |
 | Bootstrap skill definition | Define Knitten bootstrap-skill criteria, select existing bootstrap skills, and list any new bootstrap skills that must be created. |
-| Command retirement | Write the retirement spec, then convert command workflows to skills or compatibility shims; keep per-agent invocation behavior as an explicit adapter decision. |
 | Repository setup | Create the artifact repository and its initial manifest, README, validator config, and worktree policy. |
 | Pilot pack | Move one low-risk pack first and keep compatibility links or router aliases. |
 | Router update | Teach Knitten core to discover the artifact repo and resolve pack artifacts. |
 | Batch migration | Move domain packs in small PRs, validating after every batch. |
 | Cleanup | Remove compatibility links only after routing and validation prove no active references remain. |
 | Rollback | Keep each migration batch reversible by preserving source commit, manifest version, and old path mapping. |
-| Documentation | Record final core inventory, pack inventory, and install/update/uninstall commands. |
+| Documentation | Record final core inventory, pack inventory, and install/update/uninstall procedures. |
 
 ## Public Release Gates
 
@@ -298,7 +306,7 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Versioning | Core version, changelog, and release notes are prepared. |
 | License | Public license decision is recorded before external visibility. |
 | README | Install, validate, create pack, and link pack workflows are documented. |
-| Example pack | Public-safe sample pack proves install, resolver, routing, and validation. |
+| Example skill pack | Public-safe sample pack proves install, resolver, routing, and validation. |
 
 ## Open Decisions
 
@@ -308,9 +316,8 @@ new core work is promoted into `knitten-core`; new private/domain work stays in
 | Thin skill boundary | Define before inventory classification so every skill row can be classified by the same rule. |
 | Skill lifecycle manager shape | Default to one lifecycle skill that routes to specialized references before splitting create/update/delete into separate skills. |
 | Pack storage | Support local folders and git worktrees first; remote registries later. |
-| Artifact types | Skills, rules, standards, and legacy commands as migration sources. |
+| Artifact types | Skills, rules, standards, config, scripts, docs, fixtures, generated views, and shims as migration sources. |
 | Harness support | Preserve Codex/Claude adapters instead of binding the architecture to one harness. |
-| Command adapter behavior | Decide per agent later how Claude slash-command aliases, Codex skill routing, and other harness command paths map to skills or disappear. |
 | Migration style | Small reversible batches; no big-bang move. |
 | `knitten` final role | Private artifact pack monorepo plus integration overlay. |
 | License | Undecided; required before public release. |

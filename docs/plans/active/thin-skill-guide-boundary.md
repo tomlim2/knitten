@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-20
-updated: 2026-05-20
+updated: 2026-05-24
 owner: agent-hub
 milestone: agent-artifact-pack-system
 briefing: ../../briefings/specs/thin-skill-guide-boundary.md
@@ -154,7 +154,7 @@ active tier selects a primary route or the route evidence gate passes.
 | Priority | Tier | Exposed before route selection |
 |----------|------|--------------------------------|
 | 1 | bootstrap | `SYSTEM.md`, entry document, auto rules, rule index, compact routing index |
-| 2 | user-named artifact | exact skill, command, spec, PR, issue, file, or pack named by the user |
+| 2 | user-named artifact | exact skill, spec, PR, issue, file, or pack named by the user |
 | 3 | task-type router | one of plan, review, implementation, git, authoring, ops, research, deploy |
 | 4 | lifecycle router | spec, milestone, artifact, template, config, worktree, PR, or release lifecycle router |
 | 5 | domain or repo router | router matching repo key plus route domain or task type |
@@ -171,7 +171,7 @@ one gate passes.
 
 | Gate | Required evidence |
 |------|-------------------|
-| direct user naming | user names the skill, command, pack, PR, issue, file, or route domain |
+| direct user naming | user names the skill, pack, PR, issue, file, or route domain |
 | repo task match | repo key matches current cwd and task type matches user intent |
 | domain task match | route domain plus task type plus file extension, language, framework, or domain term match |
 | router decision | higher-priority router returns one primary route with at least two evidence fields |
@@ -208,7 +208,6 @@ Authoring integration:
 | Owner | Required update |
 |-------|-----------------|
 | `ah-make-skill` | apply this gate before creating a skill; redirect non-workflow content to standard, template, reference, or validator work |
-| `ah-make-command` | reject command creation when an existing skill or router owns the route |
 | `ah-make-standard` | receive cross-skill decision criteria and long policy extracted from skills |
 | `ah-manage-document-template` | receive reusable output bodies extracted from skills |
 | `scripts/validate-llm-first.mjs` | fail new high-cost skills without routing metadata, context manifest, or exemption after rollout |
@@ -231,8 +230,7 @@ Before writing a `reference` extraction target, assign one owning consumer.
 | Reference scope | Owner | Target path |
 |-----------------|-------|-------------|
 | one existing skill consumes it after route selection | owning skill | `agent/skills/<skill>/references/<slug>.md` |
-| one existing command consumes it after invocation | owning command | `agent/commands/references/<slug>.md` |
-| command authoring or skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
+| skill authoring examples | owning authoring skill | `agent/skills/<authoring-skill>/references/<slug>.md` |
 | cross-skill decision criteria or policy | standard owner | not a reference; route to `agent/standards/<domain>/` |
 | reusable generated body | template owner | not a reference; route to `agent/document-templates/` |
 | domain-pack detail with no current core owner | artifact-pack manifest | inventory row with `target-path: undecided` until the manifest contract selects a path |
@@ -258,7 +256,7 @@ Common row fields:
 | `row-id` | stable unique id |
 | `row-type` | `artifact`, `skill`, or `extraction-item` |
 | `source-artifact-path` | current tracked path |
-| `artifact-type` | `skill`, `command`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim` |
+| `artifact-type` | `skill`, `rule`, `standard`, `config`, `script`, `doc`, `fixture`, `generated-view`, or `shim` |
 | `owner-domain` | core, repo, company, personal, domain, experiment, or unknown |
 | `privacy-risk` | `public-safe`, `needs-scrub`, `private-only`, or `unknown` |
 | `dependencies` | referenced artifacts, scripts, config files, or `none` |
@@ -396,6 +394,45 @@ Potential checks:
 | route quality metrics | fail pilot reports that exceed decision-quality pass gates |
 | authoring gate | fail new high-cost skills without routing metadata, context manifest, or explicit exemption |
 
+### Extraction Rollout Rule
+
+Use this rule after a pilot classification row is accepted and before editing a
+source skill.
+
+| Step | Rule |
+|------|------|
+| 1. Select row | Pick one extraction item row with `review-state: accepted` and a parent skill row with `split-readiness: low` or `ready`. |
+| 2. Verify target owner | Reuse `target-path` only when the target already contains equivalent content or the same change patches the target before shrinking `SKILL.md`. |
+| 3. Preserve execution | Keep trigger, inputs, mode selection, ordered workflow, validation commands, and report format in `SKILL.md`. |
+| 4. Replace duplicate prose | Replace duplicated judgment, rubric, example, or format prose with a direct target reference and heading. |
+| 5. Declare runtime reads | If `required-at-runtime: yes`, add the target to frontmatter `context-*` or to the skill's required-read table. |
+| 6. Keep on-demand reads out | If `required-at-runtime: no`, link the target only where the workflow needs it after mode or route selection. |
+| 7. Resolve validation need | If `validation-needed: unknown`, record manual proof in the report or review the row before extraction. |
+| 8. Regenerate inventory | Run `node scripts/generate-artifact-inventory.mjs` after the skill or target changes. |
+| 9. Validate drift | Run `node scripts/validate-llm-first.mjs --check artifact-inventory` and full validation. |
+| 10. Record proof | Add a report under `docs/plans/reports/artifact-inventory-classification/` with before/after metrics, target-owner proof, validation-need proof, and validation commands. |
+
+Rollout stops when any condition matches:
+
+| Condition | Action |
+|-----------|--------|
+| target owner is ambiguous | mark the row `blocked`; do not create a new reference path |
+| target file exists but lacks equivalent content | patch the target in the same change or stop before shrinking `SKILL.md` |
+| runtime requirement is `unknown` | review the row first; do not extract |
+| validation need is `unknown` and no manual proof exists | review the row first; do not extract |
+| extraction removes executable workflow | revert the extraction and keep the skill body intact |
+| target belongs to a future pack decision | keep `target-path: undecided` until `core-artifact-boundary` or the manifest specs decide it |
+
+Validator rollout stays fail-only and narrow:
+
+| Check | Status |
+|-------|--------|
+| schema, enum, parent link, extraction-count, path safety | enforced |
+| `source-section` existence | enforced |
+| high-cost skill extraction coverage | deferred until at least one non-Shotloom pilot extraction lands |
+| route quality metric gates | deferred until reports use one stable metric table |
+| core-vs-pack destination enforcement | deferred to `core-artifact-boundary` and artifact-pack manifest specs |
+
 ## Execution Plan
 
 ### Batch A: Accept Boundary Spec
@@ -409,7 +446,7 @@ Potential checks:
 
 1. Done: Update `ah-make-skill` to run the skill creation gate before writing a new
    skill.
-2. Done: Update `ah-make-command` to reject route duplicates already owned by skills
+2. Done: Keep new repeatable procedures in skills and route duplicates into existing skill owners
    or routers.
 3. Done: Update `ah-make-standard` and `ah-manage-document-template` handoff wording
    so extracted criteria and reusable bodies have canonical homes.
@@ -423,7 +460,8 @@ Potential checks:
    `artifact-inventory-classification`.
 3. Done: Add the initial inventory generator and generated JSON output through
    `artifact-inventory-classification`.
-4. Pending: Validate pilot skill classifications without reading chat history.
+4. Done: Validate pilot skill classifications without reading chat history.
+   Evidence: `docs/plans/reports/artifact-inventory-classification/pilot-classification-review-2026-05-24.md`.
 
 ### Batch D: Pilot Classification
 
@@ -441,25 +479,33 @@ Done: initial generated inventory covers 5 representative skills:
    `core-skill-role`, `extraction-count`, and `split-readiness`.
 3. Done: Add extraction item rows for source sections that can leave the pilot
    skills.
-4. Pending: Review blockers where no existing target home fits.
+4. Done: Review blockers where no existing target home fits.
+   Evidence: blocked pilot rows in `agent/config/artifact-inventory.json`.
 
 ### Batch E: Pilot Extraction
 
-1. Pick one low-risk `workflow-with-notes`, `guide-heavy`, or
+1. Done: Pick one low-risk `workflow-with-notes`, `guide-heavy`, or
    `reference-heavy` skill with `split-readiness: ready`.
-2. Move durable guidance to the selected target home.
-3. Record before/after decision-quality metrics.
-4. Keep the skill executable through frontmatter, required reads, workflow, and
+   Evidence: `shotloom-review-before-pr`.
+2. Done: Move durable guidance to the selected target home.
+   Evidence: `docs/plans/reports/artifact-inventory-classification/pilot-extraction-shotloom-review-before-pr-2026-05-24.md`.
+3. Done: Record before/after decision-quality metrics.
+   Evidence: pilot extraction report.
+4. Done: Keep the skill executable through frontmatter, required reads, workflow, and
    validation.
-5. Run validators and review cold-start readability.
+5. Done: Run validators and review cold-start readability.
+   Evidence: `node scripts/validate-llm-first.mjs`.
 
 ### Batch F: Rollout Rule
 
-1. Convert the pilot result into an extraction rule for inventory
+1. Done: Convert the pilot result into an extraction rule for inventory
    classification.
-2. Hand core-vs-pack placement decisions to `core-artifact-boundary` and the
+   Evidence: `Extraction Rollout Rule`.
+2. Done: Hand core-vs-pack placement decisions to `core-artifact-boundary` and the
    future artifact-pack manifest specs.
-3. Add fail-only validator enforcement only after the rule is proven.
+   Evidence: validator rollout table.
+3. Done: Keep fail-only validator enforcement narrow until the rule is proven.
+   Evidence: broad extraction coverage and route quality gates stay deferred.
 
 ## Validation
 
@@ -524,7 +570,7 @@ rg -l "^domains:|^repo-keys:|^task-types:|^work-modes:" agent/skills/*/SKILL.md 
 11. Router priority and route evidence gates block domain, repo, pack,
     reference, template, and leaf skill bodies before matching evidence exists.
 12. Skill creation gate wiring is assigned to `ah-make-skill`,
-    `ah-make-command`, `ah-make-standard`, `ah-manage-document-template`, and
+    `ah-make-standard`, `ah-manage-document-template`, and
     `scripts/validate-llm-first.mjs`.
 
 ## Open Decisions

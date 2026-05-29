@@ -27,14 +27,14 @@ Do NOT run on every commit. The validator handles that. Garden review catches dr
 
 ### 1. Layer integrity (`llm-first-policy.md` §"Layered enforcement")
 
-- [ ] Every `agent/rules/*.md` (except `index.md`) has `load:` frontmatter and is registered in `rules/index.md` under the correct section (auto vs triggered) using a code-span row, not a Markdown link.
+- [ ] Every `agent/rules/*.md` (except `index.md`) has `load:` frontmatter and is registered in `agent/rules/index.md` under the correct section (auto vs triggered) using a code-span row, not a Markdown link.
 - [ ] Every `agent/standards/**/*.md` (except `index.md`) has `status:` frontmatter and is registered in `standards/index.md`.
 - [ ] Every triggered rule's `trigger:` line is still accurate — sample 5 random triggered rules and verify the trigger condition still describes when the rule applies.
 - [ ] No artifact bypasses its layer: a skill does not encode a constraint that should be a rule; a rule does not encode reference material that should be a standard. Spot-check 5 recent files.
 
 ### 2. Layer registration (run when adding a layer)
 
-- [ ] `rules/index.md` lists the new rule with correct Load + Trigger columns.
+- [ ] `agent/rules/index.md` lists the new rule with correct Load + Trigger columns.
 - [ ] `standards/index.md` lists the new standard under the correct topical group with a "When to read" entry.
 - [ ] `LOOKUP.md` has at least one row that points to the new artifact if it serves a top-10 LLM goal.
 - [ ] `README.md` count `(N)` for the affected directory is updated.

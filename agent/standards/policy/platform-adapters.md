@@ -5,7 +5,7 @@ portability: shared
 ---
 # Platform Adapter Standard
 
-Defines how shared agent-hub rules, standards, skills, and commands are consumed by multiple agent harnesses.
+Defines how shared agent-hub rules, standards, skills, config, hooks, and libraries are consumed by multiple agent harnesses.
 
 Reserved system terms live in `../../../docs/reference/system-glossary.md`.
 
@@ -14,7 +14,7 @@ Reserved system terms live in `../../../docs/reference/system-glossary.md`.
 | Term | Rule |
 |------|------|
 | Canonical policy | Shared policy every harness must follow |
-| Shared layer | Canonical instruction under `agent/{rules,standards,skills,commands}` |
+| Shared layer | Canonical instruction under `agent/{rules,standards,skills,config,hooks,lib}` |
 | Entry document | Harness adapter that loads `SYSTEM.md` first |
 | Platform adapter | Harness-specific translation of shared intent into available tools and syntax |
 | Platform mechanic | Tool name, import syntax, slash command, approval model, subagent API, or path loaded by one harness |
@@ -67,7 +67,7 @@ The `agent-hub` validator checks that manifest harnesses point to existing entry
 
 ## Migration rule
 
-Classify before moving. Do not move `agent/rules`, `agent/standards`, `agent/skills`, or `agent/commands` into a neutral folder until:
+Classify before moving. Do not move `agent/rules`, `agent/standards`, or `agent/skills` into a neutral folder until:
 
 1. The artifact has `platforms:` and `portability:` metadata.
 2. Every internal reference has a replacement path or compatibility shim.

@@ -57,13 +57,13 @@ When working in another repo, follow that repo's naming rules. This standard doe
 
 ## Per-artifact rules
 
-### Commands & skills (`agent/commands/*.md`, `agent/skills/*/SKILL.md`)
+### Skills (`agent/skills/*/SKILL.md`)
 
 Pattern: `{category}-{verb}-{subject}`
 
 - **Internal:** `{category}-{verb}-{subject}` (e.g. `cci-validate-vrm`, `ah-make-rule`)
 - **External wrapper:** `{category}-{repo}-{verb}-{subject}` (e.g. `design-huashu-make-prototype`)
-- **Categories:** canonical list lives in `agent/config/taxonomy.json` key `skillCommandCategories`
+- **Categories:** canonical list lives in `agent/config/taxonomy.json` key `skillCategories`
 - **Verbs:** keep simple — `make` not `generate`, `add` not `append`
 - **Be specific** — `tutoring-open-invoice` not just `open-invoice`
 - **Avoid redundancy** — `git-make-message` not `git-make-commit-message`
@@ -78,7 +78,7 @@ Pattern: `{verb-or-domain-or-trigger}.md`
 |-----------|----------------|----------|
 | Auto default-counter | `{topic}-defaults.md` or single noun | `git-defaults.md`, `behavior.md`, `security.md` |
 | Triggered content-creation | `{noun}-write.md` (verb-form trio) | `code-write.md`, `doc-write.md`, `test-write.md` |
-| Triggered domain | `{domain}.md` | `obsidian.md`, `slack.md`, `shotloom.md`, `cinev-git.md` |
+| Triggered domain | `{domain}.md` | `obsidian.md`, `slack.md`, `cinev-git.md` |
 | Triggered authoring | `author.md` (single file when aspects share a trigger) | `author.md` — naming + frontmatter + permissions |
 | Triggered lifecycle phase | `{family}-{phase}.md` (family prefix) | `pr-mutate.md`, `pr-comment.md`, `pr-create.md` |
 | Triggered moment | `{verb-phrase}.md` | `session-start.md`, `verify-before-report.md`, `reread-repo-conventions.md` |
@@ -92,7 +92,7 @@ Pattern: `{noun-phrase}.md` describing the subject — no verbs.
 | Standard kind | Naming pattern | Examples |
 |---------------|----------------|----------|
 | Policy | `{topic}-policy.md` or descriptive | `llm-first-policy.md`, `garden-review.md`, `principles.md` |
-| Authoring | `{thing}.md` | `slash-commands.md`, `command-skill-reference.md` |
+| Authoring | `{thing}.md` | `skill-authoring.md`, `artifact-lifecycle.md` |
 | Reference catalog | `{topic}-reference.md` or `{topic}.md` | `javascript-reference.md`, `css-reference.md`, `arp-skeleton.md` |
 | Code review | `review-{target}.md` | `review-template.md`, `review-code-rust.md`, `review-ux.md` |
 | Workflow | `{topic}-workflow.md` | `cinev-git-workflow.md`, `agent-workflow.md` |

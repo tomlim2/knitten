@@ -10,8 +10,7 @@ taxonomy. Role lenses change the failure modes to inspect; they do not change
 the checklist.
 
 Triad is the main review pass for large or risky diffs. Do not run
-`shotloom-review-code` code pass A before Triad. Use Triad verification passes
-after fixes change `HEAD`.
+`shotloom-review-code` code pass A before Triad in the same router chain.
 
 ## Shared Checklist
 
@@ -27,7 +26,7 @@ after fixes change `HEAD`.
 | Performance | Does the diff add hot-path allocation, serialization, IO, locks, or frame-budget risk? |
 | Maintainability | Does the diff add speculative public surface, drift-prone duplication, or unclear ownership? |
 | Scope control | Does the PR stay inside the issue boundary and leave unrelated refactors out? |
-| Handoff evidence | Are contract impact, tests, and accepted follow-ups clear enough for the later docs/make-pr phases? |
+| Evidence clarity | Are contract impact, tests, and accepted follow-ups source-cited? |
 
 ## Role Lenses
 
@@ -35,18 +34,21 @@ after fixes change `HEAD`.
 |---|---|
 | Runtime/Contract Engineer | Bridge DTOs, commands, events, serde/default semantics, saved-data compatibility, event order, runtime/editor observation order, rollback paths |
 | QA/Test Automation Engineer | Missing negative tests, weak assertions, fixture rationale, no-mutation checks, fallback branches, flake risk, command rejection matrix |
-| Maintainer/Product Engineer | Reviewable scope, debug UX, operational support cost, naming, helper ownership, handoff evidence, follow-up boundaries |
+| Maintainer/Product Engineer | Reviewable scope, debug UX, operational support cost, naming, helper ownership, evidence clarity, follow-up boundaries |
 
 ## Role Subagent Prompt
 
 ```text
 Read `<skill-dir>/references/TRIAD_REVIEW.md`.
+Read the caller-provided Review Brief and matching role slice.
 Review current `HEAD` as Role: <role>.
-Use the Shared Checklist exactly; do not add private checklist categories.
+Use the Shared Checklist as the role lens.
 Use `git diff origin/main...HEAD` as the reviewed diff.
+Treat the Review Brief as a navigation index, not as finding evidence.
 Report only P0-P3 findings grounded in changed or directly adjacent surfaces.
+Mark P0-P2 as `blocker=true`; mark P3/nit as `blocker=false`.
 Render the Role Report Template from the reference.
-Do not edit files, stage, commit, push, post comments, or change Linear.
+Review is read-only.
 ```
 
 ## Role Report Template
@@ -55,35 +57,17 @@ Do not edit files, stage, commit, push, post comments, or change Linear.
 ## Triad role review - <role> - branch <branch>
 
 ### Applicability
-- Shared checklist: correctness, regression risk, test coverage, data/state consistency, error handling, API/contract consistency, security/safety, performance, maintainability, scope control, handoff evidence
+- Shared checklist: correctness, regression risk, test coverage, data/state consistency, error handling, API/contract consistency, security/safety, performance, maintainability, scope control, evidence clarity
 - Role lens: <role lens>
 - Files checked: <list>
-- Context checked: <directly related specs/docs/contracts/issues or N/A>
-
-### Checklist Verdicts
-| Check | Verdict | Evidence |
-|---|---|---|
-| Correctness | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Regression risk | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Test coverage | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Data/state consistency | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Error handling | clean/P0/P1/P2/P3 | <path:line or reason> |
-| API/contract consistency | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Security/safety | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Performance | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Maintainability | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Scope control | clean/P0/P1/P2/P3 | <path:line or reason> |
-| Handoff evidence | clean/P0/P1/P2/P3 | <path:line or reason> |
+- Context checked: <directly related specs/docs/contracts/issues, or none>
 
 ### Findings
-- clean
-- OR `<priority>` `<path>:<line>` - <defect> - <source rule/guideline/check>
+- <priority> <path>:<line> - <defect> - <source rule/guideline/check>
+- OR none
 
 ### Role-specific Notes
-- <important clean evidence, false-positive, or needs-design-judgment item>
-
-### Recommendation
-- clean / nit-only / P0-P2 remains
+- <false-positive, coverage note, or needs-design-judgment item>
 ```
 
 ## Merge Rules
@@ -93,17 +77,5 @@ Do not edit files, stage, commit, push, post comments, or change Linear.
 - Keep the highest priority across role reports.
 - If roles disagree about whether a behavior is a defect, mark
   `needs-design-judgment` and list both role names.
-- Treat P0-P2 as blocking until fixed or explicitly accepted for later handoff.
-- Treat P3/nit as optional once; do not loop only for nits.
-
-## Verification Pass
-
-Use this preamble for triad pass B or later:
-
-```text
-This is an independent Triad verification pass after fixes changed HEAD.
-Use the Shared Checklist for current HEAD. Confirm prior P0-P2 findings are
-fixed, inspect regressions introduced by fixes, and report unresolved defects
-visible in the current diff. Review from a different angle than the previous
-role report. Do not rely on earlier conclusions; check direct evidence.
-```
+- Report P0/P1/P2 priorities as `blocker=true`; report P3 as
+  `blocker=false`.

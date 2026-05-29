@@ -9,10 +9,10 @@ trigger: start of non-trivial work in any repo
   2. `AGENTS.md` at repo root — agent-facing workflow, ownership model, breadcrumb doc requirements.
   3. `docs/guidelines/*.md` — `pr-guideline.md`, `commit-guideline.md`, `code-review-guideline.md`, `review-rust.md`, `review-typescript.md`. These are the review criteria your PR will be judged against.
   4. `docs/adr/*.md` — architecture decisions binding scope, crate layering, dependency policy.
-  5. Repo-specific harness meta — `~/.claude/rules/<repo>.md`. **Overrides** generic rules in this folder when they conflict. Holds harness-side operational meta only (gh account, build flags, approval-gate exceptions); project rules live in slots 1–4.
+  5. Repo-specific harness meta — `agent/rules/<repo>.md`. **Overrides** generic rules in this folder when they conflict. Holds harness-side operational meta only; project rules live in slots 1–4.
 - **Re-read every session.** Guidelines update; ADRs land. Stale memory causes CHANGES_REQUESTED.
 - **Before opening a PR, audit the branch against the guideline.** Verify: commit format, PR body shape, required sections, co-location artifacts (MAP.md, breadcrumb READMEs, ADR index updates), new-dep justifications, test coverage, `#[allow(...)]` comments, `unwrap()`/`expect()` in non-test paths. Treat every P0/P1 item in `code-review-guideline.md` as a pre-PR gate.
 - **Re-read conventions before reviewing code.** Applies to: self-review before push, responding to reviewer feedback, reviewing a sub-agent's output, reviewing someone else's PR. Before forming any review comments, re-read `code-review-guideline.md`, `pr-guideline.md`, and the language-specific review file in `docs/guidelines/` matching the changed code's primary language. The guideline is canonical for what counts as a defect.
-- **Repo-specific rule files take precedence.** When `~/.claude/rules/shotloom.md` and `git.md` conflict, the repo-specific file wins for that repo.
-- **When you discover a new harness-side convention, update the relevant runtime rule file.** Add Claude Code conventions to `~/.claude/rules/<repo>.md` so the next session does not miss it.
+- **Repo-specific rule files take precedence.** When `agent/rules/<repo>.md` and generic git rules conflict, the repo-specific file wins for that repo.
+- **When you discover a new harness-side convention, update the relevant runtime rule file.** Add shared conventions to `agent/rules/<repo>.md` so the next session does not miss it.
 - **When repo conventions disagree, follow the active repo's rule, not the one you used in another repo.**

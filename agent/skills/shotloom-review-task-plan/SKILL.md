@@ -1,5 +1,5 @@
 ---
-description: Validate an existing Shotloom task spec before implementation; gather fresh Linear/code/docs context, patch the spec contract until only nit findings remain, commit and push spec-only changes, share the spec, then ask whether to implement
+description: Leaf/component Shotloom skill for reviewing an existing task spec. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[slug-or-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 domains: rust
@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
+context-rules: rules/shotloom-docs-lane.md
 exclude-when: unreal,obsidian
 ---
 
@@ -139,6 +139,7 @@ Run more rounds with a different stance each time. Useful stances:
 | Docs/spec owner | Are docs required, and are non-goals explicit? |
 | Release/cache owner | Does it invalidate cache/state/user-visible behavior correctly? |
 | Validator contract owner | For validators, manifests, package scripts, file IO, asset importers, or path resolvers: does the spec define contract claims, negative fixtures, root containment, error order, enforcement surface, and regression proof? |
+| Proof-obligation owner | Does each changed API, UI primitive, bridge/runtime transition, provider adapter, workflow, Node supervisor, asset/path output, or durable contract doc name the executable proof that fails before implementation? |
 
 After each round:
 
@@ -169,6 +170,10 @@ Before landing, verify:
   asset importer, or path resolver, it has a `Validator Contract Matrix` with
   contract claim, negative fixture, boundary rule, error order, enforcement
   surface, and regression proof.
+- If it changes a public API, DTO, TS mirror, UI primitive, bridge command,
+  runtime transition, provider adapter, workflow, Node supervisor, asset/path
+  output, or durable contract doc, it has a `Proof Obligation Matrix` that maps
+  the surface to an executable proof and a Design Plan stage.
 - It has `## Risk Map` with rows for error source chain, schema compatibility,
   ownership/API boundary, partial mutation/rollback, diagnostic ownership, test
   oracle strength, scope creep, and reviewer objection.

@@ -78,8 +78,8 @@ git diff origin/main...HEAD --name-only -- 'package.json' '.github/workflows/*' 
 ```
 
 When a new package script or validator entry lands, require at least one of:
-local command documented in the PR body, CI workflow coverage, README/guideline
-surface, or a validator inventory update.
+local validation notes, CI workflow coverage, README/guideline surface, or a
+validator inventory update.
 
 Finding format:
 
@@ -90,7 +90,7 @@ V2: <path>:<line> +<path operation> - IO occurs before root-containment proof.
 
 ```text
 V4: <path>:<line> +<script-or-validator> - no CI, README, or validator inventory surface runs it.
-    Fix: wire it into the smallest relevant gate or document the manual command in the PR body.
+    Fix: wire it into the smallest relevant gate or document the manual command in the validation notes.
 ```
 
 ## Pattern U — Speculative public API surface
@@ -99,14 +99,14 @@ Origin: promoted from recurring review-time maintainability findings about
 barrel drift and public symbols without consumers.
 
 Barrel `index.ts` re-exports, public Rust `pub fn` / `pub use` items, and
-similar widenings of a module's contract surface should only land when an
+similar widenings of a module's contract surface are justified when an
 out-of-module consumer already needs them. Speculative re-exports turn future
 renames or removals into breaking changes for callers that do not exist yet.
 
-Rule: every newly exported symbol from a barrel / `pub` item must have at least
+Rule: every newly exported symbol from a barrel / `pub` item needs at least
 one out-of-module consumer in the same diff. If the new symbol is only used by
 siblings reachable via relative imports / `crate::` paths inside the same
-module, drop the re-export; siblings should keep using the direct import.
+module, prefer the direct import over the re-export.
 
 ### U1: barrel widening without an external consumer (TS)
 
@@ -153,7 +153,7 @@ U2: <crate>/src/<file>.rs +pub <kind> <symbol> - no out-of-crate consumer.
 ```
 
 Tie-in: this is the "speculative public API" defect class - the more general
-form of `~/.claude/rules/code-write.md` "Start small, prove, then grow".
+form of `agent/rules/code-write.md` "Start small, prove, then grow".
 
 ## Pattern J — TypeScript defensive-shape patterns
 
@@ -180,8 +180,8 @@ justifies the defensive form.
   guard.** Find `if (!<name>) return undefined` or equivalent added in the diff
   where the surrounding function's argument type includes `| undefined` /
   `| null`. Cross-check: does any current caller actually pass `undefined`? If
-  every call site narrows beforehand, the widening + guard is dead code that
-  lies about the contract.
+  every call site narrows beforehand, the widening + guard misstates the
+  contract.
 - **J3 - Parser over-tolerance: silently collapsing invalid input into valid
   input.** Find URL / path / query parsers added in the diff that use
   `.split(<sep>).find(<filter>)` or `array[0]` to extract a single token. These
@@ -242,7 +242,7 @@ For each shared helper used by multiple bridge commands, require one of:
 
 - table-driven or parameterized regression across every public command surface;
 - an explicit shared-contract comment plus representative input-class tests;
-- an existing direct per-command test named in the PR body.
+- an existing direct per-command test named in the review evidence.
 
 Finding format:
 
@@ -255,10 +255,10 @@ Source evidence: PR 384, reviewer, `crates/shotloom-engine/src/bridge/tests/stag
 
 ### B2: diagnostic helper wrappers preserve ownership shape
 
-When a helper only standardizes a lower-level diagnostic API call, its signature
-should preserve the lower-level ownership shape. Do not narrow an
-owned-or-borrowed API such as `impl Into<String>` to a borrowed-only helper such
-as `impl AsRef<str>` unless the narrower contract is intentional and documented.
+When a helper only standardizes a lower-level diagnostic API call, preserve the
+lower-level ownership shape. Narrowing an owned-or-borrowed API such as
+`impl Into<String>` to a borrowed-only helper such as `impl AsRef<str>` needs an
+intentional, documented contract.
 
 Sweep:
 

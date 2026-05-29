@@ -10,7 +10,7 @@ const AGENT_HUB_ROOT = path.resolve(__dirname, '..');
 const agentHubPath = path.join(AGENT_HUB_ROOT, 'agent', 'config', 'agent-hub.json');
 const isDryRun = process.argv.includes('--dry-run');
 const harnessFilter = getArgValue('--harness');
-const REQUIRED_SYMLINK_LAYER_MAPPINGS = ['rules', 'standards', 'skills', 'commands'];
+const REQUIRED_SYMLINK_LAYER_MAPPINGS = ['rules', 'standards', 'skills'];
 
 function getArgValue(flag) {
   const index = process.argv.indexOf(flag);

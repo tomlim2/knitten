@@ -132,5 +132,5 @@ See `references/UNREAL-ENGINE-ASSET.md` for CJK translation rules and API limita
 - Validate script: `~/.claude/skills/ue-validate-asset-name/validate_name.py`
 - Rename script: `~/.claude/skills/ue-validate-asset-name/rename_assets.py`
 - Remote sender: `~/.claude/skills/ue-validate-asset-name/run_in_editor.py`
-- Command: `~/.claude/commands/ue-validate-asset-name.md`
+- Skill: `~/.claude/skills/ue-validate-asset-name/SKILL.md`
 - Output: `~/.claude/private/unreal/name-validate/`

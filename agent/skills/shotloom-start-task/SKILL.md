@@ -1,210 +1,267 @@
 ---
-description: Pre-write gate for Shotloom coding - Linear fetch, worktree setup, convention re-read, persisted briefing, spec-risk handoff
-argument-hint: "[STL-NN | linear-url | category]"
+description: Leaf/component Shotloom skill for start-task intake only. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
+argument-hint: "STL-NN | linear-url"
 allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
-context-rules: rules/shotloom.md,rules/shotloom-docs-lane.md
 ---
 
 # shotloom-start-task
 
-Mandatory pre-write flow before editing Shotloom code.
+## Role
+
+Leaf/component skill. Prefer
+[`../shotloom-prepare-task/SKILL.md`](../shotloom-prepare-task/SKILL.md) for a
+full task-preparation request unless the user explicitly asks for start-task
+only.
+
+Start-task intake flow. It validates that the skill can run, gathers the Linear
+issue body plus related external planning/material context, writes a briefing
+file, and returns a small JSON envelope.
+
+Temporary runtime files follow
+`agent/standards/policy/temporary-runtime-files.md`.
 
 ## Arguments
 
-Accepts optional `STL-NN`, Linear URL, or category (`rust` / `ts` / `bridge` /
-`docs` / `test`). Zero args is valid; detect intent from current branch,
-`git status`, and recent `git log`.
+Requires `STL-NN` or a Linear URL. If no Linear issue key is provided, do not
+run this skill; ask for the issue key and stop.
 
 ## Workflow
 
-### Step 1: Pre-flight (MANDATORY — never skip)
+### Step 1: Skill usability gate (MANDATORY — never skip)
 
-Run in parallel:
+Input: current environment plus `$ARGUMENTS`.
+
+Run local gates and detect the Linear issue key:
 
 ```bash
-gh auth status
-git rev-parse --show-toplevel
-git rev-parse --git-common-dir
-git rev-parse --abbrev-ref HEAD
-git config user.name
-git config user.email
-git status --short
-git remote get-url origin
-bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/shotloom-preflight.mjs" --allow-dirty --print-json
+node "$knitten_root/agent/lib/shotloom-linear-intake.mjs" detect "$ARGUMENTS"
 ```
 
-Verify: resolver returns the Shotloom main checkout path; cwd is Shotloom by
-toplevel, git-common-dir, or origin URL; active `gh` user is `tomlim2` per
-`gh api user --jq .login`; Shotloom repo git identity matches `agent/rules/shotloom-docs-lane.md`
-(`tomlim2 <deemo@vonvon.me>`, warn only); dirty changes are reported with
-stash/commit/proceed choices.
+If no Linear `get_issue` tool is visible, discover it with a tool search for
+`Linear get_issue`; MCP server names vary by harness and must not be hard-coded.
 
-**Hard stop on wrong repo or wrong gh user.**
+Fetch the Linear issue body with the currently available Linear connector and
+save the exact connector result as `<workDir>/linear-raw.json`.
 
-### Step 2: Resolve Linear issue
+Output: true/false usability decision plus the fetched Linear body JSON.
 
-Parse `$ARGUMENTS` for Linear signals: `STL-\d+`, linear.app URL, commit body
-`Related to STL-NN` on the current branch. Do **not** parse the branch name for
-an STL prefix — Shotloom branches use `feat/<description>` per
-`~/.claude/rules/shotloom.md` and never carry an STL ID.
+```json
+{
+  "ok": true,
+  "environment": {
+    "worktree": "<path>",
+    "branch": "<branch>",
+    "origin": "<remote>",
+    "configured-shotloom-root": "<path>",
+    "gh-login": "<login>",
+    "git-identity": "<name <email>>",
+    "dirty": false,
+    "dirty-files": [],
+    "github": { "ok": true }
+  },
+  "linear": {
+    "ok": true,
+    "issueKey": "STL-NN",
+    "workDir": "<workDir>",
+    "rawPath": "<workDir>/linear-raw.json",
+    "intakePath": "<workDir>/intake.json",
+    "body": {
+      "identifier": "STL-NN",
+      "title": "<Linear title>",
+      "description": "<Linear description>"
+    }
+  }
+}
+```
 
-If an identifier is found, use the currently available Linear connector to
-fetch the issue. If no Linear `get_issue` tool is visible, discover it with a
-tool search for `Linear get_issue`; MCP server names vary by harness and must
-not be hard-coded. Extract: problem statement, acceptance criteria, affected
-modules/crates, linked ADRs, linked specs, and the intent lens.
+If either command exits nonzero or returns `ok: false`, output `ok: false` and
+stop before repo reads or briefing writes. If Linear `get_issue` fails, output
+`ok: false` and stop. `shotloom-preflight.mjs` delegates GitHub login / git
+author checks to `shotloom-github-guard.mjs --print-json`; consume `github.ok`
+as detail, not as a separate hand-written checklist.
+`shotloom-linear-intake.mjs detect` must return `issueKey`; do not infer issues
+from branch names, git state, recent commits, or free-form category names.
 
-Intent lens = failure mode to prevent, AC lines that are verification examples
-rather than primitives, and user clarification that overrides literal AC text.
-Apply the intent-vs-literal precedent in `reference.md`.
+When `ok: true`, save the raw Linear body JSON and write the intake file:
 
-If no identifier is found, skip Step 2.5 and rely on git state for category
-detection.
+```bash
+node "$knitten_root/agent/lib/shotloom-linear-intake.mjs" get "<issueKey>" \
+  --raw "<workDir>/linear-raw.json" \
+  --work-dir "<workDir>"
+```
 
-### Step 2.5: Create worktree for the Linear issue
+Machine contract for this skill: use only `detect` and `get`. `get` is the only
+command that stores Linear body content. Do not call `create`, `post`, or
+`delete` from this skill. Later steps read the intake file created by `get`
+instead of re-fetching Linear.
 
-Skip this step if no Linear issue was resolved. Before deriving a branch, read
-`CONTRIBUTING.md` Branch Naming Policy and `~/.claude/rules/shotloom.md`
-Worktree dir naming.
+### Step 1.5: Create task worktree after a clean gate
 
-Derive the canonical branch from the Linear title. If the current branch equals
-that derived branch, stay in the current checkout or worktree. Otherwise create
-`<type>/<scope>-<verb>-<subject>` from `origin/main` in the worktree base from
-`reference.md`. Branch and directory names must not include Linear IDs. If the
-directory exists, report and stop; if the branch exists, use it.
+Run this step only after Step 1 returns `ok: true` for every local and Linear
+gate. Start the task in a dedicated non-main Shotloom worktree before gathering
+planning context or writing the briefing.
 
-All subsequent steps operate inside the worktree. If the issue is `Todo` or
-`Backlog`, move it to `In Progress` with Linear; if unavailable, report and
-continue.
+Derive the branch name from the Linear title using the pattern
+`<type>/<scope>-<verb>-<subject>`:
 
-See [reference.md](reference.md) for the branch-name derivation example and the full worktree-base detection script.
+- lowercase kebab-case;
+- no `STL-NN` prefix in branch or worktree paths;
+- keep the branch at or below 50 characters when practical;
+- map non-implementation title types such as `test` to the nearest task branch
+  type when the implementation touches source.
 
-### Step 3: Re-read repo conventions (mandatory, every session)
+Use the Shotloom worktree base from `reference.md`:
 
-Read in parallel: repo `AGENTS.md`, `CONTRIBUTING.md`,
-`docs/adr/README.md`, `.agent/working-rules.md` if present, and
-`.agent/checklists.md` if present.
+```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+repo_root="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom)"
+if grep -qE '^\.worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
+  worktree_base="$repo_root/.worktrees"
+else
+  worktree_base="$(dirname "$repo_root")/shotloom-worktrees"
+  mkdir -p "$worktree_base"
+fi
+```
 
-List filenames under `docs/guidelines/` and mention which apply to the inferred category.
+Then create or attach the task worktree:
 
-### Step 4: Detect work category
+```bash
+cd "$repo_root"
+git fetch origin main
+git worktree add "$worktree_base/<branch-body>" -b "<branch>" origin/main
+# If the branch already exists locally:
+git worktree add "$worktree_base/<branch-body>" "<branch>"
+```
 
-Classify as `rust` / `ts` / `bridge` / `docs` / `test` / `mixed`. Priority:
-1. Explicit `$ARGUMENTS` category
-2. Linear "Affected modules" / labels
-3. `git diff --name-only origin/main...HEAD` file-type distribution
-4. Branch name hint
-5. Ask user if ambiguous
+After creating the worktree, continue Steps 2-3 from that worktree. If a
+matching branch or worktree already exists, reuse it only when it is the same
+Linear task and the user has not asked for a fresh branch. If worktree creation
+fails because the branch is already checked out elsewhere, report that path and
+ask whether to continue there or create a differently named follow-up branch.
 
-### Step 5: Load targeted standards (in-repo authoritative)
+### Step 2: Gather related planning context
 
-Always load from the shotloom repo: `CONTRIBUTING.md`,
-`docs/guidelines/error-handling.md`, `review-rust.md`,
-`commit-guideline.md`, and `pr-guideline.md`.
+Input: Linear body JSON from Step 1.
 
-Category additions: `ts` -> `review-typescript.md`; `bridge` ->
-`docs/ipc/bridge-contract.md` + `review-typescript.md`; `docs` ->
-`documentation-standard.md`; `mixed` -> all category additions. For Rust, scan
-`docs/adr/` for ADRs relevant to the affected crate.
+Use the related-context helper to extract fetch/search candidates from the
+intake file:
 
-### Step 5b: Cross-check Linear AC against cited primitives (mandatory)
+```bash
+node "$knitten_root/agent/lib/shotloom-linear-context.mjs" discover "<issueKey>" \
+  --work-dir "<workDir>"
+```
 
-For each AC that cites a repo primitive, open that primitive and classify the AC
-as `codified`, `wrong-shape`, `verification-example`, or `sibling-owned`.
-`wrong-shape` means propose primitive codification before implementation; do
-not apply a one-file workaround. Use `reference.md` precedents and the issue
-intent lens to decide the row.
+Fetch any `referencedIssueKeys` with Linear `get_issue` when they are relevant
+to planning context. Search local planning docs only for `documentHints`,
+`searchTerms`, or user-provided keywords. Then gather the fetched materials:
 
-### Step 5c: Seed the spec-validation loop (mandatory)
+```bash
+node "$knitten_root/agent/lib/shotloom-linear-context.mjs" gather \
+  "<issueKey>" \
+  --work-dir "<workDir>" \
+  --related <related-linear-raw.json> \
+  --doc <planning-doc.md>
+```
 
-Run targeted `rg` searches for identifiers named by Linear, branch, AC, or
-affected modules. Read only matching definitions needed for the briefing.
-Record P1/P2/P3 seeds only when they have evidence, an exact spec question, and
-AC/ADR/precedent trace. Move untraced notes to follow-up notes. Mark scope
-changes ask-first. Taxonomy and search examples: `reference.md`.
+Step 3 consumes `<workDir>/context.json`.
 
-Always seed intent-preserving verification for sibling-owned or absent workflow
-steps when the failure mode can be proved another way. Always seed atomicity for
-coupled artifacts, such as JSON + BIN, state + event, or cache + manifest.
+Record only planning inputs and open questions:
+- linked Linear parent/related issue summaries when available;
+- linked docs, specs, design notes, PRDs, or planning artifacts;
+- relevant Shotloom ADRs, guidelines, CI/CD workflow docs, workflow YAML, and
+  repo convention docs found by the planning-source sweep;
+- local planning/briefing documents whose slug or content clearly matches;
+- unresolved questions the user must answer before the next planning step.
 
-### Step 5d: Sibling spec scan in Knitten (mandatory)
+Do not collect codebase implementation context in this skill. If planning
+context is ambiguous, ask the user a focused question and stop with `ok: false`.
 
-Before the Ready briefing, resolve Knitten with `repo knitten`, then scan
-current and recently deleted `docs/plans/` + `docs/briefings/shotloom/` paths
-for sibling artifacts whose slug overlaps the work. Commands: `reference.md`.
+### Step 2.5: Run planning-source sweep
 
-Read every match in full with the Read tool. Record slug, status, stance, and
-disagreement signal. If zero siblings are found, write `Sibling specs: none
-found`.
+Before writing the briefing, read [`PROMOTED_FINDINGS.md`](PROMOTED_FINDINGS.md)
+and apply entries that match planning context. For Shotloom development work,
+verify that Step 2 considered the relevant durable docs, not only the Linear
+body:
 
-### Step 6: Write Ready Briefing
+```bash
+repo_root="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom)"
+rg --files "$repo_root" \
+  | rg '(^|/)(AGENTS|CONTRIBUTING|WORKFLOW|MAP)\.md$|docs/(adr|decisions|guidelines|arch|ipc)/|\.github/workflows/'
+```
 
-Resolve the task slug from the Linear title, the derived branch, or the current
-branch body after `<type>/`. If no Linear issue was resolved and the current
-branch is not `<type>/<slug>`, ask for an STL ID or slug and stop before writing.
-Before writing, switch Knitten to the daily Shotloom docs lane defined in
-`agent/rules/shotloom-docs-lane.md`:
+Read only files that match the issue's scope, acceptance criteria, labels, or
+search terms. At minimum, record whether matching ADRs, guidelines, workflow
+docs, CI/CD workflow files, and repo conventions were found or not. If an issue
+clearly touches CI/CD, release, deploy, asset publishing, IPC, ADR-governed
+architecture, or editor primitives and the sweep finds no durable source, mark
+that as an open question instead of silently proceeding.
+
+### Step 3: Write briefing and JSON output
+
+Apply concrete handoff instructions when an active promoted finding requires
+them.
+
+Resolve a slug from the Linear title. Write a compact briefing markdown file to
+the Knitten checkout:
 
 ```text
-codex/YYYYMMDD-shotloom-docs
+<knitten_root>/docs/briefings/shotloom/<slug>.md
 ```
 
-Use an existing local branch or remote branch for the current KST date. Create
-the branch from `origin/main` only when no branch exists. If the primary
-Knitten checkout is busy, use the matching worktree:
+Create the directory before writing.
 
-```text
-../knitten-worktrees/YYYYMMDD-shotloom-docs
+The briefing file contains:
+- Linear issue key, title, URL, state, assignee, labels, and body summary;
+- related planning/materials gathered in Step 2;
+- planning-source sweep result, including relevant Shotloom ADRs/guidelines,
+  CI/CD docs, workflow files, and repo convention docs read or intentionally
+  skipped;
+- open questions;
+- suggested next action.
+
+Final chat output is JSON only:
+
+```json
+{
+  "ok": true,
+  "issueKey": "STL-NN",
+  "slug": "<slug>",
+  "briefingPath": "/absolute/path/docs/briefings/shotloom/<slug>.md",
+  "workDir": "<workDir>",
+  "contextPath": "<workDir>/context.json",
+  "cleanupPaths": ["<workDir>"],
+  "relatedContextCount": 0,
+  "openQuestions": [],
+  "handoffCommand": "/shotloom-draft-spec <slug>",
+  "next": "ask-user"
+}
 ```
 
-Write the compact briefing to
-`$knitten/docs/briefings/shotloom/<slug>.md` using the template in
-`reference.md`. Resolve `$knitten` with
-`ah-resolve-doc-path repo knitten`. Create the directory if absent.
+Failure output:
 
-The briefing must show issue, branch, standards loaded, ADRs, ask-first
-triggers, pre-write checklist, intent lens, AC-to-primitive verdicts, spec-risk
-handoff, and sibling-spec inventory.
-
-Emit the same briefing content in chat plus the briefing path.
-
-After the briefing, stop this skill. When invoked standalone, **end the turn**.
-When invoked by `/shotloom-prepare-task`, return the briefing path, slug, and
-ask-first triggers to the orchestrator. Do NOT edit code. Do NOT write a task
-spec doc inside this skill. Do NOT commit yet; `/shotloom-draft-spec` commits
-the briefing and spec together only after a clean direct spec lands, then runs
-the spec review gate in the same workflow.
-
-Tell the user explicitly what comes next:
-
-> "Briefing OK → 다음 단계는 `/shotloom-draft-spec`입니다. 스펙 작성/리뷰,
-> 브리핑/스펙 커밋/푸시 후 구현할지 물어봅니다."
-> "구현 후 PR 전에는 `/shotloom-review-before-pr`가 먼저 돌아야 합니다."
-> "한 번에 준비를 끝내려면 `/shotloom-prepare-task`를 사용합니다."
-
-**Spec ↔ implementation are two distinct gates.** `/shotloom-draft-spec` reads
-the briefing, writes `docs/plans/proposed/<slug>.md`, reviews it, commits and
-pushes briefing + spec, shares the spec path, then asks whether to implement.
-Implementation begins only after a separate user message such as "구현 시작",
-"implement", or "go".
+```json
+{
+  "ok": false,
+  "stage": "skill-usability-gate | gather-related-context | write-briefing",
+  "error": "<reason>",
+  "issueKey": "STL-NN|null",
+  "openQuestions": []
+}
+```
 
 This skill (`/shotloom-start-task`) NEVER:
-- Writes the task spec doc itself.
-- Reads source files for the full file-map section; targeted Step 5c reads are allowed.
-- Edits any code in the worktree.
+- Mutates Linear.
+- Creates, posts, deletes, assigns, or transitions Linear issues.
+- Writes a task spec.
+- Reads source files for implementation mapping.
+- Edits implementation code.
 
-## Binding rules
+## Binding Rules
 
-- **Never skip Step 1 pre-flight.** Wrong gh user or wrong repo = hard stop.
-- **Never skip Step 3 re-read.** Stale memory is the #1 cause of CHANGES_REQUESTED.
-- **Never skip Step 5c spec-risk handoff.** The task-spec authoring skill needs
-  seeded P1/P2 questions before it validates the spec contract.
-- **Never open a PR without `/shotloom-review-before-pr` first.**
-- If Linear MCP fetch fails, report the error and continue from branch/commit hints.
-- Step 6 outputs only the briefing file and matching chat briefing.
-- Every Ready briefing uses the daily Shotloom docs branch, not a per-STL branch.
-- If user says "skip pre-flight" / "already did this", skip Step 3 only; never skip Step 1.
-
-## Additional Resources
-
-For the worktree-base detection script, branch-name derivation example, and the Ready-briefing template, see [reference.md](reference.md).
+| Rule | Source |
+|------|--------|
+| Run Steps 1-3 in order. | This skill workflow. |
+| Read Linear only; do not mutate Linear. | This skill `NEVER` list. |
+| Return JSON only in chat. | Step 3 final output contract. |

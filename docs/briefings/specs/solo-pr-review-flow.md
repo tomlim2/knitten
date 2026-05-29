@@ -1,9 +1,9 @@
 ---
 status: intake
 created: 2026-05-18
-updated: 2026-05-18
+updated: 2026-05-26
 owner: agent-hub
-spec: docs/plans/active/solo-pr-review-flow.md
+spec: docs/plans/completed/solo-pr-review-flow.md
 ---
 
 # Spec Intake: solo-pr-review-flow

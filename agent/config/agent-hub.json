@@ -12,7 +12,6 @@
       "mappings": {
         "CLAUDE.md": "agent/CLAUDE.md",
         "SYSTEM.md": "SYSTEM.md",
-        "commands": "agent/commands",
         "rules": "agent/rules",
         "skills": "agent/skills",
         "standards": "agent/standards",
@@ -39,8 +38,7 @@
         "docs": "docs",
         "rules": "agent/rules",
         "standards": "agent/standards",
-        "skills": "agent/skills",
-        "commands": "agent/commands"
+        "skills": "agent/skills"
       }
     },
     {
@@ -54,9 +52,6 @@
       "configFormat": {
         "skills": [
           "$AGENT_HUB_ROOT/agent/skills"
-        ],
-        "prompts": [
-          "$AGENT_HUB_ROOT/agent/commands"
         ],
         "instructions": [
           "$AGENT_HUB_ROOT/SYSTEM.md"
@@ -88,14 +83,6 @@
       "loadMode": "triggered",
       "inventorySource": "README.md",
       "deployTarget": "~/.claude/skills"
-    },
-    {
-      "id": "commands",
-      "path": "agent/commands",
-      "kind": "commands",
-      "loadMode": "invoked",
-      "inventorySource": "README.md",
-      "deployTarget": "~/.claude/commands"
     },
     {
       "id": "lib",
@@ -156,6 +143,30 @@
       "secretPolicy": "no-secrets"
     },
     {
+      "id": "managed-paths",
+      "path": "agent/config/managed-paths.json",
+      "domain": "canonical shared-layer paths, deploy aliases, and hardcoded path drift checks",
+      "format": "json",
+      "deployTarget": "~/.claude/config/managed-paths.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-schema",
+      "path": "agent/config/artifact-pack.schema.json",
+      "domain": "artifact pack manifest schema",
+      "format": "json",
+      "deployTarget": "~/.claude/config/artifact-pack.schema.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-core-capabilities",
+      "path": "agent/config/artifact-pack-core-capabilities.json",
+      "domain": "core capability ids accepted by artifact pack dependency refs",
+      "format": "json",
+      "deployTarget": "~/.claude/config/artifact-pack-core-capabilities.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
       "id": "audit-policy",
       "path": "agent/config/audit-policy.json",
       "domain": "audit thresholds and severity tiers",
@@ -193,7 +204,7 @@
       "id": "readme-inventory",
       "path": "README.md",
       "marker": "readme-inventory",
-      "source": "agent commands, skills, standards, and rules",
+      "source": "agent skills, standards, and rules",
       "mode": "generated-block",
       "validator": "generated-blocks"
     },
@@ -267,7 +278,7 @@
     },
     {
       "id": "shared-deploy-tree",
-      "pathPattern": "~/.claude/{rules,standards,skills,commands,lib,config}",
+      "pathPattern": "~/.claude/{rules,standards,skills,lib,config}",
       "owner": "agent-hub",
       "gitPolicy": "tracked",
       "secretPolicy": "no-secrets",
@@ -376,8 +387,27 @@
       "script": "scripts/validate-llm-first.mjs",
       "listedCheck": "taxonomy",
       "covers": [
-        "skill and command categories",
+        "skill categories",
         "managed document naming"
+      ]
+    },
+    {
+      "id": "managed-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "managed-paths",
+      "covers": [
+        "managed path registry shape",
+        "stale shared-layer path literals"
+      ]
+    },
+    {
+      "id": "artifact-pack",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "artifact-pack",
+      "covers": [
+        "artifact pack manifest shape",
+        "artifact pack dependencies",
+        "artifact pack route conflicts"
       ]
     },
     {
@@ -389,11 +419,11 @@
       ]
     },
     {
-      "id": "skill-command-mechanics",
+      "id": "skill-mechanics",
       "script": "scripts/validate-llm-first.mjs",
-      "listedCheck": "skill-command-mechanics",
+      "listedCheck": "skill-mechanics",
       "covers": [
-        "skill and command mechanical shape"
+        "skill mechanical shape"
       ]
     },
     {

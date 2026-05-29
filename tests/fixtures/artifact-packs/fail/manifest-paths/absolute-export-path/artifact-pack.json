@@ -1,0 +1,25 @@
+{
+  "schema-version": 1,
+  "pack-id": "absolute-export-path",
+  "display-name": "Absolute Export Path",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid path fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "bad-skill",
+      "artifact-type": "skill",
+      "path": "/tmp/bad-skill",
+      "shape": "directory",
+      "mount": {
+        "layer": "skills",
+        "target": "bad-skill",
+        "mode": "link"
+      },
+      "entrypoint": "/tmp/bad-skill/SKILL.md",
+      "load": "on-demand",
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

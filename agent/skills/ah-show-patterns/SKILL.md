@@ -1,14 +1,14 @@
 ---
-description: "Common design patterns for commands and skills with detailed examples. Use when designing new command workflows."
+description: "Common design patterns for shared skills and routing workflows with detailed examples."
 ---
 
 # ah-show-patterns
 
-Common design patterns for agent-hub commands and skills with detailed examples.
+Common design patterns for agent-hub skills and routing workflows with detailed examples.
 
 ## Purpose
 
-This guide documents common design patterns used in agent-hub commands and skills. Each pattern includes a detailed explanation, code examples, and use cases to help you structure your own commands and skills effectively.
+This guide documents common design patterns used in agent-hub skills and routing workflows. Each pattern includes a detailed explanation, code examples, and use cases to help you structure new shared artifacts effectively.
 
 ---
 
@@ -16,7 +16,7 @@ This guide documents common design patterns used in agent-hub commands and skill
 
 | Need | Pattern |
 |------|---------|
-| Complex reusable logic | Command Invokes Skill |
+| Complex reusable logic | Router Invokes Skill |
 | Sequential operations | Multi-Step Workflow |
 | Current system state | Dynamic Context Injection |
 | Multiple modes | Conditional Execution |

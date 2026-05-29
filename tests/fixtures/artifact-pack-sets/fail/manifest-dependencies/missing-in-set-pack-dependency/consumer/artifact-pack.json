@@ -1,0 +1,25 @@
+{
+  "schema-version": 1,
+  "pack-id": "consumer-pack",
+  "display-name": "Consumer Pack",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Consumer fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "consumer-doc",
+      "artifact-type": "doc",
+      "path": "docs/consumer.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "consumer.md",
+        "mode": "copy"
+      },
+      "load": "manual",
+      "dependencies": ["pack:missing-pack"],
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

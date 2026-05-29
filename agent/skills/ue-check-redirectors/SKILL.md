@@ -94,5 +94,5 @@ JSON is saved to `~/.claude/private/unreal/check-redirectors/redirectors.json`.
 
 ## Related Files
 
-- Command: `~/.claude/commands/ue-check-redirectors.md`
+- Skill: `~/.claude/skills/ue-check-redirectors/SKILL.md`
 - Output: `~/.claude/private/unreal/check-redirectors/`

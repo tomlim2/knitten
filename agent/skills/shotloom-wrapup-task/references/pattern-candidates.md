@@ -87,7 +87,7 @@ findings_worktree=$(
 )
 
 cd "$findings_worktree"
-node scripts/operational-findings-report.mjs capture \
+node "$knitten_root/scripts/operational-findings-report.mjs" capture \
   --source wrapup-task \
   --context "shotloom PR 371" \
   --area workflow \

@@ -37,7 +37,7 @@ Verified in the configured `agent-hub` repo on 2026-05-14.
 |---|---|---|
 | Shared load model | `SYSTEM.md` defines auto rules, triggered rules, standards, and skills as separate layers | `SYSTEM.md` |
 | Codex entry | `AGENTS.md` tells Codex to read `SYSTEM.md`, then `agent/rules/index.md`, then every auto rule | `AGENTS.md` |
-| Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `rules/index.md`, and seven bootstrap auto rules; standards are read on demand | `CLAUDE.md` |
+| Claude entry | `CLAUDE.md` imports `SYSTEM.md`, `agent/rules/index.md`, and seven bootstrap auto rules; standards are read on demand | `CLAUDE.md` |
 | Rules index | `agent/rules/index.md` separates auto rules from triggered rules | `agent/rules/index.md` |
 | Standards index | `agent/standards/index.md` is a discoverable index for on-demand standards | `agent/standards/index.md` |
 | Routing plan | `docs/plans/completed/task-context-routing.md` already defines route-domain metadata and high-cost artifact routing | `docs/plans/completed/task-context-routing.md` |
@@ -49,7 +49,7 @@ Verified in the configured `agent-hub` repo on 2026-05-14.
 |---|---|
 | Entry documents still import shared indexes and auto rules directly | Cold-start cost grows as the shared system grows |
 | Skill dependencies are prose-only | Validators cannot prove that a skill declares every rule or standard it requires |
-| Commands and skills mix routing, procedure, and context ownership | The system has no single place to ask which context belongs to a workflow |
+| Skills mix routing, procedure, and context ownership | The system has no single place to ask which context belongs to a workflow |
 | Review and Shotloom workflows load broad guidance by convention | A cold-start agent can miss a needed standard or load unrelated standards |
 | Current routing metadata and skill workflow context are separate mechanisms | Context routing reduces discovery cost, but does not yet define required reads per skill |
 
@@ -60,7 +60,7 @@ Verified in the configured `agent-hub` repo on 2026-05-14.
 | Keep a bootstrap layer | Entry documents keep only safety, skill discovery, canonical routing, and verification rules |
 | Skills own task context | A skill declares its required rules, standards, repo docs, and references in frontmatter |
 | Rules and standards stay canonical | Skills link shared files; skills do not duplicate rule or standard bodies |
-| Commands stay thin | A command invokes a skill or small workflow; it does not own long context policy |
+| Workflows stay thin | A skill or small workflow invokes only the context it owns; it does not carry long context policy inline |
 | Validators enforce declarations | A validator rejects undeclared `rules/` and `standards/` body references inside skills |
 | Pilot Shotloom first | Convert Shotloom skills before broad rollout because they use heavy review, PR, docs, and repo context |
 

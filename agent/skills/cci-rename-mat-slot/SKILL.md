@@ -71,5 +71,5 @@ For each missing slot (e.g., `Body_MTL`):
 ## Related Files
 
 - Validation skill: `~/.claude/skills/cci-validate-character-mat-slot-names/`
-- Command: `~/.claude/commands/cci-rename-mat-slot.md`
+- Skill: `~/.claude/skills/cci-rename-mat-slot/SKILL.md`
 - Output: `~/.claude/private/unreal/mat-slot-rename/`

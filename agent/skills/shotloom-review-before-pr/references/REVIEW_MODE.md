@@ -4,8 +4,8 @@ status: accepted
 
 # Review Mode
 
-Use this reference from `shotloom-review-before-pr` Step 2. Default mode is
-Auto. Auto selects Single for small low-risk diffs and Triad for large or
+Use this reference from `shotloom-decide-review-mode`. Default behavior returns
+`needsTriad=false` for small low-risk diffs and `needsTriad=true` for large or
 boundary-risk diffs.
 
 ## Evidence
@@ -21,7 +21,7 @@ git diff origin/main...HEAD
 
 Also count matching trigger rows from
 `references/LARGE_BOUNDARY_PR_LENSES.md` → `Trigger`; the same count feeds the
-`triad triggers` field in the decision template.
+`triggers` field in the decision JSON.
 
 ## Surface Map
 
@@ -36,45 +36,51 @@ Also count matching trigger rows from
 
 ## Decision Rules
 
-Select `review_mode=triad` if any condition is true:
+Set `needsTriad=true` if any condition is true:
 
-- `files_changed >= 10`.
-- `lines_added + lines_deleted >= 1000`.
-- Bridge/API contract changes a DTO, event, command, rejection code, schema,
-  IPC doc, or fixture snapshot.
-- Model, validation, persistence, import/export, asset manifest, or runtime
-  event-ordering changes can reject existing data, change saved data, or change
-  editor/runtime observation order.
-- Rust and TypeScript contract surfaces both change in the same branch.
-- Large boundary lens batching triggers with three or more trigger rows.
+| Trigger id | True when |
+|---|---|
+| `large-file-count` | `files_changed >= 10`. |
+| `large-line-count` | `lines_added + lines_deleted >= 1000`. |
+| `bridge-api-contract` | Bridge/API contract changes a DTO, event, command, rejection code, schema, IPC doc, or fixture snapshot. |
+| `rust-ts-contract` | Rust contract code and TypeScript mirror or consumer both changed. |
+| `runtime-proof-artifacts` | Runtime code and fixtures, snapshots, golden files, or generated proof artifacts changed together. |
+| `model-validation-persistence` | Model, validation, persistence, import/export, hydrate, migrate, or save/load behavior changed. |
+| `asset-manifest-fixture` | Asset, manifest, catalog, fixture, snapshot, or data-pack contract changed. |
+| `event-ordering` | Runtime/editor observation order, command echo, rejection order, or bridge event sequencing changed. |
+| `cross-ownership` | Three or more ownership surfaces changed. |
+| `boundary-lens-count` | Three or more large-boundary trigger rows match. |
 
-Select `review_mode=single` only when all conditions are true:
+Set `needsTriad=false` only when all conditions are true:
 
 - `files_changed <= 5`.
 - `lines_added + lines_deleted <= 500`.
 - Changed surfaces are limited to UI, tests, docs, or one low-risk helper.
 - No Triad trigger above matches.
 
-If neither rule is decisive, select `review_mode=triad`.
+If neither rule is decisive, set `needsTriad=true`.
 
 Compatibility:
 
-| User override | Effective mode |
+| User override | Effective output |
 |---------------|----------------|
-| `force single` | `single` |
-| `force standard` | `single` |
-| `force triad` | `triad` |
+| `force single` | `needsTriad=false` |
+| `force standard` | `needsTriad=false` |
+| `force triad` | `needsTriad=true` |
 
 ## Decision Template
 
-```markdown
-## Review Mode Decision - branch <branch>
-
-Mode: Single | Triad
-Reason: <one sentence>
-Signals:
-- files changed: <N>
-- lines changed: +<A>/-<D>
-- touched surfaces: <list>
-- triad triggers: <list or none>
+```json
+{
+  "needsTriad": true,
+  "reason": "<one sentence>",
+  "triggers": ["<trigger>"],
+  "signals": {
+    "branch": "<branch>",
+    "filesChanged": 0,
+    "linesAdded": 0,
+    "linesDeleted": 0,
+    "touchedSurfaces": []
+  }
+}
 ```

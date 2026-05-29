@@ -1,5 +1,5 @@
 ---
-description: "Post Shotloom deploy start / success notices to the CINEV team Slack channel via Arnyang. Two phases: start (top-level notice + detail thread reply) and success (broadcast + detail thread reply)."
+description: Leaf/component Shotloom skill for deploy status notices only. Prefer shotloom-router for full deploy workflows.
 argument-hint: "<start|success> --version vX.Y.Z [field flags]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*)
 domains: rust,web
@@ -18,7 +18,7 @@ Two-phase Slack notifier for Shotloom web deploys.
 
 - **start** — two sends: top-level "배포 시작" channel message + thread reply with workflow details. Returns the top-level ts for pairing with `success`.
 - **success** — two sends: broadcast "사내망 배포 완료" on the start ts + thread detail reply with ETag and manifest commit.
-- **completion-only fallback** — when no start thread exists, send a top-level message containing only the live URL and patch-note URL, then put deployment details in a thread reply.
+- **completion-only fallback** — when no start thread exists, send a top-level completion message containing only the live URL and patch-note URL, then put deployment details in a thread reply.
 
 ## Arguments
 
@@ -109,7 +109,7 @@ Message B (thread reply under A):
 
 Omit `패치노트:` only when `--release-url` is absent. Do not paste long patch notes into Slack; link the generated release or equivalent patch-note document.
 
-Completion-only fallback — use only when a deploy finished but no `start` phase was sent, so `success --thread-ts` cannot be used:
+Completion-only fallback — use only when a deploy finished but no `start` phase was sent, so `success --thread-ts` cannot be used. The top-level message is audience-facing only; keep workflow, manifest, image, SHA, ETag, and verification details in the thread reply.
 
 Top-level channel message:
 ```
@@ -118,6 +118,8 @@ Shotloom $VERSION 사내망 배포 완료.
 - 대상: $TARGET_URL
 - 패치노트: $RELEASE_URL
 ```
+
+If `--target-url` is omitted, render the default URL as `https://shotloom.cinamon.io/` with the trailing slash. Omit `패치노트:` only when `--release-url` is absent.
 
 Thread reply under the top-level message:
 ```

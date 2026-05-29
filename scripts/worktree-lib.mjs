@@ -9,6 +9,7 @@ export function runGit(args, options = {}) {
     cwd: options.cwd || process.cwd(),
     encoding: "utf8",
     stdio: options.stdio || ["ignore", "pipe", "pipe"],
+    timeout: options.timeout || 15000,
   });
   return typeof output === "string" ? output.trim() : "";
 }
@@ -18,6 +19,7 @@ export function tryGit(args, options = {}) {
     cwd: options.cwd || process.cwd(),
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
+    timeout: options.timeout || 15000,
   });
   return {
     ok: result.status === 0,
@@ -161,6 +163,11 @@ export function currentBranch(cwd) {
 export function remoteBranchExists(branch, cwd) {
   if (!branch) return false;
   return tryGit(["ls-remote", "--exit-code", "--heads", "origin", branch], { cwd }).ok;
+}
+
+export function remoteTrackingBranchExists(branch, cwd) {
+  if (!branch) return false;
+  return tryGit(["show-ref", "--verify", "--quiet", `refs/remotes/origin/${branch}`], { cwd }).ok;
 }
 
 export function localBranchExists(branch, cwd) {

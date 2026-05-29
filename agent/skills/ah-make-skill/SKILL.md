@@ -41,7 +41,7 @@ creation and route to the owning artifact workflow.
 Before writing files, run:
 
 ```bash
-rg -n "<slug>|<route words>|<subject>" agent/skills agent/commands agent/standards agent/document-templates
+rg -n "<slug>|<route words>|<subject>" agent/skills agent/standards agent/document-templates
 ```
 
 If an existing router, lifecycle skill, or standard owns the route, update that
@@ -67,9 +67,7 @@ skills/{category}-{verb}-{subject}/
 
 ---
 
-## Skill vs Command Precedence
-
-If skill `skills/foo/SKILL.md` and command `commands/foo.md` share a name, **the skill wins**.
+## Skill Priority
 
 Location priority when the same skill appears in multiple scopes:
 ```
@@ -82,7 +80,7 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ## Naming Convention (MANDATORY)
 
-**`{category}-{verb}-{subject}` pattern** — same as commands. See `ah-make-command` for complete rules.
+**`{category}-{verb}-{subject}` pattern**.
 
 - Lowercase only, no camelCase
 - Hyphens as separators, never underscores
@@ -101,13 +99,13 @@ Plugin skills use `plugin-name:skill-name` namespace — never conflict.
 
 ## Category Registry
 
-Canonical command and skill categories live in `agent/config/taxonomy.json` under `skillCommandCategories`.
+Canonical skill categories live in `agent/config/taxonomy.json` under `skillCategories`.
 
 When creating a skill:
 
 1. Pass the Creation Gate.
 2. Extract the category prefix before the first hyphen.
-3. Reuse an existing prefix from `skillCommandCategories`.
+3. Reuse an existing prefix from `skillCategories`.
 4. If a new prefix is required, patch `taxonomy.json` in the same change and keep the array sorted.
 5. Run `node scripts/validate-llm-first.mjs --check taxonomy` from the agent-hub repo root.
 
@@ -139,7 +137,7 @@ comma-separated scalar fields so the lightweight frontmatter parser can validate
 them without loading a YAML library:
 
 ```yaml
-context-rules: rules/shotloom.md,rules/test-write.md
+context-rules: rules/code-write.md,rules/test-write.md
 context-standards: standards/review/review-template.md
 context-repo-docs: repo:docs/guidelines/review-rust.md
 context-references: reference.md,references/CHECKLIST.md
@@ -277,4 +275,4 @@ Full template in [reference.md](reference.md).
 
 For the full SKILL.md template, detailed frontmatter examples (user-only deploy, forked agent, monorepo `paths`), String Substitutions worked examples, Dynamic Shell Injection patterns, UE-skill rationale, and subagent/visual-output patterns, see [reference.md](reference.md).
 
-Canonical docs: <https://code.claude.com/docs/en/skills>. Slash-command patterns: `~/.claude/skills/ah-make-command/references/SLASH-COMMANDS.md`.
+Canonical docs: <https://code.claude.com/docs/en/skills>.

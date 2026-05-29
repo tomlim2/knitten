@@ -1,0 +1,24 @@
+{
+  "schema-version": 1,
+  "pack-id": "trailing-dotdot-path",
+  "display-name": "Trailing Dotdot Path",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid path fixture with a trailing parent segment.",
+  "exports": [
+    {
+      "artifact-id": "bad-doc",
+      "artifact-type": "doc",
+      "path": "docs/..",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "bad-doc.md",
+        "mode": "link"
+      },
+      "load": "manual",
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

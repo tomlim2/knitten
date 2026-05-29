@@ -8,8 +8,7 @@ import {
   mainPathFor,
   parseWorktreeList,
   policyFor,
-  remoteBranchExists,
-  runGit,
+  remoteTrackingBranchExists,
   statusPorcelain,
   tryGit,
 } from "./worktree-lib.mjs";
@@ -41,7 +40,6 @@ async function main() {
     return;
   }
   const mainPath = await mainPathFor(context.entry);
-  runGit(["fetch", "origin", "main"], { cwd: mainPath, stdio: "ignore" });
   const items = parseWorktreeList(mainPath);
   console.log("path\tbranch\tdirty\tahead\tage\tcleanup");
   for (const item of items) {
@@ -53,7 +51,7 @@ async function main() {
     const status = statusPorcelain(item.path);
     const dirty = status ? `dirty(${status.split("\n").length})` : "clean";
     const merged = branchMergedIntoMain(branch, mainPath);
-    const remoteExists = remoteBranchExists(branch, mainPath);
+    const remoteExists = remoteTrackingBranchExists(branch, mainPath);
     const cleanup = path.resolve(item.path) === path.resolve(mainPath)
       ? "main"
       : isClean(item.path) && merged && !remoteExists

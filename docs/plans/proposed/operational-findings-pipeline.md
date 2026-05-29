@@ -165,7 +165,7 @@ Index rows must record:
 | `Area` | skill, rule, standard, validator, docs, config, workflow, routing, ux, other, or unknown |
 | `Context` | report-context label |
 | `Summary` | one-line rough description |
-| `Status` | `captured`, `triaged`, `promoted`, `merged`, `parked`, `discarded` |
+| `Status` | `captured`, `triaged`, `promoted`, `merged`, `resolved`, `assetized`, `parked`, `discarded` |
 
 Canonical index table:
 
@@ -220,8 +220,19 @@ Status vocabulary:
 | `triaged` | reviewed and routed, but not yet fully resolved |
 | `promoted` | converted into a durable artifact change or accepted follow-up |
 | `merged` | folded into another report or existing artifact |
+| `resolved` | fixed by a durable artifact, PR, or commit; no active queue work remains |
+| `assetized` | reusable completion context moved to Obsidian and the repo report is a stub |
 | `parked` | kept for more evidence |
 | `discarded` | closed as too specific, stale, or not worth codifying |
+
+Completion rule:
+
+- If a finding has reusable completion context, move that context to Obsidian
+  using `ah-resolve-doc-path doc learning agent-hub`.
+- After Obsidian owns the explanation, keep only a report stub with `status`,
+  `resolved-by`, `resolved-at`, and `moved-to`.
+- Delete a report only when another durable artifact already owns the context or
+  the report was invalid.
 
 ### 4. Triage and promotion lane
 

@@ -283,17 +283,17 @@ Parse JSON and produce structured analysis.
 4. Confirm creation
 ```
 
-### Example: Meta Make Command
+### Example: Meta Make Skill
 
-**Command** (`commands/ah-make-command.md`):
+**Skill** (`skills/ah-make-skill/SKILL.md`):
 ```markdown
 ---
-description: Generate a new command following naming conventions
+description: Create a new skill following naming conventions
 argument-hint: "<category> <verb> <subject>"
 allowed-tools: Read, Write
 ---
 
-# Generate New Command
+# Generate New Skill
 
 ## Execution
 
@@ -305,7 +305,7 @@ allowed-tools: Read, Write
    - Tools it needs
 
 4. **Generate file**: Fill template with user input
-5. **Write**: Create `commands/{category}-{verb}-{subject}.md`
+5. **Write**: Create `skills/{category}-{verb}-{subject}/SKILL.md`
 6. **Confirm**: Show created file path
 ```
 
@@ -395,5 +395,5 @@ Read: !`ls ~/.claude/private/data.json`
 ## Related Files
 
 - `SYSTEM.md` - Canonical policy
-- `skills/ah-make-command/SKILL.md` - Command creation rules
+- `skills/ah-make-skill/SKILL.md` - Skill creation rules
 - `skills/ah-make-skill/SKILL.md` - Skill creation rules

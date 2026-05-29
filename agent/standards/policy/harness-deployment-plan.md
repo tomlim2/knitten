@@ -29,7 +29,7 @@ Create a machine-readable source of truth for all known agents and their global 
         "name": "claude",
         "targetPath": "~/.claude",
         "linkMethod": "symlink",
-        "mappings": { "skills": "agent/skills", "commands": "agent/commands" }
+        "mappings": { "skills": "agent/skills" }
       },
       {
         "name": "pi",
@@ -37,8 +37,7 @@ Create a machine-readable source of truth for all known agents and their global 
         "linkMethod": "json-config",
         "configFile": "settings.json",
         "configFormat": { 
-          "skills": ["$AGENT_HUB_ROOT/agent/skills"],
-          "prompts": ["$AGENT_HUB_ROOT/agent/commands"]
+          "skills": ["$AGENT_HUB_ROOT/agent/skills"]
         }
       },
       {

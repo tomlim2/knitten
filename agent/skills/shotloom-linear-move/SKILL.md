@@ -1,5 +1,5 @@
 ---
-description: Transition a Shotloom Linear issue to another state (Todo → In Progress → In Review → Done)
+description: Leaf/component Shotloom skill for Linear state transition only. Prefer shotloom-router for full task closeout.
 argument-hint: "<STL-NN> [target-state]"
 allowed-tools: Bash(git:*)
 ---

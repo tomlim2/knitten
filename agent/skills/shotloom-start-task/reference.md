@@ -23,8 +23,8 @@ Claude sessions the MCP server prefix can differ.
 ## Step 2.5 — worktree base detection (full script)
 
 ```bash
-repo_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
-repo_root="${repo_root#RESOLVED_PATH=}"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+repo_root="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" shotloom)"
 if grep -qE '^\.worktrees/?$' "$repo_root/.gitignore" 2>/dev/null; then
   worktree_base="$repo_root/.worktrees"
 else
@@ -134,8 +134,8 @@ read the full body and record: slug, status, stance summary, and disagreement
 signal.
 
 ```bash
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
-knitten="${knitten#RESOLVED_PATH=}"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+knitten="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" knitten)"
 rg --files "$knitten/docs/plans" "$knitten/docs/briefings/shotloom" \
   2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 git -C "$knitten" log --diff-filter=D --name-only --pretty=format: -- \

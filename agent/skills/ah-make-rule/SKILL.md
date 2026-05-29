@@ -42,7 +42,7 @@ File name: `{topic}.md` in `agent/rules/`.
 
 - Lowercase, hyphen-separated, short (1-3 words).
 - Scope prefix if domain-specific: `cinev-*`.
-- Examples: `git-defaults.md`, `author.md`, `cinev-git.md`, `shotloom.md`.
+- Examples: `git-defaults.md`, `author.md`, `cinev-git.md`, `pr-create.md`.
 
 ---
 
@@ -69,9 +69,9 @@ Structural rules:
 1. Parse filename from `$ARGUMENTS`.
 2. Check `agent/rules/{name}.md` does not exist. Abort if it does.
 3. Ask the user:
-   - Short scope description (for `rules/index.md`)
+   - Short scope description (for `agent/rules/index.md`)
    - The bullets themselves (or confirm the user will fill them in after)
-   - Which index group: Core, Command Authoring, or Domain-specific
+   - Which index group: Core, Authoring, or Domain-specific
    - Which standard (if any) backs this rule
 4. Write the file from the template.
 5. Update `agent/rules/index.md` — add a code-span row to the chosen group. Do not use Markdown links in the rules index.
@@ -98,6 +98,5 @@ Structural rules:
 - `ah-manage-artifact` — CRUD router for shared artifacts
 - `ah-make-standard` — long reference docs
 - `ah-make-skill` — reusable skills
-- `ah-make-command` — slash commands
-- `rules/index.md` — full index
+- `agent/rules/index.md` — full index
 - `standards/index.md` — reference docs rules link to

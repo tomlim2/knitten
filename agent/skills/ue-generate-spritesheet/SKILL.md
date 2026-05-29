@@ -80,5 +80,5 @@ Filename pattern: `{folder_name}_{frame_count}.png`
 
 ## Related Files
 
-- Command: `~/.claude/commands/ue-generate-spritesheet.md`
+- Skill: `~/.claude/skills/ue-generate-spritesheet/SKILL.md`
 - Output: `~/.claude/private/unreal/spritesheet-generate/`

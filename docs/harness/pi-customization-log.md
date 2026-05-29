@@ -8,7 +8,7 @@ This document tracks all machine-local or harness-specific customizations applie
 **Action:** Configured `pi` to load the `agent-hub` Agent Hub globally.
 **Details:** 
 - `skills` array points to `$AGENT_HUB_ROOT/agent/skills`.
-- `prompts` array points to `$AGENT_HUB_ROOT/agent/commands`.
+- Pi prompt configuration uses the shared skills path only.
 - `instructions` array points to `$AGENT_HUB_ROOT/SYSTEM.md` (ensuring the LLM-First context is loaded immediately on cold start without needing local project context).
 
 ## Pi-Specific Skills

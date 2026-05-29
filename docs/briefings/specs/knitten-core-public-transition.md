@@ -35,7 +35,6 @@ external exposure.
 | file | `docs/milestones/index.md` | Milestone index row must remain current. |
 | file | `SYSTEM.md` | Defines Knitten shared-policy identity. |
 | directory | `agent/skills/` | Major source of artifacts to classify. |
-| directory | `agent/commands/` | Command artifacts to classify. |
 | directory | `agent/rules/` | Core safety vs pack-specific rules. |
 | directory | `agent/standards/` | Core standards vs domain-specific reference catalogs. |
 | user | current chat | User preference: create `knitten-core` and keep only clean core contents. |

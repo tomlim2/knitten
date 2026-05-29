@@ -39,6 +39,7 @@ promotion, and durable artifact edits can happen later.
 2. Prepare the dedicated worktree and capture the absolute path:
 
 ```bash
+knitten_root=$(pwd)
 findings_worktree=$(
   node scripts/operational-findings-worktree.mjs prepare \
     | awk -F': ' '/^worktree:/ {print $2; exit}'
@@ -54,7 +55,7 @@ cd "$findings_worktree"
 4. In the prepared worktree, run the capture script:
 
 ```bash
-node scripts/operational-findings-report.mjs capture \
+node "$knitten_root/scripts/operational-findings-report.mjs" capture \
   --summary "<rough finding>" \
   --context "<context>" \
   --source user-report \
@@ -73,6 +74,20 @@ node scripts/operational-findings-report.mjs capture \
 - Do not classify too aggressively during capture.
 - Do not edit the target skill, rule, standard, or validator from this skill
   unless the user asks to immediately fix the finding.
+
+## Completion Policy
+
+If the user asks what to do with completed findings:
+
+1. Resolve the Obsidian destination with
+   `ah-resolve-doc-path doc learning agent-hub`.
+2. Move reusable completion context into an Obsidian learning note.
+3. Replace the repo report with a thin stub containing `status`,
+   `resolved-by`, `resolved-at`, and `moved-to`.
+4. Update the inbox row to `resolved` when the fix exists and `assetized` after
+   the Obsidian note owns the durable explanation.
+5. Delete a report only when another durable artifact already owns the context
+   or the report was invalid.
 
 ## Files
 

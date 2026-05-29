@@ -1,0 +1,27 @@
+{
+  "schema-version": 1,
+  "pack-id": "fixture-pack",
+  "display-name": "Fixture Pack",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Installed pack lifecycle link fixture.",
+  "exports": [
+    {
+      "artifact-id": "demo-skill",
+      "artifact-type": "skill",
+      "path": "skills/demo-skill",
+      "shape": "directory",
+      "mount": {
+        "layer": "skills",
+        "target": "demo-skill",
+        "mode": "link"
+      },
+      "entrypoint": "skills/demo-skill/SKILL.md",
+      "load": "on-demand",
+      "dependencies": ["core:manifest-schema"],
+      "privacy-risk": "public-safe",
+      "platforms": ["all"]
+    }
+  ]
+}

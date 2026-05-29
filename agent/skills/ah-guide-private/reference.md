@@ -6,7 +6,7 @@ Detailed patterns, code examples, and guidelines for using the private/ folder.
 
 ## Accessing Private Data
 
-### From Commands (Markdown)
+### From Markdown Skills
 
 **Pattern:** Use `!backtick` for dynamic execution
 

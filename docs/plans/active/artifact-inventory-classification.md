@@ -1,7 +1,7 @@
 ---
 status: active
 created: 2026-05-20
-updated: 2026-05-20
+updated: 2026-05-24
 owner: agent-hub
 milestone: agent-artifact-pack-system
 intake: docs/briefings/specs/artifact-inventory-classification.md
@@ -40,7 +40,7 @@ different row shapes and produce incompatible migration batches.
 |-------------------------|-------|
 | Do not generate complete inventory rows in this schema slice. | Generator implementation batch |
 | Do not classify every artifact as core or pack. | `core-artifact-boundary` |
-| Do not move skills, commands, rules, standards, docs, scripts, or config files. | `artifact-repo-migration-plan` |
+| Do not move skills, rules, standards, docs, scripts, or config files. | `artifact-repo-migration-plan` |
 | Do not enforce fail-only validator checks in the schema-contract PR. | Batch D after pilot rows |
 | Do not define artifact pack manifest exports. | `artifact-pack-manifest-contract` |
 
@@ -53,6 +53,7 @@ different row shapes and produce incompatible migration batches.
 | Artifact vocabulary | Defines artifact types and pack terms. | `docs/plans/completed/artifact-pack-vocabulary.md` |
 | Existing capability views | README and AGENT-HUB generated blocks count capabilities only. | `scripts/validate-llm-first.mjs` |
 | Config schema pattern | JSON schemas live under `agent/config/*.schema.json`. | `agent/config/repo-policy.schema.json` |
+| Pilot classification review | Accepted 6 pilot rows and blocked 10 target-dependent rows. | `docs/plans/reports/artifact-inventory-classification/pilot-classification-review-2026-05-24.md` |
 
 ## Proposed Design
 
@@ -139,6 +140,7 @@ different row shapes and produce incompatible migration batches.
 | Check | Command Or Inspection |
 |-------|-----------------------|
 | Schema parses | `node -e "JSON.parse(require('fs').readFileSync('agent/config/artifact-inventory.schema.json','utf8'))"` |
+| Source section drift | `node scripts/validate-llm-first.mjs --check artifact-inventory` |
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 | Full validator | `node scripts/validate-llm-first.mjs` |
 | Patch whitespace | `git diff --check` |
@@ -163,7 +165,9 @@ different row shapes and produce incompatible migration batches.
 - [x] `thin-skill-guide-boundary` points to this spec as the inventory schema owner.
 - [x] Generator creates `agent/config/artifact-inventory.json`.
 - [x] Pilot classification covers at least five representative skills.
-- [ ] Validator checks enforce row ids, parent links, enum values, and extraction counts.
+- [x] Validator checks enforce row ids, parent links, enum values, and extraction counts.
+- [x] Pilot review records accepted and blocked rows without using chat history.
+- [x] Validator checks extraction `source-section` values against source skill files.
 
 ## Open Decisions
 

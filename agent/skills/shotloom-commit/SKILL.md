@@ -1,16 +1,23 @@
 ---
-description: Stage-aware commit helper — run gates, draft conventional commit message, commit
-argument-hint: "[--skip-gates] [extra message hint]"
+description: Leaf/component Shotloom skill for committing a prepared diff only. Prefer shotloom-router for full task or PR workflows.
+argument-hint: "[extra message hint]"
 allowed-tools: Read, Bash(git:*), Bash(cargo:*), Bash(node:*), Bash(pnpm:*)
 ---
 
 # shotloom-commit
 
-Commit helper for Shotloom repos. Ensures every commit passes gates and follows `docs/guidelines/commit-guideline.md` before hitting the branch.
+Commit guideline helper for Shotloom repos. Delivers the Shotloom commit and push checklist, drafts a commit message from staged changes, and commits after user approval.
+
+This skill does not own Shotloom gate policy. Treat it as a delivery wrapper for current Shotloom commit guidance. `reference.md` records commit-local guideline leak fixes.
+
+| Need | Action |
+|------|--------|
+| Draft and create a commit | Use this skill. |
+| Run local gates | Follow Shotloom repo guidance. Use `/shotloom-check-gates` only when the repo guidance or user asks for local helper evidence. |
+| Need push/PR evidence | Follow Shotloom repo guidance first. Run `/shotloom-check-gates --full` only when repo guidance, the active workflow, or the user asks for helper evidence. |
 
 ## Arguments
 
-- `[--skip-gates]` — skip pre-commit gate run (use only for docs-only commits when CI won't run anything meaningful). Default: run gates.
 - `[extra message hint]` — free text the user wants included in the body (e.g., "STL-99" to ensure the footer has it).
 
 Usage: `/shotloom-commit` or `/shotloom-commit STL-99 refactor viewer bootstrap`
@@ -29,11 +36,15 @@ git log -1 --format="%an <%ae>"
 - If nothing staged but working tree dirty → report "nothing staged" and list modified files. Ask user whether to `git add` which paths.
 - If author identity ≠ `tomlim2 <deemo@vonvon.me>` → warn, offer `git commit --amend --reset-author` path (but don't auto-fix mid-flow).
 
-### Step 2: Run gates
+### Step 2: Deliver gate checklist
 
-Unless `--skip-gates` provided, delegate to `/shotloom-check-gates` (default = full bundle: fmt + clippy + check + **test** + doc-paths). If any gate fails, stop — do not attempt the commit. Report which gate and where.
+Print the current gate checklist before drafting:
 
-The earlier convention split "fast for commit / full for push" produced PRs where commit-time gates passed and CI-equivalent push-time gates surfaced test regressions. The Shotloom canonical bundle now runs the same set every time so CI parity is a build-time guarantee, not a per-skill flag. If the user wants to skip tests for a docs-only commit, pass `/shotloom-commit --skip-gates` and explain in the commit body.
+| Moment | Required local evidence |
+|--------|-------------------------|
+| Before commit | Follow Shotloom repo guidance. If it requires local evidence, run the requested helper. |
+| Before push | Follow Shotloom repo guidance. If it asks for helper evidence, run `/shotloom-check-gates --full`. |
+| Before PR | Follow Shotloom repo guidance and the active PR workflow. If helper evidence is required, run `/shotloom-check-gates --full`; otherwise report the evidence source used. |
 
 ### Step 3: Draft commit message
 
@@ -44,7 +55,7 @@ Read the staged diff, classify, and draft per `docs/guidelines/commit-guideline.
 
 <body — why, not what; 80-char wraps; grouped by behavior>
 
-Related to STL-NN   (commit footer only — never use "Resolves STL-NN" in commits per ~/.claude/rules/shotloom.md; closing linkage belongs in the PR description)
+Related to STL-NN   (commit footer only — closing linkage belongs in the PR description)
 ```
 
 Before asking for approval, count the first line exactly as Git will receive
@@ -87,7 +98,11 @@ No `--no-verify`. No `-f`. No Co-Authored-By trailer.
 ✅ Committed <sha-short> on <branch>
   <subject line>
 
-Next: push with `git push` or continue local work.
+Next:
+- If this commit belongs to an active workflow, return to that workflow for push.
+- If this is standalone Shotloom work, follow Shotloom repo guidance before
+  `git push`.
+- If more local edits remain, continue without pushing.
 ```
 
 If the pre-commit hook failed at Step 5 (possible if repo hook is stricter than `shotloom-check-gates` knows), report the hook output and stop — do NOT amend. Let the user fix and re-run.
@@ -96,4 +111,5 @@ If the pre-commit hook failed at Step 5 (possible if repo hook is stricter than 
 
 - This skill commits on the current branch/worktree. Does not push.
 - Use `/shotloom-make-pr` to open PR after pushing.
-- Follows `~/.claude/rules/shotloom.md`: never `--no-verify`, never force-push, author must be tomlim2.
+- Extra gate rationale lives in [reference.md](reference.md).
+- Check author identity before commit. Never use `--no-verify` or force-push.

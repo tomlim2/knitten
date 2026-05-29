@@ -1,5 +1,5 @@
 ---
-description: Dashboard of active Shotloom work — worktrees, open PRs, in-progress Linear issues
+description: Leaf/component Shotloom skill for status dashboard only. Prefer shotloom-router for choosing a full workflow.
 argument-hint: ""
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*)
 domains: shotloom
@@ -7,7 +7,7 @@ repo-keys: shotloom
 languages: markdown
 task-types: ops
 context-profile: shotloom-ops
-context-rules: rules/git-defaults.md,rules/shotloom.md
+context-rules: rules/git-defaults.md
 ---
 
 # shotloom-status

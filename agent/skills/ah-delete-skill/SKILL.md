@@ -36,7 +36,7 @@ rg -n "<skill-name>|agent/skills/<skill-name>|/<skill-name>" AGENT-HUB.md README
    - generated inventory
    - lookup or user-facing docs
    - routing config
-   - commands that invoke the skill
+   - skills, scripts, or docs that invoke the skill
    - standards or rules that depend on the skill
    - installed symlinks in harness directories
 5. Stop if non-generated references remain and no replacement is defined.
@@ -71,6 +71,7 @@ Return:
 ## Related
 
 - `agent/skills/ah-manage-artifact/SKILL.md`
+- `agent/skills/ah-manage-skill/SKILL.md`
 - `agent/skills/ah-make-skill/SKILL.md`
 - `agent/skills/ah-edit-skill/SKILL.md`
 - `agent/skills/ah-update-skill/SKILL.md`

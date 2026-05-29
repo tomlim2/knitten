@@ -1,5 +1,5 @@
 ---
-description: Load all Shotloom rules/conventions/standards into a base session for forking — run once per day, fork for actual work
+description: Leaf/component Shotloom skill for preflight context loading only. Prefer shotloom-router for full task workflows.
 allowed-tools: Read, Glob, Bash(git:*), Bash(ls:*), Bash(date:*)
 domains: rust
 repo-keys: shotloom
@@ -7,7 +7,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/shotloom.md
+context-rules: rules/reread-repo-conventions.md
 exclude-when: unreal,obsidian
 ---
 
@@ -62,11 +62,10 @@ Then enumerate and read every file under:
 
 ### Step 3: Read global Shotloom standards (parallel)
 
-From `~/.claude/` (harness-side only — in-repo `docs/guidelines/` is canonical for writing/review rules and is loaded in Step 2):
+From `agent/` (canonical shared artifacts — in-repo `docs/guidelines/` is canonical for Shotloom writing/review rules and is loaded in Step 2):
 
-- the PR-scope policy in `~/.claude/skills/shotloom-auto-pr/reference.md` — PR scope classification policy (no in-repo equivalent)
-- `~/.claude/rules/shotloom.md` — hub rule (routing + answering style)
-- `~/.claude/rules/shotloom.md` — harness-side gates (gh auth, auto-commit, CI exclude flags)
+- the PR-scope policy in `agent/skills/shotloom-auto-pr/reference.md` — PR scope classification policy
+- `agent/lib/shotloom-github-guard.mjs` — Shotloom GitHub identity
 
 ### Step 4: Read ADR index entries
 
@@ -83,7 +82,7 @@ Emit:
 **shotloom HEAD:** <short-sha>
 **Loaded:**
 - Repo: AGENTS, CONTRIBUTING, CLAUDE, ADR index, N guideline files, M .agent files
-- Harness-side: ~/.claude/rules/shotloom.md, ~/.claude/skills/shotloom-auto-pr/reference.md (PR-scope policy)
+- Agent-hub: agent/lib/shotloom-github-guard.mjs, agent/skills/shotloom-auto-pr/reference.md (PR-scope policy)
 - ADR titles indexed: <count>
 
 **Fork this session for each work task.**
@@ -111,4 +110,4 @@ If the user asks to work on code in this session, refuse and tell them to fork f
 ## Related
 
 - [`shotloom-start-task`](../shotloom-start-task/SKILL.md) — run inside the forked session for per-task setup (Linear fetch, worktree, category detect)
-- `~/.claude/rules/shotloom.md` — hub
+- `agent/lib/shotloom-github-guard.mjs` — hub GitHub guard

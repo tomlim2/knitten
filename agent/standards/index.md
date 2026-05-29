@@ -1,6 +1,6 @@
 # Standards Index
 
-On-demand reference docs. For always-applied rules see [`rules/index.md`](../rules/index.md).
+On-demand reference docs. For always-applied rules see [`agent/rules/index.md`](../rules/index.md).
 
 Use active standards as policy. Use redirect stubs only to find the skill-owned replacement reference.
 
@@ -14,12 +14,13 @@ Use active standards as policy. Use redirect stubs only to find the skill-owned 
 | [`policy/garden-review.md`](policy/garden-review.md) | accepted | pre-tag, after 30+ days clean, or structural review requested |
 | [`policy/harness-deployment-plan.md`](policy/harness-deployment-plan.md) | draft | editing the draft harness deployment plan |
 | [`policy/harness-deployment.md`](policy/harness-deployment.md) | accepted | editing harness deployment mechanics |
-| [`policy/llm-first-docs.md`](policy/llm-first-docs.md) | accepted | editing SYSTEM.md, entry documents, rules, skills, commands, or standards |
+| [`policy/llm-first-docs.md`](policy/llm-first-docs.md) | accepted | editing SYSTEM.md, entry documents, rules, skills, or standards |
 | [`policy/llm-first-policy.md`](policy/llm-first-policy.md) | accepted | designing a new layer or resolving an artifact conflict |
 | [`policy/metaphor-style.md`](policy/metaphor-style.md) | accepted | picking metaphor domain when explaining technical concepts |
-| [`policy/naming.md`](policy/naming.md) | accepted | naming a new rule, standard, command, skill, plan, or vault file |
+| [`policy/naming.md`](policy/naming.md) | accepted | naming a new rule, standard, skill, plan, or vault file |
 | [`policy/platform-adapters.md`](policy/platform-adapters.md) | accepted | classifying artifacts for multiple harnesses |
 | [`policy/principles.md`](policy/principles.md) | accepted | checking whether a pattern fits the layer model |
+| [`policy/temporary-runtime-files.md`](policy/temporary-runtime-files.md) | accepted | writing temporary runtime files that wrapup must clean |
 | [`authoring/document-templates.md`](authoring/document-templates.md) | accepted | changing a document template or finding its canonical owner |
 | [`research/research-methodology.md`](research/research-methodology.md) | accepted | doing research |
 | [`review/review-code-unreal-cpp.md`](review/review-code-unreal-cpp.md) | accepted | reviewing UE C++ code |
@@ -32,8 +33,6 @@ Use active standards as policy. Use redirect stubs only to find the skill-owned 
 
 | Stub | Replacement |
 |------|-------------|
-| [`authoring/command-skill-reference.md`](authoring/command-skill-reference.md) | `agent/skills/ah-make-command/references/COMMAND-SKILL-REFERENCE.md` |
-| [`authoring/slash-commands.md`](authoring/slash-commands.md) | `agent/skills/ah-make-command/references/SLASH-COMMANDS.md` |
 | [`cinev/cci-slack.md`](cinev/cci-slack.md) | `agent/skills/cci-serve-mcp/references/CCI-SLACK.md` |
 | [`cinev/cinev-character-asset-naming.md`](cinev/cinev-character-asset-naming.md) | `agent/skills/cci-validate-character-mat-slot-names/references/CINEV-CHARACTER-ASSET-NAMING.md` |
 | [`cinev/cinev-git-workflow.md`](cinev/cinev-git-workflow.md) | `agent/skills/cci-manage-art-branch/references/CINEV-GIT-WORKFLOW.md` |

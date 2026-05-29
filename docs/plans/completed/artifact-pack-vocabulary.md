@@ -105,11 +105,11 @@ create incompatible manifest fields, or move core bootstrap files into packs.
 | `core-artifact-boundary` | `core artifact`, `pack artifact`, `artifact type`. |
 | `artifact-pack-manifest-contract` | `artifact pack`, `artifact manifest`, artifact id, pack id, compatibility alias. |
 | `artifact-pack-discovery-routing` | `artifact resolver`, route evidence, pack install, artifact id. |
-| `artifact-pack-install-link-flow` | `pack install`, artifact pack id, artifact manifest. |
+| `installed-pack-lifecycle` | `pack install`, artifact pack id, artifact manifest. |
 | `artifact-compatibility-shims` | `compatibility shim`, canonical target id, removal criteria. |
 | `artifact-pack-validation-gates` | Every vocabulary term in this spec. |
 | `public-safety-scrub-gates` | `artifact type`, `pack artifact`, `core artifact`, pack visibility. |
-| `example-artifact-pack` | `artifact pack`, `artifact manifest`, `artifact resolver`, `pack install`. |
+| `example-skill-pack` | `artifact pack`, `artifact manifest`, `artifact resolver`, `pack install`. |
 
 ## Execution Plan
 
@@ -153,5 +153,5 @@ create incompatible manifest fields, or move core bootstrap files into packs.
 |----------|---------|
 | Glossary update timing | Done in this PR. |
 | Manifest filename | Decide in `artifact-pack-manifest-contract`. |
-| First example pack id | Decide in `example-artifact-pack`. |
+| First example skill pack id | Decide in `example-skill-pack`. |
 | Pack versioning field | Decide in `artifact-pack-manifest-contract`. |

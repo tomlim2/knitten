@@ -12,11 +12,11 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | Area | Count | Canonical owner |
 |------|------:|-----------------|
 | Harnesses | 3 | `agent/config/agent-hub.json` `harnesses` |
-| Shared layers | 6 | `agent/config/agent-hub.json` `sharedLayers` |
-| Registries | 9 | `agent/config/agent-hub.json` `registries` |
+| Shared layers | 5 | `agent/config/agent-hub.json` `sharedLayers` |
+| Registries | 12 | `agent/config/agent-hub.json` `registries` |
 | Generated documents | 5 | `agent/config/agent-hub.json` `generatedDocuments` |
 | Runtime path policies | 8 | `agent/config/agent-hub.json` `runtimePathPolicies` |
-| Validators | 22 | `agent/config/agent-hub.json` `validators` |
+| Validators | 24 | `agent/config/agent-hub.json` `validators` |
 
 ## Harnesses
 
@@ -33,7 +33,6 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | `rules` | `agent/rules` | `entry` |
 | `standards` | `agent/standards` | `on-demand` |
 | `skills` | `agent/skills` | `triggered` |
-| `commands` | `agent/commands` | `invoked` |
 | `lib` | `agent/lib` | `library` |
 | `config` | `agent/config` | `config` |
 
@@ -46,6 +45,9 @@ Do not add policy here. Put policy in `SYSTEM.md` or the owning shared layer.
 | `doc-budgets` | `agent/config/doc-budgets.json` | document length budgets |
 | `frontmatter-schema` | `agent/config/frontmatter-schema.json` | frontmatter enums and platform metadata pilot files |
 | `taxonomy` | `agent/config/taxonomy.json` | categories, standard groups, and naming patterns |
+| `managed-paths` | `agent/config/managed-paths.json` | canonical shared-layer paths, deploy aliases, and hardcoded path drift checks |
+| `artifact-pack-schema` | `agent/config/artifact-pack.schema.json` | artifact pack manifest schema |
+| `artifact-pack-core-capabilities` | `agent/config/artifact-pack-core-capabilities.json` | core capability ids accepted by artifact pack dependency refs |
 | `audit-policy` | `agent/config/audit-policy.json` | audit thresholds and severity tiers |
 | `exceptions` | `agent/config/exceptions.json` | grandfathered exceptions |
 | `slack` | `agent/config/slack.json` | non-secret Slack channel IDs and message templates |

@@ -1,5 +1,5 @@
 ---
-description: Review a Shotloom GitHub PR as the reviewer: checkout PR head, inspect code/docs diff, draft inline review comments, submit one GitHub review so threads get Resolve buttons, then verify the review landed.
+description: Leaf/component Shotloom skill for human reviewer mode only. Prefer shotloom-router for ambiguous Shotloom PR work.
 argument-hint: "<pr-number | github-pr-url>"
 allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(python3:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(sed:*), Agent
 domains: rust
@@ -97,7 +97,7 @@ Read fresh in the worktree:
 - `docs/guidelines/documentation-standard.md` when docs/comments changed
 - `docs/guidelines/pr-guideline.md`
 
-Also read `~/.claude/rules/pr-comment.md` and `~/.claude/rules/shotloom.md`
+Also read `agent/rules/pr-comment.md` and `agent/rules/git-defaults.md`
 for approval gates.
 
 ### Step 4: Inspect Diff

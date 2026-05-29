@@ -31,7 +31,7 @@ milestone: worktree-first-workflow
 | PR creation gate | `agent/rules/pr-create.md` | Done | Requires local gates, pushed branch, `--body-file`, and body read-back verification. |
 | PR mutation gate | `agent/rules/pr-mutate.md` | Done | Requires explicit per-PR approval for open, close, merge, reopen, and force-push. |
 | PR comment gate | `agent/rules/pr-comment.md` | Done | Requires full draft plus explicit approval before posting comments or reviews. |
-| Solo PR flow | `docs/plans/active/solo-pr-review-flow.md` | Partial | Defines manual objective review evidence, not automatic review execution. |
+| Solo PR flow | `docs/plans/completed/solo-pr-review-flow.md` | Done | Defines manual objective review evidence, not automatic review execution. |
 | Milestone slot | `docs/milestones/worktree-first-workflow.md` | Partial | Lists `auto-pr-review` as proposed/future with no executable spec. |
 
 ## Problem

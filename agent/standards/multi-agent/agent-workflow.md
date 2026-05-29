@@ -5,7 +5,7 @@ status: accepted
 
 **Version:** 1.1.0
 
-Standard patterns for multi-pass agent commands.
+Standard patterns for multi-pass agent workflows.
 
 ---
 
@@ -18,16 +18,16 @@ Standard patterns for multi-pass agent commands.
 
 ## Purpose
 
-This document defines the standard structure for **agent commands** — commands that chain multiple passes to accomplish complex tasks. It formalizes patterns already in use and provides building blocks for creating new agents.
+This document defines the standard structure for **agent workflows**: repeatable procedures that chain multiple passes to accomplish complex tasks. It formalizes patterns already in use and provides building blocks for creating new agent skills and scripts.
 
-**Agent definition:** A command with 2+ passes, where each pass has a distinct purpose and the output of one pass feeds the next.
+**Agent definition:** A workflow with 2+ passes, where each pass has a distinct purpose and the output of one pass feeds the next.
 
 ---
 
 ## When to Use an Agent
 
-| Simple Command | Agent |
-|----------------|-------|
+| Simple Procedure | Agent |
+|------------------|-------|
 | Single-step execution | 2+ passes with distinct purposes |
 | References one standard | Combines multiple standards |
 | Produces single output | Passes data between steps |
@@ -319,13 +319,13 @@ After all passes, include:
 
 ## Integration
 
-Agent commands follow ALL rules from `slash-commands.md` plus these additions:
+Agent workflows follow the shared artifact mechanics plus these additions:
 
 1. **Pre-execution runs once** — At agent start, not per pass.
-2. **Frontmatter follows standard** — Same field order, same Bash specificity rules.
-3. **Naming follows convention** — `{category}-{verb}-{subject}` pattern.
-4. **Pipeline declared in command** — The command file declares the full pipeline shape.
-5. **Argument validation** — Same guard rules as regular commands.
+2. **Frontmatter follows standard** — Same field order and tool specificity rules as skills.
+3. **Naming follows convention** — `{category}-{verb}-{subject}` pattern where applicable.
+4. **Pipeline declared in the artifact** — The skill, script, or plan declares the full pipeline shape.
+5. **Input validation** — State required inputs and stop when they are missing.
 
 ---
 
@@ -408,9 +408,8 @@ Shape: Fan-Out/Fan-In, 4 passes
 
 ## Testing Checklist
 
-Before finalizing an agent command, verify:
+Before finalizing an agent workflow, verify:
 
-- [ ] `slash-commands.md` rules followed (frontmatter, pre-execution, naming, argument guard)
 - [ ] Pipeline shape declared (Linear, Fan-Out, Conditional, or Loop)
 - [ ] Each pass declares all 6 interface fields (Name, Purpose, Input, Reference, Output, Execution)
 - [ ] Standard Binding table present
@@ -424,7 +423,6 @@ Before finalizing an agent command, verify:
 
 ## Related Files
 
-- `slash-commands.md` — Command authoring standard (agents are commands)
 - `unreal-engine-cpp.md` — UE C++ coding standard (Generate pass reference)
 - `review-code-unreal-cpp.md` — UE C++ review checklist (Review pass reference)
 - `review-template.md` — Code review output format

@@ -9,7 +9,7 @@ Operational standard implementing the agent-hub LLM-first charter (see `SYSTEM.m
 
 Applies unless one of three switches fires (see below). Non-exhaustive list of LLM-first artifacts:
 
-- `SYSTEM.md`, `agent/AGENTS.md`, `agent/CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `commands/*.md`, `standards/*.md`
+- `SYSTEM.md`, `agent/AGENTS.md`, `agent/CLAUDE.md`, `rules/*.md`, `skills/*/SKILL.md`, `standards/*.md`
 - Every agent-to-agent handoff: `asks/*.md`, `ops/*-briefing.md`, `ops/*-log.md`, `ops/*-timeline.md`, multi-agent dispatches, sub-agent prompts
 - Repo `README.md` (yes — even README), `AGENTS.md`, `CONTRIBUTING.md`, ADRs, design docs
 - PR bodies, commit messages, code comments, issue descriptions
@@ -93,15 +93,17 @@ If the same rule lives in two files, the LLM may follow whichever it sees and mi
 
 Banned: motivation, marketing, decoration, philosophical asides.
 
-- Banned: "Every command is a guardrail. Every skill is accumulated experience."
+- Banned: "Every skill is a guardrail. Every standard is accumulated experience."
 - Banned: `"Carefully consider the implications…"`
 - Banned: emoji, decorative dividers, ascii art.
 
 These add tokens and zero decision power.
 
-### 8. Extreme-S writing — implemented only, present tense
+### 8. Operational Writing — implemented only, present tense
 
-MBTI shorthand: write as **extreme S (Sensing)**. No N (iNtuition) statements. Only what currently exists, observable, present.
+Write docs as executable operating contracts. Use only current implemented
+facts, observable paths, commands, inputs, outputs, explicit if/else decisions,
+owned responsibilities, stop conditions, and validation evidence.
 
 Banned without explicit user agreement (or user-LLM written agreement in the same doc):
 
@@ -119,7 +121,8 @@ If a feature is unimplemented, do not describe it as if it works. Either:
 2. Mark with `status: proposed` frontmatter + `**status:** not implemented` body marker.
 3. Move to a sanctioned `*-roadmap.md` (only if user explicitly agreed to that file existing).
 
-The LLM reads docs as canonical facts. N-language pollutes those facts and propagates into actions.
+The LLM reads docs as canonical facts. Non-operational language pollutes those
+facts and propagates into actions.
 
 ---
 
@@ -149,10 +152,9 @@ Avoid:
 | `rules/*.md` (auto, body) | ≤ 40 lines | Always in cold-start context — every line costs every turn |
 | `rules/*.md` (triggered, body) | ≤ 120 lines | Loads only on declared trigger — more room for detail |
 | `skills/*/SKILL.md` | ≤ 200 lines | Loaded when invoked; push reference detail to `reference.md` |
-| `commands/*.md` | ≤ 100 lines | Loaded when invoked; thin orchestration only |
 | `standards/*.md` | ≤ 500 lines | On-demand layer 4 reference; split when reading the whole file is the bottleneck |
 
-`rules/*.md` body excludes frontmatter. The auto-vs-triggered split is declared by the rule's `load:` frontmatter field; see `rules/index.md`.
+`rules/*.md` body excludes frontmatter. The auto-vs-triggered split is declared by the rule's `load:` frontmatter field; see `agent/rules/index.md`.
 
 If a file exceeds budget, split — do not let it grow.
 
@@ -164,7 +166,7 @@ This table is the canonical reference. Other files (e.g. `rules/behavior.md`) re
 
 Before committing changes to an LLM-first doc, scan for:
 
-- N-language (intuitive, non-Sensing): future tense, aspirational, speculation, abstract patterns
+- Non-operational language: future tense, aspirational, speculation, abstract patterns
   - `will`, `going to`, `plans to`, `is planned`, `aims to`, `goal is to`
   - `could`, `probably`, `in theory`, `would likely`, `might`
   - `consider`, `usually`, `typically`, `may`, `should probably`

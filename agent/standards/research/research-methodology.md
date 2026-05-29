@@ -16,7 +16,7 @@ Standards for conducting web research on technical topics.
 
 ## Purpose
 
-This document defines the approach to researching technical concepts, tools, and best practices via web search. Use these standards when executing `/research` commands or conducting any systematic investigation.
+This document defines the approach to researching technical concepts, tools, and best practices via web search. Use these standards when conducting systematic investigation or skill-driven research workflows.
 
 ---
 
@@ -328,7 +328,7 @@ Codebase exploration only. Does NOT do web research.
 
 ## Related Files
 
-- Command: `~/.claude/commands/ah-research-web.md`
+- Skill: `~/.claude/skills/ah-make-standard/SKILL.md`
 - Output: `~/.claude/private/research/`
 
 ---

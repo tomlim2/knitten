@@ -1,5 +1,5 @@
 ---
-description: Deploy, verify, rollback, and diagnose CINEV/shotloom web image through its GitHub Actions image build and the GitOps prototype-manifest rollout. Default mode is dry-run; --for-real ships a SemVer git tag that lets ArgoCD roll the cluster.
+description: Leaf/component Shotloom skill for web deploy only. Prefer shotloom-router for full task workflows.
 argument-hint: "[--for-real] [--smoke] [--version vX.Y.Z]"
 allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*), Bash(mktemp:*), Bash(python3:*)
 domains: rust,web
@@ -8,7 +8,7 @@ languages: css,rust,typescript
 frameworks: bevy,wgpu
 task-types: deploy
 context-profile: shotloom-deploy
-context-rules: rules/git-defaults.md,rules/shotloom.md,rules/slack.md
+context-rules: rules/git-defaults.md,rules/slack.md
 exclude-when: unreal,obsidian
 ---
 
@@ -47,7 +47,7 @@ If no argument: dry-run, no smoke, suggest next patch.
 
 - **`--for-real` requires explicit per-invocation final approval.** Per `~/.claude/rules/git-defaults.md`, the skill stops one beat before `git push origin vX.Y.Z` and waits for `y`, even when `--for-real` is on the command line.
 - **No silent re-tag.** If a tag with the chosen version already exists locally or on origin, abort. Tags are immutable in GitOps.
-- **`gh` account must be `tomlim2`.** Follow the active-login check in `rules/shotloom.md`. Fail only when the active login is not `tomlim2` or cannot be read.
+- **`gh` account must be `tomlim2`.** Run `agent/lib/shotloom-github-guard.mjs`; fail when the active login is not `tomlim2` or cannot be read.
 - **Working tree clean and on `main`.** Deploy from a feature branch is meaningless.
 - **Local `main` in sync with `origin/main`.** Auto-`git fetch`, then refuse if behind.
 - **HEAD's CI must be green.** Refuse to deploy a red SHA.
@@ -64,8 +64,8 @@ toplevel=$(git rev-parse --show-toplevel)
 remote=$(git -C "$toplevel" remote get-url origin)
 case "$remote" in *CINEV/shotloom*|*CINEV/shotloom.git) ;; *) abort ;; esac
 
-gh_login=$(gh api user --jq .login 2>/dev/null) || abort "unable to read active gh login"
-[[ "$gh_login" == "tomlim2" ]] || abort "gh account must be tomlim2"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+node "$knitten_root/agent/lib/shotloom-github-guard.mjs" || abort "Shotloom GitHub guard failed"
 
 git rev-parse --abbrev-ref HEAD | grep -qx main || abort "must deploy from main"
 git status --porcelain | head -1 | grep -q . && abort "working tree not clean"
@@ -301,9 +301,27 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 ### Step 9: GitHub Release + Slack 결과 알림 (for-real only)
 
 ```bash
-release_url=$(gh release create "$version" --generate-notes --title "$version" \
-  ${prev_tag:+--notes-start-tag "$prev_tag"})
+notes_file="$(mktemp /tmp/shotloom-release-notes.XXXXXX.md)"
+if [[ -n "$prev_tag" ]]; then
+  gh api repos/CINEV/shotloom/releases/generate-notes \
+    -f tag_name="$version" \
+    -f previous_tag_name="$prev_tag" \
+    --jq '.body' \
+    | sed -E 's/ by @[^ ]+ in / in /g' > "$notes_file"
+else
+  gh api repos/CINEV/shotloom/releases/generate-notes \
+    -f tag_name="$version" \
+    --jq '.body' \
+    | sed -E 's/ by @[^ ]+ in / in /g' > "$notes_file"
+fi
+
+release_url=$(gh release create "$version" --title "$version" \
+  --notes-file "$notes_file")
 ```
+
+Release notes should stay PR-centered. Strip GitHub's generated contributor
+attribution (`by @user`) before creating the release; do not include a separate
+contributors section.
 
 Then delegate the thread-reply to `/shotloom-send-deploy-status success` — same canonical template, same per-message approval gate, same `cci-send-alert` underneath. Use this only when Step 7 returned `start_ts`.
 
@@ -443,5 +461,5 @@ When debugging suspected runtime failures, reproduce locally with a minimal `doc
 - `.github/workflows/build-web-image.yml` (in shotloom repo)
 - `apps/editor/Containerfile`, `apps/editor/nginx.conf`
 - `CINEV/prototype-manifest` — GitOps canonical source (`shotloom/deployment.yaml`, `applications/shotloom-web.yaml`)
-- `~/.claude/rules/shotloom.md`, `~/.claude/rules/git-defaults.md`, `~/.claude/rules/slack.md`
+- `agent/rules/git-defaults.md`, `agent/rules/slack.md`
 - `~/.claude/skills/cci-send-alert/` — Slack send tooling (`team_channel` from `~/.claude/config/slack.json`)

@@ -20,8 +20,6 @@ Verify all before requesting user approval to call `gh pr create`:
   `gh pr view <N> --json body` and verify code spans, validation commands, and
   issue links did not disappear.
 
-**Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated harness-side meta in `~/.claude/rules/<repo>.md`, consult and satisfy it in addition to the bullets above:
-
-- shotloom (CINEV/shotloom) → `~/.claude/rules/shotloom.md`
+**Repo-specific pre-PR rules take precedence over the generic checklist.** When the target repo has dedicated harness-side meta in `agent/rules/<repo>.md`, consult and satisfy it in addition to the bullets above.
 
 Full reference: `~/.claude/skills/cci-manage-art-branch/references/CINEV-GIT-WORKFLOW.md`.

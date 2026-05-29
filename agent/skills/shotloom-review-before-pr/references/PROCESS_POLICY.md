@@ -10,57 +10,154 @@ Operational policy for `shotloom-review-before-pr`.
 
 | Phase | Owns | Does not own |
 |---|---|---|
+| Review brief | Source-cited diff inventory, surface map, risk questions, evidence ledger, and verifier. | Defect verdicts, safety claims, or replacing raw diff review. |
+| Review quality | Blocker contract, refute pass, calibration notes. | Original defect discovery or code edits. |
 | Single code | Small, low-risk code review with the `shotloom-review-code` checklist. | Triad roles, exhaustive boundary mirror checks. |
 | Triad | Broad defect discovery for large or risky diffs across runtime/contract, QA, and maintainer/product roles. | Sequential boundary batch execution or final prose polish. |
-| Large boundary | Cross-surface contract, state, runtime, fixture, and contract-doc consistency when multiple boundary surfaces changed. | General code review, broad docs review, PR merge readiness. |
-| Docs | Final changed prose/comment/rustdoc and handoff evidence after code and boundary fixes settle. | Re-reviewing code behavior already owned by Single/Triad/Large boundary. |
-| Make-PR | Local gates, PR title/body, and explicit PR creation approval. | Pre-PR defect discovery. |
+| Implement blockers | Writing normalized blocker findings to a temporary JSON handoff file, passing that file to `shotloom-implement-code`, re-running the owning review phase, and committing loop fixes before `prReady=true`. | Finding discovery, PR creation, broad release gates, push. |
+| Docs | Final changed prose/comment/rustdoc and evidence clarity after code review settles. | Re-reviewing code behavior already owned by Single/Triad. |
 
 ## Phase Order
 
 Run phases in this order:
 
-1. Selected main review: Single code or Triad.
-2. Large-boundary batches only when triggered.
-3. Targeted docs pass.
-4. `shotloom-make-pr`, unless `review only` / `no make-pr` is active.
+1. Review mode decision.
+2. Selected main review: Single code or Triad.
+3. Code blocker handling: implement blocker findings, then repeat the selected
+   main review until code blockers are zero or implementation needs user input.
+   Commit loop fixes before continuing to docs review.
+4. Docs review.
+5. Docs blocker handling: implement blocker findings, then repeat docs review
+   until docs blockers are zero or implementation needs user input. Commit loop
+   fixes before returning `prReady=true`.
+6. Readiness summary.
 
-Each phase starts with pass A. Run verification passes B, C, ... only when fixes
-changed `HEAD` and P0-P2 findings remain. Do not loop only for P3/nit findings.
+If implementation needs missing input or product/design judgment, stop with
+readiness JSON. Non-blocking findings do not change `prReady`.
+
+## Missing Shared Policy Inputs
+
+Some Shotloom worktrees reference agent-hub shared files such as `SYSTEM.md` or
+`agent/rules/index.md` that are not present inside the Shotloom checkout. Handle
+them as structured input state, not shell noise.
+
+| Case | Action |
+|---|---|
+| Repo-requested shared file exists in cwd | Read it normally. |
+| Repo-requested shared file is missing in cwd but installed agent-hub copy exists | Read the installed/current agent-hub copy and report `shared-policy-source=<path>`. |
+| Repo-requested shared file is missing everywhere | Report `missing-shared-policy-input path=<path>` and continue only if Shotloom in-repo guidance plus loaded skill/rule context is enough for the current review. |
+| Missing input changes the review contract | Stop and ask for the correct shared-policy path. |
+
+Do not run `cat`, `sed`, or similar file reads against a path before checking it
+exists. Do not show raw `No such file or directory` output as the finding.
+
+## Validation Timing
+
+Use the smallest validation that proves the current phase.
+
+| Moment | Validation |
+|---|---|
+| Active small-edit iteration | No broad workspace test run. Use no command or one targeted command tied to changed behavior. |
+| Behavior, state, prop, accessibility, route, or data-contract change | Run the smallest targeted test/check that can fail for that contract. |
+| Commit, push, or `shotloom-make-pr` | Run the Shotloom repo-required broad gates. |
+| User explicitly asks for broad validation | Run the requested broad command and report duration/result. |
+
+Do not replace focused proof with a broad green gate. Do not run broad tests after
+each wording/style-only edit.
+
+## Finding JSON Schema
+
+Normalize supported findings before readiness output.
+
+| Field | Required | Meaning |
+|---|---|
+| `id` | yes | Stable within one run: `C1`, `T1`, `B1`, `D1`. |
+| `kind` | yes | `code`, `triad`, or `docs`. |
+| `priority` | yes | `P0`, `P1`, `P2`, or `P3`. |
+| `blocker` | yes | `true` blocks `prReady`; `false` is nit or follow-up. |
+| `status` | yes | `unresolved`, `fixed`, `accepted-follow-up`, `nit`, or `needs-normalization`. |
+| `source` | yes | Guideline, ADR, spec, pattern, or contract evidence. |
+| `file` | when available | Repo-relative path. |
+| `line` | when available | Exact or nearest line. |
+| `summary` | yes | One-sentence defect. |
+| `requiredAction` | yes for blockers | Concrete fix or focused user question. |
+| `acceptanceCheck` | yes for blockers | Test, fixture, command, or diff condition proving the fix. |
 
 ## Finding Handling
 
 | Finding | Action |
 |---|---|
-| P0-P2, in scope | Fix without asking, then verify if `HEAD` changed. |
-| P0-P2, ambiguous | Ask one focused question before editing. |
-| P0-P2, out of scope | Ask whether to accept risk or split follow-up. |
-| P0-P2, product/design decision | Ask before editing. |
-| P3/nit | Fix or accept once; do not cycle only for nits. |
+| Supported P0-P2, in scope | Mark `blocker=true`; write to the phase handoff JSON for `shotloom-implement-code`. |
+| Supported P0-P2, ambiguous | Mark `blocker=true`; ask one focused question before editing. |
+| Supported P0-P2, out of scope | Mark `blocker=true` unless the user accepts it as follow-up. |
+| Supported P0-P2, product/design decision | Mark `blocker=true`; ask before editing. |
+| P3/nit | Mark `blocker=false`; include in findings without changing readiness. |
+| Missing required schema field | Mark `status=needs-normalization`; treat as blocker when blocker risk exists. |
 
-## Handoff
+## Readiness JSON
 
-If any P0-P2 finding remains unaccepted, stop and report blockers. Do not invoke
-`shotloom-make-pr`.
+Every run writes one result file and prints the same JSON block. The result file
+path is `/tmp/shotloom-before-pr-<safe-branch>-readiness.json`, where
+`<safe-branch>` maps slash and whitespace to `-`.
 
-If all fired phases are clean or nit-only:
+```json
+{
+  "prReady": false,
+  "phase": "code-review",
+  "branch": "feat/example",
+  "headSha": "abc1234",
+  "dirty": true,
+  "resultPath": "/tmp/shotloom-before-pr-feat-example-readiness.json",
+  "needsTriad": false,
+  "blockersRemaining": 1,
+  "findings": [
+    {
+      "id": "C1",
+      "kind": "code",
+      "priority": "P2",
+      "blocker": true,
+      "status": "unresolved",
+      "source": "docs/guidelines/review-rust.md §3",
+      "file": "crates/example/src/lib.rs",
+      "line": 42,
+      "summary": "Fallible IO error is dropped.",
+      "requiredAction": "Preserve and return the error.",
+      "acceptanceCheck": "Targeted test fails before the fix and passes after it."
+    }
+  ]
+}
+```
 
-- If `review only` / `no make-pr` is active, stop after the final review report.
-- Else invoke `shotloom-make-pr` in the same worktree.
+Set `prReady=true` when `blockersRemaining=0`.
+Set `dirty=false` only after blocker fixes are committed or no worktree changes
+were produced by this run.
+
+## Review Summary
+
+Report the review state after the JSON.
+
+| State | Summary text |
+|---|---|
+| Blocker remains | `Review summary: blockers remain.` List each blocker. |
+| Blockers fixed or accepted | `Review summary: blockers fixed or accepted.` List evidence. |
+| Nit-only | `Review summary: nit-only; prReady=true.` List optional items. |
+| Clean | `Review summary: clean; prReady=true.` List phases run. |
 
 `shotloom-make-pr` owns local CI-equivalent gates, PR title/body drafting, and
 explicit approval before `gh pr create`.
 
 ## Binding Rules
 
-- Always print the Review Mode Decision before launching review agents.
-- Always run one selected main review before docs.
+- Print the `needsTriad` decision JSON before launching review agents.
+- Run `REVIEW_QUALITY.md` -> `Finding Quality Check` before `Finding Handling`.
+- Run one selected main review before docs.
 - In Single mode, run code pass A only.
 - In Triad mode, run triad pass A only; never run code pass A in the same chain.
-- Treat PR scope as a reviewable truth source: when the diff combines multiple
-  Linear scopes, the PR title/body and related issue list must name the combined
-  boundary or the reviewer should report a scope-control finding.
-- Always use read-only Explore subagents.
-- Never run verification unless the matching phase changed `HEAD`.
-- Label every follow-up pass as independent verification.
-- Do not push, create PRs, or post PR comments inside this review skill.
+- Write blocker findings to `/tmp/shotloom-before-pr-<phase>-blockers.json`
+  before invoking `shotloom-implement-code`; do not make review child skills own
+  implementation routing.
+- Treat branch scope as a reviewable signal: when the diff combines multiple
+  Linear scopes, the issue/spec evidence should name the combined boundary. If
+  not, report a scope-control finding.
+- Use read-only Explore subagents.
+- Keep commits, pushes, PR creation, and PR comments outside this review skill.

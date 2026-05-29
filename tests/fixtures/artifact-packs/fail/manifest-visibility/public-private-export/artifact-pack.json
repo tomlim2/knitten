@@ -1,0 +1,24 @@
+{
+  "schema-version": 1,
+  "pack-id": "public-private-export",
+  "display-name": "Public Private Export",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid public visibility fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "private-doc",
+      "artifact-type": "doc",
+      "path": "docs/private.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "private.md",
+        "mode": "copy"
+      },
+      "load": "manual",
+      "privacy-risk": "private-only"
+    }
+  ]
+}
