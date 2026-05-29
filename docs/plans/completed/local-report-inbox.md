@@ -28,6 +28,7 @@ Define a gitignored local inbox for report-only cross-session handoff.
 | Local inbox path | Use `.agent-local/reports/` for report-only handoff files. |
 | Git behavior | `.agent-local/` is ignored; files under it are never committed. |
 | Branch behavior | Do not create a branch or worktree solely to write a local report. |
+| Starter behavior | Do not run `scripts/worktree-start.mjs` for report-only handoff. |
 | Main checkout behavior | Writing `.agent-local/reports/*` from the main checkout is allowed because the path is ignored. |
 | Durable escalation | If a report becomes policy, spec, decision, rule, standard, milestone, or accepted finding, move the content into the tracked owner path and use the normal worktree/PR flow. |
 

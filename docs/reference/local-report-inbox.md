@@ -12,6 +12,10 @@ owner: agent-hub
 Use `.agent-local/reports/` for report-only cross-session handoff that must not
 create a branch, worktree, commit, or PR.
 
+Do not run `scripts/worktree-start.mjs` for report-only handoff. The inbox is
+the exception path that exists so another session can leave local state without
+creating git state.
+
 ## Path Contract
 
 | Path | Status | Use |
@@ -40,7 +44,7 @@ create a branch, worktree, commit, or PR.
 
 | Situation | Action |
 |---|---|
-| User asks only to leave a local report for another session | Write `.agent-local/reports/<date>-<slug>.md` from the current checkout. |
+| User asks only to leave a local report for another session | Write `.agent-local/reports/<date>-<slug>.md` from the current checkout; do not create a branch or worktree. |
 | User asks to implement, fix, document durable policy, or commit | Use the normal worktree-first flow. |
 | A local report contains a decision that must persist | Move the decision into the tracked owner path, then commit through PR flow. |
 
