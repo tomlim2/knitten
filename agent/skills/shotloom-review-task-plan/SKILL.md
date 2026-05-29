@@ -1,5 +1,5 @@
 ---
-description: Validate an existing Shotloom task spec before implementation; gather fresh Linear/code/docs context, patch the spec contract until only nit findings remain, commit and push spec-only changes, share the spec, then ask whether to implement
+description: Leaf/component Shotloom skill for reviewing an existing task spec. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[slug-or-path]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 domains: rust

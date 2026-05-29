@@ -1,5 +1,5 @@
 ---
-description: Find stale Shotloom Linear issues — dead in-progress, state/worktree mismatch, zombie tickets
+description: Leaf/component Shotloom skill for stale Linear issue audit. Prefer shotloom-router for choosing a full workflow.
 argument-hint: "[--days N]"
 allowed-tools: Bash(gh:*), Bash(git:*)
 ---

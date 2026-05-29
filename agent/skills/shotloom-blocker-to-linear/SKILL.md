@@ -1,5 +1,5 @@
 ---
-description: Post a blocker or progress note to the current Shotloom Linear issue as a comment
+description: Leaf/component Shotloom skill for posting a Linear blocker/progress note only. Prefer shotloom-router for full task workflows.
 argument-hint: "<blocker description>"
 allowed-tools: Read, Bash(git:*)
 ---

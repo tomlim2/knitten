@@ -14,6 +14,11 @@ exclude-when: unreal,obsidian
 
 # shotloom-respond-pr
 
+## Role
+
+User-facing orchestrator. For ambiguous Shotloom task selection, start with
+[`../shotloom-router/SKILL.md`](../shotloom-router/SKILL.md).
+
 Read GitHub PR review comments on a Shotloom PR, fix each item, commit, post inline replies, and re-request review. Never auto-resolves threads — the reviewer owns resolution.
 
 Scope: GitHub PR review response only. Input starts from GitHub PR review

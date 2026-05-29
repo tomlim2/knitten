@@ -1,5 +1,5 @@
 ---
-description: Draft a new Shotloom ADR following repo conventions, scan existing ADRs for conflicts
+description: Leaf/component Shotloom skill for ADR drafting only. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "<short-kebab-title>"
 allowed-tools: Read, Write, Glob, Grep, Bash(ls:*), Bash(git:*)
 ---

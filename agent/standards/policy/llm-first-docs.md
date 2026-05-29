@@ -99,9 +99,11 @@ Banned: motivation, marketing, decoration, philosophical asides.
 
 These add tokens and zero decision power.
 
-### 8. Extreme-S writing — implemented only, present tense
+### 8. Operational Writing — implemented only, present tense
 
-MBTI shorthand: write as **extreme S (Sensing)**. No N (iNtuition) statements. Only what currently exists, observable, present.
+Write docs as executable operating contracts. Use only current implemented
+facts, observable paths, commands, inputs, outputs, explicit if/else decisions,
+owned responsibilities, stop conditions, and validation evidence.
 
 Banned without explicit user agreement (or user-LLM written agreement in the same doc):
 
@@ -119,7 +121,8 @@ If a feature is unimplemented, do not describe it as if it works. Either:
 2. Mark with `status: proposed` frontmatter + `**status:** not implemented` body marker.
 3. Move to a sanctioned `*-roadmap.md` (only if user explicitly agreed to that file existing).
 
-The LLM reads docs as canonical facts. N-language pollutes those facts and propagates into actions.
+The LLM reads docs as canonical facts. Non-operational language pollutes those
+facts and propagates into actions.
 
 ---
 
@@ -163,7 +166,7 @@ This table is the canonical reference. Other files (e.g. `rules/behavior.md`) re
 
 Before committing changes to an LLM-first doc, scan for:
 
-- N-language (intuitive, non-Sensing): future tense, aspirational, speculation, abstract patterns
+- Non-operational language: future tense, aspirational, speculation, abstract patterns
   - `will`, `going to`, `plans to`, `is planned`, `aims to`, `goal is to`
   - `could`, `probably`, `in theory`, `would likely`, `might`
   - `consider`, `usually`, `typically`, `may`, `should probably`

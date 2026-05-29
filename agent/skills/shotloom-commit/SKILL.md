@@ -1,5 +1,5 @@
 ---
-description: Stage-aware Shotloom commit guideline helper — inspect staged changes, deliver commit/push checklist, draft conventional commit message, commit
+description: Leaf/component Shotloom skill for committing a prepared diff only. Prefer shotloom-router for full task or PR workflows.
 argument-hint: "[extra message hint]"
 allowed-tools: Read, Bash(git:*), Bash(cargo:*), Bash(node:*), Bash(pnpm:*)
 ---

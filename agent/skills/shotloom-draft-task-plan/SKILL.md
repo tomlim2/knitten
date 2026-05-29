@@ -1,5 +1,5 @@
 ---
-description: Compatibility entry for Shotloom task specs; prefer shotloom-draft-spec for user-facing flows
+description: Compatibility leaf/component Shotloom skill. Prefer shotloom-router, then shotloom-draft-spec for user-facing spec work.
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 context-rules: rules/shotloom-docs-lane.md

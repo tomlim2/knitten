@@ -16,6 +16,11 @@ exclude-when: unreal,obsidian
 
 Shotloom pre-implementation orchestrator.
 
+## Role
+
+User-facing orchestrator. For ambiguous Shotloom task selection, start with
+[`../shotloom-router/SKILL.md`](../shotloom-router/SKILL.md).
+
 ## Purpose
 
 Run the full preparation path before source edits:
@@ -129,6 +134,8 @@ Implementation begins only after a separate user message such as `구현 시작`
 
 ## Related
 
+- [`shotloom-router`](../shotloom-router/SKILL.md) — first-read Shotloom task router
+- [`shotloom-skill-map`](../shotloom-skill-map.md) — orchestrator and leaf/component map
 - [`shotloom-start-task`](../shotloom-start-task/SKILL.md) — Ready briefing
 - [`shotloom-draft-spec`](../shotloom-draft-spec/SKILL.md) — spec authoring and review
 - [`shotloom-review-task-plan`](../shotloom-review-task-plan/SKILL.md) — spec review gate

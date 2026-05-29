@@ -1,5 +1,5 @@
 ---
-description: Run Shotloom local gates in parallel — fast by default, full when requested
+description: Leaf/component Shotloom skill for local gates only. Prefer shotloom-router for full task or PR workflows.
 argument-hint: "[--fast|--full]"
 allowed-tools: Bash(cargo:*), Bash(node:*), Bash(pnpm:*), Bash(git:*)
 ---

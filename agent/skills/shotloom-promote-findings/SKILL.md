@@ -1,5 +1,5 @@
 ---
-description: Promote Shotloom operational findings into executable validation targets or layer-specific promoted-finding ledgers.
+description: Leaf/component Shotloom skill for promoting operational findings only. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[--dry-run]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(node:*), Bash(date:*)
 domains: rust,typescript

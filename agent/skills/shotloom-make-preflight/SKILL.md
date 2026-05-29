@@ -1,5 +1,5 @@
 ---
-description: Load all Shotloom rules/conventions/standards into a base session for forking — run once per day, fork for actual work
+description: Leaf/component Shotloom skill for preflight context loading only. Prefer shotloom-router for full task workflows.
 allowed-tools: Read, Glob, Bash(git:*), Bash(ls:*), Bash(date:*)
 domains: rust
 repo-keys: shotloom

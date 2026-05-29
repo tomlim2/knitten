@@ -1,5 +1,5 @@
 ---
-description: Cold-start Rust/TS code-quality review via Explore subagent using resolver-selected Shotloom guidance and supplemental patterns.
+description: Leaf/component Shotloom code review lens. Prefer shotloom-router or shotloom-review-before-pr for full pre-PR readiness.
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(pwd), Bash(cd:*), Bash(node:*)
 domains: rust
 repo-keys: shotloom
@@ -12,6 +12,13 @@ exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-code
+
+## Role
+
+Leaf/component skill. Prefer
+[`../shotloom-review-before-pr/SKILL.md`](../shotloom-review-before-pr/SKILL.md)
+for a full pre-PR readiness request unless the user explicitly asks for the code
+review lens only.
 
 Cold-start code-quality review for a Shotloom branch.
 

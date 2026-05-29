@@ -14,6 +14,11 @@ exclude-when: unreal,obsidian
 
 # shotloom-implement-code
 
+## Role
+
+User-facing orchestrator. For ambiguous Shotloom task selection, start with
+[`../shotloom-router/SKILL.md`](../shotloom-router/SKILL.md).
+
 Implement Shotloom source changes from either:
 
 - an approved spec after the task-preparation flow;

@@ -1,5 +1,5 @@
 ---
-description: Library of ad-hoc Rust analysis scripts for the shotloom retarget pipeline — VRM rest dump, ARP source rest dump, FBX finger-animation activity scan, Option B world-transport derivation. Drop into a worktree's `tests/` directory, run, capture data, delete.
+description: Leaf/component Shotloom skill for ad-hoc rig analysis scripts only. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[script-name]  (omit to list available scripts)"
 allowed-tools: Read, Bash(cargo:*), Bash(cp:*), Bash(rm:*), Bash(ls:*), Bash(mkdir:*), Write
 ---

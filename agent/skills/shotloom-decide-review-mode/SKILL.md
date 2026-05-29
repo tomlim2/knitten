@@ -1,5 +1,5 @@
 ---
-description: Decide whether a Shotloom branch needs triad review by evaluating a checklist against the branch diff.
+description: Leaf/component Shotloom skill for review mode selection. Prefer shotloom-router or shotloom-review-before-pr for full pre-PR readiness.
 argument-hint: "[force single|force standard|force triad]"
 allowed-tools: Read, Grep, Bash(git:*), Bash(rg:*), Bash(pwd)
 domains: rust

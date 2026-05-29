@@ -1,5 +1,5 @@
 ---
-description: Run three-lens Shotloom code review for branches where needsTriad=true.
+description: Leaf/component Shotloom triad review runner. Prefer shotloom-router or shotloom-review-before-pr for full pre-PR readiness.
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(pwd), Bash(node:*)
 domains: rust
 repo-keys: shotloom

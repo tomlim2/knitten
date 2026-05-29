@@ -1,5 +1,5 @@
 ---
-description: "Post Shotloom deploy start / success notices to the CINEV team Slack channel via Arnyang. Two phases: start (top-level notice + detail thread reply) and success (broadcast + detail thread reply)."
+description: Leaf/component Shotloom skill for deploy status notices only. Prefer shotloom-router for full deploy workflows.
 argument-hint: "<start|success> --version vX.Y.Z [field flags]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*)
 domains: rust,web

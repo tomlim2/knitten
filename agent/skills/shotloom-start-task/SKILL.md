@@ -1,10 +1,17 @@
 ---
-description: Start a task from a Linear issue by validating usability, gathering related planning context, and writing a briefing
+description: Leaf/component Shotloom skill for start-task intake only. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "STL-NN | linear-url"
 allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*)
 ---
 
 # shotloom-start-task
+
+## Role
+
+Leaf/component skill. Prefer
+[`../shotloom-prepare-task/SKILL.md`](../shotloom-prepare-task/SKILL.md) for a
+full task-preparation request unless the user explicitly asks for start-task
+only.
 
 Start-task intake flow. It validates that the skill can run, gathers the Linear
 issue body plus related external planning/material context, writes a briefing

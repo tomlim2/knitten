@@ -1,5 +1,5 @@
 ---
-description: Background Shotloom PR watcher + event-driven auto-responder (nohup polls, Claude reacts only on change)
+description: Leaf/component Shotloom skill for background PR watching only. Prefer shotloom-router for full PR response workflows.
 argument-hint: "[start|stop|status|react] <pr-number>"
 allowed-tools: Read, Write, Edit, Glob, Grep, Agent, Bash(gh:*), Bash(git:*), Bash(launchctl:*), Bash(bash:*), Bash(cargo:*), Bash(node:*), Bash(jq:*), Bash(chmod:*), Bash(ls:*), Bash(mkdir:*), Bash(date:*), Bash(sed:*), Bash(kill:*), Bash(cat:*)
 domains: rust

@@ -1,5 +1,5 @@
 ---
-description: Deploy, verify, rollback, and diagnose CINEV/shotloom web image through its GitHub Actions image build and the GitOps prototype-manifest rollout. Default mode is dry-run; --for-real ships a SemVer git tag that lets ArgoCD roll the cluster.
+description: Leaf/component Shotloom skill for web deploy only. Prefer shotloom-router for full task workflows.
 argument-hint: "[--for-real] [--smoke] [--version vX.Y.Z]"
 allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*), Bash(mktemp:*), Bash(python3:*)
 domains: rust,web

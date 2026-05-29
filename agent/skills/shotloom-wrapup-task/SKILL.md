@@ -6,7 +6,11 @@ allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(awk:*), Ba
 
 # shotloom-wrapup-task
 
-Wraps up one Shotloom task cleanly: transition Linear, remove the worktree + branch, stop the watcher, and delegate retrospective logging.
+Role: user-facing orchestrator. For ambiguous Shotloom task selection, start
+with [`../shotloom-router/SKILL.md`](../shotloom-router/SKILL.md).
+
+Wraps up one Shotloom task cleanly: transition Linear, remove the worktree and
+branch, stop the watcher, and delegate retrospective logging.
 
 Use when:
 - A PR has merged and `/shotloom-auto-pr` wasn't running to auto-cleanup, OR

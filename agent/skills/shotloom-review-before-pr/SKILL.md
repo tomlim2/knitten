@@ -14,6 +14,11 @@ exclude-when: unreal,obsidian
 
 # shotloom-review-before-pr
 
+## Role
+
+User-facing orchestrator. For ambiguous Shotloom task selection, start with
+[`../shotloom-router/SKILL.md`](../shotloom-router/SKILL.md).
+
 Run the pre-PR review/fix loop for the current Shotloom branch.
 
 Contract:

@@ -1,5 +1,5 @@
 ---
-description: Draft and open a Shotloom PR after prReady=true, per repo guideline, with local gates and approval before `gh pr create`
+description: Leaf/component Shotloom skill for PR creation after prReady=true. Prefer shotloom-router or shotloom-review-before-pr before PR creation.
 argument-hint: "[pr-number-to-supersede]"
 allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*)
 domains: rust

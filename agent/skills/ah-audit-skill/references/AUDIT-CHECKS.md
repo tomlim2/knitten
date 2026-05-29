@@ -29,7 +29,7 @@ unless the target is outside validator scope or the validator result is skipped.
 | W5 | Paired examples | Boundary rules show Bad and Good examples |
 | W6 | No duplication | Content is not copied from an auto-loaded rule or standard |
 | W7 | No rhetoric | Candidate sweep W7 below |
-| W8 | Extreme-S writing | Candidate sweep W8 below |
+| W8 | Operational Writing | Candidate sweep W8 below |
 
 ```bash
 rg -nw -e powerful -e elegant -e comprehensive -e world-class -e seamless -e robust "$target"

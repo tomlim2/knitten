@@ -1,5 +1,5 @@
 ---
-description: Cold-start docs / wording / markup review via Explore subagent — Patterns G + H + I + M + S. Pair skill of shotloom-review-code
+description: Leaf/component Shotloom docs review lens. Prefer shotloom-router or shotloom-review-before-pr for full pre-PR readiness.
 allowed-tools: Read, Agent, Bash(git:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(grep:*), Bash(node:*), Bash(pwd), Bash(cd:*)
 domains: rust
 repo-keys: shotloom
@@ -12,6 +12,13 @@ exclude-when: unreal,obsidian
 ---
 
 # shotloom-review-docs
+
+## Role
+
+Leaf/component skill. Prefer
+[`../shotloom-review-before-pr/SKILL.md`](../shotloom-review-before-pr/SKILL.md)
+for a full pre-PR readiness request unless the user explicitly asks for the docs
+review lens only.
 
 Standalone cold-start docs / wording / markup review for a Shotloom branch.
 

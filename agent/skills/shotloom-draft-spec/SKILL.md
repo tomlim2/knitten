@@ -1,5 +1,5 @@
 ---
-description: Author and review a Shotloom task spec after shotloom-start-task; commit/push the briefing and reviewed spec, then ask before implementation
+description: Leaf/component Shotloom skill for spec authoring after start-task. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
 domains: rust
@@ -13,6 +13,13 @@ exclude-when: unreal,obsidian
 ---
 
 # shotloom-draft-spec
+
+## Role
+
+Leaf/component skill. Prefer
+[`../shotloom-prepare-task/SKILL.md`](../shotloom-prepare-task/SKILL.md) for a
+full pre-implementation request unless start-task already produced a Ready
+briefing.
 
 User-facing Shotloom spec workflow after `/shotloom-start-task`.
 
