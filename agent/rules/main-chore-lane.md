@@ -7,6 +7,13 @@ trigger: committing or pushing from the primary main checkout in a worktree-firs
 
 Use the primary `main` checkout only for a narrow safe chore lane.
 
+## Main Worktree Boundary
+
+Use the main checkout only for coordination: status checks, fetch, pull,
+fast-forward merge, push, worktree management, and cleanup. Before editing files
+for any task, create or switch to a non-main worktree branch. If main is dirty,
+stop and ask whether to move, commit, or discard the changes.
+
 Knitten lane requirements:
 
 | Field | Rule |
