@@ -6,21 +6,21 @@ import { spawnSync } from "node:child_process";
 
 function usage() {
   console.error(`Usage:
-  github-pr-review-snapshot.mjs <pr> [--repo owner/name] [--out-dir path] [--prefix name] [--threads]
+  github-pr-review-snapshot.mjs <pr> [--repo owner/name] --out-dir path [--prefix name] [--threads]
 
 Fetches PR metadata, inline review comments, and review records into JSON files.
 Defaults match shotloom-respond-pr cache names.
 
 Examples:
   github-pr-review-snapshot.mjs 404
-  github-pr-review-snapshot.mjs 404 --prefix post --threads
-  github-pr-review-snapshot.mjs 404 --out-dir ~/.claude/ops/pr-404`);
+  github-pr-review-snapshot.mjs 404 --out-dir .agent-local/shotloom/pr/404
+  github-pr-review-snapshot.mjs 404 --out-dir .agent-local/shotloom/pr/404 --prefix post --threads`);
 }
 
 function parseArgs(argv) {
   const args = {
     repo: process.env.GH_REPO || "CINEV/shotloom",
-    outDir: "/tmp",
+    outDir: "",
     prefix: "",
     threads: false,
     positional: [],
@@ -44,7 +44,12 @@ function parseArgs(argv) {
     }
   }
 
-  if (args.positional.length !== 1 || !/^[0-9]+$/.test(args.positional[0]) || !args.repo.includes("/")) {
+  if (
+    args.positional.length !== 1 ||
+    !/^[0-9]+$/.test(args.positional[0]) ||
+    !args.repo.includes("/") ||
+    !args.outDir
+  ) {
     usage();
     process.exit(2);
   }

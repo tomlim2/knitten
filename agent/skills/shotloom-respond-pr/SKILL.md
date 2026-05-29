@@ -71,17 +71,27 @@ Save each fetch to a per-PR cache file so later steps can re-read without re-fet
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS"
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+    | jq -r '.absoluteCleanupPath'
+)"
+node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS" --out-dir "$cache_dir"
 ```
 
 Then build the start-context JSON:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/github-pr-respond-start-context.mjs" "$ARGUMENTS" --write
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+    | jq -r '.absoluteCleanupPath'
+)"
+node "$knitten_root/agent/lib/github-pr-respond-start-context.mjs" "$ARGUMENTS" --out-dir "$cache_dir" --write
 ```
 
-`/tmp/pr<N>-respond-start.json` is the workflow intake contract:
+`.agent-local/shotloom/pr/<N>/pr<N>-respond-start.json` is the workflow intake contract:
 
 - `pr<N>-comments.json` — array of inline comments (`id`, `path`, `line`, `body`, `diff_hunk`, `user.login`)
 - `pr<N>-reviews.json` — array of reviews with `state` and `user.login`; Step 9 reads this to compute the `CHANGES_REQUESTED` reviewer roster.
@@ -97,7 +107,7 @@ stop and repeat Step 1.
 
 ### Step 3: Classify + record feedback table
 
-Read `/tmp/pr<N>-respond-start.json`. Process every `reviewItems[]` entry under
+Read the start-context JSON in `.agent-local/shotloom/pr/<N>/`. Process every `reviewItems[]` entry under
 the Step 1 author-neutral rule. Assign exactly one route per actionable item.
 The route controls Step 4 work and the Step 7 reply-plan entry.
 
@@ -246,8 +256,13 @@ Right before building the reply plan, run:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS"
-node "$knitten_root/agent/lib/github-pr-respond-start-context.mjs" "$ARGUMENTS" --write
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+    | jq -r '.absoluteCleanupPath'
+)"
+node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS" --out-dir "$cache_dir"
+node "$knitten_root/agent/lib/github-pr-respond-start-context.mjs" "$ARGUMENTS" --out-dir "$cache_dir" --write
 ```
 
 Compare the refreshed `reviewItems[]` to the Step 3 classification table. Any
@@ -264,9 +279,17 @@ Step 8 while the question could change the fix scope, PR body, suppressed
 summary reply, or re-request roster. Do not run the approval-state helper until
 the current start context has no unresolved `ask-user` route.
 
-Create `/tmp/pr${ARGUMENTS}-reply-plan.json` from the refreshed start context,
+Create `reply-plan.json` under `.agent-local/shotloom/pr/<N>/` from the refreshed start context,
 Step 3 routes, and Step 4 evidence. This is the Step 7 execution contract.
 Step 8 and Step 9 read this file; they do not re-derive routing fields.
+
+```bash
+reply_plan="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" reply-plan \
+    | jq -r '.absolutePath'
+)"
+```
 
 Plan item rules:
 - Add one `items[]` entry per resolved inline finding.
@@ -315,8 +338,15 @@ review state and item metadata:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+    | jq -r '.absoluteCleanupPath'
+)"
+reply_plan="$cache_dir/reply-plan.json"
 node "$knitten_root/agent/lib/github-pr-approved-state-plan.mjs" "$ARGUMENTS" \
-  --plan /tmp/pr${ARGUMENTS}-reply-plan.json \
+  --plan "$reply_plan" \
+  --out-dir "$cache_dir" \
   --write
 ```
 
@@ -357,8 +387,13 @@ When `RESPOND_PR_RESOLVE_THREADS=1` is set, resolve threads through the helper:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+    | jq -r '.absoluteCleanupPath'
+)"
 node "$knitten_root/agent/lib/github-pr-resolve-review-threads.mjs" "$ARGUMENTS" \
-  --plan /tmp/pr${ARGUMENTS}-reply-plan.json \
+  --plan "$cache_dir/reply-plan.json" \
   --yes
 ```
 
@@ -373,19 +408,25 @@ Re-request is the signal that "I'm done with this round; please re-review." It r
 1. Identify reviewers to re-request from the cache files Step 2 saved. The two files have different shapes — view is an object, reviews is an array — so jq filters MUST run against the matching file. Mixing them in one `jq … fileA fileB` invocation crashes with `Cannot index array with string "reviewRequests"`.
 
    ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+   cache_dir="$(
+     node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+       --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+       | jq -r '.absoluteCleanupPath'
+   )"
    # Branch on cached reviewDecision (object field on view)
-   DECISION=$(jq -r '.reviewDecision // ""' "/tmp/pr${ARGUMENTS}-view.json")
+   DECISION=$(jq -r '.reviewDecision // ""' "$cache_dir/pr${ARGUMENTS}-view.json")
 
    if [[ "$DECISION" == "CHANGES_REQUESTED" ]]; then
      # Reviewers who requested changes — array of review records
      jq -r '.[] | select(.state=="CHANGES_REQUESTED") | .user.login' \
-       "/tmp/pr${ARGUMENTS}-reviews.json" | sort -u
+       "$cache_dir/pr${ARGUMENTS}-reviews.json" | sort -u
    else
      # Union of pending review requests + everyone who has reviewed.
      # Run two jq invocations against the right file each, then union.
      {
-       jq -r '.reviewRequests[]?.login' "/tmp/pr${ARGUMENTS}-view.json"
-       jq -r '.[]?.user.login' "/tmp/pr${ARGUMENTS}-reviews.json"
+       jq -r '.reviewRequests[]?.login' "$cache_dir/pr${ARGUMENTS}-view.json"
+       jq -r '.[]?.user.login' "$cache_dir/pr${ARGUMENTS}-reviews.json"
      } | sort -u
    fi | grep -v "^$(gh api user --jq '.login')$" || true   # drop self from roster (GitHub rejects self re-request)
    ```
@@ -406,7 +447,12 @@ summary:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS" --prefix post --threads
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$ARGUMENTS" log \
+    | jq -r '.absoluteCleanupPath'
+)"
+node "$knitten_root/agent/lib/github-pr-review-snapshot.mjs" "$ARGUMENTS" --out-dir "$cache_dir" --prefix post --threads
 gh pr checks "$ARGUMENTS" --watch=false
 ```
 

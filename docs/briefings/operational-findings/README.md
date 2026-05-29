@@ -1,13 +1,20 @@
 # Operational Findings
 
-Knitten-wide operational findings live here after capture.
+Knitten-wide operational finding references live here after promotion.
+
+Raw finding capture is temporary and local:
+
+```text
+.agent-local/ah/operational-findings/YYYY-MM-DD/
+```
 
 | Path | Purpose |
 |------|---------|
-| `reports/` | One report-context file per captured finding cluster. |
+| `reports/` | Legacy promoted or retained report stubs. Do not write new raw captures here. |
 | `fast-track-manual.md` | Manual route for urgent findings. |
 
-The canonical index is `docs/briefings/operational-findings-inbox.md`.
+The temporary daily index is
+`.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md`.
 
 ## Completion Policy
 

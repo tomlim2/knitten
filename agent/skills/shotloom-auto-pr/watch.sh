@@ -3,15 +3,24 @@
 # invokes claude -p only when an actual change is detected.
 #
 # Usage: watch.sh <pr-number>
-# Called by start.sh's nohup sleep loop every N seconds (NOT launchd —
-# launchd is blocked from ~/.claude/ by macOS TCC). Designed to exit 0
+# Called by start.sh's nohup sleep loop every N seconds. Designed to exit 0
 # silently on no-change.
 
 set -euo pipefail
 
 PR="${1:?usage: watch.sh <pr-number>}"
 REPO="CINEV/shotloom"
-OPS_DIR="$HOME/.claude/ops/pr-$PR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KNITTEN_ROOT="${KNITTEN_ROOT:-$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)}"
+HELPER_RESOLVER="$KNITTEN_ROOT/agent/lib/resolve-helper-path.mjs"
+LOCAL_RESOLVER="$(
+  node "$HELPER_RESOLVER" --root "$KNITTEN_ROOT" resolve-local-artifact-path \
+    | jq -r '.absolutePath'
+)"
+OPS_DIR="$(
+  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" log \
+    | jq -r '.absoluteCleanupPath'
+)"
 STATE="$OPS_DIR/state.json"
 LOG="$OPS_DIR/log.md"
 LOCK="$OPS_DIR/watch.lock"
@@ -206,7 +215,7 @@ if [[ "$STATE_NOW" == "MERGED" || "$STATE_NOW" == "CLOSED" ]]; then
   jq -n --arg pr "$PR" --arg state "$STATE_NOW" --arg reason "terminal" \
     '{pr: ($pr|tonumber), kind: "terminal", state: $state}' > "$EVENT"
   claude -p "/shotloom-auto-pr react $PR" >/dev/null 2>&1 &
-  # unload launchd agent for this PR
+  # cleanup legacy launchd agent for this PR
   PLIST="$HOME/Library/LaunchAgents/com.shotloom.autopr.$PR.plist"
   [[ -f "$PLIST" ]] && launchctl unload "$PLIST" 2>/dev/null && rm -f "$PLIST"
   exit 0

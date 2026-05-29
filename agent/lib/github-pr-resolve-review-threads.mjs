@@ -12,8 +12,8 @@ matching unresolved threads. Defaults to dry-run. Pass --yes only after the
 reply plan execution has been approved.
 
 Examples:
-  github-pr-resolve-review-threads.mjs 404 --plan /tmp/pr404-reply-plan.json
-  github-pr-resolve-review-threads.mjs 404 --plan /tmp/pr404-reply-plan.json --yes`);
+  github-pr-resolve-review-threads.mjs 404 --plan .agent-local/shotloom/pr/404/reply-plan.json
+  github-pr-resolve-review-threads.mjs 404 --plan .agent-local/shotloom/pr/404/reply-plan.json --yes`);
 }
 
 export function parseArgs(argv) {

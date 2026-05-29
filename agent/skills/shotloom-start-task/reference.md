@@ -136,17 +136,17 @@ signal.
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 knitten="$(node "$knitten_root/agent/lib/resolve-repo-path.mjs" knitten)"
-rg --files "$knitten/docs/plans" "$knitten/docs/briefings/shotloom" \
+rg --files "$knitten/docs/plans" "$knitten/.agent-local/shotloom/planning" \
   2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 git -C "$knitten" log --diff-filter=D --name-only --pretty=format: -- \
-  "docs/plans/" "docs/briefings/shotloom/" | rg -i "<scope>|<subject>"
+  "docs/plans/" ".agent-local/shotloom/planning/" | rg -i "<scope>|<subject>"
 ```
 
 ---
 
 ## Step 6 — Ready briefing artifact template
 
-Path: `docs/briefings/shotloom/<slug>.md`
+Path: `.agent-local/shotloom/planning/stl-<N>/brief.md`
 
 ```markdown
 ---
@@ -195,7 +195,7 @@ spec: ../../plans/proposed/<slug>.md
 - [x] targeted sections loaded
 - [x] AC primitive cross-check recorded
 - [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (Knitten docs/plans/ + docs/briefings/shotloom/, full body via Read tool for every match)
+- [x] sibling-spec scan run (Knitten docs/plans/ + .agent-local/shotloom/planning/, full body via Read tool for every match)
 
 Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.
 ```

@@ -2,7 +2,6 @@
 description: Compatibility leaf/component Shotloom skill. Prefer shotloom-router, then shotloom-draft-spec for user-facing spec work.
 argument-hint: "[slug]"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
-context-rules: rules/shotloom-docs-lane.md
 ---
 
 # shotloom-draft-task-plan
@@ -12,21 +11,22 @@ Compatibility alias for the Shotloom spec workflow. Prefer
 instructions.
 
 When this legacy name is invoked, run the same workflow as
-`/shotloom-draft-spec`: read the persisted Linear briefing, audit live Shotloom
-code, write one requirements/decisions/verification contract, commit and push
-only a clean direct spec plus its briefing, immediately run the spec review
-gate, share the final spec path, then ask whether to implement.
+`/shotloom-draft-spec`: read the local planning briefing, audit live Shotloom
+code, write requirements/decisions/verification and design-plan artifacts under
+the local planning bundle, immediately run the spec review gate, share the
+manifest path, then ask whether to implement.
 
 ## Mandatory Contract
 
-After Step 1 resolves `$spec_path`, every stop writes one `.md` artifact:
+After Step 1 resolves the local planning bundle, every stop writes local
+artifacts through `agent/lib/resolve-local-artifact-path.mjs`:
 
 | Result | Artifact | Commit |
 |---|---|---|
-| Clean converged spec | `$knitten/docs/plans/proposed/<slug>.md` + `$knitten/docs/briefings/shotloom/<slug>.md` | Yes |
-| Step 2 factual stop | `$knitten/docs/plans/drafts/<slug>.md` | No |
-| Unconverged draft | `$knitten/docs/plans/drafts/<slug>-partial.md` | No |
-| Parallel or staged-delete spec | `$knitten/docs/plans/drafts/<slug>-claude.md` | No |
+| Clean converged spec | `.agent-local/shotloom/planning/stl-<N>/spec.md` + `design-plan.md` + `manifest.json` | No |
+| Step 2 factual stop | `.agent-local/shotloom/planning/stl-<N>/questions.md` | No |
+| Unconverged draft | `.agent-local/shotloom/planning/stl-<N>/spec.md` with unresolved questions | No |
+| Parallel or staged-delete spec | `.agent-local/shotloom/planning/stl-<N>/spec.md` with blocker note | No |
 
 Pre-Step-1 failures stop without writing because no target path exists.
 
@@ -35,9 +35,9 @@ Pre-Step-1 failures stop without writing because no target path exists.
 This skill authors a task spec, not an implementation checklist or briefing.
 The spec is a pre-implementation contract: it locks requirements, evidence,
 decisions, non-goals, verification, traps, and the design plan before source
-edits begin. The persisted Ready briefing is the required handoff input; live
+edits begin. The local Ready briefing is the required handoff input; live
 Shotloom code is canonical evidence. Missing primitives or scope expansion
-create a `.draft.md` conflict artifact.
+create a local `questions.md` artifact.
 
 ## Planning Stages
 
@@ -85,18 +85,18 @@ Verify:
   When invoked by `/shotloom-prepare-task`, its no-blocker orchestration counts
   as Ready-briefing acceptance.
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
-- Knitten is on the daily Shotloom docs branch from
-  `agent/rules/shotloom-docs-lane.md`: `codex/YYYYMMDD-shotloom-docs`.
-- `$knitten/docs/plans/proposed/` and `$knitten/docs/plans/drafts/` exist.
-- `$knitten/docs/briefings/shotloom/$slug.md` exists.
+- The local planning bundle for the STL exists under
+  `.agent-local/shotloom/planning/stl-<N>/`.
+- The planning bundle contains `brief.md` or a manifest that points to it.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Set `spec_path="$knitten/docs/plans/proposed/$slug.md"`. Surface spec slug, target,
-briefing path, and Shotloom root.
+Resolve `spec.md`, `design-plan.md`, `questions.md`, and `manifest.json` through
+`agent/lib/resolve-local-artifact-path.mjs`. Surface the slug, STL id, manifest
+path, and Shotloom root.
 
 ### Step 2: Run Current-State Audit
 
-Read `briefing_path="$knitten/docs/briefings/shotloom/$slug.md"` first. Before
+Read local `brief.md` first. Before
 authoring, search the live Shotloom tree. Choose terms from the briefing,
 Linear, branch, AC, ADR, and affected modules. Search examples:
 [reference.md](reference.md).
@@ -111,13 +111,12 @@ Factual stop conditions:
 2. Out-of-briefing expansion: scope forces protocol change, dependency, ADR, or
    multi-file import design absent from the briefing.
 
-If a stop condition fires, write the conflict report as `.draft.md` in Step 6a,
+If a stop condition fires, write the conflict report to `questions.md` in Step 6a,
 skip commit, then ask for the split or scope decision.
 
 ### Step 3: Detect Create vs Update Mode
 
-Inspect `$spec_path`, `git -C "$knitten" status`, and
-`git -C "$knitten" show HEAD:docs/plans/proposed/<slug>.md`.
+Inspect the local planning manifest and existing local spec/design-plan files.
 Use Read for files present on disk. Use `git -C "$knitten" show HEAD:<path>`
 only for HEAD-only or deleted-at-HEAD content.
 
@@ -220,42 +219,19 @@ ask the user instead of guessing.
 
 #### Step 6a: Write Artifact
 
-Write exactly one artifact according to the Mandatory Contract table. If a
-clean spec cannot land, write the best current candidate under the correct suffix
-and report the blocker.
+Write the local artifacts according to the Mandatory Contract table. If a clean
+spec cannot land, write the best current candidate and record the blocker in
+`questions.md`.
 
 #### Step 6b: Commit Direct Spec Only
 
-Continue only when Step 6a wrote directly to `$spec_path`.
-
-From Knitten:
-
-```bash
-git -C "$knitten" config user.name
-git -C "$knitten" config user.email
-git -C "$knitten" add docs/briefings/shotloom/<slug>.md
-git -C "$knitten" add docs/plans/proposed/<slug>.md
-git -C "$knitten" commit -m "docs(shotloom): spec <slug>"
-git -C "$knitten" push
-```
-
-Before commit, verify the Knitten docs lane identity from
-`agent/rules/shotloom-docs-lane.md` (`tomlim2 <tomandlim@gmail.com>`). This is
-separate from the Shotloom implementation repo identity. If hooks fail, fix the
-cause and retry. Never use `--no-verify`.
-The commit lands on the daily Shotloom docs branch, not a per-STL Knitten
-branch.
-
-Commit only `docs/briefings/shotloom/<slug>.md` and
-`docs/plans/proposed/<slug>.md` unless the user explicitly requested skill or
-doc edits in the same turn.
-
-After push, create or update the daily docs PR required by
-`agent/rules/shotloom-docs-lane.md`.
+Raw local planning artifacts are not committed. If the user explicitly asks to
+promote the reviewed plan to durable docs, create a separate tracked spec from
+the local manifest through the normal Knitten worktree flow.
 
 ### Step 7: Chain to Review or Stop
 
-If Step 6b committed and pushed a direct spec at `$spec_path`, immediately run:
+If Step 6a produced a complete local manifest, immediately run:
 
 ```bash
 /shotloom-review-task-plan "$slug"
@@ -265,9 +241,9 @@ Let `/shotloom-review-task-plan` own the review-spec commit and final report.
 The final report must include the spec path and ask the user whether to start
 implementation from the reviewed spec.
 
-If Step 6a wrote a suffix artifact (`.draft.md`, `.partial.md`, or
-`.claude.md`), report the artifact path and blocker, then stop. Do not run
-review-task-plan on non-direct artifacts.
+If Step 6a recorded unresolved blockers in `questions.md`, report the artifact
+path and blocker, then stop. Do not run review-task-plan on incomplete local
+artifacts.
 
 Do not edit Shotloom source files in this skill.
 

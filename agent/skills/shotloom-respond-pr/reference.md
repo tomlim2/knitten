@@ -34,12 +34,12 @@ update this table in the same patch.
 |---|---|---|
 | Gate | `<pr-number>`, GitHub PR assignees | Stop or permission to continue |
 | 1 | `<pr-number>`, `gh auth status`, git identity, repo, PR `headRefName`, working tree status | Correct account, repo, branch, and author-neutral invariant |
-| 2 | PR number on checked-out PR branch | `/tmp/pr<N>-view.json`, `/tmp/pr<N>-comments.json`, `/tmp/pr<N>-reviews.json`, `/tmp/pr<N>-respond-start.json` |
-| 3 | `/tmp/pr<N>-respond-start.json`, Step 1 author-neutral invariant | Numbered feedback table with one route per actionable item and hard-stop rows surfaced |
+| 2 | PR number on checked-out PR branch | `.agent-local/shotloom/pr/<N>/pr<N>-view.json`, `pr<N>-comments.json`, `pr<N>-reviews.json`, `pr<N>-respond-start.json` |
+| 3 | `.agent-local/shotloom/pr/<N>/pr<N>-respond-start.json`, Step 1 author-neutral invariant | Numbered feedback table with one route per actionable item and hard-stop rows surfaced |
 | 4 | Step 3 table, target files, cited rules, user decisions for non-default routes | Minimal diff, STL issue links or rationale, evidence line per routed finding |
 | 5 | Current diff, Step 4 evidence | Re-review result; new findings routed through Step 3 or separate issue candidate |
 | 6 | Step 3 table, Step 4 evidence, current diff, Shotloom gates | Commit, push, refreshed PR body, or stop on failed evidence |
-| 7 | Refreshed start context, Step 3 routes, Step 4 evidence, pushed commit | `/tmp/pr<N>-reply-plan.json` with replies, `approvedState`, and `reRequest` |
+| 7 | Refreshed start context, Step 3 routes, Step 4 evidence, pushed commit | `.agent-local/shotloom/pr/<N>/reply-plan.json` with replies, `approvedState`, and `reRequest` |
 | 8 | Step 7 reply plan, explicit user approval | Posted inline replies and optional review-level summary/thread resolution |
 | 9 | Step 7 reply plan, Step 2 cache files, posted reply state | Reviewer re-request or explicit skip |
 | 10 | Post-response snapshot, PR checks | Verification result for replies, new items, threads, and CI |
@@ -76,9 +76,9 @@ update this table in the same patch.
     "reviewApproved": false
   },
   "files": {
-    "view": "/tmp/pr253-view.json",
-    "comments": "/tmp/pr253-comments.json",
-    "reviews": "/tmp/pr253-reviews.json"
+    "view": ".agent-local/shotloom/pr/253/pr253-view.json",
+    "comments": ".agent-local/shotloom/pr/253/pr253-comments.json",
+    "reviews": ".agent-local/shotloom/pr/253/pr253-reviews.json"
   },
   "reviewItems": [
     {

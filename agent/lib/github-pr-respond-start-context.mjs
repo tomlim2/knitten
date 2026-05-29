@@ -7,7 +7,7 @@ import { computeReviewApproval } from "./github-pr-approved-state-plan.mjs";
 
 function usage() {
   console.error(`Usage:
-  github-pr-respond-start-context.mjs <pr> [--out-dir path] [--output path] [--write]
+  github-pr-respond-start-context.mjs <pr> --out-dir path [--output path] [--write]
 
 Builds the shotloom-respond-pr start-context JSON from cached PR snapshot
 files. Defaults to read-only stdout. Pass --write to save the file.
@@ -18,12 +18,12 @@ Expected cache files:
   <out-dir>/pr<N>-reviews.json
 
 Example:
-  github-pr-respond-start-context.mjs 404 --write`);
+  github-pr-respond-start-context.mjs 404 --out-dir .agent-local/shotloom/pr/404 --write`);
 }
 
 export function parseArgs(argv) {
   const args = {
-    outDir: "/tmp",
+    outDir: "",
     output: null,
     write: false,
     positional: [],
@@ -45,7 +45,7 @@ export function parseArgs(argv) {
     }
   }
 
-  if (args.positional.length !== 1 || !/^[0-9]+$/.test(args.positional[0])) {
+  if (args.positional.length !== 1 || !/^[0-9]+$/.test(args.positional[0]) || !args.outDir) {
     usage();
     process.exit(2);
   }

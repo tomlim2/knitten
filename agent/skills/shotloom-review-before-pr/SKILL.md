@@ -91,8 +91,15 @@ Normalize code or triad findings into the schema.
 
 If any finding has `blocker=true`:
 
-1. Write the normalized blocker findings to
-   `/tmp/shotloom-before-pr-code-blockers.json`.
+1. Resolve the code blocker path with
+   `agent/lib/resolve-local-artifact-path.mjs`:
+   ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+   safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
+   node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+     --root "$knitten_root" --create shotloom before-pr stl-<N> "$safe_branch" code-blockers
+   ```
+   Write normalized blocker findings to the returned `absolutePath`.
 2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
    with that JSON path.
 3. Re-run Step 3 on the updated branch.
@@ -115,8 +122,13 @@ Capture its findings.
 
 If any docs finding has `blocker=true`:
 
-1. Write the normalized blocker findings to
-   `/tmp/shotloom-before-pr-docs-blockers.json`.
+1. Resolve the docs blocker path with
+   `agent/lib/resolve-local-artifact-path.mjs`:
+   ```bash
+   node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+     --root "$knitten_root" --create shotloom before-pr stl-<N> "$safe_branch" docs-blockers
+   ```
+   Write normalized blocker findings to the returned `absolutePath`.
 2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
    with that JSON path.
 3. Re-run Step 5 on the updated branch.
@@ -139,8 +151,13 @@ Apply `PROCESS_POLICY.md` -> `Readiness JSON` and `Review Summary`.
 Before printing the final JSON, write the same object to:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
-result_path="/tmp/shotloom-before-pr-${safe_branch}-readiness.json"
+result_path="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom before-pr stl-<N> "$safe_branch" readiness \
+    | jq -r '.absolutePath'
+)"
 ```
 
 If no blocker remains, output:
@@ -152,7 +169,7 @@ If no blocker remains, output:
   "branch": "<branch>",
   "headSha": "<git rev-parse HEAD>",
   "dirty": false,
-  "resultPath": "/tmp/shotloom-before-pr-<branch>-readiness.json",
+  "resultPath": ".agent-local/shotloom/before-pr/stl-<N>/<branch>/readiness.json",
   "needsTriad": "<Step 2 needsTriad>",
   "blockersRemaining": 0,
   "findings": []

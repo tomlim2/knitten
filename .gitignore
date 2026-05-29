@@ -85,7 +85,7 @@ Thumbs.db
 .claude/
 .worktrees/
 
-# Local agent handoff reports; never commit.
+# Local agent scratch, handoff reports, and temporary artifacts; never commit.
 .agent-local/
 
 # Hyperframes runtime

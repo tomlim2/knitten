@@ -281,7 +281,12 @@ This is verification only — no retries, no auto-rollback, no paging. Surfaces 
 When Step 8a hits the known masking issue, the image IS in the registry but the manifest job aborted with `resolved empty image`. Build the image without touching the manifest only if Step 6a/6b workflow run already succeeded for the build-push job. Then update the manifest by hand:
 
 ```bash
-tmpdir="$(mktemp -d /private/tmp/shotloom-manifest.XXXXXX)"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+tmpdir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom deploy "$version" manifest \
+    | jq -r '.absoluteCleanupPath'
+)"
 git clone https://github.com/CINEV/prototype-manifest.git "$tmpdir/prototype-manifest"
 cd "$tmpdir/prototype-manifest"
 
@@ -301,7 +306,11 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 ### Step 9: GitHub Release + Slack 결과 알림 (for-real only)
 
 ```bash
-notes_file="$(mktemp /tmp/shotloom-release-notes.XXXXXX.md)"
+notes_file="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom deploy "$version" release-notes \
+    | jq -r '.absolutePath'
+)"
 if [[ -n "$prev_tag" ]]; then
   gh api repos/CINEV/shotloom/releases/generate-notes \
     -f tag_name="$version" \
@@ -379,7 +388,11 @@ Honesty rules:
 Use when live traffic is broken or a new image cannot be proven good.
 
 ```bash
-tmpdir="$(mktemp -d /private/tmp/shotloom-rollback.XXXXXX)"
+tmpdir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom deploy "$version" rollback \
+    | jq -r '.absoluteCleanupPath'
+)"
 git clone https://github.com/CINEV/prototype-manifest.git "$tmpdir/prototype-manifest"
 cd "$tmpdir/prototype-manifest"
 

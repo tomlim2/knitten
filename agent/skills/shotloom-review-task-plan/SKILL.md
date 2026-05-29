@@ -8,7 +8,7 @@ languages: rust,typescript
 frameworks: bevy,wgpu
 task-types: review
 context-profile: shotloom-review
-context-rules: rules/shotloom-docs-lane.md
+context-rules: rules/doc-write.md
 exclude-when: unreal,obsidian
 ---
 
@@ -20,7 +20,8 @@ the task spec artifact only. Do not edit Shotloom source files.
 
 ## Purpose
 
-Take an existing lifecycle spec under Knitten `docs/plans/` and validate it as a
+Take an existing local planning spec under `.agent-local/shotloom/planning/` or
+an explicitly promoted Knitten spec under `docs/plans/` and validate it as a
 requirements/decisions/verification contract. Run cold-start rounds until no
 unhandled `P1`/`P2` findings remain. Patch the spec after each serious finding.
 When only `P3`/nit findings remain, land the spec and stop.
@@ -68,11 +69,9 @@ Resolve the spec path. Surface:
 If the spec path cannot be resolved, stop without writing. If `repo_root`
 equals `$knitten` and no input was provided, stop and ask for `[slug-or-path]`.
 
-If the spec belongs to Shotloom and the review patches Knitten docs, verify
-Knitten is on the daily Shotloom docs branch from
-`agent/rules/shotloom-docs-lane.md`: `codex/YYYYMMDD-shotloom-docs`. If it is
-not, switch to that branch or use the matching Knitten docs worktree before
-editing.
+If the spec belongs to Shotloom and is local, patch the local artifact in place.
+If the spec was explicitly promoted to tracked docs, use the normal Knitten
+worktree flow before editing.
 
 ### Step 2: Round 1 - Cold-Start Context Gather
 
@@ -259,13 +258,9 @@ git -C "$knitten" commit -m "docs(shotloom): review spec <slug>"
 git -C "$knitten" push
 ```
 
-Before commit, verify the Knitten docs lane identity from
-`agent/rules/shotloom-docs-lane.md` (`tomlim2 <tomandlim@gmail.com>`). This is
-separate from the Shotloom implementation repo identity. Never use
+Before commit, verify the Knitten identity (`tomlim2 <tomandlim@gmail.com>`).
+This is separate from the Shotloom implementation repo identity. Never use
 `--no-verify`. Do not stage unrelated dirty files.
-The commit lands on the daily Shotloom docs branch.
-After push, create or update the daily docs PR required by
-`agent/rules/shotloom-docs-lane.md`.
 
 If no edits were needed, do not create an empty commit.
 

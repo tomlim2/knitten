@@ -1,6 +1,6 @@
 ---
 load: triggered
-trigger: writing any doc to vault, staging, private/, or ops/
+trigger: writing any doc to vault, staging, private/, or local runtime paths
 ---
 
 - **Resolve via `ah-resolve-doc-path` first** — never hand-build a doc path by reading `machine-paths.json` directly. The resolver is canonical.
@@ -9,7 +9,7 @@ trigger: writing any doc to vault, staging, private/, or ops/
 - **Decision tree:** project context exists → skill; cross-project learning → skill (`_cross-project`); no project context AND not a learning → raw resolver with `notes` or matching purpose.
 - **Vault filename contract** — New day logs MUST resolve to `days/YYYY-MM-DD.md`. Do not encode topic, ticket, PR, `daily`, or `devlog` in day filenames; put that information in `title`, H1, tags, and the lead paragraph. For multiple same-day notes, merge into the day file unless the user explicitly needs separate artifacts; then use `days/YYYY-MM-DD/<slug>.md`.
 - **Purpose-first principle** — If a doc destination isn't in `doc-paths.json` yet, ADD the purpose entry there FIRST. NEVER work around with `tool` mode + manual subpath, or hardcode the path in the consumer. Path knowledge belongs to Layer 1 (config), not Layer 2 (skills).
-- **`~/.claude/ops/`** — allowed only when `purpose=ops` (transient runtime state). Durable records MUST NOT live there.
+- **`.agent-local/**`** — allowed only for transient runtime state. Durable records MUST NOT live there.
 - **Folder check** — Before inventing a new project folder name, `ls` the resolved parent to check whether a folder/convention already exists.
 
 Run: `bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh <purpose> [project]`. Read `RESOLVED_PATH` from output.

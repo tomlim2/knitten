@@ -203,14 +203,16 @@ that as an open question instead of silently proceeding.
 Apply concrete handoff instructions when an active promoted finding requires
 them.
 
-Resolve a slug from the Linear title. Write a compact briefing markdown file to
-the Knitten checkout:
+Resolve a slug from the Linear title and an STL id from the Linear issue key.
+Write a compact briefing markdown file to the Knitten checkout through
+`agent/lib/resolve-local-artifact-path.mjs`:
 
-```text
-<knitten_root>/docs/briefings/shotloom/<slug>.md
+```bash
+node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+  --root "$knitten_root" --create shotloom planning stl-<N> brief
 ```
 
-Create the directory before writing.
+Write to the returned `absolutePath`.
 
 The briefing file contains:
 - Linear issue key, title, URL, state, assignee, labels, and body summary;
@@ -228,7 +230,7 @@ Final chat output is JSON only:
   "ok": true,
   "issueKey": "STL-NN",
   "slug": "<slug>",
-  "briefingPath": "/absolute/path/docs/briefings/shotloom/<slug>.md",
+  "briefingPath": "/absolute/path/.agent-local/shotloom/planning/stl-<N>/brief.md",
   "workDir": "<workDir>",
   "contextPath": "<workDir>/context.json",
   "cleanupPaths": ["<workDir>"],

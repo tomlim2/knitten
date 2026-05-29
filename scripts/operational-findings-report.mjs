@@ -1,20 +1,10 @@
 #!/usr/bin/env node
 import { existsSync } from "node:fs";
-import { execFileSync } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import {
-  currentBranch,
-  gitRoot,
-  isClean,
-  runGit,
-  statusPorcelain,
-  tryGit,
-} from "./worktree-lib.mjs";
+import { resolveLocalArtifactPath } from "../agent/lib/resolve-local-artifact-path.mjs";
+import { gitRoot } from "./worktree-lib.mjs";
 
-const FINDINGS_BRANCH = "operational-findings";
-const INBOX_PATH = "docs/briefings/operational-findings-inbox.md";
-const REPORT_DIR = "docs/briefings/operational-findings/reports";
 const AREA_VALUES = new Set(["skill", "rule", "standard", "validator", "docs", "config", "workflow", "routing", "ux", "other", "unknown"]);
 
 function parseArgs(argv) {
@@ -61,10 +51,6 @@ function today() {
   }).format(new Date());
 }
 
-function datestamp() {
-  return today().replaceAll("-", "");
-}
-
 function tableCell(value) {
   return String(value || "").replaceAll("|", "/").replace(/\s+/g, " ").trim();
 }
@@ -90,13 +76,14 @@ function reportSlug(value) {
   return slug || "finding";
 }
 
-function reportBody(args, reportTitle) {
+function reportBody(args, reportTitle, findingId) {
   const date = today();
   const fastTrack = args.urgent ? "yes" : "no";
   return `---
 status: captured
 created: ${date}
 updated: ${date}
+finding-id: ${findingId}
 initial-source: ${args.source}
 area: ${args.area}
 contexts:
@@ -140,114 +127,72 @@ ${args.summary}
 function initialInboxBody() {
   return `# Operational Findings Inbox
 
-Canonical Knitten-wide intake index for operational findings.
+Local Knitten-wide temporary intake index for operational findings.
 
-Detailed report context lives under \`${REPORT_DIR}/\`.
+Detailed report context lives under \`reports/\`.
 
-| Date | Report | Initial Source | Area | Context | Summary | Status |
-|------|--------|----------------|------|---------|---------|--------|
+| ID | Date | Report | Initial Source | Area | Context | Summary | Status |
+|----|------|--------|----------------|------|---------|---------|--------|
 `;
 }
 
-async function ensureInbox(root) {
-  const inbox = path.join(root, INBOX_PATH);
-  if (!existsSync(inbox)) {
-    await mkdir(path.dirname(inbox), { recursive: true });
-    await writeFile(inbox, initialInboxBody());
-  }
+function resolvePath(root, args, { create = false } = {}) {
+  return resolveLocalArtifactPath({ root, create, args });
 }
 
-async function resolveReportPath(root, title, { dryRun = false } = {}) {
-  const baseSlug = reportSlug(title);
-  const dir = path.join(root, REPORT_DIR);
-  if (!dryRun) {
-    await mkdir(dir, { recursive: true });
+async function ensureInbox(root, date) {
+  const inbox = resolvePath(root, ["ah", "operational-findings", date, "inbox"], { create: true });
+  if (!existsSync(inbox.absolutePath)) {
+    await writeFile(inbox.absolutePath, initialInboxBody());
   }
+  return inbox;
+}
+
+async function resolveReportPath(root, title, { dryRun = false, date = today() } = {}) {
+  const baseSlug = reportSlug(title);
   for (let suffix = 0; suffix < 100; suffix++) {
-    const name = `${datestamp()}-${baseSlug}${suffix === 0 ? "" : `-${suffix + 1}`}.md`;
-    const absolute = path.join(dir, name);
-    if (!existsSync(absolute)) {
+    const slug = `${baseSlug}${suffix === 0 ? "" : `-${suffix + 1}`}`;
+    const resolved = resolvePath(root, ["ah", "operational-findings", date, "report", slug], { create: !dryRun });
+    if (!existsSync(resolved.absolutePath)) {
       return {
-        absolute,
-        repoRelative: `${REPORT_DIR}/${name}`,
-        inboxRelative: `operational-findings/reports/${name}`,
+        absolute: resolved.absolutePath,
+        repoRelative: resolved.path,
+        inboxRelative: path.posix.join("reports", `${slug}.md`),
+        findingId: `ah-of-${date.replaceAll("-", "")}-${slug}`,
       };
     }
   }
   throw new Error(`could not allocate report path for ${baseSlug}`);
 }
 
-async function appendInboxRow(root, args, report) {
-  const inbox = path.join(root, INBOX_PATH);
-  const row = `| ${today()} | \`${report.inboxRelative}\` | ${tableCell(args.source)} | ${tableCell(args.area)} | ${tableCell(args.context)} | ${tableCell(args.summary)} | captured |\n`;
-  const current = await readFile(inbox, "utf8");
-  await writeFile(inbox, current.endsWith("\n") ? current + row : `${current}\n${row}`);
-}
-
-function changedFiles(root) {
-  const output = execFileSync("git", ["status", "--porcelain=v1", "-z"], {
-    cwd: root,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  return output
-    .split("\0")
-    .filter(Boolean)
-    .map((entry) => entry.slice(3).trim())
-    .filter(Boolean);
-}
-
-function assertOnlyAllowedFiles(root, reportPath) {
-  const allowed = new Set([INBOX_PATH, reportPath]);
-  const changed = changedFiles(root);
-  const unexpected = changed.filter((file) => !allowed.has(file));
-  if (unexpected.length > 0) {
-    throw new Error(`unexpected files changed; refusing commit:\n${unexpected.join("\n")}`);
-  }
+async function appendInboxRow(inbox, args, report, date) {
+  const row = `| ${report.findingId} | ${date} | \`${report.inboxRelative}\` | ${tableCell(args.source)} | ${tableCell(args.area)} | ${tableCell(args.context)} | ${tableCell(args.summary)} | captured |\n`;
+  const current = await readFile(inbox.absolutePath, "utf8");
+  await writeFile(inbox.absolutePath, current.endsWith("\n") ? current + row : `${current}\n${row}`);
 }
 
 async function capture(args) {
   const root = gitRoot(process.cwd());
-  if (!args.dryRun && currentBranch(root) !== FINDINGS_BRANCH) {
-    throw new Error(`run capture from ${FINDINGS_BRANCH} branch`);
-  }
-  if (!args.dryRun && !isClean(root)) {
-    throw new Error(`findings worktree is dirty before capture:\n${statusPorcelain(root)}`);
-  }
-
-  if (!args.dryRun) {
-    const upstream = tryGit(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], { cwd: root });
-    if (upstream.ok) {
-      if (upstream.stdout !== `origin/${FINDINGS_BRANCH}`) {
-        throw new Error(`findings branch upstream must be origin/${FINDINGS_BRANCH}, got ${upstream.stdout}`);
-      }
-      runGit(["pull", "--ff-only"], { cwd: root, stdio: "inherit" });
-    }
-  }
+  const date = today();
   const title = titleFromArgs(args);
-  const report = await resolveReportPath(root, title, { dryRun: args.dryRun });
-  const body = reportBody(args, title);
+  const report = await resolveReportPath(root, title, { dryRun: args.dryRun, date });
+  const body = reportBody(args, title, report.findingId);
+  const inbox = resolvePath(root, ["ah", "operational-findings", date, "inbox"]);
 
   if (args.dryRun) {
     console.log(`would write: ${report.repoRelative}`);
-    console.log(`would update: ${INBOX_PATH}`);
-    console.log("would commit and push findings capture");
+    console.log(`would update: ${inbox.path}`);
+    console.log(`finding-id: ${report.findingId}`);
     return;
   }
 
-  await ensureInbox(root);
+  const ensuredInbox = await ensureInbox(root, date);
   await writeFile(report.absolute, body);
-  await appendInboxRow(root, args, report);
-  assertOnlyAllowedFiles(root, report.repoRelative);
-  runGit(["add", INBOX_PATH, report.repoRelative], { cwd: root, stdio: "inherit" });
-  runGit(["commit", "-m", `docs: capture operational finding ${path.basename(report.repoRelative, ".md")}`], {
-    cwd: root,
-    stdio: "inherit",
-  });
-  runGit(["push", "-u", "origin", `HEAD:${FINDINGS_BRANCH}`], { cwd: root, stdio: "inherit" });
-  const commit = runGit(["rev-parse", "--short", "HEAD"], { cwd: root });
+  await appendInboxRow(ensuredInbox, args, report, date);
   console.log(`report: ${report.repoRelative}`);
-  console.log(`commit: ${commit}`);
+  console.log(`inbox: ${ensuredInbox.path}`);
+  console.log(`finding-id: ${report.findingId}`);
+  console.log(`cleanup: ${path.posix.dirname(ensuredInbox.path)}`);
 }
 
 async function main() {

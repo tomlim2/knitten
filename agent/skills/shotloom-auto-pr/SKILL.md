@@ -16,7 +16,7 @@ exclude-when: unreal,obsidian
 
 Split into two halves:
 
-1. **Watcher** — `watch.sh` run in a `nohup` bash sleep-loop spawned by `start.sh` (PID tracked in `~/.claude/ops/pr-<N>/watcher.pid`). Polls PR via `gh` every `INTERVAL` seconds (default 120, override `start.sh <N> 180`), diffs against `state.json`, exits silently on no-change. Claude is NOT invoked on no-change ticks. **macOS note:** launchd is blocked from `~/.claude/` by TCC, so we use `nohup` — watcher dies on reboot; re-run `start.sh` after boot.
+1. **Watcher** — `watch.sh` run in a `nohup` bash sleep-loop spawned by `start.sh` (PID tracked in `.agent-local/shotloom/pr/<N>/watcher.pid`). Polls PR via `gh` every `INTERVAL` seconds (default 120, override `start.sh <N> 180`), diffs against `state.json`, exits silently on no-change. Claude is NOT invoked on no-change ticks. The watcher dies on reboot; re-run `start.sh` after boot.
 2. **Reactor** — `/shotloom-auto-pr react <N>` is a headless handler the watcher fires ONLY when a real change is detected (new comment, new review, CI flipped to fail, state→MERGED/CLOSED). Reads `last-event.json`, applies fixes/replies, exits.
 
 Replaces the old `ScheduleWakeup` loop that burned tokens every 3 min doing nothing.
@@ -55,20 +55,20 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
    gh pr view "<N>" --json assignees --jq '.assignees[].login' | grep -qx 'tomlim2'
    ```
    If this check fails, stop. Do not start the watcher.
-4. `chmod +x ~/.claude/skills/shotloom-auto-pr/{watch,start,stop}.sh` if needed.
-5. Run `~/.claude/skills/shotloom-auto-pr/start.sh <N>`.
+4. Run `shotloom-auto-pr-start <N>`.
 6. `start.sh` spawns a `nohup` background loop running `watch.sh <N>` every 120s by default (`start.sh <N> 180` overrides).
-7. Report: "watcher PID <pid> for PR #<N>. logs: ~/.claude/ops/pr-<N>/{watcher,react}.log"
+7. Report: "watcher PID <pid> for PR #<N>. logs: .agent-local/shotloom/pr/<N>/{watcher,react}.log"
 
 ## Stop workflow
 
-`~/.claude/skills/shotloom-auto-pr/stop.sh <N>` — `kill -- -<pgid>` the watcher process group; also unload any stale launchd plist that legacy installs may have left behind.
+Run `shotloom-auto-pr-stop <N>`. The helper kills the watcher process group and
+unloads any stale launchd plist that legacy installs may have left behind.
 
 ## Status workflow
 
 ```bash
 # Active nohup watchers
-for d in ~/.claude/ops/pr-*; do
+for d in .agent-local/shotloom/pr/*; do
   [[ -f "$d/watcher.pid" ]] || continue
   pid=$(cat "$d/watcher.pid")
   if kill -0 "$pid" 2>/dev/null; then
@@ -86,14 +86,14 @@ done
 ls ~/Library/LaunchAgents/com.shotloom.autopr.*.plist 2>/dev/null
 
 # Per-PR state snapshot
-for d in ~/.claude/ops/pr-*; do
+for d in .agent-local/shotloom/pr/*; do
   [[ -f "$d/state.json" ]] && jq -r '"PR \(.pr) [\(.state)] last=\(.last_tick) fail=\(.fail_count)"' "$d/state.json"
 done
 ```
 
 ## React workflow (invoked by watcher)
 
-Fires only when `watch.sh` detects a change. Reads `~/.claude/ops/pr-<N>/last-event.json`:
+Fires only when `watch.sh` detects a change. Reads `.agent-local/shotloom/pr/<N>/last-event.json`:
 
 ```json
 {"pr": 141, "kind": "change"|"terminal", "state": "OPEN|MERGED|CLOSED",
@@ -140,7 +140,7 @@ trap 'rm -f "$PAUSE_FILE"' EXIT
 
 Do not leave a successful or blocked react cycle with `watcher.paused` still
 present. If a previous crash leaves a stale pause file, `/shotloom-auto-pr
-status` reports `alive (paused)`; inspect `~/.claude/ops/pr-<N>/react.log`, then
+status` reports `alive (paused)`; inspect `.agent-local/shotloom/pr/<N>/react.log`, then
 delete `watcher.paused` manually or rerun `/shotloom-auto-pr start <N>`.
 
 **Trigger semantics:**
@@ -292,7 +292,7 @@ This is the architectural decision recorded as P0 from the 2026-04-25 skill audi
 1. Locate via `git worktree list --porcelain` for `refs/heads/<headRefName>`.
 2. If under `.worktrees/`: `git worktree remove <path>` + `git branch -d <headRefName>`.
 3. If Linear STL resolvable: invoke `/shotloom-linear-move <STL-NN> Done` silently.
-4. Log to `~/.claude/ops/pr-<N>/log.md`.
+4. Log to `.agent-local/shotloom/pr/<N>/log.md`.
 
 ## Reference (state schema, journal template, nohup rationale, common failures)
 

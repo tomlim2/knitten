@@ -22,6 +22,7 @@ creating git state.
 |---|---|---|
 | `.agent-local/` | gitignored | Local-only agent scratch and handoff tree. |
 | `.agent-local/reports/` | gitignored | Report-only session handoff files. |
+| `.agent-local/ah/operational-findings/` | gitignored | Knitten-wide temporary operational finding queue. |
 
 ## Allowed Content
 
@@ -30,6 +31,7 @@ creating git state.
 | Session status | `.agent-local/reports/20260529-main-status.md` |
 | Investigation summary | `.agent-local/reports/20260529-stage-flow-investigation.md` |
 | Other-session handoff | `.agent-local/reports/20260529-continue-shotloom-docs.md` |
+| Operational finding queue | `.agent-local/ah/operational-findings/2026-05-29/inbox.md` |
 
 ## Forbidden Content
 
@@ -37,7 +39,7 @@ creating git state.
 |---|---|
 | Secret, token, credential, or private key | Do not write it. |
 | Durable rule, standard, skill, spec, milestone, or decision | Write the tracked owner file in a worktree. |
-| Accepted operational finding | Use the operational-findings workflow. |
+| Accepted operational finding | Capture in `.agent-local/ah/operational-findings/`, then promote durable knowledge to the owning artifact. |
 | Source code change request | Create or resume a task worktree. |
 
 ## Branch Decision

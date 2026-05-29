@@ -58,7 +58,9 @@ Pass criteria:
 
 Report the table to the user. If any comment is detached (missing path/position) or the count is suspiciously low, flag it as a verification fail and surface the comment IDs.
 
-The verify script also writes state to `~/.claude/ops/shotloom-verify-review/pr-${PR}-review-${REVIEW_ID}.json` so the watch phase has a baseline.
+The verify script also writes state to
+`.agent-local/shotloom/pr/<PR>/review-<REVIEW_ID>.json` so the watch phase has
+a baseline.
 
 ### Step 3: Offer to start the watch
 
@@ -72,7 +74,7 @@ Schedule a 1-minute recurring cron that polls for activity directed at this revi
 
 ```
 CronCreate: cron "*/1 * * * *", recurring true
-prompt: "Run python3 ~/.claude/skills/shotloom-verify-review/watch.py ${PR} ${REVIEW_ID} once. If it prints any line tagged NEW:, surface those lines to the user verbatim with the discussion URL. Otherwise stay silent. If the script prints DONE: <reason>, call CronDelete on this job and report why."
+prompt: "Run shotloom-watch-review ${PR} ${REVIEW_ID} once. If it prints any line tagged NEW:, surface those lines to the user verbatim with the discussion URL. Otherwise stay silent. If the script prints DONE: <reason>, call CronDelete on this job and report why."
 ```
 
 The watch script (`watch.py`) checks four signals:

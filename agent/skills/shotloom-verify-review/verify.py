@@ -3,9 +3,9 @@
 
 Usage: verify.py <pr> <review-id>
 
-Outputs a per-comment summary and writes state to
-~/.claude/ops/shotloom-verify-review/pr-<pr>-review-<rid>.json so the watch
-phase has a baseline.
+Outputs a per-comment summary and writes state under
+.agent-local/shotloom/pr/<pr>/review-<rid>.json so the watch phase has a
+baseline.
 
 Exit codes:
   0 — all comments verified (path + position non-null, no duplicates)
@@ -16,6 +16,7 @@ Exit codes:
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -23,7 +24,6 @@ from pathlib import Path
 
 
 REPO = "CINEV/shotloom"
-STATE_DIR = Path.home() / ".claude" / "ops" / "shotloom-verify-review"
 
 KIND_PATTERNS = [
     ("Blocker",  re.compile(r"\[Blocker\]")),
@@ -38,6 +38,38 @@ def gh_api(path: str) -> object:
         check=True, capture_output=True, text=True,
     )
     return json.loads(out.stdout)
+
+
+def repo_root_from_here() -> Path:
+    for parent in Path(__file__).resolve().parents:
+        if (parent / "SYSTEM.md").exists() and (parent / "agent/config/agent-hub.json").exists():
+            return parent
+    raise RuntimeError("unable to locate Knitten root from script path")
+
+
+def knitten_root() -> Path:
+    if "KNITTEN_ROOT" in os.environ:
+        return Path(os.environ["KNITTEN_ROOT"]).resolve()
+    return repo_root_from_here()
+
+
+def helper_path(helper_id: str) -> Path:
+    root = knitten_root()
+    resolver = root / "agent/lib/resolve-helper-path.mjs"
+    out = subprocess.run(
+        ["node", str(resolver), "--root", str(root), helper_id],
+        check=True, capture_output=True, text=True,
+    )
+    return Path(json.loads(out.stdout)["absolutePath"])
+
+
+def pr_state_dir(pr: str) -> Path:
+    resolver = helper_path("resolve-local-artifact-path")
+    out = subprocess.run(
+        ["node", str(resolver), "--root", str(knitten_root()), "--create", "shotloom", "pr", pr, "log"],
+        check=True, capture_output=True, text=True,
+    )
+    return Path(json.loads(out.stdout)["absoluteCleanupPath"])
 
 
 def classify(body: str) -> str:
@@ -122,8 +154,7 @@ def main(argv: list[str]) -> int:
     if not failed:
         print(f"✓ All {n} comments anchored, no duplicates, all on the same head SHA.")
 
-    STATE_DIR.mkdir(parents=True, exist_ok=True)
-    state_path = STATE_DIR / f"pr-{pr}-review-{rid}.json"
+    state_path = pr_state_dir(pr) / f"review-{rid}.json"
     state = {
         "pr": int(pr),
         "review_id": int(rid),

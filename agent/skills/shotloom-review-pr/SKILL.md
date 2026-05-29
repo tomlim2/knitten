@@ -59,10 +59,16 @@ Verify:
 Fetch PR metadata:
 
 ```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+cache_dir="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" --create shotloom pr "$PR" log \
+    | jq -r '.absoluteCleanupPath'
+)"
 gh pr view "$PR" \
   --json number,title,body,author,baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,state,isDraft,reviewDecision,url \
-  > "/tmp/pr${PR}-review-view.json"
-gh pr diff "$PR" --patch > "/tmp/pr${PR}-review.diff"
+  > "$cache_dir/pr${PR}-review-view.json"
+gh pr diff "$PR" --patch > "$cache_dir/pr${PR}-review.diff"
 ```
 
 Stop if the PR is closed.
@@ -73,8 +79,8 @@ Create a detached review worktree so the user's current checkout is untouched:
 
 ```bash
 repo_root="$(git rev-parse --show-toplevel)"
-base="$(jq -r '.baseRefName' "/tmp/pr${PR}-review-view.json")"
-head_oid="$(jq -r '.headRefOid' "/tmp/pr${PR}-review-view.json")"
+base="$(jq -r '.baseRefName' "$cache_dir/pr${PR}-review-view.json")"
+head_oid="$(jq -r '.headRefOid' "$cache_dir/pr${PR}-review-view.json")"
 review_dir="$repo_root/.worktrees/review-pr-${PR}"
 git fetch origin "$base"
 test ! -e "$review_dir" || { echo "review worktree already exists: $review_dir"; exit 1; }
@@ -139,7 +145,7 @@ guidelines do not require.
 
 ### Step 6: Build GitHub Review Payload
 
-Create `/tmp/pr${PR}-review-payload.json`:
+Create `.agent-local/shotloom/pr/<PR>/pr<PR>-review-payload.json`:
 
 ```json
 {
@@ -202,9 +208,9 @@ assistant turn, do not submit. Any edit request returns to Step 5 or Step 6.
 Right before posting, re-fetch PR head and diff:
 
 ```bash
-old_head="$(jq -r '.headRefOid' "/tmp/pr${PR}-review-view.json")"
-gh pr view "$PR" --json headRefOid,state > "/tmp/pr${PR}-review-prepost.json"
-new_head="$(jq -r '.headRefOid' "/tmp/pr${PR}-review-prepost.json")"
+old_head="$(jq -r '.headRefOid' "$cache_dir/pr${PR}-review-view.json")"
+gh pr view "$PR" --json headRefOid,state > "$cache_dir/pr${PR}-review-prepost.json"
+new_head="$(jq -r '.headRefOid' "$cache_dir/pr${PR}-review-prepost.json")"
 test "$old_head" = "$new_head" || { echo "PR head changed; re-review required"; exit 1; }
 ```
 
@@ -212,14 +218,14 @@ Submit:
 
 ```bash
 gh api -X POST "/repos/CINEV/shotloom/pulls/${PR}/reviews" \
-  --input "/tmp/pr${PR}-review-payload.json" \
-  > "/tmp/pr${PR}-submitted-review.json"
+  --input "$cache_dir/pr${PR}-review-payload.json" \
+  > "$cache_dir/pr${PR}-submitted-review.json"
 ```
 
 Capture:
 
 ```bash
-jq -r '.id' "/tmp/pr${PR}-submitted-review.json"
+jq -r '.id' "$cache_dir/pr${PR}-submitted-review.json"
 ```
 
 ### Step 9: Verify + Watch
@@ -227,7 +233,7 @@ jq -r '.id' "/tmp/pr${PR}-submitted-review.json"
 Run `/shotloom-verify-review <PR> <review-id>` semantics:
 
 ```bash
-python3 ~/.claude/skills/shotloom-verify-review/verify.py "$PR" "$review_id"
+shotloom-verify-review "$PR" "$review_id"
 ```
 
 Report whether every inline comment landed with path and position.

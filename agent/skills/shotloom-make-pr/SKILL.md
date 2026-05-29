@@ -128,7 +128,12 @@ Resolve the result file before trusting readiness:
 
 ```bash
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
-result_path="/tmp/shotloom-before-pr-${safe_branch}-readiness.json"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
+result_path="$(
+  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
+    --root "$knitten_root" shotloom before-pr stl-<N> "$safe_branch" readiness \
+    | jq -r '.absolutePath'
+)"
 ```
 
 If the file is missing, stale, for another branch, for another `HEAD`, has

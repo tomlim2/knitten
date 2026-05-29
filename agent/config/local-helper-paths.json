@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "resolve-repo-path",
+      "kind": "script",
+      "path": "agent/lib/resolve-repo-path.mjs",
+      "description": "Resolve configured repository paths"
+    },
+    {
+      "id": "resolve-local-artifact-path",
+      "kind": "script",
+      "path": "agent/lib/resolve-local-artifact-path.mjs",
+      "description": "Resolve local artifact paths"
+    },
+    {
+      "id": "prepare-local-bin",
+      "kind": "script",
+      "path": "agent/lib/prepare-local-bin.mjs",
+      "description": "Prepare local helper command wrappers"
+    },
+    {
+      "id": "shotloom-auto-pr-start",
+      "kind": "script",
+      "path": "agent/skills/shotloom-auto-pr/start.sh",
+      "description": "Start a Shotloom PR watcher"
+    },
+    {
+      "id": "shotloom-auto-pr-watch",
+      "kind": "script",
+      "path": "agent/skills/shotloom-auto-pr/watch.sh",
+      "description": "Run one Shotloom PR watcher tick"
+    },
+    {
+      "id": "shotloom-auto-pr-stop",
+      "kind": "script",
+      "path": "agent/skills/shotloom-auto-pr/stop.sh",
+      "description": "Stop a Shotloom PR watcher"
+    },
+    {
+      "id": "shotloom-verify-review",
+      "kind": "script",
+      "path": "agent/skills/shotloom-verify-review/verify.py",
+      "description": "Verify a Shotloom PR review"
+    },
+    {
+      "id": "shotloom-watch-review",
+      "kind": "script",
+      "path": "agent/skills/shotloom-verify-review/watch.py",
+      "description": "Watch a Shotloom PR review"
+    },
+    {
+      "id": "shotloom-review-state",
+      "kind": "script",
+      "path": "agent/skills/shotloom-verify-review/state.py",
+      "description": "Manage Shotloom review verification state"
+    }
+  ]
+}

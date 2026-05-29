@@ -156,7 +156,7 @@ When you cannot confidently classify as in-scope or out-of-scope, **lean ambiguo
 
 ## End-of-cycle briefing
 
-Every auto-pr cycle that processed feedback must emit (to `~/.claude/ops/pr-<N>/log.md` AND to the user's next turn):
+Every auto-pr cycle that processed feedback must emit (to `.agent-local/shotloom/pr/<N>/log.md` AND to the user's next turn):
 
 ```
 ## <ISO timestamp> — review response cycle
@@ -239,7 +239,7 @@ watcher.
 - nohup loop survives logout but **not reboot** — re-run `start.sh <N>` after boot.
 - default polling interval is 120 seconds. Override with `start.sh <N>
   <seconds>` only when a PR needs a quieter or more aggressive cadence.
-- Per-PR PID file in `~/.claude/ops/pr-<N>/watcher.pid` makes stop/start surgical.
+- Per-PR PID file in `.agent-local/shotloom/pr/<N>/watcher.pid` makes stop/start surgical.
 - Separate `watcher.log` / `react.log` per PR.
 - Does NOT consume Claude context tokens on no-change ticks — `claude -p` fires only when `watch.sh` detects a diff.
 - `stop.sh` keeps a legacy `launchctl unload` guard so hosts with a stale plist from a launchd-era install can be converted by running `stop.sh` once.
@@ -261,9 +261,9 @@ Footguns in the reactor's `fail_checks` → run_id/job_id resolution path (SKILL
 | Symptom | Fix |
 |---------|-----|
 | `claude: command not found` in `watcher.log` | `~/.local/bin` not on PATH for the nohup process; export PATH in `start.sh` or use the absolute claude path |
-| Lockfile leftover | flock-based: `rm ~/.claude/ops/pr-<N>/watch.lock`. mkdir-fallback: `rmdir ~/.claude/ops/pr-<N>/watch.lock.d`. The trap cleans the mkdir lock automatically; manual cleanup only needed after SIGKILL |
-| Watcher not firing | `kill -0 $(cat ~/.claude/ops/pr-<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick |
-| Watcher alive but no polling | Check `~/.claude/ops/pr-<N>/watcher.paused`; if stale after a crashed react cycle, inspect `react.log` and remove it. |
+| Lockfile leftover | flock-based: `rm .agent-local/shotloom/pr/<N>/watch.lock`. mkdir-fallback: `rmdir .agent-local/shotloom/pr/<N>/watch.lock.d`. The trap cleans the mkdir lock automatically; manual cleanup only needed after SIGKILL |
+| Watcher not firing | `kill -0 $(cat .agent-local/shotloom/pr/<N>/watcher.pid)` — dead → re-run `start.sh`. Tail `watcher.log` for last tick |
+| Watcher alive but no polling | Check `.agent-local/shotloom/pr/<N>/watcher.paused`; if stale after a crashed react cycle, inspect `react.log` and remove it. |
 | `gh` auth prompt in nohup ctx | keychain locked at login; run `gh auth status` interactively in a regular shell once |
 | Duplicate react runs | `flock` (or `mkdir` fallback) prevents concurrent ticks; overlapping `claude -p` sessions are fine — each re-diffs state.json and is idempotent |
 | Stale launchd plist from old install | `stop.sh <N>` unloads + removes any `com.shotloom.autopr.<N>.plist` left behind |
