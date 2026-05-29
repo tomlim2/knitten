@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for human reviewer mode only. Prefer shotloom-router for ambiguous Shotloom PR work.
 argument-hint: "<pr-number | github-pr-url>"
-allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(python3:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(sed:*), Agent
+allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(python3:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(sed:*), Bash(resolve-local-artifact-path:*), Agent
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -59,10 +59,8 @@ Verify:
 Fetch PR metadata:
 
 ```bash
-knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 cache_dir="$(
-  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
-    --root "$knitten_root" --create shotloom pr "$PR" log \
+  resolve-local-artifact-path --create shotloom pr "$PR" log \
     | jq -r '.absoluteCleanupPath'
 )"
 gh pr view "$PR" \
@@ -145,7 +143,7 @@ guidelines do not require.
 
 ### Step 6: Build GitHub Review Payload
 
-Create `.agent-local/shotloom/pr/<PR>/pr<PR>-review-payload.json`:
+Create `pr<PR>-review-payload.json` in the resolved PR cache directory:
 
 ```json
 {

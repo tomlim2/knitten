@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for deploy status notices only. Prefer shotloom-router for full deploy workflows.
 argument-hint: "<start|success> --version vX.Y.Z [field flags]"
-allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*)
+allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(date:*), Bash(python3:*), Bash(cci-send-alert:*)
 domains: rust,web
 repo-keys: shotloom
 languages: css,rust,typescript
@@ -168,20 +168,20 @@ B:
 
 ### Step 5: Send
 
-`start` Message 1 — top-level via send.py (no `--thread-ts`):
+`start` Message 1 — top-level via `cci-send-alert` (no `--thread-ts`):
 
 ```bash
-resp=$(python3 ~/.claude/skills/cci-send-alert/send.py "$MSG_1")
+resp=$(cci-send-alert "$MSG_1")
 START_TS=$(echo "$resp" | python3 -c "import json,sys; print(json.load(sys.stdin)['ts'])")
 ```
 
-`start` Message 2 — thread reply via send.py:
+`start` Message 2 — thread reply via `cci-send-alert`:
 
 ```bash
-python3 ~/.claude/skills/cci-send-alert/send.py "$MSG_2" --thread-ts "$START_TS"
+cci-send-alert "$MSG_2" --thread-ts "$START_TS"
 ```
 
-`success` Message A — direct Slack API with `reply_broadcast: true` (send.py does not support this flag):
+`success` Message A — direct Slack API with `reply_broadcast: true` (`cci-send-alert` does not support this flag):
 
 ```python
 payload = {
@@ -196,10 +196,10 @@ payload = {
 # capture A_TS = result["ts"]
 ```
 
-`success` Message B — thread reply under A via send.py:
+`success` Message B — thread reply under A via `cci-send-alert`:
 
 ```bash
-python3 ~/.claude/skills/cci-send-alert/send.py "$MSG_B" --thread-ts "$A_TS"
+cci-send-alert "$MSG_B" --thread-ts "$A_TS"
 ```
 
 On any `ok=false`: surface Slack API error verbatim. Common errors:
@@ -244,7 +244,7 @@ Sent: phase=success  broadcast_ts=<A_ts>  detail_ts=<B_ts>  thread=<THREAD_TS>
 
 ## Related
 
-- `~/.claude/skills/cci-send-alert/SKILL.md` — underlying send mechanism (`team_channel`, `SLACK_BOT_TOKEN`)
-- `~/.claude/skills/shotloom-deploy-web/SKILL.md` — primary caller
-- `~/.claude/rules/slack.md` — per-message approval gate
+- `../cci-send-alert/SKILL.md` — underlying send mechanism (`team_channel`, `SLACK_BOT_TOKEN`)
+- `../shotloom-deploy-web/SKILL.md` — primary caller
+- `agent/rules/slack.md` — per-message approval gate
 - `~/.claude/config/slack.json` — `team_channel`, `team_bot_username`

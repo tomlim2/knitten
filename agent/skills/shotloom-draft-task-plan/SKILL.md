@@ -1,7 +1,7 @@
 ---
 description: Compatibility leaf/component Shotloom skill. Prefer shotloom-router, then shotloom-draft-spec for user-facing spec work.
 argument-hint: "[slug]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(ah-resolve-doc-path:*), Bash(resolve-local-artifact-path:*)
 ---
 
 # shotloom-draft-task-plan
@@ -19,7 +19,7 @@ manifest path, then ask whether to implement.
 ## Mandatory Contract
 
 After Step 1 resolves the local planning bundle, every stop writes local
-artifacts through `agent/lib/resolve-local-artifact-path.mjs`:
+artifacts through `resolve-local-artifact-path`:
 
 | Result | Artifact | Commit |
 |---|---|---|
@@ -62,9 +62,9 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 repo_root="$(git rev-parse --show-toplevel)"
 git_common="$(git rev-parse --git-common-dir)"
 origin="$(git remote get-url origin)"
-shotloom_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
 shotloom_root="${shotloom_root#RESOLVED_PATH=}"
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="$(ah-resolve-doc-path repo knitten)"
 knitten="${knitten#RESOLVED_PATH=}"
 ```
 
@@ -91,8 +91,8 @@ Verify:
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
 Resolve `spec.md`, `design-plan.md`, `questions.md`, and `manifest.json` through
-`agent/lib/resolve-local-artifact-path.mjs`. Surface the slug, STL id, manifest
-path, and Shotloom root.
+`resolve-local-artifact-path`. Surface the slug, STL id, manifest path, and
+Shotloom root.
 
 ### Step 2: Run Current-State Audit
 

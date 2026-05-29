@@ -65,7 +65,7 @@ Then enumerate and read every file under:
 From `agent/` (canonical shared artifacts — in-repo `docs/guidelines/` is canonical for Shotloom writing/review rules and is loaded in Step 2):
 
 - the PR-scope policy in `agent/skills/shotloom-auto-pr/reference.md` — PR scope classification policy
-- `agent/lib/shotloom-github-guard.mjs` — Shotloom GitHub identity
+- `shotloom-github-guard` — Shotloom GitHub identity
 
 ### Step 4: Read ADR index entries
 
@@ -82,7 +82,7 @@ Emit:
 **shotloom HEAD:** <short-sha>
 **Loaded:**
 - Repo: AGENTS, CONTRIBUTING, CLAUDE, ADR index, N guideline files, M .agent files
-- Agent-hub: agent/lib/shotloom-github-guard.mjs, agent/skills/shotloom-auto-pr/reference.md (PR-scope policy)
+- Agent-hub: `shotloom-github-guard`, `agent/skills/shotloom-auto-pr/reference.md` (PR-scope policy)
 - ADR titles indexed: <count>
 
 **Fork this session for each work task.**
@@ -110,4 +110,4 @@ If the user asks to work on code in this session, refuse and tell them to fork f
 ## Related
 
 - [`shotloom-start-task`](../shotloom-start-task/SKILL.md) — run inside the forked session for per-task setup (Linear fetch, worktree, category detect)
-- `agent/lib/shotloom-github-guard.mjs` — hub GitHub guard
+- `shotloom-github-guard` — hub GitHub guard

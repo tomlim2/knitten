@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for spec authoring after start-task. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "[slug]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(resolve-local-artifact-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -72,6 +72,6 @@ rules on top:
 ## Local Artifact Contract
 
 Resolve every planning artifact through
-`agent/lib/resolve-local-artifact-path.mjs`. Do not write raw planning outputs
+`resolve-local-artifact-path`. Do not write raw planning outputs
 under tracked `docs/` paths unless a later promotion step explicitly turns a
 local artifact into durable knowledge.

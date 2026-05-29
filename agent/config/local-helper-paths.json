@@ -14,6 +14,60 @@
       "description": "Resolve local artifact paths"
     },
     {
+      "id": "resolve-helper-path",
+      "kind": "script",
+      "path": "agent/lib/resolve-helper-path.mjs",
+      "description": "Resolve local helper commands"
+    },
+    {
+      "id": "ah-resolve-doc-path",
+      "kind": "script",
+      "path": "agent/skills/ah-resolve-doc-path/resolve.sh",
+      "description": "Resolve configured document and repository paths"
+    },
+    {
+      "id": "cci-send-alert",
+      "kind": "script",
+      "path": "agent/skills/cci-send-alert/send.py",
+      "description": "Send a CINEV Slack alert"
+    },
+    {
+      "id": "shotloom-preflight",
+      "kind": "script",
+      "path": "agent/lib/shotloom-preflight.mjs",
+      "description": "Run Shotloom PR/worktree preflight checks"
+    },
+    {
+      "id": "shotloom-github-guard",
+      "kind": "script",
+      "path": "agent/lib/shotloom-github-guard.mjs",
+      "description": "Verify the active GitHub account for Shotloom"
+    },
+    {
+      "id": "github-pr-review-snapshot",
+      "kind": "script",
+      "path": "agent/lib/github-pr-review-snapshot.mjs",
+      "description": "Fetch a GitHub PR review snapshot"
+    },
+    {
+      "id": "github-pr-respond-start-context",
+      "kind": "script",
+      "path": "agent/lib/github-pr-respond-start-context.mjs",
+      "description": "Build GitHub PR response start context"
+    },
+    {
+      "id": "github-pr-approved-state-plan",
+      "kind": "script",
+      "path": "agent/lib/github-pr-approved-state-plan.mjs",
+      "description": "Annotate a GitHub PR response plan with approval-state routing"
+    },
+    {
+      "id": "github-pr-resolve-review-threads",
+      "kind": "script",
+      "path": "agent/lib/github-pr-resolve-review-threads.mjs",
+      "description": "Resolve GitHub PR review threads from a response plan"
+    },
+    {
       "id": "prepare-local-bin",
       "kind": "script",
       "path": "agent/lib/prepare-local-bin.mjs",

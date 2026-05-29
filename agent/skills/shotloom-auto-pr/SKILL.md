@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for background PR watching only. Prefer shotloom-router for full PR response workflows.
 argument-hint: "[start|stop|status|react] <pr-number>"
-allowed-tools: Read, Write, Edit, Glob, Grep, Agent, Bash(gh:*), Bash(git:*), Bash(launchctl:*), Bash(bash:*), Bash(cargo:*), Bash(node:*), Bash(jq:*), Bash(chmod:*), Bash(ls:*), Bash(mkdir:*), Bash(date:*), Bash(sed:*), Bash(kill:*), Bash(cat:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Agent, Bash(gh:*), Bash(git:*), Bash(launchctl:*), Bash(bash:*), Bash(cargo:*), Bash(node:*), Bash(jq:*), Bash(chmod:*), Bash(ls:*), Bash(mkdir:*), Bash(date:*), Bash(sed:*), Bash(kill:*), Bash(cat:*), Bash(shotloom-github-guard:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -48,7 +48,7 @@ The exemption applies to **this skill only**. `/shotloom-respond-pr` is unaffect
 
 ## Start workflow
 
-1. Pre-flight: run `agent/lib/shotloom-github-guard.mjs`; `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
+1. Pre-flight: run `shotloom-github-guard`; `gh repo view -q .nameWithOwner` is `CINEV/shotloom`.
 2. Resolve PR number. If no arg: `gh pr view --json number -q .number`.
 3. Confirm PR is assigned to `tomlim2`:
    ```bash
@@ -304,4 +304,4 @@ See `reference.md` — "Guideline Leak Fixes", "State file shapes", "Journal on 
 - `agent/skills/shotloom-make-pr/SKILL.md` — PR creation
 - the PR-scope policy in `reference.md` — in-scope classification
 - `docs/guidelines/review-rust.md` (in shotloom repo) — canonical Rust review spec
-- `agent/lib/shotloom-github-guard.mjs` — Shotloom GitHub identity
+- `shotloom-github-guard` — Shotloom GitHub identity

@@ -1,7 +1,7 @@
 ---
 description: Run the Shotloom pre-PR review/fix loop and return prReady true/false.
 argument-hint: ""
-allowed-tools: Read, Write, Bash(git:*), Bash(pwd)
+allowed-tools: Read, Write, Bash(git:*), Bash(pwd), Bash(resolve-local-artifact-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -91,13 +91,10 @@ Normalize code or triad findings into the schema.
 
 If any finding has `blocker=true`:
 
-1. Resolve the code blocker path with
-   `agent/lib/resolve-local-artifact-path.mjs`:
+1. Resolve the code blocker path:
    ```bash
-   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
    safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
-   node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
-     --root "$knitten_root" --create shotloom before-pr stl-<N> "$safe_branch" code-blockers
+   resolve-local-artifact-path --create shotloom before-pr stl-<N> "$safe_branch" code-blockers
    ```
    Write normalized blocker findings to the returned `absolutePath`.
 2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
@@ -122,11 +119,9 @@ Capture its findings.
 
 If any docs finding has `blocker=true`:
 
-1. Resolve the docs blocker path with
-   `agent/lib/resolve-local-artifact-path.mjs`:
+1. Resolve the docs blocker path:
    ```bash
-   node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
-     --root "$knitten_root" --create shotloom before-pr stl-<N> "$safe_branch" docs-blockers
+   resolve-local-artifact-path --create shotloom before-pr stl-<N> "$safe_branch" docs-blockers
    ```
    Write normalized blocker findings to the returned `absolutePath`.
 2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
@@ -151,11 +146,9 @@ Apply `PROCESS_POLICY.md` -> `Readiness JSON` and `Review Summary`.
 Before printing the final JSON, write the same object to:
 
 ```bash
-knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
 result_path="$(
-  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
-    --root "$knitten_root" --create shotloom before-pr stl-<N> "$safe_branch" readiness \
+  resolve-local-artifact-path --create shotloom before-pr stl-<N> "$safe_branch" readiness \
     | jq -r '.absolutePath'
 )"
 ```

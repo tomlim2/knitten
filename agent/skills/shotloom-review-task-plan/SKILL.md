@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for reviewing an existing task spec. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[slug-or-path]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(ah-resolve-doc-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -53,9 +53,9 @@ Run:
 ```bash
 repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
-shotloom_root="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo shotloom)"
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
 shotloom_root="${shotloom_root#RESOLVED_PATH=}"
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="$(ah-resolve-doc-path repo knitten)"
 knitten="${knitten#RESOLVED_PATH=}"
 ```
 

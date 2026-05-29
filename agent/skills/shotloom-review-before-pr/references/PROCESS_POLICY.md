@@ -97,11 +97,10 @@ Normalize supported findings before readiness output.
 ## Readiness JSON
 
 Every run writes one result file and prints the same JSON block. Resolve the
-result file with `agent/lib/resolve-local-artifact-path.mjs`:
+result file with `resolve-local-artifact-path`:
 
 ```bash
-node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
-  --root "$knitten_root" --create shotloom before-pr stl-<N> <safe-branch> readiness
+resolve-local-artifact-path --create shotloom before-pr stl-<N> <safe-branch> readiness
 ```
 
 `<safe-branch>` maps slash and whitespace to `-`.

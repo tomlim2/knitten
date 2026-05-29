@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for PR creation after prReady=true. Prefer shotloom-router or shotloom-review-before-pr before PR creation.
 argument-hint: "[pr-number-to-supersede]"
-allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*)
+allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*), Bash(resolve-local-artifact-path:*), Bash(shotloom-github-guard:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -31,7 +31,7 @@ PR body and ask before posting any redirect comment.
 ## Binding rules (CRITICAL)
 
 - **NEVER call `gh pr create` without explicit per-PR user approval.** Draft status does not exempt. (See `rules/git-defaults.md`.)
-- **Use `tomlim2` account and commit identity only.** Run `agent/lib/shotloom-github-guard.mjs --require-git-author`.
+- **Use `tomlim2` account and commit identity only.** Run `shotloom-github-guard --require-git-author`.
 - **Build gate excludes `shotloom-desktop`** — use `--exclude shotloom-desktop`.
 - **All PR body text in English** (Shotloom convention).
 - **Assign every PR to `@me`.** This applies to both draft and ready-for-review PRs.
@@ -67,7 +67,7 @@ status=$(git status --short)
 [ -z "$status" ] || { echo "ERROR: working tree is not clean"; git status --short; exit 1; }
 
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
-node "$knitten_root/agent/lib/shotloom-github-guard.mjs" --require-git-author
+shotloom-github-guard --require-git-author
 
 default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null || true)
 default_branch="${default_branch#origin/}"
@@ -128,10 +128,8 @@ Resolve the result file before trusting readiness:
 
 ```bash
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
-knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the agent-hub repo path}"
 result_path="$(
-  node "$knitten_root/agent/lib/resolve-local-artifact-path.mjs" \
-    --root "$knitten_root" shotloom before-pr stl-<N> "$safe_branch" readiness \
+  resolve-local-artifact-path shotloom before-pr stl-<N> "$safe_branch" readiness \
     | jq -r '.absolutePath'
 )"
 ```

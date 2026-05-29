@@ -1,7 +1,7 @@
 ---
 description: "Run Shotloom task preparation end-to-end: start-task briefing, draft-spec, spec review, commit/push docs, then stop before implementation."
 argument-hint: "STL-NN | linear-url"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(rg:*), Bash(stat:*), Bash(test:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(rg:*), Bash(stat:*), Bash(test:*), Bash(resolve-local-artifact-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -93,7 +93,7 @@ Keep repo responsibilities separate:
 | Repo | Owned by | Contract |
 |---|---|---|
 | Shotloom | `/shotloom-start-task` | Creates or attaches the task worktree. This skill does not commit source edits. |
-| Knitten | `/shotloom-draft-spec` | Writes local planning artifacts through `agent/lib/resolve-local-artifact-path.mjs`. |
+| Knitten | `/shotloom-draft-spec` | Writes local planning artifacts through `resolve-local-artifact-path`. |
 
 If spec authoring or review asks a product/scope/trade-off question, stop and
 surface that question. Do not guess.
@@ -125,8 +125,7 @@ Implementation begins only after a separate user message such as `구현 시작`
 - Do not write Shotloom source files.
 - Do not open a Shotloom implementation PR.
 - Do not proceed past a child-skill blocker.
-- Preserve the local artifact resolver contract from
-  `agent/lib/resolve-local-artifact-path.mjs`.
+- Preserve the local artifact resolver contract from `resolve-local-artifact-path`.
 
 ## Related
 

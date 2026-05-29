@@ -211,7 +211,7 @@ Gather context as if starting cold:
 git status --short
 rg -n "<linear id>|<title keywords>|<primary symbols>" crates apps docs contracts assets MAP.md
 rg -n "<diagnostic/code/cache/bridge/test keywords>" crates apps docs contracts
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="$(ah-resolve-doc-path repo knitten)"
 knitten="${knitten#RESOLVED_PATH=}"
 ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 ```
@@ -337,7 +337,7 @@ The Ready briefing includes a sibling inventory. If the inventory is absent,
 run this scan from any cwd:
 
 ```bash
-knitten="$(bash ~/.claude/skills/ah-resolve-doc-path/resolve.sh repo knitten)"
+knitten="$(ah-resolve-doc-path repo knitten)"
 knitten="${knitten#RESOLVED_PATH=}"
 ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 ls "$knitten/docs/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
