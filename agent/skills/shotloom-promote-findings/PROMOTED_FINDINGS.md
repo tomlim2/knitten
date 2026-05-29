@@ -89,3 +89,43 @@ mechanisms cleanly.
 - Fix Shape: make consuming skills read the promoted ledger explicitly during
   their workflow.
 - Status: active
+
+### Keep operational findings capture end-to-end smokeable
+
+- Source: `docs/briefings/operational-findings/reports/20260524-operational-findings-lifecycle-smoke-test.md`
+- Trigger: operational-findings capture, prepare, inbox update, commit, or push logic changes.
+- Check: verify a real end-to-end smoke path exists in addition to dry-run checks.
+- Fix Shape: exercise prepare, capture, index update, allowed-file guard, commit, and push on the dedicated findings branch before declaring the pipeline healthy.
+- Status: active
+
+### Parse changed files from git porcelain without slicing paths
+
+- Source: `docs/briefings/operational-findings/reports/20260524-status-porcelain-parsing-damaged-changed.md`
+- Trigger: a capture script filters or validates changed files from `git status --porcelain` output.
+- Check: verify status parsing preserves full paths, including the first path characters and rename forms.
+- Fix Shape: use porcelain-v1 `-z` parsing or a structured helper and add a regression for modified docs paths.
+- Status: active
+
+### Pin the findings branch upstream explicitly
+
+- Source: `docs/briefings/operational-findings/reports/20260524-findings-branch-inherited-origin-main.md`
+- Trigger: preparing or repairing the long-lived `operational-findings` worktree.
+- Check: verify the branch tracks `origin/operational-findings`, not the branch it was created from.
+- Fix Shape: set the upstream during prepare and refuse unsafe pushes when the upstream is not the findings branch.
+- Status: active
+
+### Run findings capture with current checkout scripts
+
+- Source: `docs/briefings/operational-findings/reports/20260524-long-lived-findings-branch-can.md`
+- Trigger: running capture logic from a long-lived findings worktree that can lag the main Knitten checkout.
+- Check: verify orchestration resolves scripts from the current Knitten checkout while writing reports from the dedicated findings worktree.
+- Fix Shape: invoke the live checkout's capture scripts with the findings worktree as cwd, and keep branch preparation separate from script ownership.
+- Status: active
+
+### Make findings branch guard failures actionable
+
+- Source: `docs/briefings/operational-findings/reports/20260526-operational-finding-capture-guard-message-is-unclear.md`
+- Trigger: a findings capture guard refuses to write because cwd, branch, upstream, or dirty state is wrong.
+- Check: verify the error names observed cwd, current branch, expected worktree or branch, and the next safe command.
+- Fix Shape: replace terse guard strings with structured recovery messages that let the next agent continue without interpreting shell errors.
+- Status: active

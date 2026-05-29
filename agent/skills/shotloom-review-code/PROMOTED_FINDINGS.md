@@ -110,3 +110,19 @@ additional review lenses.
   privacy-sensitive URL fields, digest/catalog mismatch, and cleanup-key
   collisions before durable output is written.
 - Status: active
+
+### Keep UI integration tests honest about mocked paths
+
+- Source: `docs/briefings/operational-findings/reports/20260529-reviewer-found-that-an-app-level-inspector-test-claimed-viewport-toolbar.md`
+- Trigger: a PR moves UI actions across viewport, overlay, toolbar, portal, or routed shell boundaries.
+- Check: verify test names and assertions match the real rendered path they exercise, and do not claim production integration coverage when a child component is mocked.
+- Fix Shape: add focused real-path coverage for the production component chain, or rename the test to describe the mocked forwarding boundary exactly.
+- Status: active
+
+### Review portal UI moves as target, layer, and fallback contracts
+
+- Source: `docs/briefings/operational-findings/reports/20260529-reviewer-found-that-moving-persistence-actions-into-a-portal-introduced.md`
+- Trigger: a PR moves controls into a React portal, overlay slot, viewport layer, topbar mount point, or fallback render branch.
+- Check: verify target lookup timing, z-index or stacking order, fallback rendering behavior, and test stub provenance together.
+- Fix Shape: capture the portal target after mount, assert overlay layering, test the fallback branch, and make slot stubs represent the production contract they stand in for.
+- Status: active

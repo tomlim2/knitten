@@ -6,7 +6,7 @@ initial-source: user-report
 area: config
 contexts:
   - git-pull-repos / repo-paths.json
-promotion-target: unknown
+promotion-target: agent/skills/git-pull-repos/SKILL.md
 urgent: false
 ---
 
