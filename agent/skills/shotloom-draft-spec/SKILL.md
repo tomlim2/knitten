@@ -63,9 +63,9 @@ rules on top:
 
 ## Output Contract
 
-- `.agent-local/shotloom/planning/stl-<N>/brief.md` in Knitten
-- `.agent-local/shotloom/planning/stl-<N>/spec.md` in Knitten
-- `.agent-local/shotloom/planning/stl-<N>/design-plan.md` in Knitten
+- `.agent-local/shotloom/planning/stl-<N>/brief.json` in Knitten
+- `.agent-local/shotloom/planning/stl-<N>/spec.json` in Knitten
+- `.agent-local/shotloom/planning/stl-<N>/design-plan.json` in Knitten
 - `.agent-local/shotloom/planning/stl-<N>/manifest.json` in Knitten
 - final user prompt: "이 스펙으로 구현 시작할까요?"
 

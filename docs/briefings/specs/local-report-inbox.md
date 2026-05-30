@@ -39,6 +39,7 @@ spec: docs/plans/completed/local-report-inbox.md
 |---|---|
 | Local inbox path | `.agent-local/reports/` |
 | Git tracking | Entire `.agent-local/` tree is ignored. |
+| Handoff format | JSON only for LLM-to-LLM temporary handoff. |
 | Allowed use | Session handoff reports, transient status, investigation notes, and draft summaries not intended as durable policy. |
 | Forbidden use | Source changes, specs, accepted decisions, durable rules, committed reports, secrets, credentials. |
 | Branch rule | Do not create a task branch solely to leave a local report. |
@@ -47,6 +48,6 @@ spec: docs/plans/completed/local-report-inbox.md
 
 | Check | Command |
 |---|---|
-| Git ignore | `git check-ignore -q .agent-local/reports/example.md` |
+| Git ignore | `git check-ignore -q .agent-local/reports/example.json` |
 | LLM-first docs | `node scripts/validate-llm-first.mjs` |
 | Whitespace | `git diff --check` |

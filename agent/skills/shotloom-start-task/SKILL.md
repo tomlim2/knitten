@@ -232,7 +232,7 @@ Final chat output is JSON only:
   "ok": true,
   "issueKey": "STL-NN",
   "slug": "<slug>",
-  "briefingPath": "/absolute/path/.agent-local/shotloom/planning/stl-<N>/brief.md",
+  "briefingPath": "/absolute/path/.agent-local/shotloom/planning/stl-<N>/brief.json",
   "workDir": "<workDir>",
   "contextPath": "<workDir>/context.json",
   "cleanupPaths": ["<workDir>"],

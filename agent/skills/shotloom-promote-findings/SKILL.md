@@ -53,8 +53,10 @@ contains `--dry-run`, do not edit files.
 
 Read:
 
-- `.agent-local/ah/operational-findings/*/inbox.md` when present;
-- `.agent-local/ah/operational-findings/*/reports/*.md`;
+- `.agent-local/ah/operational-findings/*/inbox.json` when present;
+- `.agent-local/ah/operational-findings/*/reports/*.json`;
+- legacy `.agent-local/ah/operational-findings/*/inbox.md` when present;
+- legacy `.agent-local/ah/operational-findings/*/reports/*.md`;
 - legacy `docs/briefings/operational-findings-inbox.md` when present;
 - legacy `docs/briefings/operational-findings/reports/*.md`;
 - existing `PROMOTED_FINDINGS.md` ledgers listed above.

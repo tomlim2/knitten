@@ -59,18 +59,18 @@ repo config, pass it as `--root`, then use the returned path.
 | Artifact | Canonical local path | Owner |
 |---|---|---|
 | Shotloom planning bundle | `.agent-local/shotloom/planning/stl-<N>/` | Shotloom workflow |
-| Shotloom planning brief | `.agent-local/shotloom/planning/stl-<N>/brief.md` | `shotloom-start-task` |
-| Shotloom spec draft | `.agent-local/shotloom/planning/stl-<N>/spec.md` | `shotloom-draft-spec` |
-| Shotloom design plan | `.agent-local/shotloom/planning/stl-<N>/design-plan.md` | `shotloom-draft-spec` |
-| Shotloom open questions | `.agent-local/shotloom/planning/stl-<N>/questions.md` | Planning workflow |
+| Shotloom planning brief | `.agent-local/shotloom/planning/stl-<N>/brief.json` | `shotloom-start-task` |
+| Shotloom spec draft | `.agent-local/shotloom/planning/stl-<N>/spec.json` | `shotloom-draft-spec` |
+| Shotloom design plan | `.agent-local/shotloom/planning/stl-<N>/design-plan.json` | `shotloom-draft-spec` |
+| Shotloom open questions | `.agent-local/shotloom/planning/stl-<N>/questions.json` | Planning workflow |
 | Shotloom before-PR readiness | `.agent-local/shotloom/before-pr/stl-<N>/<safe-branch>/readiness.json` | `shotloom-review-before-pr` |
 | Shotloom before-PR blockers | `.agent-local/shotloom/before-pr/stl-<N>/<safe-branch>/<phase>-blockers.json` | `shotloom-review-before-pr` |
 | Shotloom PR watcher state | `.agent-local/shotloom/pr/<N>/` | `shotloom-auto-pr` |
 | Shotloom deploy state | `.agent-local/shotloom/deploy/<date-or-version>/` | `shotloom-deploy-web` |
 | Operational findings daily queue | `.agent-local/ah/operational-findings/YYYY-MM-DD/` | `ah-report-finding` |
-| Operational findings inbox | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md` | `ah-report-finding` |
-| Operational finding reports | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/<slug>.md` | `ah-report-finding` |
-| Generic local handoff | `.agent-local/reports/<date>-<slug>.md` | Local report inbox |
+| Operational findings inbox | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.json` | `ah-report-finding` |
+| Operational finding reports | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/<slug>.json` | `ah-report-finding` |
+| Generic local handoff | `.agent-local/reports/<date>-<slug>.json` | Local report inbox |
 
 `.agent-local/` is gitignored. No new ignore entry is required; update the
 `.gitignore` comment to name local artifacts.
@@ -118,8 +118,8 @@ Output JSON:
   "owner": "shotloom",
   "artifactType": "planning",
   "root": "<knitten-root>",
-  "path": ".agent-local/shotloom/planning/stl-123/brief.md",
-  "absolutePath": "<knitten-root>/.agent-local/shotloom/planning/stl-123/brief.md",
+  "path": ".agent-local/shotloom/planning/stl-123/brief.json",
+  "absolutePath": "<knitten-root>/.agent-local/shotloom/planning/stl-123/brief.json",
   "cleanupPath": ".agent-local/shotloom/planning/stl-123"
 }
 ```
@@ -142,8 +142,9 @@ Resolution rules:
 | `shotloom` | `before-pr` | `stl-<N> <safe-branch> readiness\|code-blockers\|docs-blockers` | `.agent-local/shotloom/before-pr/stl-<N>/<safe-branch>/<file>` |
 | `shotloom` | `pr` | `<N> watcher-pid\|watcher-log\|react-log\|state\|last-event\|log` | `.agent-local/shotloom/pr/<N>/<file>` |
 | `shotloom` | `deploy` | `<date-or-version> release-notes\|manifest\|rollback` | `.agent-local/shotloom/deploy/<date-or-version>/<file>` |
-| `ah` | `operational-findings` | `YYYY-MM-DD inbox` | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md` |
-| `ah` | `operational-findings` | `YYYY-MM-DD report <slug>` | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/<slug>.md` |
+| `ah` | `reports` | `YYYYMMDD handoff <slug>` | `.agent-local/reports/YYYYMMDD-<slug>.json` |
+| `ah` | `operational-findings` | `YYYY-MM-DD inbox` | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.json` |
+| `ah` | `operational-findings` | `YYYY-MM-DD report <slug>` | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/<slug>.json` |
 
 Script requirements:
 
@@ -160,10 +161,10 @@ Script requirements:
 ```json
 {
   "stl": "stl-123",
-  "brief": ".agent-local/shotloom/planning/stl-123/brief.md",
-  "spec": ".agent-local/shotloom/planning/stl-123/spec.md",
-  "designPlan": ".agent-local/shotloom/planning/stl-123/design-plan.md",
-  "questions": ".agent-local/shotloom/planning/stl-123/questions.md"
+  "brief": ".agent-local/shotloom/planning/stl-123/brief.json",
+  "spec": ".agent-local/shotloom/planning/stl-123/spec.json",
+  "designPlan": ".agent-local/shotloom/planning/stl-123/design-plan.json",
+  "questions": ".agent-local/shotloom/planning/stl-123/questions.json"
 }
 ```
 
@@ -173,10 +174,10 @@ Planning split rule:
 
 | File | Content |
 |---|---|
-| `brief.md` | Issue intake, source sweep, related context, open questions, and next handoff. |
-| `spec.md` | Requirements, contracts, non-goals, acceptance criteria, and verification obligations. |
-| `design-plan.md` | Ordered implementation phases, file/surface plan, validation order, and rollback notes. |
-| `questions.md` | Unanswered user/product/design questions only. |
+| `brief.json` | Issue intake, source sweep, related context, open questions, and next handoff. |
+| `spec.json` | Requirements, contracts, non-goals, acceptance criteria, and verification obligations. |
+| `design-plan.json` | Ordered implementation phases, file/surface plan, validation order, and rollback notes. |
+| `questions.json` | Unanswered user/product/design questions only. |
 | `manifest.json` | Machine-readable pointers to the files above and the STL id. |
 
 ## Skill Changes
@@ -243,8 +244,8 @@ node agent/lib/resolve-local-artifact-path.mjs shotloom planning stl-123 brief
 node agent/lib/resolve-local-artifact-path.mjs shotloom planning stl-123 manifest
 node agent/lib/resolve-local-artifact-path.mjs shotloom before-pr stl-123 feat-example readiness
 node agent/lib/resolve-local-artifact-path.mjs ah operational-findings 2026-05-29 inbox
-git check-ignore .agent-local/shotloom/planning/stl-123/brief.md
-git check-ignore .agent-local/ah/operational-findings/2026-05-29/inbox.md
+git check-ignore .agent-local/shotloom/planning/stl-123/brief.json
+git check-ignore .agent-local/ah/operational-findings/2026-05-29/inbox.json
 rg -n '(^| )(mkdir|mktemp|write|append|OPS_DIR=|notes_file=|tmpdir=).*(/tmp/shotloom|~/.claude/ops|agent/obsidian-staging/projects/shotloom)' \
   agent/skills/shotloom-* agent/rules scripts
 ! rg -n 'shotloom-docs-lane' agent/skills/shotloom-* agent/rules scripts

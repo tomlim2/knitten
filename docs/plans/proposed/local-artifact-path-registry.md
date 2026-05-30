@@ -84,7 +84,7 @@ path registry.
       "args": [
         { "name": "stl", "pattern": "^stl-[0-9]+$", "normalize": "lowercase" }
       ],
-      "path": ".agent-local/shotloom/planning/{stl}/brief.md",
+      "path": ".agent-local/shotloom/planning/{stl}/brief.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}"
     }
   ]

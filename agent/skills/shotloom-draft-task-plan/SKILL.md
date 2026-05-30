@@ -23,10 +23,10 @@ artifacts through `resolve-local-artifact-path`:
 
 | Result | Artifact | Commit |
 |---|---|---|
-| Clean converged spec | `.agent-local/shotloom/planning/stl-<N>/spec.md` + `design-plan.md` + `manifest.json` | No |
-| Step 2 factual stop | `.agent-local/shotloom/planning/stl-<N>/questions.md` | No |
-| Unconverged draft | `.agent-local/shotloom/planning/stl-<N>/spec.md` with unresolved questions | No |
-| Parallel or staged-delete spec | `.agent-local/shotloom/planning/stl-<N>/spec.md` with blocker note | No |
+| Clean converged spec | `.agent-local/shotloom/planning/stl-<N>/spec.json` + `design-plan.json` + `manifest.json` | No |
+| Step 2 factual stop | `.agent-local/shotloom/planning/stl-<N>/questions.json` | No |
+| Unconverged draft | `.agent-local/shotloom/planning/stl-<N>/spec.json` with unresolved questions | No |
+| Parallel or staged-delete spec | `.agent-local/shotloom/planning/stl-<N>/spec.json` with blocker note | No |
 
 Pre-Step-1 failures stop without writing because no target path exists.
 
@@ -37,7 +37,7 @@ The spec is a pre-implementation contract: it locks requirements, evidence,
 decisions, non-goals, verification, traps, and the design plan before source
 edits begin. The local Ready briefing is the required handoff input; live
 Shotloom code is canonical evidence. Missing primitives or scope expansion
-create a local `questions.md` artifact.
+create a local `questions.json` artifact.
 
 ## Planning Stages
 
@@ -89,16 +89,16 @@ Verify:
 - `slug` matches `^[a-z0-9]+(-[a-z0-9]+)*$` and contains no `/`.
 - The local planning bundle for the STL exists under
   `.agent-local/shotloom/planning/stl-<N>/`.
-- The planning bundle contains `brief.md` or a manifest that points to it.
+- The planning bundle contains `brief.json` or a manifest that points to it.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Resolve `spec.md`, `design-plan.md`, `questions.md`, and `manifest.json` through
+Resolve `spec.json`, `design-plan.json`, `questions.json`, and `manifest.json` through
 `resolve-local-artifact-path`. Surface the slug, STL id, manifest path, and
 Shotloom root.
 
 ### Step 2: Run Current-State Audit
 
-Read local `brief.md` first. Before
+Read local `brief.json` first. Before
 authoring, search the live Shotloom tree. Choose terms from the briefing,
 Linear, branch, AC, ADR, and affected modules. Search examples:
 [reference.md](reference.md).
@@ -113,12 +113,12 @@ Factual stop conditions:
 2. Out-of-briefing expansion: scope forces protocol change, dependency, ADR, or
    multi-file import design absent from the briefing.
 
-If a stop condition fires, write the conflict report to `questions.md` in Step 6a,
+If a stop condition fires, write the conflict report to `questions.json` in Step 6a,
 skip commit, then ask for the split or scope decision.
 
 ### Step 3: Detect Create vs Update Mode
 
-Inspect the local planning manifest and existing local spec/design-plan files.
+Inspect the local planning manifest and existing local spec/design-plan JSON files.
 Use Read for files present on disk. Use `git -C "$knitten" show HEAD:<path>`
 only for HEAD-only or deleted-at-HEAD content.
 
@@ -223,7 +223,7 @@ ask the user instead of guessing.
 
 Write the local artifacts according to the Mandatory Contract table. If a clean
 spec cannot land, write the best current candidate and record the blocker in
-`questions.md`.
+`questions.json`.
 
 #### Step 6b: Commit Direct Spec Only
 
@@ -243,7 +243,7 @@ Let `/shotloom-review-task-plan` own the review-spec commit and final report.
 The final report must include the spec path and ask the user whether to start
 implementation from the reviewed spec.
 
-If Step 6a recorded unresolved blockers in `questions.md`, report the artifact
+If Step 6a recorded unresolved blockers in `questions.json`, report the artifact
 path and blocker, then stop. Do not run review-task-plan on incomplete local
 artifacts.
 

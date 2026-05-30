@@ -36,9 +36,9 @@ Define a gitignored local inbox for report-only cross-session handoff.
 
 | File type | Path |
 |---|---|
-| Session report | `.agent-local/reports/<YYYYMMDD>-<slug>.md` |
-| Status handoff | `.agent-local/reports/<YYYYMMDD>-<slug>-status.md` |
-| Investigation note | `.agent-local/reports/<YYYYMMDD>-<slug>-investigation.md` |
+| Session report | `.agent-local/reports/<YYYYMMDD>-<slug>.json` |
+| Status handoff | `.agent-local/reports/<YYYYMMDD>-<slug>-status.json` |
+| Investigation note | `.agent-local/reports/<YYYYMMDD>-<slug>-investigation.json` |
 
 ## Forbidden Files
 
@@ -61,7 +61,7 @@ Define a gitignored local inbox for report-only cross-session handoff.
 
 | AC | Evidence |
 |---|---|
-| AC1 | `git check-ignore -q .agent-local/reports/example.md` passed. |
+| AC1 | `git check-ignore -q .agent-local/reports/example.json` passed. |
 | AC2 | `agent/rules/git-defaults.md` includes the local report inbox exception. |
 | AC3 | `docs/reference/local-report-inbox.md` names allowed and forbidden use. |
 | AC4 | `git diff --check` and `node scripts/validate-llm-first.mjs` passed. |

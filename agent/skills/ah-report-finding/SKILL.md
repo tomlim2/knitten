@@ -4,7 +4,7 @@ argument-hint: "<summary>"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(node:*), Bash(rg:*)
 domains: agent-hub
 repo-keys: agent-hub
-languages: markdown,yaml,javascript
+languages: json,javascript,markdown,yaml
 task-types: ops,authoring
 work-modes: company,experiment,personal
 context-profile: ah-authoring
@@ -22,7 +22,7 @@ Use this when the user says a Knitten problem, workflow issue, skill issue, or
 operational lesson should be reported. Capture first; precise diagnosis,
 promotion, and durable artifact edits can happen later.
 
-Raw captures are temporary local artifacts. Durable knowledge starts only after
+Raw captures are temporary local JSON artifacts. Durable knowledge starts only after
 promotion into the owning skill, rule, standard, script, validator, spec, or
 decision.
 
@@ -81,8 +81,8 @@ If the user asks what to do with completed findings:
 
 | File | Purpose |
 |------|---------|
-| `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md` | Local temporary thin index. |
-| `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/` | Local temporary report-context files. |
+| `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.json` | Local temporary JSON thin index. |
+| `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/*.json` | Local temporary JSON report-context files. |
 | `docs/briefings/operational-findings/fast-track-manual.md` | Durable urgent handling reference. |
 | `agent/document-templates/agent-hub/operational-finding-report.md` | Report body template. |
 | `agent/lib/resolve-local-artifact-path.mjs` | Resolve local artifact paths. |

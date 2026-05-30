@@ -13,6 +13,7 @@ status: accepted
 | Discovery output | The first script that creates the directory MUST print `workDir` in JSON. |
 | Final output | The final chat JSON MUST include `workDir` and `cleanupPaths: ["<workDir>"]`. |
 | Runtime files | Raw tool responses, normalized JSON, discovered context, caches, and intermediate docs belong under `workDir`. |
+| LLM handoff docs | Temporary documents meant for another LLM to resume MUST be JSON, not Markdown. |
 | Durable files | Briefings, plans, reports, specs, and committed docs MUST NOT live under `workDir`. |
 | Cleanup | Wrapup deletes every path in `cleanupPaths` after durable outputs are verified. |
 
@@ -45,6 +46,20 @@ Good:
 .agent-local/runtime/shotloom-start-task-STL-431/context-discover.json
 .agent-local/runtime/shotloom-start-task-STL-431/context.json
 .agent-local/runtime/shotloom-start-task-STL-431/related-STL-430-raw.json
+```
+
+Bad LLM handoff:
+
+```text
+.agent-local/reports/20260530-continue-shotloom-docs.md
+.agent-local/shotloom/planning/stl-431/brief.md
+```
+
+Good LLM handoff:
+
+```text
+.agent-local/reports/20260530-continue-shotloom-docs.json
+.agent-local/shotloom/planning/stl-431/brief.json
 ```
 
 ## Consumer Rule

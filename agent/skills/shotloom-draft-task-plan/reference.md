@@ -219,7 +219,7 @@ ls "$knitten/docs/plans/" 2>/dev/null | rg -i "<scope>|<subject>|<linear-id>"
 Also inspect:
 
 - Linear issue body and related/parent issues when available.
-- Local briefing artifact at `.agent-local/shotloom/planning/stl-<N>/brief.md`.
+- Local briefing artifact at `.agent-local/shotloom/planning/stl-<N>/brief.json`.
 - Current live code, not just the Ready briefing.
 - Current docs/specs/ADRs/cache notes relevant to the spec.
 - Sibling specs and recently deleted sibling specs.

@@ -14,7 +14,7 @@
           "normalize": "lowercase"
         }
       ],
-      "path": ".agent-local/shotloom/planning/{stl}/brief.md",
+      "path": ".agent-local/shotloom/planning/{stl}/brief.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning brief"
     },
@@ -30,7 +30,7 @@
           "normalize": "lowercase"
         }
       ],
-      "path": ".agent-local/shotloom/planning/{stl}/spec.md",
+      "path": ".agent-local/shotloom/planning/{stl}/spec.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning spec"
     },
@@ -46,7 +46,7 @@
           "normalize": "lowercase"
         }
       ],
-      "path": ".agent-local/shotloom/planning/{stl}/design-plan.md",
+      "path": ".agent-local/shotloom/planning/{stl}/design-plan.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning design plan"
     },
@@ -62,7 +62,7 @@
           "normalize": "lowercase"
         }
       ],
-      "path": ".agent-local/shotloom/planning/{stl}/questions.md",
+      "path": ".agent-local/shotloom/planning/{stl}/questions.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning open questions"
     },
@@ -339,6 +339,26 @@
     },
     {
       "owner": "ah",
+      "artifactType": "reports",
+      "item": "handoff",
+      "kind": "file",
+      "args": [
+        {
+          "name": "date",
+          "pattern": "^[0-9]{8}$"
+        },
+        {
+          "name": "slug",
+          "pattern": "^[a-zA-Z0-9._-]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/reports/{date}-{slug}.json",
+      "cleanupPath": ".agent-local/reports",
+      "description": "Agent-hub JSON-only cross-session handoff report"
+    },
+    {
+      "owner": "ah",
       "artifactType": "operational-findings",
       "item": "inbox",
       "kind": "file",
@@ -348,7 +368,7 @@
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         }
       ],
-      "path": ".agent-local/ah/operational-findings/{date}/inbox.md",
+      "path": ".agent-local/ah/operational-findings/{date}/inbox.json",
       "cleanupPath": ".agent-local/ah/operational-findings/{date}",
       "description": "Agent-hub operational findings inbox"
     },
@@ -368,7 +388,7 @@
           "position": "after-item"
         }
       ],
-      "path": ".agent-local/ah/operational-findings/{date}/reports/{slug}.md",
+      "path": ".agent-local/ah/operational-findings/{date}/reports/{slug}.json",
       "cleanupPath": ".agent-local/ah/operational-findings/{date}",
       "description": "Agent-hub operational finding report"
     }

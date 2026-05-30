@@ -8,13 +8,16 @@ Raw finding capture is temporary and local:
 .agent-local/ah/operational-findings/YYYY-MM-DD/
 ```
 
+Temporary raw captures are JSON. Markdown belongs only to durable tracked
+reports, ledgers, rules, standards, specs, or decisions.
+
 | Path | Purpose |
 |------|---------|
 | `reports/` | Legacy promoted or retained report stubs. Do not write new raw captures here. |
 | `fast-track-manual.md` | Manual route for urgent findings. |
 
 The temporary daily index is
-`.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md`.
+`.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.json`.
 
 ## Completion Policy
 

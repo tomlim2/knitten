@@ -146,58 +146,79 @@ git -C "$knitten" log --diff-filter=D --name-only --pretty=format: -- \
 
 ## Step 6 — Ready briefing artifact template
 
-Path: `.agent-local/shotloom/planning/stl-<N>/brief.md`
+Path: `.agent-local/shotloom/planning/stl-<N>/brief.json`
 
-```markdown
----
-status: ready
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
-load: triggered
-trigger: STL-NN
-repo: shotloom
-linear: STL-NN
-spec: ../../plans/proposed/<slug>.md
----
-
-### Shotloom coding mode — <category>
-
-**Issue:** STL-NN "<title>"
-  Problem: <one-line>
-  Acceptance: <bulleted>
-  Affected: <crate/module list>
-  Linked: <ADR-XXXX, spec-YYY>
-
-**Branch:** <current-branch>  (base: <base>)  <N> commits ahead, <clean|N dirty files>
-
-**Standards loaded:** AGENTS.md, CONTRIBUTING.md, docs/guidelines/error-handling.md, docs/guidelines/review-rust.md, docs/guidelines/commit-guideline.md, docs/guidelines/pr-guideline.md, <category additions>
-**ADRs to honor:** <list>
-**Ask-first triggers for this task:** <filtered from §16>
-**Intent lens:** <failure mode to prevent; note any user clarification that overrides literal AC wording>
-
-**AC primitive cross-check:**
-- <AC id>: <codified | wrong-shape | verification-example | sibling-owned> - <path/section evidence, equivalent proof, sibling owner, or split needed>
-
-**Spec-risk handoff for `/shotloom-draft-spec`:**
-- P1: <question to lock before implementation> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent that demands this>
-- P2: <ambiguity/test/doc gap to resolve in the spec> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent>
-- P3: <cheap nit or precedent to review> - evidence: <path or rg hit> - AC-trace: <AC line / ADR / precedent, or related-follow-up>
-
-**Sibling specs (Knitten docs):**
-- <slug>.md - <working-tree | staged | HEAD | deleted> - stance: <one-line scope summary> - <agrees | disagrees> with this briefing
-- (or: "none found" if Step 5d scan returned empty)
-
-**Pre-write checklist passed:**
-- [x] gh auth: tomlim2
-- [x] Shotloom repo commit identity: tomlim2 <deemo@vonvon.me>
-- [x] conventions re-read: AGENTS, CONTRIBUTING, ADR index
-- [x] category: <category>
-- [x] targeted sections loaded
-- [x] AC primitive cross-check recorded
-- [x] spec-risk handoff seeded
-- [x] sibling-spec scan run (Knitten docs/plans/ + .agent-local/shotloom/planning/, full body via Read tool for every match)
-
-Ready. If this briefing is OK, next step is `/shotloom-draft-spec`.
+```json
+{
+  "schemaVersion": 1,
+  "kind": "shotloom-start-task-brief",
+  "status": "ready",
+  "created": "YYYY-MM-DD",
+  "updated": "YYYY-MM-DD",
+  "repo": "shotloom",
+  "linear": "STL-NN",
+  "spec": "docs/plans/proposed/<slug>.md",
+  "category": "<category>",
+  "issue": {
+    "id": "STL-NN",
+    "title": "<title>",
+    "problem": "<one-line>",
+    "acceptance": ["<acceptance criterion>"],
+    "affected": ["<crate/module>"],
+    "linked": ["<ADR-XXXX>", "<spec>"]
+  },
+  "branch": {
+    "name": "<current-branch>",
+    "base": "<base>",
+    "commitsAhead": 0,
+    "state": "clean"
+  },
+  "standardsLoaded": [
+    "AGENTS.md",
+    "CONTRIBUTING.md",
+    "docs/guidelines/error-handling.md",
+    "docs/guidelines/review-rust.md",
+    "docs/guidelines/commit-guideline.md",
+    "docs/guidelines/pr-guideline.md"
+  ],
+  "adrsToHonor": [],
+  "askFirstTriggers": [],
+  "intentLens": "<failure mode to prevent>",
+  "acceptancePrimitiveCrossCheck": [
+    {
+      "acceptanceId": "<AC id>",
+      "status": "codified",
+      "evidence": "<path/section evidence>"
+    }
+  ],
+  "specRiskHandoff": [
+    {
+      "priority": "P1",
+      "question": "<question to lock before implementation>",
+      "evidence": "<path or rg hit>",
+      "acceptanceTrace": "<AC line / ADR / precedent>"
+    }
+  ],
+  "siblingSpecs": [
+    {
+      "slug": "<slug>.md",
+      "state": "HEAD",
+      "stance": "<one-line scope summary>",
+      "relation": "agrees"
+    }
+  ],
+  "preWriteChecklist": {
+    "ghAuthTomlim2": true,
+    "shotloomCommitIdentityTomlim2": true,
+    "conventionsReread": true,
+    "categorySelected": true,
+    "targetedSectionsLoaded": true,
+    "acceptancePrimitiveCrossCheckRecorded": true,
+    "specRiskHandoffSeeded": true,
+    "siblingSpecScanRun": true
+  },
+  "nextAction": "/shotloom-draft-spec"
+}
 ```
 
 Write exactly this artifact and emit the same briefing in chat with the

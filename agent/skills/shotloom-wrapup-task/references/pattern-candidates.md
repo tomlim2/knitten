@@ -14,8 +14,8 @@ promoting them directly into the review catalog.
 | Field | Value |
 |---|---|
 | Local queue | `.agent-local/ah/operational-findings/YYYY-MM-DD/` |
-| Inbox | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.md` |
-| Report directory | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/` |
+| Inbox | `.agent-local/ah/operational-findings/YYYY-MM-DD/inbox.json` |
+| Report directory | `.agent-local/ah/operational-findings/YYYY-MM-DD/reports/*.json` |
 | Capture script | `scripts/operational-findings-report.mjs` |
 
 ## Capture Rules
@@ -23,13 +23,13 @@ promoting them directly into the review catalog.
 1. Resolve the Knitten checkout from agent-hub config before running scripts;
    wrapup is usually invoked from a Shotloom worktree, not from Knitten.
 2. Capture through `scripts/operational-findings-report.mjs`; do not hand-edit
-   the local daily index.
+   the local daily JSON index.
 3. If capture fails, report the skip; do not block Linear or worktree cleanup.
 4. Do not commit or push raw finding captures.
 
 ## Entry Shape
 
-Write one report only when the PR has findings. The report is not a PR summary
+Write one JSON report only when the PR has findings. The report is not a PR summary
 and not a duplicate of the devlog `지적`; it is a reusable pattern candidate
 captured for later triage.
 

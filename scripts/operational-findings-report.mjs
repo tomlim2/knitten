@@ -51,10 +51,6 @@ function today() {
   }).format(new Date());
 }
 
-function tableCell(value) {
-  return String(value || "").replaceAll("|", "/").replace(/\s+/g, " ").trim();
-}
-
 function titleFromArgs(args) {
   return args.title || args.summary.split(/[.!?。]/)[0].trim().slice(0, 80) || "Operational finding";
 }
@@ -78,62 +74,54 @@ function reportSlug(value) {
 
 function reportBody(args, reportTitle, findingId) {
   const date = today();
-  const fastTrack = args.urgent ? "yes" : "no";
-  return `---
-status: captured
-created: ${date}
-updated: ${date}
-finding-id: ${findingId}
-initial-source: ${args.source}
-area: ${args.area}
-contexts:
-  - ${args.context}
-promotion-target: unknown
-urgent: ${args.urgent ? "true" : "false"}
----
-
-# ${reportTitle}
-
-## Summary
-
-${args.summary}
-
-## Observations
-
-### 1. Initial capture
-
-- Observed In: ${args.context}
-- Rough Finding: ${args.summary}
-- Why It Matters: <clarify during triage>
-- Evidence: ${args.evidence || "<add evidence during triage>"}
-- Follow-up Guess: <clarify during triage>
-- Needs Clarification: yes
-
-## Suggested Follow-up
-
-- Next pass should clarify: root cause, owner, and promotion target.
-- Problem: <clarify during triage>
-- Likely Scope: ${args.area}
-- Done When: finding is promoted, resolved, assetized, parked, or discarded.
-- Possible destination: unknown
-
-## Status
-
-- Current State: captured
-- Fast Track: ${fastTrack}
-`;
+  return {
+    schemaVersion: 1,
+    kind: "operational-finding-report",
+    status: "captured",
+    created: date,
+    updated: date,
+    findingId,
+    title: reportTitle,
+    initialSource: args.source,
+    area: args.area,
+    contexts: [args.context],
+    promotionTarget: null,
+    urgent: args.urgent,
+    summary: args.summary,
+    observations: [
+      {
+        label: "initial-capture",
+        observedIn: args.context,
+        roughFinding: args.summary,
+        whyItMatters: null,
+        evidence: args.evidence || null,
+        followUpGuess: null,
+        needsClarification: true,
+      },
+    ],
+    suggestedFollowUp: {
+      nextPass: "Clarify root cause, owner, and promotion target.",
+      problem: null,
+      likelyScope: args.area,
+      doneWhen: "Finding is promoted, resolved, assetized, parked, or discarded.",
+      possibleDestination: null,
+    },
+    fastTrack: args.urgent,
+  };
 }
 
-function initialInboxBody() {
-  return `# Operational Findings Inbox
+function initialInboxBody(date) {
+  return {
+    schemaVersion: 1,
+    kind: "operational-findings-inbox",
+    date,
+    description: "Local Knitten-wide temporary JSON intake index for operational findings.",
+    entries: [],
+  };
+}
 
-Local Knitten-wide temporary intake index for operational findings.
-
-Detailed report context lives under \`reports/\`.
-
-| ID | Date | Report | Initial Source | Area | Context | Summary | Status |
-|----|------|--------|----------------|------|---------|---------|--------|
-`;
+function writeJson(value) {
+  return `${JSON.stringify(value, null, 2)}\n`;
 }
 
 function resolvePath(root, args, { create = false } = {}) {
@@ -143,7 +131,7 @@ function resolvePath(root, args, { create = false } = {}) {
 async function ensureInbox(root, date) {
   const inbox = resolvePath(root, ["ah", "operational-findings", date, "inbox"], { create: true });
   if (!existsSync(inbox.absolutePath)) {
-    await writeFile(inbox.absolutePath, initialInboxBody());
+    await writeFile(inbox.absolutePath, writeJson(initialInboxBody(date)));
   }
   return inbox;
 }
@@ -157,7 +145,7 @@ async function resolveReportPath(root, title, { dryRun = false, date = today() }
       return {
         absolute: resolved.absolutePath,
         repoRelative: resolved.path,
-        inboxRelative: path.posix.join("reports", `${slug}.md`),
+        inboxRelative: path.posix.join("reports", `${slug}.json`),
         findingId: `ah-of-${date.replaceAll("-", "")}-${slug}`,
       };
     }
@@ -166,9 +154,18 @@ async function resolveReportPath(root, title, { dryRun = false, date = today() }
 }
 
 async function appendInboxRow(inbox, args, report, date) {
-  const row = `| ${report.findingId} | ${date} | \`${report.inboxRelative}\` | ${tableCell(args.source)} | ${tableCell(args.area)} | ${tableCell(args.context)} | ${tableCell(args.summary)} | captured |\n`;
-  const current = await readFile(inbox.absolutePath, "utf8");
-  await writeFile(inbox.absolutePath, current.endsWith("\n") ? current + row : `${current}\n${row}`);
+  const current = JSON.parse(await readFile(inbox.absolutePath, "utf8"));
+  current.entries.push({
+    id: report.findingId,
+    date,
+    report: report.inboxRelative,
+    initialSource: args.source,
+    area: args.area,
+    context: args.context,
+    summary: args.summary,
+    status: "captured",
+  });
+  await writeFile(inbox.absolutePath, writeJson(current));
 }
 
 async function capture(args) {
@@ -187,7 +184,7 @@ async function capture(args) {
   }
 
   const ensuredInbox = await ensureInbox(root, date);
-  await writeFile(report.absolute, body);
+  await writeFile(report.absolute, writeJson(body));
   await appendInboxRow(ensuredInbox, args, report, date);
   console.log(`report: ${report.repoRelative}`);
   console.log(`inbox: ${ensuredInbox.path}`);
