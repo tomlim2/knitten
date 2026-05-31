@@ -34,7 +34,7 @@ makes output contracts difficult to bypass during future skill work.
 | [output-contract-minimal-fields.md](../plans/completed/output-contract-minimal-fields.md) | completed | Define the minimal registry fields for the skill or workflow that creates the output and the write target shape. |
 | [output-contract-validator-enforcement.md](../plans/completed/output-contract-validator-enforcement.md) | completed | Define validator checks that catch broken `madeBy` references, templates, parent outputs, unsafe paths, and stale fields. |
 | `output-contract-consumer-adoption-pass.md` | todo | Define the first focused skill adoption pass for high-repeat output writers without broad churn. |
-| `output-contract-resolver-fixtures.md` | todo | Define success and failure fixtures for resolver behavior. |
+| [output-contract-resolver-fixtures.md](../plans/completed/output-contract-resolver-fixtures.md) | completed | Define success and failure fixtures for resolver behavior. |
 
 ## Progress
 
@@ -47,7 +47,7 @@ makes output contracts difficult to bypass during future skill work.
 | Minimal output fields | done | `docs/plans/completed/output-contract-minimal-fields.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`, and `scripts/validate-llm-first.mjs --check outputs`. |
 | Enforcement validator | done | `docs/plans/completed/output-contract-validator-enforcement.md`, `scripts/validate-llm-first.mjs --check outputs`, and `--outputs-fixture` negative proof. |
 | Consumer adoption proof | not started | Planned in `output-contract-consumer-adoption-pass.md`. |
-| Resolver fixtures | not started | Planned in `output-contract-resolver-fixtures.md`. |
+| Resolver fixtures | done | `docs/plans/completed/output-contract-resolver-fixtures.md` and `node --test tests/output-contract-resolver.test.mjs`. |
 
 ## Acceptance Criteria
 

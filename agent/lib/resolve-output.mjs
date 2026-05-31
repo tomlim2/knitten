@@ -170,7 +170,13 @@ function baseResult(root, entry) {
     format: entry.format,
   };
   if (entry.formatOptions) result.formatOptions = entry.formatOptions;
-  if (entry.template) result.absoluteTemplatePath = path.join(root, entry.template);
+  if (entry.template) {
+    const absoluteTemplatePath = path.join(root, entry.template);
+    if (!existsSync(absoluteTemplatePath)) {
+      throw new Error(`${entry.id} template does not exist: ${entry.template}`);
+    }
+    result.absoluteTemplatePath = absoluteTemplatePath;
+  }
   if (writeTarget.section) result.section = writeTarget.section;
   if (writeTarget.parentOutput) result.parentOutput = writeTarget.parentOutput;
   return result;
