@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-26
 updated: 2026-05-26
 owner: agent-hub
-spec: docs/plans/proposed/artifact-inventory-reviewed-decision-application.md
+spec: docs/plans/completed/artifact-inventory-reviewed-decision-application.md
 ---
 
 # Spec Intake: artifact-inventory-reviewed-decision-application

@@ -6,6 +6,7 @@ import { promisify } from 'util';
 const execFileAsync = promisify(execFile);
 const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const OUTPUT_PATH = 'agent/config/artifact-inventory.json';
+const REVIEWED_DECISIONS_PATH = 'agent/config/artifact-inventory-reviewed-decisions.json';
 
 const TRACKED_OR_NEW_ARGS = ['ls-files', '--cached', '--others', '--exclude-standard'];
 
@@ -132,6 +133,7 @@ async function main() {
     rows.push(makeArtifactRow(file, artifactType));
   }
 
+  await applyReviewedDecisions(rows);
   rows.sort((a, b) => a['row-id'].localeCompare(b['row-id']));
   const inventory = {
     'schema-version': 1,
@@ -143,6 +145,25 @@ async function main() {
 
   await fs.writeFile(path.join(REPO_ROOT, OUTPUT_PATH), `${JSON.stringify(inventory, null, 2)}\n`);
   console.log(`wrote ${OUTPUT_PATH} (${rows.length} rows)`);
+}
+
+async function applyReviewedDecisions(rows) {
+  const decisionPath = path.join(REPO_ROOT, REVIEWED_DECISIONS_PATH);
+  let payload;
+  try {
+    payload = JSON.parse(await fs.readFile(decisionPath, 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') return;
+    throw error;
+  }
+  const decisions = new Map((payload.decisions || []).map((decision) => [decision['row-id'], decision]));
+  for (const row of rows) {
+    const decision = decisions.get(row['row-id']);
+    if (!decision) continue;
+    row['classification-stage'] = decision['classification-stage'];
+    row['proposed-destination'] = decision['proposed-destination'];
+    row['review-state'] = decision['review-state'];
+  }
 }
 
 async function listRepoFiles() {

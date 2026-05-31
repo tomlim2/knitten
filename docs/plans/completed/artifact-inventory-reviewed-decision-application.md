@@ -1,7 +1,7 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-06-01
 owner: agent-hub
 milestone: agent-artifact-pack-system
 intake: docs/briefings/specs/artifact-inventory-reviewed-decision-application.md
@@ -21,16 +21,31 @@ only Markdown reports.
 rows, but `agent/config/artifact-inventory.json` still emits almost every row as
 `classification-stage: undecided` and `proposed-destination: undecided`.
 
-Current count from `agent/config/artifact-inventory.json`:
+Baseline count before this implementation:
 
 | Metric | Count |
 |--------|-------|
-| total rows | 703 |
-| `classification-stage: undecided` | 700 |
+| total rows | 763 |
+| `classification-stage: undecided` | 760 |
+| `classification-stage: core-candidate` | 0 |
+| `classification-stage: pack-candidate` | 0 |
 | `classification-stage: migrate-later` | 3 |
 | `review-state: accepted` | 6 |
 | `review-state: blocked` | 10 |
-| `review-state: pending` | 687 |
+| `review-state: pending` | 747 |
+
+Post-implementation count after regeneration:
+
+| Metric | Count |
+|--------|-------|
+| total rows | 799 |
+| `classification-stage: undecided` | 696 |
+| `classification-stage: core-candidate` | 95 |
+| `classification-stage: pack-candidate` | 5 |
+| `classification-stage: migrate-later` | 3 |
+| `review-state: accepted` | 6 |
+| `review-state: blocked` | 10 |
+| `review-state: pending` | 783 |
 
 The migration plan cannot safely select core, private-pack, or migrate-later
 rows until reviewed decisions are encoded in generated inventory.
@@ -51,7 +66,7 @@ rows until reviewed decisions are encoded in generated inventory.
 |----------|-------|
 | Do not physically move artifacts into packs. | `artifact-repo-migration-plan` |
 | Do not create compatibility shims. | `artifact-compatibility-shims` |
-| Do not resolve all 703 inventory rows. | Later classification batches |
+| Do not resolve all inventory rows. | Later classification batches |
 | Do not publish or split `knitten-core`. | `knitten-core-public-transition`, `core-release-validation` |
 | Do not rewrite skill bodies. | `thin-skill-guide-boundary` |
 
@@ -64,6 +79,7 @@ rows until reviewed decisions are encoded in generated inventory.
 | Generator | Most rows default to `undecided`; only migrate-later pilot rows are special-cased. | `scripts/generate-artifact-inventory.mjs` |
 | Validator | Inventory shape, enums, row ids, parent links, and extraction source sections are checked. | `scripts/validate-llm-first.mjs` |
 | Reviewed report | 125 core-owned rows have reviewed decisions. | `docs/plans/reports/core-artifact-boundary/core-owned-classification-2026-05-24.md` |
+| Reviewed decision data | Reviewed decisions are encoded for generator and validator consumption. | `agent/config/artifact-inventory-reviewed-decisions.json` |
 | Bootstrap role pattern | Generator already encodes reviewed role decisions for one batch. | `docs/plans/active/bootstrap-skill-definition-selection.md` |
 
 ## Proposed Design
@@ -76,9 +92,11 @@ Use the reviewed report as the canonical owner for this slice:
 docs/plans/reports/core-artifact-boundary/core-owned-classification-2026-05-24.md
 ```
 
-Encode the report's row decisions in a generator-owned structure. Prefer a
-small explicit decision map over parsing Markdown at runtime, unless the
-implementation proves a report parser is safer and validator-covered.
+Encode the report's row decisions in
+`agent/config/artifact-inventory-reviewed-decisions.json`. The generator applies
+the data to currently emitted row ids. The validator permits decision rows whose
+source files no longer exist because command retirement and path cleanup already
+removed several old rows.
 
 ### Decision Fields
 
@@ -97,7 +115,7 @@ Add or extend validator coverage so reviewed rows cannot silently regress to
 
 | Check | Failure |
 |-------|---------|
-| Reviewed row id missing from generated inventory. | `reviewed decision row missing` |
+| Reviewed row id source exists but row is missing from generated inventory. | `reviewed decision row missing` |
 | Reviewed row emits a different stage or destination than the decision map. | `reviewed decision mismatch` |
 | Reviewed blocked row emits `accepted`. | `blocked reviewed row marked accepted` |
 
@@ -133,19 +151,19 @@ git status --short --branch
 
 ## Acceptance Criteria
 
-- [ ] Reviewed core-owned row decisions are encoded in generator-owned data.
-- [ ] `agent/config/artifact-inventory.json` is regenerated from the generator.
-- [ ] Reviewed rows from `core-owned-classification-2026-05-24.md` no longer emit default `undecided` values unless the report decision is explicitly `undecided`.
-- [ ] Blocked and migrate-later rows keep their blocker-safe state.
-- [ ] Validator fails when a reviewed row mapping is missing or mismatched.
-- [ ] No artifact files move.
-- [ ] `git diff --check` passes.
-- [ ] `node scripts/validate-llm-first.mjs` passes.
+- [x] Reviewed core-owned row decisions are encoded in generator-owned data.
+- [x] `agent/config/artifact-inventory.json` is regenerated from the generator.
+- [x] Reviewed rows from `core-owned-classification-2026-05-24.md` no longer emit default `undecided` values unless the report decision is explicitly `undecided`.
+- [x] Blocked and migrate-later rows keep their blocker-safe state.
+- [x] Validator fails when a reviewed row mapping is missing or mismatched.
+- [x] No artifact files move.
+- [x] `git diff --check` passes.
+- [x] `node scripts/validate-llm-first.mjs` passes.
 
 ## Open Decisions
 
 | Decision | Default |
 |----------|---------|
-| Mapping storage | Start with explicit generator-owned map; move to JSON only if the map becomes too large. |
+| Mapping storage | Use `agent/config/artifact-inventory-reviewed-decisions.json` because the reviewed map has 125 rows and both generator and validator consume it. |
 | Review-state update policy | Change only rows whose reviewed report requires non-default state. |
 | Next batch | After this slice, choose a domain or private-pack batch from remaining pending rows. |

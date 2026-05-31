@@ -3136,6 +3136,10 @@ function inventoryViolation(violations, message) {
   violations.push({ file: "agent/config/artifact-inventory.json", line: 1, message });
 }
 
+function reviewedDecisionViolation(violations, message) {
+  violations.push({ file: "agent/config/artifact-inventory-reviewed-decisions.json", line: 1, message });
+}
+
 function checkInventoryProvenance(violations, inventory) {
   const isoDateTimePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
   const parsedGeneratedAt = new Date(inventory["generated-at"]);
@@ -3207,6 +3211,78 @@ async function checkInventorySourceSection(violations, row) {
   }
 }
 
+function sourcePathFromInventoryRowId(rowId) {
+  if (typeof rowId !== "string") return null;
+  if (rowId.startsWith("artifact:")) return rowId.slice("artifact:".length);
+  if (rowId.startsWith("skill:")) return rowId.slice("skill:".length);
+  if (rowId.startsWith("extraction:")) {
+    const value = rowId.slice("extraction:".length);
+    const hashIndex = value.indexOf("#");
+    return hashIndex === -1 ? value : value.slice(0, hashIndex);
+  }
+  return null;
+}
+
+async function checkReviewedArtifactInventoryDecisions(violations, rowsById) {
+  const file = "agent/config/artifact-inventory-reviewed-decisions.json";
+  let payload;
+  try {
+    payload = await readJsonRel(file);
+  } catch (err) {
+    reviewedDecisionViolation(violations, `cannot read reviewed decisions: ${err.message}`);
+    return;
+  }
+
+  if (payload["schema-version"] !== 1) {
+    reviewedDecisionViolation(violations, `schema-version must be 1, got ${JSON.stringify(payload["schema-version"])}`);
+  }
+  if (hasUnsafeInventoryPath(payload["source-report"]) || !existsSync(path.join(REPO_ROOT, payload["source-report"]))) {
+    reviewedDecisionViolation(violations, `invalid source-report: ${JSON.stringify(payload["source-report"])}`);
+  }
+  if (!Array.isArray(payload.decisions)) {
+    reviewedDecisionViolation(violations, "decisions must be an array");
+    return;
+  }
+
+  const decisionIds = new Set();
+  for (const decision of payload.decisions) {
+    const rowId = decision["row-id"];
+    if (typeof rowId !== "string") {
+      reviewedDecisionViolation(violations, `decision missing row-id: ${JSON.stringify(decision)}`);
+      continue;
+    }
+    if (decisionIds.has(rowId)) {
+      reviewedDecisionViolation(violations, `duplicate decision row-id: ${rowId}`);
+    }
+    decisionIds.add(rowId);
+
+    checkInventoryEnum(violations, decision, "classification-stage", ARTIFACT_INVENTORY_ENUMS.classificationStages);
+    checkInventoryEnum(violations, decision, "proposed-destination", ARTIFACT_INVENTORY_ENUMS.proposedDestinations);
+    checkInventoryEnum(violations, decision, "review-state", ARTIFACT_INVENTORY_ENUMS.reviewStates);
+
+    const row = rowsById.get(rowId);
+    if (!row) {
+      const sourcePath = sourcePathFromInventoryRowId(rowId);
+      if (sourcePath && existsSync(path.join(REPO_ROOT, sourcePath))) {
+        inventoryViolation(violations, `reviewed decision row missing from inventory: ${rowId}`);
+      }
+      continue;
+    }
+
+    for (const field of ["classification-stage", "proposed-destination", "review-state"]) {
+      if (row[field] !== decision[field]) {
+        inventoryViolation(
+          violations,
+          `reviewed decision mismatch for ${rowId} ${field}: expected ${JSON.stringify(decision[field])}, got ${JSON.stringify(row[field])}`,
+        );
+      }
+    }
+    if (decision["review-state"] === "blocked" && row["review-state"] === "accepted") {
+      inventoryViolation(violations, `blocked reviewed row marked accepted: ${rowId}`);
+    }
+  }
+}
+
 async function checkArtifactInventory() {
   const violations = [];
   const file = "agent/config/artifact-inventory.json";
@@ -3228,6 +3304,7 @@ async function checkArtifactInventory() {
   }
 
   const rowIds = new Set();
+  const rowsById = new Map();
   const skillRows = new Map();
   const extractionRowsByParent = new Map();
   const extractionIdsByParent = new Map();
@@ -3252,6 +3329,7 @@ async function checkArtifactInventory() {
       inventoryViolation(violations, `duplicate row-id: ${row["row-id"]}`);
     }
     rowIds.add(row["row-id"]);
+    rowsById.set(row["row-id"], row);
 
     checkInventoryEnum(violations, row, "row-type", ARTIFACT_INVENTORY_ENUMS.rowTypes);
     checkInventoryEnum(violations, row, "artifact-type", ARTIFACT_INVENTORY_ENUMS.artifactTypes);
@@ -3361,6 +3439,8 @@ async function checkArtifactInventory() {
       );
     }
   }
+
+  await checkReviewedArtifactInventoryDecisions(violations, rowsById);
 
   return { name: "artifact-inventory", violations };
 }
