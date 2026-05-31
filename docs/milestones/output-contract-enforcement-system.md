@@ -32,7 +32,7 @@ makes output contracts difficult to bypass during future skill work.
 | Spec | Status | Role |
 |------|--------|------|
 | [output-contract-minimal-fields.md](../plans/completed/output-contract-minimal-fields.md) | completed | Define the minimal registry fields for the skill or workflow that creates the output and the write target shape. |
-| `output-contract-validator-enforcement.md` | todo | Define validator checks that catch broken `madeBy` references, templates, parent outputs, unsafe paths, and missing adoption proof. |
+| [output-contract-validator-enforcement.md](../plans/completed/output-contract-validator-enforcement.md) | completed | Define validator checks that catch broken `madeBy` references, templates, parent outputs, unsafe paths, and stale fields. |
 | `output-contract-consumer-adoption-pass.md` | todo | Define the first focused skill adoption pass for high-repeat output writers without broad churn. |
 | `output-contract-resolver-fixtures.md` | todo | Define success and failure fixtures for resolver behavior. |
 
@@ -45,7 +45,7 @@ makes output contracts difficult to bypass during future skill work.
 | Baseline validator hook | done | `scripts/validate-llm-first.mjs --check outputs` validates the current registry shape. |
 | First consumer | done | `agent/skills/ah-manage-spec/SKILL.md` names output ids for proposed specs and Design Plan sections. |
 | Minimal output fields | done | `docs/plans/completed/output-contract-minimal-fields.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`, and `scripts/validate-llm-first.mjs --check outputs`. |
-| Enforcement validator | not started | Planned in `output-contract-validator-enforcement.md`. |
+| Enforcement validator | done | `docs/plans/completed/output-contract-validator-enforcement.md`, `scripts/validate-llm-first.mjs --check outputs`, and `--outputs-fixture` negative proof. |
 | Consumer adoption proof | not started | Planned in `output-contract-consumer-adoption-pass.md`. |
 | Resolver fixtures | not started | Planned in `output-contract-resolver-fixtures.md`. |
 

@@ -1730,6 +1730,7 @@ function isSafeLocalArtifactPath(value) {
 function isSafeRepoRelativeDocumentTemplate(value) {
   if (typeof value !== "string" || !/\.(json|md)$/.test(value)) return false;
   if (!isSafeRepoRelativePath(value)) return false;
+  if (!value.startsWith("agent/document-templates/")) return false;
   return existsSync(path.join(REPO_ROOT, value));
 }
 
@@ -1813,7 +1814,7 @@ async function checkLocalArtifactPaths() {
       }
     }
     if (entry.template !== undefined && !isSafeRepoRelativeDocumentTemplate(entry.template)) {
-      localArtifactViolation(violations, `${identity} template must be an existing repo-relative .md or .json file`);
+      localArtifactViolation(violations, `${identity} template must be an existing agent/document-templates .md or .json file`);
     }
     if (entry.schemaKind !== undefined && (typeof entry.schemaKind !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.schemaKind))) {
       localArtifactViolation(violations, `${identity} schemaKind must be kebab-case`);
@@ -1918,11 +1919,19 @@ function validateFormatOptions(violations, identity, entry) {
   }
 }
 
-async function checkOutputs() {
+async function readOutputRegistry(args) {
+  if (args?.outputsFixture) {
+    const text = await readFile(path.resolve(args.outputsFixture), "utf8");
+    return JSON.parse(text);
+  }
+  return readJsonConfig("outputs.json");
+}
+
+async function checkOutputs(args = {}) {
   const violations = [];
   let registry;
   try {
-    registry = await readJsonConfig("outputs.json");
+    registry = await readOutputRegistry(args);
   } catch (err) {
     outputViolation(violations, `cannot read output registry: ${err.message}`);
     return { name: "outputs", violations };
@@ -1965,12 +1974,12 @@ async function checkOutputs() {
     if (typeof entry.description !== "string" || !entry.description) {
       outputViolation(violations, `${identity} missing description`);
     }
-    for (const legacyField of ["locationKind", "path", "localArtifactTokens", "docPurpose", "parentOutput", "section", "shapeKind"]) {
+    for (const legacyField of ["path", "localArtifactTokens", "docPurpose", "parentOutput", "section"]) {
       if (Object.hasOwn(entry, legacyField)) {
         outputViolation(violations, `${identity} must move ${legacyField} under writeTarget or remove it`);
       }
     }
-    for (const removedField of ["afterWrite", "verifyWith"]) {
+    for (const removedField of ["locationKind", "shapeKind", "afterWrite", "verifyWith", "outputType", "outputProfile"]) {
       if (Object.hasOwn(entry, removedField)) {
         outputViolation(violations, `${identity} must remove stale field ${removedField}`);
       }
@@ -1991,7 +2000,7 @@ async function checkOutputs() {
     }
     validateFormatOptions(violations, identity, entry);
     if (Object.hasOwn(entry, "template") && !isSafeRepoRelativeDocumentTemplate(entry.template)) {
-      outputViolation(violations, `${identity} template must be an existing repo-relative .md or .json file`);
+      outputViolation(violations, `${identity} template must be an existing agent/document-templates .md or .json file`);
     }
     if (["markdown", "json", "markdown-section"].includes(entry.format) && !Object.hasOwn(entry, "template")) {
       outputViolation(violations, `${identity} template is required for ${entry.format} outputs`);
@@ -4899,7 +4908,7 @@ const CHECKS = [
 ];
 
 function parseArgs(argv) {
-  const args = { check: null, list: false, artifactPackInputs: [], unknown: [], errors: [] };
+  const args = { check: null, list: false, artifactPackInputs: [], outputsFixture: null, unknown: [], errors: [] };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--list") args.list = true;
@@ -4923,6 +4932,16 @@ function parseArgs(argv) {
       }
     }
     else if (a.startsWith("--artifact-pack=")) args.artifactPackInputs.push(a.slice("--artifact-pack=".length));
+    else if (a === "--outputs-fixture") {
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) {
+        args.errors.push("--outputs-fixture requires a path");
+        if (value?.startsWith("--")) i--;
+      } else {
+        args.outputsFixture = value;
+      }
+    }
+    else if (a.startsWith("--outputs-fixture=")) args.outputsFixture = a.slice("--outputs-fixture=".length);
     else args.unknown.push(a);
   }
   return args;
@@ -4949,6 +4968,10 @@ async function main() {
   }
   if (args.artifactPackInputs.length > 0 && (!args.check || !args.check.startsWith("artifact-pack"))) {
     console.error("--artifact-pack can only be used with --check artifact-pack or artifact-pack:<gate>");
+    process.exit(2);
+  }
+  if (args.outputsFixture && args.check !== "outputs") {
+    console.error("--outputs-fixture can only be used with --check outputs");
     process.exit(2);
   }
   const selected = args.check
