@@ -4,7 +4,11 @@
     {
       "id": "local-session-handoff",
       "description": "Agent-hub JSON-only cross-session handoff report",
-      "locationKind": "local-artifact",
+      "madeBy": "workflow:agent-hub-session-handoff",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": ["ah", "reports", "{date}", "handoff", "{slug}"]
+      },
       "args": [
         {
           "name": "date",
@@ -15,41 +19,43 @@
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
         }
       ],
-      "localArtifactTokens": ["ah", "reports", "{date}", "handoff", "{slug}"],
       "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
-      "format": "json",
-      "shapeKind": "session-handoff"
+      "format": "json"
     },
     {
       "id": "agent-hub-spec-proposed",
       "description": "Agent-hub proposed spec document",
-      "locationKind": "repo-template",
+      "madeBy": "ah-manage-spec",
+      "writeTarget": {
+        "kind": "repo-template",
+        "path": "docs/plans/proposed/{slug}.md"
+      },
       "args": [
         {
           "name": "slug",
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
         }
       ],
-      "path": "docs/plans/proposed/{slug}.md",
       "template": "agent/document-templates/agent-hub/spec.md",
-      "format": "markdown",
-      "shapeKind": "agent-hub-spec"
+      "format": "markdown"
     },
     {
       "id": "agent-hub-design-plan-section",
       "description": "Design Plan section inside an agent-hub proposed spec",
-      "locationKind": "document-section",
+      "madeBy": "ah-manage-spec",
+      "writeTarget": {
+        "kind": "document-section",
+        "parentOutput": "agent-hub-spec-proposed",
+        "section": "## Design Plan"
+      },
       "args": [
         {
           "name": "slug",
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
         }
       ],
-      "parentOutput": "agent-hub-spec-proposed",
-      "section": "## Design Plan",
       "template": "agent/document-templates/agent-hub/design-plan.md",
-      "format": "markdown-section",
-      "shapeKind": "agent-hub-design-plan"
+      "format": "markdown-section"
     }
   ]
 }

@@ -1901,6 +1901,23 @@ function outputArgNameSet(args) {
   return new Set((Array.isArray(args) ? args : []).filter((arg) => arg && typeof arg === "object").map((arg) => arg.name));
 }
 
+function outputWriteTarget(entry) {
+  return entry?.writeTarget && typeof entry.writeTarget === "object" ? entry.writeTarget : null;
+}
+
+function isValidOutputMadeBy(value) {
+  if (typeof value !== "string" || !value) return false;
+  if (value.startsWith("workflow:")) return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value.slice("workflow:".length));
+  return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value) && existsSync(path.join(AGENT_ROOT, "skills", value, "SKILL.md"));
+}
+
+function validateFormatOptions(violations, identity, entry) {
+  if (!Object.hasOwn(entry, "formatOptions")) return;
+  if (!entry.formatOptions || typeof entry.formatOptions !== "object" || Array.isArray(entry.formatOptions)) {
+    outputViolation(violations, `${identity} formatOptions must be an object when present`);
+  }
+}
+
 async function checkOutputs() {
   const violations = [];
   let registry;
@@ -1928,8 +1945,8 @@ async function checkOutputs() {
 
   const ids = new Set();
   const entriesById = new Map();
-  const allowedLocationKinds = new Set(["repo-template", "local-artifact", "doc-path", "document-section"]);
-  const allowedFormats = new Set(["markdown", "json", "markdown-section"]);
+  const allowedWriteTargetKinds = new Set(["repo-template", "local-artifact", "doc-path", "document-section"]);
+  const allowedFormats = new Set(["markdown", "json", "markdown-section", "txt", "png", "jpg", "jpeg", "webp", "mp4", "webm", "mov", "pdf", "pptx"]);
 
   for (const entry of registry.entries) {
     if (!entry || typeof entry !== "object") {
@@ -1948,62 +1965,81 @@ async function checkOutputs() {
     if (typeof entry.description !== "string" || !entry.description) {
       outputViolation(violations, `${identity} missing description`);
     }
-    if (!allowedLocationKinds.has(entry.locationKind)) {
-      outputViolation(violations, `${identity} invalid locationKind: ${JSON.stringify(entry.locationKind)}`);
+    for (const legacyField of ["locationKind", "path", "localArtifactTokens", "docPurpose", "parentOutput", "section", "shapeKind"]) {
+      if (Object.hasOwn(entry, legacyField)) {
+        outputViolation(violations, `${identity} must move ${legacyField} under writeTarget or remove it`);
+      }
+    }
+    for (const removedField of ["afterWrite", "verifyWith"]) {
+      if (Object.hasOwn(entry, removedField)) {
+        outputViolation(violations, `${identity} must remove stale field ${removedField}`);
+      }
+    }
+    if (!isValidOutputMadeBy(entry.madeBy)) {
+      outputViolation(violations, `${identity} madeBy must be an existing skill name or workflow:<kebab-case-id>`);
+    }
+    const writeTarget = outputWriteTarget(entry);
+    if (!writeTarget) {
+      outputViolation(violations, `${identity} missing writeTarget`);
+      continue;
+    }
+    if (!allowedWriteTargetKinds.has(writeTarget.kind)) {
+      outputViolation(violations, `${identity} invalid writeTarget.kind: ${JSON.stringify(writeTarget.kind)}`);
     }
     if (!allowedFormats.has(entry.format)) {
       outputViolation(violations, `${identity} invalid format: ${JSON.stringify(entry.format)}`);
     }
-    if (typeof entry.shapeKind !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.shapeKind)) {
-      outputViolation(violations, `${identity} shapeKind must be kebab-case`);
-    }
-    if (!isSafeRepoRelativeDocumentTemplate(entry.template)) {
+    validateFormatOptions(violations, identity, entry);
+    if (Object.hasOwn(entry, "template") && !isSafeRepoRelativeDocumentTemplate(entry.template)) {
       outputViolation(violations, `${identity} template must be an existing repo-relative .md or .json file`);
+    }
+    if (["markdown", "json", "markdown-section"].includes(entry.format) && !Object.hasOwn(entry, "template")) {
+      outputViolation(violations, `${identity} template is required for ${entry.format} outputs`);
     }
 
     const argNames = validateOutputArgs(violations, identity, entry.args);
     const declared = new Set(argNames);
     const templateFields = [];
 
-    if (entry.locationKind === "repo-template") {
-      if (!isSafeRepoRelativePath(entry.path)) {
-        outputViolation(violations, `${identity} path must be a safe repo-relative path`);
+    if (writeTarget.kind === "repo-template") {
+      if (!isSafeRepoRelativePath(writeTarget.path)) {
+        outputViolation(violations, `${identity} writeTarget.path must be a safe repo-relative path`);
       }
-      templateFields.push(entry.path);
+      templateFields.push(writeTarget.path);
     }
-    if (entry.locationKind === "local-artifact") {
-      if (!Array.isArray(entry.localArtifactTokens) || entry.localArtifactTokens.length === 0) {
-        outputViolation(violations, `${identity} localArtifactTokens must be a non-empty array`);
+    if (writeTarget.kind === "local-artifact") {
+      if (!Array.isArray(writeTarget.localArtifactTokens) || writeTarget.localArtifactTokens.length === 0) {
+        outputViolation(violations, `${identity} writeTarget.localArtifactTokens must be a non-empty array`);
       } else {
-        for (const token of entry.localArtifactTokens) {
+        for (const token of writeTarget.localArtifactTokens) {
           if (typeof token !== "string" || !token) {
-            outputViolation(violations, `${identity} localArtifactTokens entries must be non-empty strings`);
+            outputViolation(violations, `${identity} writeTarget.localArtifactTokens entries must be non-empty strings`);
           }
           templateFields.push(token);
         }
         if (localArtifactRegistry) {
           const dummyValues = Object.fromEntries(argNames.map((name) => [name, name]));
-          const rendered = renderOutputTokens(entry.localArtifactTokens, dummyValues);
+          const rendered = renderOutputTokens(writeTarget.localArtifactTokens, dummyValues);
           if (!matchingLocalArtifactEntry(localArtifactRegistry, rendered)) {
-            outputViolation(violations, `${identity} localArtifactTokens must resolve to an existing local-artifact-paths entry`);
+            outputViolation(violations, `${identity} writeTarget.localArtifactTokens must resolve to an existing local-artifact-paths entry`);
           }
         }
       }
     }
-    if (entry.locationKind === "doc-path") {
-      if (typeof entry.docPurpose !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.docPurpose)) {
-        outputViolation(violations, `${identity} docPurpose must be kebab-case when locationKind is doc-path`);
+    if (writeTarget.kind === "doc-path") {
+      if (typeof writeTarget.docPurpose !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(writeTarget.docPurpose)) {
+        outputViolation(violations, `${identity} writeTarget.docPurpose must be kebab-case when kind is doc-path`);
       }
       if (declared.has("project")) {
         templateFields.push("{project}");
       }
     }
-    if (entry.locationKind === "document-section") {
-      if (typeof entry.parentOutput !== "string" || !entry.parentOutput) {
-        outputViolation(violations, `${identity} parentOutput is required when locationKind is document-section`);
+    if (writeTarget.kind === "document-section") {
+      if (typeof writeTarget.parentOutput !== "string" || !writeTarget.parentOutput) {
+        outputViolation(violations, `${identity} writeTarget.parentOutput is required when kind is document-section`);
       }
-      if (typeof entry.section !== "string" || !/^## [^\n]+$/.test(entry.section)) {
-        outputViolation(violations, `${identity} section must be an H2 heading string`);
+      if (typeof writeTarget.section !== "string" || !/^## [^\n]+$/.test(writeTarget.section)) {
+        outputViolation(violations, `${identity} writeTarget.section must be an H2 heading string`);
       }
       if (entry.format !== "markdown-section") {
         outputViolation(violations, `${identity} document-section outputs must use format markdown-section`);
@@ -2017,18 +2053,20 @@ async function checkOutputs() {
       }
     }
     for (const name of declared) {
-      if (!used.has(name) && entry.locationKind !== "document-section") {
+      if (!used.has(name) && writeTarget.kind !== "document-section") {
         outputViolation(violations, `${identity} declares unused arg: ${name}`);
       }
     }
   }
 
   for (const entry of registry.entries) {
-    if (entry?.locationKind !== "document-section") continue;
-    const parent = entriesById.get(entry.parentOutput);
+    const writeTarget = outputWriteTarget(entry);
+    if (writeTarget?.kind !== "document-section") continue;
+    const parent = entriesById.get(writeTarget.parentOutput);
+    const parentTarget = outputWriteTarget(parent);
     if (!parent) {
-      outputViolation(violations, `${entry.id} parentOutput does not exist: ${entry.parentOutput}`);
-    } else if (parent.locationKind === "document-section") {
+      outputViolation(violations, `${entry.id} parentOutput does not exist: ${writeTarget.parentOutput}`);
+    } else if (parentTarget?.kind === "document-section") {
       outputViolation(violations, `${entry.id} parentOutput must be a file output, got document-section`);
     } else {
       const childArgs = outputArgNameSet(entry.args);

@@ -12,8 +12,10 @@ const PLACEHOLDER_PATTERN = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 function usage() {
   return `Usage:
   resolve-output.mjs [--root <knitten-root>] <output-id> [name=value ...]
+  resolve-output.mjs [--root <knitten-root>] --list
 
 Examples:
+  resolve-output.mjs --list
   resolve-output.mjs local-session-handoff date=20260531 slug=main-status
   resolve-output.mjs agent-hub-spec-proposed slug=output-contract-registry
   resolve-output.mjs agent-hub-design-plan-section slug=output-contract-registry`;
@@ -41,13 +43,15 @@ function resolveRoot(rootOption = null, cwd = process.cwd()) {
 }
 
 function parseOptions(argv) {
-  const options = { root: null, args: [] };
+  const options = { root: null, list: false, args: [] };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (arg === "--root") {
       options.root = argv[++index];
     } else if (arg?.startsWith("--root=")) {
       options.root = arg.slice("--root=".length);
+    } else if (arg === "--list") {
+      options.list = true;
     } else if (arg === "-h" || arg === "--help") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -131,19 +135,44 @@ function findEntry(registry, id) {
   return matches[0];
 }
 
+function listOutputs(registry) {
+  return registry.entries.map((entry) => {
+    const writeTarget = writeTargetFor(entry);
+    return {
+      id: entry.id,
+      description: entry.description,
+      madeBy: entry.madeBy,
+      writeTargetKind: writeTarget.kind,
+      args: (entry.args || []).map((arg) => arg.name),
+      format: entry.format,
+      hasTemplate: Boolean(entry.template),
+    };
+  });
+}
+
+function writeTargetFor(entry) {
+  if (!entry.writeTarget || typeof entry.writeTarget !== "object") {
+    throw new Error(`${entry.id} missing writeTarget`);
+  }
+  return entry.writeTarget;
+}
+
 function baseResult(root, entry) {
+  const writeTarget = writeTargetFor(entry);
   const result = {
     ok: true,
     id: entry.id,
     description: entry.description,
-    locationKind: entry.locationKind,
+    madeBy: entry.madeBy,
+    writeTarget,
+    locationKind: writeTarget.kind,
     template: entry.template,
-    absoluteTemplatePath: path.join(root, entry.template),
     format: entry.format,
-    shapeKind: entry.shapeKind,
   };
-  if (entry.section) result.section = entry.section;
-  if (entry.parentOutput) result.parentOutput = entry.parentOutput;
+  if (entry.formatOptions) result.formatOptions = entry.formatOptions;
+  if (entry.template) result.absoluteTemplatePath = path.join(root, entry.template);
+  if (writeTarget.section) result.section = writeTarget.section;
+  if (writeTarget.parentOutput) result.parentOutput = writeTarget.parentOutput;
   return result;
 }
 
@@ -153,9 +182,10 @@ export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd(
   const entry = findEntry(registry, id);
   const normalizedValues = validateArgs(entry, values);
   const result = baseResult(knittenRoot, entry);
+  const writeTarget = writeTargetFor(entry);
 
-  if (entry.locationKind === "repo-template") {
-    const relativePath = renderTemplate(entry.path, normalizedValues);
+  if (writeTarget.kind === "repo-template") {
+    const relativePath = renderTemplate(writeTarget.path, normalizedValues);
     if (!isSafeRepoRelativePath(relativePath)) {
       throw new Error(`${entry.id} resolved unsafe repo path: ${relativePath}`);
     }
@@ -166,8 +196,8 @@ export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd(
     };
   }
 
-  if (entry.locationKind === "local-artifact") {
-    const localTokens = entry.localArtifactTokens.map((token) => renderTemplate(token, normalizedValues));
+  if (writeTarget.kind === "local-artifact") {
+    const localTokens = writeTarget.localArtifactTokens.map((token) => renderTemplate(token, normalizedValues));
     const local = resolveLocalArtifactPath({ root: knittenRoot, args: localTokens, cwd });
     return {
       ...result,
@@ -178,10 +208,10 @@ export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd(
     };
   }
 
-  if (entry.locationKind === "document-section") {
+  if (writeTarget.kind === "document-section") {
     const parent = resolveOutput({
       root: knittenRoot,
-      id: entry.parentOutput,
+      id: writeTarget.parentOutput,
       values: normalizedValues,
       cwd,
     });
@@ -192,9 +222,9 @@ export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd(
     };
   }
 
-  if (entry.locationKind === "doc-path") {
+  if (writeTarget.kind === "doc-path") {
     const script = path.join(knittenRoot, "agent/skills/ah-resolve-doc-path/resolve.sh");
-    const docArgs = ["doc", entry.docPurpose];
+    const docArgs = ["doc", writeTarget.docPurpose];
     if (Object.hasOwn(normalizedValues, "project")) {
       docArgs.push(normalizedValues.project);
     }
@@ -216,14 +246,20 @@ export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd(
     };
   }
 
-  throw new Error(`${entry.id} unsupported locationKind: ${entry.locationKind}`);
+  throw new Error(`${entry.id} unsupported writeTarget kind: ${writeTarget.kind}`);
 }
 
 function main() {
   const options = parseOptions(process.argv.slice(2));
   const [id, ...assignmentTokens] = options.args;
-  if (!id) fail("usage", usage());
   try {
+    if (options.list) {
+      const root = resolveRoot(options.root);
+      const registry = loadRegistry(root);
+      process.stdout.write(`${JSON.stringify({ ok: true, outputs: listOutputs(registry) }, null, 2)}\n`);
+      return;
+    }
+    if (!id) fail("usage", usage());
     const result = resolveOutput({
       root: options.root,
       id,
