@@ -11,8 +11,11 @@ const PLACEHOLDER_PATTERN = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 
 function usage() {
   return `Usage:
-  resolve-output.mjs [--root <knitten-root>] <output-id> [name=value ...]
+  resolve-output.mjs [--root <knitten-root>] [--create] <output-id> [name=value ...]
   resolve-output.mjs [--root <knitten-root>] --list
+
+Options:
+  --create  Create parent directories for local-artifact outputs.
 
 Examples:
   resolve-output.mjs --list
@@ -43,10 +46,12 @@ function resolveRoot(rootOption = null, cwd = process.cwd()) {
 }
 
 function parseOptions(argv) {
-  const options = { root: null, list: false, args: [] };
+  const options = { root: null, create: false, list: false, args: [] };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
-    if (arg === "--root") {
+    if (arg === "--create") {
+      options.create = true;
+    } else if (arg === "--root") {
       options.root = argv[++index];
     } else if (arg?.startsWith("--root=")) {
       options.root = arg.slice("--root=".length);
@@ -94,15 +99,16 @@ function validateArgs(entry, rawValues) {
     if (!Object.hasOwn(rawValues, arg.name)) {
       throw new Error(`${entry.id} missing arg: ${arg.name}`);
     }
-    const value = String(rawValues[arg.name]);
-    if (value.includes("/") || value.includes("..")) {
+    const rawValue = String(rawValues[arg.name]);
+    if (rawValue.includes("/") || rawValue.includes("..")) {
       throw new Error(`${arg.name} contains invalid path characters`);
     }
+    const value = arg.normalize === "lowercase" ? rawValue.toLowerCase() : rawValue;
     const pattern = new RegExp(arg.pattern);
     if (!pattern.test(value)) {
       throw new Error(`${arg.name} does not match ${arg.pattern}`);
     }
-    values[arg.name] = arg.normalize === "lowercase" ? value.toLowerCase() : value;
+    values[arg.name] = value;
   }
   for (const name of Object.keys(rawValues)) {
     if (!declared.has(name)) {
@@ -182,7 +188,7 @@ function baseResult(root, entry) {
   return result;
 }
 
-export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd() }) {
+export function resolveOutput({ root = null, create = false, id, values = {}, cwd = process.cwd() }) {
   const knittenRoot = resolveRoot(root, cwd);
   const registry = loadRegistry(knittenRoot);
   const entry = findEntry(registry, id);
@@ -204,7 +210,7 @@ export function resolveOutput({ root = null, id, values = {}, cwd = process.cwd(
 
   if (writeTarget.kind === "local-artifact") {
     const localTokens = writeTarget.localArtifactTokens.map((token) => renderTemplate(token, normalizedValues));
-    const local = resolveLocalArtifactPath({ root: knittenRoot, args: localTokens, cwd });
+    const local = resolveLocalArtifactPath({ root: knittenRoot, create, args: localTokens, cwd });
     return {
       ...result,
       path: local.path,
@@ -268,6 +274,7 @@ function main() {
     if (!id) fail("usage", usage());
     const result = resolveOutput({
       root: options.root,
+      create: options.create,
       id,
       values: parseAssignments(assignmentTokens),
     });

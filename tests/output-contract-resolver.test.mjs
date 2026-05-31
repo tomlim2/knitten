@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -124,6 +124,136 @@ test("resolves local session handoff output", () => {
   assert.equal(result.format, "json");
 });
 
+test("resolves Shotloom start-task brief output", () => {
+  const result = resolveOutput({
+    root: repoRoot,
+    id: "shotloom-start-task-brief",
+    values: { stl: "STL-123" },
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.madeBy, "shotloom-start-task");
+  assert.equal(result.writeTarget.kind, "local-artifact");
+  assert.equal(result.path, ".agent-local/shotloom/planning/stl-123/brief.json");
+  assert.equal(result.absolutePath, path.join(repoRoot, ".agent-local/shotloom/planning/stl-123/brief.json"));
+  assert.equal(result.cleanupPath, ".agent-local/shotloom/planning/stl-123");
+  assert.equal(result.absoluteCleanupPath, path.join(repoRoot, ".agent-local/shotloom/planning/stl-123"));
+  assert.equal(result.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+  assert.equal(result.format, "json");
+  assert.deepEqual(result.formatOptions, { schemaKind: "shotloom-start-task-brief" });
+});
+
+test("resolves Shotloom draft-spec planning outputs", () => {
+  const cases = [
+    ["shotloom-planning-spec", "spec", "shotloom-planning-spec"],
+    ["shotloom-planning-design-plan", "design-plan", "shotloom-planning-design-plan"],
+    ["shotloom-planning-questions", "questions", "shotloom-planning-questions"],
+    ["shotloom-planning-manifest", "manifest", "shotloom-planning-manifest"],
+  ];
+
+  for (const [id, artifact, schemaKind] of cases) {
+    const result = resolveOutput({
+      root: repoRoot,
+      id,
+      values: { stl: "STL-431" },
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.madeBy, "shotloom-draft-spec");
+    assert.equal(result.writeTarget.kind, "local-artifact");
+    assert.equal(result.path, `.agent-local/shotloom/planning/stl-431/${artifact}.json`);
+    assert.equal(result.absolutePath, path.join(repoRoot, `.agent-local/shotloom/planning/stl-431/${artifact}.json`));
+    assert.equal(result.cleanupPath, ".agent-local/shotloom/planning/stl-431");
+    assert.equal(result.absoluteCleanupPath, path.join(repoRoot, ".agent-local/shotloom/planning/stl-431"));
+    assert.equal(result.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+    assert.equal(result.format, "json");
+    assert.deepEqual(result.formatOptions, { schemaKind });
+  }
+});
+
+test("resolves Shotloom before-PR outputs", () => {
+  const cases = [
+    ["shotloom-before-pr-readiness", "readiness", "shotloom-before-pr-readiness"],
+    ["shotloom-before-pr-code-blockers", "code-blockers", "shotloom-before-pr-code-blockers"],
+    ["shotloom-before-pr-docs-blockers", "docs-blockers", "shotloom-before-pr-docs-blockers"],
+  ];
+
+  for (const [id, artifact, schemaKind] of cases) {
+    const result = resolveOutput({
+      root: repoRoot,
+      id,
+      values: { stl: "STL-510", safeBranch: "feat-shotloom-output" },
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.madeBy, "shotloom-review-before-pr");
+    assert.equal(result.writeTarget.kind, "local-artifact");
+    assert.equal(result.path, `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/${artifact}.json`);
+    assert.equal(result.absolutePath, path.join(repoRoot, `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/${artifact}.json`));
+    assert.equal(result.cleanupPath, ".agent-local/shotloom/before-pr/stl-510/feat-shotloom-output");
+    assert.equal(result.absoluteCleanupPath, path.join(repoRoot, ".agent-local/shotloom/before-pr/stl-510/feat-shotloom-output"));
+    assert.equal(result.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+    assert.equal(result.format, "json");
+    assert.deepEqual(result.formatOptions, { schemaKind });
+  }
+});
+
+test("resolves Shotloom PR outputs", () => {
+  const cache = resolveOutput({
+    root: repoRoot,
+    id: "shotloom-pr-cache",
+    values: { pr: "77" },
+  });
+
+  assert.equal(cache.ok, true);
+  assert.equal(cache.madeBy, "workflow:shotloom-pr-cache");
+  assert.equal(cache.path, ".agent-local/shotloom/pr/77");
+  assert.equal(cache.absolutePath, path.join(repoRoot, ".agent-local/shotloom/pr/77"));
+  assert.equal(cache.cleanupPath, ".agent-local/shotloom/pr/77");
+  assert.equal(cache.absoluteCleanupPath, path.join(repoRoot, ".agent-local/shotloom/pr/77"));
+  assert.equal(cache.template, undefined);
+  assert.equal(cache.format, "directory");
+
+  const replyPlan = resolveOutput({
+    root: repoRoot,
+    id: "shotloom-pr-reply-plan",
+    values: { pr: "77" },
+  });
+
+  assert.equal(replyPlan.ok, true);
+  assert.equal(replyPlan.madeBy, "shotloom-respond-pr");
+  assert.equal(replyPlan.path, ".agent-local/shotloom/pr/77/reply-plan.json");
+  assert.equal(replyPlan.cleanupPath, ".agent-local/shotloom/pr/77");
+  assert.equal(replyPlan.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+  assert.equal(replyPlan.format, "json");
+  assert.deepEqual(replyPlan.formatOptions, { schemaKind: "shotloom-pr-reply-plan" });
+});
+
+test("resolves Shotloom deploy outputs", () => {
+  const cases = [
+    ["shotloom-deploy-release-notes", "release-notes.md", "agent/document-templates/agent-hub/release-notes.md", "markdown", null],
+    ["shotloom-deploy-manifest", "manifest.json", "agent/document-templates/agent-hub/json-handoff-packet.json", "json", "shotloom-deploy-manifest"],
+    ["shotloom-deploy-rollback", "rollback.json", "agent/document-templates/agent-hub/json-handoff-packet.json", "json", "shotloom-deploy-rollback"],
+  ];
+
+  for (const [id, fileName, template, format, schemaKind] of cases) {
+    const result = resolveOutput({
+      root: repoRoot,
+      id,
+      values: { key: "v0.1.2-test" },
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.madeBy, "shotloom-deploy-web");
+    assert.equal(result.writeTarget.kind, "local-artifact");
+    assert.equal(result.path, `.agent-local/shotloom/deploy/v0.1.2-test/${fileName}`);
+    assert.equal(result.cleanupPath, ".agent-local/shotloom/deploy/v0.1.2-test");
+    assert.equal(result.template, template);
+    assert.equal(result.format, format);
+    if (schemaKind) assert.deepEqual(result.formatOptions, { schemaKind });
+  }
+});
+
 test("lists output contract ids", () => {
   const result = runResolver(["--list"]);
 
@@ -133,6 +263,19 @@ test("lists output contract ids", () => {
     "local-session-handoff",
     "agent-hub-spec-proposed",
     "agent-hub-design-plan-section",
+    "shotloom-start-task-brief",
+    "shotloom-planning-spec",
+    "shotloom-planning-design-plan",
+    "shotloom-planning-questions",
+    "shotloom-planning-manifest",
+    "shotloom-before-pr-readiness",
+    "shotloom-before-pr-code-blockers",
+    "shotloom-before-pr-docs-blockers",
+    "shotloom-pr-cache",
+    "shotloom-pr-reply-plan",
+    "shotloom-deploy-release-notes",
+    "shotloom-deploy-manifest",
+    "shotloom-deploy-rollback",
   ]);
   assert.deepEqual(result.json.outputs.find((entry) => entry.id === "agent-hub-spec-proposed"), {
     id: "agent-hub-spec-proposed",
@@ -207,5 +350,27 @@ test("CLI supports temp roots", () => {
     assert.equal(result.code, 0, result.stderr);
     assert.equal(result.json.ok, true);
     assert.equal(result.json.absolutePath, path.join(root, "docs/plans/proposed/test-spec.md"));
+  });
+});
+
+test("CLI --create creates local artifact parent directories", () => {
+  withTempRoot((outputs) => outputs, (root) => {
+    const result = runResolver(["--root", root, "--create", "shotloom-start-task-brief", "stl=stl-123"]);
+
+    assert.equal(result.code, 0, result.stderr);
+    assert.equal(result.json.ok, true);
+    assert.equal(result.json.absolutePath, path.join(root, ".agent-local/shotloom/planning/stl-123/brief.json"));
+    assert.equal(existsSync(path.dirname(result.json.absolutePath)), true);
+  });
+});
+
+test("CLI --create creates local artifact directories", () => {
+  withTempRoot((outputs) => outputs, (root) => {
+    const result = runResolver(["--root", root, "--create", "shotloom-pr-cache", "pr=77"]);
+
+    assert.equal(result.code, 0, result.stderr);
+    assert.equal(result.json.ok, true);
+    assert.equal(result.json.absolutePath, path.join(root, ".agent-local/shotloom/pr/77"));
+    assert.equal(existsSync(result.json.absolutePath), true);
   });
 });

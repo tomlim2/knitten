@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for web deploy only. Prefer shotloom-router for full task workflows.
 argument-hint: "[--for-real] [--smoke] [--version vX.Y.Z]"
-allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*), Bash(mktemp:*), Bash(python3:*), Bash(ah-resolve-doc-path:*), Bash(shotloom-github-guard:*), Bash(resolve-local-artifact-path:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(pnpm:*), Bash(date:*), Bash(test:*), Bash(grep:*), Bash(sort:*), Bash(awk:*), Bash(sed:*), Bash(curl:*), Bash(sleep:*), Bash(mktemp:*), Bash(node:*), Bash(python3:*), Bash(ah-resolve-doc-path:*), Bash(shotloom-github-guard:*)
 domains: rust,web
 repo-keys: shotloom
 languages: css,rust,typescript
@@ -285,7 +285,7 @@ When Step 8a hits the known masking issue, the image IS in the registry but the 
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 tmpdir="$(
-  resolve-local-artifact-path --create shotloom deploy "$version" manifest \
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-deploy-manifest key="$version" \
     | jq -r '.absoluteCleanupPath'
 )"
 git clone https://github.com/CINEV/prototype-manifest.git "$tmpdir/prototype-manifest"
@@ -310,7 +310,7 @@ The structural fix is to change `.github/workflows/build-web-image.yml` so the m
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 notes_file="$(
-  resolve-local-artifact-path --create shotloom deploy "$version" release-notes \
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-deploy-release-notes key="$version" \
     | jq -r '.absolutePath'
 )"
 if [[ -n "$prev_tag" ]]; then
@@ -390,7 +390,7 @@ Use when live traffic is broken or a new image cannot be proven good.
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 tmpdir="$(
-  resolve-local-artifact-path --create shotloom deploy "$version" rollback \
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-deploy-rollback key="$version" \
     | jq -r '.absoluteCleanupPath'
 )"
 git clone https://github.com/CINEV/prototype-manifest.git "$tmpdir/prototype-manifest"

@@ -1,7 +1,7 @@
 ---
 description: Compatibility leaf/component Shotloom skill. Prefer shotloom-router, then shotloom-draft-spec for user-facing spec work.
 argument-hint: "[slug]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(ah-resolve-doc-path:*), Bash(resolve-local-artifact-path:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(ah-resolve-doc-path:*), Bash(node:*)
 ---
 
 # shotloom-draft-task-plan
@@ -19,7 +19,7 @@ manifest path, then ask whether to implement.
 ## Mandatory Contract
 
 After Step 1 resolves the local planning bundle, every stop writes local
-artifacts through `resolve-local-artifact-path`:
+artifacts through output contracts:
 
 | Result | Artifact | Commit |
 |---|---|---|
@@ -92,9 +92,18 @@ Verify:
 - The planning bundle contains `brief.json` or a manifest that points to it.
 - cwd belongs to Shotloom by `repo_root`, `git_common`, or `origin`.
 
-Resolve `spec.json`, `design-plan.json`, `questions.json`, and `manifest.json` through
-`resolve-local-artifact-path`. Surface the slug, STL id, manifest path, and
-Shotloom root.
+Resolve `spec.json`, `design-plan.json`, `questions.json`, and `manifest.json`
+through output contracts:
+
+```bash
+node "$knitten/agent/lib/resolve-output.mjs" --create shotloom-planning-spec stl=stl-<N>
+node "$knitten/agent/lib/resolve-output.mjs" --create shotloom-planning-design-plan stl=stl-<N>
+node "$knitten/agent/lib/resolve-output.mjs" --create shotloom-planning-questions stl=stl-<N>
+node "$knitten/agent/lib/resolve-output.mjs" --create shotloom-planning-manifest stl=stl-<N>
+```
+
+Use returned `absolutePath` values for writes. Surface the slug, STL id,
+manifest path, and Shotloom root.
 
 ### Step 2: Run Current-State Audit
 

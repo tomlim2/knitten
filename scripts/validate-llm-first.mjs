@@ -1955,7 +1955,7 @@ async function checkOutputs(args = {}) {
   const ids = new Set();
   const entriesById = new Map();
   const allowedWriteTargetKinds = new Set(["repo-template", "local-artifact", "doc-path", "document-section"]);
-  const allowedFormats = new Set(["markdown", "json", "markdown-section", "txt", "png", "jpg", "jpeg", "webp", "mp4", "webm", "mov", "pdf", "pptx"]);
+  const allowedFormats = new Set(["markdown", "json", "markdown-section", "directory", "txt", "png", "jpg", "jpeg", "webp", "mp4", "webm", "mov", "pdf", "pptx"]);
 
   for (const entry of registry.entries) {
     if (!entry || typeof entry !== "object") {

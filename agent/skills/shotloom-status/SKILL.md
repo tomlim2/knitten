@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for status dashboard only. Prefer shotloom-router for choosing a full workflow.
 argument-hint: ""
-allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*)
+allowed-tools: Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(ah-resolve-doc-path:*)
 domains: shotloom
 repo-keys: shotloom
 languages: markdown
@@ -22,7 +22,11 @@ Single message, multiple Bash calls:
 
 ```bash
 # Worktrees
-git -C "$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/agent-hub-config/repo-paths.json)" worktree list --porcelain
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
+shotloom_root="${shotloom_root#RESOLVED_PATH=}"
+git -C "$shotloom_root" worktree list --porcelain
 
 # Open PRs authored by me
 gh pr list --repo CINEV/shotloom --author @me --state open --json number,title,headRefName,isDraft,reviewDecision,statusCheckRollup,updatedAt

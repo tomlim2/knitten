@@ -1,7 +1,7 @@
 ---
 description: Run the Shotloom pre-PR review/fix loop and return prReady true/false.
 argument-hint: ""
-allowed-tools: Read, Write, Bash(git:*), Bash(pwd), Bash(resolve-local-artifact-path:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(pwd), Bash(jq:*), Bash(node:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -101,7 +101,7 @@ If any finding has `blocker=true`:
 1. Resolve the code blocker path:
    ```bash
    safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
-   resolve-local-artifact-path --create shotloom before-pr stl-<N> "$safe_branch" code-blockers
+   node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-before-pr-code-blockers stl=stl-<N> safeBranch="$safe_branch"
    ```
    Write normalized blocker findings to the returned `absolutePath`.
 2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
@@ -128,7 +128,7 @@ If any docs finding has `blocker=true`:
 
 1. Resolve the docs blocker path:
    ```bash
-   resolve-local-artifact-path --create shotloom before-pr stl-<N> "$safe_branch" docs-blockers
+   node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-before-pr-docs-blockers stl=stl-<N> safeBranch="$safe_branch"
    ```
    Write normalized blocker findings to the returned `absolutePath`.
 2. Run [`../shotloom-implement-code/SKILL.md`](../shotloom-implement-code/SKILL.md)
@@ -155,7 +155,7 @@ Before printing the final JSON, write the same object to:
 ```bash
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
 result_path="$(
-  resolve-local-artifact-path --create shotloom before-pr stl-<N> "$safe_branch" readiness \
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-before-pr-readiness stl=stl-<N> safeBranch="$safe_branch" \
     | jq -r '.absolutePath'
 )"
 ```

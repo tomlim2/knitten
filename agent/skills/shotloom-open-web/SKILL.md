@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for launching the local web app only. Prefer shotloom-router for full task workflows.
 argument-hint: "[--port N]"
-allowed-tools: Read, Bash(pnpm:*), Bash(npx:*), Bash(cargo:*), Bash(node:*), Bash(which:*), Bash(ls:*), Bash(cd:*)
+allowed-tools: Read, Bash(pnpm:*), Bash(npx:*), Bash(cargo:*), Bash(node:*), Bash(which:*), Bash(ls:*), Bash(cd:*), Bash(ah-resolve-doc-path:*)
 ---
 
 # shotloom-open-web
@@ -20,14 +20,24 @@ Minimal orchestration around `pnpm dev:web`; handles the common environment gaps
 
 - **Never auto-open the browser.** Print the URL and let the user click. Avoids racing the WASM initialization.
 - **Never run in the foreground.** `pnpm dev:web` is a long-lived process; always launch in the background and hand control back to the user once the URL is ready.
-- **Respect repo path indirection.** Resolve the shotloom repo from `~/.claude/private/agent-hub-config/repo-paths.json` (key `shotloom`); never hardcode paths.
+- **Respect repo path indirection.** Resolve the shotloom repo with `ah-resolve-doc-path repo shotloom`; never hardcode paths.
 - **Do not run destructive installs silently.** If `wasm-pack` / `pnpm` are missing, show the exact install command and ask before running.
 
 ## Workflow
 
 ### Step 1: Resolve the shotloom repo path
 
-Read `~/.claude/private/agent-hub-config/repo-paths.json` and look up the `shotloom` entry. If missing, abort and ask the user to register it first with `/ah-manage-config`.
+Run:
+
+```bash
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
+shotloom_root="${shotloom_root#RESOLVED_PATH=}"
+```
+
+If missing, abort and ask the user to register the Shotloom repo first with
+`/ah-manage-config`.
 
 ### Step 2: Environment preflight
 

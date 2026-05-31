@@ -1,7 +1,7 @@
 ---
 description: "Run Shotloom task preparation end-to-end: start-task briefing, draft-spec, spec review, commit/push docs, then stop before implementation."
 argument-hint: "STL-NN | linear-url"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(rg:*), Bash(stat:*), Bash(test:*), Bash(resolve-local-artifact-path:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(rg:*), Bash(stat:*), Bash(test:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -30,6 +30,18 @@ Run the full preparation path before source edits:
 3. Stop and ask whether to implement.
 
 This skill does not edit Shotloom source files.
+
+## Output Contract
+
+This orchestrator owns no output id. It consumes child-skill outputs:
+
+| Child skill | Output ids | Use |
+|-------------|------------|-----|
+| `/shotloom-start-task` | `shotloom-start-task-brief` | Ready briefing path and handoff envelope. |
+| `/shotloom-draft-spec` | `shotloom-planning-spec`, `shotloom-planning-design-plan`, `shotloom-planning-questions`, `shotloom-planning-manifest` | Reviewed planning artifacts and final manifest path. |
+
+Do not write local planning artifacts directly from this skill. Let each child
+skill resolve and write its own output contract.
 
 ## Arguments
 
@@ -93,7 +105,7 @@ Keep repo responsibilities separate:
 | Repo | Owned by | Contract |
 |---|---|---|
 | Shotloom | `/shotloom-start-task` | Creates or attaches the task worktree. This skill does not commit source edits. |
-| Knitten | `/shotloom-draft-spec` | Writes local planning artifacts through `resolve-local-artifact-path`. |
+| Knitten | `/shotloom-draft-spec` | Writes local planning artifacts through output contracts. |
 
 If spec authoring or review asks a product/scope/trade-off question, stop and
 surface that question. Do not guess.
@@ -125,7 +137,8 @@ Implementation begins only after a separate user message such as `구현 시작`
 - Do not write Shotloom source files.
 - Do not open a Shotloom implementation PR.
 - Do not proceed past a child-skill blocker.
-- Preserve the local artifact resolver contract from `resolve-local-artifact-path`.
+- Preserve child-skill output contracts; this orchestrator does not own local
+  artifact path resolution.
 
 ## Related
 

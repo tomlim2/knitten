@@ -119,7 +119,12 @@ At the start of every `react <N>` cycle, before any file edit, test run, commit,
 push, PR reply, or reviewer re-request, create:
 
 ```bash
-OPS_DIR="$HOME/.claude/ops/pr-$ARGUMENTS"
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+OPS_DIR="$(
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
+)"
 PAUSE_FILE="$OPS_DIR/watcher.paused"
 mkdir -p "$OPS_DIR"
 printf 'paused_at=%s\nreason=react\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$PAUSE_FILE"
@@ -180,7 +185,13 @@ Dispatch by event type:
   - `last-event.json`'s `fail_checks` is an array of **objects** `{name, workflow, link}` written by `watch.sh`. Use `link` as the canonical lookup key — it is the github.com URL to the failing check run and embeds both `run_id` and (when single-job) `job_id`. Name-based matching against `gh run list` is unreliable: multi-job workflows have one check per job whose `name` differs from the workflow's `name`, so `gh run list` filtered by check name can miss the run entirely.
 
     ```bash
-    EVENT_FILE="$HOME/.claude/ops/pr-$PR/last-event.json"
+    knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+    source "$knitten_root/agent/lib/activate-local-bin.sh"
+    OPS_DIR="$(
+      node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$PR" \
+        | jq -r '.absolutePath'
+    )"
+    EVENT_FILE="$OPS_DIR/last-event.json"
     sha=$(jq -r '.sha' "$EVENT_FILE")
 
     # Iterate every newly-failing check; one log fetch per check.

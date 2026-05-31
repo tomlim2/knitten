@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for verifying submitted review comments. Prefer shotloom-router for full PR workflows.
 argument-hint: "<pr-number> [review-id]"
-allowed-tools: Bash(gh:*), Bash(python3:*), Bash(mkdir:*), Bash(cat:*), Read, CronCreate, CronDelete, CronList
+allowed-tools: Bash(gh:*), Bash(jq:*), Bash(python3:*), Bash(mkdir:*), Bash(cat:*), Read, CronCreate, CronDelete, CronList
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript

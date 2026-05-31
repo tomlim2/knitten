@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for human reviewer mode only. Prefer shotloom-router for ambiguous Shotloom PR work.
 argument-hint: "<pr-number | github-pr-url>"
-allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(python3:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(sed:*), Bash(resolve-local-artifact-path:*), Agent
+allowed-tools: Read, Glob, Grep, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(mkdir:*), Bash(node:*), Bash(python3:*), Bash(rg:*), Bash(wc:*), Bash(tr:*), Bash(sed:*), Agent
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -62,14 +62,16 @@ Fetch PR metadata:
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$PR" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$PR" \
+    | jq -r '.absolutePath'
 )"
 gh pr view "$PR" \
   --json number,title,body,author,baseRefName,headRefName,headRefOid,headRepository,headRepositoryOwner,state,isDraft,reviewDecision,url \
   > "$cache_dir/pr${PR}-review-view.json"
 gh pr diff "$PR" --patch > "$cache_dir/pr${PR}-review.diff"
 ```
+
+Use the `shotloom-pr-cache` output as the per-PR review cache directory.
 
 Stop if the PR is closed.
 

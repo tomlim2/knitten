@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for PR creation after prReady=true. Prefer shotloom-router or shotloom-review-before-pr before PR creation.
 argument-hint: "[pr-number-to-supersede]"
-allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*), Bash(resolve-local-artifact-path:*), Bash(shotloom-github-guard:*)
+allowed-tools: Read, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(jq:*), Bash(mktemp:*), Bash(cat:*), Bash(rm:*), Bash(printf:*), Bash(sleep:*), Bash(shotloom-github-guard:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -132,7 +132,7 @@ knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 safe_branch="$(git rev-parse --abbrev-ref HEAD | tr '/[:space:]' '--')"
 result_path="$(
-  resolve-local-artifact-path shotloom before-pr stl-<N> "$safe_branch" readiness \
+  node "$knitten_root/agent/lib/resolve-output.mjs" shotloom-before-pr-readiness stl=stl-<N> safeBranch="$safe_branch" \
     | jq -r '.absolutePath'
 )"
 ```

@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for spec authoring after start-task. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "[slug]"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(resolve-local-artifact-path:*)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(bash:*), Bash(git:*), Bash(ls:*), Bash(stat:*), Bash(rg:*), Bash(test:*), Bash(node:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -63,15 +63,21 @@ rules on top:
 
 ## Output Contract
 
-- `.agent-local/shotloom/planning/stl-<N>/brief.json` in Knitten
-- `.agent-local/shotloom/planning/stl-<N>/spec.json` in Knitten
-- `.agent-local/shotloom/planning/stl-<N>/design-plan.json` in Knitten
-- `.agent-local/shotloom/planning/stl-<N>/manifest.json` in Knitten
-- final user prompt: "이 스펙으로 구현 시작할까요?"
+Resolve planning artifacts through output contracts before writing them. Stop
+when the resolver returns `{ ok: false }` or a consumed field is missing.
 
-## Local Artifact Contract
+| Output id | Command | Consumed fields |
+|-----------|---------|-----------------|
+| `shotloom-start-task-brief` | `node agent/lib/resolve-output.mjs shotloom-start-task-brief stl=stl-<N>` | `path`, `format`, `cleanupPath` |
+| `shotloom-planning-spec` | `node agent/lib/resolve-output.mjs --create shotloom-planning-spec stl=stl-<N>` | `path`, `template`, `format`, `cleanupPath` |
+| `shotloom-planning-design-plan` | `node agent/lib/resolve-output.mjs --create shotloom-planning-design-plan stl=stl-<N>` | `path`, `template`, `format`, `cleanupPath` |
+| `shotloom-planning-questions` | `node agent/lib/resolve-output.mjs --create shotloom-planning-questions stl=stl-<N>` | `path`, `template`, `format`, `cleanupPath` |
+| `shotloom-planning-manifest` | `node agent/lib/resolve-output.mjs --create shotloom-planning-manifest stl=stl-<N>` | `path`, `template`, `format`, `cleanupPath` |
 
-Resolve every planning artifact through
-`resolve-local-artifact-path`. Do not write raw planning outputs
-under tracked `docs/` paths unless a later promotion step explicitly turns a
-local artifact into durable knowledge.
+Use returned `path` values as artifact destinations, returned `template` values
+as JSON body-shape references, returned `format` to confirm JSON handling, and
+returned `cleanupPath` as the planning bundle cleanup boundary. Do not write raw
+planning outputs under tracked `docs/` paths unless a later promotion step
+explicitly turns a local artifact into durable knowledge.
+
+Final user prompt: "이 스펙으로 구현 시작할까요?"

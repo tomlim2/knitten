@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for PR polling only. Prefer shotloom-router for full PR response workflows.
 argument-hint: "<pr-number-or-url>"
-allowed-tools: Bash(gh:*), Read, CronCreate, CronDelete, CronList
+allowed-tools: Bash(gh:*), Bash(jq:*), Read, CronCreate, CronDelete, CronList
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript

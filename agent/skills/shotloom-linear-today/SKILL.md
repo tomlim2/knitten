@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for listing assigned Linear work. Prefer shotloom-router for choosing a full workflow.
 argument-hint: ""
-allowed-tools: Bash(gh:*), Bash(git:*)
+allowed-tools: Bash(gh:*), Bash(git:*), Bash(ah-resolve-doc-path:*)
 ---
 
 # shotloom-linear-today
@@ -18,7 +18,14 @@ Compact list of what you should work on today: Linear issues assigned to you in 
    ```
    Call with: `team: "Shotloom"`, `assignee: me`, `state: ["Todo", "In Progress", "In Review", "Backlog"]`, sort by priority/updatedAt.
 
-2. Worktrees: `git -C "$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/agent-hub-config/repo-paths.json)" worktree list --porcelain`
+2. Worktrees:
+   ```bash
+   knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+   source "$knitten_root/agent/lib/activate-local-bin.sh"
+   shotloom_root="$(ah-resolve-doc-path repo shotloom)"
+   shotloom_root="${shotloom_root#RESOLVED_PATH=}"
+   git -C "$shotloom_root" worktree list --porcelain
+   ```
 
 3. Open PRs: `gh pr list --repo CINEV/shotloom --author @me --state open --json number,title,headRefName,statusCheckRollup,reviewDecision`
 

@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for start-task intake only. Prefer shotloom-router or shotloom-prepare-task for full task preparation.
 argument-hint: "STL-NN | linear-url"
-allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*), Bash(shotloom-preflight:*), Bash(resolve-local-artifact-path:*)
+allowed-tools: Read, Write, Glob, Grep, Bash(bash:*), Bash(gh:*), Bash(git:*), Bash(ls:*), Bash(mkdir:*), Bash(grep:*), Bash(rg:*), Bash(test:*), Bash(node:*), Bash(shotloom-preflight:*)
 ---
 
 # shotloom-start-task
@@ -19,6 +19,20 @@ file, and returns a small JSON envelope.
 
 Temporary runtime files follow
 `agent/standards/policy/temporary-runtime-files.md`.
+
+## Output Contracts
+
+Resolve the start-task brief through the output contract before writing it.
+Stop when the resolver returns `{ ok: false }` or a consumed field is missing.
+
+| Output id | Command | Consumed fields |
+|-----------|---------|-----------------|
+| `shotloom-start-task-brief` | `node agent/lib/resolve-output.mjs --create shotloom-start-task-brief stl=stl-<N>` | `path`, `template`, `format`, `cleanupPath` |
+
+Use returned `path` as the brief destination, returned `template` as the JSON
+body shape, returned `format` to confirm JSON handling, and returned
+`cleanupPath` as the temporary runtime cleanup boundary. This output contract
+delegates path rendering to the existing local artifact resolver.
 
 ## Arguments
 
@@ -205,13 +219,12 @@ Apply concrete handoff instructions when an active promoted finding requires
 them.
 
 Resolve a slug from the Linear title and an STL id from the Linear issue key.
-Write a compact briefing markdown file to the Knitten checkout through
-`resolve-local-artifact-path`:
+Write a compact briefing JSON file to the Knitten checkout through the
+`shotloom-start-task-brief` output contract:
 
 ```bash
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
-source "$knitten_root/agent/lib/activate-local-bin.sh"
-resolve-local-artifact-path --create shotloom planning stl-<N> brief
+node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-start-task-brief stl=stl-<N>
 ```
 
 Write to the returned `absolutePath`.

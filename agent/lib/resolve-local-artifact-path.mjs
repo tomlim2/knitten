@@ -12,7 +12,7 @@ function usage() {
   return `Usage:
   resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom planning stl-123 brief|spec|design-plan|questions|manifest
   resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom before-pr stl-123 <safe-branch> readiness|code-blockers|docs-blockers
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom pr <number> watcher-pid|watcher-log|react-log|state|last-event|log|reply-plan|pause|lock|lock-dir
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom pr <number> watcher-pid|watcher-log|react-log|state|last-event|cache|reply-plan|pause|lock|lock-dir
   resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom deploy <date-or-version> release-notes|manifest|rollback
   resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] ah reports YYYYMMDD handoff <slug>
   resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] ah operational-findings YYYY-MM-DD inbox

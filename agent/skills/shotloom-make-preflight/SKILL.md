@@ -1,6 +1,6 @@
 ---
 description: Leaf/component Shotloom skill for preflight context loading only. Prefer shotloom-router for full task workflows.
-allowed-tools: Read, Glob, Bash(git:*), Bash(ls:*), Bash(date:*)
+allowed-tools: Read, Glob, Bash(git:*), Bash(ls:*), Bash(date:*), Bash(ah-resolve-doc-path:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -38,7 +38,10 @@ If unsure, recreate. Cheap insurance.
 Run in parallel:
 
 ```bash
-shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/agent-hub-config/repo-paths.json)
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
+shotloom_root="${shotloom_root#RESOLVED_PATH=}"
 git -C "$shotloom_root" rev-parse HEAD
 git -C "$shotloom_root" status --short
 date +"%Y-%m-%d %H:%M:%S %Z"

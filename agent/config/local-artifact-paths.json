@@ -231,17 +231,17 @@
     {
       "owner": "shotloom",
       "artifactType": "pr",
-      "item": "log",
-      "kind": "file",
+      "item": "cache",
+      "kind": "directory",
       "args": [
         {
           "name": "pr",
           "pattern": "^[0-9]+$"
         }
       ],
-      "path": ".agent-local/shotloom/pr/{pr}/log.md",
+      "path": ".agent-local/shotloom/pr/{pr}",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR log"
+      "description": "Shotloom PR local workflow cache directory"
     },
     {
       "owner": "shotloom",

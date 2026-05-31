@@ -1,7 +1,7 @@
 ---
 description: End-of-work cleanup for a Shotloom task — close Linear, remove worktree, delegate retrospective logging.
 argument-hint: "[STL-NN]"
-allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(awk:*), Bash(bash:*), Bash(node:*), Bash(rg:*)
+allowed-tools: Read, Write, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(awk:*), Bash(bash:*), Bash(node:*), Bash(rg:*), Bash(ah-resolve-doc-path:*)
 ---
 
 # shotloom-wrapup-task
@@ -30,10 +30,11 @@ Usage: `/shotloom-wrapup-task STL-114` or `/shotloom-wrapup-task` from inside th
 Capture invocation cwd **before** any `cd` so worktree detection sees where the user actually invoked from. Hard-resetting to the repo-paths root would target the main checkout instead of the active worktree.
 
 ```bash
-# Capture invocation cwd first
 invoked_from=$(pwd)
 
-# Detect worktree from invocation cwd — do NOT cd to shotloom_root yet
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+
 toplevel=$(git -C "$invoked_from" rev-parse --show-toplevel 2>/dev/null) || toplevel=""
 remote=$(git -C "${toplevel:-$invoked_from}" remote get-url origin 2>/dev/null || true)
 
@@ -43,16 +44,17 @@ case "$remote" in
     current_branch=$(git -C "$worktree" rev-parse --abbrev-ref HEAD)
     ;;
   *)
-    # Not inside a shotloom worktree — fall back to the main checkout
-    # (only valid if user passed STL-NN explicitly so we know what to close)
-    worktree=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/agent-hub-config/repo-paths.json)
+    # Fallback is valid only when user passed STL-NN explicitly.
+    worktree="$(ah-resolve-doc-path repo shotloom)"
+    worktree="${worktree#RESOLVED_PATH=}"
     current_branch=""  # branch cleanup is disabled until explicitly resolved
     ;;
 esac
 
-shotloom_root=$(jq -r '.shotloom.path // .shotloom' ~/.claude/private/agent-hub-config/repo-paths.json)
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
+shotloom_root="${shotloom_root#RESOLVED_PATH=}"
 if [ -z "$shotloom_root" ] || [ "$shotloom_root" = "null" ]; then
-  echo "ERROR: repo-paths.json has no shotloom path"
+  echo "ERROR: shotloom repo path is unresolved"
   exit 1
 fi
 if [ -z "$worktree" ] || [ "$worktree" = "null" ]; then

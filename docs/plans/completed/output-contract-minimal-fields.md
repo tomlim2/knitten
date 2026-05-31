@@ -59,7 +59,7 @@ fields instead of letting the validator infer checks from the output structure.
 | `writeTarget.localArtifactTokens` | Required for `local-artifact`. |
 | `writeTarget.docPurpose` | Required for `doc-path`. |
 | `args` | Declares placeholders used by the write target or parent output. |
-| `format` | Existing format plus future-safe media/export values. |
+| `format` | Existing document formats, `directory`, and future-safe media/export values. |
 | `formatOptions` | Optional object for dimensions, fps, codec, color space, page size, or aspect ratio. |
 | `template` | Required only when the output has a Markdown or JSON body template. |
 
@@ -112,6 +112,7 @@ git diff --check
 | Workflow `madeBy` ids are typo-prone. | Pattern-check now; add a workflow registry only when workflows become durable artifacts. |
 | Historical specs still mention `locationKind`, `shapeKind`, `verifyWith`, or `afterWrite`. | Treat completed specs as historical records; use this completed spec as the forward contract. |
 | Media options grow too early. | Keep `formatOptions` optional and validate only object shape in this slice. |
+| Directory outputs get mistaken for body outputs. | Use `format: "directory"` with no `template`; consumers read `absolutePath` as the directory. |
 
 ## Acceptance Criteria
 

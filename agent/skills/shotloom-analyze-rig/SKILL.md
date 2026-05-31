@@ -1,7 +1,7 @@
 ---
 description: Leaf/component Shotloom skill for ad-hoc rig analysis scripts only. Prefer shotloom-router for ambiguous Shotloom work.
 argument-hint: "[script-name]  (omit to list available scripts)"
-allowed-tools: Read, Bash(cargo:*), Bash(cp:*), Bash(rm:*), Bash(ls:*), Bash(mkdir:*), Write
+allowed-tools: Read, Bash(cargo:*), Bash(cp:*), Bash(rm:*), Bash(ls:*), Bash(mkdir:*), Bash(ah-resolve-doc-path:*), Write
 ---
 
 # shotloom-analyze-rig
@@ -10,7 +10,7 @@ Templates for one-off analysis tests that probe shotloom retarget internals — 
 
 ## Available scripts
 
-Scripts live under `~/.claude/skills/shotloom-analyze-rig/scripts/`. Each is a self-contained `tests/*.rs` file.
+Scripts live under this skill's `scripts/` directory. Each is a self-contained `tests/*.rs` file.
 
 | Script | Purpose |
 |--------|---------|
@@ -22,7 +22,10 @@ Scripts live under `~/.claude/skills/shotloom-analyze-rig/scripts/`. Each is a s
 ### Step 1: Resolve the shotloom worktree
 
 ```bash
-shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/agent-hub-config/repo-paths.json)
+knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
+source "$knitten_root/agent/lib/activate-local-bin.sh"
+shotloom_root="$(ah-resolve-doc-path repo shotloom)"
+shotloom_root="${shotloom_root#RESOLVED_PATH=}"
 # Scripts go into a worktree, not the main checkout. Either pass an explicit
 # worktree path or use the worktree the conversation is currently in
 # (`git rev-parse --show-toplevel`).
@@ -31,7 +34,7 @@ shotloom_root=$(jq -re '.shotloom.path // .shotloom // empty' ~/.claude/private/
 ### Step 2: Copy the script into the worktree
 
 ```bash
-cp ~/.claude/skills/shotloom-analyze-rig/scripts/<script>.rs \
+cp "$knitten_root/agent/skills/shotloom-analyze-rig/scripts/<script>.rs" \
    <worktree>/crates/shotloom-retarget/tests/<script>.rs
 ```
 
@@ -59,7 +62,7 @@ Pre-PR gates (`cargo fmt --check`, clippy) won't accept ad-hoc scripts; the trai
 
 When a new analysis script proves useful in the same session it was written:
 
-1. Save the final version under `~/.claude/skills/shotloom-analyze-rig/scripts/<purpose>.rs`.
+1. Save the final version under `agent/skills/shotloom-analyze-rig/scripts/<purpose>.rs`.
 2. Add a row to the **Available scripts** table above with a one-line purpose.
 3. Note the Linear issue + commit-or-PR that motivated it in the script's `//!` doc header so future readers can trace the context.
 

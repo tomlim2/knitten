@@ -18,8 +18,8 @@ LOCAL_RESOLVER="$(
     | jq -r '.absolutePath'
 )"
 OPS_DIR="$(
-  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" cache \
+    | jq -r '.absolutePath'
 )"
 STATE="$OPS_DIR/state.json"
 LOG="$OPS_DIR/log.md"

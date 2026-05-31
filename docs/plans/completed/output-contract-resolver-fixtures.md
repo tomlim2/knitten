@@ -26,7 +26,7 @@ payloads.
 
 | Goal | Requirement |
 |------|-------------|
-| Success fixtures | Test all current output ids: local handoff, proposed spec file, and Design Plan section. |
+| Success fixtures | Test the resolver success ids covered by this fixture set: local handoff, proposed spec file, Design Plan section, Shotloom planning, before-PR, PR, and deploy artifacts. |
 | Failure fixtures | Test unknown id, missing arg, undeclared arg, invalid arg value, broken parent output, unsafe resolved path, missing template, and unsupported `writeTarget.kind`. |
 | CLI contract | Assert CLI success emits `{ ok: true }` JSON and CLI failure emits `{ ok: false, error, detail }` JSON with non-zero exit. |
 | Library contract | Assert exported `resolveOutput()` returns the fields consumers rely on. |
@@ -46,7 +46,7 @@ payloads.
 | Surface | State |
 |---------|-------|
 | `agent/lib/resolve-output.mjs` | Exports `resolveOutput()` and provides CLI JSON output. |
-| `agent/config/outputs.json` | Contains three current output ids. |
+| `agent/config/outputs.json` | Contains the current output ids, including agent-hub and Shotloom local artifact outputs. |
 | `scripts/validate-llm-first.mjs --check outputs` | Validates registry shape and supports `--outputs-fixture`. |
 | `tests/output-contract-resolver.test.mjs` | Covers resolver success, CLI failures, temp-root failures, and CLI `--root`. |
 
@@ -77,6 +77,19 @@ Use repo root derived from `import.meta.url`, not the caller cwd.
 | `agent-hub-spec-proposed` | `slug=test-spec` | `ok`, `madeBy`, `writeTarget.kind`, `path`, `absolutePath`, `template`, `absoluteTemplatePath`, `format`. |
 | `agent-hub-design-plan-section` | `slug=test-spec` | Parent path is reused, `section` is returned, `parentOutput` is returned, format is `markdown-section`. |
 | `local-session-handoff` | `date=20260531`, `slug=test-handoff` | `.agent-local/reports/20260531-test-handoff.json`, `cleanupPath`, `absoluteCleanupPath`, `format`. |
+| `shotloom-start-task-brief` | `stl=stl-123` | `.agent-local/shotloom/planning/stl-123/brief.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
+| `shotloom-planning-spec` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/spec.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
+| `shotloom-planning-design-plan` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/design-plan.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
+| `shotloom-planning-questions` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/questions.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
+| `shotloom-planning-manifest` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/manifest.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
+| `shotloom-before-pr-readiness` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/readiness.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-before-pr-code-blockers` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/code-blockers.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-before-pr-docs-blockers` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/docs-blockers.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-pr-cache` | `pr=77` | `.agent-local/shotloom/pr/77`, `cleanupPath`, directory format, no template. |
+| `shotloom-pr-reply-plan` | `pr=77` | `.agent-local/shotloom/pr/77/reply-plan.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-deploy-release-notes` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/release-notes.md`, `cleanupPath`, Markdown template, format. |
+| `shotloom-deploy-manifest` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/manifest.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-deploy-rollback` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/rollback.json`, `cleanupPath`, `template`, `formatOptions`. |
 | `--list` | none | Lists all current ids with `madeBy`, `writeTargetKind`, `args`, `format`, and `hasTemplate`. |
 
 ### Failure Matrix
@@ -156,7 +169,7 @@ Input:
 - Current output ids and resolver export.
 
 Output:
-- `tests/output-contract-resolver.test.mjs` covers all current success ids and
+- `tests/output-contract-resolver.test.mjs` covers the listed success ids and
   `--list`.
 
 Non-output:
@@ -250,7 +263,7 @@ git diff --check
 
 | ID | Criteria |
 |----|----------|
-| AC1 | `tests/output-contract-resolver.test.mjs` covers success for all current output ids and `--list`. |
+| AC1 | `tests/output-contract-resolver.test.mjs` covers success for listed resolver output ids and `--list`. |
 | AC2 | Tests cover unknown id, missing arg, undeclared arg, invalid arg value, broken parent output, unsafe resolved path, missing template, and unsupported `writeTarget.kind`. |
 | AC3 | CLI failure tests assert non-zero exit and JSON `{ ok:false, error, detail }`. |
 | AC4 | Resolver fails when a row declares a missing template. |

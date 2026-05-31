@@ -1,7 +1,7 @@
 ---
 description: Read Shotloom PR review comments, fix issues, commit, and post inline replies
 argument-hint: "<pr-number>"
-allowed-tools: Read, Edit, Write, Glob, Grep, Agent, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(node:*), Bash(resolve-local-artifact-path:*), Bash(shotloom-preflight:*), Bash(github-pr-review-snapshot:*), Bash(github-pr-respond-start-context:*), Bash(github-pr-approved-state-plan:*), Bash(github-pr-resolve-review-threads:*)
+allowed-tools: Read, Edit, Write, Glob, Grep, Agent, Bash(git:*), Bash(gh:*), Bash(cargo:*), Bash(jq:*), Bash(node:*), Bash(shotloom-preflight:*), Bash(github-pr-review-snapshot:*), Bash(github-pr-respond-start-context:*), Bash(github-pr-approved-state-plan:*), Bash(github-pr-resolve-review-threads:*)
 domains: rust
 repo-keys: shotloom
 languages: rust,typescript
@@ -74,11 +74,13 @@ Save each fetch to a per-PR cache file so later steps can re-read without re-fet
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
 )"
 github-pr-review-snapshot "$ARGUMENTS" --out-dir "$cache_dir"
 ```
+
+Use the `shotloom-pr-cache` output as the per-PR cache directory.
 
 Then build the start-context JSON:
 
@@ -86,8 +88,8 @@ Then build the start-context JSON:
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
 )"
 github-pr-respond-start-context "$ARGUMENTS" --out-dir "$cache_dir" --write
 ```
@@ -259,8 +261,8 @@ Right before building the reply plan, run:
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
 )"
 github-pr-review-snapshot "$ARGUMENTS" --out-dir "$cache_dir"
 github-pr-respond-start-context "$ARGUMENTS" --out-dir "$cache_dir" --write
@@ -288,7 +290,7 @@ Step 8 and Step 9 read this file; they do not re-derive routing fields.
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 reply_plan="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" reply-plan \
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-reply-plan pr="$ARGUMENTS" \
     | jq -r '.absolutePath'
 )"
 ```
@@ -342,8 +344,8 @@ review state and item metadata:
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
 )"
 reply_plan="$cache_dir/reply-plan.json"
 github-pr-approved-state-plan "$ARGUMENTS" \
@@ -391,8 +393,8 @@ When `RESPOND_PR_RESOLVE_THREADS=1` is set, resolve threads through the helper:
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
 )"
 github-pr-resolve-review-threads "$ARGUMENTS" \
   --plan "$cache_dir/reply-plan.json" \
@@ -413,8 +415,8 @@ Re-request is the signal that "I'm done with this round; please re-review." It r
    knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
    source "$knitten_root/agent/lib/activate-local-bin.sh"
    cache_dir="$(
-     resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-       | jq -r '.absoluteCleanupPath'
+     node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+       | jq -r '.absolutePath'
    )"
    # Branch on cached reviewDecision (object field on view)
    DECISION=$(jq -r '.reviewDecision // ""' "$cache_dir/pr${ARGUMENTS}-view.json")
@@ -451,8 +453,8 @@ summary:
 knitten_root="${KNITTEN_ROOT:?set KNITTEN_ROOT to the Knitten checkout}"
 source "$knitten_root/agent/lib/activate-local-bin.sh"
 cache_dir="$(
-  resolve-local-artifact-path --create shotloom pr "$ARGUMENTS" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$knitten_root/agent/lib/resolve-output.mjs" --create shotloom-pr-cache pr="$ARGUMENTS" \
+    | jq -r '.absolutePath'
 )"
 github-pr-review-snapshot "$ARGUMENTS" --out-dir "$cache_dir" --prefix post --threads
 gh pr checks "$ARGUMENTS" --watch=false

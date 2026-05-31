@@ -12,8 +12,8 @@ LOCAL_RESOLVER="$(
     | jq -r '.absolutePath'
 )"
 OPS_DIR="$(
-  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" log \
-    | jq -r '.absoluteCleanupPath'
+  node "$LOCAL_RESOLVER" --root "$KNITTEN_ROOT" --create shotloom pr "$PR" cache \
+    | jq -r '.absolutePath'
 )"
 PID_FILE="$OPS_DIR/watcher.pid"
 
