@@ -156,7 +156,7 @@
           "normalize": "lowercase"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-planning-manifest.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-manifest"
@@ -181,7 +181,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-before-pr-readiness.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-readiness"
@@ -206,7 +206,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-before-pr-findings.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-code-blockers"
@@ -231,7 +231,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-before-pr-findings.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-docs-blockers"
@@ -267,7 +267,7 @@
           "pattern": "^[0-9]+$"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-pr-reply-plan.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-pr-reply-plan"
@@ -304,7 +304,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-deploy-manifest.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-deploy-manifest"
@@ -324,7 +324,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "template": "agent/document-templates/agent-hub/shotloom-deploy-rollback.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-deploy-rollback"

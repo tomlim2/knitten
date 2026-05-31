@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "shotloom-before-pr-readiness",
+  "status": "ready",
+  "summary": "<one-line readiness result>",
+  "stl": "stl-000",
+  "branch": "<git branch>",
+  "headSha": "<sha>",
+  "prReady": false,
+  "phase": "code-review",
+  "reviewMode": "single",
+  "counts": {
+    "codeBlockers": 0,
+    "docsBlockers": 0,
+    "nits": 0
+  },
+  "artifacts": {
+    "codeBlockers": null,
+    "docsBlockers": null
+  },
+  "validation": [],
+  "next": {
+    "action": "fix-blockers",
+    "commandHint": "/shotloom-implement-code"
+  }
+}

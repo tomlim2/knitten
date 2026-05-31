@@ -50,6 +50,12 @@ function makeTempRoot(editOutputs = (outputs) => outputs) {
     "agent/document-templates/agent-hub/spec.md",
     "agent/document-templates/agent-hub/design-plan.md",
     "agent/document-templates/agent-hub/json-handoff-packet.json",
+    "agent/document-templates/agent-hub/shotloom-before-pr-findings.json",
+    "agent/document-templates/agent-hub/shotloom-before-pr-readiness.json",
+    "agent/document-templates/agent-hub/shotloom-deploy-manifest.json",
+    "agent/document-templates/agent-hub/shotloom-deploy-rollback.json",
+    "agent/document-templates/agent-hub/shotloom-planning-manifest.json",
+    "agent/document-templates/agent-hub/shotloom-pr-reply-plan.json",
   ]) {
     copyFile(template, root);
   }
@@ -145,13 +151,13 @@ test("resolves Shotloom start-task brief output", () => {
 
 test("resolves Shotloom draft-spec planning outputs", () => {
   const cases = [
-    ["shotloom-planning-spec", "spec", "shotloom-planning-spec"],
-    ["shotloom-planning-design-plan", "design-plan", "shotloom-planning-design-plan"],
-    ["shotloom-planning-questions", "questions", "shotloom-planning-questions"],
-    ["shotloom-planning-manifest", "manifest", "shotloom-planning-manifest"],
+    ["shotloom-planning-spec", "spec", "shotloom-planning-spec", "agent/document-templates/agent-hub/json-handoff-packet.json"],
+    ["shotloom-planning-design-plan", "design-plan", "shotloom-planning-design-plan", "agent/document-templates/agent-hub/json-handoff-packet.json"],
+    ["shotloom-planning-questions", "questions", "shotloom-planning-questions", "agent/document-templates/agent-hub/json-handoff-packet.json"],
+    ["shotloom-planning-manifest", "manifest", "shotloom-planning-manifest", "agent/document-templates/agent-hub/shotloom-planning-manifest.json"],
   ];
 
-  for (const [id, artifact, schemaKind] of cases) {
+  for (const [id, artifact, schemaKind, template] of cases) {
     const result = resolveOutput({
       root: repoRoot,
       id,
@@ -165,7 +171,7 @@ test("resolves Shotloom draft-spec planning outputs", () => {
     assert.equal(result.absolutePath, path.join(repoRoot, `.agent-local/shotloom/planning/stl-431/${artifact}.json`));
     assert.equal(result.cleanupPath, ".agent-local/shotloom/planning/stl-431");
     assert.equal(result.absoluteCleanupPath, path.join(repoRoot, ".agent-local/shotloom/planning/stl-431"));
-    assert.equal(result.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+    assert.equal(result.template, template);
     assert.equal(result.format, "json");
     assert.deepEqual(result.formatOptions, { schemaKind });
   }
@@ -173,12 +179,12 @@ test("resolves Shotloom draft-spec planning outputs", () => {
 
 test("resolves Shotloom before-PR outputs", () => {
   const cases = [
-    ["shotloom-before-pr-readiness", "readiness", "shotloom-before-pr-readiness"],
-    ["shotloom-before-pr-code-blockers", "code-blockers", "shotloom-before-pr-code-blockers"],
-    ["shotloom-before-pr-docs-blockers", "docs-blockers", "shotloom-before-pr-docs-blockers"],
+    ["shotloom-before-pr-readiness", "readiness", "shotloom-before-pr-readiness", "agent/document-templates/agent-hub/shotloom-before-pr-readiness.json"],
+    ["shotloom-before-pr-code-blockers", "code-blockers", "shotloom-before-pr-code-blockers", "agent/document-templates/agent-hub/shotloom-before-pr-findings.json"],
+    ["shotloom-before-pr-docs-blockers", "docs-blockers", "shotloom-before-pr-docs-blockers", "agent/document-templates/agent-hub/shotloom-before-pr-findings.json"],
   ];
 
-  for (const [id, artifact, schemaKind] of cases) {
+  for (const [id, artifact, schemaKind, template] of cases) {
     const result = resolveOutput({
       root: repoRoot,
       id,
@@ -192,7 +198,7 @@ test("resolves Shotloom before-PR outputs", () => {
     assert.equal(result.absolutePath, path.join(repoRoot, `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/${artifact}.json`));
     assert.equal(result.cleanupPath, ".agent-local/shotloom/before-pr/stl-510/feat-shotloom-output");
     assert.equal(result.absoluteCleanupPath, path.join(repoRoot, ".agent-local/shotloom/before-pr/stl-510/feat-shotloom-output"));
-    assert.equal(result.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+    assert.equal(result.template, template);
     assert.equal(result.format, "json");
     assert.deepEqual(result.formatOptions, { schemaKind });
   }
@@ -224,7 +230,7 @@ test("resolves Shotloom PR outputs", () => {
   assert.equal(replyPlan.madeBy, "shotloom-respond-pr");
   assert.equal(replyPlan.path, ".agent-local/shotloom/pr/77/reply-plan.json");
   assert.equal(replyPlan.cleanupPath, ".agent-local/shotloom/pr/77");
-  assert.equal(replyPlan.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+  assert.equal(replyPlan.template, "agent/document-templates/agent-hub/shotloom-pr-reply-plan.json");
   assert.equal(replyPlan.format, "json");
   assert.deepEqual(replyPlan.formatOptions, { schemaKind: "shotloom-pr-reply-plan" });
 });
@@ -232,8 +238,8 @@ test("resolves Shotloom PR outputs", () => {
 test("resolves Shotloom deploy outputs", () => {
   const cases = [
     ["shotloom-deploy-release-notes", "release-notes.md", "agent/document-templates/agent-hub/release-notes.md", "markdown", null],
-    ["shotloom-deploy-manifest", "manifest.json", "agent/document-templates/agent-hub/json-handoff-packet.json", "json", "shotloom-deploy-manifest"],
-    ["shotloom-deploy-rollback", "rollback.json", "agent/document-templates/agent-hub/json-handoff-packet.json", "json", "shotloom-deploy-rollback"],
+    ["shotloom-deploy-manifest", "manifest.json", "agent/document-templates/agent-hub/shotloom-deploy-manifest.json", "json", "shotloom-deploy-manifest"],
+    ["shotloom-deploy-rollback", "rollback.json", "agent/document-templates/agent-hub/shotloom-deploy-rollback.json", "json", "shotloom-deploy-rollback"],
   ];
 
   for (const [id, fileName, template, format, schemaKind] of cases) {

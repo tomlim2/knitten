@@ -81,15 +81,15 @@ Use repo root derived from `import.meta.url`, not the caller cwd.
 | `shotloom-planning-spec` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/spec.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
 | `shotloom-planning-design-plan` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/design-plan.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
 | `shotloom-planning-questions` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/questions.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
-| `shotloom-planning-manifest` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/manifest.json`, `cleanupPath`, `absoluteCleanupPath`, `template`, `formatOptions`. |
-| `shotloom-before-pr-readiness` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/readiness.json`, `cleanupPath`, `template`, `formatOptions`. |
-| `shotloom-before-pr-code-blockers` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/code-blockers.json`, `cleanupPath`, `template`, `formatOptions`. |
-| `shotloom-before-pr-docs-blockers` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/docs-blockers.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-planning-manifest` | `stl=stl-431` | `.agent-local/shotloom/planning/stl-431/manifest.json`, `cleanupPath`, `absoluteCleanupPath`, `shotloom-planning-manifest.json`, `formatOptions`. |
+| `shotloom-before-pr-readiness` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/readiness.json`, `cleanupPath`, `shotloom-before-pr-readiness.json`, `formatOptions`. |
+| `shotloom-before-pr-code-blockers` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/code-blockers.json`, `cleanupPath`, `shotloom-before-pr-findings.json`, `formatOptions`. |
+| `shotloom-before-pr-docs-blockers` | `stl=stl-510`, `safeBranch=feat-shotloom-output` | `.agent-local/shotloom/before-pr/stl-510/feat-shotloom-output/docs-blockers.json`, `cleanupPath`, `shotloom-before-pr-findings.json`, `formatOptions`. |
 | `shotloom-pr-cache` | `pr=77` | `.agent-local/shotloom/pr/77`, `cleanupPath`, directory format, no template. |
-| `shotloom-pr-reply-plan` | `pr=77` | `.agent-local/shotloom/pr/77/reply-plan.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-pr-reply-plan` | `pr=77` | `.agent-local/shotloom/pr/77/reply-plan.json`, `cleanupPath`, `shotloom-pr-reply-plan.json`, `formatOptions`. |
 | `shotloom-deploy-release-notes` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/release-notes.md`, `cleanupPath`, Markdown template, format. |
-| `shotloom-deploy-manifest` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/manifest.json`, `cleanupPath`, `template`, `formatOptions`. |
-| `shotloom-deploy-rollback` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/rollback.json`, `cleanupPath`, `template`, `formatOptions`. |
+| `shotloom-deploy-manifest` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/manifest.json`, `cleanupPath`, `shotloom-deploy-manifest.json`, `formatOptions`. |
+| `shotloom-deploy-rollback` | `key=v0.1.2-test` | `.agent-local/shotloom/deploy/v0.1.2-test/rollback.json`, `cleanupPath`, `shotloom-deploy-rollback.json`, `formatOptions`. |
 | `--list` | none | Lists all current ids with `madeBy`, `writeTargetKind`, `args`, `format`, and `hasTemplate`. |
 
 ### Failure Matrix
