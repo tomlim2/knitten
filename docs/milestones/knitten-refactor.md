@@ -48,6 +48,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 | [skill-output-lifecycle.md](../plans/proposed/skill-output-lifecycle.md) | proposed | Define lifecycle states for each output: create, temporary, durable, promoted, completed, archived, or deleted. |
 | [skill-output-contract-adoption.md](../plans/proposed/skill-output-contract-adoption.md) | proposed | Define how skills reference output ids instead of hardcoded path/template pairs. |
 | [skill-output-validator-strategy.md](../plans/proposed/skill-output-validator-strategy.md) | proposed | Define validator strategy for output contracts, paths, templates, lifecycle, and adoption drift. |
+| [knitten-refactor-closure-review.md](../plans/proposed/knitten-refactor-closure-review.md) | proposed | Define the completion review that decides whether this milestone can close. |
 
 ## Progress
 
@@ -62,6 +63,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 | Output lifecycle | proposed | `docs/plans/proposed/skill-output-lifecycle.md` lifecycle states and gates. |
 | Skill contract adoption | proposed | `docs/plans/proposed/skill-output-contract-adoption.md` adoption order and gates. |
 | Validator strategy | proposed | `docs/plans/proposed/skill-output-validator-strategy.md` drift map, check triggers, and validation matrix. |
+| Closure review | proposed | `docs/plans/proposed/knitten-refactor-closure-review.md` completion evidence matrix and status rules. |
 | Milestone review | done | Reviewed with [milestone-review.md](../guidelines/milestone-review.md); current routing verdict: ready after template assets were classified as assets, not a standalone spec. |
 | Migration order | proposed | Migration Order section in `docs/plans/proposed/skill-operating-system.md`. |
 
