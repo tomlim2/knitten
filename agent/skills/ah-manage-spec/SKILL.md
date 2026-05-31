@@ -28,6 +28,21 @@ Start with intake, then route, then write. A spec must be grounded in evidence:
 user request, files, docs, skills, rules, standards, commands, or explicit
 decisions.
 
+## Output Contracts
+
+For new proposed specs and Design Plan sections, resolve the output contract
+before writing. Stop when the resolver returns `{ ok: false }` or a consumed
+field is missing.
+
+| Output id | Command | Consumed fields |
+|-----------|---------|-----------------|
+| `agent-hub-spec-proposed` | `node agent/lib/resolve-output.mjs agent-hub-spec-proposed slug=<slug>` | `path`, `template`, `format` |
+| `agent-hub-design-plan-section` | `node agent/lib/resolve-output.mjs agent-hub-design-plan-section slug=<slug>` | `path`, `template`, `format`, `section`, `parentOutput` |
+
+Use returned `path` as the destination. Use returned `template` as the body or
+section shape. For section outputs, use returned `section` and `parentOutput`
+as the section placement contract.
+
 ## Modes
 
 | Mode | Use when | Writes |
@@ -68,9 +83,8 @@ Use [SPEC-INTAKE.md](references/SPEC-INTAKE.md) for the intake template.
 1. Resolve slug: `^[a-z0-9]+(-[a-z0-9]+)*$`.
 2. Resolve existing spec paths across lifecycle folders using
    [SPEC-LIFECYCLE.md](references/SPEC-LIFECYCLE.md).
-3. If no spec exists, default new specs to `docs/plans/proposed/<slug>.md`
-   unless the user explicitly asks to begin active implementation now. Resolve
-   this destination through the `agent-hub-spec-proposed` output contract:
+3. If no spec exists, default new specs to the `agent-hub-spec-proposed`
+   output unless the user explicitly asks to begin active implementation now:
 
 ```bash
 node agent/lib/resolve-output.mjs agent-hub-spec-proposed slug=<slug>
@@ -84,17 +98,17 @@ rg -n "<slug>|<main-term>" docs/plans docs/milestones docs/briefings
 ```
 
 6. Read only required evidence and selected route references.
-7. Draft using [`agent/document-templates/agent-hub/spec.md`](../../document-templates/agent-hub/spec.md).
-8. If the spec needs ordered implementation stages, add a Design Plan using
-   [`agent/document-templates/agent-hub/design-plan.md`](../../document-templates/agent-hub/design-plan.md). Resolve
-   the section contract first:
+7. Draft using the returned `template` and write to the returned `path`.
+8. If the spec needs ordered implementation stages, resolve the
+   `agent-hub-design-plan-section` output first:
 
 ```bash
 node agent/lib/resolve-output.mjs agent-hub-design-plan-section slug=<slug>
 ```
 
-   Specs are internal-consumption artifacts; preserve durable knowledge in a
-   separate vault-assetization note.
+   Use its returned `template` for the section body and returned `section` for
+   placement. Specs are internal-consumption artifacts; preserve durable
+   knowledge in a separate vault-assetization note.
 9. Review the draft for missing evidence, unclear decisions, impossible
    validation, and unsafe operations.
 10. Write the spec; write intake if required.
@@ -177,8 +191,8 @@ report the exact blocker and still run `git diff --check`.
 | `SKILL.md` | operational workflow |
 | `references/SPEC-INTAKE.md` | intake artifact template and rules |
 | `references/SPEC-LIFECYCLE.md` | status/archive/delete rules |
-| `../../document-templates/agent-hub/spec.md` | direct spec templates |
-| `../../document-templates/agent-hub/design-plan.md` | optional implementation-order stage template |
+| `../../document-templates/agent-hub/spec.md` | template returned by `agent-hub-spec-proposed` |
+| `../../document-templates/agent-hub/design-plan.md` | template returned by `agent-hub-design-plan-section` |
 | `../../config/outputs.json` | output ids for proposed specs and Design Plan sections |
 | `../../lib/resolve-output.mjs` | resolver for output path plus template contracts |
 | `references/SPEC-ROUTING.md` | route matrix and existing skill reuse |
