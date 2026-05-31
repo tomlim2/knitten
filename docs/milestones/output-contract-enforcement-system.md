@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-31
 updated: 2026-06-01
 owner: agent-hub
@@ -60,7 +60,7 @@ makes output contracts difficult to bypass during future skill work.
 | AC5 | At least one high-repeat output-writing skill is reviewed and patched to remove legacy path/template reconstruction where an output id exists. |
 | AC6 | Resolver tests or fixtures cover success, unknown id, invalid args, broken parent output, missing template, and unsafe path cases. |
 
-## Open Decisions
+## Decisions
 
 | Decision | Default |
 |----------|---------|
@@ -75,7 +75,7 @@ makes output contracts difficult to bypass during future skill work.
 
 | Blocker | Impact |
 |---------|--------|
-| None. | First specs can start from the current registry and validator. |
+| None. | Milestone acceptance criteria are satisfied. |
 
 ## External Mirrors
 
