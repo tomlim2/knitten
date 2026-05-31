@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -26,7 +26,7 @@ destination, template, format, lifecycle, ownerSkill, and validation.
 
 | Spec | Status | Role |
 |------|--------|------|
-| `output-contract-registry.md` | tracked by parent | Defines registry, resolver, initial outputs, validation, and adoption plan. |
+| `output-contract-registry.md` | completed, tracked by parent | Defines registry, resolver, initial outputs, validation, and adoption plan. |
 
 ## Progress
 
@@ -38,7 +38,7 @@ destination, template, format, lifecycle, ownerSkill, and validation.
 | Validator integration | done | `scripts/validate-llm-first.mjs --check outputs` |
 | First consumer adoption | done | `agent/skills/ah-manage-spec/SKILL.md` |
 | Temporary file boundary review | done | `local-session-handoff` resolves under `.agent-local/reports`; repo docs resolve only through explicit `repo-template` output rows. |
-| Follow-up skill adoption | todo | Add output rows only when a skill needs a path/template pair. |
+| Follow-up skill adoption | done | Milestone scope keeps future rows on-demand; no bulk migration is required. |
 
 ## Acceptance Criteria
 
@@ -49,6 +49,8 @@ destination, template, format, lifecycle, ownerSkill, and validation.
 | AC3 | Resolver returns parent path plus section plus template for section outputs. |
 | AC4 | Validator checks the output registry. |
 | AC5 | `ah-manage-spec` names output ids for proposed specs and Design Plan sections. |
+
+All acceptance criteria are satisfied by the files listed in `## Progress`.
 
 ## Open Decisions
 
@@ -62,7 +64,7 @@ destination, template, format, lifecycle, ownerSkill, and validation.
 
 | Blocker | Impact |
 |---------|--------|
-| None. | Implementation can start after spec review. |
+| None. | Milestone is complete. |
 
 ## External Mirrors
 
