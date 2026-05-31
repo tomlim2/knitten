@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
-spec: docs/plans/proposed/skill-operating-system.md
+spec: docs/plans/completed/skill-operating-system.md
 ---
 
 # Spec Intake: skill-operating-system
@@ -32,7 +32,7 @@ location, lifecycle, and adoption specs.
 | file | `SYSTEM.md` | Repository charter: LLM-first agent hub. |
 | standard | `agent/standards/policy/llm-first-docs.md` | Writing constraints for agent-facing docs. |
 | milestone | `docs/milestones/knitten-refactor.md` | Parent scope and acceptance criteria. |
-| spec | `docs/plans/proposed/output-contract-registry.md` | First implemented child contract. |
+| spec | `docs/plans/completed/output-contract-registry.md` | First implemented child contract. |
 | reference | `docs/reference/local-report-inbox.md` | Temporary JSON handoff boundary. |
 | resolver | `agent/lib/resolve-output.mjs` | Output id to destination/template contract. |
 
@@ -43,7 +43,7 @@ location, lifecycle, and adoption specs.
 | Knitten is an LLM skill-friendly operating system, not only a document cleanup project. | User chat and `docs/milestones/knitten-refactor.md`. |
 | Skills stay central; documents, templates, paths, validators, and handoff artifacts support skill operation. | User chat and `docs/milestones/knitten-refactor.md`. |
 | LLM-to-LLM temporary handoff documents are JSON. | `docs/reference/local-report-inbox.md`. |
-| Output contracts bind purpose, destination, template, format, and validation surface. | `docs/plans/proposed/output-contract-registry.md`. |
+| Output contracts bind purpose, destination, template, format, and validation surface. | `docs/plans/completed/output-contract-registry.md`. |
 
 ## Open Questions
 

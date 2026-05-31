@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -147,7 +147,7 @@ or a rule with no mechanical predicate.
 
 | Step | Action | Output |
 |------|--------|--------|
-| 1 | Create this validator strategy spec and intake. | `docs/plans/proposed/skill-output-validator-strategy.md` and intake briefing. |
+| 1 | Create this validator strategy spec and intake. | `docs/plans/completed/skill-output-validator-strategy.md` and intake briefing. |
 | 2 | Update `docs/milestones/knitten-refactor.md`. | Specs table links the spec; Validator strategy progress becomes `proposed`. |
 | 3 | Review strategy against current checks and prior child specs. | Review findings or no blocking findings. |
 | 4 | Apply review fixes. | Focused wording/table updates. |
@@ -159,11 +159,11 @@ S0 - Baseline re-check
 
 Input:
 - `docs/milestones/knitten-refactor.md`
-- `docs/plans/proposed/skill-operating-system.md`
-- `docs/plans/proposed/output-contract-registry.md`
-- `docs/plans/proposed/skill-output-location-architecture.md`
-- `docs/plans/proposed/skill-output-lifecycle.md`
-- `docs/plans/proposed/skill-output-contract-adoption.md`
+- `docs/plans/completed/skill-operating-system.md`
+- `docs/plans/completed/output-contract-registry.md`
+- `docs/plans/completed/skill-output-location-architecture.md`
+- `docs/plans/completed/skill-output-lifecycle.md`
+- `docs/plans/completed/skill-output-contract-adoption.md`
 - `scripts/validate-llm-first.mjs`
 - `agent/config/agent-hub.json`
 
@@ -213,7 +213,7 @@ Failure:
 - Stop if spec frontmatter milestone does not match the milestone file.
 
 Proof:
-- `rg -n "skill-output-validator-strategy|Validator strategy" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-validator-strategy.md`
+- `rg -n "skill-output-validator-strategy|Validator strategy" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-validator-strategy.md`
 
 S3 - Review, fix, validate, publish
 
@@ -247,7 +247,7 @@ Proof:
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 | Output registry | `node scripts/validate-llm-first.mjs --check outputs` |
 | Document templates | `node scripts/validate-llm-first.mjs --check document-templates` |
-| Spec route evidence | `rg -n "skill-output-validator-strategy|Validator strategy" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-validator-strategy.md docs/briefings/specs/skill-output-validator-strategy.md` |
+| Spec route evidence | `rg -n "skill-output-validator-strategy|Validator strategy" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-validator-strategy.md docs/briefings/specs/skill-output-validator-strategy.md` |
 
 ## Risks
 

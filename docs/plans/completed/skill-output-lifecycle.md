@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -160,7 +160,7 @@ Promote local or runtime content only when the content is a durable fact.
 
 | Step | Action | Output |
 |------|--------|--------|
-| 1 | Create this lifecycle spec and intake. | `docs/plans/proposed/skill-output-lifecycle.md` and intake briefing. |
+| 1 | Create this lifecycle spec and intake. | `docs/plans/completed/skill-output-lifecycle.md` and intake briefing. |
 | 2 | Update `docs/milestones/knitten-refactor.md`. | Spec row link and Output lifecycle progress become `proposed`. |
 | 3 | Review lifecycle coverage against parent and location specs. | Review findings or no blocking findings. |
 | 4 | Apply review fixes. | Focused lifecycle wording or table updates. |
@@ -171,8 +171,8 @@ Promote local or runtime content only when the content is a durable fact.
 S0 - Baseline re-check
 
 Input:
-- `docs/plans/proposed/skill-operating-system.md`
-- `docs/plans/proposed/skill-output-location-architecture.md`
+- `docs/plans/completed/skill-operating-system.md`
+- `docs/plans/completed/skill-output-location-architecture.md`
 - `docs/reference/local-report-inbox.md`
 - `agent/standards/policy/temporary-runtime-files.md`
 - `SPEC-LIFECYCLE.md`
@@ -223,7 +223,7 @@ Failure:
 - Stop if spec frontmatter milestone does not match the milestone file.
 
 Proof:
-- `rg -n "skill-output-lifecycle|Output lifecycle" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-lifecycle.md`
+- `rg -n "skill-output-lifecycle|Output lifecycle" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-lifecycle.md`
 
 S3 - Review, fix, validate, publish
 
@@ -252,7 +252,7 @@ Proof:
 | Diff hygiene | `git diff --check` |
 | LLM-first validator | `node scripts/validate-llm-first.mjs` |
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
-| Spec route evidence | `rg -n "skill-output-lifecycle|Output lifecycle" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-lifecycle.md docs/briefings/specs/skill-output-lifecycle.md` |
+| Spec route evidence | `rg -n "skill-output-lifecycle|Output lifecycle" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-lifecycle.md docs/briefings/specs/skill-output-lifecycle.md` |
 
 ## Risks
 

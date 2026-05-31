@@ -32,7 +32,7 @@ destination, template, format, lifecycle, ownerSkill, and validation.
 
 | Phase | State | Evidence |
 |-------|-------|----------|
-| Spec | done | `docs/plans/proposed/output-contract-registry.md` |
+| Spec | done | `docs/plans/completed/output-contract-registry.md` |
 | Registry implementation | done | `agent/config/outputs.json` |
 | Resolver implementation | done | `agent/lib/resolve-output.mjs` |
 | Validator integration | done | `scripts/validate-llm-first.mjs --check outputs` |

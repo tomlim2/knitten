@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
-spec: docs/plans/proposed/knitten-refactor-closure-review.md
+spec: docs/plans/completed/knitten-refactor-closure-review.md
 ---
 
 # Spec Intake: knitten-refactor-closure-review
@@ -32,12 +32,12 @@ milestone.
 |------|----------------|--------|
 | milestone | `docs/milestones/knitten-refactor.md` | Parent milestone and acceptance criteria. |
 | guideline | `docs/guidelines/milestone-review.md` | Review lens and required output block. |
-| spec | `docs/plans/proposed/skill-operating-system.md` | Parent architecture evidence. |
-| spec | `docs/plans/proposed/output-contract-registry.md` | Output registry and resolver evidence. |
-| spec | `docs/plans/proposed/skill-output-location-architecture.md` | Location boundary evidence. |
-| spec | `docs/plans/proposed/skill-output-lifecycle.md` | Lifecycle boundary evidence. |
-| spec | `docs/plans/proposed/skill-output-contract-adoption.md` | Skill adoption evidence. |
-| spec | `docs/plans/proposed/skill-output-validator-strategy.md` | Validator strategy evidence. |
+| spec | `docs/plans/completed/skill-operating-system.md` | Parent architecture evidence. |
+| spec | `docs/plans/completed/output-contract-registry.md` | Output registry and resolver evidence. |
+| spec | `docs/plans/completed/skill-output-location-architecture.md` | Location boundary evidence. |
+| spec | `docs/plans/completed/skill-output-lifecycle.md` | Lifecycle boundary evidence. |
+| spec | `docs/plans/completed/skill-output-contract-adoption.md` | Skill adoption evidence. |
+| spec | `docs/plans/completed/skill-output-validator-strategy.md` | Validator strategy evidence. |
 
 ## Known Decisions
 

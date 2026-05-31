@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
-spec: docs/plans/proposed/skill-output-contract-adoption.md
+spec: docs/plans/completed/skill-output-contract-adoption.md
 ---
 
 # Spec Intake: skill-output-contract-adoption
@@ -31,10 +31,10 @@ path/template pairs in skill prose.
 | Type | Path or source | Reason |
 |------|----------------|--------|
 | milestone | `docs/milestones/knitten-refactor.md` | Owns next todo and acceptance criteria. |
-| parent spec | `docs/plans/proposed/skill-operating-system.md` | Defines operating loop, output taxonomy, and migration order. |
-| child spec | `docs/plans/proposed/output-contract-registry.md` | Defines current output registry, resolver, and first consumer docs. |
-| child spec | `docs/plans/proposed/skill-output-location-architecture.md` | Defines resolver boundaries and direct path rules. |
-| child spec | `docs/plans/proposed/skill-output-lifecycle.md` | Defines output lifecycle and owner responsibilities. |
+| parent spec | `docs/plans/completed/skill-operating-system.md` | Defines operating loop, output taxonomy, and migration order. |
+| child spec | `docs/plans/completed/output-contract-registry.md` | Defines current output registry, resolver, and first consumer docs. |
+| child spec | `docs/plans/completed/skill-output-location-architecture.md` | Defines resolver boundaries and direct path rules. |
+| child spec | `docs/plans/completed/skill-output-lifecycle.md` | Defines output lifecycle and owner responsibilities. |
 | registry | `agent/config/outputs.json` | Current output ids and row shape. |
 | resolver | `agent/lib/resolve-output.mjs` | Current command contract for output ids. |
 

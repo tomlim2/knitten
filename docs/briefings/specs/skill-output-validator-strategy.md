@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
-spec: docs/plans/proposed/skill-output-validator-strategy.md
+spec: docs/plans/completed/skill-output-validator-strategy.md
 ---
 
 # Spec Intake: skill-output-validator-strategy
@@ -31,11 +31,11 @@ paths, templates, lifecycle, and adoption rules have mechanical anti-rot checks.
 | Type | Path or source | Reason |
 |------|----------------|--------|
 | milestone | `docs/milestones/knitten-refactor.md` | Owns the remaining Validator strategy todo. |
-| parent spec | `docs/plans/proposed/skill-operating-system.md` | Defines validator boundary and output taxonomy. |
-| child spec | `docs/plans/proposed/output-contract-registry.md` | Defines `outputs` validator scope. |
-| child spec | `docs/plans/proposed/skill-output-location-architecture.md` | Defines path-owner boundaries. |
-| child spec | `docs/plans/proposed/skill-output-lifecycle.md` | Defines lifecycle owner gates. |
-| child spec | `docs/plans/proposed/skill-output-contract-adoption.md` | Defines adoption gates and skill wording contract. |
+| parent spec | `docs/plans/completed/skill-operating-system.md` | Defines validator boundary and output taxonomy. |
+| child spec | `docs/plans/completed/output-contract-registry.md` | Defines `outputs` validator scope. |
+| child spec | `docs/plans/completed/skill-output-location-architecture.md` | Defines path-owner boundaries. |
+| child spec | `docs/plans/completed/skill-output-lifecycle.md` | Defines lifecycle owner gates. |
+| child spec | `docs/plans/completed/skill-output-contract-adoption.md` | Defines adoption gates and skill wording contract. |
 | validator | `scripts/validate-llm-first.mjs` | Current validator checks and check names. |
 | manifest | `agent/config/agent-hub.json` | Current validator registry metadata. |
 

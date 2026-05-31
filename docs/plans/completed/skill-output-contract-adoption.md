@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -163,7 +163,7 @@ absolute path, duplicates an existing path resolver, or has no owner skill.
 
 | Step | Action | Output |
 |------|--------|--------|
-| 1 | Create this adoption spec and intake. | `docs/plans/proposed/skill-output-contract-adoption.md` and intake briefing. |
+| 1 | Create this adoption spec and intake. | `docs/plans/completed/skill-output-contract-adoption.md` and intake briefing. |
 | 2 | Update `docs/milestones/knitten-refactor.md`. | Spec row link and Skill contract adoption progress become `proposed`. |
 | 3 | Review adoption rules against parent, registry, location, and lifecycle specs. | Review findings or no blocking findings. |
 | 4 | Apply review fixes. | Focused wording/table updates. |
@@ -175,10 +175,10 @@ S0 - Baseline re-check
 
 Input:
 - `docs/milestones/knitten-refactor.md`
-- `docs/plans/proposed/skill-operating-system.md`
-- `docs/plans/proposed/output-contract-registry.md`
-- `docs/plans/proposed/skill-output-location-architecture.md`
-- `docs/plans/proposed/skill-output-lifecycle.md`
+- `docs/plans/completed/skill-operating-system.md`
+- `docs/plans/completed/output-contract-registry.md`
+- `docs/plans/completed/skill-output-location-architecture.md`
+- `docs/plans/completed/skill-output-lifecycle.md`
 - `agent/config/outputs.json`
 - `agent/lib/resolve-output.mjs`
 
@@ -228,7 +228,7 @@ Failure:
 - Stop if spec frontmatter milestone does not match the milestone file.
 
 Proof:
-- `rg -n "skill-output-contract-adoption|Skill contract adoption" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-contract-adoption.md`
+- `rg -n "skill-output-contract-adoption|Skill contract adoption" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-contract-adoption.md`
 
 S3 - Review, fix, validate, publish
 
@@ -259,7 +259,7 @@ Proof:
 | LLM-first validator | `node scripts/validate-llm-first.mjs` |
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 | Resolver smoke | `node agent/lib/resolve-output.mjs agent-hub-spec-proposed slug=skill-output-contract-adoption` |
-| Spec route evidence | `rg -n "skill-output-contract-adoption|Skill contract adoption" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-contract-adoption.md docs/briefings/specs/skill-output-contract-adoption.md` |
+| Spec route evidence | `rg -n "skill-output-contract-adoption|Skill contract adoption" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-contract-adoption.md docs/briefings/specs/skill-output-contract-adoption.md` |
 
 ## Risks
 

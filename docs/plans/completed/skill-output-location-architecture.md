@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -162,7 +162,7 @@ Use `.agent-local` only for local-only state.
 
 | Step | Action | Output |
 |------|--------|--------|
-| 1 | Create this location architecture spec and intake. | `docs/plans/proposed/skill-output-location-architecture.md` and intake briefing. |
+| 1 | Create this location architecture spec and intake. | `docs/plans/completed/skill-output-location-architecture.md` and intake briefing. |
 | 2 | Update `docs/milestones/knitten-refactor.md`. | Spec row link and location inventory progress become `proposed`. |
 | 3 | Validate current docs. | Diff hygiene, LLM-first validator, and spec lifecycle pass. |
 | 4 | If accepted, create `skill-output-lifecycle.md`. | Lifecycle state machine spec. |
@@ -172,7 +172,7 @@ Use `.agent-local` only for local-only state.
 S0 - Baseline re-check
 
 Input:
-- `docs/plans/proposed/skill-operating-system.md`
+- `docs/plans/completed/skill-operating-system.md`
 - `agent/config/outputs.json`
 - `agent/config/local-artifact-paths.json`
 - `agent/skills/ah-resolve-doc-path/SKILL.md`
@@ -221,7 +221,7 @@ Failure:
 - Stop if spec frontmatter milestone does not match the milestone file.
 
 Proof:
-- `rg -n "skill-output-location-architecture|Location inventory" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-location-architecture.md`
+- `rg -n "skill-output-location-architecture|Location inventory" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-location-architecture.md`
 
 S3 - Validation
 
@@ -249,7 +249,7 @@ Proof:
 | Diff hygiene | `git diff --check` |
 | LLM-first validator | `node scripts/validate-llm-first.mjs` |
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
-| Spec route evidence | `rg -n "skill-output-location-architecture|Location inventory" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-output-location-architecture.md docs/briefings/specs/skill-output-location-architecture.md` |
+| Spec route evidence | `rg -n "skill-output-location-architecture|Location inventory" docs/milestones/knitten-refactor.md docs/plans/completed/skill-output-location-architecture.md docs/briefings/specs/skill-output-location-architecture.md` |
 
 ## Risks
 

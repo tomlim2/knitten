@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
-spec: docs/plans/proposed/skill-output-location-architecture.md
+spec: docs/plans/completed/skill-output-location-architecture.md
 ---
 
 # Spec Intake: skill-output-location-architecture
@@ -29,7 +29,7 @@ Define where skill outputs live and which resolver owns each path family.
 
 | Type | Path or source | Reason |
 |------|----------------|--------|
-| spec | `docs/plans/proposed/skill-operating-system.md` | Parent model and child spec trigger. |
+| spec | `docs/plans/completed/skill-operating-system.md` | Parent model and child spec trigger. |
 | milestone | `docs/milestones/knitten-refactor.md` | Parent progress and acceptance criteria. |
 | config | `agent/config/outputs.json` | Output id to destination/template registry. |
 | config | `agent/config/local-artifact-paths.json` | `.agent-local` owner/artifact/item path registry. |
@@ -41,8 +41,8 @@ Define where skill outputs live and which resolver owns each path family.
 
 | Decision | Source |
 |----------|--------|
-| Do not replace every path resolver with one resolver. | `docs/plans/proposed/skill-operating-system.md`. |
-| Use output contracts for repeated skill path/template pairs. | `docs/plans/proposed/skill-operating-system.md` and `agent/config/outputs.json`. |
+| Do not replace every path resolver with one resolver. | `docs/plans/completed/skill-operating-system.md`. |
+| Use output contracts for repeated skill path/template pairs. | `docs/plans/completed/skill-operating-system.md` and `agent/config/outputs.json`. |
 | Use `.agent-local` for temporary local-only handoff and runtime artifacts. | `docs/reference/local-report-inbox.md`. |
 | Use `ah-resolve-doc-path` for vault, staging, ops, private, repo, tool, and structure lookups. | `agent/skills/ah-resolve-doc-path/SKILL.md`. |
 

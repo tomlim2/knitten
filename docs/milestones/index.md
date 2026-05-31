@@ -31,8 +31,8 @@ repo Markdown as the canonical owner for agent work:
 
 1. A milestone must be readable without opening an external tracker.
 2. Specs remain the executable work contracts.
-3. External tools such as GitHub, GitLab, or Linear may mirror the milestone,
-   but they do not own the repo contract.
+3. External tools such as GitHub, GitLab, or Linear mirror the milestone only
+   when needed; they do not own the repo contract.
 4. A milestone links to every included spec.
 5. Progress must be expressed as explicit states, not prose vibes.
 6. Open decisions and blockers must be visible in the milestone body.
@@ -74,7 +74,7 @@ Milestone filenames must be kebab-case Markdown files:
 | [agent-work-routing-system.md](agent-work-routing-system.md) | completed | review, planning, and implementation routing |
 | [agent-artifact-pack-system.md](agent-artifact-pack-system.md) | active | external agent artifact packs, manifests, discovery, install, and validation |
 | [output-contract-system.md](output-contract-system.md) | active | skill output contracts |
-| [knitten-refactor.md](knitten-refactor.md) | active | LLM skill operating system architecture |
+| [knitten-refactor.md](knitten-refactor.md) | completed | LLM skill operating system architecture |
 | [spec-lifecycle-system.md](spec-lifecycle-system.md) | completed | spec, milestone, and lifecycle-management system |
 | [worktree-first-workflow.md](worktree-first-workflow.md) | active | worktree-first isolation, solo PR flow, and future automatic PR review |
 

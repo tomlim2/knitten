@@ -3,7 +3,7 @@ status: intake
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
-spec: docs/plans/proposed/skill-output-lifecycle.md
+spec: docs/plans/completed/skill-output-lifecycle.md
 ---
 
 # Spec Intake: skill-output-lifecycle
@@ -30,8 +30,8 @@ and owner responsibilities for Knitten skill outputs.
 
 | Type | Path or source | Reason |
 |------|----------------|--------|
-| spec | `docs/plans/proposed/skill-operating-system.md` | Parent output taxonomy and lifecycle boundary. |
-| spec | `docs/plans/proposed/skill-output-location-architecture.md` | Path family and resolver ownership. |
+| spec | `docs/plans/completed/skill-operating-system.md` | Parent output taxonomy and lifecycle boundary. |
+| spec | `docs/plans/completed/skill-output-location-architecture.md` | Path family and resolver ownership. |
 | standard | `agent/standards/policy/temporary-runtime-files.md` | Runtime workDir and cleanup contract. |
 | reference | `docs/reference/local-report-inbox.md` | JSON-only local handoff and promotion boundary. |
 | reference | `agent/skills/ah-manage-spec/references/SPEC-LIFECYCLE.md` | Spec lifecycle states and delete/archive gates. |
@@ -42,7 +42,7 @@ and owner responsibilities for Knitten skill outputs.
 
 | Decision | Source |
 |----------|--------|
-| Lifecycle transitions belong in `skill-output-lifecycle.md`. | `docs/plans/proposed/skill-output-location-architecture.md`. |
+| Lifecycle transitions belong in `skill-output-lifecycle.md`. | `docs/plans/completed/skill-output-location-architecture.md`. |
 | Runtime files stay local and include cleanup paths. | `agent/standards/policy/temporary-runtime-files.md`. |
 | LLM handoff under `.agent-local` is JSON-only. | `docs/reference/local-report-inbox.md`. |
 | Specs and milestones already have accepted lifecycle references. | `SPEC-LIFECYCLE.md`, `MILESTONE-LIFECYCLE.md`. |

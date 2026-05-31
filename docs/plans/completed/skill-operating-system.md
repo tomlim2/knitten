@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -160,7 +160,7 @@ When a skill writes an output, it must use the narrowest available contract.
 
 | Step | Action | Output |
 |------|--------|--------|
-| 1 | Create this parent architecture spec. | `docs/plans/proposed/skill-operating-system.md` |
+| 1 | Create this parent architecture spec. | `docs/plans/completed/skill-operating-system.md` |
 | 2 | Update `docs/milestones/knitten-refactor.md` to link this spec and mark the model phase proposed. | milestone progress reflects parent spec. |
 | 3 | Review the spec against `llm-first-docs.md`. | no speculative current-state claims. |
 | 4 | If the parent spec is accepted, create `skill-output-location-architecture.md`. | path family and resolver boundary spec. |
@@ -173,7 +173,7 @@ S0 - Baseline re-check
 
 Input:
 - `docs/milestones/knitten-refactor.md`
-- `docs/plans/proposed/output-contract-registry.md`
+- `docs/plans/completed/output-contract-registry.md`
 - `docs/reference/local-report-inbox.md`
 
 Output:
@@ -194,7 +194,7 @@ Input:
 - User request and baseline evidence.
 
 Output:
-- `docs/plans/proposed/skill-operating-system.md` defines operating loop, layer model, output taxonomy, path boundary, and child specs.
+- `docs/plans/completed/skill-operating-system.md` defines operating loop, layer model, output taxonomy, path boundary, and child specs.
 
 Non-output:
 - No code implementation.
@@ -223,7 +223,7 @@ Failure:
 - Stop if milestone status and spec frontmatter conflict.
 
 Proof:
-- `rg -n "skill-operating-system" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-operating-system.md`
+- `rg -n "skill-operating-system" docs/milestones/knitten-refactor.md docs/plans/completed/skill-operating-system.md`
 
 S3 - Validation
 
@@ -250,7 +250,7 @@ Proof:
 |-------|---------|
 | Diff hygiene | `git diff --check` |
 | LLM-first validator | `node scripts/validate-llm-first.mjs` |
-| Spec route evidence | `rg -n "skill-operating-system" docs/milestones/knitten-refactor.md docs/plans/proposed/skill-operating-system.md docs/briefings/specs/skill-operating-system.md` |
+| Spec route evidence | `rg -n "skill-operating-system" docs/milestones/knitten-refactor.md docs/plans/completed/skill-operating-system.md docs/briefings/specs/skill-operating-system.md` |
 
 ## Risks
 

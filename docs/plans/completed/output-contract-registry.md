@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -207,8 +207,8 @@ For file outputs, return:
 {
   "ok": true,
   "id": "agent-hub-spec-proposed",
-  "path": "docs/plans/proposed/output-contract-registry.md",
-  "absolutePath": "<knitten-root>/docs/plans/proposed/output-contract-registry.md",
+  "path": "docs/plans/completed/output-contract-registry.md",
+  "absolutePath": "<knitten-root>/docs/plans/completed/output-contract-registry.md",
   "template": "agent/document-templates/agent-hub/spec.md",
   "absoluteTemplatePath": "<knitten-root>/agent/document-templates/agent-hub/spec.md",
   "format": "markdown",
@@ -222,7 +222,7 @@ For section outputs, return the parent document path plus section metadata:
 {
   "ok": true,
   "id": "agent-hub-design-plan-section",
-  "path": "docs/plans/proposed/output-contract-registry.md",
+  "path": "docs/plans/completed/output-contract-registry.md",
   "section": "## Design Plan",
   "template": "agent/document-templates/agent-hub/design-plan.md",
   "format": "markdown-section",

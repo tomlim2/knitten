@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: completed
 created: 2026-05-31
 updated: 2026-05-31
 owner: agent-hub
@@ -53,12 +53,12 @@ evidence.
 
 | Surface | Evidence |
 |---------|----------|
-| Parent architecture | `docs/plans/proposed/skill-operating-system.md`. |
-| Output contract implementation | `docs/plans/proposed/output-contract-registry.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`. |
-| Location boundary | `docs/plans/proposed/skill-output-location-architecture.md`. |
-| Lifecycle boundary | `docs/plans/proposed/skill-output-lifecycle.md`. |
-| Skill adoption boundary | `docs/plans/proposed/skill-output-contract-adoption.md`. |
-| Validator strategy | `docs/plans/proposed/skill-output-validator-strategy.md`. |
+| Parent architecture | `docs/plans/completed/skill-operating-system.md`. |
+| Output contract implementation | `docs/plans/completed/output-contract-registry.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`. |
+| Location boundary | `docs/plans/completed/skill-output-location-architecture.md`. |
+| Lifecycle boundary | `docs/plans/completed/skill-output-lifecycle.md`. |
+| Skill adoption boundary | `docs/plans/completed/skill-output-contract-adoption.md`. |
+| Validator strategy | `docs/plans/completed/skill-output-validator-strategy.md`. |
 | Review guideline | `docs/guidelines/milestone-review.md`. |
 | CI validator | `.github/workflows/validate.yml` runs repository validation. |
 
@@ -183,7 +183,7 @@ Failure:
 - Stop if spec frontmatter milestone does not match the milestone file.
 
 Proof:
-- `rg -n "knitten-refactor-closure-review|Closure review" docs/milestones/knitten-refactor.md docs/plans/proposed/knitten-refactor-closure-review.md`
+- `rg -n "knitten-refactor-closure-review|Closure review" docs/milestones/knitten-refactor.md docs/plans/completed/knitten-refactor-closure-review.md`
 
 ## Validation
 
@@ -194,7 +194,7 @@ Proof:
 | Spec lifecycle | `node scripts/validate-llm-first.mjs --check spec-lifecycle` |
 | Template validator | `node scripts/validate-llm-first.mjs --check document-templates` |
 | Output registry | `node scripts/validate-llm-first.mjs --check outputs` |
-| Spec route evidence | `rg -n "knitten-refactor-closure-review|Closure review" docs/milestones/knitten-refactor.md docs/plans/proposed/knitten-refactor-closure-review.md docs/briefings/specs/knitten-refactor-closure-review.md` |
+| Spec route evidence | `rg -n "knitten-refactor-closure-review|Closure review" docs/milestones/knitten-refactor.md docs/plans/completed/knitten-refactor-closure-review.md docs/briefings/specs/knitten-refactor-closure-review.md` |
 
 ## Risks
 
