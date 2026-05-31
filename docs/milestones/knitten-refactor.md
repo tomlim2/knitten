@@ -42,7 +42,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 
 | Spec | Status | Role |
 |------|--------|------|
-| `skill-operating-system.md` | todo | Define the simplified top-level model for LLM skill discovery, execution, outputs, validation, and handoff. |
+| [skill-operating-system.md](../plans/proposed/skill-operating-system.md) | proposed | Define the simplified top-level model for LLM skill discovery, execution, outputs, validation, and handoff. |
 | [output-contract-registry.md](../plans/proposed/output-contract-registry.md) | proposed | First concrete output contract layer: purpose to destination plus template. |
 | `skill-output-location-architecture.md` | todo | Define the full Knitten output/path architecture and naming boundaries. |
 | `skill-output-lifecycle.md` | todo | Define lifecycle states for each output: create, temporary, durable, promoted, completed, archived, or deleted. |
@@ -52,17 +52,17 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 
 | Phase | State | Evidence |
 |-------|-------|----------|
-| Skill operating model | todo | `docs/plans/proposed/skill-operating-system.md` |
-| Skill operating system spec | todo | `docs/plans/proposed/skill-operating-system.md` |
+| Skill operating model | proposed | `docs/plans/proposed/skill-operating-system.md` |
+| Skill operating system spec | proposed | `docs/plans/proposed/skill-operating-system.md` |
 | Skill template assets | done | `agent/document-templates/agent-hub/skill.md` and `agent/document-templates/agent-hub/skill-html-like.md`. |
-| Output inventory | todo | `docs/plans/proposed/skill-operating-system.md` inventory section. |
+| Output inventory | proposed | `docs/plans/proposed/skill-operating-system.md` output taxonomy. |
 | Location inventory | todo | `docs/plans/proposed/skill-output-location-architecture.md` |
 | Output contract layer | done | `docs/plans/proposed/output-contract-registry.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`, and `scripts/validate-llm-first.mjs --check outputs`. |
 | Output lifecycle | todo | `docs/plans/proposed/skill-output-lifecycle.md` |
 | Skill contract adoption | todo | `docs/plans/proposed/skill-output-contract-adoption.md` |
 | Validator strategy | todo | Validator section in each accepted child spec. |
 | Milestone review | done | Reviewed with [milestone-review.md](../guidelines/milestone-review.md); current routing verdict: ready after template assets were classified as assets, not a standalone spec. |
-| Migration order | todo | Migration order section in `docs/plans/proposed/skill-operating-system.md`. |
+| Migration order | proposed | Migration Order section in `docs/plans/proposed/skill-operating-system.md`. |
 
 ## Acceptance Criteria
 
