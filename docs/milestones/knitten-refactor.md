@@ -45,7 +45,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 | [skill-operating-system.md](../plans/proposed/skill-operating-system.md) | proposed | Define the simplified top-level model for LLM skill discovery, execution, outputs, validation, and handoff. |
 | [output-contract-registry.md](../plans/proposed/output-contract-registry.md) | proposed | First concrete output contract layer: purpose to destination plus template. |
 | [skill-output-location-architecture.md](../plans/proposed/skill-output-location-architecture.md) | proposed | Define the full Knitten output/path architecture and naming boundaries. |
-| `skill-output-lifecycle.md` | todo | Define lifecycle states for each output: create, temporary, durable, promoted, completed, archived, or deleted. |
+| [skill-output-lifecycle.md](../plans/proposed/skill-output-lifecycle.md) | proposed | Define lifecycle states for each output: create, temporary, durable, promoted, completed, archived, or deleted. |
 | `skill-output-contract-adoption.md` | todo | Define how skills reference output ids instead of hardcoded path/template pairs. |
 
 ## Progress
@@ -58,7 +58,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 | Output inventory | proposed | `docs/plans/proposed/skill-operating-system.md` output taxonomy. |
 | Location inventory | proposed | `docs/plans/proposed/skill-output-location-architecture.md` path family matrix. |
 | Output contract layer | done | `docs/plans/proposed/output-contract-registry.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`, and `scripts/validate-llm-first.mjs --check outputs`. |
-| Output lifecycle | todo | `docs/plans/proposed/skill-output-lifecycle.md` |
+| Output lifecycle | proposed | `docs/plans/proposed/skill-output-lifecycle.md` lifecycle states and gates. |
 | Skill contract adoption | todo | `docs/plans/proposed/skill-output-contract-adoption.md` |
 | Validator strategy | todo | Validator section in each accepted child spec. |
 | Milestone review | done | Reviewed with [milestone-review.md](../guidelines/milestone-review.md); current routing verdict: ready after template assets were classified as assets, not a standalone spec. |
