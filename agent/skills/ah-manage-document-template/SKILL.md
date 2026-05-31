@@ -34,6 +34,7 @@ template owns the generated body shape.
 | GitHub PR body | `agent/document-templates/github/*.md` | GitHub runtime mirror |
 | Linear issue body | `agent/document-templates/linear/*.md` | Linear issue commands |
 | Agent-hub docs | `agent/document-templates/agent-hub/*.md` | spec, milestone, technical spec skills |
+| Agent-hub JSON packets | `agent/document-templates/agent-hub/*.json` | local artifact resolver and LLM handoff writers |
 | Review output | `agent/document-templates/review/*.md` | review skills and standards |
 | Obsidian notes | `agent/document-templates/obsidian/*.md` | vault note workflows |
 | Consulting records | `agent/document-templates/consulting/*.md` | consulting workflows |

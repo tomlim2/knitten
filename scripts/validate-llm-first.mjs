@@ -1713,6 +1713,10 @@ function localArtifactViolation(violations, message) {
   violations.push({ file: "agent/config/local-artifact-paths.json", line: 1, message });
 }
 
+function outputViolation(violations, message) {
+  violations.push({ file: "agent/config/outputs.json", line: 1, message });
+}
+
 function placeholdersInTemplate(template) {
   return [...String(template || "").matchAll(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g)].map((match) => match[1]);
 }
@@ -1721,6 +1725,12 @@ function isSafeLocalArtifactPath(value) {
   if (typeof value !== "string" || !value.startsWith(".agent-local/")) return false;
   const normalized = path.posix.normalize(value);
   return normalized === value && !normalized.startsWith("../") && !normalized.includes("/../");
+}
+
+function isSafeRepoRelativeDocumentTemplate(value) {
+  if (typeof value !== "string" || !/\.(json|md)$/.test(value)) return false;
+  if (!isSafeRepoRelativePath(value)) return false;
+  return existsSync(path.join(REPO_ROOT, value));
 }
 
 async function checkLocalArtifactPaths() {
@@ -1802,6 +1812,12 @@ async function checkLocalArtifactPaths() {
         localArtifactViolation(violations, `${identity} ${field} must be a safe .agent-local path`);
       }
     }
+    if (entry.template !== undefined && !isSafeRepoRelativeDocumentTemplate(entry.template)) {
+      localArtifactViolation(violations, `${identity} template must be an existing repo-relative .md or .json file`);
+    }
+    if (entry.schemaKind !== undefined && (typeof entry.schemaKind !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.schemaKind))) {
+      localArtifactViolation(violations, `${identity} schemaKind must be kebab-case`);
+    }
     const declared = new Set(argNames);
     const used = new Set([...placeholdersInTemplate(entry.path), ...placeholdersInTemplate(entry.cleanupPath)]);
     for (const name of used) {
@@ -1816,6 +1832,221 @@ async function checkLocalArtifactPaths() {
     }
   }
   return { name: "local-artifact-paths", violations };
+}
+
+function validateOutputArgs(violations, identity, args) {
+  if (!Array.isArray(args)) {
+    outputViolation(violations, `${identity} args must be an array`);
+    return [];
+  }
+  const argNames = [];
+  for (const arg of args) {
+    if (!arg || typeof arg !== "object") {
+      outputViolation(violations, `${identity} args entries must be objects`);
+      continue;
+    }
+    if (typeof arg.name !== "string" || !/^[a-zA-Z][a-zA-Z0-9]*$/.test(arg.name)) {
+      outputViolation(violations, `${identity} invalid arg name: ${JSON.stringify(arg.name)}`);
+    } else {
+      argNames.push(arg.name);
+    }
+    if (typeof arg.pattern !== "string" || !arg.pattern) {
+      outputViolation(violations, `${identity} arg ${arg.name || "<unknown>"} missing pattern`);
+    } else {
+      try {
+        new RegExp(arg.pattern);
+      } catch (err) {
+        outputViolation(violations, `${identity} arg ${arg.name || "<unknown>"} invalid pattern: ${err.message}`);
+      }
+    }
+    if (arg.normalize !== undefined && arg.normalize !== "lowercase") {
+      outputViolation(violations, `${identity} arg ${arg.name || "<unknown>"} invalid normalize: ${JSON.stringify(arg.normalize)}`);
+    }
+  }
+  if (hasDuplicates(argNames)) {
+    outputViolation(violations, `${identity} args must not contain duplicate names`);
+  }
+  return argNames;
+}
+
+function renderOutputTokens(tokens, values) {
+  return tokens.map((token) => String(token).replaceAll(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g, (_match, name) => values[name] ?? `{${name}}`));
+}
+
+function localArtifactRegistryArgPosition(arg) {
+  return arg.position || "before-item";
+}
+
+function matchingLocalArtifactEntry(localRegistry, renderedTokens) {
+  if (!Array.isArray(renderedTokens) || renderedTokens.length < 3) return null;
+  if (!Array.isArray(localRegistry.entries)) return null;
+  const [owner, artifactType, ...tokens] = renderedTokens;
+  const candidates = localRegistry.entries.filter((entry) => entry.owner === owner && entry.artifactType === artifactType);
+  for (let itemIndex = 0; itemIndex < tokens.length; itemIndex++) {
+    const item = tokens[itemIndex];
+    const entry = candidates.find((candidate) => candidate.item === item);
+    if (!entry) continue;
+    const beforeArgs = entry.args.filter((arg) => localArtifactRegistryArgPosition(arg) === "before-item");
+    const afterArgs = entry.args.filter((arg) => localArtifactRegistryArgPosition(arg) === "after-item");
+    const beforeTokens = tokens.slice(0, itemIndex);
+    const afterTokens = tokens.slice(itemIndex + 1);
+    if (beforeTokens.length === beforeArgs.length && afterTokens.length === afterArgs.length) {
+      return entry;
+    }
+  }
+  return null;
+}
+
+function outputArgNameSet(args) {
+  return new Set((Array.isArray(args) ? args : []).filter((arg) => arg && typeof arg === "object").map((arg) => arg.name));
+}
+
+async function checkOutputs() {
+  const violations = [];
+  let registry;
+  try {
+    registry = await readJsonConfig("outputs.json");
+  } catch (err) {
+    outputViolation(violations, `cannot read output registry: ${err.message}`);
+    return { name: "outputs", violations };
+  }
+
+  let localArtifactRegistry = null;
+  try {
+    localArtifactRegistry = await readJsonConfig("local-artifact-paths.json");
+  } catch (err) {
+    outputViolation(violations, `cannot read local artifact path registry for output validation: ${err.message}`);
+  }
+
+  if (registry.schemaVersion !== 1) {
+    outputViolation(violations, `schemaVersion must be 1, got ${JSON.stringify(registry.schemaVersion)}`);
+  }
+  if (!Array.isArray(registry.entries) || registry.entries.length === 0) {
+    outputViolation(violations, "entries must be a non-empty array");
+    return { name: "outputs", violations };
+  }
+
+  const ids = new Set();
+  const entriesById = new Map();
+  const allowedLocationKinds = new Set(["repo-template", "local-artifact", "doc-path", "document-section"]);
+  const allowedFormats = new Set(["markdown", "json", "markdown-section"]);
+
+  for (const entry of registry.entries) {
+    if (!entry || typeof entry !== "object") {
+      outputViolation(violations, "entries must be objects");
+      continue;
+    }
+    const identity = entry.id || "<unknown>";
+    if (typeof entry.id !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.id)) {
+      outputViolation(violations, `${identity} id must be kebab-case`);
+    } else if (ids.has(entry.id)) {
+      outputViolation(violations, `duplicate output id: ${entry.id}`);
+    } else {
+      ids.add(entry.id);
+      entriesById.set(entry.id, entry);
+    }
+    if (typeof entry.description !== "string" || !entry.description) {
+      outputViolation(violations, `${identity} missing description`);
+    }
+    if (!allowedLocationKinds.has(entry.locationKind)) {
+      outputViolation(violations, `${identity} invalid locationKind: ${JSON.stringify(entry.locationKind)}`);
+    }
+    if (!allowedFormats.has(entry.format)) {
+      outputViolation(violations, `${identity} invalid format: ${JSON.stringify(entry.format)}`);
+    }
+    if (typeof entry.shapeKind !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.shapeKind)) {
+      outputViolation(violations, `${identity} shapeKind must be kebab-case`);
+    }
+    if (!isSafeRepoRelativeDocumentTemplate(entry.template)) {
+      outputViolation(violations, `${identity} template must be an existing repo-relative .md or .json file`);
+    }
+
+    const argNames = validateOutputArgs(violations, identity, entry.args);
+    const declared = new Set(argNames);
+    const templateFields = [];
+
+    if (entry.locationKind === "repo-template") {
+      if (!isSafeRepoRelativePath(entry.path)) {
+        outputViolation(violations, `${identity} path must be a safe repo-relative path`);
+      }
+      templateFields.push(entry.path);
+    }
+    if (entry.locationKind === "local-artifact") {
+      if (!Array.isArray(entry.localArtifactTokens) || entry.localArtifactTokens.length === 0) {
+        outputViolation(violations, `${identity} localArtifactTokens must be a non-empty array`);
+      } else {
+        for (const token of entry.localArtifactTokens) {
+          if (typeof token !== "string" || !token) {
+            outputViolation(violations, `${identity} localArtifactTokens entries must be non-empty strings`);
+          }
+          templateFields.push(token);
+        }
+        if (localArtifactRegistry) {
+          const dummyValues = Object.fromEntries(argNames.map((name) => [name, name]));
+          const rendered = renderOutputTokens(entry.localArtifactTokens, dummyValues);
+          if (!matchingLocalArtifactEntry(localArtifactRegistry, rendered)) {
+            outputViolation(violations, `${identity} localArtifactTokens must resolve to an existing local-artifact-paths entry`);
+          }
+        }
+      }
+    }
+    if (entry.locationKind === "doc-path") {
+      if (typeof entry.docPurpose !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.docPurpose)) {
+        outputViolation(violations, `${identity} docPurpose must be kebab-case when locationKind is doc-path`);
+      }
+      if (declared.has("project")) {
+        templateFields.push("{project}");
+      }
+    }
+    if (entry.locationKind === "document-section") {
+      if (typeof entry.parentOutput !== "string" || !entry.parentOutput) {
+        outputViolation(violations, `${identity} parentOutput is required when locationKind is document-section`);
+      }
+      if (typeof entry.section !== "string" || !/^## [^\n]+$/.test(entry.section)) {
+        outputViolation(violations, `${identity} section must be an H2 heading string`);
+      }
+      if (entry.format !== "markdown-section") {
+        outputViolation(violations, `${identity} document-section outputs must use format markdown-section`);
+      }
+    }
+
+    const used = new Set(templateFields.flatMap((value) => placeholdersInTemplate(value)));
+    for (const name of used) {
+      if (!declared.has(name)) {
+        outputViolation(violations, `${identity} template references undeclared arg: ${name}`);
+      }
+    }
+    for (const name of declared) {
+      if (!used.has(name) && entry.locationKind !== "document-section") {
+        outputViolation(violations, `${identity} declares unused arg: ${name}`);
+      }
+    }
+  }
+
+  for (const entry of registry.entries) {
+    if (entry?.locationKind !== "document-section") continue;
+    const parent = entriesById.get(entry.parentOutput);
+    if (!parent) {
+      outputViolation(violations, `${entry.id} parentOutput does not exist: ${entry.parentOutput}`);
+    } else if (parent.locationKind === "document-section") {
+      outputViolation(violations, `${entry.id} parentOutput must be a file output, got document-section`);
+    } else {
+      const childArgs = outputArgNameSet(entry.args);
+      const parentArgs = outputArgNameSet(parent.args);
+      for (const name of parentArgs) {
+        if (!childArgs.has(name)) {
+          outputViolation(violations, `${entry.id} missing parentOutput arg: ${name}`);
+        }
+      }
+      for (const name of childArgs) {
+        if (!parentArgs.has(name)) {
+          outputViolation(violations, `${entry.id} declares arg not used by parentOutput: ${name}`);
+        }
+      }
+    }
+  }
+
+  return { name: "outputs", violations };
 }
 
 function localHelperViolation(violations, message) {
@@ -4393,7 +4624,7 @@ function pushRequiredFrontmatter(violations, file, text, keys) {
 async function checkDocumentTemplates() {
   const violations = [];
   const root = path.join(AGENT_ROOT, "document-templates");
-  const files = await walk(root, (f) => f.endsWith(".md"));
+  const files = await walk(root, (f) => f.endsWith(".md") || f.endsWith(".json"));
   const allowedObsidianTagAxes = await readAllowedObsidianTagAxes();
 
   for (const f of files) {
@@ -4402,6 +4633,27 @@ async function checkDocumentTemplates() {
     const text = await readFile(f, "utf8");
     const parts = relative.split(path.sep);
     const group = parts[0];
+
+    if (f.endsWith(".json")) {
+      if (group !== "agent-hub") {
+        violations.push({ file, line: 1, message: "JSON document templates must live under agent-hub unless a consumer contract is added" });
+        continue;
+      }
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        violations.push({ file, line: 1, message: `JSON template must parse: ${err.message}` });
+        continue;
+      }
+      for (const field of ["schemaVersion", "kind", "status", "summary"]) {
+        if (!Object.prototype.hasOwnProperty.call(data, field)) {
+          violations.push({ file, line: 1, message: `JSON template missing ${field}` });
+        }
+      }
+      continue;
+    }
+
     pushMarkdownFenceViolations(violations, file, text);
 
     if (relative === "README.md") {
@@ -4578,6 +4830,7 @@ const CHECKS = [
   { name: "platform-metadata", fn: checkPlatformMetadata },
   { name: "taxonomy", fn: checkTaxonomy },
   { name: "local-artifact-paths", fn: checkLocalArtifactPaths },
+  { name: "outputs", fn: checkOutputs },
   { name: "local-helper-paths", fn: checkLocalHelperPaths },
   { name: "managed-paths", fn: checkManagedPaths },
   { name: "artifact-inventory", fn: checkArtifactInventory },

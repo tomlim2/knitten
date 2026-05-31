@@ -16,7 +16,7 @@ and execution steps only.
 
 | Folder | Owns |
 |--------|------|
-| `agent-hub/` | specs, milestones, design plans, generated technical specs |
+| `agent-hub/` | specs, milestones, design plans, generated technical specs, JSON handoff packets |
 | `consulting/` | consulting history records |
 | `github/` | GitHub pull request body templates |
 | `linear/` | Linear issue body templates |
@@ -58,6 +58,7 @@ of making the operational template carry both purposes.
 | `consulting/*.md` | Obsidian vault note | same as `obsidian/*.md` |
 | `project/*.md` | Obsidian vault note | same as `obsidian/*.md` |
 | `agent-hub/*.md` | agent-hub docs skill | has `status:` frontmatter; contains fenced generated-body examples |
+| `agent-hub/*.json` | local artifact resolver or JSON handoff writer | valid JSON; contains `schemaVersion`, `kind`, `status`, and `summary` |
 | `review/*.md` | review-output formatter | has `status:` frontmatter; contains review output sections |
 | `README.md` | LLM template index | has `status:` frontmatter; lists folders and consumer contract |
 

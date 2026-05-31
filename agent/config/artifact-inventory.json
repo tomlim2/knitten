@@ -1,7 +1,7 @@
 {
   "schema-version": 1,
-  "generated-at": "2026-05-29T15:59:53.377Z",
-  "source-commit": "625dd2e7fb5122948bf1966dc890573a28ae2949",
+  "generated-at": "2026-05-30T03:31:34.340Z",
+  "source-commit": "08df6256f2d0e2d778a9f526efd09fd0dc194b0a",
   "source-dirty": true,
   "rows": [
     {
@@ -372,6 +372,19 @@
       "row-id": "artifact:agent/document-templates/agent-hub/design-plan.md",
       "row-type": "artifact",
       "source-artifact-path": "agent/document-templates/agent-hub/design-plan.md",
+      "artifact-type": "doc",
+      "owner-domain": "core",
+      "privacy-risk": "public-safe",
+      "dependencies": [],
+      "proposed-destination": "undecided",
+      "compatibility-need": "unknown",
+      "classification-stage": "undecided",
+      "review-state": "pending"
+    },
+    {
+      "row-id": "artifact:agent/document-templates/agent-hub/json-handoff-packet.json",
+      "row-type": "artifact",
+      "source-artifact-path": "agent/document-templates/agent-hub/json-handoff-packet.json",
       "artifact-type": "doc",
       "owner-domain": "core",
       "privacy-risk": "public-safe",

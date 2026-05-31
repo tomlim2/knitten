@@ -85,7 +85,9 @@ path registry.
         { "name": "stl", "pattern": "^stl-[0-9]+$", "normalize": "lowercase" }
       ],
       "path": ".agent-local/shotloom/planning/{stl}/brief.json",
-      "cleanupPath": ".agent-local/shotloom/planning/{stl}"
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "schemaKind": "shotloom-start-task-brief"
     }
   ]
 }
@@ -103,6 +105,8 @@ path registry.
 | `path` | yes | Repo-relative template. Must start with `.agent-local/`. |
 | `cleanupPath` | yes | Repo-relative cleanup directory template. Must start with `.agent-local/`. |
 | `description` | no | Human note for maintainers. |
+| `template` | no | Repo-relative `.json` template the writer should start from. |
+| `schemaKind` | no | Kebab-case JSON kind hint included in resolver output. |
 
 ### Argument Contract
 

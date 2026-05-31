@@ -39,6 +39,17 @@ content is promoted to a durable tracked owner path.
 
 ## JSON Contract
 
+Template:
+`agent/document-templates/agent-hub/json-handoff-packet.json`.
+
+Use the template for generic `.agent-local/reports/*.json` handoff packets.
+Specialized workflows may add fields, but they must keep the routing fields
+below unless a workflow-specific schema replaces them.
+
+Path scripts expose the same hint. When resolving a generic handoff path with
+`agent/lib/resolve-local-artifact-path.mjs`, read `template` and `schemaKind`
+from the resolver JSON instead of hardcoding the template path in the caller.
+
 | Field | Required | Meaning |
 |---|---|---|
 | `schemaVersion` | yes | Integer schema version. Start at `1`. |
@@ -50,6 +61,7 @@ content is promoted to a durable tracked owner path.
 | `context` | no | Object or array with repo, branch, PR, issue, command, or evidence references. |
 | `nextAction` | no | The concrete action expected from the next LLM. |
 | `cleanupPaths` | no | Local-only paths the next LLM may remove after durable promotion or completion. |
+| `decisionBasis` | no | Short LLM-facing reason/tradeoff for the next session. |
 
 ## Format Boundary
 

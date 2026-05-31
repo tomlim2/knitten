@@ -69,7 +69,13 @@ Use [SPEC-INTAKE.md](references/SPEC-INTAKE.md) for the intake template.
 2. Resolve existing spec paths across lifecycle folders using
    [SPEC-LIFECYCLE.md](references/SPEC-LIFECYCLE.md).
 3. If no spec exists, default new specs to `docs/plans/proposed/<slug>.md`
-   unless the user explicitly asks to begin active implementation now.
+   unless the user explicitly asks to begin active implementation now. Resolve
+   this destination through the `agent-hub-spec-proposed` output contract:
+
+```bash
+node agent/lib/resolve-output.mjs agent-hub-spec-proposed slug=<slug>
+```
+
 4. Gather intake and classify route.
 5. Search related specs:
 
@@ -80,7 +86,13 @@ rg -n "<slug>|<main-term>" docs/plans docs/milestones docs/briefings
 6. Read only required evidence and selected route references.
 7. Draft using [`agent/document-templates/agent-hub/spec.md`](../../document-templates/agent-hub/spec.md).
 8. If the spec needs ordered implementation stages, add a Design Plan using
-   [`agent/document-templates/agent-hub/design-plan.md`](../../document-templates/agent-hub/design-plan.md).
+   [`agent/document-templates/agent-hub/design-plan.md`](../../document-templates/agent-hub/design-plan.md). Resolve
+   the section contract first:
+
+```bash
+node agent/lib/resolve-output.mjs agent-hub-design-plan-section slug=<slug>
+```
+
    Specs are internal-consumption artifacts; preserve durable knowledge in a
    separate vault-assetization note.
 9. Review the draft for missing evidence, unclear decisions, impossible
@@ -167,6 +179,8 @@ report the exact blocker and still run `git diff --check`.
 | `references/SPEC-LIFECYCLE.md` | status/archive/delete rules |
 | `../../document-templates/agent-hub/spec.md` | direct spec templates |
 | `../../document-templates/agent-hub/design-plan.md` | optional implementation-order stage template |
+| `../../config/outputs.json` | output ids for proposed specs and Design Plan sections |
+| `../../lib/resolve-output.mjs` | resolver for output path plus template contracts |
 | `references/SPEC-ROUTING.md` | route matrix and existing skill reuse |
 
 ## Related

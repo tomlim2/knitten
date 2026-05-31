@@ -21,6 +21,9 @@ canonical owner, then update any skill or redirect that references it.
 | Design plan | internal-consumption | `agent/document-templates/agent-hub/design-plan.md` | specs and task-plan skills that need implementation-order stages |
 | Generated technical spec | internal-consumption | `agent/document-templates/agent-hub/technical-spec.md` | `agent/skills/dev-generate-spec/SKILL.md` |
 | Operational finding report | internal-consumption | `agent/document-templates/agent-hub/operational-finding-report.md` | `agent/skills/ah-report-finding/SKILL.md` |
+| JSON handoff packet | internal-consumption | `agent/document-templates/agent-hub/json-handoff-packet.json` | `.agent-local/reports/*.json` and LLM-to-LLM temporary handoff |
+| Skill template | internal-consumption | `agent/document-templates/agent-hub/skill.md` | official recommended Markdown shape for Knitten skills |
+| HTML-like skill template | internal-consumption | `agent/document-templates/agent-hub/skill-html-like.md` | experimental tag-structured Markdown shape for LLM parsing and validation experiments |
 | Code review output | internal-consumption | `agent/document-templates/review/code-review.md` | review standards and `review-audit-*` skills |
 | Devlog day | vault-assetization | `agent/document-templates/obsidian/devlog-day.md` | `learn-log-day` and devlog workflows |
 | Cross-project learning | vault-assetization | `agent/document-templates/obsidian/cross-project-learning.md` | `learn-log-day _cross-project learning` |
@@ -79,6 +82,7 @@ a separate step.
 | Korean user-facing examples | allowed inside template bodies |
 | Frontmatter | include `status:` for standards and references that act as policy |
 | Placeholders | use one style per file; prefer `{NAME}` inside examples and `{{NAME}}` inside vault templates |
+| JSON templates | keep valid JSON; use string placeholders rather than comments or trailing commas |
 | Obsidian tags | include exactly one `type/` tag and exactly one `project/` tag |
 | Lists | enumerate every valid item or point to the owning registry |
 | Future work | do not add promised future work unless the template is explicitly a roadmap or follow-up tracker |

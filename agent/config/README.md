@@ -11,6 +11,7 @@ Shared JSON registries and public service configuration.
 | `doc-budgets.json` | Document length budgets consumed by `validate-llm-first.mjs` | committed |
 | `frontmatter-schema.json` | Frontmatter enum values and pilot metadata file list | committed |
 | `taxonomy.json` | Skill categories, standard groups, naming regexes | committed |
+| `outputs.json` | Skill operating output contracts binding purpose, destination, template, format, and shape | committed |
 | `managed-paths.json` | Canonical shared-layer paths, deploy aliases, and path drift policy | committed |
 | `managed-paths.schema.json` | Schema for managed shared path registry rows | committed |
 | `audit-policy.json` | Garden/audit thresholds and severity tiers | committed |

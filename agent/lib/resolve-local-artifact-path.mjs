@@ -176,7 +176,7 @@ export function resolveLocalArtifactPath({ root = null, create = false, args = [
       mkdirSync(path.dirname(absolutePath), { recursive: true });
     }
   }
-  return {
+  const result = {
     ok: true,
     owner: entry.owner,
     artifactType: entry.artifactType,
@@ -188,6 +188,14 @@ export function resolveLocalArtifactPath({ root = null, create = false, args = [
     cleanupPath,
     absoluteCleanupPath,
   };
+  if (entry.template) {
+    result.template = entry.template;
+    result.absoluteTemplatePath = path.join(knittenRoot, entry.template);
+  }
+  if (entry.schemaKind) {
+    result.schemaKind = entry.schemaKind;
+  }
+  return result;
 }
 
 function main() {

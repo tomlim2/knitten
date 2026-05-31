@@ -16,7 +16,9 @@
       ],
       "path": ".agent-local/shotloom/planning/{stl}/brief.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
-      "description": "Shotloom planning brief"
+      "description": "Shotloom planning brief",
+      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "schemaKind": "shotloom-start-task-brief"
     },
     {
       "owner": "shotloom",
@@ -32,7 +34,8 @@
       ],
       "path": ".agent-local/shotloom/planning/{stl}/spec.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
-      "description": "Shotloom planning spec"
+      "description": "Shotloom planning spec",
+      "schemaKind": "shotloom-planning-spec"
     },
     {
       "owner": "shotloom",
@@ -48,7 +51,8 @@
       ],
       "path": ".agent-local/shotloom/planning/{stl}/design-plan.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
-      "description": "Shotloom planning design plan"
+      "description": "Shotloom planning design plan",
+      "schemaKind": "shotloom-planning-design-plan"
     },
     {
       "owner": "shotloom",
@@ -64,7 +68,8 @@
       ],
       "path": ".agent-local/shotloom/planning/{stl}/questions.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
-      "description": "Shotloom planning open questions"
+      "description": "Shotloom planning open questions",
+      "schemaKind": "shotloom-planning-questions"
     },
     {
       "owner": "shotloom",
@@ -80,7 +85,8 @@
       ],
       "path": ".agent-local/shotloom/planning/{stl}/manifest.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
-      "description": "Shotloom planning manifest"
+      "description": "Shotloom planning manifest",
+      "schemaKind": "shotloom-planning-manifest"
     },
     {
       "owner": "shotloom",
@@ -100,7 +106,8 @@
       ],
       "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/readiness.json",
       "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
-      "description": "Shotloom before-PR readiness result"
+      "description": "Shotloom before-PR readiness result",
+      "schemaKind": "shotloom-before-pr-readiness"
     },
     {
       "owner": "shotloom",
@@ -120,7 +127,8 @@
       ],
       "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/code-blockers.json",
       "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
-      "description": "Shotloom before-PR code blockers"
+      "description": "Shotloom before-PR code blockers",
+      "schemaKind": "shotloom-before-pr-code-blockers"
     },
     {
       "owner": "shotloom",
@@ -140,7 +148,8 @@
       ],
       "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/docs-blockers.json",
       "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
-      "description": "Shotloom before-PR docs blockers"
+      "description": "Shotloom before-PR docs blockers",
+      "schemaKind": "shotloom-before-pr-docs-blockers"
     },
     {
       "owner": "shotloom",
@@ -200,7 +209,8 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/state.json",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher state"
+      "description": "Shotloom PR watcher state",
+      "schemaKind": "shotloom-pr-state"
     },
     {
       "owner": "shotloom",
@@ -215,7 +225,8 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/last-event.json",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher last event"
+      "description": "Shotloom PR watcher last event",
+      "schemaKind": "shotloom-pr-last-event"
     },
     {
       "owner": "shotloom",
@@ -245,7 +256,8 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/reply-plan.json",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR response reply plan"
+      "description": "Shotloom PR response reply plan",
+      "schemaKind": "shotloom-pr-reply-plan"
     },
     {
       "owner": "shotloom",
@@ -320,7 +332,8 @@
       ],
       "path": ".agent-local/shotloom/deploy/{key}/manifest.json",
       "cleanupPath": ".agent-local/shotloom/deploy/{key}",
-      "description": "Shotloom deploy manifest"
+      "description": "Shotloom deploy manifest",
+      "schemaKind": "shotloom-deploy-manifest"
     },
     {
       "owner": "shotloom",
@@ -335,7 +348,8 @@
       ],
       "path": ".agent-local/shotloom/deploy/{key}/rollback.json",
       "cleanupPath": ".agent-local/shotloom/deploy/{key}",
-      "description": "Shotloom deploy rollback data"
+      "description": "Shotloom deploy rollback data",
+      "schemaKind": "shotloom-deploy-rollback"
     },
     {
       "owner": "ah",
@@ -355,7 +369,9 @@
       ],
       "path": ".agent-local/reports/{date}-{slug}.json",
       "cleanupPath": ".agent-local/reports",
-      "description": "Agent-hub JSON-only cross-session handoff report"
+      "description": "Agent-hub JSON-only cross-session handoff report",
+      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "schemaKind": "session-handoff"
     },
     {
       "owner": "ah",
@@ -370,7 +386,8 @@
       ],
       "path": ".agent-local/ah/operational-findings/{date}/inbox.json",
       "cleanupPath": ".agent-local/ah/operational-findings/{date}",
-      "description": "Agent-hub operational findings inbox"
+      "description": "Agent-hub operational findings inbox",
+      "schemaKind": "operational-findings-inbox"
     },
     {
       "owner": "ah",
@@ -390,7 +407,8 @@
       ],
       "path": ".agent-local/ah/operational-findings/{date}/reports/{slug}.json",
       "cleanupPath": ".agent-local/ah/operational-findings/{date}",
-      "description": "Agent-hub operational finding report"
+      "description": "Agent-hub operational finding report",
+      "schemaKind": "operational-finding-report"
     }
   ]
 }
