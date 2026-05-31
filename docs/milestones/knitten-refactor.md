@@ -47,6 +47,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 | [skill-output-location-architecture.md](../plans/proposed/skill-output-location-architecture.md) | proposed | Define the full Knitten output/path architecture and naming boundaries. |
 | [skill-output-lifecycle.md](../plans/proposed/skill-output-lifecycle.md) | proposed | Define lifecycle states for each output: create, temporary, durable, promoted, completed, archived, or deleted. |
 | [skill-output-contract-adoption.md](../plans/proposed/skill-output-contract-adoption.md) | proposed | Define how skills reference output ids instead of hardcoded path/template pairs. |
+| [skill-output-validator-strategy.md](../plans/proposed/skill-output-validator-strategy.md) | proposed | Define validator strategy for output contracts, paths, templates, lifecycle, and adoption drift. |
 
 ## Progress
 
@@ -60,7 +61,7 @@ format/template it uses, how long it lasts, who owns it, and what validates it.
 | Output contract layer | done | `docs/plans/proposed/output-contract-registry.md`, `agent/config/outputs.json`, `agent/lib/resolve-output.mjs`, and `scripts/validate-llm-first.mjs --check outputs`. |
 | Output lifecycle | proposed | `docs/plans/proposed/skill-output-lifecycle.md` lifecycle states and gates. |
 | Skill contract adoption | proposed | `docs/plans/proposed/skill-output-contract-adoption.md` adoption order and gates. |
-| Validator strategy | todo | Validator section in each accepted child spec. |
+| Validator strategy | proposed | `docs/plans/proposed/skill-output-validator-strategy.md` drift map, check triggers, and validation matrix. |
 | Milestone review | done | Reviewed with [milestone-review.md](../guidelines/milestone-review.md); current routing verdict: ready after template assets were classified as assets, not a standalone spec. |
 | Migration order | proposed | Migration Order section in `docs/plans/proposed/skill-operating-system.md`. |
 
