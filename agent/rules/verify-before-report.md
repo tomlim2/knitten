@@ -1,5 +1,0 @@
----
-load: auto
----
-
-- **Always verify before presenting** — code change → run tests/CLI/diagnostics → confirm results → only then show to user or suggest next step.
