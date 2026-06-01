@@ -1,22 +1,19 @@
-# SYSTEM.md
-
-Knitten is a Codex plugin core.
+# Knitten System
 
 ## Contract
 
 | Rule | Meaning |
 |------|---------|
 | Plugin source | The checkout is loaded by Codex through `.codex-plugin/plugin.json`. |
-| No harness deploy dependency | Operation does not require a separate runtime mirror folder. |
-| Pack boundary | Optional skills, standards, templates, and working documents live in plugin or artifact-pack payload repositories. |
-| Core boundary | This repo keeps the minimal policy, registry, and resolver skeleton needed before optional payloads load. |
+| Minimal core | This repository contains only plugin identity, entry guidance, validation, and local registration. |
+| Self-contained source | Operation does not require a second harness-specific source tree. |
+| Payload boundary | Skills, standards, domain workflows, and working documents live in separate payload plugins. |
 
 ## Load
 
-Codex reads plugin metadata from `.codex-plugin/plugin.json`. Skills are loaded
-from plugin-declared `skills/` directories when present.
+Codex reads plugin metadata from `.codex-plugin/plugin.json`.
 
-## Legacy
+## Runtime Assumptions
 
-The legacy integration source is `knitten-all`. Do not add new runtime setup
-instructions here that require `knitten-all`.
+Do not require another harness runtime, private local paths, domain service
+credentials, or legacy source checkouts for this plugin to load.
