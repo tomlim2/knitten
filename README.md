@@ -1,10 +1,19 @@
 # Knitten
 
-Knitten is a minimal Codex plugin shell.
+Knitten is the core Codex plugin for generic AH development workflows.
 
-It provides plugin identity, a small policy entry, a Codex adapter document, and
-a local materialization helper for registering the plugin in the Codex personal
+It provides plugin identity, a small policy entry, a Codex adapter document,
+generic AH workflow skills, a plugin-native output resolver, and local
+materialization helpers for registering the plugin in the Codex personal
 marketplace.
+
+Repository roles:
+
+| Repository | Role |
+|------------|------|
+| `knitten` | Public core plugin and generic runtime. |
+| `knitten-all-skills` | Private payload plugin for full skill coverage. |
+| `knitten-archive` | Historical archive of the former combined repository. |
 
 ## Contents
 
@@ -13,12 +22,12 @@ marketplace.
 | `.codex-plugin/plugin.json` | Codex plugin manifest. |
 | `SYSTEM.md` | Minimal plugin boundary contract. |
 | `agent/AGENTS.md` | Codex adapter entry document. |
-| `skills/knitten-status/` | Minimal plugin health/status skill. |
+| `skills/` | Generic Knitten and AH workflow skills. |
 | `bin/knitten-resolve-output` | Payload-helper-facing output runtime shim. |
 | `scripts/doctor.mjs` | Check source and personal-marketplace installation state. |
 | `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
 | `scripts/resolve-output.mjs` | Resolve plugin and active workspace output destinations. |
-| `docs/specs/` | Design notes for the minimal plugin shell. |
+| `docs/specs/` | Design notes for the plugin core and runtime. |
 
 ## Validate
 
@@ -46,6 +55,6 @@ Apache License 2.0. See `LICENSE`.
 
 ## Boundary
 
-Skills, standards, domain workflows, domain output registries, and artifact-pack
-lifecycle tools belong in payload plugins unless they are intentionally promoted
-into this minimal core later. Knitten owns only the generic output runtime.
+Domain workflows, domain output registries, and artifact-pack lifecycle tools
+belong in payload plugins unless they are intentionally promoted into this core.
+Knitten owns generic workflow skills and the generic output runtime.
