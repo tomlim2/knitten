@@ -3,12 +3,21 @@ set -euo pipefail
 
 resolve_plugin_root() {
   if [[ -n "${KNITTEN_PLUGIN_ROOT:-}" ]]; then
+    if [[ ! -f "$KNITTEN_PLUGIN_ROOT/scripts/resolve-output.mjs" ]]; then
+      printf 'KNITTEN_PLUGIN_ROOT does not contain scripts/resolve-output.mjs: %s\n' "$KNITTEN_PLUGIN_ROOT" >&2
+      return 1
+    fi
     printf '%s\n' "$KNITTEN_PLUGIN_ROOT"
     return 0
   fi
 
   if [[ -n "${KNITTEN_MARKETPLACE_ROOT:-}" ]]; then
-    printf '%s\n' "$KNITTEN_MARKETPLACE_ROOT/plugins/knitten"
+    local marketplace_plugin_root="$KNITTEN_MARKETPLACE_ROOT/plugins/knitten"
+    if [[ ! -f "$marketplace_plugin_root/scripts/resolve-output.mjs" ]]; then
+      printf 'KNITTEN_MARKETPLACE_ROOT does not contain plugins/knitten/scripts/resolve-output.mjs: %s\n' "$KNITTEN_MARKETPLACE_ROOT" >&2
+      return 1
+    fi
+    printf '%s\n' "$marketplace_plugin_root"
     return 0
   fi
 
@@ -22,6 +31,10 @@ resolve_plugin_root() {
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local repo_root
   repo_root="$(cd "$script_dir/.." && pwd)"
+  if [[ ! -f "$repo_root/scripts/resolve-output.mjs" ]]; then
+    printf 'could not locate Knitten resolve-output.mjs from %s\n' "$repo_root" >&2
+    return 1
+  fi
   printf '%s\n' "$repo_root"
 }
 
