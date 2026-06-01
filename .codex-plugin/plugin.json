@@ -1,7 +1,7 @@
 {
   "name": "knitten",
   "version": "0.1.0",
-  "description": "Minimal Knitten Codex plugin shell",
+  "description": "Knitten Codex plugin for generic AH development workflow support",
   "author": {
     "name": "tomlim2"
   },
@@ -16,17 +16,18 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Knitten",
-    "shortDescription": "Minimal plugin shell for Codex.",
-    "longDescription": "Knitten provides a small Codex plugin identity, boundary policy, adapter entry, and local personal-marketplace registration helper.",
+    "shortDescription": "Generic AH development workflow support for Codex.",
+    "longDescription": "Knitten provides Codex plugin identity, boundary policy, local registration helpers, and generic AH development workflow skills for preparing, implementing, reviewing, managing PRs, and wrapping up work.",
     "developerName": "tomlim2",
     "category": "Productivity",
     "capabilities": [
-      "Read"
+      "Read",
+      "Write"
     ],
     "websiteURL": "https://github.com/tomlim2/knitten",
     "brandColor": "#3B82F6",
     "defaultPrompt": [
-      "Read SYSTEM.md and keep this plugin self-contained."
+      "Read SYSTEM.md, keep this plugin self-contained, and use AH workflow skills for generic development tasks."
     ],
     "screenshots": []
   }

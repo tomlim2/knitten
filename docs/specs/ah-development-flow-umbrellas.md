@@ -258,9 +258,9 @@ optional in the normal path:
 | `ah-review-pr` | PR URL/number | review findings or approval summary | `ah-manage-pr`, `ah-review-work` |
 | `ah-respond-pr` | PR review comments and accepted actions | posted replies or response plan | `ah-manage-pr` |
 | `ah-close-work` | merged PR or cancelled task state | wrapup summary and cleanup candidates | `ah-wrapup-work` |
-| `ah-report-finding` | recurring issue, failed assumption, or workflow gap | structured finding record and suggested next action | primary: `ah-review-work`, `ah-manage-pr`, `ah-wrapup-work` |
-| `ah-manage-milestone` | milestone name/state or task list | updated milestone status and next-task ordering | primary: `ah-prepare-work`, `ah-wrapup-work` |
-| `ah-audit-skill` | skill path or skill name | skill review findings and fix recommendations | primary: `ah-review-work` |
+| `ah-report-finding` | recurring issue, failed assumption, or workflow gap | structured finding record and suggested next action | `ah-review-work`, `ah-manage-pr`, `ah-wrapup-work` |
+| `ah-manage-milestone` | milestone name/state or task list | updated milestone status and next-task ordering | `ah-prepare-work`, `ah-wrapup-work` |
+| `ah-audit-skill` | skill path or skill name | skill review findings and fix recommendations | `ah-review-work` |
 
 ## Umbrella-To-Leaf Map
 
@@ -314,5 +314,5 @@ skill.
 - Each initial leaf has input, output, and primary caller information.
 - The spec does not require importing all legacy `ah-*` skills.
 - The spec keeps word-ban validation out of scope.
-- The next implementation round can add the five umbrella skill skeletons and
-  initial leaf skill skeletons to `knitten`.
+- `knitten` contains the five umbrella skill skeletons and initial leaf skill
+  skeletons.
