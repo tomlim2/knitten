@@ -258,27 +258,9 @@ export function resolveOutput({ root = null, outputsRegistryPath = null, localAr
   }
 
   if (writeTarget.kind === "doc-path") {
-    const script = path.join(knittenRoot, "agent/skills/ah-resolve-doc-path/resolve.sh");
-    const docArgs = ["doc", writeTarget.docPurpose];
-    if (Object.hasOwn(normalizedValues, "project")) {
-      docArgs.push(normalizedValues.project);
-    }
-    const stdout = execFileSync("bash", [script, ...docArgs], {
-      cwd: knittenRoot,
-      encoding: "utf8",
-    });
-    const resolvedPath = stdout
-      .split("\n")
-      .find((line) => line.startsWith("RESOLVED_PATH="))
-      ?.slice("RESOLVED_PATH=".length);
-    if (!resolvedPath) {
-      throw new Error(`${entry.id} doc-path resolver did not return RESOLVED_PATH`);
-    }
-    return {
-      ...result,
-      path: resolvedPath,
-      absolutePath: resolvedPath,
-    };
+    throw new Error(
+      `${entry.id} uses legacy doc-path resolution; use repo-template or local-artifact output targets instead`,
+    );
   }
 
   throw new Error(`${entry.id} unsupported writeTarget kind: ${writeTarget.kind}`);

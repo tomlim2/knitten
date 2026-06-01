@@ -8,7 +8,7 @@
     },
     {
       "id": "artifact-pack-validation",
-      "owner": "scripts/validate-llm-first.mjs --check artifact-pack",
+      "owner": "agent/config/artifact-pack.schema.json",
       "description": "Validator check for artifact pack manifests."
     },
     {
