@@ -90,4 +90,35 @@ jobs:
           node --check scripts/resolve-output.mjs
           bash -n bin/knitten-resolve-output
           bin/knitten-resolve-output --kind=review-json --name=ci --workspace-root="$PWD" >/tmp/knitten-output.json
-          node scripts/materialize-local-plugin.mjs --dry-run --cachebuster=ci
+          node - <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+          const output = JSON.parse(fs.readFileSync("/tmp/knitten-output.json", "utf8"));
+          const expectedPath = path.join(process.cwd(), ".agent-local", "knitten", "reviews", "ci.json");
+          if (output.selectedPath !== expectedPath) {
+            throw new Error(`unexpected selectedPath: ${output.selectedPath}`);
+          }
+          if (output.selectedDir !== path.dirname(expectedPath)) {
+            throw new Error(`unexpected selectedDir: ${output.selectedDir}`);
+          }
+          if (output.selectedPersistence !== "local") {
+            throw new Error(`unexpected selectedPersistence: ${output.selectedPersistence}`);
+          }
+          NODE
+          if node scripts/resolve-output.mjs --kind=review-json --workspace-root="$PWD"; then
+            echo "missing --name should fail" >&2
+            exit 1
+          fi
+          marketplace_root="$(mktemp -d)"
+          node scripts/materialize-local-plugin.mjs --marketplace-root="$marketplace_root" --cachebuster=ci
+          node scripts/doctor.mjs --marketplace-root="$marketplace_root"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path(".codex-plugin/plugin.json").read_text())
+          for field in ("name", "version", "description", "interface", "skills"):
+              if field not in manifest:
+                  raise SystemExit(f"plugin manifest missing {field}")
+          if manifest["name"] != "knitten":
+              raise SystemExit("plugin manifest name must be knitten")
+          PY
