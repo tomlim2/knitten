@@ -4959,6 +4959,24 @@ async function checkOutputContractResolver() {
   return { name: "output-contract-resolver", violations };
 }
 
+async function checkPluginizationInventoryReport() {
+  const violations = [];
+  try {
+    await execFileAsync(process.execPath, ["--test", "tests/pluginization-inventory-report.test.mjs"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+    });
+  } catch (err) {
+    violations.push({
+      file: "tests/pluginization-inventory-report.test.mjs",
+      line: 1,
+      message: `pluginization inventory report tests failed: ${(err.stdout || err.stderr || err.message).trim()}`,
+    });
+  }
+  return { name: "pluginization-inventory-report", violations };
+}
+
 async function checkExampleSkillPack() {
   const violations = [];
   try {
@@ -5008,6 +5026,7 @@ const CHECKS = [
   { name: "artifact-pack:manifest-compatibility", fn: (args) => checkArtifactPack("manifest-compatibility", args.artifactPackInputs), full: false },
   { name: "artifact-pack-discovery-routing", fn: checkArtifactPackDiscoveryRouting },
   { name: "artifact-pack-registry-merge", fn: checkArtifactPackRegistryMerge },
+  { name: "pluginization-inventory-report", fn: checkPluginizationInventoryReport },
   { name: "example-skill-pack", fn: checkExampleSkillPack },
   { name: "skill-root-shape", fn: checkSkillRootShape },
   { name: "skill-mechanics", fn: checkSkillCommandMechanics },
