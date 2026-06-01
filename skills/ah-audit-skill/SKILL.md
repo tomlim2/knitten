@@ -38,5 +38,5 @@ resolve it from the active workspace first, then from the plugin root when the
 workspace does not contain it. When roots are unclear, run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs
+<knitten-plugin-root>/bin/knitten-resolve-output
 ```

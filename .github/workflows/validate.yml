@@ -57,7 +57,8 @@ jobs:
             "docs/specs/plugin-native-core-reboot.md",
             "scripts/doctor.mjs",
             "scripts/materialize-local-plugin.mjs",
-            "scripts/resolve-paths.mjs",
+            "scripts/resolve-output.mjs",
+            "bin/knitten-resolve-output",
             "skills/knitten-status/SKILL.md",
           ];
           for (const file of requiredFiles) {
@@ -86,5 +87,7 @@ jobs:
         run: |
           node --check scripts/doctor.mjs
           node --check scripts/materialize-local-plugin.mjs
-          node --check scripts/resolve-paths.mjs
+          node --check scripts/resolve-output.mjs
+          bash -n bin/knitten-resolve-output
+          bin/knitten-resolve-output --kind=review-json --name=ci --workspace-root="$PWD" >/tmp/knitten-output.json
           node scripts/materialize-local-plugin.mjs --dry-run --cachebuster=ci

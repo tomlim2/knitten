@@ -36,5 +36,5 @@ response plans in the plugin install path. For a temporary JSON response plan,
 use:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --skill=ah-respond-pr --name=pr-<number>-response --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-respond-pr --name=pr-<number>-response --create
 ```

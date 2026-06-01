@@ -34,5 +34,5 @@ Read milestone state from the active workspace or connected tool. If temporary
 scratch space is needed, use `workspaceLocalRoot` from:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --create
+<knitten-plugin-root>/bin/knitten-resolve-output --create
 ```

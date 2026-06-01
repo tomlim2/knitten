@@ -37,13 +37,14 @@ function parseArgs(argv) {
 
 function usage() {
   return `Usage:
-  resolve-paths.mjs [--workspace-root=<path>] [--skill=<skill>] [--kind=<kind>] [--name=<name>] [--create]
+  resolve-output.mjs [--workspace-root=<path>] [--skill=<skill>] [--kind=<kind>] [--name=<name>] [--create]
 
-Prints Knitten plugin, workspace, and selected output paths as JSON.
+Prints Knitten plugin, workspace, and selected output destinations as JSON.
 
 Skill defaults:
   ah-draft-spec -> spec
   ah-add-design-plan -> design-plan
+  ah-review-spec -> review-json
   ah-review-pr -> review-json
   ah-review-implementation -> review-json
   ah-respond-pr -> temp-json
@@ -54,7 +55,11 @@ Kinds:
   design-plan docs/design-plans/<name>.md
   temp-json   .agent-local/knitten/json/<name>.json
   review-json .agent-local/knitten/reviews/<name>.json
-  finding-json .agent-local/knitten/findings/<name>.json`;
+  finding-json .agent-local/knitten/findings/<name>.json
+  report-md   .agent-local/knitten/reports/<name>.md
+  report-html .agent-local/knitten/reports/<name>.html
+  pull-request-json .agent-local/knitten/pull-requests/<name>.json
+  task-json   .agent-local/knitten/tasks/<name>.json`;
 }
 
 function samePath(left, right) {
@@ -73,6 +78,9 @@ function slugifyName(value) {
 
 function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot }) {
   if (!kind) return null;
+  if (!String(name || "").trim()) {
+    throw new Error("--name is required when --kind or --skill selects an output file");
+  }
 
   const slug = slugifyName(name);
   const paths = {
@@ -81,6 +89,10 @@ function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot }) {
     "temp-json": path.join(workspaceLocalRoot, "json", `${slug}.json`),
     "review-json": path.join(workspaceLocalRoot, "reviews", `${slug}.json`),
     "finding-json": path.join(workspaceLocalRoot, "findings", `${slug}.json`),
+    "report-md": path.join(workspaceLocalRoot, "reports", `${slug}.md`),
+    "report-html": path.join(workspaceLocalRoot, "reports", `${slug}.html`),
+    "pull-request-json": path.join(workspaceLocalRoot, "pull-requests", `${slug}.json`),
+    "task-json": path.join(workspaceLocalRoot, "tasks", `${slug}.json`),
   };
 
   if (!Object.hasOwn(paths, kind)) {
@@ -90,12 +102,19 @@ function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot }) {
   return paths[kind];
 }
 
+function persistenceFor(kind) {
+  if (!kind) return null;
+  const durableKinds = new Set(["spec", "design-plan"]);
+  return durableKinds.has(kind) ? "durable" : "local";
+}
+
 function kindForSkill(skill) {
   if (!skill) return "";
 
   const skillKinds = {
     "ah-draft-spec": "spec",
     "ah-add-design-plan": "design-plan",
+    "ah-review-spec": "review-json",
     "ah-review-pr": "review-json",
     "ah-review-implementation": "review-json",
     "ah-respond-pr": "temp-json",
@@ -127,13 +146,11 @@ function main() {
     workspaceRoot,
     workspaceLocalRoot,
   });
+  const selectedDir = selectedPath ? path.dirname(selectedPath) : workspaceLocalRoot;
+  const selectedPersistence = persistenceFor(selectedKind);
 
   if (args.create) {
-    if (selectedPath) {
-      fs.mkdirSync(path.dirname(selectedPath), { recursive: true });
-    } else {
-      fs.mkdirSync(workspaceLocalRoot, { recursive: true });
-    }
+    fs.mkdirSync(selectedDir, { recursive: true });
   }
 
   process.stdout.write(`${JSON.stringify({
@@ -148,6 +165,8 @@ function main() {
     selectedKind: selectedKind || null,
     selectedName: args.name || null,
     selectedPath,
+    selectedDir,
+    selectedPersistence,
     isPluginWorkspace: samePath(PLUGIN_ROOT, workspaceRoot),
   }, null, 2)}\n`);
 }

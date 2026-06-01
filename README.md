@@ -14,9 +14,10 @@ marketplace.
 | `SYSTEM.md` | Minimal plugin boundary contract. |
 | `agent/AGENTS.md` | Codex adapter entry document. |
 | `skills/knitten-status/` | Minimal plugin health/status skill. |
+| `bin/knitten-resolve-output` | Payload-helper-facing output runtime shim. |
 | `scripts/doctor.mjs` | Check source and personal-marketplace installation state. |
 | `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
-| `scripts/resolve-paths.mjs` | Resolve plugin and active workspace path roots. |
+| `scripts/resolve-output.mjs` | Resolve plugin and active workspace output destinations. |
 | `docs/specs/` | Design notes for the minimal plugin shell. |
 
 ## Validate
@@ -24,6 +25,7 @@ marketplace.
 ```bash
 python3 <path-to-validate_plugin.py> .
 node --check scripts/doctor.mjs
+node --check scripts/resolve-output.mjs
 ```
 
 ## Local Registration
@@ -31,7 +33,7 @@ node --check scripts/doctor.mjs
 ```bash
 node scripts/materialize-local-plugin.mjs
 node scripts/doctor.mjs
-node scripts/resolve-paths.mjs
+bin/knitten-resolve-output
 python3 <path-to-validate_plugin.py> ~/.agents/plugins/plugins/knitten
 ```
 
@@ -44,6 +46,6 @@ Apache License 2.0. See `LICENSE`.
 
 ## Boundary
 
-Skills, standards, domain workflows, output systems, and artifact-pack lifecycle
-tools belong in payload plugins unless they are intentionally promoted into this
-minimal core later.
+Skills, standards, domain workflows, domain output registries, and artifact-pack
+lifecycle tools belong in payload plugins unless they are intentionally promoted
+into this minimal core later. Knitten owns only the generic output runtime.

@@ -35,5 +35,5 @@ path unless the plugin itself is the target repository. When roots are unclear,
 run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs
+<knitten-plugin-root>/bin/knitten-resolve-output
 ```

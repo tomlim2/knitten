@@ -44,5 +44,5 @@ from the plugin root; user work is written or reported relative to the active
 workspace. When roots are unclear, run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs
+<knitten-plugin-root>/bin/knitten-resolve-output
 ```

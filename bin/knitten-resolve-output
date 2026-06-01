@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_plugin_root() {
+  if [[ -n "${KNITTEN_PLUGIN_ROOT:-}" ]]; then
+    printf '%s\n' "$KNITTEN_PLUGIN_ROOT"
+    return 0
+  fi
+
+  if [[ -n "${KNITTEN_MARKETPLACE_ROOT:-}" ]]; then
+    printf '%s\n' "$KNITTEN_MARKETPLACE_ROOT/plugins/knitten"
+    return 0
+  fi
+
+  local default_root="$HOME/.agents/plugins/plugins/knitten"
+  if [[ -f "$default_root/scripts/resolve-output.mjs" ]]; then
+    printf '%s\n' "$default_root"
+    return 0
+  fi
+
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local repo_root
+  repo_root="$(cd "$script_dir/.." && pwd)"
+  printf '%s\n' "$repo_root"
+}
+
+plugin_root="$(resolve_plugin_root)"
+exec node "$plugin_root/scripts/resolve-output.mjs" "$@"

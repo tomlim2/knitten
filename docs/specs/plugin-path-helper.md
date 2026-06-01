@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft.
+Superseded by [Plugin Output Runtime](plugin-output-runtime.md).
 
 ## Goal
 

@@ -37,5 +37,5 @@ location when one exists; otherwise report the record in the response.
 If a temporary local scratch path is needed, resolve it with:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --skill=ah-report-finding --name=<finding-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-report-finding --name=<finding-name> --create
 ```

@@ -43,7 +43,7 @@ When writing a spec file, use the active workspace's documented spec location.
 If no location is documented, use the helper default:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --skill=ah-draft-spec --name=<task-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-draft-spec --name=<task-name> --create
 ```
 
 Do not write specs into the plugin install path.

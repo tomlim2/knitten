@@ -38,5 +38,5 @@ Review diffs and files in the active workspace unless the user explicitly gives
 a plugin file path. When roots are unclear, run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --skill=ah-review-implementation --name=<task-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-review-implementation --name=<task-name> --create
 ```

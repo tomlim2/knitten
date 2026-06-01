@@ -32,7 +32,7 @@ Plan target files relative to the active workspace. When writing a separate
 design-plan file and no workspace convention exists, use:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --skill=ah-add-design-plan --name=<task-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-add-design-plan --name=<task-name> --create
 ```
 
 Do not plan user outputs inside the plugin install path.

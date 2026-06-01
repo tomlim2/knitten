@@ -2,9 +2,21 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const PLUGIN_NAME = "knitten";
 const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const OUTPUT_KINDS = [
+  ["spec", path.join("docs", "specs", "doctor-output.md"), "durable"],
+  ["design-plan", path.join("docs", "design-plans", "doctor-output.md"), "durable"],
+  ["temp-json", path.join(".agent-local", "knitten", "json", "doctor-output.json"), "local"],
+  ["review-json", path.join(".agent-local", "knitten", "reviews", "doctor-output.json"), "local"],
+  ["finding-json", path.join(".agent-local", "knitten", "findings", "doctor-output.json"), "local"],
+  ["report-md", path.join(".agent-local", "knitten", "reports", "doctor-output.md"), "local"],
+  ["report-html", path.join(".agent-local", "knitten", "reports", "doctor-output.html"), "local"],
+  ["pull-request-json", path.join(".agent-local", "knitten", "pull-requests", "doctor-output.json"), "local"],
+  ["task-json", path.join(".agent-local", "knitten", "tasks", "doctor-output.json"), "local"],
+];
 
 function parseArgs(argv) {
   const args = {
@@ -37,6 +49,18 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
+function runJson(command, args, options = {}) {
+  const result = spawnSync(command, args, {
+    cwd: options.cwd || REPO_ROOT,
+    env: options.env || process.env,
+    encoding: "utf8",
+  });
+  if (result.status !== 0) {
+    throw new Error((result.stderr || result.stdout || `${command} failed`).trim());
+  }
+  return JSON.parse(result.stdout);
+}
+
 function check(checks, id, run) {
   try {
     const detail = run();
@@ -51,9 +75,12 @@ function main() {
   const checks = [];
   const sourceManifestPath = path.join(REPO_ROOT, ".codex-plugin", "plugin.json");
   const sourceSkillPath = path.join(REPO_ROOT, "skills", "knitten-status", "SKILL.md");
+  const sourceOutputScriptPath = path.join(REPO_ROOT, "scripts", "resolve-output.mjs");
+  const sourceOutputShimPath = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
   const marketplacePath = path.join(args.marketplaceRoot, "marketplace.json");
   const copiedRoot = path.join(args.marketplaceRoot, "plugins", PLUGIN_NAME);
   const copiedManifestPath = path.join(copiedRoot, ".codex-plugin", "plugin.json");
+  const copiedOutputShimPath = path.join(copiedRoot, "bin", "knitten-resolve-output");
 
   let sourceManifest = null;
   let marketplace = null;
@@ -71,6 +98,47 @@ function main() {
   check(checks, "source-status-skill", () => {
     if (!fs.existsSync(sourceSkillPath)) throw new Error(`missing ${sourceSkillPath}`);
     return sourceSkillPath;
+  });
+
+  check(checks, "source-output-runtime", () => {
+    if (!fs.existsSync(sourceOutputScriptPath)) throw new Error(`missing ${sourceOutputScriptPath}`);
+    if (!fs.existsSync(sourceOutputShimPath)) throw new Error(`missing ${sourceOutputShimPath}`);
+    return `${sourceOutputScriptPath}, ${sourceOutputShimPath}`;
+  });
+
+  check(checks, "source-output-kinds", () => {
+    for (const [kind, relativePath, persistence] of OUTPUT_KINDS) {
+      const output = runJson("node", [
+        sourceOutputScriptPath,
+        `--kind=${kind}`,
+        "--name=doctor-output",
+        `--workspace-root=${REPO_ROOT}`,
+      ]);
+      const expectedPath = path.join(REPO_ROOT, relativePath);
+      if (output.selectedPath !== expectedPath) {
+        throw new Error(`${kind} path expected ${expectedPath}, got ${output.selectedPath}`);
+      }
+      if (output.selectedDir !== path.dirname(expectedPath)) {
+        throw new Error(`${kind} dir expected ${path.dirname(expectedPath)}, got ${output.selectedDir}`);
+      }
+      if (output.selectedPersistence !== persistence) {
+        throw new Error(`${kind} persistence expected ${persistence}, got ${output.selectedPersistence}`);
+      }
+    }
+    return `${OUTPUT_KINDS.length} kinds`;
+  });
+
+  check(checks, "source-output-name-required", () => {
+    const result = spawnSync("node", [
+      sourceOutputScriptPath,
+      "--kind=review-json",
+      `--workspace-root=${REPO_ROOT}`,
+    ], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+    });
+    if (result.status === 0) throw new Error("missing --name should fail");
+    return "missing --name fails";
   });
 
   check(checks, "marketplace-file", () => {
@@ -109,6 +177,26 @@ function main() {
       throw new Error(`copied version lacks +codex. cachebuster: ${copiedManifest.version}`);
     }
     return copiedManifest.version;
+  });
+
+  check(checks, "copied-output-shim", () => {
+    if (!fs.existsSync(copiedOutputShimPath)) throw new Error(`missing ${copiedOutputShimPath}`);
+    const output = runJson(copiedOutputShimPath, [
+      "--kind=review-json",
+      "--name=doctor-output",
+      `--workspace-root=${REPO_ROOT}`,
+    ], {
+      cwd: REPO_ROOT,
+      env: {
+        ...process.env,
+        KNITTEN_PLUGIN_ROOT: copiedRoot,
+      },
+    });
+    const expectedPath = path.join(REPO_ROOT, ".agent-local", "knitten", "reviews", "doctor-output.json");
+    if (output.selectedPath !== expectedPath) {
+      throw new Error(`copied shim path expected ${expectedPath}, got ${output.selectedPath}`);
+    }
+    return copiedOutputShimPath;
   });
 
   const ok = checks.every((item) => item.ok);

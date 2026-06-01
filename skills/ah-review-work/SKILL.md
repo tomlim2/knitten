@@ -40,5 +40,5 @@ Review active workspace artifacts by default. Use plugin paths only for plugin
 resources or plugin-focused reviews. When roots are unclear, run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs
+<knitten-plugin-root>/bin/knitten-resolve-output
 ```

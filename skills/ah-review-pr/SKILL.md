@@ -33,5 +33,5 @@ Use the active workspace repository to inspect PR context. Do not cache PR data
 inside the plugin install path. For temporary PR review JSON, use:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs --skill=ah-review-pr --name=pr-<number>-review --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-review-pr --name=pr-<number>-review --create
 ```

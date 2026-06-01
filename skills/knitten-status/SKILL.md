@@ -27,5 +27,5 @@ healthy as a Codex plugin.
 For path debugging, run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs
+<knitten-plugin-root>/bin/knitten-resolve-output
 ```

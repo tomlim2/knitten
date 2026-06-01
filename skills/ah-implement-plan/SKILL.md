@@ -34,5 +34,5 @@ Resolve user work relative to the active workspace, not the plugin install path.
 When roots are unclear, run:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-paths.mjs
+<knitten-plugin-root>/bin/knitten-resolve-output
 ```
