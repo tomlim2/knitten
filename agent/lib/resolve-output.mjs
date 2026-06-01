@@ -11,8 +11,8 @@ const PLACEHOLDER_PATTERN = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 
 function usage() {
   return `Usage:
-  resolve-output.mjs [--root <knitten-root>] [--create] <output-id> [name=value ...]
-  resolve-output.mjs [--root <knitten-root>] --list
+  resolve-output.mjs [--root <knitten-root>] [--outputs-registry <path>] [--local-artifact-registry <path>] [--create] <output-id> [name=value ...]
+  resolve-output.mjs [--root <knitten-root>] [--outputs-registry <path>] --list
 
 Options:
   --create  Create parent directories for local-artifact outputs.
@@ -46,7 +46,7 @@ function resolveRoot(rootOption = null, cwd = process.cwd()) {
 }
 
 function parseOptions(argv) {
-  const options = { root: null, create: false, list: false, args: [] };
+  const options = { root: null, outputsRegistry: null, localArtifactRegistry: null, create: false, list: false, args: [] };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (arg === "--create") {
@@ -55,6 +55,14 @@ function parseOptions(argv) {
       options.root = argv[++index];
     } else if (arg?.startsWith("--root=")) {
       options.root = arg.slice("--root=".length);
+    } else if (arg === "--outputs-registry") {
+      options.outputsRegistry = argv[++index];
+    } else if (arg?.startsWith("--outputs-registry=")) {
+      options.outputsRegistry = arg.slice("--outputs-registry=".length);
+    } else if (arg === "--local-artifact-registry") {
+      options.localArtifactRegistry = argv[++index];
+    } else if (arg?.startsWith("--local-artifact-registry=")) {
+      options.localArtifactRegistry = arg.slice("--local-artifact-registry=".length);
     } else if (arg === "--list") {
       options.list = true;
     } else if (arg === "-h" || arg === "--help") {
@@ -67,8 +75,21 @@ function parseOptions(argv) {
   return options;
 }
 
-function loadRegistry(root) {
-  return JSON.parse(readFileSync(path.join(root, REGISTRY_PATH), "utf8"));
+function resolveRegistryPath(root, registryPath = null) {
+  const selected = registryPath || process.env.AGENT_HUB_OUTPUTS_REGISTRY || REGISTRY_PATH;
+  return path.isAbsolute(selected) ? selected : path.join(root, selected);
+}
+
+function loadRegistry(root, registryPath = null) {
+  const selectedRegistryPath = resolveRegistryPath(root, registryPath);
+  if (!existsSync(selectedRegistryPath)) {
+    throw new Error(`output registry does not exist: ${selectedRegistryPath}`);
+  }
+  const registry = JSON.parse(readFileSync(selectedRegistryPath, "utf8"));
+  if (!registry || registry.schemaVersion !== 1 || !Array.isArray(registry.entries)) {
+    throw new Error("output registry must have schemaVersion 1 and entries[]");
+  }
+  return registry;
 }
 
 function parseAssignments(tokens) {
@@ -188,9 +209,9 @@ function baseResult(root, entry) {
   return result;
 }
 
-export function resolveOutput({ root = null, create = false, id, values = {}, cwd = process.cwd() }) {
+export function resolveOutput({ root = null, outputsRegistryPath = null, localArtifactRegistryPath = null, create = false, id, values = {}, cwd = process.cwd() }) {
   const knittenRoot = resolveRoot(root, cwd);
-  const registry = loadRegistry(knittenRoot);
+  const registry = loadRegistry(knittenRoot, outputsRegistryPath);
   const entry = findEntry(registry, id);
   const normalizedValues = validateArgs(entry, values);
   const result = baseResult(knittenRoot, entry);
@@ -210,7 +231,7 @@ export function resolveOutput({ root = null, create = false, id, values = {}, cw
 
   if (writeTarget.kind === "local-artifact") {
     const localTokens = writeTarget.localArtifactTokens.map((token) => renderTemplate(token, normalizedValues));
-    const local = resolveLocalArtifactPath({ root: knittenRoot, create, args: localTokens, cwd });
+    const local = resolveLocalArtifactPath({ root: knittenRoot, registryPath: localArtifactRegistryPath, create, args: localTokens, cwd });
     return {
       ...result,
       path: local.path,
@@ -223,6 +244,8 @@ export function resolveOutput({ root = null, create = false, id, values = {}, cw
   if (writeTarget.kind === "document-section") {
     const parent = resolveOutput({
       root: knittenRoot,
+      outputsRegistryPath,
+      localArtifactRegistryPath,
       id: writeTarget.parentOutput,
       values: normalizedValues,
       cwd,
@@ -267,13 +290,15 @@ function main() {
   try {
     if (options.list) {
       const root = resolveRoot(options.root);
-      const registry = loadRegistry(root);
+      const registry = loadRegistry(root, options.outputsRegistry);
       process.stdout.write(`${JSON.stringify({ ok: true, outputs: listOutputs(registry) }, null, 2)}\n`);
       return;
     }
     if (!id) fail("usage", usage());
     const result = resolveOutput({
       root: options.root,
+      outputsRegistryPath: options.outputsRegistry,
+      localArtifactRegistryPath: options.localArtifactRegistry,
       create: options.create,
       id,
       values: parseAssignments(assignmentTokens),

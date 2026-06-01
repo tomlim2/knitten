@@ -10,13 +10,13 @@ const PLACEHOLDER_PATTERN = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 
 function usage() {
   return `Usage:
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom planning stl-123 brief|spec|design-plan|questions|manifest
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom before-pr stl-123 <safe-branch> readiness|code-blockers|docs-blockers
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom pr <number> watcher-pid|watcher-log|react-log|state|last-event|cache|reply-plan|pause|lock|lock-dir
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] shotloom deploy <date-or-version> release-notes|manifest|rollback
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] ah reports YYYYMMDD handoff <slug>
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] ah operational-findings YYYY-MM-DD inbox
-  resolve-local-artifact-path.mjs [--root <knitten-root>] [--create] ah operational-findings YYYY-MM-DD report <slug>`;
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] shotloom planning stl-123 brief|spec|design-plan|questions|manifest
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] shotloom before-pr stl-123 <safe-branch> readiness|code-blockers|docs-blockers
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] shotloom pr <number> watcher-pid|watcher-log|react-log|state|last-event|cache|reply-plan|pause|lock|lock-dir
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] shotloom deploy <date-or-version> release-notes|manifest|rollback
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] ah reports YYYYMMDD handoff <slug>
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] ah operational-findings YYYY-MM-DD inbox
+  resolve-local-artifact-path.mjs [--root <knitten-root>] [--registry <path>] [--create] ah operational-findings YYYY-MM-DD report <slug>`;
 }
 
 function fail(error, detail, code = 2) {
@@ -33,7 +33,7 @@ function validateRoot(root) {
 }
 
 function parseOptions(argv) {
-  const options = { root: null, create: false, args: [] };
+  const options = { root: null, registry: null, create: false, args: [] };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (arg === "--create") {
@@ -42,6 +42,10 @@ function parseOptions(argv) {
       options.root = argv[++index];
     } else if (arg?.startsWith("--root=")) {
       options.root = arg.slice("--root=".length);
+    } else if (arg === "--registry") {
+      options.registry = argv[++index];
+    } else if (arg?.startsWith("--registry=")) {
+      options.registry = arg.slice("--registry=".length);
     } else if (arg === "-h" || arg === "--help") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -60,9 +64,29 @@ function resolveRoot(rootOption = null, cwd = process.cwd()) {
   return validateRoot(root);
 }
 
-function loadRegistry(root) {
-  const registryPath = path.join(root, REGISTRY_PATH);
-  return JSON.parse(readFileSync(registryPath, "utf8"));
+function resolveRegistryPath(root, registryPath = null) {
+  const selected = registryPath || process.env.AGENT_HUB_LOCAL_ARTIFACT_PATHS_REGISTRY || REGISTRY_PATH;
+  return path.isAbsolute(selected) ? selected : path.join(root, selected);
+}
+
+function loadRegistry(root, registryPath = null) {
+  const selectedRegistryPath = resolveRegistryPath(root, registryPath);
+  if (!existsSync(selectedRegistryPath)) {
+    throw new Error(`local artifact path registry does not exist: ${selectedRegistryPath}`);
+  }
+  return JSON.parse(readFileSync(selectedRegistryPath, "utf8"));
+}
+
+function assertRegistryShape(registry) {
+  if (!registry || registry.schemaVersion !== 1 || registry.root !== ".agent-local" || !Array.isArray(registry.entries)) {
+    throw new Error("local artifact path registry must have schemaVersion 1, root .agent-local, and entries[]");
+  }
+}
+
+function loadValidatedRegistry(root, registryPath = null) {
+  const registry = loadRegistry(root, registryPath);
+  assertRegistryShape(registry);
+  return registry;
 }
 
 function entryKey(entry) {
@@ -158,9 +182,9 @@ function parseCommand(registry, args) {
   throw new Error(`unknown local artifact item for ${owner} ${artifactType}; expected ${knownItems}`);
 }
 
-export function resolveLocalArtifactPath({ root = null, create = false, args = [], cwd = process.cwd() }) {
+export function resolveLocalArtifactPath({ root = null, registryPath = null, create = false, args = [], cwd = process.cwd() }) {
   const knittenRoot = resolveRoot(root, cwd);
-  const registry = loadRegistry(knittenRoot);
+  const registry = loadValidatedRegistry(knittenRoot, registryPath);
   const { entry, values } = parseCommand(registry, args);
   if (!["file", "directory"].includes(entry.kind)) {
     throw new Error(`unknown local artifact kind: ${entry.kind}`);
@@ -201,7 +225,12 @@ export function resolveLocalArtifactPath({ root = null, create = false, args = [
 function main() {
   const options = parseOptions(process.argv.slice(2));
   try {
-    const result = resolveLocalArtifactPath(options);
+    const result = resolveLocalArtifactPath({
+      root: options.root,
+      registryPath: options.registry,
+      create: options.create,
+      args: options.args,
+    });
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   } catch (error) {
     fail("resolve-failed", error.message);

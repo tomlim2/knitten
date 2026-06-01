@@ -7,12 +7,28 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 import { resolveOutput } from "../agent/lib/resolve-output.mjs";
+import { resolveLocalArtifactPath } from "../agent/lib/resolve-local-artifact-path.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const resolverScript = path.join(repoRoot, "agent/lib/resolve-output.mjs");
+const localResolverScript = path.join(repoRoot, "agent/lib/resolve-local-artifact-path.mjs");
 
 function runResolver(args, options = {}) {
   const result = spawnSync(process.execPath, [resolverScript, ...args], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    ...options,
+  });
+  return {
+    code: result.status,
+    json: result.stdout ? JSON.parse(result.stdout) : null,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  };
+}
+
+function runLocalResolver(args, options = {}) {
+  const result = spawnSync(process.execPath, [localResolverScript, ...args], {
     cwd: repoRoot,
     encoding: "utf8",
     ...options,
@@ -61,6 +77,53 @@ function makeTempRoot(editOutputs = (outputs) => outputs) {
   }
   writeJson(path.join(root, "agent/config/outputs.json"), editOutputs(readJson("agent/config/outputs.json")));
   return root;
+}
+
+function addPackRegistryViews(root) {
+  const outputs = readJson("agent/config/outputs.json");
+  const localArtifactPaths = readJson("agent/config/local-artifact-paths.json");
+  const outputsRegistryPath = path.join(root, ".agent-local/generated/outputs.json");
+  const localArtifactRegistryPath = path.join(root, ".agent-local/generated/local-artifact-paths.json");
+
+  mkdirSync(path.dirname(outputsRegistryPath), { recursive: true });
+  writeJson(outputsRegistryPath, {
+    ...outputs,
+    entries: [
+      ...outputs.entries,
+      {
+        id: "pack-output-summary",
+        description: "Pack output resolved through generated registry view",
+        madeBy: "workflow:pack-fixture",
+        writeTarget: {
+          kind: "local-artifact",
+          localArtifactTokens: ["pack", "reports", "{slug}", "summary"],
+        },
+        args: [{ name: "slug", pattern: "^[a-z0-9]+(-[a-z0-9]+)*$" }],
+        template: "agent/document-templates/agent-hub/json-handoff-packet.json",
+        format: "json",
+      },
+    ],
+  });
+  writeJson(localArtifactRegistryPath, {
+    ...localArtifactPaths,
+    entries: [
+      ...localArtifactPaths.entries,
+      {
+        owner: "pack",
+        artifactType: "reports",
+        item: "summary",
+        kind: "file",
+        args: [{ name: "slug", pattern: "^[a-z0-9]+(-[a-z0-9]+)*$" }],
+        path: ".agent-local/pack/reports/{slug}/summary.json",
+        cleanupPath: ".agent-local/pack/reports/{slug}",
+        description: "Pack local artifact resolved through generated registry view",
+        template: "agent/document-templates/agent-hub/json-handoff-packet.json",
+        schemaKind: "pack-summary",
+      },
+    ],
+  });
+
+  return { outputsRegistryPath, localArtifactRegistryPath };
 }
 
 function withTempRoot(editOutputs, fn) {
@@ -378,5 +441,84 @@ test("CLI --create creates local artifact directories", () => {
     assert.equal(result.json.ok, true);
     assert.equal(result.json.absolutePath, path.join(root, ".agent-local/shotloom/pr/77"));
     assert.equal(existsSync(result.json.absolutePath), true);
+  });
+});
+
+test("resolves pack output from generated registry views without changing core defaults", () => {
+  withTempRoot((outputs) => outputs, (root) => {
+    const { outputsRegistryPath, localArtifactRegistryPath } = addPackRegistryViews(root);
+
+    assert.throws(
+      () => resolveOutput({ root, id: "pack-output-summary", values: { slug: "alpha" } }),
+      /unknown output id: pack-output-summary/,
+    );
+
+    const result = resolveOutput({
+      root,
+      outputsRegistryPath,
+      localArtifactRegistryPath,
+      id: "pack-output-summary",
+      values: { slug: "alpha" },
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.path, ".agent-local/pack/reports/alpha/summary.json");
+    assert.equal(result.absolutePath, path.join(root, ".agent-local/pack/reports/alpha/summary.json"));
+    assert.equal(result.cleanupPath, ".agent-local/pack/reports/alpha");
+    assert.equal(result.schemaKind, undefined);
+    assert.equal(result.template, "agent/document-templates/agent-hub/json-handoff-packet.json");
+  });
+});
+
+test("CLI resolves pack output from generated registry views", () => {
+  withTempRoot((outputs) => outputs, (root) => {
+    const { outputsRegistryPath, localArtifactRegistryPath } = addPackRegistryViews(root);
+    const result = runResolver([
+      "--root", root,
+      "--outputs-registry", outputsRegistryPath,
+      "--local-artifact-registry", localArtifactRegistryPath,
+      "pack-output-summary",
+      "slug=beta",
+    ]);
+
+    assert.equal(result.code, 0, result.stderr);
+    assert.equal(result.json.ok, true);
+    assert.equal(result.json.path, ".agent-local/pack/reports/beta/summary.json");
+  });
+});
+
+test("local artifact resolver supports generated registry view", () => {
+  withTempRoot((outputs) => outputs, (root) => {
+    const { localArtifactRegistryPath } = addPackRegistryViews(root);
+
+    assert.throws(
+      () => resolveLocalArtifactPath({ root, args: ["pack", "reports", "gamma", "summary"] }),
+      /unknown local artifact type: pack reports/,
+    );
+
+    const result = resolveLocalArtifactPath({
+      root,
+      registryPath: localArtifactRegistryPath,
+      args: ["pack", "reports", "gamma", "summary"],
+    });
+
+    assert.equal(result.ok, true);
+    assert.equal(result.path, ".agent-local/pack/reports/gamma/summary.json");
+    assert.equal(result.schemaKind, "pack-summary");
+  });
+});
+
+test("local artifact CLI supports generated registry view", () => {
+  withTempRoot((outputs) => outputs, (root) => {
+    const { localArtifactRegistryPath } = addPackRegistryViews(root);
+    const result = runLocalResolver([
+      "--root", root,
+      "--registry", localArtifactRegistryPath,
+      "pack", "reports", "delta", "summary",
+    ]);
+
+    assert.equal(result.code, 0, result.stderr);
+    assert.equal(result.json.ok, true);
+    assert.equal(result.json.path, ".agent-local/pack/reports/delta/summary.json");
   });
 });

@@ -4941,6 +4941,24 @@ async function checkArtifactPackRegistryMerge() {
   return { name: "artifact-pack-registry-merge", violations };
 }
 
+async function checkOutputContractResolver() {
+  const violations = [];
+  try {
+    await execFileAsync(process.execPath, ["--test", "tests/output-contract-resolver.test.mjs"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+    });
+  } catch (err) {
+    violations.push({
+      file: "tests/output-contract-resolver.test.mjs",
+      line: 1,
+      message: `output contract resolver tests failed: ${(err.stdout || err.stderr || err.message).trim()}`,
+    });
+  }
+  return { name: "output-contract-resolver", violations };
+}
+
 async function checkExampleSkillPack() {
   const violations = [];
   try {
@@ -4976,6 +4994,7 @@ const CHECKS = [
   { name: "taxonomy", fn: checkTaxonomy },
   { name: "local-artifact-paths", fn: checkLocalArtifactPaths },
   { name: "outputs", fn: checkOutputs },
+  { name: "output-contract-resolver", fn: checkOutputContractResolver },
   { name: "local-helper-paths", fn: checkLocalHelperPaths },
   { name: "managed-paths", fn: checkManagedPaths },
   { name: "artifact-inventory", fn: checkArtifactInventory },
