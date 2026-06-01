@@ -20,7 +20,7 @@ const OUTPUT_KINDS = [
 
 function parseArgs(argv) {
   const args = {
-    marketplaceRoot: path.join(os.homedir(), ".agents", "plugins"),
+    marketplaceRoot: os.homedir(),
     allowSourceVersion: false,
   };
   for (const arg of argv) {
@@ -81,7 +81,7 @@ function main() {
   const sourceSkillPath = path.join(REPO_ROOT, "skills", "knitten-status", "SKILL.md");
   const sourceOutputScriptPath = path.join(REPO_ROOT, "scripts", "resolve-output.mjs");
   const sourceOutputShimPath = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
-  const marketplacePath = path.join(args.marketplaceRoot, "marketplace.json");
+  const marketplacePath = path.join(args.marketplaceRoot, ".agents", "plugins", "marketplace.json");
   const copiedRoot = path.join(args.marketplaceRoot, "plugins", PLUGIN_NAME);
   const copiedManifestPath = path.join(copiedRoot, ".codex-plugin", "plugin.json");
   const copiedOutputShimPath = path.join(copiedRoot, "bin", "knitten-resolve-output");

@@ -16,7 +16,7 @@ const COPY_EXCLUDES = new Set([
 function parseArgs(argv) {
   const args = {
     dryRun: false,
-    marketplaceRoot: path.join(os.homedir(), ".agents", "plugins"),
+    marketplaceRoot: os.homedir(),
     cachebuster: defaultCachebuster(),
     useCachebuster: true,
   };
@@ -45,8 +45,8 @@ function usage() {
   return `Usage:
   materialize-local-plugin.mjs [--dry-run] [--marketplace-root=<path>] [--cachebuster=<token>] [--no-cachebuster]
 
-Copies this checkout into the Codex personal marketplace plugin folder and
-upserts the local marketplace entry.`;
+Copies this checkout into the Codex personal plugin folder and upserts the
+personal marketplace entry.`;
 }
 
 function defaultCachebuster() {
@@ -95,18 +95,20 @@ async function readManifest(root) {
 async function readMarketplace(marketplacePath) {
   if (!existsSync(marketplacePath)) {
     return {
-      name: "personal",
+      name: "knitten-local",
       interface: {
-        displayName: "Personal",
+        displayName: "Knitten Local",
       },
       plugins: [],
     };
   }
   const marketplace = await readJson(marketplacePath);
   if (!Array.isArray(marketplace.plugins)) marketplace.plugins = [];
-  if (!marketplace.name) marketplace.name = "personal";
+  if (!marketplace.name || marketplace.name === "personal") marketplace.name = "knitten-local";
   if (!marketplace.interface || typeof marketplace.interface !== "object") {
-    marketplace.interface = { displayName: "Personal" };
+    marketplace.interface = { displayName: "Knitten Local" };
+  } else if (!marketplace.interface.displayName || marketplace.interface.displayName === "Personal") {
+    marketplace.interface.displayName = "Knitten Local";
   }
   return marketplace;
 }
@@ -167,7 +169,7 @@ async function rewriteCopiedManifest(targetDir, sourceManifest, cachebuster, dry
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const sourceManifest = await readManifest(REPO_ROOT);
-  const marketplacePath = path.join(args.marketplaceRoot, "marketplace.json");
+  const marketplacePath = path.join(args.marketplaceRoot, ".agents", "plugins", "marketplace.json");
   const targetDir = path.join(args.marketplaceRoot, "plugins", PLUGIN_NAME);
   assertTargetOutsideRepo(targetDir);
   const marketplace = await readMarketplace(marketplacePath);
@@ -181,7 +183,7 @@ async function main() {
     console.log(`[dry-run] write ${marketplacePath}`);
     return;
   }
-  await fs.mkdir(args.marketplaceRoot, { recursive: true });
+  await fs.mkdir(path.dirname(marketplacePath), { recursive: true });
   await fs.writeFile(marketplacePath, `${JSON.stringify(marketplace, null, 2)}\n`, "utf8");
   console.log(`wrote marketplace: ${marketplacePath}`);
 }
