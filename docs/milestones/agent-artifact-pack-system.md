@@ -44,6 +44,7 @@ copying everything into the core repository.
 | [core-artifact-boundary.md](../plans/active/core-artifact-boundary.md) | active | Define stay-in-core vs move-to-pack criteria for skills, rules, and standards. |
 | [bootstrap-skill-definition-selection.md](../plans/active/bootstrap-skill-definition-selection.md) | active | Define Knitten bootstrap skill criteria, select existing bootstrap skills, and identify new bootstrap skills that must be created. |
 | [knitten-core-public-transition.md](../plans/proposed/knitten-core-public-transition.md) | proposed | Plan the public-facing `knitten-core` repo and external artifact migration. |
+| [knitten-pluginization-core-extraction.md](../plans/proposed/knitten-pluginization-core-extraction.md) | proposed | Define the staged pluginization plan for extracting a smaller core and moving optional workflows into manifest-backed artifact packs. |
 | [thin-skill-guide-boundary.md](../plans/active/thin-skill-guide-boundary.md) | active | Define the split between executable skills and durable guide, standard, reference, template, and validator artifacts. |
 | [skill-lifecycle-manager.md](../plans/completed/skill-lifecycle-manager.md) | completed | Define skill CRUD and lifecycle management before broad skill inventory edits. |
 | [operational-findings-pipeline.md](../plans/proposed/operational-findings-pipeline.md) | proposed | Define one Knitten-wide findings intake, promotion, and reporting lifecycle for operational issues and lessons; periodic consolidation stays manual-first. |
