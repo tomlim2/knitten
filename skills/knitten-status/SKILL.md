@@ -23,3 +23,9 @@ healthy as a Codex plugin.
 3. If any check failed, report the failed check ids and details.
 4. Do not edit files, materialize the plugin, or change marketplace state unless
    the user explicitly asks.
+
+For path debugging, run:
+
+```bash
+node <knitten-plugin-root>/scripts/resolve-paths.mjs
+```

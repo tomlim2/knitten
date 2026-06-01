@@ -1,4 +1,4 @@
-# AH Payload Plugin Minimal Adoption
+# AH Skill Minimal Adoption
 
 ## Status
 
@@ -6,36 +6,22 @@ Draft.
 
 ## Goal
 
-Create a separate `knitten-ah` payload plugin for Knitten/agent-hub operating
-skills, then migrate `ah-*` skills one at a time.
+Migrate Knitten/agent-hub `ah-*` skills into the existing `knitten` plugin one
+at a time.
 
-The first milestone should prove the payload plugin shape and one imported AH
-skill. It should not import company, personal, hobby, Shotloom, tutoring, drink,
-or other domain-specific skills.
+The first milestone should add one minimal AH status skill to `knitten`. It
+should not import company, personal, hobby, Shotloom, tutoring, drink, or other
+domain-specific skills.
 
 ## Boundary
 
-`knitten` remains the minimal core plugin.
+`knitten` remains the plugin.
 
-`knitten-ah` owns Knitten/agent-hub operation skills.
+`knitten` may own small Knitten/agent-hub operation skills when they are generic
+to Knitten itself.
 
 `knitten-all-skills` remains a legacy holding area while skills are reviewed and
 moved out deliberately.
-
-## Repository Target
-
-First create `knitten-ah` as a separate local checkout:
-
-```text
-/Users/younsoolim/Desktop/www/knitten-ah
-```
-
-The initial round does not require a remote repository. Add a remote only after
-the local payload plugin validates, materializes, and exposes `ah-status`.
-
-The plugin is private/internal by default. Its manifest should use
-`"license": "UNLICENSED"` unless a later publishing decision chooses a public
-license.
 
 ## Non-goals
 
@@ -43,8 +29,7 @@ license.
 - Do not add validator rules that block specific words.
 - Do not scan for domain words as a hard failure.
 - Do not import Shotloom, tutoring, drink, CINEV, UE, VRM, PMX, Obsidian, or
-  other domain skills into `knitten-ah`.
-- Do not make `knitten` core depend on `knitten-ah`.
+  other domain skills into `knitten`.
 
 ## Initial Plugin Tree
 
@@ -67,16 +52,16 @@ skill.
 
 Purpose:
 
-- report that `knitten-ah` is installed as a payload plugin
+- report that `knitten` is installed and has AH skill support
 - point to the next candidate AH skills
 - avoid file edits unless explicitly requested
 
-This mirrors the successful `knitten-status` approach and proves the payload
-skill surface before importing heavier workflows.
+This mirrors the successful `knitten-status` approach and proves the AH skill
+surface before importing heavier workflows.
 
 ## Candidate Migration Order
 
-Move one skill per round after the payload plugin is proven. This order is a
+Move one skill per round after `ah-status` is proven. This order is a
 starting hypothesis, not a commitment. Re-check dependencies before each round
 and choose the smallest useful next skill.
 
@@ -113,11 +98,11 @@ For each imported skill:
 
 `scripts/doctor.mjs` should check:
 
-- source manifest exists and has `name: "knitten-ah"`
+- source manifest exists and has `name: "knitten"`
 - `skills/ah-status/SKILL.md` exists
-- personal marketplace has a `knitten-ah` entry
-- entry path is `./plugins/knitten-ah`
-- copied plugin manifest exists and has `name: "knitten-ah"`
+- personal marketplace has a `knitten` entry
+- entry path is `./plugins/knitten`
+- copied plugin manifest exists and has `name: "knitten"`
 - copied plugin version contains `+codex.` unless an explicit test flag allows
   source version
 
@@ -147,13 +132,12 @@ that domain or source unless the migrated skill explicitly owns that dependency.
 
 ## Acceptance Criteria
 
-- `knitten-ah` exists at `/Users/younsoolim/Desktop/www/knitten-ah`.
-- `.codex-plugin/plugin.json` uses `name: "knitten-ah"` and
-  `license: "UNLICENSED"`.
-- `python3 <validate_plugin.py> .` passes in `knitten-ah`.
-- `node scripts/materialize-local-plugin.mjs` registers `knitten-ah` in the
+- `skills/ah-status/SKILL.md` exists in `knitten`.
+- `.codex-plugin/plugin.json` exposes `skills: "./skills/"`.
+- `python3 <validate_plugin.py> .` passes in `knitten`.
+- `node scripts/materialize-local-plugin.mjs` registers `knitten` in the
   personal marketplace.
 - `node scripts/doctor.mjs` reports `ok: true`.
-- `python3 <validate_plugin.py> ~/.agents/plugins/plugins/knitten-ah` passes.
+- `python3 <validate_plugin.py> ~/.agents/plugins/plugins/knitten` passes.
 - The first payload skill, `ah-status`, is available in the plugin tree.
 - No non-AH domain skills are imported.
