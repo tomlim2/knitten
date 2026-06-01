@@ -1,0 +1,10 @@
+{
+  "art_channel": "C05CS9N5E69",
+  "bot_username": "아트 아르리므",
+  "team_channel": "C09DF8A1ZK4",
+  "team_bot_username": "아르리므",
+  "art_new_branch_message": "<!here>\n새 아트 브렌치가 준비되었습니다.\n`{branch_name}`\n\n아래 순서대로 진행해 주세요.\n1. 위 브렌치로 이동 (체크아웃)\n2. 다운로드 바이너리스",
+  "art_merge_notice_message": "`{branch_name}` 브렌치를 디벨롭에 합칠 예정입니다.\n\n합치기 전에 아래 작업을 완료해 주세요.\n1. 리다이렉터 픽스업 (Fix Up Redirectors)\n2. 변경사항 커밋, 푸시\n3. 파일 잠금이 있다면 해제 (언락)",
+  "art_merge_result_message": "`{branch_name}` 디벨롭 머지 완료되었습니다.",
+  "art_merge_detail_message": "**머지 내역**\n```\n{details}\n```"
+}

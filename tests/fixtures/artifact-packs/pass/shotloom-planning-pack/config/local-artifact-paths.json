@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "root": ".agent-local",
+  "entries": [
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "brief",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/brief.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning brief",
+      "template": "agent/document-templates/agent-hub/json-handoff-packet.json",
+      "schemaKind": "shotloom-start-task-brief"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "spec",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/spec.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning spec",
+      "schemaKind": "shotloom-planning-spec"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "design-plan",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/design-plan.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning design plan",
+      "schemaKind": "shotloom-planning-design-plan"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "questions",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/questions.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning open questions",
+      "schemaKind": "shotloom-planning-questions"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "manifest",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/manifest.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning manifest",
+      "schemaKind": "shotloom-planning-manifest"
+    }
+  ]
+}

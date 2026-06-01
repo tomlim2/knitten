@@ -1,0 +1,36 @@
+{
+  "schema-version": 1,
+  "pack-id": "valid-minimal-public",
+  "display-name": "Valid Minimal Public",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Valid public fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "demo-skill",
+      "artifact-type": "skill",
+      "path": "skills/demo-skill",
+      "shape": "directory",
+      "mount": {
+        "layer": "skills",
+        "target": "demo-skill",
+        "mode": "link"
+      },
+      "entrypoint": "skills/demo-skill/SKILL.md",
+      "load": "on-demand",
+      "dependencies": ["core:manifest-schema"],
+      "privacy-risk": "public-safe",
+      "platforms": ["all"]
+    }
+  ],
+  "compatibility-aliases": [
+    {
+      "alias-id": "old-demo-skill",
+      "target-artifact-id": "demo-skill",
+      "compatibility-need": "alias",
+      "old-name": "old-demo-skill",
+      "removal-criteria": "Remove after reference scan finds no old-demo-skill use."
+    }
+  ]
+}

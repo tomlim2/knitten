@@ -1,0 +1,19 @@
+{
+  "schema-version": 1,
+  "installed-packs": [
+    {
+      "pack-id": "fixture-pack",
+      "source-kind": "local-folder",
+      "source-path": "__PACK_SOURCE__",
+      "manifest-path": "__PACK_SOURCE__/artifact-pack.json",
+      "manifest-digest": "fixture-digest-before",
+      "state": "active",
+      "scope": {},
+      "links": [],
+      "candidate-index": [],
+      "transaction-id": "tx-before",
+      "installed-at": "2026-05-25T00:00:00.000Z",
+      "updated-at": "2026-05-25T00:00:00.000Z"
+    }
+  ]
+}

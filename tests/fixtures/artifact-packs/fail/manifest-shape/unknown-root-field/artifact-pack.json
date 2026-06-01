@@ -1,0 +1,25 @@
+{
+  "schema-version": 1,
+  "pack-id": "unknown-root-field",
+  "display-name": "Unknown Root Field",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid shape fixture with a root field outside the manifest schema.",
+  "unknown-field": true,
+  "exports": [
+    {
+      "artifact-id": "demo-doc",
+      "artifact-type": "doc",
+      "path": "README.md",
+      "shape": "file",
+      "mount": {
+        "layer": "docs",
+        "target": "demo-doc.md",
+        "mode": "link"
+      },
+      "load": "manual",
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

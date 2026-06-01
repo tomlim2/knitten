@@ -1,0 +1,510 @@
+{
+  "version": 1,
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "displayName": "Claude Code",
+      "entryDocument": "agent/CLAUDE.md",
+      "deployTarget": "~/.claude",
+      "firstRead": "@SYSTEM.md",
+      "adapter": "claude",
+      "linkMethod": "symlink",
+      "mappings": {
+        "CLAUDE.md": "agent/CLAUDE.md",
+        "SYSTEM.md": "SYSTEM.md",
+        "rules": "agent/rules",
+        "skills": "agent/skills",
+        "standards": "agent/standards",
+        "hooks": "agent/hooks",
+        "lib": "agent/lib",
+        "config": "agent/config",
+        "settings.json": "agent/settings.json",
+        "repo-registry.json": "agent/repo-registry.json"
+      }
+    },
+    {
+      "id": "codex",
+      "displayName": "Codex",
+      "entryDocument": "agent/AGENTS.md",
+      "deployTarget": "~/.codex",
+      "firstRead": "First shared-policy read: `SYSTEM.md`.",
+      "adapter": "codex",
+      "linkMethod": "symlink",
+      "mappings": {
+        "AGENTS.md": "agent/AGENTS.md",
+        "AGENT-HUB.md": "AGENT-HUB.md",
+        "SYSTEM.md": "SYSTEM.md",
+        "agent": "agent",
+        "docs": "docs",
+        "rules": "agent/rules",
+        "standards": "agent/standards",
+        "skills": "agent/skills"
+      }
+    },
+    {
+      "id": "pi",
+      "displayName": "Pi Coding Agent",
+      "entryDocument": "SYSTEM.md",
+      "deployTarget": "~/.pi/agent/settings.json",
+      "firstRead": "SYSTEM.md",
+      "adapter": "pi",
+      "linkMethod": "json-config",
+      "configFormat": {
+        "skills": [
+          "$AGENT_HUB_ROOT/agent/skills"
+        ],
+        "instructions": [
+          "$AGENT_HUB_ROOT/SYSTEM.md"
+        ]
+      }
+    }
+  ],
+  "sharedLayers": [
+    {
+      "id": "rules",
+      "path": "agent/rules",
+      "kind": "rules",
+      "loadMode": "entry",
+      "inventorySource": "agent/rules/index.md",
+      "deployTarget": "~/.claude/rules"
+    },
+    {
+      "id": "standards",
+      "path": "agent/standards",
+      "kind": "standards",
+      "loadMode": "on-demand",
+      "inventorySource": "agent/standards/index.md",
+      "deployTarget": "~/.claude/standards"
+    },
+    {
+      "id": "skills",
+      "path": "agent/skills",
+      "kind": "skills",
+      "loadMode": "triggered",
+      "inventorySource": "README.md",
+      "deployTarget": "~/.claude/skills"
+    },
+    {
+      "id": "lib",
+      "path": "agent/lib",
+      "kind": "lib",
+      "loadMode": "library",
+      "inventorySource": "SYSTEM.md",
+      "deployTarget": "~/.claude/lib"
+    },
+    {
+      "id": "config",
+      "path": "agent/config",
+      "kind": "config",
+      "loadMode": "config",
+      "inventorySource": "agent/config/README.md",
+      "deployTarget": "~/.claude/config"
+    }
+  ],
+  "registries": [
+    {
+      "id": "agent-hub",
+      "path": "agent/config/agent-hub.json",
+      "domain": "agent hub routing and validation metadata",
+      "format": "json",
+      "deployTarget": "~/.claude/config/agent-hub.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "context-routing",
+      "path": "agent/config/context-routing.json",
+      "domain": "task route axes, context profiles, pilot files, and routing fixtures",
+      "format": "json",
+      "deployTarget": "~/.claude/config/context-routing.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "doc-budgets",
+      "path": "agent/config/doc-budgets.json",
+      "domain": "document length budgets",
+      "format": "json",
+      "deployTarget": "~/.claude/config/doc-budgets.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "frontmatter-schema",
+      "path": "agent/config/frontmatter-schema.json",
+      "domain": "frontmatter enums and platform metadata pilot files",
+      "format": "json",
+      "deployTarget": "~/.claude/config/frontmatter-schema.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "taxonomy",
+      "path": "agent/config/taxonomy.json",
+      "domain": "categories, standard groups, and naming patterns",
+      "format": "json",
+      "deployTarget": "~/.claude/config/taxonomy.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "managed-paths",
+      "path": "agent/config/managed-paths.json",
+      "domain": "canonical shared-layer paths, deploy aliases, and hardcoded path drift checks",
+      "format": "json",
+      "deployTarget": "~/.claude/config/managed-paths.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-schema",
+      "path": "agent/config/artifact-pack.schema.json",
+      "domain": "artifact pack manifest schema",
+      "format": "json",
+      "deployTarget": "~/.claude/config/artifact-pack.schema.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-core-capabilities",
+      "path": "agent/config/artifact-pack-core-capabilities.json",
+      "domain": "core capability ids accepted by artifact pack dependency refs",
+      "format": "json",
+      "deployTarget": "~/.claude/config/artifact-pack-core-capabilities.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "audit-policy",
+      "path": "agent/config/audit-policy.json",
+      "domain": "audit thresholds and severity tiers",
+      "format": "json",
+      "deployTarget": "~/.claude/config/audit-policy.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "exceptions",
+      "path": "agent/config/exceptions.json",
+      "domain": "grandfathered exceptions",
+      "format": "json",
+      "deployTarget": "~/.claude/config/exceptions.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "slack",
+      "path": "agent/config/slack.json",
+      "domain": "non-secret Slack channel IDs and message templates",
+      "format": "json",
+      "deployTarget": "~/.claude/config/slack.json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "doc-paths",
+      "path": "agent/private/agent-hub-config/doc-paths.json",
+      "domain": "shared document routing",
+      "format": "json",
+      "deployTarget": "~/.claude/private/agent-hub-config/doc-paths.json",
+      "secretPolicy": "no-secrets"
+    }
+  ],
+  "generatedDocuments": [
+    {
+      "id": "readme-inventory",
+      "path": "README.md",
+      "marker": "readme-inventory",
+      "source": "agent skills, standards, and rules",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
+    },
+    {
+      "id": "validator-checks",
+      "path": "agent/standards/policy/principles.md",
+      "marker": "validator-checks",
+      "source": "scripts/validate-llm-first.mjs --list",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
+    },
+    {
+      "id": "system-entry-documents",
+      "path": "SYSTEM.md",
+      "marker": "entry-documents-table",
+      "source": "agent/config/agent-hub.json harnesses",
+      "mode": "validated-manual",
+      "validator": "agent-hub"
+    },
+    {
+      "id": "agent-hub-inventory",
+      "path": "AGENT-HUB.md",
+      "marker": "agent-hub-inventory",
+      "source": "agent/config/agent-hub.json",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
+    },
+    {
+      "id": "agent-hub-routing",
+      "path": "AGENT-HUB.md",
+      "marker": "routing",
+      "startMarker": "<!-- routing:start -->",
+      "endMarker": "<!-- routing:end -->",
+      "source": "agent/config/context-routing.json",
+      "mode": "generated-block",
+      "validator": "generated-blocks"
+    }
+  ],
+  "runtimePathPolicies": [
+    {
+      "id": "claude-settings",
+      "pathPattern": "agent/settings.json",
+      "owner": "agent-hub",
+      "gitPolicy": "tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "project-settings-templates",
+      "pathPattern": "agent/config/permissions/*.json",
+      "owner": "agent-hub",
+      "gitPolicy": "template-tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "hooks",
+      "pathPattern": "agent/hooks/*.sh",
+      "owner": "agent-hub",
+      "gitPolicy": "tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "tool-apps",
+      "pathPattern": "tools/*",
+      "owner": "agent-hub",
+      "gitPolicy": "mixed",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "shared-deploy-tree",
+      "pathPattern": "~/.claude/{rules,standards,skills,lib,config}",
+      "owner": "agent-hub",
+      "gitPolicy": "tracked",
+      "secretPolicy": "no-secrets",
+      "durability": "durable"
+    },
+    {
+      "id": "machine-private-config",
+      "pathPattern": "agent/private/agent-hub-config/{hardware,machine-paths,repo-paths}.json",
+      "owner": "machine-local",
+      "gitPolicy": "ignored",
+      "secretPolicy": "may-contain-secrets",
+      "durability": "private"
+    },
+    {
+      "id": "runtime-history",
+      "pathPattern": "agent/history.jsonl",
+      "owner": "runtime",
+      "gitPolicy": "ignored",
+      "secretPolicy": "must-not-commit",
+      "durability": "session"
+    },
+    {
+      "id": "runtime-cache-folders",
+      "pathPattern": "agent/{cache,backups,sessions,tasks,telemetry,projects,shell-snapshots,paste-cache,file-history,plans,session-env}",
+      "owner": "runtime",
+      "gitPolicy": "ignored",
+      "secretPolicy": "must-not-commit",
+      "durability": "cache"
+    }
+  ],
+  "validators": [
+    {
+      "id": "banned-terms",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "banned-terms",
+      "covers": [
+        "banned wording in active LLM docs"
+      ]
+    },
+    {
+      "id": "terminology",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "terminology",
+      "covers": [
+        "reserved system terminology"
+      ]
+    },
+    {
+      "id": "registry-integrity",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "registry-integrity",
+      "covers": [
+        "registry JSON structure"
+      ]
+    },
+    {
+      "id": "agent-hub",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "agent-hub",
+      "covers": [
+        "agent hub manifest schema"
+      ]
+    },
+    {
+      "id": "context-routing",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "context-routing",
+      "covers": [
+        "task route registry, pilot metadata, and route fixtures"
+      ]
+    },
+    {
+      "id": "rules-frontmatter",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "rules-frontmatter",
+      "covers": [
+        "rule load metadata"
+      ]
+    },
+    {
+      "id": "standards-status",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "standards-status",
+      "covers": [
+        "standard status metadata"
+      ]
+    },
+    {
+      "id": "standards-redirects",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "standards-redirects",
+      "covers": [
+        "superseded standard redirect targets"
+      ]
+    },
+    {
+      "id": "platform-metadata",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "platform-metadata",
+      "covers": [
+        "platform and portability metadata"
+      ]
+    },
+    {
+      "id": "taxonomy",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "taxonomy",
+      "covers": [
+        "skill categories",
+        "managed document naming"
+      ]
+    },
+    {
+      "id": "managed-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "managed-paths",
+      "covers": [
+        "managed path registry shape",
+        "stale shared-layer path literals"
+      ]
+    },
+    {
+      "id": "artifact-pack",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "artifact-pack",
+      "covers": [
+        "artifact pack manifest shape",
+        "artifact pack dependencies",
+        "artifact pack route conflicts"
+      ]
+    },
+    {
+      "id": "skill-root-shape",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "skill-root-shape",
+      "covers": [
+        "first-level skill directory shape"
+      ]
+    },
+    {
+      "id": "skill-mechanics",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "skill-mechanics",
+      "covers": [
+        "skill mechanical shape"
+      ]
+    },
+    {
+      "id": "tracked-runtime-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "tracked-runtime-paths",
+      "covers": [
+        "runtime/cache paths stay untracked"
+      ]
+    },
+    {
+      "id": "tracked-user-paths",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "tracked-user-paths",
+      "covers": [
+        "user-specific absolute path drift"
+      ]
+    },
+    {
+      "id": "entry-documents",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "entry-documents",
+      "covers": [
+        "entry document first-read markers"
+      ]
+    },
+    {
+      "id": "generated-blocks",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "generated-blocks",
+      "covers": [
+        "generated markdown blocks"
+      ]
+    },
+    {
+      "id": "markdown-links",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "markdown-links",
+      "covers": [
+        "markdown link targets"
+      ]
+    },
+    {
+      "id": "spec-lifecycle",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "spec-lifecycle",
+      "covers": [
+        "spec, milestone, and intake link consistency"
+      ]
+    },
+    {
+      "id": "length-caps",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "length-caps",
+      "covers": [
+        "document line budgets"
+      ]
+    },
+    {
+      "id": "import-targets",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "import-targets",
+      "covers": [
+        "Claude import targets"
+      ]
+    },
+    {
+      "id": "inventory-counts",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "inventory-counts",
+      "covers": [
+        "README inventory counts"
+      ]
+    },
+    {
+      "id": "lookup-presence",
+      "script": "scripts/validate-llm-first.mjs",
+      "listedCheck": "lookup-presence",
+      "covers": [
+        "LOOKUP presence"
+      ]
+    }
+  ]
+}

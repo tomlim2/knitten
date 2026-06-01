@@ -1,0 +1,126 @@
+{
+  "standardLengthGrandfathered": [
+    {
+      "path": "agent/standards/unreal/unreal-engine-asset.md",
+      "reason": "Unreal Engine asset naming catalog predates the standard body cap.",
+      "decision": "docs/plans/completed/harden-system-drift.md",
+      "reviewAfter": "2026-08-09"
+    }
+  ],
+  "skillLengthGrandfathered": [
+    {
+      "path": "agent/skills/ah-make-skill/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/ah-manage-config/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/ah-review-implementation/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/algorithmic-art/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/hatch-pet/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/obsidian-json-canvas/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/obsidian-obsidian-bases/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/obsidian-obsidian-markdown/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-auto-pr/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-deploy-web/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-draft-task-plan/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-make-pr/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-respond-pr/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-review-code/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-review-pr/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-review-task-plan/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-send-deploy-status/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/shotloom-start-task/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    },
+    {
+      "path": "agent/skills/vrm-derive-axis-correction/SKILL.md",
+      "reason": "Predates skill length-cap enforcement; split through thin-skill guide-boundary work.",
+      "decision": "docs/milestones/agent-artifact-pack-system.md",
+      "reviewAfter": "2026-08-20"
+    }
+  ]
+}

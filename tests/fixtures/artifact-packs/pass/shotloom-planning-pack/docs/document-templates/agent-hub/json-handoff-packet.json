@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "kind": "session-handoff",
+  "status": "ready",
+  "created": "YYYY-MM-DDTHH:mm:ssZ",
+  "updated": "YYYY-MM-DDTHH:mm:ssZ",
+  "summary": "<one-line route summary for the next LLM>",
+  "task": {
+    "intent": "<why this handoff exists>",
+    "scope": "<what is in scope>",
+    "nonGoals": ["<what the next LLM should not do>"]
+  },
+  "state": {
+    "repo": "<repo key>",
+    "cwd": "<absolute path>",
+    "branch": "<branch name>",
+    "base": "<base ref or sha>",
+    "lastCommit": "<sha or null>",
+    "dirty": false
+  },
+  "next": {
+    "action": "<continue|review|commit|open_pr|ask_user|stop>",
+    "commandHint": "<optional command or skill name>",
+    "requiresUserDecision": false,
+    "userQuestion": null
+  },
+  "blockedBy": [],
+  "evidence": [
+    {
+      "type": "validation",
+      "command": "<command>",
+      "result": "pass",
+      "path": null
+    }
+  ],
+  "changedFiles": [],
+  "cleanupPaths": [],
+  "decisionBasis": {
+    "why": "<short decision reason for the next LLM>",
+    "tradeoff": "<short tradeoff, or null>",
+    "appliesTo": []
+  }
+}

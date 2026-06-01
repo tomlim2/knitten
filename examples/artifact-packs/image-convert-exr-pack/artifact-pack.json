@@ -1,0 +1,49 @@
+{
+  "schema-version": 1,
+  "pack-id": "image-convert-exr-pack",
+  "display-name": "Image Convert EXR Pack",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Public-safe image conversion skill pack for EXR and HDR texture conversion.",
+  "exports": [
+    {
+      "artifact-id": "image-convert-exr",
+      "artifact-type": "skill",
+      "path": "skills/image-convert-exr",
+      "shape": "directory",
+      "mount": {
+        "layer": "skills",
+        "target": "image-convert-exr",
+        "mode": "virtual"
+      },
+      "entrypoint": "skills/image-convert-exr/SKILL.md",
+      "load": "route-selected",
+      "route": {
+        "domains": ["3d"],
+        "task-types": ["ops"],
+        "languages": ["python"],
+        "work-modes": ["personal"],
+        "min-evidence": 1,
+        "priority": 1
+      },
+      "dependencies": [
+        "core:manifest-schema",
+        "core:artifact-pack-validation",
+        "core:context-routing"
+      ],
+      "privacy-risk": "public-safe",
+      "platforms": ["all"]
+    }
+  ],
+  "compatibility-aliases": [
+    {
+      "alias-id": "image-convert-exr-legacy-skill-path",
+      "target-artifact-id": "image-convert-exr",
+      "compatibility-need": "old-path-mapping",
+      "old-name": "image-convert-exr",
+      "old-path": "agent/skills/image-convert-exr",
+      "removal-criteria": "Remove after the skill no longer references ~/.claude/skills/image-convert-exr/convert.py and reference scan finds no legacy path use."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema-version": 1,
+  "pack-id": "entrypoint-escapes-directory",
+  "display-name": "Entrypoint Escapes Directory",
+  "version": "1.0.0",
+  "visibility": "public",
+  "owner-domain": "domain",
+  "description": "Invalid entrypoint fixture pack.",
+  "exports": [
+    {
+      "artifact-id": "bad-skill",
+      "artifact-type": "skill",
+      "path": "skills/bad-skill",
+      "shape": "directory",
+      "mount": {
+        "layer": "skills",
+        "target": "bad-skill",
+        "mode": "link"
+      },
+      "entrypoint": "other/SKILL.md",
+      "load": "on-demand",
+      "privacy-risk": "public-safe"
+    }
+  ]
+}

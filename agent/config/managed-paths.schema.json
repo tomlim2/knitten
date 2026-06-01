@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Hub managed paths",
+  "type": "object",
+  "required": ["schema-version", "paths"],
+  "properties": {
+    "schema-version": {
+      "const": 1
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "canonical"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "canonical": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["value", "contexts"],
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "contexts": {
+                  "type": "array",
+                  "items": {
+                    "enum": ["deploy-target", "context-frontmatter", "historical-doc", "registry-owner", "validator-adapter"]
+                  },
+                  "uniqueItems": true,
+                  "minItems": 1
+                },
+                "enforce-canonical": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "uniqueItems": true
+          },
+          "deploy-targets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
