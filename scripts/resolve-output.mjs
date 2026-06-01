@@ -67,13 +67,16 @@ function samePath(left, right) {
 }
 
 function slugifyName(value) {
-  const slug = String(value || "untitled")
+  const slug = String(value)
     .trim()
     .toLowerCase()
     .replace(/[^\p{L}\p{N}._-]+/gu, "-")
     .replace(/-{2,}/g, "-")
     .replace(/^-|-$/g, "");
-  return slug || "untitled";
+  if (!slug) {
+    throw new Error("--name must contain at least one letter, number, dot, underscore, or hyphen");
+  }
+  return slug;
 }
 
 function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot }) {

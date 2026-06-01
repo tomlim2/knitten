@@ -154,7 +154,8 @@ or set `KNITTEN_PLUGIN_ROOT`.
 | `--create` | No | Create the selected path's parent directory. |
 
 When `--kind` or `--skill` selects a file output, `--name` is required. The
-runtime should not silently write to `untitled.*`.
+runtime should not silently write to `untitled.*`. Names that cannot produce a
+usable slug should fail.
 
 ## Outputs
 
@@ -253,6 +254,7 @@ Initial validation should prove:
 - `--create` creates only parent directories
 - `--skill` and `--kind` together fail
 - file-selecting invocations without `--name` fail
+- file-selecting invocations with unusable names fail
 - outputs include `selectedDir` and `selectedPersistence`
 - slugging preserves useful non-ASCII names
 - payload-style invocation from outside the plugin checkout resolves the target

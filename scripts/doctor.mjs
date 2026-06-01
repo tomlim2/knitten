@@ -49,6 +49,10 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
+function sameRealPath(left, right) {
+  return fs.realpathSync(left) === fs.realpathSync(right);
+}
+
 function runJson(command, args, options = {}) {
   const result = spawnSync(command, args, {
     cwd: options.cwd || REPO_ROOT,
@@ -129,16 +133,17 @@ function main() {
   });
 
   check(checks, "source-output-name-required", () => {
-    const result = spawnSync("node", [
-      sourceOutputScriptPath,
-      "--kind=review-json",
-      `--workspace-root=${REPO_ROOT}`,
-    ], {
-      cwd: REPO_ROOT,
-      encoding: "utf8",
-    });
-    if (result.status === 0) throw new Error("missing --name should fail");
-    return "missing --name fails";
+    for (const args of [
+      ["--kind=review-json", `--workspace-root=${REPO_ROOT}`],
+      ["--kind=review-json", "--name=!!!", `--workspace-root=${REPO_ROOT}`],
+    ]) {
+      const result = spawnSync("node", [sourceOutputScriptPath, ...args], {
+        cwd: REPO_ROOT,
+        encoding: "utf8",
+      });
+      if (result.status === 0) throw new Error(`${args.join(" ")} should fail`);
+    }
+    return "missing or unusable --name fails";
   });
 
   check(checks, "marketplace-file", () => {
@@ -189,6 +194,9 @@ function main() {
       cwd: REPO_ROOT,
     });
     const expectedPath = path.join(REPO_ROOT, ".agent-local", "knitten", "reviews", "doctor-output.json");
+    if (!sameRealPath(output.pluginRoot, copiedRoot)) {
+      throw new Error(`copied shim pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
+    }
     if (output.selectedPath !== expectedPath) {
       throw new Error(`copied shim path expected ${expectedPath}, got ${output.selectedPath}`);
     }

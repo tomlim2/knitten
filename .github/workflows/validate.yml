@@ -95,6 +95,9 @@ jobs:
           const path = require("path");
           const output = JSON.parse(fs.readFileSync("/tmp/knitten-output.json", "utf8"));
           const expectedPath = path.join(process.cwd(), ".agent-local", "knitten", "reviews", "ci.json");
+          if (fs.realpathSync(output.pluginRoot) !== fs.realpathSync(process.cwd())) {
+            throw new Error(`unexpected pluginRoot: ${output.pluginRoot}`);
+          }
           if (output.selectedPath !== expectedPath) {
             throw new Error(`unexpected selectedPath: ${output.selectedPath}`);
           }
@@ -107,6 +110,10 @@ jobs:
           NODE
           if node scripts/resolve-output.mjs --kind=review-json --workspace-root="$PWD"; then
             echo "missing --name should fail" >&2
+            exit 1
+          fi
+          if node scripts/resolve-output.mjs --kind=review-json --name='!!!' --workspace-root="$PWD"; then
+            echo "unusable --name should fail" >&2
             exit 1
           fi
           marketplace_root="$(mktemp -d)"
