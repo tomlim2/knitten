@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch origin "${{ github.base_ref }}" --depth=1
+            git fetch origin "${{ github.base_ref }}"
             git diff --check "origin/${{ github.base_ref }}...HEAD"
           elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
             git diff --check "${{ github.event.before }}..${{ github.sha }}"
@@ -57,6 +57,7 @@ jobs:
             "docs/specs/plugin-native-core-reboot.md",
             "scripts/doctor.mjs",
             "scripts/materialize-local-plugin.mjs",
+            "scripts/resolve-paths.mjs",
             "skills/knitten-status/SKILL.md",
           ];
           for (const file of requiredFiles) {
@@ -69,7 +70,8 @@ jobs:
             .filter(Boolean);
           for (const file of files) {
             const allowedSpec = file.startsWith("docs/specs/") && file.endsWith(".md");
-            if (!allowed.has(file) && !allowedSpec) {
+            const allowedSkill = file.startsWith("skills/") && file.endsWith("/SKILL.md");
+            if (!allowed.has(file) && !allowedSpec && !allowedSkill) {
               throw new Error(`unexpected file in minimal plugin shell: ${file}`);
             }
           }
@@ -84,4 +86,5 @@ jobs:
         run: |
           node --check scripts/doctor.mjs
           node --check scripts/materialize-local-plugin.mjs
+          node --check scripts/resolve-paths.mjs
           node scripts/materialize-local-plugin.mjs --dry-run --cachebuster=ci
