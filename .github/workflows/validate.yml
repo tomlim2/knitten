@@ -53,8 +53,11 @@ jobs:
             "README.md",
             "SYSTEM.md",
             "agent/AGENTS.md",
+            "docs/specs/doctor-status-skill.md",
             "docs/specs/plugin-native-core-reboot.md",
+            "scripts/doctor.mjs",
             "scripts/materialize-local-plugin.mjs",
+            "skills/knitten-status/SKILL.md",
           ];
           for (const file of requiredFiles) {
             if (!fs.existsSync(file)) throw new Error(`missing required file: ${file}`);
@@ -76,5 +79,6 @@ jobs:
 
       - name: Check scripts
         run: |
+          node --check scripts/doctor.mjs
           node --check scripts/materialize-local-plugin.mjs
           node scripts/materialize-local-plugin.mjs --dry-run --cachebuster=ci

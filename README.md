@@ -13,6 +13,8 @@ marketplace.
 | `.codex-plugin/plugin.json` | Codex plugin manifest. |
 | `SYSTEM.md` | Minimal plugin boundary contract. |
 | `agent/AGENTS.md` | Codex adapter entry document. |
+| `skills/knitten-status/` | Minimal plugin health/status skill. |
+| `scripts/doctor.mjs` | Check source and personal-marketplace installation state. |
 | `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
 | `docs/specs/` | Design notes for the minimal plugin shell. |
 
@@ -20,12 +22,14 @@ marketplace.
 
 ```bash
 python3 <path-to-validate_plugin.py> .
+node --check scripts/doctor.mjs
 ```
 
 ## Local Registration
 
 ```bash
 node scripts/materialize-local-plugin.mjs
+node scripts/doctor.mjs
 python3 <path-to-validate_plugin.py> ~/.agents/plugins/plugins/knitten
 ```
 

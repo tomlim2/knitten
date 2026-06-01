@@ -13,6 +13,7 @@
     "codex",
     "plugin"
   ],
+  "skills": "./skills/",
   "interface": {
     "displayName": "Knitten",
     "shortDescription": "Minimal plugin shell for Codex.",
