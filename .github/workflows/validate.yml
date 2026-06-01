@@ -68,7 +68,10 @@ jobs:
             .split("\n")
             .filter(Boolean);
           for (const file of files) {
-            if (!allowed.has(file)) throw new Error(`unexpected file in minimal plugin shell: ${file}`);
+            const allowedSpec = file.startsWith("docs/specs/") && file.endsWith(".md");
+            if (!allowed.has(file) && !allowedSpec) {
+              throw new Error(`unexpected file in minimal plugin shell: ${file}`);
+            }
           }
           const manifest = JSON.parse(fs.readFileSync(".codex-plugin/plugin.json", "utf8"));
           for (const field of ["name", "version", "description", "interface"]) {
