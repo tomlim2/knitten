@@ -1,7 +1,7 @@
 {
   "name": "knitten",
   "version": "0.1.0",
-  "description": "Knitten Codex plugin core",
+  "description": "Minimal Knitten Codex plugin shell",
   "author": {
     "name": "tomlim2"
   },
@@ -15,8 +15,8 @@
   ],
   "interface": {
     "displayName": "Knitten",
-    "shortDescription": "Agent operating core for Codex.",
-    "longDescription": "Knitten provides the core policy, routing, resolver, and validation skeleton used before optional skill packs load.",
+    "shortDescription": "Minimal plugin shell for Codex.",
+    "longDescription": "Knitten provides a small Codex plugin identity, boundary policy, adapter entry, and local personal-marketplace registration helper.",
     "developerName": "tomlim2",
     "category": "Productivity",
     "capabilities": [
@@ -25,7 +25,7 @@
     "websiteURL": "https://github.com/tomlim2/knitten",
     "brandColor": "#3B82F6",
     "defaultPrompt": [
-      "Use Knitten core policy and routing for this task."
+      "Read SYSTEM.md and keep this plugin self-contained."
     ],
     "screenshots": []
   }

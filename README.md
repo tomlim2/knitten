@@ -1,42 +1,43 @@
-# Knitten Core
+# Knitten
 
-Knitten Core is an LLM-first agent operating core. It provides shared policy,
-entry documents, resolver utilities, output contracts, and artifact-pack
-configuration for Codex plugin workflows.
+Knitten is a minimal Codex plugin shell.
+
+It provides plugin identity, a small policy entry, a Codex adapter document, and
+a local materialization helper for registering the plugin in the Codex personal
+marketplace.
 
 ## Contents
 
 | Path | Purpose |
 |------|---------|
-| `SYSTEM.md` | Shared policy loaded before harness-specific behavior. |
+| `.codex-plugin/plugin.json` | Codex plugin manifest. |
+| `SYSTEM.md` | Minimal plugin boundary contract. |
 | `agent/AGENTS.md` | Codex adapter entry document. |
-| `agent/config/` | Machine-readable registries and plugin-local contracts. |
-| `agent/document-templates/agent-hub/` | Core document templates used by output contracts. |
-| `agent/lib/` | Plugin-local resolver utilities. |
-| `docs/public-core/` | Source overlay used by the split synchronization job. |
+| `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
+| `docs/specs/` | Design notes for the minimal plugin shell. |
 
 ## Validate
 
 ```bash
-python3 /Users/younsoolim/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .
+python3 <path-to-validate_plugin.py> .
 ```
 
-When synchronized through the legacy source repository, run
-`scripts/materialize-codex-personal-plugins.mjs` there to refresh the local
-Codex personal marketplace copy.
+## Local Registration
 
-## Artifact Packs
+```bash
+node scripts/materialize-local-plugin.mjs
+python3 <path-to-validate_plugin.py> ~/.agents/plugins/plugins/knitten
+```
 
-Artifact packs are manifest-declared collections of optional agent artifacts.
-Core keeps the resolver, installer, validation gates, and bootstrap workflows.
-Domain, company, personal, and repository-specific workflows should live in
-packs instead of the public core tree.
+The materialized copy receives a local `+codex.<timestamp>` version suffix. The
+source manifest stays stable.
 
 ## License
 
 Apache License 2.0. See `LICENSE`.
 
-## Status
+## Boundary
 
-This README is the public core overlay source. The private integration
-repository may keep a different generated README for local inventory.
+Skills, standards, domain workflows, output systems, and artifact-pack lifecycle
+tools belong in payload plugins unless they are intentionally promoted into this
+minimal core later.
