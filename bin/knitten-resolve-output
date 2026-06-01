@@ -21,21 +21,23 @@ resolve_plugin_root() {
     return 0
   fi
 
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local repo_root
+  repo_root="$(cd "$script_dir/.." && pwd)"
+  if [[ -f "$repo_root/scripts/resolve-output.mjs" ]]; then
+    printf '%s\n' "$repo_root"
+    return 0
+  fi
+
   local default_root="$HOME/.agents/plugins/plugins/knitten"
   if [[ -f "$default_root/scripts/resolve-output.mjs" ]]; then
     printf '%s\n' "$default_root"
     return 0
   fi
 
-  local script_dir
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  local repo_root
-  repo_root="$(cd "$script_dir/.." && pwd)"
-  if [[ ! -f "$repo_root/scripts/resolve-output.mjs" ]]; then
-    printf 'could not locate Knitten resolve-output.mjs from %s\n' "$repo_root" >&2
-    return 1
-  fi
-  printf '%s\n' "$repo_root"
+  printf 'could not locate Knitten resolve-output.mjs from %s or %s\n' "$repo_root" "$default_root" >&2
+  return 1
 }
 
 plugin_root="$(resolve_plugin_root)"

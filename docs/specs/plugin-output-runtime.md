@@ -103,10 +103,9 @@ Resolution order:
 
 1. `KNITTEN_PLUGIN_ROOT` when the caller already set it.
 2. `KNITTEN_MARKETPLACE_ROOT` when the caller points to a marketplace root.
-3. The default Codex personal marketplace copy:
+3. The checkout containing the executed `bin/knitten-resolve-output` shim.
+4. The default Codex personal marketplace copy:
    `~/.agents/plugins/plugins/knitten`.
-4. A repo-local checkout only when the user is actively working inside
-   `knitten` itself.
 
 This discovery logic should live in one Knitten-provided helper command or
 script. Payload skills should not reimplement marketplace path probing.

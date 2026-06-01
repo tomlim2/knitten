@@ -187,10 +187,6 @@ function main() {
       `--workspace-root=${REPO_ROOT}`,
     ], {
       cwd: REPO_ROOT,
-      env: {
-        ...process.env,
-        KNITTEN_PLUGIN_ROOT: copiedRoot,
-      },
     });
     const expectedPath = path.join(REPO_ROOT, ".agent-local", "knitten", "reviews", "doctor-output.json");
     if (output.selectedPath !== expectedPath) {
