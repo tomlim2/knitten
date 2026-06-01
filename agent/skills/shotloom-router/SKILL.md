@@ -36,6 +36,7 @@ and the correct Shotloom skill is not already explicit.
 | Start a Linear task, prepare a task, write a spec before implementation | `shotloom-prepare-task` |
 | Implement an approved spec or structured review findings | `shotloom-implement-code` |
 | Review a branch before opening a PR | `shotloom-review-before-pr` |
+| Review a `CINEV/shotloom-asset-library` PR or asset-library PR URL | `shotloom-review-asset-library-pr` |
 | Address PR review comments | `shotloom-respond-pr` |
 | Finish a task, close Linear, clean worktree | `shotloom-wrapup-task` |
 | Show active work, worktrees, PRs, Linear state | `shotloom-status` |

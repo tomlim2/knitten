@@ -10,6 +10,7 @@ leaf/component skills.
 | `shotloom-prepare-task` | `shotloom-start-task` -> `shotloom-draft-spec` -> spec review -> Knitten docs commit/push | Reviewed spec exists and implementation needs separate user approval. |
 | `shotloom-implement-code` | Approved spec or structured findings -> Shotloom source/doc changes | Implementation diff exists and caller must decide the next review/commit step. |
 | `shotloom-review-before-pr` | Evidence packet -> code/docs review -> fixes -> `prReady` decision | `prReady=true` or unresolved blocker is known. |
+| `shotloom-review-asset-library-pr` | `CINEV/shotloom-asset-library` PR human review -> asset catalog/LFS/static-output/docs/CI checklist -> GitHub review submission | Review is posted or a blocker/user decision stops submission. |
 | `shotloom-respond-pr` | PR comments -> classification -> fixes -> replies/re-request path | Review response cycle is complete or needs user decision. |
 | `shotloom-wrapup-task` | Task closure -> Linear/worktree cleanup -> retrospective handoff | Task closeout is complete or blocked. |
 
@@ -50,5 +51,6 @@ leaf/component skills.
 | Exact utility request | Use the matching leaf/component skill. |
 | Ambiguous Shotloom request | Start with `shotloom-router`. |
 | Review lens request | Use `shotloom-review-before-pr` unless the user names a specific lens. |
+| Asset-library PR review | Use `shotloom-review-asset-library-pr`; do not use `shotloom-review-pr`. |
 | PR comment response | Use `shotloom-respond-pr`; do not use `shotloom-review-pr`. |
 | Human reviewer mode | Use `shotloom-review-pr`. |
