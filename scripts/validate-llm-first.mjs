@@ -4977,6 +4977,24 @@ async function checkPluginizationInventoryReport() {
   return { name: "pluginization-inventory-report", violations };
 }
 
+async function checkPluginizationManifestDryRun() {
+  const violations = [];
+  try {
+    await execFileAsync(process.execPath, ["--test", "tests/pluginization-manifest-dry-run.test.mjs"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+    });
+  } catch (err) {
+    violations.push({
+      file: "tests/pluginization-manifest-dry-run.test.mjs",
+      line: 1,
+      message: `pluginization manifest dry-run tests failed: ${(err.stdout || err.stderr || err.message).trim()}`,
+    });
+  }
+  return { name: "pluginization-manifest-dry-run", violations };
+}
+
 async function checkExampleSkillPack() {
   const violations = [];
   try {
@@ -5027,6 +5045,7 @@ const CHECKS = [
   { name: "artifact-pack-discovery-routing", fn: checkArtifactPackDiscoveryRouting },
   { name: "artifact-pack-registry-merge", fn: checkArtifactPackRegistryMerge },
   { name: "pluginization-inventory-report", fn: checkPluginizationInventoryReport },
+  { name: "pluginization-manifest-dry-run", fn: checkPluginizationManifestDryRun },
   { name: "example-skill-pack", fn: checkExampleSkillPack },
   { name: "skill-root-shape", fn: checkSkillRootShape },
   { name: "skill-mechanics", fn: checkSkillCommandMechanics },
