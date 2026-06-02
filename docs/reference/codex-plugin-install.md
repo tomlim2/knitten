@@ -23,6 +23,12 @@ Knitten uses the plugin layer to expose its skill bundle.
 | `.agents/plugins/marketplace.json` | Local marketplace that exposes the `knitten` plugin. |
 | `agent/skills/` | Skill root exposed by the plugin manifest. |
 
+The manifest exposes all skill directories under `agent/skills/`:
+
+```json
+"skills": "./agent/skills/"
+```
+
 ## Local Install
 
 Add these entries to `~/.codex/config.toml`.
@@ -61,6 +67,7 @@ Run:
 test -f .codex-plugin/plugin.json
 test -f .agents/plugins/marketplace.json
 node -e 'JSON.parse(require("fs").readFileSync(".codex-plugin/plugin.json","utf8")); JSON.parse(require("fs").readFileSync(".agents/plugins/marketplace.json","utf8"))'
+node -e 'const fs=require("fs"),p=require("path"); const skills=fs.readdirSync("agent/skills").filter(n=>fs.existsSync(p.join("agent/skills",n,"SKILL.md"))); console.log(skills.length)'
 rg 'knitten@knitten-local|marketplaces.knitten-local' ~/.codex/config.toml
 ```
 
@@ -70,6 +77,7 @@ Expected result:
 |-------|----------|
 | plugin manifest parses | pass |
 | marketplace manifest parses | pass |
+| all `agent/skills/*/SKILL.md` directories count | non-zero |
 | Codex config contains plugin entry | pass |
 | Codex config contains marketplace entry | pass |
 
