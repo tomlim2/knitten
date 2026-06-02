@@ -100,6 +100,9 @@ jobs:
           if (fs.realpathSync(output.pluginRoot) !== fs.realpathSync(process.cwd())) {
             throw new Error(`unexpected pluginRoot: ${output.pluginRoot}`);
           }
+          if (fs.realpathSync(output.hubRoot) !== fs.realpathSync(process.cwd())) {
+            throw new Error(`unexpected hubRoot: ${output.hubRoot}`);
+          }
           if (output.selectedPath !== expectedPath) {
             throw new Error(`unexpected selectedPath: ${output.selectedPath}`);
           }

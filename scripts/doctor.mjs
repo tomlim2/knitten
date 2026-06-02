@@ -103,6 +103,7 @@ function main() {
   const marketplacePath = path.join(args.marketplaceRoot, ".agents", "plugins", "marketplace.json");
   const copiedRoot = path.join(args.marketplaceRoot, "plugins", PLUGIN_NAME);
   const copiedManifestPath = path.join(copiedRoot, ".codex-plugin", "plugin.json");
+  const copiedSourceMetadataPath = path.join(copiedRoot, ".codex-plugin", "materialized-source.json");
   const copiedOutputShimPath = path.join(copiedRoot, "bin", "knitten-resolve-output");
 
   let sourceManifest = null;
@@ -162,7 +163,7 @@ function main() {
       `--target-root=${targetRoot}`,
     ]);
     const expectedPath = path.join(
-      targetRoot,
+      REPO_ROOT,
       ".agent-local",
       "ah",
       "operational-findings",
@@ -172,11 +173,14 @@ function main() {
     if (output.selectedPath !== expectedPath) {
       throw new Error(`target-root path expected ${expectedPath}, got ${output.selectedPath}`);
     }
-    if (output.selectedOwnerRoot !== targetRoot) {
-      throw new Error(`target-root owner expected ${targetRoot}, got ${output.selectedOwnerRoot}`);
+    if (output.selectedOwnerRoot !== REPO_ROOT) {
+      throw new Error(`target-root owner expected ${REPO_ROOT}, got ${output.selectedOwnerRoot}`);
     }
     if (output.targetRoot !== targetRoot) {
       throw new Error(`targetRoot expected ${targetRoot}, got ${output.targetRoot}`);
+    }
+    if (output.selectedTargetRoot !== targetRoot) {
+      throw new Error(`selectedTargetRoot expected ${targetRoot}, got ${output.selectedTargetRoot}`);
     }
     return expectedPath;
   });
@@ -270,6 +274,17 @@ function main() {
     return copiedManifest.version;
   });
 
+  check(checks, "copied-source-metadata", () => {
+    const metadata = readJson(copiedSourceMetadataPath);
+    if (metadata.plugin !== PLUGIN_NAME) {
+      throw new Error(`metadata plugin expected ${PLUGIN_NAME}, got ${metadata.plugin}`);
+    }
+    if (!sameRealPath(metadata.sourceRoot, REPO_ROOT)) {
+      throw new Error(`metadata sourceRoot expected ${REPO_ROOT}, got ${metadata.sourceRoot}`);
+    }
+    return copiedSourceMetadataPath;
+  });
+
   check(checks, "copied-output-shim", () => {
     if (!fs.existsSync(copiedOutputShimPath)) throw new Error(`missing ${copiedOutputShimPath}`);
     const output = runJson(copiedOutputShimPath, [
@@ -282,6 +297,9 @@ function main() {
     const expectedPath = path.join(REPO_ROOT, ".agent-local", "ah", "reviews", "doctor-output.json");
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`copied shim pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
+    }
+    if (!sameRealPath(output.hubRoot, REPO_ROOT)) {
+      throw new Error(`copied shim hubRoot expected ${REPO_ROOT}, got ${output.hubRoot}`);
     }
     if (output.selectedPath !== expectedPath) {
       throw new Error(`copied shim path expected ${expectedPath}, got ${output.selectedPath}`);
@@ -306,6 +324,9 @@ function main() {
     const expectedPath = path.join(REPO_ROOT, ".agent-local", "ah", "reviews", "doctor-env-output.json");
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`plugins-root env pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
+    }
+    if (!sameRealPath(output.hubRoot, REPO_ROOT)) {
+      throw new Error(`plugins-root env hubRoot expected ${REPO_ROOT}, got ${output.hubRoot}`);
     }
     if (output.selectedPath !== expectedPath) {
       throw new Error(`plugins-root env path expected ${expectedPath}, got ${output.selectedPath}`);

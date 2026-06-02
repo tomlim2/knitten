@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const PLUGIN_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const MATERIALIZED_SOURCE_PATH = path.join(PLUGIN_ROOT, ".codex-plugin", "materialized-source.json");
 
 function parseArgs(argv) {
   const args = {
@@ -10,6 +11,7 @@ function parseArgs(argv) {
     kind: "",
     name: "",
     skill: "",
+    hubRoot: "",
     targetRoot: "",
     workspaceRoot: process.cwd(),
   };
@@ -23,6 +25,8 @@ function parseArgs(argv) {
       args.name = arg.slice("--name=".length);
     } else if (arg.startsWith("--skill=")) {
       args.skill = arg.slice("--skill=".length);
+    } else if (arg.startsWith("--hub-root=")) {
+      args.hubRoot = arg.slice("--hub-root=".length);
     } else if (arg.startsWith("--target-root=")) {
       args.targetRoot = arg.slice("--target-root=".length);
     } else if (arg.startsWith("--workspace-root=")) {
@@ -40,7 +44,7 @@ function parseArgs(argv) {
 
 function usage() {
   return `Usage:
-  resolve-output.mjs [--workspace-root=<path>] [--target-root=<path>] [--skill=<skill>] [--kind=<kind>] [--name=<name>] [--create]
+  resolve-output.mjs [--workspace-root=<path>] [--target-root=<path>] [--hub-root=<path>] [--skill=<skill>] [--kind=<kind>] [--name=<name>] [--create]
 
 Prints Knitten plugin, workspace, and selected output destinations as JSON.
 
@@ -54,16 +58,16 @@ Skill defaults:
   ah-report-finding -> operational-finding-json
 
 Kinds:
-  spec        docs/specs/<name>.md
-  design-plan docs/design-plans/<name>.md
-  temp-json   .agent-local/ah/json/<name>.json
-  review-json .agent-local/ah/reviews/<name>.json
-  response-json .agent-local/ah/responses/<name>.json
-  operational-finding-json .agent-local/ah/operational-findings/<YYYY-MM-DD>/<name>.json
-  report-md   .agent-local/ah/reports/<name>.md
-  report-html .agent-local/ah/reports/<name>.html
-  pull-request-json .agent-local/ah/pull-requests/<name>.json
-  task-json   .agent-local/ah/tasks/<name>.json`;
+  spec        <targetRoot>/docs/specs/<name>.md
+  design-plan <targetRoot>/docs/design-plans/<name>.md
+  temp-json   <hubRoot>/.agent-local/ah/json/<name>.json
+  review-json <hubRoot>/.agent-local/ah/reviews/<name>.json
+  response-json <hubRoot>/.agent-local/ah/responses/<name>.json
+  operational-finding-json <hubRoot>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/<name>.json
+  report-md   <hubRoot>/.agent-local/ah/reports/<name>.md
+  report-html <hubRoot>/.agent-local/ah/reports/<name>.html
+  pull-request-json <hubRoot>/.agent-local/ah/pull-requests/<name>.json
+  task-json   <hubRoot>/.agent-local/ah/tasks/<name>.json`;
 }
 
 function samePath(left, right) {
@@ -90,7 +94,50 @@ function localDateString(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot, targetRoot, targetLocalRoot }) {
+function readJsonIfExists(file) {
+  if (!fs.existsSync(file)) return null;
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function hasKnittenManifest(root) {
+  const manifestPath = path.join(root, ".codex-plugin", "plugin.json");
+  if (!fs.existsSync(manifestPath)) return false;
+  try {
+    return readJsonIfExists(manifestPath)?.name === "knitten";
+  } catch {
+    return false;
+  }
+}
+
+function hasGitMetadata(root) {
+  return fs.existsSync(path.join(root, ".git"));
+}
+
+function isSourceCheckout(root) {
+  return hasKnittenManifest(root) && hasGitMetadata(root);
+}
+
+function resolveHubRoot(explicitHubRoot) {
+  const candidateReaders = [
+    () => explicitHubRoot,
+    () => process.env.KNITTEN_HUB_ROOT,
+    () => readJsonIfExists(MATERIALIZED_SOURCE_PATH)?.sourceRoot,
+    () => (isSourceCheckout(PLUGIN_ROOT) ? PLUGIN_ROOT : ""),
+  ];
+
+  for (const readCandidate of candidateReaders) {
+    const candidate = readCandidate();
+    if (!String(candidate || "").trim()) continue;
+    const hubRoot = path.resolve(candidate);
+    if (isSourceCheckout(hubRoot)) return hubRoot;
+  }
+
+  throw new Error(
+    "could not resolve Knitten hub root; set --hub-root or KNITTEN_HUB_ROOT to the Knitten source checkout",
+  );
+}
+
+function selectedPathFor({ kind, name, hubLocalRoot, targetRoot }) {
   if (!kind) return null;
   if (!String(name || "").trim()) {
     throw new Error("--name is required when --kind or --skill selects an output file");
@@ -101,14 +148,14 @@ function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot, target
   const paths = {
     "spec": path.join(targetRoot, "docs", "specs", `${slug}.md`),
     "design-plan": path.join(targetRoot, "docs", "design-plans", `${slug}.md`),
-    "temp-json": path.join(workspaceLocalRoot, "json", `${slug}.json`),
-    "review-json": path.join(workspaceLocalRoot, "reviews", `${slug}.json`),
-    "response-json": path.join(workspaceLocalRoot, "responses", `${slug}.json`),
-    "operational-finding-json": path.join(targetLocalRoot, "operational-findings", today, `${slug}.json`),
-    "report-md": path.join(workspaceLocalRoot, "reports", `${slug}.md`),
-    "report-html": path.join(workspaceLocalRoot, "reports", `${slug}.html`),
-    "pull-request-json": path.join(workspaceLocalRoot, "pull-requests", `${slug}.json`),
-    "task-json": path.join(workspaceLocalRoot, "tasks", `${slug}.json`),
+    "temp-json": path.join(hubLocalRoot, "json", `${slug}.json`),
+    "review-json": path.join(hubLocalRoot, "reviews", `${slug}.json`),
+    "response-json": path.join(hubLocalRoot, "responses", `${slug}.json`),
+    "operational-finding-json": path.join(hubLocalRoot, "operational-findings", today, `${slug}.json`),
+    "report-md": path.join(hubLocalRoot, "reports", `${slug}.md`),
+    "report-html": path.join(hubLocalRoot, "reports", `${slug}.html`),
+    "pull-request-json": path.join(hubLocalRoot, "pull-requests", `${slug}.json`),
+    "task-json": path.join(hubLocalRoot, "tasks", `${slug}.json`),
   };
 
   if (!Object.hasOwn(paths, kind)) {
@@ -118,10 +165,10 @@ function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot, target
   return paths[kind];
 }
 
-function ownerRootFor(kind, { workspaceRoot, targetRoot }) {
+function durableOwnerRootFor(kind, targetRoot) {
   if (!kind) return null;
-  const targetOwnedKinds = new Set(["spec", "design-plan", "operational-finding-json"]);
-  return targetOwnedKinds.has(kind) ? targetRoot : workspaceRoot;
+  const targetOwnedKinds = new Set(["spec", "design-plan"]);
+  return targetOwnedKinds.has(kind) ? targetRoot : null;
 }
 
 function persistenceFor(kind) {
@@ -152,16 +199,18 @@ function kindForSkill(skill) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  const hubRoot = resolveHubRoot(args.hubRoot);
   const workspaceRoot = path.resolve(args.workspaceRoot);
   const targetRoot = path.resolve(args.targetRoot || workspaceRoot);
+  const hubLocalRoot = path.join(hubRoot, ".agent-local", "ah");
   const workspaceLocalRoot = path.join(workspaceRoot, ".agent-local", "ah");
   const targetLocalRoot = path.join(targetRoot, ".agent-local", "ah");
   const docsRoot = path.join(targetRoot, "docs");
   const specsRoot = path.join(docsRoot, "specs");
   const designPlansRoot = path.join(docsRoot, "design-plans");
-  const tempJsonRoot = path.join(workspaceLocalRoot, "json");
-  const responseJsonRoot = path.join(workspaceLocalRoot, "responses");
-  const operationalFindingsRoot = path.join(targetLocalRoot, "operational-findings");
+  const tempJsonRoot = path.join(hubLocalRoot, "json");
+  const responseJsonRoot = path.join(hubLocalRoot, "responses");
+  const operationalFindingsRoot = path.join(hubLocalRoot, "operational-findings");
   if (args.kind && args.skill) {
     throw new Error("use either --kind or --skill, not both");
   }
@@ -169,14 +218,14 @@ function main() {
   const selectedPath = selectedPathFor({
     kind: selectedKind,
     name: args.name,
-    workspaceRoot,
-    workspaceLocalRoot,
+    hubLocalRoot,
     targetRoot,
-    targetLocalRoot,
   });
-  const selectedDir = selectedPath ? path.dirname(selectedPath) : workspaceLocalRoot;
+  const selectedDir = selectedPath ? path.dirname(selectedPath) : hubLocalRoot;
   const selectedPersistence = persistenceFor(selectedKind);
-  const selectedOwnerRoot = ownerRootFor(selectedKind, { workspaceRoot, targetRoot });
+  const selectedOwnerRoot = selectedPersistence === "local"
+    ? hubRoot
+    : durableOwnerRootFor(selectedKind, targetRoot);
 
   if (args.create) {
     fs.mkdirSync(selectedDir, { recursive: true });
@@ -184,6 +233,8 @@ function main() {
 
   process.stdout.write(`${JSON.stringify({
     pluginRoot: PLUGIN_ROOT,
+    hubRoot,
+    hubLocalRoot,
     workspaceRoot,
     workspaceLocalRoot,
     targetRoot,
@@ -200,6 +251,7 @@ function main() {
     selectedPath,
     selectedDir,
     selectedOwnerRoot,
+    selectedTargetRoot: targetRoot,
     selectedPersistence,
     isPluginWorkspace: samePath(PLUGIN_ROOT, workspaceRoot),
   }, null, 2)}\n`);

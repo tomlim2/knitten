@@ -2,7 +2,12 @@
 
 ## Status
 
-Draft.
+Historical.
+
+The local-output ownership rules in this spec are superseded by
+[AH Local Output Hub Storage](ah-local-output-hub-storage.md). This document is
+kept as migration context for the earlier `.agent-local/knitten` to
+`.agent-local/ah` transition.
 
 ## Goal
 

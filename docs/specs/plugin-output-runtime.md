@@ -2,8 +2,8 @@
 
 ## Status
 
-Implemented. Current location behavior is extended by
-[AH Output Location Plugin Boundary](ah-output-location-plugin-boundary.md).
+Implemented. Current local-output hub behavior is extended by
+[AH Local Output Hub Storage](ah-local-output-hub-storage.md).
 
 ## Goal
 
@@ -49,8 +49,10 @@ artifact, tutoring note, or any other domain-specific output means.
 | Term | Meaning |
 |------|---------|
 | Plugin root | The physical installed or source checkout containing the runtime script. |
+| Hub root | The Knitten source checkout that owns generic AH local storage. |
 | Workspace root | The active repository or workspace where the user is working. |
-| Local output root | `.agent-local/ah` under the workspace root. |
+| Target root | The repository, plugin, or domain surface the output is about. |
+| Local output root | `.agent-local/ah` under the hub root. |
 | Durable document | A user-facing document intended to remain in the workspace, usually under `docs/`. |
 | Local artifact | A temporary or operational file under `.agent-local/ah`. |
 | Output kind | A generic output category such as `spec` or `review-json`. |
@@ -84,7 +86,8 @@ Payload skills call their payload-local helper.
 
 ## Runtime Discovery
 
-Payload plugins need one stable way to find the Knitten runtime.
+Payload plugins need one stable way to find the Knitten runtime and one stable
+hub for generic AH local outputs.
 
 The first implementation should ship two files:
 
@@ -97,8 +100,8 @@ The command shim is the payload-helper-facing API. It resolves the Knitten
 plugin root and then calls `scripts/resolve-output.mjs`.
 
 `scripts/resolve-output.mjs` should not probe the marketplace. It resolves
-outputs from its own plugin location and the requested workspace root. Runtime
-discovery belongs to the command shim.
+outputs from its own plugin location, the requested workspace/target roots, and
+the Knitten hub root. Runtime discovery belongs to the command shim.
 
 Resolution order:
 
@@ -168,10 +171,12 @@ The command returns JSON with at least:
 | Field | Meaning |
 |-------|---------|
 | `pluginRoot` | Physical Knitten plugin checkout containing the script. |
+| `hubRoot` | Knitten source checkout that owns writable generic AH local storage. |
+| `hubLocalRoot` | `.agent-local/ah` under `hubRoot`. |
 | `workspaceRoot` | Resolved active workspace root. |
-| `workspaceLocalRoot` | `.agent-local/ah` under the active workspace root. |
+| `workspaceLocalRoot` | Metadata path under the active workspace root; not the default local write target. |
 | `targetRoot` | Resolved target workspace root. |
-| `targetLocalRoot` | `.agent-local/ah` under the target workspace root. |
+| `targetLocalRoot` | Metadata path under the target workspace root; not the default local write target. |
 | `docsRoot` | `docs` under the target workspace root. |
 | `selectedKind` | Resolved output kind or null. |
 | `selectedSkill` | Input skill alias or null. |
@@ -179,6 +184,7 @@ The command returns JSON with at least:
 | `selectedPath` | Concrete output file path when a kind or skill is supplied. |
 | `selectedDir` | Parent directory for `selectedPath`, or local output root when no path is selected. |
 | `selectedOwnerRoot` | Root that owns the selected output. |
+| `selectedTargetRoot` | Root the selected output is about. |
 | `selectedPersistence` | `durable` for workspace documents, `local` for `.agent-local` artifacts. |
 | `isPluginWorkspace` | Whether the workspace is the Knitten plugin checkout. |
 
@@ -186,16 +192,16 @@ The command returns JSON with at least:
 
 | Kind | Path |
 |------|------|
-| `spec` | `docs/specs/<slug>.md` |
-| `design-plan` | `docs/design-plans/<slug>.md` |
-| `temp-json` | `.agent-local/ah/json/<slug>.json` |
-| `review-json` | `.agent-local/ah/reviews/<slug>.json` |
-| `response-json` | `.agent-local/ah/responses/<slug>.json` |
-| `operational-finding-json` | `.agent-local/ah/operational-findings/<YYYY-MM-DD>/<slug>.json` |
-| `report-md` | `.agent-local/ah/reports/<slug>.md` |
-| `report-html` | `.agent-local/ah/reports/<slug>.html` |
-| `pull-request-json` | `.agent-local/ah/pull-requests/<slug>.json` |
-| `task-json` | `.agent-local/ah/tasks/<slug>.json` |
+| `spec` | `<targetRoot>/docs/specs/<slug>.md` |
+| `design-plan` | `<targetRoot>/docs/design-plans/<slug>.md` |
+| `temp-json` | `<hubRoot>/.agent-local/ah/json/<slug>.json` |
+| `review-json` | `<hubRoot>/.agent-local/ah/reviews/<slug>.json` |
+| `response-json` | `<hubRoot>/.agent-local/ah/responses/<slug>.json` |
+| `operational-finding-json` | `<hubRoot>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/<slug>.json` |
+| `report-md` | `<hubRoot>/.agent-local/ah/reports/<slug>.md` |
+| `report-html` | `<hubRoot>/.agent-local/ah/reports/<slug>.html` |
+| `pull-request-json` | `<hubRoot>/.agent-local/ah/pull-requests/<slug>.json` |
+| `task-json` | `<hubRoot>/.agent-local/ah/tasks/<slug>.json` |
 
 These kinds are file-shape oriented, not domain oriented.
 
@@ -290,7 +296,8 @@ Initial validation should prove:
 - The output runtime is generic and domain-neutral.
 - `knitten-all-skills` can call the runtime without duplicating it.
 - No Shotloom-specific output kind is added to `knitten`.
-- Existing AH skills continue to resolve their current paths.
+- Existing AH skills continue to resolve paths through the runtime instead of
+  hard-coding local destinations.
 - No active skill or README instruction refers to `scripts/resolve-paths.mjs`.
 - Payload plugins that cannot rely on `PATH` use one local helper for Knitten
   output runtime calls.
@@ -298,5 +305,6 @@ Initial validation should prove:
 - Payload skills do not set or depend on `KNITTEN_PLUGIN_ROOT` directly.
 - Payload-local helpers forward caller arguments without changing the workspace
   root unless `--workspace-root` is explicitly supplied.
-- New report/task/pull-request JSON kinds resolve under `.agent-local/ah`.
+- New report/task/pull-request JSON kinds resolve under the hub
+  `.agent-local/ah`.
 - Source and materialized plugin validation pass.

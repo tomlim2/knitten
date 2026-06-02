@@ -166,6 +166,21 @@ async function rewriteCopiedManifest(targetDir, sourceManifest, cachebuster, dry
   console.log(`set ${PLUGIN_NAME} version: ${sourceManifest.version} -> ${nextVersion}`);
 }
 
+async function writeMaterializedSource(targetDir, dryRun) {
+  const metadata = {
+    plugin: PLUGIN_NAME,
+    sourceRoot: REPO_ROOT,
+    materializedAt: new Date().toISOString(),
+  };
+  const metadataPath = path.join(targetDir, ".codex-plugin", "materialized-source.json");
+  if (dryRun) {
+    console.log(`[dry-run] write source metadata: ${metadataPath}`);
+    return;
+  }
+  await fs.writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf8");
+  console.log(`wrote source metadata: ${metadataPath}`);
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const sourceManifest = await readManifest(REPO_ROOT);
@@ -178,6 +193,7 @@ async function main() {
   console.log(`${action} marketplace entry: ${PLUGIN_NAME}`);
   await copyPlugin(targetDir, args.dryRun);
   await rewriteCopiedManifest(targetDir, sourceManifest, args.useCachebuster ? args.cachebuster : "", args.dryRun);
+  await writeMaterializedSource(targetDir, args.dryRun);
 
   if (args.dryRun) {
     console.log(`[dry-run] write ${marketplacePath}`);
