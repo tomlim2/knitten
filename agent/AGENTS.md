@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Codex adapter entry for the Knitten plugin shell.
+Codex adapter entry for the Knitten Agent Hub routing system.
 
 ## Load Order
 
@@ -11,3 +11,6 @@ Codex adapter entry for the Knitten plugin shell.
 
 This checkout is a Codex plugin source. It should load without external harness
 deploy folders, private paths, or domain-specific credentials.
+
+Knitten routes generic Agent Hub workflow intent, path/output destinations, and
+plugin boundaries. Domain-specific behavior belongs in payload plugins.

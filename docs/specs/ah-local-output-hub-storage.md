@@ -6,12 +6,11 @@ Draft.
 
 ## Goal
 
-Define Knitten as the storage hub for generic AH local outputs.
+Define the local-output hub behavior of Knitten's Agent Hub routing system.
 
-Knitten owns the generic output/path system. Generic AH temporary files and
-operational records should therefore be written under the Knitten source
-checkout's local AH storage, not scattered across every active or target
-workspace.
+Knitten owns generic AH path/output routing. Generic AH temporary files and
+operational records should therefore route to the Knitten source checkout's
+local AH storage, not scatter across every active or target workspace.
 
 This spec supersedes the local-output ownership parts of
 [AH Output Location Plugin Boundary](ah-output-location-plugin-boundary.md).
@@ -39,8 +38,8 @@ AH operational layer harder to inspect:
 
 - AH review plans, response plans, task JSON, and findings scatter across
   unrelated repositories.
-- A payload plugin can look like it owns AH storage even though Knitten owns the
-  path/output system.
+- A payload plugin can look like it owns AH storage even though Knitten owns
+  generic AH path/output routing.
 - Follow-up triage requires checking multiple `.agent-local/ah` trees.
 - The distinction between "where the record is stored" and "what the record is
   about" is not explicit enough.
@@ -64,7 +63,7 @@ Out of scope:
 - Writing AH output files into installed plugin copies under `~/plugins/knitten`.
 - Generic local-output content schemas beyond target metadata.
 - Migrating every existing old local artifact.
-- Adding a broad output contract system beyond generic path resolution.
+- Adding a broad output contract system beyond generic path/output routing.
 
 ## Inputs
 
@@ -372,7 +371,7 @@ Files:
 
 Changes:
 
-- Explain that Knitten is the AH local output hub.
+- Explain that Knitten routes generic AH local outputs to the hub.
 - Explain that `targetRoot` is semantic attribution, not storage ownership.
 - Keep installed plugin copies read-only.
 - Mark older location docs as superseded instead of leaving competing current
