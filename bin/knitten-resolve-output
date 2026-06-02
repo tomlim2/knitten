@@ -11,13 +11,13 @@ resolve_plugin_root() {
     return 0
   fi
 
-  if [[ -n "${KNITTEN_MARKETPLACE_ROOT:-}" ]]; then
-    local marketplace_plugin_root="$KNITTEN_MARKETPLACE_ROOT/plugins/knitten"
-    if [[ ! -f "$marketplace_plugin_root/scripts/resolve-output.mjs" ]]; then
-      printf 'KNITTEN_MARKETPLACE_ROOT does not contain plugins/knitten/scripts/resolve-output.mjs: %s\n' "$KNITTEN_MARKETPLACE_ROOT" >&2
+  if [[ -n "${KNITTEN_PLUGINS_ROOT:-}" ]]; then
+    local plugins_root_plugin_root="$KNITTEN_PLUGINS_ROOT/knitten"
+    if [[ ! -f "$plugins_root_plugin_root/scripts/resolve-output.mjs" ]]; then
+      printf 'KNITTEN_PLUGINS_ROOT does not contain knitten/scripts/resolve-output.mjs: %s\n' "$KNITTEN_PLUGINS_ROOT" >&2
       return 1
     fi
-    printf '%s\n' "$marketplace_plugin_root"
+    printf '%s\n' "$plugins_root_plugin_root"
     return 0
   fi
 

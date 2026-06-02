@@ -209,6 +209,29 @@ function main() {
     return "finding-json rejected";
   });
 
+  check(checks, "source-output-shim-plugins-root-env", () => {
+    const output = runJson(sourceOutputShimPath, [
+      "--kind=review-json",
+      "--name=doctor-source-env-output",
+      `--workspace-root=${REPO_ROOT}`,
+    ], {
+      cwd: REPO_ROOT,
+      env: {
+        ...process.env,
+        KNITTEN_PLUGIN_ROOT: "",
+        KNITTEN_PLUGINS_ROOT: path.join(args.marketplaceRoot, "plugins"),
+      },
+    });
+    const expectedPath = path.join(REPO_ROOT, ".agent-local", "ah", "reviews", "doctor-source-env-output.json");
+    if (!sameRealPath(output.pluginRoot, copiedRoot)) {
+      throw new Error(`source shim plugins-root env pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
+    }
+    if (output.selectedPath !== expectedPath) {
+      throw new Error(`source shim plugins-root env path expected ${expectedPath}, got ${output.selectedPath}`);
+    }
+    return "KNITTEN_PLUGINS_ROOT";
+  });
+
   check(checks, "marketplace-file", () => {
     marketplace = readJson(marketplacePath);
     if (!Array.isArray(marketplace.plugins)) throw new Error("marketplace.plugins must be an array");
@@ -264,6 +287,30 @@ function main() {
       throw new Error(`copied shim path expected ${expectedPath}, got ${output.selectedPath}`);
     }
     return copiedOutputShimPath;
+  });
+
+  check(checks, "copied-output-shim-plugins-root-env", () => {
+    if (!fs.existsSync(copiedOutputShimPath)) throw new Error(`missing ${copiedOutputShimPath}`);
+    const output = runJson(copiedOutputShimPath, [
+      "--kind=review-json",
+      "--name=doctor-env-output",
+      `--workspace-root=${REPO_ROOT}`,
+    ], {
+      cwd: REPO_ROOT,
+      env: {
+        ...process.env,
+        KNITTEN_PLUGIN_ROOT: "",
+        KNITTEN_PLUGINS_ROOT: path.join(args.marketplaceRoot, "plugins"),
+      },
+    });
+    const expectedPath = path.join(REPO_ROOT, ".agent-local", "ah", "reviews", "doctor-env-output.json");
+    if (!sameRealPath(output.pluginRoot, copiedRoot)) {
+      throw new Error(`plugins-root env pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
+    }
+    if (output.selectedPath !== expectedPath) {
+      throw new Error(`plugins-root env path expected ${expectedPath}, got ${output.selectedPath}`);
+    }
+    return "KNITTEN_PLUGINS_ROOT";
   });
 
   const ok = checks.every((item) => item.ok);
