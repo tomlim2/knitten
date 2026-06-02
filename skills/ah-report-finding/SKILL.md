@@ -31,11 +31,19 @@ Record:
 - suggested next action
 - status
 
-Do not invent a storage path. Use the active repository's documented finding
-location when one exists; otherwise report the record in the response.
+Do not invent a storage path. Use the active or target repository's documented
+finding location when one exists; otherwise report the record in the response.
 
-If a temporary local scratch path is needed, resolve it with:
+If an operational finding record should be stored in the active workspace,
+resolve it with:
 
 ```bash
 <knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-report-finding --name=<finding-name> --create
+```
+
+If the finding is about a different target workspace, pass that workspace
+explicitly:
+
+```bash
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-report-finding --name=<finding-name> --target-root=<target-workspace> --create
 ```

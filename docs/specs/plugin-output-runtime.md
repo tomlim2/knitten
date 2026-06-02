@@ -2,7 +2,8 @@
 
 ## Status
 
-Draft.
+Implemented. Current location behavior is extended by
+[AH Output Location Plugin Boundary](ah-output-location-plugin-boundary.md).
 
 ## Goal
 
@@ -49,9 +50,9 @@ artifact, tutoring note, or any other domain-specific output means.
 |------|---------|
 | Plugin root | The physical installed or source checkout containing the runtime script. |
 | Workspace root | The active repository or workspace where the user is working. |
-| Local output root | `.agent-local/knitten` under the workspace root. |
+| Local output root | `.agent-local/ah` under the workspace root. |
 | Durable document | A user-facing document intended to remain in the workspace, usually under `docs/`. |
-| Local artifact | A temporary or operational file under `.agent-local/knitten`. |
+| Local artifact | A temporary or operational file under `.agent-local/ah`. |
 | Output kind | A generic output category such as `spec` or `review-json`. |
 | Skill alias | A mapping from a skill name to one generic output kind. |
 | Output destination | The resolved file path and its parent directory. |
@@ -69,13 +70,13 @@ The runtime command prints JSON and exits nonzero on invalid input.
 Primary command:
 
 ```bash
-knitten-resolve-output --kind=<kind> --name=<name> --workspace-root=<path> --create
+knitten-resolve-output --kind=<kind> --name=<name> --workspace-root=<path> --target-root=<path> --create
 ```
 
 Implementation command:
 
 ```bash
-node <knitten-plugin-root>/scripts/resolve-output.mjs --kind=<kind> --name=<name> --workspace-root=<path> --create
+node <knitten-plugin-root>/scripts/resolve-output.mjs --kind=<kind> --name=<name> --workspace-root=<path> --target-root=<path> --create
 ```
 
 Knitten implementation, tests, and diagnostics may call either command.
@@ -105,7 +106,7 @@ Resolution order:
 2. `KNITTEN_MARKETPLACE_ROOT` when the caller points to a marketplace root.
 3. The checkout containing the executed `bin/knitten-resolve-output` shim.
 4. The default Codex personal marketplace copy:
-   `~/.agents/plugins/plugins/knitten`.
+   `~/plugins/knitten`.
 
 This discovery logic should live in one Knitten-provided helper command or
 script. Payload skills should not reimplement marketplace path probing.
@@ -136,7 +137,7 @@ The payload-local helper should forward caller arguments unchanged and own the
 installed-plugin fallback:
 
 ```bash
-"${KNITTEN_MARKETPLACE_ROOT:-$HOME/.agents/plugins}/plugins/knitten/bin/knitten-resolve-output" "$@"
+"${KNITTEN_PLUGIN_HOME:-$HOME/plugins}/knitten/bin/knitten-resolve-output" "$@"
 ```
 
 Individual payload skills call the payload-local helper, not the installed
@@ -148,6 +149,7 @@ or set `KNITTEN_PLUGIN_ROOT`.
 | Input | Required | Meaning |
 |-------|----------|---------|
 | `--workspace-root=<path>` | No | Target workspace. Defaults to current working directory. |
+| `--target-root=<path>` | No | Workspace that should own durable documents or operational findings. Defaults to `workspaceRoot`. |
 | `--kind=<kind>` | No | Generic output kind to resolve. |
 | `--skill=<skill>` | No | Skill alias to resolve to one output kind. Mutually exclusive with `--kind`. |
 | `--name=<name>` | Yes when selecting a file | Human name or task id used to build a stable file name. |
@@ -164,14 +166,17 @@ The command returns JSON with at least:
 | Field | Meaning |
 |-------|---------|
 | `pluginRoot` | Physical Knitten plugin checkout containing the script. |
-| `workspaceRoot` | Resolved target workspace root. |
-| `workspaceLocalRoot` | `.agent-local/knitten` under the workspace root. |
-| `docsRoot` | `docs` under the workspace root. |
+| `workspaceRoot` | Resolved active workspace root. |
+| `workspaceLocalRoot` | `.agent-local/ah` under the active workspace root. |
+| `targetRoot` | Resolved target workspace root. |
+| `targetLocalRoot` | `.agent-local/ah` under the target workspace root. |
+| `docsRoot` | `docs` under the target workspace root. |
 | `selectedKind` | Resolved output kind or null. |
 | `selectedSkill` | Input skill alias or null. |
 | `selectedName` | Input name or null. |
 | `selectedPath` | Concrete output file path when a kind or skill is supplied. |
 | `selectedDir` | Parent directory for `selectedPath`, or local output root when no path is selected. |
+| `selectedOwnerRoot` | Root that owns the selected output. |
 | `selectedPersistence` | `durable` for workspace documents, `local` for `.agent-local` artifacts. |
 | `isPluginWorkspace` | Whether the workspace is the Knitten plugin checkout. |
 
@@ -181,13 +186,14 @@ The command returns JSON with at least:
 |------|------|
 | `spec` | `docs/specs/<slug>.md` |
 | `design-plan` | `docs/design-plans/<slug>.md` |
-| `temp-json` | `.agent-local/knitten/json/<slug>.json` |
-| `review-json` | `.agent-local/knitten/reviews/<slug>.json` |
-| `finding-json` | `.agent-local/knitten/findings/<slug>.json` |
-| `report-md` | `.agent-local/knitten/reports/<slug>.md` |
-| `report-html` | `.agent-local/knitten/reports/<slug>.html` |
-| `pull-request-json` | `.agent-local/knitten/pull-requests/<slug>.json` |
-| `task-json` | `.agent-local/knitten/tasks/<slug>.json` |
+| `temp-json` | `.agent-local/ah/json/<slug>.json` |
+| `review-json` | `.agent-local/ah/reviews/<slug>.json` |
+| `response-json` | `.agent-local/ah/responses/<slug>.json` |
+| `operational-finding-json` | `.agent-local/ah/operational-findings/<YYYY-MM-DD>/<slug>.json` |
+| `report-md` | `.agent-local/ah/reports/<slug>.md` |
+| `report-html` | `.agent-local/ah/reports/<slug>.html` |
+| `pull-request-json` | `.agent-local/ah/pull-requests/<slug>.json` |
+| `task-json` | `.agent-local/ah/tasks/<slug>.json` |
 
 These kinds are file-shape oriented, not domain oriented.
 
@@ -207,8 +213,8 @@ Initial aliases:
 | `ah-review-spec` | `review-json` |
 | `ah-review-implementation` | `review-json` |
 | `ah-review-pr` | `review-json` |
-| `ah-respond-pr` | `temp-json` |
-| `ah-report-finding` | `finding-json` |
+| `ah-respond-pr` | `response-json` |
+| `ah-report-finding` | `operational-finding-json` |
 
 ## Payload Plugin Use
 
@@ -290,5 +296,5 @@ Initial validation should prove:
 - Payload skills do not set or depend on `KNITTEN_PLUGIN_ROOT` directly.
 - Payload-local helpers forward caller arguments without changing the workspace
   root unless `--workspace-root` is explicitly supplied.
-- New report/task/pull-request JSON kinds resolve under `.agent-local/knitten`.
+- New report/task/pull-request JSON kinds resolve under `.agent-local/ah`.
 - Source and materialized plugin validation pass.

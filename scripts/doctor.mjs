@@ -6,17 +6,36 @@ import { spawnSync } from "node:child_process";
 
 const PLUGIN_NAME = "knitten";
 const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
-const OUTPUT_KINDS = [
-  ["spec", path.join("docs", "specs", "doctor-output.md"), "durable"],
-  ["design-plan", path.join("docs", "design-plans", "doctor-output.md"), "durable"],
-  ["temp-json", path.join(".agent-local", "knitten", "json", "doctor-output.json"), "local"],
-  ["review-json", path.join(".agent-local", "knitten", "reviews", "doctor-output.json"), "local"],
-  ["finding-json", path.join(".agent-local", "knitten", "findings", "doctor-output.json"), "local"],
-  ["report-md", path.join(".agent-local", "knitten", "reports", "doctor-output.md"), "local"],
-  ["report-html", path.join(".agent-local", "knitten", "reports", "doctor-output.html"), "local"],
-  ["pull-request-json", path.join(".agent-local", "knitten", "pull-requests", "doctor-output.json"), "local"],
-  ["task-json", path.join(".agent-local", "knitten", "tasks", "doctor-output.json"), "local"],
-];
+
+function localDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function outputKinds() {
+  const today = localDateString();
+  const operationalFindingPath = path.join(
+    ".agent-local",
+    "ah",
+    "operational-findings",
+    today,
+    "doctor-output.json",
+  );
+  return [
+    ["spec", path.join("docs", "specs", "doctor-output.md"), "durable"],
+    ["design-plan", path.join("docs", "design-plans", "doctor-output.md"), "durable"],
+    ["temp-json", path.join(".agent-local", "ah", "json", "doctor-output.json"), "local"],
+    ["review-json", path.join(".agent-local", "ah", "reviews", "doctor-output.json"), "local"],
+    ["response-json", path.join(".agent-local", "ah", "responses", "doctor-output.json"), "local"],
+    ["operational-finding-json", operationalFindingPath, "local"],
+    ["report-md", path.join(".agent-local", "ah", "reports", "doctor-output.md"), "local"],
+    ["report-html", path.join(".agent-local", "ah", "reports", "doctor-output.html"), "local"],
+    ["pull-request-json", path.join(".agent-local", "ah", "pull-requests", "doctor-output.json"), "local"],
+    ["task-json", path.join(".agent-local", "ah", "tasks", "doctor-output.json"), "local"],
+  ];
+}
 
 function parseArgs(argv) {
   const args = {
@@ -111,7 +130,8 @@ function main() {
   });
 
   check(checks, "source-output-kinds", () => {
-    for (const [kind, relativePath, persistence] of OUTPUT_KINDS) {
+    const kinds = outputKinds();
+    for (const [kind, relativePath, persistence] of kinds) {
       const output = runJson("node", [
         sourceOutputScriptPath,
         `--kind=${kind}`,
@@ -129,7 +149,36 @@ function main() {
         throw new Error(`${kind} persistence expected ${persistence}, got ${output.selectedPersistence}`);
       }
     }
-    return `${OUTPUT_KINDS.length} kinds`;
+    return `${kinds.length} kinds`;
+  });
+
+  check(checks, "source-output-target-root", () => {
+    const targetRoot = path.join(REPO_ROOT, ".agent-local", "doctor-target-root");
+    const output = runJson("node", [
+      sourceOutputScriptPath,
+      "--skill=ah-report-finding",
+      "--name=doctor-output",
+      `--workspace-root=${REPO_ROOT}`,
+      `--target-root=${targetRoot}`,
+    ]);
+    const expectedPath = path.join(
+      targetRoot,
+      ".agent-local",
+      "ah",
+      "operational-findings",
+      localDateString(),
+      "doctor-output.json",
+    );
+    if (output.selectedPath !== expectedPath) {
+      throw new Error(`target-root path expected ${expectedPath}, got ${output.selectedPath}`);
+    }
+    if (output.selectedOwnerRoot !== targetRoot) {
+      throw new Error(`target-root owner expected ${targetRoot}, got ${output.selectedOwnerRoot}`);
+    }
+    if (output.targetRoot !== targetRoot) {
+      throw new Error(`targetRoot expected ${targetRoot}, got ${output.targetRoot}`);
+    }
+    return expectedPath;
   });
 
   check(checks, "source-output-name-required", () => {
@@ -144,6 +193,20 @@ function main() {
       if (result.status === 0) throw new Error(`${args.join(" ")} should fail`);
     }
     return "missing or unusable --name fails";
+  });
+
+  check(checks, "source-output-legacy-kind-rejected", () => {
+    const result = spawnSync("node", [
+      sourceOutputScriptPath,
+      "--kind=finding-json",
+      "--name=doctor-output",
+      `--workspace-root=${REPO_ROOT}`,
+    ], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+    });
+    if (result.status === 0) throw new Error("finding-json should fail");
+    return "finding-json rejected";
   });
 
   check(checks, "marketplace-file", () => {
@@ -193,7 +256,7 @@ function main() {
     ], {
       cwd: REPO_ROOT,
     });
-    const expectedPath = path.join(REPO_ROOT, ".agent-local", "knitten", "reviews", "doctor-output.json");
+    const expectedPath = path.join(REPO_ROOT, ".agent-local", "ah", "reviews", "doctor-output.json");
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`copied shim pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
     }

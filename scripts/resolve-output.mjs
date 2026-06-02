@@ -10,6 +10,7 @@ function parseArgs(argv) {
     kind: "",
     name: "",
     skill: "",
+    targetRoot: "",
     workspaceRoot: process.cwd(),
   };
 
@@ -22,6 +23,8 @@ function parseArgs(argv) {
       args.name = arg.slice("--name=".length);
     } else if (arg.startsWith("--skill=")) {
       args.skill = arg.slice("--skill=".length);
+    } else if (arg.startsWith("--target-root=")) {
+      args.targetRoot = arg.slice("--target-root=".length);
     } else if (arg.startsWith("--workspace-root=")) {
       args.workspaceRoot = arg.slice("--workspace-root=".length);
     } else if (arg === "-h" || arg === "--help") {
@@ -37,7 +40,7 @@ function parseArgs(argv) {
 
 function usage() {
   return `Usage:
-  resolve-output.mjs [--workspace-root=<path>] [--skill=<skill>] [--kind=<kind>] [--name=<name>] [--create]
+  resolve-output.mjs [--workspace-root=<path>] [--target-root=<path>] [--skill=<skill>] [--kind=<kind>] [--name=<name>] [--create]
 
 Prints Knitten plugin, workspace, and selected output destinations as JSON.
 
@@ -47,19 +50,20 @@ Skill defaults:
   ah-review-spec -> review-json
   ah-review-pr -> review-json
   ah-review-implementation -> review-json
-  ah-respond-pr -> temp-json
-  ah-report-finding -> finding-json
+  ah-respond-pr -> response-json
+  ah-report-finding -> operational-finding-json
 
 Kinds:
   spec        docs/specs/<name>.md
   design-plan docs/design-plans/<name>.md
-  temp-json   .agent-local/knitten/json/<name>.json
-  review-json .agent-local/knitten/reviews/<name>.json
-  finding-json .agent-local/knitten/findings/<name>.json
-  report-md   .agent-local/knitten/reports/<name>.md
-  report-html .agent-local/knitten/reports/<name>.html
-  pull-request-json .agent-local/knitten/pull-requests/<name>.json
-  task-json   .agent-local/knitten/tasks/<name>.json`;
+  temp-json   .agent-local/ah/json/<name>.json
+  review-json .agent-local/ah/reviews/<name>.json
+  response-json .agent-local/ah/responses/<name>.json
+  operational-finding-json .agent-local/ah/operational-findings/<YYYY-MM-DD>/<name>.json
+  report-md   .agent-local/ah/reports/<name>.md
+  report-html .agent-local/ah/reports/<name>.html
+  pull-request-json .agent-local/ah/pull-requests/<name>.json
+  task-json   .agent-local/ah/tasks/<name>.json`;
 }
 
 function samePath(left, right) {
@@ -79,19 +83,28 @@ function slugifyName(value) {
   return slug;
 }
 
-function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot }) {
+function localDateString(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot, targetRoot, targetLocalRoot }) {
   if (!kind) return null;
   if (!String(name || "").trim()) {
     throw new Error("--name is required when --kind or --skill selects an output file");
   }
 
   const slug = slugifyName(name);
+  const today = localDateString();
   const paths = {
-    "spec": path.join(workspaceRoot, "docs", "specs", `${slug}.md`),
-    "design-plan": path.join(workspaceRoot, "docs", "design-plans", `${slug}.md`),
+    "spec": path.join(targetRoot, "docs", "specs", `${slug}.md`),
+    "design-plan": path.join(targetRoot, "docs", "design-plans", `${slug}.md`),
     "temp-json": path.join(workspaceLocalRoot, "json", `${slug}.json`),
     "review-json": path.join(workspaceLocalRoot, "reviews", `${slug}.json`),
-    "finding-json": path.join(workspaceLocalRoot, "findings", `${slug}.json`),
+    "response-json": path.join(workspaceLocalRoot, "responses", `${slug}.json`),
+    "operational-finding-json": path.join(targetLocalRoot, "operational-findings", today, `${slug}.json`),
     "report-md": path.join(workspaceLocalRoot, "reports", `${slug}.md`),
     "report-html": path.join(workspaceLocalRoot, "reports", `${slug}.html`),
     "pull-request-json": path.join(workspaceLocalRoot, "pull-requests", `${slug}.json`),
@@ -103,6 +116,12 @@ function selectedPathFor({ kind, name, workspaceRoot, workspaceLocalRoot }) {
   }
 
   return paths[kind];
+}
+
+function ownerRootFor(kind, { workspaceRoot, targetRoot }) {
+  if (!kind) return null;
+  const targetOwnedKinds = new Set(["spec", "design-plan", "operational-finding-json"]);
+  return targetOwnedKinds.has(kind) ? targetRoot : workspaceRoot;
 }
 
 function persistenceFor(kind) {
@@ -120,8 +139,8 @@ function kindForSkill(skill) {
     "ah-review-spec": "review-json",
     "ah-review-pr": "review-json",
     "ah-review-implementation": "review-json",
-    "ah-respond-pr": "temp-json",
-    "ah-report-finding": "finding-json",
+    "ah-respond-pr": "response-json",
+    "ah-report-finding": "operational-finding-json",
   };
 
   if (!Object.hasOwn(skillKinds, skill)) {
@@ -134,11 +153,15 @@ function kindForSkill(skill) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const workspaceRoot = path.resolve(args.workspaceRoot);
-  const workspaceLocalRoot = path.join(workspaceRoot, ".agent-local", "knitten");
-  const docsRoot = path.join(workspaceRoot, "docs");
+  const targetRoot = path.resolve(args.targetRoot || workspaceRoot);
+  const workspaceLocalRoot = path.join(workspaceRoot, ".agent-local", "ah");
+  const targetLocalRoot = path.join(targetRoot, ".agent-local", "ah");
+  const docsRoot = path.join(targetRoot, "docs");
   const specsRoot = path.join(docsRoot, "specs");
   const designPlansRoot = path.join(docsRoot, "design-plans");
   const tempJsonRoot = path.join(workspaceLocalRoot, "json");
+  const responseJsonRoot = path.join(workspaceLocalRoot, "responses");
+  const operationalFindingsRoot = path.join(targetLocalRoot, "operational-findings");
   if (args.kind && args.skill) {
     throw new Error("use either --kind or --skill, not both");
   }
@@ -148,9 +171,12 @@ function main() {
     name: args.name,
     workspaceRoot,
     workspaceLocalRoot,
+    targetRoot,
+    targetLocalRoot,
   });
   const selectedDir = selectedPath ? path.dirname(selectedPath) : workspaceLocalRoot;
   const selectedPersistence = persistenceFor(selectedKind);
+  const selectedOwnerRoot = ownerRootFor(selectedKind, { workspaceRoot, targetRoot });
 
   if (args.create) {
     fs.mkdirSync(selectedDir, { recursive: true });
@@ -160,15 +186,20 @@ function main() {
     pluginRoot: PLUGIN_ROOT,
     workspaceRoot,
     workspaceLocalRoot,
+    targetRoot,
+    targetLocalRoot,
     docsRoot,
     specsRoot,
     designPlansRoot,
     tempJsonRoot,
+    responseJsonRoot,
+    operationalFindingsRoot,
     selectedSkill: args.skill || null,
     selectedKind: selectedKind || null,
     selectedName: args.name || null,
     selectedPath,
     selectedDir,
+    selectedOwnerRoot,
     selectedPersistence,
     isPluginWorkspace: samePath(PLUGIN_ROOT, workspaceRoot),
   }, null, 2)}\n`);
