@@ -1,7 +1,7 @@
 {
   "name": "knitten",
   "version": "0.1.0",
-  "description": "Knitten Codex plugin for generic Agent Hub development workflow support",
+  "description": "Agent Hub routing system for Codex plugins",
   "author": {
     "name": "tomlim2"
   },
@@ -11,13 +11,15 @@
   "keywords": [
     "agent",
     "codex",
-    "plugin"
+    "plugin",
+    "routing",
+    "path-output"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Knitten",
-    "shortDescription": "Generic Agent Hub development workflow support for Codex.",
-    "longDescription": "Knitten provides Codex plugin identity, boundary policy, local registration helpers, and generic Agent Hub (AH) development workflow skills for preparing, implementing, reviewing, managing PRs, and wrapping up work.",
+    "shortDescription": "Agent Hub routing system for Codex plugins.",
+    "longDescription": "Knitten routes generic Agent Hub workflow intent, path/output destinations, and plugin boundaries for Codex plugins. Durable documents stay with the target workspace, local operational outputs go to the Knitten hub, and payload plugins keep domain-specific behavior.",
     "developerName": "tomlim2",
     "category": "Productivity",
     "capabilities": [
@@ -27,7 +29,7 @@
     "websiteURL": "https://github.com/tomlim2/knitten",
     "brandColor": "#3B82F6",
     "defaultPrompt": [
-      "Read SYSTEM.md, keep this plugin self-contained, and use Agent Hub (AH) workflow skills for generic development tasks."
+      "Read SYSTEM.md, keep this plugin self-contained, and use Knitten to route Agent Hub workflow intent, output paths, and plugin boundaries."
     ],
     "screenshots": []
   }

@@ -1,4 +1,4 @@
-# Plugin Output Runtime
+# Plugin Path/Output Routing Runtime
 
 ## Status
 
@@ -7,10 +7,11 @@ Implemented. Current local-output hub behavior is extended by
 
 ## Goal
 
-Promote Knitten's path resolver into a small plugin-native output runtime.
+Promote Knitten's path resolver into a small plugin-native path/output routing
+runtime.
 
-The runtime should let Knitten and payload plugins resolve predictable output
-destinations without copying output rules into every skill. It should be
+The runtime should let Knitten and payload plugins route predictable output
+destinations without copying routing rules into every skill. It should be
 generic enough for private payload plugins such as `knitten-all-skills`, but
 small enough that `knitten` does not become a domain workflow bundle.
 
@@ -31,12 +32,12 @@ causes drift:
 
 - plugin install paths can be confused with target workspace paths
 - local scratch paths can spread across unrelated directories
-- private payload plugins must duplicate the same resolver logic
+- private payload plugins must duplicate the same routing logic
 - skills become harder to read because path policy appears inside each workflow
 
 ## Core Principle
 
-`knitten` owns generic output destination resolution.
+`knitten` owns generic AH path/output routing.
 
 Payload plugins own domain meaning.
 
@@ -61,7 +62,7 @@ artifact, tutoring note, or any other domain-specific output means.
 
 ## Scope
 
-This milestone defines output destination resolution.
+This milestone defines output destination routing.
 
 It does not write, validate, or manage output content.
 
@@ -281,7 +282,7 @@ Initial validation should prove:
 3. Add `selectedPersistence` to the JSON output.
 4. Add `knitten-resolve-output` so payload helpers do not need to duplicate
    runtime discovery.
-5. Add output runtime checks to `scripts/doctor.mjs`.
+5. Add path/output routing checks to `scripts/doctor.mjs`.
 6. Update README with the core/payload usage rule.
 7. Update generic AH skills only where they still imply hard-coded output paths.
 8. Add or document the `knitten-all-skills` helper name:
@@ -293,14 +294,14 @@ Initial validation should prove:
 ## Acceptance Criteria
 
 - `knitten` still loads as a minimal Codex plugin.
-- The output runtime is generic and domain-neutral.
+- The path/output routing runtime is generic and domain-neutral.
 - `knitten-all-skills` can call the runtime without duplicating it.
 - No Shotloom-specific output kind is added to `knitten`.
 - Existing AH skills continue to resolve paths through the runtime instead of
   hard-coding local destinations.
 - No active skill or README instruction refers to `scripts/resolve-paths.mjs`.
 - Payload plugins that cannot rely on `PATH` use one local helper for Knitten
-  output runtime calls.
+  path/output routing calls.
 - Payload skills do not repeat the installed plugin fallback path inline.
 - Payload skills do not set or depend on `KNITTEN_PLUGIN_ROOT` directly.
 - Payload-local helpers forward caller arguments without changing the workspace

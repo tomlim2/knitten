@@ -11,12 +11,12 @@ kept as migration context for the earlier `.agent-local/knitten` to
 
 ## Goal
 
-Define where AH workflow outputs go now that Knitten is a Codex plugin.
+Historical migration note for where AH workflow outputs went after Knitten
+became a Codex plugin.
 
-Knitten is a plugin and runtime provider. It must not become the default
-storage repository for every AH workflow artifact. AH outputs belong to the
-active or target workspace unless the output is explicitly about the Knitten
-plugin itself.
+This document predates the current routing-system framing. Current local-output
+ownership is defined by
+[AH Local Output Hub Storage](ah-local-output-hub-storage.md).
 
 ## Problem
 

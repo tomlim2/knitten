@@ -1,4 +1,4 @@
-# Plugin-Native Core Reboot
+# Plugin-Native Routing Core Reboot
 
 ## Status
 
@@ -6,9 +6,9 @@ Draft.
 
 ## Goal
 
-Rebuild Knitten Core as the smallest useful Codex plugin shell.
+Rebuild Knitten as the smallest useful Codex plugin for Agent Hub routing.
 
-The first milestone is not a full operating system. It is a minimal plugin that
+The first milestone is not the full routing system. It is a minimal plugin that
 Codex can discover from the personal marketplace, validate, and load without
 legacy harness deploy paths.
 
@@ -27,8 +27,9 @@ This makes `knitten` harder to reason about as a standalone Codex plugin.
 
 ## Desired Shape
 
-`knitten` is the plugin shell. It owns only the minimum files needed for Codex
-plugin identity, entry guidance, validation, and local marketplace registration.
+`knitten` is the Agent Hub routing system. The initial reboot owns only the
+minimum files needed for Codex plugin identity, entry guidance, validation, and
+local marketplace registration.
 
 `knitten-all-skills` is a payload plugin. It owns skills, standards, examples,
 domain workflows, and working documents.
@@ -71,8 +72,8 @@ registration milestone:
 | Historical plans and reports | Archive/reference material, not runtime core. |
 | Private config paths | Not portable plugin behavior. |
 | Harness-specific paths | Codex plugin should not depend on another harness's runtime layout. |
-| Output/path registries | Defer until the minimal plugin shell is proven. |
-| Artifact-pack registries | Defer until plugin shell registration is stable. |
+| Output/path registries | Defer until minimal plugin registration is proven. |
+| Artifact-pack registries | Defer until plugin registration is stable. |
 
 ## Forbidden Runtime Assumptions
 
