@@ -42,17 +42,70 @@ node --check scripts/doctor.mjs
 node --check scripts/resolve-output.mjs
 ```
 
-## Local Registration
+## Local Codex Installation
+
+Knitten is the core plugin. `knitten-all-skills` is the DLC-style payload
+plugin. In normal local use, both should appear in the same `knitten-local`
+marketplace:
+
+```text
+knitten@knitten-local
+knitten-all-skills@knitten-local
+```
+
+Codex reads the local marketplace from this config:
+
+```toml
+[marketplaces.knitten-local]
+source_type = "local"
+source = "/Users/deemooooooooo"
+
+[plugins."knitten@knitten-local"]
+enabled = true
+
+[plugins."knitten-all-skills@knitten-local"]
+enabled = true
+```
+
+The marketplace manifest lives at:
+
+```text
+/Users/deemooooooooo/.agents/plugins/marketplace.json
+```
+
+Runtime plugin copies live under:
+
+```text
+/Users/deemooooooooo/plugins/knitten
+/Users/deemooooooooo/plugins/knitten-all-skills
+```
+
+Install or refresh the core plugin:
 
 ```bash
 node scripts/materialize-local-plugin.mjs
 node scripts/doctor.mjs
-bin/knitten-resolve-output
-python3 <path-to-validate_plugin.py> ~/plugins/knitten
+codex plugin add knitten@knitten-local
+codex plugin list
 ```
 
 The materialized copy receives a local `+codex.<timestamp>` version suffix. The
 source manifest stays stable.
+
+Then install or refresh the payload plugin from the sibling
+`knitten-all-skills` repository:
+
+```bash
+cd /Users/deemooooooooo/Desktop/www/plugins/knitten-all-skills
+node scripts/materialize-local-plugin.mjs
+node scripts/doctor.mjs
+codex plugin add knitten-all-skills@knitten-local
+codex plugin list
+```
+
+Restart Codex after changing `~/.codex/config.toml` or refreshing plugin
+installations. Existing sessions may keep the old skill list until a new
+session starts.
 
 ## License
 
