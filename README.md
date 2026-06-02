@@ -27,6 +27,7 @@ Repository roles:
 | `SYSTEM.md` | Minimal plugin boundary contract. |
 | `agent/AGENTS.md` | Codex adapter entry document. |
 | `skills/` | Generic Knitten and Agent Hub workflow skills. |
+| `document-templates/` | Generic Agent Hub document templates. |
 | `bin/knitten-resolve-output` | Payload-helper-facing output runtime shim. |
 | `scripts/doctor.mjs` | Check source and personal-marketplace installation state. |
 | `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
@@ -47,7 +48,7 @@ node --check scripts/resolve-output.mjs
 node scripts/materialize-local-plugin.mjs
 node scripts/doctor.mjs
 bin/knitten-resolve-output
-python3 <path-to-validate_plugin.py> ~/.agents/plugins/plugins/knitten
+python3 <path-to-validate_plugin.py> ~/plugins/knitten
 ```
 
 The materialized copy receives a local `+codex.<timestamp>` version suffix. The

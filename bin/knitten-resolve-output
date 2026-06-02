@@ -30,7 +30,7 @@ resolve_plugin_root() {
     return 0
   fi
 
-  local default_root="$HOME/.agents/plugins/plugins/knitten"
+  local default_root="$HOME/plugins/knitten"
   if [[ -f "$default_root/scripts/resolve-output.mjs" ]]; then
     printf '%s\n' "$default_root"
     return 0

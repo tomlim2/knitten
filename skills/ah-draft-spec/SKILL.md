@@ -23,6 +23,9 @@ needs a written contract before implementation.
 
 ## Spec Shape
 
+Use `document-templates/agent-hub/spec.md` when available. The spec document
+contains both the work contract and the design plan section.
+
 Include:
 
 - status

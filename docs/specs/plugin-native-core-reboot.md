@@ -105,7 +105,7 @@ docs/specs/plugin-native-core-reboot.md
 3. Delete extracted registries, resolvers, templates, and public-core overlay
    files from `knitten`.
 4. Add a small standalone local materialization script that:
-   - copies this checkout into `~/.agents/plugins/plugins/knitten`
+   - copies this checkout into `~/plugins/knitten`
    - writes or updates `~/.agents/plugins/marketplace.json`
    - uses `./plugins/knitten` as the marketplace source path
    - applies a local `+codex.<timestamp>` cachebuster only to the copied
@@ -119,7 +119,7 @@ docs/specs/plugin-native-core-reboot.md
 - `node scripts/materialize-local-plugin.mjs --dry-run` passes.
 - `node scripts/materialize-local-plugin.mjs` writes the personal marketplace
   entry and physical plugin copy.
-- `python3 validate_plugin.py ~/.agents/plugins/plugins/knitten` passes.
+- `python3 validate_plugin.py ~/plugins/knitten` passes.
 - Searching the core tree for forbidden runtime assumptions returns no active
   runtime references.
 - The core tree contains no Shotloom-specific files.

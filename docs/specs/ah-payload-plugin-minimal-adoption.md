@@ -138,6 +138,6 @@ that domain or source unless the migrated skill explicitly owns that dependency.
 - `node scripts/materialize-local-plugin.mjs` registers `knitten` in the
   personal marketplace.
 - `node scripts/doctor.mjs` reports `ok: true`.
-- `python3 <validate_plugin.py> ~/.agents/plugins/plugins/knitten` passes.
+- `python3 <validate_plugin.py> ~/plugins/knitten` passes.
 - The first payload skill, `ah-status`, is available in the plugin tree.
 - No non-AH domain skills are imported.

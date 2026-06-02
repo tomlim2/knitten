@@ -78,7 +78,7 @@ requirements.
 - `node scripts/doctor.mjs` passes after local materialization.
 - `node scripts/materialize-local-plugin.mjs` refreshes the personal marketplace
   copy.
-- `python3 <validate_plugin.py> ~/.agents/plugins/plugins/knitten` passes.
+- `python3 <validate_plugin.py> ~/plugins/knitten` passes.
 - CI allowlist includes only the minimal shell plus this doctor/status surface.
 - Active runtime docs contain no legacy harness, domain, or private path
   assumptions.

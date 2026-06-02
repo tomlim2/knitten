@@ -55,6 +55,7 @@ jobs:
             "agent/AGENTS.md",
             "docs/specs/doctor-status-skill.md",
             "docs/specs/plugin-native-core-reboot.md",
+            "document-templates/agent-hub/spec.md",
             "scripts/doctor.mjs",
             "scripts/materialize-local-plugin.mjs",
             "scripts/resolve-output.mjs",
@@ -72,7 +73,8 @@ jobs:
           for (const file of files) {
             const allowedSpec = file.startsWith("docs/specs/") && file.endsWith(".md");
             const allowedSkill = file.startsWith("skills/") && file.endsWith("/SKILL.md");
-            if (!allowed.has(file) && !allowedSpec && !allowedSkill) {
+            const allowedTemplate = file.startsWith("document-templates/") && file.endsWith(".md");
+            if (!allowed.has(file) && !allowedSpec && !allowedSkill && !allowedTemplate) {
               throw new Error(`unexpected file in minimal plugin shell: ${file}`);
             }
           }
@@ -94,7 +96,7 @@ jobs:
           const fs = require("fs");
           const path = require("path");
           const output = JSON.parse(fs.readFileSync("/tmp/knitten-output.json", "utf8"));
-          const expectedPath = path.join(process.cwd(), ".agent-local", "knitten", "reviews", "ci.json");
+          const expectedPath = path.join(process.cwd(), ".agent-local", "ah", "reviews", "ci.json");
           if (fs.realpathSync(output.pluginRoot) !== fs.realpathSync(process.cwd())) {
             throw new Error(`unexpected pluginRoot: ${output.pluginRoot}`);
           }
