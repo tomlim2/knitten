@@ -102,8 +102,10 @@ discovery belongs to the command shim.
 
 Resolution order:
 
-1. `KNITTEN_PLUGIN_ROOT` when the caller already set it.
-2. `KNITTEN_MARKETPLACE_ROOT` when the caller points to a marketplace root.
+1. `KNITTEN_PLUGIN_ROOT` when the caller already knows the exact Knitten plugin
+   root.
+2. `KNITTEN_PLUGINS_ROOT` when the caller knows the directory containing plugin
+   folders.
 3. The checkout containing the executed `bin/knitten-resolve-output` shim.
 4. The default Codex personal marketplace copy:
    `~/plugins/knitten`.
@@ -137,7 +139,7 @@ The payload-local helper should forward caller arguments unchanged and own the
 installed-plugin fallback:
 
 ```bash
-"${KNITTEN_PLUGIN_HOME:-$HOME/plugins}/knitten/bin/knitten-resolve-output" "$@"
+"${KNITTEN_PLUGINS_ROOT:-$HOME/plugins}/knitten/bin/knitten-resolve-output" "$@"
 ```
 
 Individual payload skills call the payload-local helper, not the installed
