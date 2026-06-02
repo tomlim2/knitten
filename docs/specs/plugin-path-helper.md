@@ -3,7 +3,7 @@
 ## Status
 
 Superseded by [Plugin Output Runtime](plugin-output-runtime.md) and
-[AH Output Location Plugin Boundary](ah-output-location-plugin-boundary.md).
+[AH Local Output Hub Storage](ah-local-output-hub-storage.md).
 Do not use the paths in this document as current runtime behavior.
 
 The names and paths below are historical only. In particular, `finding-json`

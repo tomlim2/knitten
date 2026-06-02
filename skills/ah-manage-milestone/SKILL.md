@@ -31,8 +31,8 @@ Do not create or mutate external milestone records unless the user asks.
 ## Path Handling
 
 Read milestone state from the active workspace or connected tool. If temporary
-scratch space is needed, use `workspaceLocalRoot` from:
+scratch space is needed, resolve a local AH output path from:
 
 ```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --create
+<knitten-plugin-root>/bin/knitten-resolve-output --kind=task-json --name=<milestone-name> --create
 ```

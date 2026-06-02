@@ -31,7 +31,7 @@ Repository roles:
 | `bin/knitten-resolve-output` | Payload-helper-facing output runtime shim. |
 | `scripts/doctor.mjs` | Check source and personal-marketplace installation state. |
 | `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
-| `scripts/resolve-output.mjs` | Resolve plugin and active workspace output destinations. |
+| `scripts/resolve-output.mjs` | Resolve durable workspace docs and hub-owned AH local outputs. |
 | `docs/specs/` | Design notes for the plugin core and runtime. |
 
 ## Validate
