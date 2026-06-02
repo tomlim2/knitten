@@ -64,6 +64,8 @@ After linking, initialize machine config:
 
 This populates `~/.claude/private/agent-hub-config/` from templates in `agent/skills/ah-manage-config/*.template.json`.
 
+Codex plugin install: [`docs/reference/codex-plugin-install.md`](docs/reference/codex-plugin-install.md).
+
 ---
 
 <!-- generated:readme-inventory -->

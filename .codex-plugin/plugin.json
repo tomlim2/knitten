@@ -1,0 +1,38 @@
+{
+  "name": "knitten",
+  "version": "0.1.0",
+  "description": "Knitten LLM-first agent operating system skills and workflows.",
+  "author": {
+    "name": "deemooooooooo"
+  },
+  "homepage": "https://github.com/tomlim2/knitten",
+  "repository": "https://github.com/tomlim2/knitten",
+  "license": "UNLICENSED",
+  "keywords": [
+    "knitten",
+    "agent-hub",
+    "skills",
+    "llm-first",
+    "artifact-pack"
+  ],
+  "skills": "./agent/skills/",
+  "interface": {
+    "displayName": "Knitten",
+    "shortDescription": "LLM-first skill operating system",
+    "longDescription": "Knitten provides LLM-first skills, rules, standards, document templates, validators, and artifact-pack migration workflows for operating Codex and related agent harnesses.",
+    "developerName": "deemooooooooo",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/tomlim2/knitten",
+    "privacyPolicyURL": "https://github.com/tomlim2/knitten",
+    "termsOfServiceURL": "https://github.com/tomlim2/knitten",
+    "defaultPrompt": [
+      "Use Knitten skills to plan, implement, review, and maintain agent-hub artifacts"
+    ],
+    "brandColor": "#111827",
+    "screenshots": []
+  }
+}
