@@ -22,9 +22,12 @@ Use this leaf skill only when the user explicitly asks to create a PR.
 ## Steps
 
 1. Confirm the working tree state.
-2. Push the current branch when needed.
-3. Create the PR using repository conventions.
-4. Report the PR URL and any checks already known.
+2. For Knitten or Knitten All Skills changes, read
+   `docs/guidelines/plugin-boundary-pr-check.md` before staging, pushing, or
+   creating the PR.
+3. Push the current branch when needed.
+4. Create the PR using repository conventions.
+5. Report the PR URL and any checks already known.
 
 Do not merge the PR from this skill.
 

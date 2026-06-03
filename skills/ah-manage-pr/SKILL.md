@@ -32,6 +32,9 @@ or merge a pull request.
 - Do not create or merge a PR without explicit user request.
 - Preserve repository-specific PR conventions.
 - Treat GitHub review comments by content, not by author type.
+- For Knitten or Knitten All Skills changes, read
+  `docs/guidelines/plugin-boundary-pr-check.md` before PR creation, push,
+  merge, or check handoff.
 
 ## Path Handling
 
