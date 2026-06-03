@@ -50,7 +50,7 @@ artifact, tutoring note, or any other domain-specific output means.
 | Term | Meaning |
 |------|---------|
 | Plugin root | The physical installed or source checkout containing the runtime script. |
-| Hub root | The Knitten source checkout that owns generic AH local storage. |
+| Hub root | The current Knitten plugin root that owns generic AH local storage. |
 | Workspace root | The active repository or workspace where the user is working. |
 | Target root | The repository, plugin, or domain surface the output is about. |
 | Local output root | `.agent-local/ah` under the hub root. |
@@ -172,7 +172,7 @@ The command returns JSON with at least:
 | Field | Meaning |
 |-------|---------|
 | `pluginRoot` | Physical Knitten plugin checkout containing the script. |
-| `hubRoot` | Knitten source checkout that owns writable generic AH local storage. |
+| `hubRoot` | Current Knitten plugin root that owns writable generic AH local storage. |
 | `hubLocalRoot` | `.agent-local/ah` under `hubRoot`. |
 | `workspaceRoot` | Resolved active workspace root. |
 | `workspaceLocalRoot` | Metadata path under the active workspace root; not the default local write target. |

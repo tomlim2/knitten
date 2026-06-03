@@ -3,7 +3,6 @@ import fs from "node:fs";
 import path from "node:path";
 
 const PLUGIN_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
-const MATERIALIZED_SOURCE_PATH = path.join(PLUGIN_ROOT, ".codex-plugin", "materialized-source.json");
 
 function parseArgs(argv) {
   const args = {
@@ -109,31 +108,22 @@ function hasKnittenManifest(root) {
   }
 }
 
-function hasGitMetadata(root) {
-  return fs.existsSync(path.join(root, ".git"));
-}
-
-function isSourceCheckout(root) {
-  return hasKnittenManifest(root) && hasGitMetadata(root);
-}
-
 function resolveHubRoot(explicitHubRoot) {
   const candidateReaders = [
     () => explicitHubRoot,
     () => process.env.KNITTEN_HUB_ROOT,
-    () => readJsonIfExists(MATERIALIZED_SOURCE_PATH)?.sourceRoot,
-    () => (isSourceCheckout(PLUGIN_ROOT) ? PLUGIN_ROOT : ""),
+    () => PLUGIN_ROOT,
   ];
 
   for (const readCandidate of candidateReaders) {
     const candidate = readCandidate();
     if (!String(candidate || "").trim()) continue;
     const hubRoot = path.resolve(candidate);
-    if (isSourceCheckout(hubRoot)) return hubRoot;
+    if (hasKnittenManifest(hubRoot)) return hubRoot;
   }
 
   throw new Error(
-    "could not resolve Knitten hub root; set --hub-root or KNITTEN_HUB_ROOT to the Knitten source checkout",
+    "could not resolve Knitten hub root; set --hub-root or KNITTEN_HUB_ROOT to a Knitten plugin root",
   );
 }
 

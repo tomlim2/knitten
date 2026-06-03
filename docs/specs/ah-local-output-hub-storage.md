@@ -9,7 +9,7 @@ Draft.
 Define the local-output hub behavior of Knitten's Agent Hub routing system.
 
 Knitten owns generic AH path/output routing. Generic AH temporary files and
-operational records should therefore route to the Knitten source checkout's
+operational records should therefore route to the current Knitten plugin root's
 local AH storage, not scatter across every active or target workspace.
 
 This spec supersedes the local-output ownership parts of
@@ -60,7 +60,7 @@ Out of scope:
 
 - Durable workspace documents such as specs and design plans.
 - Domain-specific payload plugin caches, such as Shotloom PR watcher state.
-- Writing AH output files into installed plugin copies under `~/plugins/knitten`.
+- Writing AH output files into payload plugin workspaces.
 - Generic local-output content schemas beyond target metadata.
 - Migrating every existing old local artifact.
 - Adding a broad output contract system beyond generic path/output routing.
@@ -81,18 +81,18 @@ Out of scope:
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
 | Durable specs/design plans | durable | Continue to resolve under `targetRoot/docs/...`. |
-| Generic AH local files | local | Resolve under the Knitten source checkout's `.agent-local/ah/...`. |
-| Operational findings | local | Resolve under the Knitten source checkout's `.agent-local/ah/operational-findings/YYYY-MM-DD/...`. |
+| Generic AH local files | local | Resolve under the current Knitten plugin root's `.agent-local/ah/...`. |
+| Operational findings | local | Resolve under the current Knitten plugin root's `.agent-local/ah/operational-findings/YYYY-MM-DD/...`. |
 | Target metadata | local JSON metadata | Resolver output records what repository the file is about. |
 
 ## Contract
 
-- Installed plugin copies are never AH output write targets.
-- The Knitten source checkout is the AH local storage hub.
+- Payload plugin copies and workspaces are never generic AH output write targets.
+- The current Knitten plugin root is the AH local storage hub.
 - `workspaceRoot` means where the user is working.
 - `targetRoot` means what repository, plugin, or domain surface the output is
   about.
-- `hubRoot` means the Knitten source checkout that owns local AH storage.
+- `hubRoot` means the current Knitten plugin root that owns local AH storage.
 - Generic local outputs use `hubRoot/.agent-local/ah/...`.
 - `hubRoot/.agent-local/**` is gitignored and never committed.
 - Durable `spec` and `design-plan` outputs continue to use `targetRoot/docs/...`.
@@ -105,7 +105,7 @@ Out of scope:
 | Field | Meaning |
 |-------|---------|
 | `pluginRoot` | Physical Knitten runtime root used by the command. May be installed or source. |
-| `hubRoot` | Knitten source checkout used for writable local AH storage. |
+| `hubRoot` | Current Knitten plugin root used for writable local AH storage. |
 | `workspaceRoot` | Active workspace. |
 | `targetRoot` | Repository or plugin the output is about. |
 | `hubLocalRoot` | `hubRoot/.agent-local/ah`. |
@@ -161,26 +161,15 @@ The finding content should include target metadata when useful:
 
 ## Hub Root Resolution
 
-The resolver must not write into an installed plugin copy.
-
 Resolution order:
 
 1. `--hub-root=<path>` when explicitly provided.
 2. `KNITTEN_HUB_ROOT` when set.
-3. Materialized-copy metadata written by `scripts/materialize-local-plugin.mjs`,
-   containing the source checkout path used for installation.
-4. If `pluginRoot` is itself a source checkout, use `pluginRoot`.
-5. Fail with a clear error if no hub root can be resolved.
+3. The current Knitten `pluginRoot`.
+4. Fail with a clear error if no hub root can be resolved.
 
 The resolver must validate the selected hub root before using it. A valid hub
-root has Knitten source files and is not an installed plugin copy. The practical
-source-checkout signal is the presence of Git metadata plus Knitten plugin
-files.
-
-Materialized metadata is generated install-time data, not an AH output. It may
-live inside the installed plugin copy, but it points AH output writes back to the
-source checkout. The installed copy itself remains read-only during normal
-output resolution.
+root has a Knitten plugin manifest. It does not need Git metadata.
 
 ## Skill Alias Behavior
 
@@ -218,18 +207,18 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 
 ## Validation
 
-- `node scripts/resolve-output.mjs --kind=review-json --name=test --hub-root=<knitten-source>`
-  returns `<knitten-source>/.agent-local/ah/reviews/test.json`.
-- `node scripts/resolve-output.mjs --skill=ah-report-finding --name=test --target-root=<knitten-all-skills> --hub-root=<knitten-source>`
-  returns `<knitten-source>/.agent-local/ah/operational-findings/<today>/test.json`
+- `node scripts/resolve-output.mjs --kind=review-json --name=test --hub-root=<knitten-root>`
+  returns `<knitten-root>/.agent-local/ah/reviews/test.json`.
+- `node scripts/resolve-output.mjs --skill=ah-report-finding --name=test --target-root=<knitten-all-skills> --hub-root=<knitten-root>`
+  returns `<knitten-root>/.agent-local/ah/operational-findings/<today>/test.json`
   and includes `selectedTargetRoot=<knitten-all-skills>`.
-- `node scripts/resolve-output.mjs --skill=ah-draft-spec --name=test --target-root=<target> --hub-root=<knitten-source>`
+- `node scripts/resolve-output.mjs --skill=ah-draft-spec --name=test --target-root=<target> --hub-root=<knitten-root>`
   still returns `<target>/docs/specs/test.md`.
-- Running from the installed plugin copy resolves `hubRoot` from materialized
-  metadata when available.
-- Running from the installed plugin copy without `--hub-root`,
-  `KNITTEN_HUB_ROOT`, or materialized source metadata fails instead of creating
-  local files under `~/plugins/knitten`.
+- Running from the installed plugin copy resolves `hubRoot` to the installed
+  Knitten plugin root.
+- Running from a payload plugin shim does not emit the Knitten source checkout
+  path unless the caller explicitly passes it as `--hub-root` or
+  `KNITTEN_HUB_ROOT`.
 - `node scripts/doctor.mjs` proves source and materialized-copy behavior.
 - `.gitignore` excludes `.agent-local/`.
 - Plugin validation passes for source and materialized copy.
@@ -237,14 +226,13 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 
 ## Acceptance Criteria
 
-- Generic AH local output paths are centralized under the Knitten source
-  checkout.
+- Generic AH local output paths are centralized under the current Knitten plugin
+  root.
 - Hub-local files under `.agent-local/**` are ignored by git.
 - Durable docs still resolve to the target workspace.
-- Installed plugin copies remain read-only runtime bundles for AH output
+- Payload plugin copies remain free of generic AH output ownership.
+- Materialized Knitten copies do not need source-root metadata for AH output
   resolution.
-- Installed plugin copies can carry generated source-root metadata, but runtime
-  output writes still go to the source checkout.
 - Resolver JSON clearly separates `selectedOwnerRoot` from
   `selectedTargetRoot`.
 - Operational findings can be triaged from one Knitten-local inbox while still
@@ -253,10 +241,10 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 
 ## Decisions
 
-- Use `KNITTEN_HUB_ROOT` as the public environment variable. The storage hub is
-  intentionally the Knitten source checkout, not a generic external AH service.
-- Materialized plugin copies should include generated source-root metadata so
-  installed runtime calls can still find the hub.
+- Use `KNITTEN_HUB_ROOT` as the public override environment variable. The
+  default storage hub is the current Knitten plugin root.
+- Materialized plugin copies should not include generated source-root metadata
+  for hub resolution.
 - Do not automatically delete old scattered `.agent-local/ah` trees. Leave them
   as historical scratch unless a separate cleanup task is requested.
 
@@ -282,7 +270,7 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 - Updated local output paths for generic local kinds.
 - Updated doctor checks for hub-owned local outputs.
 - Updated docs explaining the change from workspace-local to hub-local storage.
-- Generated materialized-copy metadata containing the source checkout path.
+- Materialization preserves existing hub-local `.agent-local/` data.
 - `.gitignore` contract confirmed or updated for `.agent-local/`.
 
 ### Implementation Sequence
@@ -297,21 +285,21 @@ Changes:
 
 - Parse `--hub-root=<path>`.
 - Read `KNITTEN_HUB_ROOT`.
-- Read materialized-copy source-root metadata.
-- Use source `pluginRoot` as fallback only when it has Git metadata.
+- Use the current Knitten `pluginRoot` as fallback when it has a Knitten
+  manifest.
 - Return `hubRoot` and `hubLocalRoot`.
 
 Risk:
 
-- Stale materialized metadata could point at a moved source checkout.
+- Explicit `KNITTEN_HUB_ROOT` could point at a moved plugin root.
 
 Proof:
 
 - Resolver returns hub fields.
-- Installed-copy resolver uses materialized metadata when available.
-- Installed-copy resolver fails clearly when hub root is unavailable.
+- Installed-copy resolver uses the installed Knitten plugin root by default.
+- Resolver fails clearly when no valid Knitten plugin root is available.
 
-#### 2. Write Materialized Hub Metadata
+#### 2. Preserve Hub Local Data During Materialization
 
 Files:
 
@@ -320,21 +308,24 @@ Files:
 
 Changes:
 
-- During materialization, write generated metadata in the copied plugin that
-  records the source checkout path.
-- Exclude that metadata from source-only expectations if it is generated only in
-  the copy.
-- Doctor validates copied resolver calls use the source checkout as `hubRoot`.
+- During materialization, copy the plugin without generated source-root
+  metadata.
+- Preserve `targetDir/.agent-local` so local hub records survive plugin refresh.
+- Doctor validates copied resolver calls use the copied Knitten plugin root as
+  `hubRoot`.
 
 Risk:
 
-- The metadata path becomes stale if the source checkout is moved.
+- Explicit `KNITTEN_HUB_ROOT` can become stale if the selected plugin root is
+  moved.
 
 Proof:
 
 - `node scripts/materialize-local-plugin.mjs`
 - `node scripts/doctor.mjs`
 - `node /Users/younsoolim/plugins/knitten/scripts/doctor.mjs`
+- A file created under `/Users/younsoolim/plugins/knitten/.agent-local/ah/`
+  still exists after materialization.
 
 #### 3. Move Generic Local Kinds To Hub
 
@@ -373,7 +364,8 @@ Changes:
 
 - Explain that Knitten routes generic AH local outputs to the hub.
 - Explain that `targetRoot` is semantic attribution, not storage ownership.
-- Keep installed plugin copies read-only.
+- Explain that payload plugin copies do not own generic AH local outputs.
+- Explain that Knitten materialization preserves `.agent-local`.
 - Mark older location docs as superseded instead of leaving competing current
   rules.
 
