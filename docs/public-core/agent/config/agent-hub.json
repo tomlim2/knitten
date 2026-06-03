@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "harnesses": [
+    {
+      "id": "codex-plugin",
+      "displayName": "Codex Plugin",
+      "entryDocument": "agent/AGENTS.md",
+      "firstRead": "First shared-policy read: `SYSTEM.md`.",
+      "adapter": "codex"
+    }
+  ],
+  "sharedLayers": [
+    {
+      "id": "config",
+      "path": "agent/config",
+      "kind": "config",
+      "loadMode": "config",
+      "inventorySource": "agent/config/agent-hub.json"
+    },
+    {
+      "id": "lib",
+      "path": "agent/lib",
+      "kind": "lib",
+      "loadMode": "library",
+      "inventorySource": "agent/lib/README.md"
+    }
+  ],
+  "registries": [
+    {
+      "id": "agent-hub",
+      "path": "agent/config/agent-hub.json",
+      "domain": "plugin core routing metadata",
+      "format": "json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-schema",
+      "path": "agent/config/artifact-pack.schema.json",
+      "domain": "artifact pack manifest schema",
+      "format": "json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "artifact-pack-core-capabilities",
+      "path": "agent/config/artifact-pack-core-capabilities.json",
+      "domain": "core capability ids accepted by artifact pack dependency refs",
+      "format": "json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "outputs",
+      "path": "agent/config/outputs.json",
+      "domain": "output contract registry",
+      "format": "json",
+      "secretPolicy": "no-secrets"
+    },
+    {
+      "id": "local-artifact-paths",
+      "path": "agent/config/local-artifact-paths.json",
+      "domain": "local artifact path registry",
+      "format": "json",
+      "secretPolicy": "no-secrets"
+    }
+  ],
+  "generatedDocuments": [],
+  "runtimePathPolicies": [],
+  "validators": []
+}

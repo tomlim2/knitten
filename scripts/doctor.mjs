@@ -84,6 +84,21 @@ function runJson(command, args, options = {}) {
   return JSON.parse(result.stdout);
 }
 
+function checkConfigRegistries(root) {
+  const required = [
+    ["agent/config/outputs.json", (value) => value.schemaVersion === 1 && Array.isArray(value.entries)],
+    ["agent/config/local-artifact-paths.json", (value) => value.schemaVersion === 1 && value.root === ".agent-local" && Array.isArray(value.entries)],
+    ["agent/config/local-helper-paths.json", (value) => value.schemaVersion === 1 && Array.isArray(value.entries)],
+  ];
+  for (const [relativePath, isValid] of required) {
+    const absolutePath = path.join(root, relativePath);
+    if (!fs.existsSync(absolutePath)) throw new Error(`missing ${relativePath}`);
+    const parsed = readJson(absolutePath);
+    if (!isValid(parsed)) throw new Error(`invalid registry shape: ${relativePath}`);
+  }
+  return `${required.length} registries`;
+}
+
 function check(checks, id, run) {
   try {
     const detail = run();
@@ -127,6 +142,10 @@ function main() {
     if (!fs.existsSync(sourceOutputScriptPath)) throw new Error(`missing ${sourceOutputScriptPath}`);
     if (!fs.existsSync(sourceOutputShimPath)) throw new Error(`missing ${sourceOutputShimPath}`);
     return `${sourceOutputScriptPath}, ${sourceOutputShimPath}`;
+  });
+
+  check(checks, "source-config-registries", () => {
+    return checkConfigRegistries(REPO_ROOT);
   });
 
   check(checks, "source-output-kinds", () => {
@@ -271,6 +290,10 @@ function main() {
       throw new Error(`copied version lacks +codex. cachebuster: ${copiedManifest.version}`);
     }
     return copiedManifest.version;
+  });
+
+  check(checks, "copied-config-registries", () => {
+    return checkConfigRegistries(copiedRoot);
   });
 
   check(checks, "copied-output-shim", () => {

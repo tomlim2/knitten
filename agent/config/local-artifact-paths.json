@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "root": ".agent-local",
+  "entries": [
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "brief",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/brief.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning brief",
+      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "schemaKind": "shotloom-start-task-brief"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "spec",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/spec.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning spec",
+      "schemaKind": "shotloom-planning-spec"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "design-plan",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/design-plan.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning design plan",
+      "schemaKind": "shotloom-planning-design-plan"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "questions",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/questions.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning open questions",
+      "schemaKind": "shotloom-planning-questions"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "planning",
+      "item": "manifest",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        }
+      ],
+      "path": ".agent-local/shotloom/planning/{stl}/manifest.json",
+      "cleanupPath": ".agent-local/shotloom/planning/{stl}",
+      "description": "Shotloom planning manifest",
+      "schemaKind": "shotloom-planning-manifest"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "before-pr",
+      "item": "readiness",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        },
+        {
+          "name": "safeBranch",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/readiness.json",
+      "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
+      "description": "Shotloom before-PR readiness result",
+      "schemaKind": "shotloom-before-pr-readiness"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "before-pr",
+      "item": "code-blockers",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        },
+        {
+          "name": "safeBranch",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/code-blockers.json",
+      "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
+      "description": "Shotloom before-PR code blockers",
+      "schemaKind": "shotloom-before-pr-code-blockers"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "before-pr",
+      "item": "docs-blockers",
+      "kind": "file",
+      "args": [
+        {
+          "name": "stl",
+          "pattern": "^stl-[0-9]+$",
+          "normalize": "lowercase"
+        },
+        {
+          "name": "safeBranch",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/docs-blockers.json",
+      "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
+      "description": "Shotloom before-PR docs blockers",
+      "schemaKind": "shotloom-before-pr-docs-blockers"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "watcher-pid",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/watcher.pid",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher pid"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "watcher-log",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/watcher.log",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher log"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "react-log",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/react.log",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR reaction log"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "state",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/state.json",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher state",
+      "schemaKind": "shotloom-pr-state"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "last-event",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/last-event.json",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher last event",
+      "schemaKind": "shotloom-pr-last-event"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "cache",
+      "kind": "directory",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR local workflow cache directory"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "reply-plan",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/reply-plan.json",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR response reply plan",
+      "schemaKind": "shotloom-pr-reply-plan"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "pause",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/watcher.paused",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher pause marker"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "lock",
+      "kind": "file",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/watch.lock",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher flock lock"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "pr",
+      "item": "lock-dir",
+      "kind": "directory",
+      "args": [
+        {
+          "name": "pr",
+          "pattern": "^[0-9]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/pr/{pr}/watch.lock.d",
+      "cleanupPath": ".agent-local/shotloom/pr/{pr}",
+      "description": "Shotloom PR watcher mkdir lock"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "deploy",
+      "item": "release-notes",
+      "kind": "file",
+      "args": [
+        {
+          "name": "key",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/deploy/{key}/release-notes.md",
+      "cleanupPath": ".agent-local/shotloom/deploy/{key}",
+      "description": "Shotloom deploy release notes"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "deploy",
+      "item": "manifest",
+      "kind": "file",
+      "args": [
+        {
+          "name": "key",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/deploy/{key}/manifest.json",
+      "cleanupPath": ".agent-local/shotloom/deploy/{key}",
+      "description": "Shotloom deploy manifest",
+      "schemaKind": "shotloom-deploy-manifest"
+    },
+    {
+      "owner": "shotloom",
+      "artifactType": "deploy",
+      "item": "rollback",
+      "kind": "file",
+      "args": [
+        {
+          "name": "key",
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        }
+      ],
+      "path": ".agent-local/shotloom/deploy/{key}/rollback.json",
+      "cleanupPath": ".agent-local/shotloom/deploy/{key}",
+      "description": "Shotloom deploy rollback data",
+      "schemaKind": "shotloom-deploy-rollback"
+    },
+    {
+      "owner": "ah",
+      "artifactType": "reports",
+      "item": "handoff",
+      "kind": "file",
+      "args": [
+        {
+          "name": "date",
+          "pattern": "^[0-9]{8}$"
+        },
+        {
+          "name": "slug",
+          "pattern": "^[a-zA-Z0-9._-]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/reports/{date}-{slug}.json",
+      "cleanupPath": ".agent-local/reports",
+      "description": "Agent-hub JSON-only cross-session handoff report",
+      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "schemaKind": "session-handoff"
+    },
+    {
+      "owner": "ah",
+      "artifactType": "operational-findings",
+      "item": "inbox",
+      "kind": "file",
+      "args": [
+        {
+          "name": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        }
+      ],
+      "path": ".agent-local/ah/operational-findings/{date}/inbox.json",
+      "cleanupPath": ".agent-local/ah/operational-findings/{date}",
+      "description": "Agent-hub operational findings inbox",
+      "schemaKind": "operational-findings-inbox"
+    },
+    {
+      "owner": "ah",
+      "artifactType": "operational-findings",
+      "item": "report",
+      "kind": "file",
+      "args": [
+        {
+          "name": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        {
+          "name": "slug",
+          "pattern": "^[a-zA-Z0-9._-]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/ah/operational-findings/{date}/reports/{slug}.json",
+      "cleanupPath": ".agent-local/ah/operational-findings/{date}",
+      "description": "Agent-hub operational finding report",
+      "schemaKind": "operational-finding-report"
+    }
+  ]
+}
