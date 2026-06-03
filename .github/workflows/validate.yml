@@ -40,56 +40,14 @@ jobs:
           fi
 
       - name: Validate plugin manifest
-        run: |
-          node - <<'NODE'
-          const fs = require("fs");
-          const { execFileSync } = require("child_process");
-          // Keep this list in sync with docs/specs/plugin-native-core-reboot.md.
-          const requiredFiles = [
-            ".codex-plugin/plugin.json",
-            ".github/workflows/validate.yml",
-            ".gitignore",
-            "LICENSE",
-            "README.md",
-            "SYSTEM.md",
-            "agent/AGENTS.md",
-            "docs/specs/doctor-status-skill.md",
-            "docs/specs/plugin-native-core-reboot.md",
-            "document-templates/agent-hub/spec.md",
-            "scripts/doctor.mjs",
-            "scripts/materialize-local-plugin.mjs",
-            "scripts/resolve-output.mjs",
-            "bin/knitten-resolve-output",
-            "skills/knitten-status/SKILL.md",
-          ];
-          for (const file of requiredFiles) {
-            if (!fs.existsSync(file)) throw new Error(`missing required file: ${file}`);
-          }
-          const allowed = new Set(requiredFiles);
-          const files = execFileSync("git", ["ls-files"], { encoding: "utf8" })
-            .trim()
-            .split("\n")
-            .filter(Boolean);
-          for (const file of files) {
-            const allowedSpec = file.startsWith("docs/specs/") && file.endsWith(".md");
-            const allowedSkill = file.startsWith("skills/") && file.endsWith("/SKILL.md");
-            const allowedTemplate = file.startsWith("document-templates/") && file.endsWith(".md");
-            if (!allowed.has(file) && !allowedSpec && !allowedSkill && !allowedTemplate) {
-              throw new Error(`unexpected file in minimal plugin shell: ${file}`);
-            }
-          }
-          const manifest = JSON.parse(fs.readFileSync(".codex-plugin/plugin.json", "utf8"));
-          for (const field of ["name", "version", "description", "interface"]) {
-            if (!manifest[field]) throw new Error(`plugin manifest missing ${field}`);
-          }
-          if (manifest.name !== "knitten") throw new Error("plugin manifest name must be knitten");
-          NODE
+        run: node scripts/validate-repository-shell.mjs
 
       - name: Check scripts
         run: |
           node --check scripts/doctor.mjs
           node --check scripts/materialize-local-plugin.mjs
           node --check scripts/resolve-output.mjs
+          node --check scripts/validate-repository-shell.mjs
           bash -n bin/knitten-resolve-output
           bin/knitten-resolve-output --kind=review-json --name=ci --workspace-root="$PWD" >/tmp/knitten-output.json
           node - <<'NODE'

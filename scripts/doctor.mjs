@@ -72,6 +72,22 @@ function sameRealPath(left, right) {
   return fs.realpathSync(left) === fs.realpathSync(right);
 }
 
+function canonicalOutputPath(value) {
+  let current = path.resolve(value);
+  const suffix = [];
+  while (!fs.existsSync(current)) {
+    const parent = path.dirname(current);
+    if (parent === current) return path.resolve(value);
+    suffix.unshift(path.basename(current));
+    current = parent;
+  }
+  return path.join(fs.realpathSync(current), ...suffix);
+}
+
+function sameOutputPath(left, right) {
+  return canonicalOutputPath(left) === canonicalOutputPath(right);
+}
+
 function runJson(command, args, options = {}) {
   const result = spawnSync(command, args, {
     cwd: options.cwd || REPO_ROOT,
@@ -158,10 +174,10 @@ function main() {
         `--workspace-root=${REPO_ROOT}`,
       ]);
       const expectedPath = path.join(REPO_ROOT, relativePath);
-      if (output.selectedPath !== expectedPath) {
+      if (!sameOutputPath(output.selectedPath, expectedPath)) {
         throw new Error(`${kind} path expected ${expectedPath}, got ${output.selectedPath}`);
       }
-      if (output.selectedDir !== path.dirname(expectedPath)) {
+      if (!sameOutputPath(output.selectedDir, path.dirname(expectedPath))) {
         throw new Error(`${kind} dir expected ${path.dirname(expectedPath)}, got ${output.selectedDir}`);
       }
       if (output.selectedPersistence !== persistence) {
@@ -188,7 +204,7 @@ function main() {
       localDateString(),
       "doctor-output.json",
     );
-    if (output.selectedPath !== expectedPath) {
+    if (!sameOutputPath(output.selectedPath, expectedPath)) {
       throw new Error(`target-root path expected ${expectedPath}, got ${output.selectedPath}`);
     }
     if (output.selectedOwnerRoot !== REPO_ROOT) {
@@ -248,7 +264,7 @@ function main() {
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`source shim plugins-root env pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
     }
-    if (output.selectedPath !== expectedPath) {
+    if (!sameOutputPath(output.selectedPath, expectedPath)) {
       throw new Error(`source shim plugins-root env path expected ${expectedPath}, got ${output.selectedPath}`);
     }
     return "KNITTEN_PLUGINS_ROOT";
@@ -312,7 +328,7 @@ function main() {
     if (!sameRealPath(output.hubRoot, copiedRoot)) {
       throw new Error(`copied shim hubRoot expected ${copiedRoot}, got ${output.hubRoot}`);
     }
-    if (output.selectedPath !== expectedPath) {
+    if (!sameOutputPath(output.selectedPath, expectedPath)) {
       throw new Error(`copied shim path expected ${expectedPath}, got ${output.selectedPath}`);
     }
     return copiedOutputShimPath;
@@ -339,7 +355,7 @@ function main() {
     if (!sameRealPath(output.hubRoot, copiedRoot)) {
       throw new Error(`plugins-root env hubRoot expected ${copiedRoot}, got ${output.hubRoot}`);
     }
-    if (output.selectedPath !== expectedPath) {
+    if (!sameOutputPath(output.selectedPath, expectedPath)) {
       throw new Error(`plugins-root env path expected ${expectedPath}, got ${output.selectedPath}`);
     }
     return "KNITTEN_PLUGINS_ROOT";

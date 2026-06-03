@@ -30,6 +30,7 @@ Run the smallest relevant checks, then include any skipped coverage in the
 handoff:
 
 ```bash
+node scripts/validate-repository-shell.mjs
 node scripts/doctor.mjs
 node scripts/materialize-local-plugin.mjs
 node scripts/doctor.mjs
