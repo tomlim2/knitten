@@ -27,6 +27,8 @@ implementation, PR, or skill.
 4. Use `ah-review-pr` for PR-level review.
 5. Use `ah-audit-skill` for skill reviews.
 6. Use `ah-report-finding` for recurring workflow or system issues.
+7. Use `ah-promote-reference` when an accepted issue needs a temporary
+   skill-local `reference-promoted.md` gate before stable promotion.
 
 ## Rules
 

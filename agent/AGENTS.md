@@ -26,3 +26,10 @@ user-directed scope changes.
 
 All finding records belong to the Knitten core plugin. Payload plugins should
 not own or document the finding-report workflow.
+
+## Promoted References
+
+Payload skills may use `reference-promoted.md` as a temporary supplemental
+reference. Use `ah-promote-reference` when a checked mechanical issue needs a
+skill-local gate before it is stable enough for `SKILL.md`, `reference.md`,
+scripts, tests, or repository guidelines.

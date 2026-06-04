@@ -34,3 +34,21 @@ user-directed scope changes.
 All finding records belong to this Knitten core plugin. Even when the defect is
 observed while using a payload plugin, store the report in Knitten's local hub
 queue, not in the payload plugin.
+
+## Promoted References
+
+Payload skills may own `reference-promoted.md` next to `SKILL.md`.
+
+Use it only for temporary supplemental gates, checks, or patterns that should
+affect skill execution now but are not stable enough for `SKILL.md`,
+`reference.md`, a script, a test, or a repository guideline.
+
+Promotion criteria:
+
+- The issue is repeatable or mechanically checkable.
+- A skill-local trigger and check can prevent recurrence.
+- The rule is not already covered by a stable owner.
+- The entry has a clear retirement target.
+
+If `reference-promoted.md` exists, the owning skill must read it after
+`reference.md`. If it does not exist, skip it.

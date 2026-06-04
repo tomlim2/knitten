@@ -52,3 +52,7 @@ This writes under
 `<knitten-plugin-root>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/`.
 Include the affected repository, plugin, skill, or path in the JSON body as
 metadata; do not redirect the storage owner.
+
+If the record implies a temporary skill-local gate or check, route the follow-up
+through `ah-promote-reference`. Do not make a payload plugin own the report
+itself.
