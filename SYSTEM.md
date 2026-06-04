@@ -19,6 +19,11 @@ Codex reads plugin metadata from `.codex-plugin/plugin.json`.
 Do not require another harness runtime, private local paths, domain service
 credentials, or legacy source checkouts for this plugin to load.
 
+## Boundary
+
+Canonical boundary policy lives in
+`docs/guidelines/plugin-boundary.md`.
+
 ## Mechanical Finding Capture
 
 Use `knitten:ah-report-finding` only for checked mechanical errors:
