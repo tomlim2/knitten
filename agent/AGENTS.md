@@ -23,3 +23,6 @@ validator failures, or plugin boundary failures.
 
 Do not report ideas, naming/style preferences, guesses, one-off confusion, or
 user-directed scope changes.
+
+All finding records belong to the Knitten core plugin. Payload plugins should
+not own or document the finding-report workflow.

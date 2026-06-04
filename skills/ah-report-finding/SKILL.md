@@ -38,19 +38,17 @@ Record:
 - suggested next action
 - status
 
-Do not invent a storage path. Use the active or target repository's documented
-finding location when one exists; otherwise report the record in the response.
+Do not invent a storage path. Finding records always accumulate in the Knitten
+core hub queue, even when the observed mechanical error is in another repository
+or payload plugin.
 
-If an operational finding record should be stored in the active workspace,
-resolve it with:
+Resolve the record path with:
 
 ```bash
 <knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-report-finding --name=<finding-name> --create
 ```
 
-If the finding is about a different target workspace, pass that workspace
-explicitly:
-
-```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-report-finding --name=<finding-name> --target-root=<target-workspace> --create
-```
+This writes under
+`<knitten-plugin-root>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/`.
+Include the affected repository, plugin, skill, or path in the JSON body as
+metadata; do not redirect the storage owner.

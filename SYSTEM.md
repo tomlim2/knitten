@@ -30,3 +30,7 @@ Use `knitten:ah-report-finding` only for checked mechanical errors:
 
 Do not record ideas, naming/style preferences, guesses, one-off confusion, or
 user-directed scope changes.
+
+All finding records belong to this Knitten core plugin. Even when the defect is
+observed while using a payload plugin, store the report in Knitten's local hub
+queue, not in the payload plugin.

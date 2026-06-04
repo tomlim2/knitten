@@ -27,14 +27,15 @@ owner:
 <workspace>/.agent-local/ah/...
 ```
 
-Operational findings use `targetRoot` as their owner:
+Previous designs considered using `targetRoot` as the operational finding owner:
 
 ```text
 <targetRoot>/.agent-local/ah/operational-findings/YYYY-MM-DD/<slug>.json
 ```
 
-That keeps files near the repository being worked on, but it makes the generic
-AH operational layer harder to inspect:
+That kept files near the repository being worked on, but it made the generic
+AH operational layer harder to inspect. Current policy stores all finding
+records in the Knitten hub and keeps `targetRoot` as metadata only:
 
 - AH review plans, response plans, task JSON, and findings scatter across
   unrelated repositories.
@@ -70,7 +71,7 @@ Out of scope:
 | Input | Required | Meaning |
 |-------|----------|---------|
 | `--workspace-root=<path>` | No | Repository where the user is actively working. Defaults to cwd. |
-| `--target-root=<path>` | No | Repository, plugin, or domain surface that the output is about. Defaults to `workspaceRoot`. |
+| `--target-root=<path>` | No | Repository, plugin, or domain surface that the output is about. Defaults to `workspaceRoot`; does not change finding storage owner. |
 | `--kind=<kind>` | No | Generic output kind. |
 | `--skill=<skill>` | No | Skill alias mapped to a generic output kind. |
 | `--name=<name>` | Yes for file outputs | Stable slug source. |
@@ -191,7 +192,7 @@ Existing scattered local artifacts may remain where they are until deleted or
 manually promoted. New resolver calls should write generic local outputs to the
 hub.
 
-For the existing Shotloom wrapup finding:
+For the existing Shotloom wrapup finding, the old payload-owned path was:
 
 ```text
 knitten-all-skills/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json

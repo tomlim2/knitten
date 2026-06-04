@@ -155,7 +155,7 @@ or set `KNITTEN_PLUGIN_ROOT`.
 | Input | Required | Meaning |
 |-------|----------|---------|
 | `--workspace-root=<path>` | No | Target workspace. Defaults to current working directory. |
-| `--target-root=<path>` | No | Workspace that should own durable documents or operational findings. Defaults to `workspaceRoot`. |
+| `--target-root=<path>` | No | Workspace that should own durable documents, or metadata describing what an operational finding is about. Defaults to `workspaceRoot`. |
 | `--kind=<kind>` | No | Generic output kind to resolve. |
 | `--skill=<skill>` | No | Skill alias to resolve to one output kind. Mutually exclusive with `--kind`. |
 | `--name=<name>` | Yes when selecting a file | Human name or task id used to build a stable file name. |

@@ -49,7 +49,7 @@ It is now misleading because:
 | Knitten plugin root | Runtime code, skills, shims, docs. | Read/write only when the task edits Knitten itself. |
 | Installed plugin copy | Generated local plugin bundle. | Read-only during normal workflow use. |
 | Active workspace | Repository where the user is working. | Default durable and local output target. |
-| Target workspace | Repository or plugin that owns the issue being reported. | Preferred target for operational findings. |
+| Target workspace | Repository or plugin that the output is about. | Metadata only for operational findings. |
 | `.agent-local/ah` | AH local scratch namespace under a workspace. | Default local artifact root. |
 
 ## Scope
@@ -64,14 +64,14 @@ requirements. It does not promote local artifacts into durable docs.
 | Input | Required | Meaning |
 |-------|----------|---------|
 | `--workspace-root=<path>` | No | Active workspace. Defaults to current working directory. |
-| `--target-root=<path>` | No | Workspace that should own the output when different from the active workspace. |
+| `--target-root=<path>` | No | Workspace the output is about when different from the active workspace. |
 | `--kind=<kind>` | No | Generic output kind. |
 | `--skill=<skill>` | No | Skill alias mapped to a generic output kind. |
 | `--name=<name>` | Yes for file outputs | Stable slug source. |
 | `--create` | No | Create selected parent directories. |
 
-`--target-root` is primarily for operational findings. If omitted, it defaults
-to `--workspace-root`.
+`--target-root` is metadata for operational findings. It does not change the
+finding storage owner.
 
 ## Output Roots
 
@@ -110,14 +110,14 @@ Operational findings get a dedicated local root:
 .agent-local/ah/operational-findings/<YYYY-MM-DD>/<slug>.json
 ```
 
-They should be written under `targetRoot`, not automatically under the Knitten
-plugin workspace. If the finding is about a payload skill, `targetRoot` should
-be that payload plugin source repository.
+They are written under the Knitten hub root. If the finding is about a payload
+skill, record that payload plugin source repository in metadata instead of
+changing the storage owner.
 
 Example:
 
 ```text
-/Users/younsoolim/Desktop/www/knitten-all-skills/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
+/Users/younsoolim/Desktop/www/plugins/knitten/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
 ```
 
 ## Resolver JSON
@@ -128,7 +128,7 @@ The resolver should return at least:
 |-------|---------|
 | `pluginRoot` | Physical Knitten plugin checkout containing the runtime. |
 | `workspaceRoot` | Active workspace root. |
-| `targetRoot` | Output owner root. Defaults to `workspaceRoot`. |
+| `targetRoot` | Workspace the output is about. Defaults to `workspaceRoot`. |
 | `workspaceLocalRoot` | `.agent-local/ah` under `workspaceRoot`. |
 | `targetLocalRoot` | `.agent-local/ah` under `targetRoot`. |
 | `docsRoot` | `docs` under `targetRoot` for durable outputs. |
@@ -141,7 +141,7 @@ The resolver should return at least:
 
 For durable outputs, `selectedOwnerRoot` is `targetRoot`.
 For local non-finding outputs, `selectedOwnerRoot` is `workspaceRoot`.
-For operational findings, `selectedOwnerRoot` is `targetRoot`.
+For operational findings, `selectedOwnerRoot` is the Knitten hub root.
 
 ## Skill Alias Updates
 
@@ -161,10 +161,10 @@ Update AH skill docs so they say:
 
 - Plugin resources are read-only unless the task edits the plugin.
 - Active workspace owns normal local scratch.
-- Target workspace owns operational findings.
+- Knitten hub owns operational findings.
 - Installed plugin copies are never write targets.
-- Use `--target-root` when the issue belongs to a different repository than the
-  current working directory.
+- Use `--target-root` only as metadata when the issue belongs to a different
+  repository than the current working directory.
 
 ## Migration
 
@@ -174,8 +174,8 @@ For currently existing local artifacts:
 
 - `.agent-local/knitten/**` may remain as old scratch until deleted.
 - New resolver calls use `.agent-local/ah/**`.
-- If a current finding should survive, move it manually to the target
-  workspace's `.agent-local/ah/operational-findings/<date>/`.
+- If a current finding should survive, move it manually to the Knitten hub
+  `.agent-local/ah/operational-findings/<date>/`.
 
 The PR 433 wrapup finding should move from:
 
@@ -186,10 +186,11 @@ knitten/.agent-local/knitten/findings/shotloom-wrapup-task-pr-433-usability-gaps
 to:
 
 ```text
-knitten-all-skills/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
+knitten/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
 ```
 
-because the finding targets `shotloom-wrapup-task` in the payload plugin.
+because finding reports are core-owned even when the issue targets
+`shotloom-wrapup-task` in the payload plugin.
 
 ## Validation
 
@@ -201,15 +202,15 @@ because the finding targets `shotloom-wrapup-task` in the payload plugin.
   returns `.agent-local/ah/responses/pr-1-response.json`.
 - `node scripts/resolve-output.mjs --skill=ah-draft-spec --name=test`
   returns `docs/specs/test.md`.
-- `--target-root=<path>` changes operational finding owner root without changing
-  `pluginRoot`.
+- `--target-root=<path>` is preserved as target metadata and does not change
+  the operational finding owner root.
 - `node scripts/doctor.mjs` passes.
 - Plugin validation passes for source and materialized copy.
 
 ## Acceptance Criteria
 
 - New local AH artifacts no longer default to `.agent-local/knitten`.
-- `ah-report-finding` has a target-root-aware operational findings path.
+- `ah-report-finding` has a hub-owned operational findings path.
 - Existing AH skill docs no longer imply Knitten is the storage owner for all
   workflow outputs.
 - Installed plugin copies remain generated runtime bundles, not output
@@ -233,8 +234,8 @@ because the finding targets `shotloom-wrapup-task` in the payload plugin.
 - Updated AH skill path guidance.
 - Updated docs that still described old plugin copy or `.agent-local/knitten`
   locations as current behavior.
-- Moved PR 433 finding record to the target workspace:
-  `knitten-all-skills/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json`.
+- Moved PR 433 finding record to the Knitten hub:
+  `knitten/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json`.
 - Source and materialized plugin validation evidence.
 
 ### Implementation Sequence
@@ -274,8 +275,8 @@ Changes:
 - Update expected local paths to `.agent-local/ah`.
 - Add checks for `response-json`.
 - Add checks for `operational-finding-json`.
-- Add a `--target-root` check that proves operational findings are owned by the
-  target root while `pluginRoot` stays unchanged.
+- Add a `--target-root` check that proves operational findings stay owned by
+  the Knitten hub while `targetRoot` is retained as metadata.
 - Update copied shim check to use the new local path.
 
 #### 3. Update AH Skill Docs
@@ -327,7 +328,7 @@ knitten/.agent-local/knitten/findings/shotloom-wrapup-task-pr-433-usability-gaps
 to:
 
 ```text
-knitten-all-skills/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
+knitten/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
 ```
 
 Do not commit `.agent-local` files unless a separate durable finding promotion
