@@ -20,6 +20,12 @@ Use this leaf skill when the user asks to review a PR.
 
 ## Steps
 
+0. Review Eligibility Gate: before reading the diff, creating review worktrees,
+   or preparing GitHub review payloads, confirm the active repository, PR number
+   or URL, PR state, and reviewer authorization are appropriate for review.
+   For PR review work, verify the active user is a requested reviewer or is
+   otherwise explicitly authorized by the user before proceeding. If any of
+   these are unclear, stop and ask.
 1. Inspect PR metadata, changed files, checks, and discussion.
 2. Review the diff against the expected task contract.
 3. Treat comments by content, not author type.

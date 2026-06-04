@@ -22,6 +22,12 @@ Use this leaf skill when the user asks to respond to PR review comments.
 
 ## Steps
 
+0. Response Eligibility Gate: before reading comments, checking out branches,
+   editing files, or posting replies, confirm the active repository, PR number
+   or URL, PR state, and user authorization are appropriate for a response.
+   For PR response work, verify the active user is the PR assignee, PR author,
+   or otherwise explicitly authorized by the user before proceeding. If any of
+   these are unclear, stop and ask.
 1. Gather review comments and current PR state.
 2. Classify each item by content: fix, reply, defer, question, or informational.
 3. Use `ah-implement-work` for code or doc fixes.
