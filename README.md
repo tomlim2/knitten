@@ -1,23 +1,30 @@
 # Knitten
 
-Knitten is the Agent Hub routing system for Codex plugins.
+Knitten is the core Codex plugin for Agent Hub workflows.
 
-It routes workflow intent, output paths, and plugin boundaries. Its core is the
-generic AH path/output runtime: durable documents stay with the target
-workspace, local operational outputs go to the Knitten hub, and payload plugins
-keep their domain-specific behavior.
+Use this repository when you need to change shared Agent Hub behavior: how a
+task is routed, where a generated spec or plan is saved, where temporary local
+outputs are written, or which plugin is allowed to own a workflow.
 
-AH means Agent Hub: a generic routing layer for preparing, implementing,
-reviewing, managing PRs, wrapping up agent-assisted work, and deciding where the
-resulting records belong.
+Agent Hub (AH) is the workflow layer for Codex-assisted development tasks. It
+covers the common steps around preparing work, drafting specs, implementing,
+reviewing, creating PRs, responding to reviews, and wrapping up.
+
+Knitten keeps only the pieces that should work the same across projects. It
+does not contain the full private skill library. Domain skills live in payload
+plugins, especially Knitten All Skills (KSA).
 
 Repository roles:
 
 | Repository | Role |
 |------------|------|
-| `knitten` | Public Agent Hub routing system and path/output runtime. |
-| `knitten-all-skills` | Private payload plugin for full skill coverage. |
-| `knitten-archive` | Historical archive of the former combined repository. |
+| `knitten` | Shared core. Contains AH routing skills, output-path scripts, document templates, and boundary rules. |
+| `knitten-all-skills` (KSA) | Private skill payload. Contains concrete skills such as Shotloom, frontend, Obsidian, Unreal, VRM, review, writing, and learning-log helpers. |
+| `knitten-archive` | Old combined repository kept for history after the core/payload split. |
+
+Quick rule: if the change affects where work goes or how AH workflows are
+structured, edit `knitten`. If the change affects what a specific skill does,
+edit KSA.
 
 ## Contents
 
