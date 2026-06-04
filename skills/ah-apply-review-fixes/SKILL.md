@@ -26,8 +26,8 @@ or asked to fix.
 1. Classify findings as blocker, nit, question, or defer.
 2. Fix blockers first.
 3. Fix cheap local nits only after blockers are gone.
-4. If applying fixes to a skill, re-check whether the fix changes risk-tier,
-   Step 0, allowed-tools, or external mutation behavior.
+4. If applying fixes to a skill, re-check whether the fix changes
+   `activation-check`, Step 0, allowed-tools, or external mutation behavior.
 5. Do not expand scope beyond the finding.
 6. Validate the changed surface.
 

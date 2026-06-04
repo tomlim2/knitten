@@ -28,25 +28,25 @@ Check:
 - references and scripts are necessary and available
 - instructions are concise enough for regular use
 - no legacy path, domain, or runtime dependency leaks into generic workflow
-- `risk-tier` is present or safely inferable
-- Step 0 strictness matches the skill's mutation risk
+- `activation-check` is present or safely inferable
+- Step 0 strictness matches the skill's mutation surface
 - external mutation paths have explicit approval/stop conditions
 
 Findings first. If no issues are found, say so and name residual risk.
 
-## Risk Review
+## Activation Review
 
-Use `docs/specs/skill-risk-step-zero-policy.md` when auditing skill creation,
+Use `docs/specs/skill-activation-check-policy.md` when auditing skill creation,
 skill updates, allowed-tools changes, routers/orchestrators, or any skill that
 can mutate external state.
 
 Flag a finding when:
 
-- a high-risk skill lacks an explicit Step 0 safety gate,
-- `allowed-tools` or workflow text enables external mutation but risk is not
+- a strict skill lacks an explicit Step 0 activation check,
+- `allowed-tools` or workflow text enables external mutation but activation is not
   declared or inferable,
-- a router can call high-risk leaves without inheriting their safety gate,
-- a skill update adds mutation behavior without revisiting risk-tier.
+- a router can call strict leaves without inheriting their activation check,
+- a skill update adds mutation behavior without revisiting activation-check.
 
 ## Path Handling
 
