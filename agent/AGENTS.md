@@ -29,7 +29,6 @@ not own or document the finding-report workflow.
 
 ## Promoted References
 
-Payload skills may use `reference-promoted.md` as a temporary supplemental
-reference. Use `ah-promote-reference` when a checked mechanical issue needs a
-skill-local gate before it is stable enough for `SKILL.md`, `reference.md`,
-scripts, tests, or repository guidelines.
+Payload skills may store `reference-promoted.md`, but Knitten core owns all CRUD
+for it. Use `ah-promote-reference` for creating, editing, deleting, promoting,
+retiring, or moving entries. Payload plugins are skill storage only.

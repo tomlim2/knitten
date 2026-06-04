@@ -1,16 +1,24 @@
 ---
 name: ah-promote-reference
-description: Promote an accepted operational lesson into a skill-local reference-promoted.md gate with a retirement target.
+description: Manage Knitten-owned CRUD for skill-local reference-promoted.md gates and retirement.
 ---
 
 # AH Promote Reference
 
-Use this leaf skill when an accepted, mechanically checkable lesson should
-affect a skill now, but is not stable enough for `SKILL.md`, `reference.md`, a
-helper script, a test, or a repository guideline.
+Use this leaf skill for every `reference-promoted.md` create, read review,
+update, delete, promotion, retirement, or move.
 
-This skill edits the target skill's `reference-promoted.md`. It does not move or
-store finding records. Finding records remain owned by the Knitten core hub.
+Knitten core owns this CRUD workflow. Payload plugins are skill storage only:
+they may contain `reference-promoted.md`, but they do not define independent
+creation, deletion, promotion, or retirement rules.
+
+Use `reference-promoted.md` when an accepted, mechanically checkable lesson
+should affect a skill now, but is not stable enough for `SKILL.md`,
+`reference.md`, a helper script, a test, or a repository guideline.
+
+This skill edits the target skill's stored `reference-promoted.md`. It does not
+move or store finding records. Finding records remain owned by the Knitten core
+hub.
 
 ## Input
 
@@ -71,21 +79,24 @@ SKILL.md, reference.md, a helper script, a test, or a repository guideline.
 
 ## Workflow
 
-1. Read the target `SKILL.md` and existing `reference.md` if present.
+1. Read the target `SKILL.md`, existing `reference.md` if present, and existing
+   `reference-promoted.md` if present.
 2. Confirm the criteria above.
-3. Prefer stable owners first. If a stable owner is clearly better, edit that
-   owner instead of `reference-promoted.md`.
-4. If a temporary gate is still justified, add the smallest concrete entry to
-   `reference-promoted.md`.
-5. Update the target `SKILL.md` only if it does not already say to read
+3. For create/update: prefer stable owners first. If a stable owner is clearly
+   better, edit that owner instead of `reference-promoted.md`.
+4. For delete/retire: remove entries that are duplicated, obsolete, or already
+   absorbed into a stable owner.
+5. If a temporary gate is still justified, add or keep the smallest concrete
+   entry in `reference-promoted.md`.
+6. Update the target `SKILL.md` only if it does not already say to read
    `reference-promoted.md` when present.
-6. Validate links and syntax with the target plugin's available doctor or skill
+7. Validate links and syntax with the target plugin's available doctor or skill
    validator.
 
 ## Output
 
 - Target skill.
-- Added or updated entry title.
+- CRUD action and entry title.
 - Why the entry is temporary.
 - Retirement target.
 - Validation result.
