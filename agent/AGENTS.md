@@ -17,10 +17,9 @@ plugin boundaries. Domain-specific behavior belongs in payload plugins.
 
 ## Mechanical Findings
 
-When Knitten or a payload plugin exposes a reproducible mechanical mismatch,
-route it through `knitten:ah-report-finding`. Examples include stale paths,
-missing scripts, config/helper drift, failed validators, install/cache drift,
-or plugin boundary contradictions.
+Use `knitten:ah-report-finding` only for checked mechanical errors: missing
+files/paths/scripts/configs, stale helper references, install/cache drift,
+validator failures, or plugin boundary failures.
 
-Do not route general improvement ideas, style preferences, speculative notes,
-one-off confusion, or user-directed scope changes through `ah-report-finding`.
+Do not report ideas, naming/style preferences, guesses, one-off confusion, or
+user-directed scope changes.
