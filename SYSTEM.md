@@ -37,7 +37,7 @@ queue, not in the payload plugin.
 
 ## Promoted References
 
-Payload skills may store `reference-promoted.md` next to `SKILL.md`, but
+Knitten core may place `reference-promoted.md` next to a payload `SKILL.md`.
 Knitten core owns the CRUD workflow.
 
 Use `ah-promote-reference` for every create, update, delete, promotion,
@@ -55,5 +55,5 @@ Promotion criteria:
 - The rule is not already covered by a stable owner.
 - The entry has a clear retirement target.
 
-If `reference-promoted.md` exists, the stored skill must read it after
+If `reference-promoted.md` exists, the payload skill must read it after
 `reference.md`. If it does not exist, skip it.

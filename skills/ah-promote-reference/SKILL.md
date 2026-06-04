@@ -9,16 +9,16 @@ Use this leaf skill for every `reference-promoted.md` create, read review,
 update, delete, promotion, retirement, or move.
 
 Knitten core owns this CRUD workflow. Payload plugins are skill storage only:
-they may contain `reference-promoted.md`, but they do not define independent
-creation, deletion, promotion, or retirement rules.
+they may contain `reference-promoted.md` placed by Knitten core, but they do not
+define independent creation, deletion, promotion, or retirement rules.
 
 Use `reference-promoted.md` when an accepted, mechanically checkable lesson
 should affect a skill now, but is not stable enough for `SKILL.md`,
 `reference.md`, a helper script, a test, or a repository guideline.
 
-This skill edits the target skill's stored `reference-promoted.md`. It does not
-move or store finding records. Finding records remain owned by the Knitten core
-hub.
+This skill edits the target skill's Knitten-managed `reference-promoted.md`. It
+does not move or store finding records. Finding records remain owned by the
+Knitten core hub.
 
 ## Input
 
