@@ -5,13 +5,24 @@ description: Record a recurring AH workflow or system finding with context, impa
 
 # AH Report Finding
 
-Use this support leaf skill when a recurring workflow issue, failed assumption,
-or system gap should be captured instead of buried in a task summary.
+Use this support leaf skill only when a mechanical Knitten or payload-plugin
+finding should be captured instead of buried in a task summary.
+
+A mechanical finding is a reproducible or directly verifiable system mismatch:
+
+- documented path, script, config, skill, or command does not exist
+- stale skill reference to a moved config or helper
+- source, materialized plugin copy, or Codex plugin cache drift
+- doctor, validator, or install command failure
+- plugin boundary rule contradicts repository contents
+
+Do not use this skill for general improvement ideas, naming/style preferences,
+speculative concerns, one-off confusion, or user-directed scope changes.
 
 ## Input
 
 - Finding description.
-- Evidence or reproduction notes.
+- Evidence or reproduction notes that make the mismatch mechanically checkable.
 - Affected workflow, skill, script, doc, or repository surface.
 
 ## Output
