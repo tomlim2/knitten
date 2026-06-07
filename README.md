@@ -12,19 +12,19 @@ reviewing, creating PRs, responding to reviews, and wrapping up.
 
 Knitten keeps only the pieces that should work the same across projects. It
 does not contain the full private skill library. Domain skills live in payload
-plugins, especially Knitten All Skills (KSA).
+plugins, especially Knitten All Skills (KAS).
 
 Repository roles:
 
 | Repository | Role |
 |------------|------|
 | `knitten` | Shared core. Contains AH routing skills, output-path scripts, document templates, and boundary rules. |
-| `knitten-all-skills` (KSA) | Private skill payload. Contains concrete skills such as Shotloom, frontend, Obsidian, Unreal, VRM, review, writing, and learning-log helpers. |
+| `knitten-all-skills` (KAS) | Private skill payload. Contains concrete skills such as Shotloom, frontend, Obsidian, Unreal, VRM, review, writing, and learning-log helpers. |
 | `knitten-archive` | Old combined repository kept for history after the core/payload split. |
 
 Quick rule: if the change affects where work goes or how AH workflows are
 structured, edit `knitten`. If the change affects what a specific skill does,
-edit KSA.
+edit KAS.
 
 ## Contents
 
