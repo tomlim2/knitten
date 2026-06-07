@@ -1,6 +1,7 @@
-# Knitten
+# Knitten Core
 
-Knitten is the core Codex plugin for Agent Hub workflows.
+Knitten Core is the core Codex plugin and operating layer for Agent Hub
+workflows.
 
 Use this repository when you need to change shared Agent Hub behavior: how a
 task is routed, where a generated spec or plan is saved, where temporary local
@@ -10,15 +11,15 @@ Agent Hub (AH) is the workflow layer for Codex-assisted development tasks. It
 covers the common steps around preparing work, drafting specs, implementing,
 reviewing, creating PRs, responding to reviews, and wrapping up.
 
-Knitten keeps only the pieces that should work the same across projects. It
-does not contain the full private skill library. Domain skills live in payload
-plugins that are installed separately.
+Knitten Core keeps only the pieces that should work the same across projects.
+It does not contain the full private skill library. Domain skills live in
+payload plugins that are installed separately.
 
 Repository roles:
 
 | Repository | Role |
 |------------|------|
-| `knitten` | Shared core. Contains AH routing skills, output-path scripts, document templates, and boundary rules. |
+| `knitten` | Knitten Core. Contains AH routing skills, output-path scripts, document templates, and boundary rules. |
 | Payload plugins | Skill payloads. Contain concrete project, domain, or personal skills and skill-owned support files. |
 | `knitten-archive` | Old combined repository kept for history after the core/payload split. |
 
@@ -51,8 +52,8 @@ node --check scripts/resolve-output.mjs
 
 ## Local Codex Installation
 
-Knitten is the core plugin. Payload plugins are installed separately in the
-same local marketplace when their skills are needed:
+Knitten Core is the core plugin. Payload plugins are installed separately in
+the same local marketplace when their skills are needed:
 
 ```text
 knitten@knitten-local
@@ -113,5 +114,5 @@ MIT License. See `LICENSE`.
 
 Domain workflows, domain output registries, and artifact-pack lifecycle tools
 belong in payload plugins unless they are intentionally promoted into this core.
-Knitten owns generic AH routing, plugin boundaries, and the generic path/output
-runtime.
+Knitten Core owns generic AH routing, plugin boundaries, and the generic
+path/output runtime.
