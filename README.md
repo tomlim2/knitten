@@ -65,7 +65,7 @@ Codex reads the local marketplace from this config:
 ```toml
 [marketplaces.knitten-local]
 source_type = "local"
-source = "/Users/deemooooooooo"
+source = "<home-directory>"
 
 [plugins."knitten@knitten-local"]
 enabled = true
@@ -77,14 +77,14 @@ enabled = true
 The marketplace manifest lives at:
 
 ```text
-/Users/deemooooooooo/.agents/plugins/marketplace.json
+<home-directory>/.agents/plugins/marketplace.json
 ```
 
 Runtime plugin copies live under:
 
 ```text
-/Users/deemooooooooo/plugins/knitten
-/Users/deemooooooooo/plugins/<payload-plugin>
+<home-directory>/plugins/knitten
+<home-directory>/plugins/<payload-plugin>
 ```
 
 Install or refresh the core plugin:
@@ -105,6 +105,17 @@ plugin documentation.
 Restart Codex after changing `~/.codex/config.toml` or refreshing plugin
 installations. Existing sessions may keep the old skill list until a new
 session starts.
+
+## Path Rules
+
+Active Knitten Core docs and helper scripts should avoid personal absolute
+paths. Use placeholders such as `<home-directory>`, `<plugins-root>`, and
+`<payload-plugin>`, or prefer explicit environment variables before `$HOME`
+fallbacks in executable helpers.
+
+Historical specs may keep old local paths as evidence. Domain payload plugins
+may document private config paths when those paths are the actual external
+contract.
 
 ## License
 

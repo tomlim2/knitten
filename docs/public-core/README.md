@@ -18,7 +18,7 @@ configuration for Codex plugin workflows.
 ## Validate
 
 ```bash
-python3 /Users/younsoolim/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .
+python3 <plugin-validator-path> .
 ```
 
 When synchronized through the legacy source repository, run
