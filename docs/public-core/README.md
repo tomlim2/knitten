@@ -34,7 +34,7 @@ packs instead of the public core tree.
 
 ## License
 
-Apache License 2.0. See `LICENSE`.
+MIT License. See `LICENSE`.
 
 ## Status
 

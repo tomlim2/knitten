@@ -7,7 +7,7 @@
   },
   "homepage": "https://github.com/tomlim2/knitten",
   "repository": "https://github.com/tomlim2/knitten",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "keywords": [
     "agent",
     "codex",
