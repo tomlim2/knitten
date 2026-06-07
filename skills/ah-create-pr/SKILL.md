@@ -22,7 +22,7 @@ Use this leaf skill only when the user explicitly asks to create a PR.
 ## Steps
 
 1. Confirm the working tree state.
-2. For Knitten or Knitten All Skills changes, read
+2. For Knitten or payload plugin changes, read
    `docs/guidelines/plugin-boundary-pr-check.md` before staging, pushing, or
    creating the PR.
 3. Push the current branch when needed.

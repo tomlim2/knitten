@@ -3,14 +3,14 @@
 ## Purpose
 
 This document defines the boundary between the Knitten core plugin and payload
-plugins such as `knitten-all-skills`.
+plugins.
 
 ## Roles
 
 | Plugin | Role |
 |--------|------|
 | `knitten` | Core operating layer: policy, routing, output paths, generic AH skills, CRUD workflows, validation, local installation. |
-| `knitten-all-skills` | Payload layer: skill files and skill-owned support files. |
+| Payload plugin | Skill payload layer: skill files and skill-owned support files. |
 
 Short rule:
 

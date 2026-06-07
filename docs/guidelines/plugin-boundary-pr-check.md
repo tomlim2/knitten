@@ -1,16 +1,16 @@
 # Plugin Boundary PR Check
 
-Use this guide before creating a PR or making a commit for Knitten or Knitten
-All Skills changes.
+Use this guide before creating a PR or making a commit for Knitten or payload
+plugin changes.
 
 ## Core Boundary
 
 - Knitten owns generic runtime, output/path routing, shared config, shared
   document templates, public core overlays, and plugin diagnostics.
-- Knitten All Skills is a payload plugin. Keep domain skills, skill-local
+- Payload plugins own concrete skills. Keep domain skills, skill-local
   references, and skill-local support files there.
 - Do not add root-level `agent/config`, `document-templates`, durable planning
-  docs, or generic output resolver policy to Knitten All Skills.
+  docs, or generic output resolver policy to payload plugins.
 - If a payload skill needs a generic output path, call the Knitten runtime
   instead of copying path policy into the payload plugin.
 - Keep private repo-key lookup out of Knitten unless a separate core repository
@@ -37,7 +37,8 @@ node scripts/doctor.mjs
 git diff --check
 ```
 
-For Knitten All Skills boundary work, also run:
+For payload plugin boundary work, also run the payload repository's boundary
+checks when present, for example:
 
 ```bash
 node scripts/validate-boundary.mjs --warn-only

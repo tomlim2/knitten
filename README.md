@@ -12,19 +12,19 @@ reviewing, creating PRs, responding to reviews, and wrapping up.
 
 Knitten keeps only the pieces that should work the same across projects. It
 does not contain the full private skill library. Domain skills live in payload
-plugins, especially Knitten All Skills (KAS).
+plugins that are installed separately.
 
 Repository roles:
 
 | Repository | Role |
 |------------|------|
 | `knitten` | Shared core. Contains AH routing skills, output-path scripts, document templates, and boundary rules. |
-| `knitten-all-skills` (KAS) | Private skill payload. Contains concrete skills such as Shotloom, frontend, Obsidian, Unreal, VRM, review, writing, and learning-log helpers. |
+| Payload plugins | Skill payloads. Contain concrete project, domain, or personal skills and skill-owned support files. |
 | `knitten-archive` | Old combined repository kept for history after the core/payload split. |
 
 Quick rule: if the change affects where work goes or how AH workflows are
 structured, edit `knitten`. If the change affects what a specific skill does,
-edit KAS.
+edit the payload plugin that owns that skill.
 
 ## Contents
 
@@ -51,13 +51,12 @@ node --check scripts/resolve-output.mjs
 
 ## Local Codex Installation
 
-Knitten is the core plugin. `knitten-all-skills` is the DLC-style payload
-plugin. In normal local use, both should appear in the same `knitten-local`
-marketplace:
+Knitten is the core plugin. Payload plugins are installed separately in the
+same local marketplace when their skills are needed:
 
 ```text
 knitten@knitten-local
-knitten-all-skills@knitten-local
+<payload-plugin>@knitten-local
 ```
 
 Codex reads the local marketplace from this config:
@@ -70,7 +69,7 @@ source = "/Users/deemooooooooo"
 [plugins."knitten@knitten-local"]
 enabled = true
 
-[plugins."knitten-all-skills@knitten-local"]
+[plugins."<payload-plugin>@knitten-local"]
 enabled = true
 ```
 
@@ -84,7 +83,7 @@ Runtime plugin copies live under:
 
 ```text
 /Users/deemooooooooo/plugins/knitten
-/Users/deemooooooooo/plugins/knitten-all-skills
+/Users/deemooooooooo/plugins/<payload-plugin>
 ```
 
 Install or refresh the core plugin:
@@ -99,16 +98,8 @@ codex plugin list
 The materialized copy receives a local `+codex.<timestamp>` version suffix. The
 source manifest stays stable.
 
-Then install or refresh the payload plugin from the sibling
-`knitten-all-skills` repository:
-
-```bash
-cd /Users/deemooooooooo/Desktop/www/plugins/knitten-all-skills
-node scripts/materialize-local-plugin.mjs
-node scripts/doctor.mjs
-codex plugin add knitten-all-skills@knitten-local
-codex plugin list
-```
+Install or refresh payload plugins from their own repositories using their own
+plugin documentation.
 
 Restart Codex after changing `~/.codex/config.toml` or refreshing plugin
 installations. Existing sessions may keep the old skill list until a new
