@@ -1,7 +1,10 @@
 # Knitten Core
 
-Knitten Core is the core Codex plugin and operating layer for Agent Hub
-workflows.
+Knitten Core is a token-efficient routing layer for Codex Agent Hub workflows.
+
+It routes work to the right skill at the lowest useful context cost: a short
+activation gate decides whether a skill applies, detailed references load only
+after a match, and safety gates stay visible before mutation-prone work.
 
 Use this repository when you need to change shared Agent Hub behavior: how a
 task is routed, where a generated spec or plan is saved, where temporary local
@@ -14,6 +17,27 @@ reviewing, creating PRs, responding to reviews, and wrapping up.
 Knitten Core keeps only the pieces that should work the same across projects.
 It does not contain the full private skill library. Domain skills live in
 payload plugins that are installed separately.
+
+## Routing Position
+
+Knitten is not trying to make every skill load more context up front. Its core
+claim is the opposite: skills can grow without forcing every request to pay the
+full context cost.
+
+Routing principles:
+
+- **Activation Gate**: decide whether a skill applies before reading detailed
+  workflow material.
+- **Reference On Match**: load skill-local references only after the request
+  matches the skill.
+- **Safety First**: keep mutation, push, deploy, delete, and external-state
+  gates in the main skill file.
+- **Routing Doctor**: validate that core routing registries stay reachable,
+  generic, and separate from payload behavior.
+- **Token-Aware Skill Audits**: identify skills that are too long, too
+  ambiguous, or missing clear non-trigger rules.
+
+Current milestone: see [`MILESTONE.md`](MILESTONE.md).
 
 Repository roles:
 
@@ -32,6 +56,7 @@ edit the payload plugin that owns that skill.
 | Path | Purpose |
 |------|---------|
 | `.codex-plugin/plugin.json` | Codex plugin manifest. |
+| `MILESTONE.md` | Top-level routing milestone and roadmap. |
 | `SYSTEM.md` | Routing and plugin boundary contract. |
 | `agent/AGENTS.md` | Codex adapter entry document. |
 | `skills/` | Generic Agent Hub routing and workflow skills. |

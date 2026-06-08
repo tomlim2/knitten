@@ -8,6 +8,7 @@ const requiredFiles = [
   ".github/workflows/validate.yml",
   ".gitignore",
   "LICENSE",
+  "MILESTONE.md",
   "README.md",
   "SYSTEM.md",
   "agent/AGENTS.md",
