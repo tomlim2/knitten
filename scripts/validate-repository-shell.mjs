@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import path from "node:path";
 
 const requiredFiles = [
   ".codex-plugin/plugin.json",
@@ -36,6 +37,92 @@ function isAllowedFile(file) {
   return false;
 }
 
+function readJson(file) {
+  return JSON.parse(fs.readFileSync(file, "utf8"));
+}
+
+function isSafeRelativePath(value) {
+  return Boolean(value)
+    && !path.isAbsolute(value)
+    && !String(value).split(/[\\/]+/).includes("..");
+}
+
+function helperPathAllowed(relativePath) {
+  return relativePath.startsWith("bin/")
+    || relativePath.startsWith("scripts/")
+    || relativePath.startsWith("skills/ah-")
+    || relativePath.startsWith("skills/knitten-status/");
+}
+
+function validateRoutingRegistryContract() {
+  const outputs = readJson("agent/config/outputs.json");
+  const localArtifacts = readJson("agent/config/local-artifact-paths.json");
+  const localHelpers = readJson("agent/config/local-helper-paths.json");
+  const problems = [];
+
+  for (const entry of outputs.entries) {
+    const id = entry.id || "<missing id>";
+    const madeBy = String(entry.madeBy || "");
+    if (madeBy !== "workflow:agent-hub-session-handoff") {
+      const skillPath = path.join("skills", madeBy, "SKILL.md");
+      if (!madeBy.startsWith("ah-") || !fs.existsSync(skillPath)) {
+        problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
+      }
+    }
+
+    if (entry.template) {
+      if (!isSafeRelativePath(entry.template)) {
+        problems.push(`outputs:${id} has unsafe template path ${entry.template}`);
+      } else if (!fs.existsSync(entry.template)) {
+        problems.push(`outputs:${id} missing template ${entry.template}`);
+      }
+    }
+
+    if (entry.writeTarget?.kind === "repo-template") {
+      const outputPath = String(entry.writeTarget.path || "");
+      if (
+        !outputPath.startsWith("docs/specs/")
+        && !outputPath.startsWith("docs/design-plans/")
+      ) {
+        problems.push(`outputs:${id} has non-generic durable path ${outputPath || "<missing>"}`);
+      }
+    }
+  }
+
+  for (const entry of localArtifacts.entries) {
+    const label = `${entry.owner || "<missing owner>"}:${entry.artifactType || "<missing type>"}:${entry.item || "<missing item>"}`;
+    if (entry.owner !== "ah") {
+      problems.push(`local-artifact:${label} has disallowed owner ${entry.owner || "<missing>"}`);
+    }
+    if (entry.template) {
+      if (!isSafeRelativePath(entry.template)) {
+        problems.push(`local-artifact:${label} has unsafe template path ${entry.template}`);
+      } else if (!fs.existsSync(entry.template)) {
+        problems.push(`local-artifact:${label} missing template ${entry.template}`);
+      }
+    }
+  }
+
+  for (const entry of localHelpers.entries) {
+    const id = entry.id || "<missing id>";
+    const helperPath = String(entry.path || "");
+    if (!isSafeRelativePath(helperPath)) {
+      problems.push(`helper:${id} has unsafe path ${helperPath || "<missing>"}`);
+      continue;
+    }
+    if (!helperPathAllowed(helperPath)) {
+      problems.push(`helper:${id} has disallowed path ${helperPath}`);
+    }
+    if (!fs.existsSync(helperPath)) {
+      problems.push(`helper:${id} missing path ${helperPath}`);
+    }
+  }
+
+  if (problems.length > 0) {
+    throw new Error(problems.join("; "));
+  }
+}
+
 for (const file of requiredFiles) {
   if (!fs.existsSync(file)) throw new Error(`missing required file: ${file}`);
 }
@@ -56,5 +143,7 @@ for (const field of ["name", "version", "description", "interface"]) {
   if (!manifest[field]) throw new Error(`plugin manifest missing ${field}`);
 }
 if (manifest.name !== "knitten") throw new Error("plugin manifest name must be knitten");
+
+validateRoutingRegistryContract();
 
 process.stdout.write(`repository shell ok: ${files.length} files\n`);

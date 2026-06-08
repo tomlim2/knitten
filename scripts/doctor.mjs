@@ -100,6 +100,97 @@ function runJson(command, args, options = {}) {
   return JSON.parse(result.stdout);
 }
 
+function isSafeRelativePath(value) {
+  return Boolean(value)
+    && !path.isAbsolute(value)
+    && !String(value).split(/[\\/]+/).includes("..");
+}
+
+function helperPathAllowed(relativePath) {
+  return relativePath.startsWith("bin/")
+    || relativePath.startsWith("scripts/")
+    || relativePath.startsWith("skills/ah-")
+    || relativePath.startsWith("skills/knitten-status/");
+}
+
+function validateRoutingRegistryContract(root) {
+  const outputsPath = path.join(root, "agent", "config", "outputs.json");
+  const localArtifactsPath = path.join(root, "agent", "config", "local-artifact-paths.json");
+  const localHelpersPath = path.join(root, "agent", "config", "local-helper-paths.json");
+  const outputs = readJson(outputsPath);
+  const localArtifacts = readJson(localArtifactsPath);
+  const localHelpers = readJson(localHelpersPath);
+  const problems = [];
+
+  for (const entry of outputs.entries) {
+    const id = entry.id || "<missing id>";
+    const madeBy = String(entry.madeBy || "");
+    if (madeBy !== "workflow:agent-hub-session-handoff") {
+      const skillPath = path.join(root, "skills", madeBy, "SKILL.md");
+      if (!madeBy.startsWith("ah-") || !fs.existsSync(skillPath)) {
+        problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
+      }
+    }
+
+    if (entry.template) {
+      if (!isSafeRelativePath(entry.template)) {
+        problems.push(`outputs:${id} has unsafe template path ${entry.template}`);
+      } else if (!fs.existsSync(path.join(root, entry.template))) {
+        problems.push(`outputs:${id} missing template ${entry.template}`);
+      }
+    }
+
+    if (entry.writeTarget?.kind === "repo-template") {
+      const outputPath = String(entry.writeTarget.path || "");
+      if (
+        !outputPath.startsWith("docs/specs/")
+        && !outputPath.startsWith("docs/design-plans/")
+      ) {
+        problems.push(`outputs:${id} has non-generic durable path ${outputPath || "<missing>"}`);
+      }
+    }
+  }
+
+  for (const entry of localArtifacts.entries) {
+    const label = `${entry.owner || "<missing owner>"}:${entry.artifactType || "<missing type>"}:${entry.item || "<missing item>"}`;
+    if (entry.owner !== "ah") {
+      problems.push(`local-artifact:${label} has disallowed owner ${entry.owner || "<missing>"}`);
+    }
+    if (entry.template) {
+      if (!isSafeRelativePath(entry.template)) {
+        problems.push(`local-artifact:${label} has unsafe template path ${entry.template}`);
+      } else if (!fs.existsSync(path.join(root, entry.template))) {
+        problems.push(`local-artifact:${label} missing template ${entry.template}`);
+      }
+    }
+  }
+
+  for (const entry of localHelpers.entries) {
+    const id = entry.id || "<missing id>";
+    const helperPath = String(entry.path || "");
+    if (!isSafeRelativePath(helperPath)) {
+      problems.push(`helper:${id} has unsafe path ${helperPath || "<missing>"}`);
+      continue;
+    }
+    if (!helperPathAllowed(helperPath)) {
+      problems.push(`helper:${id} has disallowed path ${helperPath}`);
+    }
+    if (!fs.existsSync(path.join(root, helperPath))) {
+      problems.push(`helper:${id} missing path ${helperPath}`);
+    }
+  }
+
+  if (problems.length > 0) {
+    throw new Error(problems.join("; "));
+  }
+
+  return [
+    `outputs=${outputs.entries.length}`,
+    `localArtifacts=${localArtifacts.entries.length}`,
+    `localHelpers=${localHelpers.entries.length}`,
+  ].join(", ");
+}
+
 function checkConfigRegistries(root) {
   const required = [
     ["agent/config/outputs.json", (value) => value.schemaVersion === 1 && Array.isArray(value.entries)],
@@ -162,6 +253,10 @@ function main() {
 
   check(checks, "source-config-registries", () => {
     return checkConfigRegistries(REPO_ROOT);
+  });
+
+  check(checks, "source-routing-registry-contract", () => {
+    return validateRoutingRegistryContract(REPO_ROOT);
   });
 
   check(checks, "source-output-kinds", () => {
@@ -310,6 +405,10 @@ function main() {
 
   check(checks, "copied-config-registries", () => {
     return checkConfigRegistries(copiedRoot);
+  });
+
+  check(checks, "copied-routing-registry-contract", () => {
+    return validateRoutingRegistryContract(copiedRoot);
   });
 
   check(checks, "copied-output-shim", () => {
