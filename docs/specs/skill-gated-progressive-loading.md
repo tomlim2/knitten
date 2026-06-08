@@ -23,6 +23,12 @@ Knitten already benefits from explicit routing and boundary rules. The next
 efficiency improvement is to make skill activation itself cheaper and more
 mechanically auditable.
 
+This milestone intentionally starts with Claude-Skills-style progressive
+disclosure rather than a full RAG or rerank system. Knitten already has
+plugin-local skill files, references, and scripts; the first useful improvement
+is to make those layers load in the right order. Retrieval can be added later
+when the number of references makes manual conditional loading too noisy.
+
 ## Boundary
 
 In scope:
@@ -33,6 +39,8 @@ In scope:
 - Guidance for moving detailed procedures into skill-local references or
   scripts.
 - Validation/audit criteria for identifying overlong or under-gated skills.
+- A first pilot batch that exercises read-only, implementation, and
+  mutation-adjacent skill surfaces.
 
 Out of scope:
 
@@ -41,6 +49,8 @@ Out of scope:
 - Removing safety instructions from mutation-capable skills.
 - Moving domain-specific references into Knitten core.
 - Replacing scripts with natural-language instructions.
+- Building vector search, retrieve-and-rerank, or full RAG infrastructure in the
+  first adoption round.
 
 ## Inputs
 
@@ -75,6 +85,25 @@ Out of scope:
 - Scripts should own mechanically checkable validation whenever practical.
 - Payload skill references remain payload-owned. Knitten core may define the
   generic pattern and audit criteria.
+- RAG is a later-stage optimization. The first adoption round should use
+  explicit reference-selection rules inside `SKILL.md`, not implicit retrieval.
+- Reference-selection rules should be conditional and concrete: name which
+  reference to read for which matched situation.
+
+## Recommended Architecture
+
+Adopt this order of investment:
+
+| Phase | Focus | Why |
+|-------|-------|-----|
+| 1 | Gated progressive loading | Immediate token savings without new infrastructure. |
+| 2 | Skill audit checklist | Finds long, ambiguous, or unsafe skills before broad migration. |
+| 3 | Lightweight reference index | Helps when explicit reference selection becomes repetitive. |
+| 4 | RAG or rerank | Only needed when skill/reference volume is too large for simple routing. |
+
+The first two phases are the current milestone. Phases 3 and 4 are deferred
+until repeated use shows that manual reference-selection rules are no longer
+enough.
 
 ## Proposed Skill Shape
 
@@ -129,13 +158,27 @@ Do not use this skill when:
 - Pilot skills load detailed references only after activation.
 - No mutation-capable skill loses its Step 0 safety gate.
 - No payload-owned reference is moved into Knitten core.
+- No RAG or vector-search infrastructure is introduced in the first adoption
+  round.
+- A follow-up decision point is documented for whether audit should become
+  validator-enforced after the pilot.
 
 ## Open Questions
 
-- Which three skills should be the pilot batch?
-- Should Knitten add a validator for required activation sections, or keep this
-  as an audit guideline until the pattern stabilizes?
+- Should Knitten add a validator for required activation sections after the
+  pilot, or keep this as an audit guideline until the pattern stabilizes?
 - What rough size threshold should trigger review of an overlong `SKILL.md`?
+
+## Proposed Pilot Batch
+
+| Skill | Surface | Reason |
+|-------|---------|--------|
+| `ah-review-work` | read-only review umbrella | Tests fast routing between spec, implementation, PR, and skill review. |
+| `ah-implement-work` | implementation umbrella | Tests deferring detailed flow while keeping scoped-edit rules visible. |
+| `ah-create-pr` | mutation-adjacent PR leaf | Tests that explicit user-request and push/PR safety gates stay in `SKILL.md`. |
+
+These pilots cover the main risk classes without requiring payload-plugin
+migration in the first round.
 
 ## Design Plan
 
@@ -167,6 +210,7 @@ Changes:
 - Resolve open questions.
 - Decide whether this pattern is advisory or validator-enforced.
 - Align terminology with the existing activation-check policy.
+- Keep RAG and rerank out of the first adoption round.
 
 Risk:
 
@@ -180,18 +224,20 @@ Proof:
 
 Files:
 
-- `skills/*/SKILL.md`
+- `skills/ah-review-work/SKILL.md`
+- `skills/ah-implement-work/SKILL.md`
+- `skills/ah-create-pr/SKILL.md`
 
 Changes:
 
-- Choose a small set of skills with different risk levels:
-  - one read-only review or planning skill
-  - one implementation skill
-  - one mutation-adjacent PR or external-state skill
+- Confirm or revise the proposed pilot batch.
+- For each pilot, write trigger/non-trigger examples and expected reference
+  files.
 
 Risk:
 
-- Choosing only easy read-only skills may fail to test the safety contract.
+- Choosing pilots that are too broad may make the first migration hard to
+  review.
 
 Proof:
 
@@ -210,6 +256,10 @@ Changes:
 - Reduce each pilot `SKILL.md` to activation, required input, Step 0, and safety.
 - Move detailed flow into a skill-local reference.
 - Keep mutation safety gates in the main skill file.
+- Make reference loading explicit, for example:
+  - `references/spec-review-flow.md` for spec/design review
+  - `references/implementation-flow.md` for implementation
+  - `references/pr-create-flow.md` for PR creation
 
 Risk:
 
