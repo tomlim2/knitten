@@ -6,6 +6,9 @@ It routes work to the right skill at the lowest useful context cost: a short
 activation gate decides whether a skill applies, detailed references load only
 after a match, and safety gates stay visible before mutation-prone work.
 
+`KC` is the short name for Knitten Core in local notes, commands, and task
+shorthand.
+
 Use this repository when you need to change shared Agent Hub behavior: how a
 task is routed, where a generated spec or plan is saved, where temporary local
 outputs are written, or which plugin is allowed to own a workflow.
