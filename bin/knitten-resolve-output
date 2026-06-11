@@ -3,8 +3,8 @@ set -euo pipefail
 
 resolve_plugin_root() {
   if [[ -n "${KNITTEN_PLUGIN_ROOT:-}" ]]; then
-    if [[ ! -f "$KNITTEN_PLUGIN_ROOT/scripts/resolve-output.mjs" ]]; then
-      printf 'KNITTEN_PLUGIN_ROOT does not contain scripts/resolve-output.mjs: %s\n' "$KNITTEN_PLUGIN_ROOT" >&2
+    if [[ ! -x "$KNITTEN_PLUGIN_ROOT/bin/knitten-path" ]]; then
+      printf 'KNITTEN_PLUGIN_ROOT does not contain bin/knitten-path: %s\n' "$KNITTEN_PLUGIN_ROOT" >&2
       return 1
     fi
     printf '%s\n' "$KNITTEN_PLUGIN_ROOT"
@@ -13,8 +13,8 @@ resolve_plugin_root() {
 
   if [[ -n "${KNITTEN_PLUGINS_ROOT:-}" ]]; then
     local plugins_root_plugin_root="$KNITTEN_PLUGINS_ROOT/knitten"
-    if [[ ! -f "$plugins_root_plugin_root/scripts/resolve-output.mjs" ]]; then
-      printf 'KNITTEN_PLUGINS_ROOT does not contain knitten/scripts/resolve-output.mjs: %s\n' "$KNITTEN_PLUGINS_ROOT" >&2
+    if [[ ! -x "$plugins_root_plugin_root/bin/knitten-path" ]]; then
+      printf 'KNITTEN_PLUGINS_ROOT does not contain knitten/bin/knitten-path: %s\n' "$KNITTEN_PLUGINS_ROOT" >&2
       return 1
     fi
     printf '%s\n' "$plugins_root_plugin_root"
@@ -25,20 +25,20 @@ resolve_plugin_root() {
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local repo_root
   repo_root="$(cd "$script_dir/.." && pwd)"
-  if [[ -f "$repo_root/scripts/resolve-output.mjs" ]]; then
+  if [[ -x "$repo_root/bin/knitten-path" ]]; then
     printf '%s\n' "$repo_root"
     return 0
   fi
 
   local default_root="$HOME/plugins/knitten"
-  if [[ -f "$default_root/scripts/resolve-output.mjs" ]]; then
+  if [[ -x "$default_root/bin/knitten-path" ]]; then
     printf '%s\n' "$default_root"
     return 0
   fi
 
-  printf 'could not locate Knitten resolve-output.mjs from %s or %s\n' "$repo_root" "$default_root" >&2
+  printf 'could not locate Knitten bin/knitten-path from %s or %s\n' "$repo_root" "$default_root" >&2
   return 1
 }
 
 plugin_root="$(resolve_plugin_root)"
-exec node "$plugin_root/scripts/resolve-output.mjs" "$@"
+exec "$plugin_root/bin/knitten-path" output "$@"

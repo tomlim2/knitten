@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_plugin_root() {
+  if [[ -n "${KNITTEN_PLUGIN_ROOT:-}" && -f "$KNITTEN_PLUGIN_ROOT/.codex-plugin/plugin.json" ]]; then
+    printf '%s\n' "$KNITTEN_PLUGIN_ROOT"
+    return 0
+  fi
+
+  local script_dir repo_root
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  repo_root="$(cd "$script_dir/.." && pwd)"
+  if [[ -f "$repo_root/.codex-plugin/plugin.json" ]]; then
+    printf '%s\n' "$repo_root"
+    return 0
+  fi
+
+  if [[ -n "${KNITTEN_PLUGINS_ROOT:-}" && -f "$KNITTEN_PLUGINS_ROOT/knitten/.codex-plugin/plugin.json" ]]; then
+    printf '%s\n' "$KNITTEN_PLUGINS_ROOT/knitten"
+    return 0
+  fi
+
+  if [[ -f "$HOME/plugins/knitten/.codex-plugin/plugin.json" ]]; then
+    printf '%s\n' "$HOME/plugins/knitten"
+    return 0
+  fi
+
+  echo "could not locate knitten plugin root" >&2
+  return 1
+}
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  knitten-path output [resolve-output args...]
+  knitten-path artifact [resolve-local-artifact args...]
+  knitten-path template <template-id-or-path>
+  knitten-path repo <repo-key>
+  knitten-path plugin-root <knitten|knitten-all-skills>
+USAGE
+}
+
+if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" ]]; then
+  usage
+  exit $([[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && echo 0 || echo 2)
+fi
+
+command="$1"
+shift
+plugin_root="$(resolve_plugin_root)"
+
+case "$command" in
+  output)
+    use_kind_resolver=0
+    for arg in "$@"; do
+      if [[ "$arg" == --kind=* || "$arg" == --skill=* || "$arg" == --workspace-root=* || "$arg" == --target-root=* || "$arg" == --hub-root=* ]]; then
+        use_kind_resolver=1
+      fi
+    done
+    if [[ $# -eq 0 || "$use_kind_resolver" -eq 1 ]]; then
+      exec node "$plugin_root/scripts/resolve-output.mjs" "$@"
+    fi
+    exec node "$plugin_root/scripts/resolve-registered-output.mjs" "$@"
+    ;;
+  artifact)
+    exec node "$plugin_root/scripts/resolve-local-artifact-path.mjs" "$@"
+    ;;
+  template)
+    exec node "$plugin_root/scripts/resolve-template.mjs" "$@"
+    ;;
+  repo)
+    exec node "$plugin_root/scripts/resolve-repo.mjs" "$@"
+    ;;
+  plugin-root)
+    exec node "$plugin_root/scripts/resolve-plugin-root.mjs" "$@"
+    ;;
+  *)
+    echo "unknown knitten-path command: $command" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

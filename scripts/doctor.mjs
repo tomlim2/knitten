@@ -113,6 +113,18 @@ function helperPathAllowed(relativePath) {
     || relativePath.startsWith("skills/knitten-status/");
 }
 
+function outputOwnerAllowed(root, madeBy) {
+  if (madeBy === "workflow:agent-hub-session-handoff") return true;
+  if (madeBy.startsWith("workflow:")) return true;
+  if (madeBy.startsWith("ah-") && fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
+  if (madeBy.startsWith("shotloom-")) return true;
+  return false;
+}
+
+function localArtifactOwnerAllowed(owner) {
+  return owner === "ah" || owner === "shotloom";
+}
+
 function validateRoutingRegistryContract(root) {
   const outputsPath = path.join(root, "agent", "config", "outputs.json");
   const localArtifactsPath = path.join(root, "agent", "config", "local-artifact-paths.json");
@@ -125,11 +137,8 @@ function validateRoutingRegistryContract(root) {
   for (const entry of outputs.entries) {
     const id = entry.id || "<missing id>";
     const madeBy = String(entry.madeBy || "");
-    if (madeBy !== "workflow:agent-hub-session-handoff") {
-      const skillPath = path.join(root, "skills", madeBy, "SKILL.md");
-      if (!madeBy.startsWith("ah-") || !fs.existsSync(skillPath)) {
-        problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
-      }
+    if (!outputOwnerAllowed(root, madeBy)) {
+      problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
     }
 
     if (entry.template) {
@@ -153,7 +162,7 @@ function validateRoutingRegistryContract(root) {
 
   for (const entry of localArtifacts.entries) {
     const label = `${entry.owner || "<missing owner>"}:${entry.artifactType || "<missing type>"}:${entry.item || "<missing item>"}`;
-    if (entry.owner !== "ah") {
+    if (!localArtifactOwnerAllowed(entry.owner)) {
       problems.push(`local-artifact:${label} has disallowed owner ${entry.owner || "<missing>"}`);
     }
     if (entry.template) {
@@ -222,10 +231,13 @@ function main() {
   const sourceSkillPath = path.join(REPO_ROOT, "skills", "knitten-status", "SKILL.md");
   const sourceOutputScriptPath = path.join(REPO_ROOT, "scripts", "resolve-output.mjs");
   const sourceOutputShimPath = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
+  const sourcePathCommandPath = path.join(REPO_ROOT, "bin", "knitten-path");
+  const sourcePayloadValidatorPath = path.join(REPO_ROOT, "scripts", "validate-payload-boundary.mjs");
   const marketplacePath = path.join(args.marketplaceRoot, ".agents", "plugins", "marketplace.json");
   const copiedRoot = path.join(args.marketplaceRoot, "plugins", PLUGIN_NAME);
   const copiedManifestPath = path.join(copiedRoot, ".codex-plugin", "plugin.json");
   const copiedOutputShimPath = path.join(copiedRoot, "bin", "knitten-resolve-output");
+  const copiedPathCommandPath = path.join(copiedRoot, "bin", "knitten-path");
 
   let sourceManifest = null;
   let marketplace = null;
@@ -248,7 +260,9 @@ function main() {
   check(checks, "source-output-runtime", () => {
     if (!fs.existsSync(sourceOutputScriptPath)) throw new Error(`missing ${sourceOutputScriptPath}`);
     if (!fs.existsSync(sourceOutputShimPath)) throw new Error(`missing ${sourceOutputShimPath}`);
-    return `${sourceOutputScriptPath}, ${sourceOutputShimPath}`;
+    if (!fs.existsSync(sourcePathCommandPath)) throw new Error(`missing ${sourcePathCommandPath}`);
+    if (!fs.existsSync(sourcePayloadValidatorPath)) throw new Error(`missing ${sourcePayloadValidatorPath}`);
+    return `${sourceOutputScriptPath}, ${sourceOutputShimPath}, ${sourcePathCommandPath}, ${sourcePayloadValidatorPath}`;
   });
 
   check(checks, "source-config-registries", () => {
@@ -365,6 +379,25 @@ function main() {
     return "KNITTEN_PLUGINS_ROOT";
   });
 
+  check(checks, "source-knitten-path", () => {
+    const output = runJson(sourcePathCommandPath, [
+      "output",
+      "--kind=review-json",
+      "--name=doctor-path-command",
+      `--workspace-root=${REPO_ROOT}`,
+    ]);
+    if (output.selectedKind !== "review-json") throw new Error("knitten-path output returned unexpected selectedKind");
+    const template = spawnSync(sourcePathCommandPath, ["template", "agent-hub/spec.md"], {
+      cwd: REPO_ROOT,
+      encoding: "utf8",
+    });
+    if (template.status !== 0) throw new Error((template.stderr || template.stdout).trim());
+    if (!template.stdout.trim().endsWith("document-templates/agent-hub/spec.md")) {
+      throw new Error(`unexpected template path: ${template.stdout.trim()}`);
+    }
+    return "output, template";
+  });
+
   check(checks, "marketplace-file", () => {
     marketplace = readJson(marketplacePath);
     if (!Array.isArray(marketplace.plugins)) throw new Error("marketplace.plugins must be an array");
@@ -431,6 +464,18 @@ function main() {
       throw new Error(`copied shim path expected ${expectedPath}, got ${output.selectedPath}`);
     }
     return copiedOutputShimPath;
+  });
+
+  check(checks, "copied-knitten-path", () => {
+    if (!fs.existsSync(copiedPathCommandPath)) throw new Error(`missing ${copiedPathCommandPath}`);
+    const output = runJson(copiedPathCommandPath, [
+      "output",
+      "--kind=review-json",
+      "--name=doctor-copied-path-command",
+      `--workspace-root=${REPO_ROOT}`,
+    ]);
+    if (output.selectedKind !== "review-json") throw new Error("copied knitten-path output returned unexpected selectedKind");
+    return copiedPathCommandPath;
   });
 
   check(checks, "copied-output-shim-plugins-root-env", () => {
