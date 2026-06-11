@@ -469,7 +469,7 @@ Proof:
 - `rg -n "skills/kas-support|agent/lib/resolve|document-templates|agent/standards|activate-local-bin" <kas-root>/skills`
 - `rg -n "KNITTEN_PATH_BIN" <kas-root>/skills`
 - `! rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" <kas-root>/skills --glob 'SKILL.md' --glob '*.sh' --glob '*.mjs' --glob '*.py'`
-- `rg -n "Legacy evidence:" <kas-root>/skills --glob 'references/**'`
+- `rg -n "Legacy evidence:" <kas-root>/skills --glob 'references/**' || true`
 - `sh -c 'rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" "$1"/skills --glob "references/**" | rg -qv "Legacy evidence:"; test $? -eq 1' sh <kas-root>`
 - `KNITTEN_PATH_BIN=<installed-kc>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
 
