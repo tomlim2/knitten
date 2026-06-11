@@ -367,12 +367,11 @@ Risk:
 
 Proof:
 
-- `rg -n "kas-support|resolve-output|resolve-local-artifact-path|resolve-repo-path|resolve-helper-path|activate-local-bin" knitten-all-skills/skills`
-  has no active-step hits except legacy references explicitly labeled as
-  historical.
+- `sh -c 'rg -n "kas-support|resolve-output|resolve-local-artifact-path|resolve-repo-path|resolve-helper-path|activate-local-bin" "$1"/skills --glob "SKILL.md" --glob "*.sh" --glob "*.mjs" --glob "*.py"; test $? -eq 1' sh <kas-root>`
+  has no active-file hits.
 - `rg -n "KNITTEN_PATH_BIN" knitten-all-skills/skills` shows every active
   generic path call uses the payload-facing command contract.
-- `! rg -n "KNITTEN_ROOT|\\.claude|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|bin/knitten-resolve-output|scripts/resolve-[a-z-]+\\.mjs" knitten-all-skills/skills`
+- `sh -c 'rg -n "KNITTEN_ROOT|\\.claude|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|bin/knitten-resolve-output|scripts/resolve-[a-z-]+\\.mjs" "$1"/skills --glob "SKILL.md" --glob "*.sh" --glob "*.mjs" --glob "*.py"; test $? -eq 1' sh <kas-root>`
   passes for active skill instructions and executable files.
 - KAS doctor passes.
 
@@ -466,19 +465,17 @@ Proof:
 - `node <kas-root>/scripts/doctor.mjs`
 - `node <knitten-root>/scripts/validate-payload-boundary.mjs --payload <kas-root>`
 - `test ! -e <kas-root>/skills/kas-support`
-- `rg -n "skills/kas-support|agent/lib/resolve|document-templates|agent/standards|activate-local-bin" <kas-root>/skills`
 - `rg -n "KNITTEN_PATH_BIN" <kas-root>/skills`
 - `sh -c 'rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" "$1"/skills --glob "SKILL.md" --glob "*.sh" --glob "*.mjs" --glob "*.py"; test $? -eq 1' sh <kas-root>`
 - `rg -n "Legacy evidence:" <kas-root>/skills --glob 'references/**' || true`
 - `sh -c 'rg -n -P "^(?!.*Legacy evidence:).*(KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b)" "$1"/skills --glob "references/**"; test $? -eq 1' sh <kas-root>`
 - `KNITTEN_PATH_BIN=<installed-kc>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
 
-The first `rg` is expected to return no active runtime references. The second
-`rg` confirms the allowed payload-facing variable is present where active
-generic path calls remain. The deny-list `rg` for active files must return no
-hits. Active files are `SKILL.md`, `*.sh`, `*.mjs`, and `*.py`. Historical
-mentions are allowed only under `skills/**/references/**` when the same line is
-explicitly labeled with `Legacy evidence:`.
+The `KNITTEN_PATH_BIN` `rg` confirms the allowed payload-facing variable is
+present where active generic path calls remain. The deny-list `rg` for active
+files must return no hits. Active files are `SKILL.md`, `*.sh`, `*.mjs`, and
+`*.py`. Historical mentions are allowed only under `skills/**/references/**`
+when the same line is explicitly labeled with `Legacy evidence:`.
 
 ## Acceptance Criteria
 
