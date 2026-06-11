@@ -31,6 +31,8 @@ Routing principles:
 
 - **Activation Gate**: decide whether a skill applies before reading detailed
   workflow material.
+- **Activation Shell**: keep the active `SKILL.md` short: description, `Use
+  for:`, Step 0, safety gates, and a pointer to references.
 - **Reference On Match**: load skill-local references only after the request
   matches the skill.
 - **Safety First**: keep mutation, push, deploy, delete, and external-state
@@ -69,6 +71,8 @@ edit the payload plugin that owns that skill.
 | `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
 | `scripts/resolve-output.mjs` | Route durable target docs and hub-owned AH local outputs. |
 | `docs/specs/` | Design notes for the routing system and runtime. |
+| `docs/guidelines/skill-authoring.md` | Skill authoring rules for token-aware activation shells. |
+| `docs/guidelines/routing-integration.md` | Rules for connecting payload routers and leaf skills. |
 
 ## Validate
 

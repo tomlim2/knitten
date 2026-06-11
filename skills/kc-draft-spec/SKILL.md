@@ -5,6 +5,8 @@ description: Draft a compact implementation spec.
 
 # KC Draft Spec
 
+Use for: drafting compact specs, implementation contracts, or pre-work plans.
+
 Use when the user asks for a spec, plan, design plan, implementation contract,
 or pre-work document before editing.
 
@@ -49,6 +51,10 @@ Ask or infer:
 - which user approval or stop condition applies before mutation
 
 Use `docs/specs/skill-activation-check-policy.md` as the source of truth.
+Use `docs/guidelines/skill-authoring.md` as the source of truth for keeping the
+active `SKILL.md` short, router-aware, and reference-backed.
+Use `docs/guidelines/routing-integration.md` when the requested spec adds a
+payload plugin, router, leaf skill, route map, or skill move between plugins.
 
 Question only when the activation check is not obvious. Infer `strict` without
 asking when the skill can push, merge, deploy, delete, send external messages,

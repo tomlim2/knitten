@@ -5,6 +5,8 @@ description: Implement accepted specs or review findings.
 
 # KC Implement
 
+Use for: implementing accepted specs or review findings in the active workspace.
+
 Use when the user asks to implement, apply a plan, or fix accepted review
 findings.
 

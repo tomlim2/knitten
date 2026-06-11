@@ -5,6 +5,8 @@ description: Record checked mechanical workflow findings.
 
 # KC Report Finding
 
+Use for: recording checked mechanical workflow or plugin failures.
+
 Use this leaf skill only for checked mechanical errors:
 
 - missing file, path, script, config, skill, or command
@@ -54,5 +56,5 @@ Include the affected repository, plugin, skill, or path in the JSON body as
 metadata; do not redirect the storage owner.
 
 If the record implies a temporary skill-local gate or check, route the follow-up
-through `kc-promote-reference`. Do not make a payload plugin own the report
-itself.
+to the payload plugin that owns that skill. Do not make a payload plugin own the
+finding report itself.

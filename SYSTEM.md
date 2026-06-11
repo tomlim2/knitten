@@ -42,12 +42,11 @@ queue, not in the payload plugin.
 
 ## Promoted References
 
-Knitten core may place `reference-promoted.md` next to a payload `SKILL.md`.
-Knitten core owns the CRUD workflow.
+Payload plugins may place `reference-promoted.md` next to a payload `SKILL.md`.
+The payload plugin that owns the skill owns the CRUD workflow.
 
-Use `kc-promote-reference` for every create, update, delete, promotion,
-retirement, or move involving `reference-promoted.md`. Payload plugins are skill
-storage only; they should not define an independent promoted-reference workflow.
+Use the payload plugin's promote-reference skill for every create, update,
+delete, promotion, retirement, or move involving `reference-promoted.md`.
 
 Use promoted references only for temporary supplemental gates, checks, or
 patterns that should affect skill execution now but are not stable enough for

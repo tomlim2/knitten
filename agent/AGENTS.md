@@ -29,7 +29,6 @@ not own or document the finding-report workflow.
 
 ## Promoted References
 
-Knitten core may place `reference-promoted.md` next to a payload skill, and
-Knitten core owns all CRUD for it. Use `kc-promote-reference` for creating,
-editing, deleting, promoting, retiring, or moving entries. Payload plugins are
-skill storage only.
+Payload plugins may place `reference-promoted.md` next to a payload skill, and
+the payload plugin owns CRUD for it. Use the payload plugin's promote-reference
+skill for creating, editing, deleting, promoting, retiring, or moving entries.

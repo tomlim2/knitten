@@ -5,6 +5,8 @@ description: Check Knitten Core installation health.
 
 # KC Status
 
+Use for: checking Knitten Core source and installed plugin health.
+
 Use this skill when the user asks whether Knitten is installed, registered, or
 healthy as a Codex plugin.
 

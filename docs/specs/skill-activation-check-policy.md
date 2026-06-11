@@ -260,7 +260,6 @@ Files:
 - `skills/kc-draft-spec/SKILL.md`
 - `skills/ah-audit-skill/SKILL.md`
 - `skills/ah-review-work/SKILL.md`
-- `skills/kc-promote-reference/SKILL.md`
 
 Changes:
 

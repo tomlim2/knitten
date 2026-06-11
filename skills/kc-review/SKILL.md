@@ -7,6 +7,8 @@ allowed-tools: Read, Agent
 
 # KC Review
 
+Use for: read-only single/triad reviews from a prepared packet.
+
 Use when a caller has already prepared a compact review packet and wants a
 read-only single-role or three-role review pass.
 

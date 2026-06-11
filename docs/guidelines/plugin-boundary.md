@@ -59,15 +59,15 @@ Rules:
 
 ## Promoted References
 
-`reference-promoted.md` is a Knitten-managed temporary reference file that may
+`reference-promoted.md` is a payload-managed temporary reference file that may
 be placed next to a payload skill.
 
 Rules:
 
-- Knitten core owns create, update, delete, promote, retire, and move.
-- Use `kc-promote-reference` for CRUD.
+- The payload plugin owns create, update, delete, promote, retire, and move.
+- Use the payload plugin's promote-reference skill for CRUD.
 - Payload skills read `reference-promoted.md` when present.
-- Payload workflows must not create, edit, delete, promote, retire, or move it.
+- Other plugins must not create, edit, delete, promote, retire, or move it.
 - Entries need trigger, check, action, and retirement target.
 - Retire entries into `SKILL.md`, `reference.md`, helper scripts, tests, or
   repository guidelines when stable.
