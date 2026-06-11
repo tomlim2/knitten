@@ -1,16 +1,16 @@
 ---
-name: ah-triad-review
-description: Run generic read-only AH single/triad role reviews from a caller-provided review packet and return merged findings.
+name: kc-review
+description: Run read-only single/triad reviews from a prepared packet.
 activation-check: loose
 allowed-tools: Read, Agent
 ---
 
-# AH Triad Review
+# KC Review
 
-Use this leaf skill when a caller has already prepared a compact review packet
-and wants a reusable single-role or three-role review pass.
+Use when a caller has already prepared a compact review packet and wants a
+read-only single-role or three-role review pass.
 
-This skill is a review engine, not a workflow owner. It does not discover
+This is a review engine, not a workflow owner. It does not discover
 repositories, run shell commands, edit files, commit, post comments, push,
 merge, deploy, or mutate GitHub/Linear. Caller workflows own target discovery,
 diff generation, guideline loading, output persistence, fixes, PR payloads, and
@@ -28,7 +28,7 @@ external mutation.
 - Optional role constraints.
 - Optional mode: `single` or `triad`. Default is `triad`.
 
-If no caller schema is supplied, use the default AH finding schema in
+If no caller schema is supplied, use the default finding schema in
 [`references/triad.md`](references/triad.md).
 
 ## Output

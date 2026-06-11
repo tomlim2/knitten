@@ -22,7 +22,7 @@ credentials, or a legacy source checkout.
 | Skill | Owns | Output |
 |-------|------|--------|
 | `ah-prepare-work` | Work definition before implementation. | Reviewed task/spec/design context. |
-| `ah-implement-work` | Code or document implementation. | Changed files plus validation evidence. |
+| `kc-implement` | Code or document implementation. | Changed files plus validation evidence. |
 | `ah-review-work` | Spec or implementation review. | Findings classified by severity and next action. |
 | `ah-manage-pr` | Pull request creation, review, response, and merge coordination. | PR state plus requested next action. |
 | `ah-wrapup-work` | Post-merge/task closeout. | Cleanup summary, lessons, and next-task candidates. |
@@ -35,15 +35,15 @@ should not recreate every legacy `ah-*` skill.
 
 ```text
 ah-prepare-work
-  -> ah-implement-work
+  -> kc-implement
   -> ah-review-work
-  -> ah-implement-work
+  -> kc-implement
   -> ah-manage-pr
   -> ah-wrapup-work
 ```
 
-Review findings loop back to `ah-implement-work`. PR review comments also loop
-back through `ah-implement-work` unless they are purely response-only items.
+Review findings loop back to `kc-implement`. PR review comments also loop
+back through `kc-implement` unless they are purely response-only items.
 
 ## 1. ah-prepare-work
 
@@ -81,7 +81,7 @@ Stop conditions:
 - required external context is missing
 - spec review finds unresolved blockers that need user judgment
 
-## 2. ah-implement-work
+## 2. kc-implement
 
 Purpose: implement an accepted spec or fix accepted review findings.
 
@@ -163,7 +163,7 @@ Rules:
 - Do not create or merge a PR without explicit user request.
 - Preserve repository-specific PR conventions.
 - Treat GitHub review comments by content, not by author type.
-- Use `ah-implement-work` for code/doc fixes from PR feedback.
+- Use `kc-implement` for code/doc fixes from PR feedback.
 
 ## 5. ah-wrapup-work
 
@@ -204,7 +204,7 @@ Initial leaf skills:
 - `ah-gather-references`
 - `ah-organize-references`
 - `ah-brainstorm-approaches`
-- `ah-draft-spec`
+- `kc-draft-spec`
 - `ah-add-design-plan`
 - `ah-review-spec`
 - `ah-implement-plan`
@@ -213,7 +213,7 @@ Initial leaf skills:
 - `ah-create-pr`
 - `ah-review-pr`
 - `ah-respond-pr`
-- `ah-report-finding`
+- `kc-report-finding`
 - `ah-manage-milestone`
 - `ah-audit-skill`
 
@@ -233,7 +233,7 @@ needed.
 Support leaf skills are part of the initial set, but they should remain
 optional in the normal path:
 
-- `ah-report-finding` records recurring workflow or system issues discovered
+- `kc-report-finding` records recurring workflow or system issues discovered
   during implementation, review, PR response, or wrapup.
 - `ah-manage-milestone` tracks grouped work when the user asks for milestone
   state, priority, or next-task ordering.
@@ -247,16 +247,16 @@ optional in the normal path:
 | `ah-gather-references` | user request, repo context, issue/PR/doc links | reference list with relevance notes | `ah-prepare-work`, `ah-review-work` |
 | `ah-organize-references` | raw references | grouped reference summary and open questions | `ah-prepare-work` |
 | `ah-brainstorm-approaches` | task purpose and reference summary | options, tradeoffs, chosen direction | `ah-prepare-work` |
-| `ah-draft-spec` | task purpose, references, chosen direction | draft spec with explicit input/output and acceptance criteria | `ah-prepare-work` |
+| `kc-draft-spec` | task purpose, references, chosen direction | draft spec with explicit input/output and acceptance criteria | `ah-prepare-work` |
 | `ah-add-design-plan` | reviewed or draft spec | implementation plan, touched surfaces, validation plan | `ah-prepare-work` |
 | `ah-review-spec` | spec and design plan | blocker/nit findings plus readiness state | `ah-prepare-work`, `ah-review-work` |
-| `ah-implement-plan` | reviewed spec and design plan | changed files plus validation evidence | `ah-implement-work` |
-| `ah-apply-review-fixes` | accepted findings and target artifact | updated artifact plus fix summary | `ah-prepare-work`, `ah-implement-work` |
+| `ah-implement-plan` | reviewed spec and design plan | changed files plus validation evidence | `kc-implement` |
+| `ah-apply-review-fixes` | accepted findings and target artifact | updated artifact plus fix summary | `ah-prepare-work`, `kc-implement` |
 | `ah-review-implementation` | implementation diff and expected contract | findings plus ready/blocked state | `ah-review-work` |
 | `ah-create-pr` | reviewed branch and PR context | PR URL and PR summary | `ah-manage-pr` |
 | `ah-review-pr` | PR URL/number | review findings or approval summary | `ah-manage-pr`, `ah-review-work` |
 | `ah-respond-pr` | PR review comments and accepted actions | posted replies or response plan | `ah-manage-pr` |
-| `ah-report-finding` | recurring issue, failed assumption, or workflow gap | structured finding record and suggested next action | `ah-review-work`, `ah-manage-pr`, `ah-wrapup-work` |
+| `kc-report-finding` | recurring issue, failed assumption, or workflow gap | structured finding record and suggested next action | `ah-review-work`, `ah-manage-pr`, `ah-wrapup-work` |
 | `ah-manage-milestone` | milestone name/state or task list | updated milestone status and next-task ordering | `ah-prepare-work`, `ah-wrapup-work` |
 | `ah-audit-skill` | skill path or skill name | skill review findings and fix recommendations | `ah-review-work` |
 
@@ -264,11 +264,11 @@ optional in the normal path:
 
 | Umbrella | Calls |
 |----------|-------|
-| `ah-prepare-work` | `ah-gather-references`, `ah-organize-references`, `ah-brainstorm-approaches`, `ah-draft-spec`, `ah-add-design-plan`, `ah-review-spec`, `ah-apply-review-fixes` |
-| `ah-implement-work` | `ah-implement-plan` for first implementation, `ah-apply-review-fixes` when fixing review findings |
+| `ah-prepare-work` | `ah-gather-references`, `ah-organize-references`, `ah-brainstorm-approaches`, `kc-draft-spec`, `ah-add-design-plan`, `ah-review-spec`, `ah-apply-review-fixes` |
+| `kc-implement` | `ah-implement-plan` for first implementation, `ah-apply-review-fixes` when fixing review findings |
 | `ah-review-work` | `ah-gather-references` when extra context is needed, `ah-review-spec`, `ah-review-implementation`, `ah-review-pr` |
 | `ah-manage-pr` | `ah-create-pr`, `ah-review-pr`, `ah-respond-pr` |
-| `ah-wrapup-work` | `ah-report-finding` for recurring workflow issues, `ah-manage-milestone` when milestone state changes |
+| `ah-wrapup-work` | `kc-report-finding` for recurring workflow issues, `ah-manage-milestone` when milestone state changes |
 
 Support leaves may be called from any umbrella when their input contract is
 met. Their table entries list primary callers, not exclusive callers. They

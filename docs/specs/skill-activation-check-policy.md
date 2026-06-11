@@ -257,10 +257,10 @@ Proof:
 
 Files:
 
-- `skills/ah-draft-spec/SKILL.md`
+- `skills/kc-draft-spec/SKILL.md`
 - `skills/ah-audit-skill/SKILL.md`
 - `skills/ah-review-work/SKILL.md`
-- `skills/ah-promote-reference/SKILL.md`
+- `skills/kc-promote-reference/SKILL.md`
 
 Changes:
 

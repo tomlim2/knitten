@@ -48,9 +48,7 @@ the immediate milestone is to prove that simple gated loading works first.
 
 | Skill | Surface | Purpose |
 |-------|---------|---------|
-| `ah-review-work` | Read-only review umbrella | Prove fast routing across review modes. |
-| `ah-implement-work` | Implementation umbrella | Prove detailed implementation flow can be deferred safely. |
-| `ah-create-pr` | Mutation-adjacent PR leaf | Prove push/PR safety gates stay visible in `SKILL.md`. |
+| `kc-implement` | Scoped implementation | Prove deleted implementation leaves are covered by one practical core skill. |
 
 ## Success Criteria
 

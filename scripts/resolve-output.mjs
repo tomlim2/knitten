@@ -48,24 +48,17 @@ function usage() {
 Prints Knitten plugin, workspace, and selected output destinations as JSON.
 
 Skill defaults:
-  ah-draft-spec -> spec
-  ah-add-design-plan -> design-plan
-  ah-review-spec -> review-json
-  ah-review-pr -> review-json
-  ah-review-implementation -> review-json
-  ah-respond-pr -> response-json
-  ah-report-finding -> operational-finding-json
+  kc-draft-spec -> spec
+  kc-report-finding -> operational-finding-json
 
 Kinds:
   spec        <targetRoot>/docs/specs/<name>.md
   design-plan <targetRoot>/docs/design-plans/<name>.md
   temp-json   <hubRoot>/.agent-local/ah/json/<name>.json
   review-json <hubRoot>/.agent-local/ah/reviews/<name>.json
-  response-json <hubRoot>/.agent-local/ah/responses/<name>.json
   operational-finding-json <hubRoot>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/<name>.json
   report-md   <hubRoot>/.agent-local/ah/reports/<name>.md
   report-html <hubRoot>/.agent-local/ah/reports/<name>.html
-  pull-request-json <hubRoot>/.agent-local/ah/pull-requests/<name>.json
   task-json   <hubRoot>/.agent-local/ah/tasks/<name>.json`;
 }
 
@@ -140,11 +133,9 @@ function selectedPathFor({ kind, name, hubLocalRoot, targetRoot }) {
     "design-plan": path.join(targetRoot, "docs", "design-plans", `${slug}.md`),
     "temp-json": path.join(hubLocalRoot, "json", `${slug}.json`),
     "review-json": path.join(hubLocalRoot, "reviews", `${slug}.json`),
-    "response-json": path.join(hubLocalRoot, "responses", `${slug}.json`),
     "operational-finding-json": path.join(hubLocalRoot, "operational-findings", today, `${slug}.json`),
     "report-md": path.join(hubLocalRoot, "reports", `${slug}.md`),
     "report-html": path.join(hubLocalRoot, "reports", `${slug}.html`),
-    "pull-request-json": path.join(hubLocalRoot, "pull-requests", `${slug}.json`),
     "task-json": path.join(hubLocalRoot, "tasks", `${slug}.json`),
   };
 
@@ -171,13 +162,8 @@ function kindForSkill(skill) {
   if (!skill) return "";
 
   const skillKinds = {
-    "ah-draft-spec": "spec",
-    "ah-add-design-plan": "design-plan",
-    "ah-review-spec": "review-json",
-    "ah-review-pr": "review-json",
-    "ah-review-implementation": "review-json",
-    "ah-respond-pr": "response-json",
-    "ah-report-finding": "operational-finding-json",
+    "kc-draft-spec": "spec",
+    "kc-report-finding": "operational-finding-json",
   };
 
   if (!Object.hasOwn(skillKinds, skill)) {

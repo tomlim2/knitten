@@ -46,7 +46,7 @@ Record:
 | Skill | Role | Why |
 |-------|------|-----|
 | `ah-review-work` | Read-only review umbrella | Tests routing among spec, implementation, PR, and skill review. |
-| `ah-implement-work` | Implementation umbrella | Tests scoped implementation routing and deferred detailed flow. |
+| `kc-implement` | Implementation umbrella | Tests scoped implementation routing and deferred detailed flow. |
 | `ah-create-pr` | Mutation-adjacent PR leaf | Tests explicit user-request, push, and PR safety gates. |
 
 ### Test Set
@@ -56,7 +56,7 @@ Use 20 request cases:
 | Group | Count | Expected Behavior |
 |-------|-------|-------------------|
 | Matching review requests | 5 | Route to `ah-review-work`; select one review reference. |
-| Matching implementation requests | 5 | Route to `ah-implement-work`; select implementation reference. |
+| Matching implementation requests | 5 | Route to `kc-implement`; select implementation reference. |
 | Matching PR creation requests | 4 | Route to `ah-create-pr`; require safety gate. |
 | Neighboring AH requests | 3 | Reject or route to a different AH skill. |
 | Non-AH/domain requests | 3 | Reject from the pilot set. |

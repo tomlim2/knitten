@@ -147,13 +147,13 @@ For operational findings, `selectedOwnerRoot` is the Knitten hub root.
 
 | Skill | Kind |
 |-------|------|
-| `ah-draft-spec` | `spec` |
+| `kc-draft-spec` | `spec` |
 | `ah-add-design-plan` | `design-plan` |
 | `ah-review-spec` | `review-json` |
 | `ah-review-implementation` | `review-json` |
 | `ah-review-pr` | `review-json` |
 | `ah-respond-pr` | `response-json` |
-| `ah-report-finding` | `operational-finding-json` |
+| `kc-report-finding` | `operational-finding-json` |
 
 ## Skill Text Updates
 
@@ -194,13 +194,13 @@ because finding reports are core-owned even when the issue targets
 
 ## Validation
 
-- `node scripts/resolve-output.mjs --skill=ah-report-finding --name=test --create`
+- `node scripts/resolve-output.mjs --skill=kc-report-finding --name=test --create`
   returns `.agent-local/ah/operational-findings/<today>/test.json`.
 - `node scripts/resolve-output.mjs --skill=ah-review-pr --name=pr-1-review --create`
   returns `.agent-local/ah/reviews/pr-1-review.json`.
 - `node scripts/resolve-output.mjs --skill=ah-respond-pr --name=pr-1-response --create`
   returns `.agent-local/ah/responses/pr-1-response.json`.
-- `node scripts/resolve-output.mjs --skill=ah-draft-spec --name=test`
+- `node scripts/resolve-output.mjs --skill=kc-draft-spec --name=test`
   returns `docs/specs/test.md`.
 - `--target-root=<path>` is preserved as target metadata and does not change
   the operational finding owner root.
@@ -210,7 +210,7 @@ because finding reports are core-owned even when the issue targets
 ## Acceptance Criteria
 
 - New local AH artifacts no longer default to `.agent-local/knitten`.
-- `ah-report-finding` has a hub-owned operational findings path.
+- `kc-report-finding` has a hub-owned operational findings path.
 - Existing AH skill docs no longer imply Knitten is the storage owner for all
   workflow outputs.
 - Installed plugin copies remain generated runtime bundles, not output
@@ -253,7 +253,7 @@ Changes:
 - Rename local root behavior from `.agent-local/knitten` to `.agent-local/ah`.
 - Return `targetRoot`, `targetLocalRoot`, and `selectedOwnerRoot`.
 - Add `response-json`.
-- Replace `finding-json` for `ah-report-finding` with
+- Replace `finding-json` for `kc-report-finding` with
   `operational-finding-json`.
 - Resolve operational findings under
   `.agent-local/ah/operational-findings/<YYYY-MM-DD>/<slug>.json`.
@@ -283,7 +283,7 @@ Changes:
 
 Files:
 
-- `skills/ah-report-finding/SKILL.md`
+- `skills/kc-report-finding/SKILL.md`
 - `skills/ah-respond-pr/SKILL.md`
 - `skills/ah-review-pr/SKILL.md`
 - `skills/ah-review-implementation/SKILL.md`
@@ -294,7 +294,7 @@ Changes:
 
 - Say local scratch is `.agent-local/ah` in the active workspace.
 - Say operational findings belong to the target workspace.
-- Add `--target-root` guidance to `ah-report-finding`.
+- Add `--target-root` guidance to `kc-report-finding`.
 - Keep plugin install copies read-only.
 
 #### 4. Update Runtime Docs

@@ -217,13 +217,13 @@ Initial aliases:
 
 | Skill | Kind |
 |-------|------|
-| `ah-draft-spec` | `spec` |
+| `kc-draft-spec` | `spec` |
 | `ah-add-design-plan` | `design-plan` |
 | `ah-review-spec` | `review-json` |
 | `ah-review-implementation` | `review-json` |
 | `ah-review-pr` | `review-json` |
 | `ah-respond-pr` | `response-json` |
-| `ah-report-finding` | `operational-finding-json` |
+| `kc-report-finding` | `operational-finding-json` |
 
 ## Payload Plugin Use
 

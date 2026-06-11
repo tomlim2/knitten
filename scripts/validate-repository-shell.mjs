@@ -25,7 +25,7 @@ const requiredFiles = [
   "scripts/materialize-local-plugin.mjs",
   "scripts/resolve-output.mjs",
   "scripts/validate-repository-shell.mjs",
-  "skills/knitten-status/SKILL.md",
+  "skills/kc-status/SKILL.md",
 ];
 
 function isAllowedFile(file) {
@@ -56,14 +56,13 @@ function isSafeRelativePath(value) {
 function helperPathAllowed(relativePath) {
   return relativePath.startsWith("bin/")
     || relativePath.startsWith("scripts/")
-    || relativePath.startsWith("skills/ah-")
-    || relativePath.startsWith("skills/knitten-status/");
+    || relativePath.startsWith("skills/kc-");
 }
 
 function outputOwnerAllowed(madeBy) {
   if (madeBy === "workflow:agent-hub-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
-  if (madeBy.startsWith("ah-") && fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
+  if (madeBy.startsWith("kc-") && fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
   if (madeBy.startsWith("shotloom-")) return true;
   return false;
 }

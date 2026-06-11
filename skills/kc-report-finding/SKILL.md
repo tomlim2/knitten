@@ -1,9 +1,9 @@
 ---
-name: ah-report-finding
-description: Record a recurring AH workflow or system finding with context, impact, evidence, and a suggested next action.
+name: kc-report-finding
+description: Record checked mechanical workflow findings.
 ---
 
-# AH Report Finding
+# KC Report Finding
 
 Use this leaf skill only for checked mechanical errors:
 
@@ -45,7 +45,7 @@ or payload plugin.
 Resolve the record path with:
 
 ```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --skill=ah-report-finding --name=<finding-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=kc-report-finding --name=<finding-name> --create
 ```
 
 This writes under
@@ -54,5 +54,5 @@ Include the affected repository, plugin, skill, or path in the JSON body as
 metadata; do not redirect the storage owner.
 
 If the record implies a temporary skill-local gate or check, route the follow-up
-through `ah-promote-reference`. Do not make a payload plugin own the report
+through `kc-promote-reference`. Do not make a payload plugin own the report
 itself.

@@ -1,9 +1,9 @@
 ---
-name: knitten-status
-description: Check the Knitten plugin source and local personal-marketplace installation status.
+name: kc-status
+description: Check Knitten Core installation health.
 ---
 
-# Knitten Status
+# KC Status
 
 Use this skill when the user asks whether Knitten is installed, registered, or
 healthy as a Codex plugin.
@@ -17,7 +17,7 @@ healthy as a Codex plugin.
    ```
 
    Resolve `<knitten-plugin-root>` as the plugin checkout containing this
-   `skills/knitten-status/SKILL.md` file.
+   `skills/kc-status/SKILL.md` file.
 
 2. Report whether `ok` is true.
 3. If any check failed, report the failed check ids and details.

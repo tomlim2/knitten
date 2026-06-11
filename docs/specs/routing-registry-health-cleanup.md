@@ -88,7 +88,7 @@ Out of scope:
     `ah-*` skill under `skills/<madeBy>/SKILL.md`
   - local artifact `owner`: `ah`
   - helper `path`: an existing source-relative path under `bin/`, `scripts/`,
-    `skills/ah-*`, or `skills/knitten-status`
+    `skills/ah-*`, or `skills/kc-status`
 - Every retained `outputs.json` template path must exist in this checkout.
 - Every retained `outputs.json` maker that is not prefixed with `workflow:` must
   match `ah-*` and resolve to an existing skill directory in this checkout.
@@ -117,7 +117,7 @@ Out of scope:
 - `outputs.json` contains no retained template path that is missing from the
   checkout.
 - `local-helper-paths.json` contains no retained helper path outside `bin/`,
-  `scripts/`, `skills/ah-*`, or `skills/knitten-status`.
+  `scripts/`, `skills/ah-*`, or `skills/kc-status`.
 - `local-helper-paths.json` remains present as a compatibility registry; it may
   contain zero entries.
 - `node scripts/doctor.mjs` fails before the cleanup on a synthetic missing
@@ -253,8 +253,8 @@ Risk:
 
 Proof:
 
-- `node scripts/resolve-output.mjs --skill=ah-draft-spec --name=routing-health-smoke`
-- `node scripts/resolve-output.mjs --skill=ah-report-finding --name=routing-health-smoke`
+- `node scripts/resolve-output.mjs --skill=kc-draft-spec --name=routing-health-smoke`
+- `node scripts/resolve-output.mjs --skill=kc-report-finding --name=routing-health-smoke`
 - `node scripts/resolve-output.mjs --kind=review-json --name=routing-health-smoke`
 
 #### 5. Update Boundary Notes If Needed

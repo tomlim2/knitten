@@ -4,7 +4,7 @@ status: accepted
 
 # AH Triad Review Reference
 
-Use this reference from `ah-triad-review`. It defines the reusable AH role
+Use this reference from `kc-review`. It defines the reusable AH role
 review pattern:
 
 ```text

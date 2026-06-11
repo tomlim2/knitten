@@ -15,7 +15,7 @@ outputs are written, or which plugin is allowed to own a workflow.
 
 Agent Hub (AH) is the workflow layer for Codex-assisted development tasks. It
 covers the common steps around preparing work, drafting specs, implementing,
-reviewing, creating PRs, responding to reviews, and wrapping up.
+reviewing artifacts, and wrapping up.
 
 Knitten Core keeps only the pieces that should work the same across projects.
 It does not contain the full private skill library. Domain skills live in

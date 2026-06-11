@@ -174,7 +174,7 @@ Do not use this skill when:
 | Skill | Surface | Reason |
 |-------|---------|--------|
 | `ah-review-work` | read-only review umbrella | Tests fast routing between spec, implementation, PR, and skill review. |
-| `ah-implement-work` | implementation umbrella | Tests deferring detailed flow while keeping scoped-edit rules visible. |
+| `kc-implement` | implementation umbrella | Tests deferring detailed flow while keeping scoped-edit rules visible. |
 | `ah-create-pr` | mutation-adjacent PR leaf | Tests that explicit user-request and push/PR safety gates stay in `SKILL.md`. |
 
 These pilots cover the main risk classes without requiring payload-plugin
@@ -225,7 +225,7 @@ Proof:
 Files:
 
 - `skills/ah-review-work/SKILL.md`
-- `skills/ah-implement-work/SKILL.md`
+- `skills/kc-implement/SKILL.md`
 - `skills/ah-create-pr/SKILL.md`
 
 Changes:

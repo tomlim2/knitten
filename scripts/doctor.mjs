@@ -28,11 +28,9 @@ function outputKinds() {
     ["design-plan", path.join("docs", "design-plans", "doctor-output.md"), "durable"],
     ["temp-json", path.join(".agent-local", "ah", "json", "doctor-output.json"), "local"],
     ["review-json", path.join(".agent-local", "ah", "reviews", "doctor-output.json"), "local"],
-    ["response-json", path.join(".agent-local", "ah", "responses", "doctor-output.json"), "local"],
     ["operational-finding-json", operationalFindingPath, "local"],
     ["report-md", path.join(".agent-local", "ah", "reports", "doctor-output.md"), "local"],
     ["report-html", path.join(".agent-local", "ah", "reports", "doctor-output.html"), "local"],
-    ["pull-request-json", path.join(".agent-local", "ah", "pull-requests", "doctor-output.json"), "local"],
     ["task-json", path.join(".agent-local", "ah", "tasks", "doctor-output.json"), "local"],
   ];
 }
@@ -109,14 +107,13 @@ function isSafeRelativePath(value) {
 function helperPathAllowed(relativePath) {
   return relativePath.startsWith("bin/")
     || relativePath.startsWith("scripts/")
-    || relativePath.startsWith("skills/ah-")
-    || relativePath.startsWith("skills/knitten-status/");
+    || relativePath.startsWith("skills/kc-");
 }
 
 function outputOwnerAllowed(root, madeBy) {
   if (madeBy === "workflow:agent-hub-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
-  if (madeBy.startsWith("ah-") && fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
+  if (madeBy.startsWith("kc-") && fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
   if (madeBy.startsWith("shotloom-")) return true;
   return false;
 }
@@ -228,7 +225,7 @@ function main() {
   const args = parseArgs(process.argv.slice(2));
   const checks = [];
   const sourceManifestPath = path.join(REPO_ROOT, ".codex-plugin", "plugin.json");
-  const sourceSkillPath = path.join(REPO_ROOT, "skills", "knitten-status", "SKILL.md");
+  const sourceSkillPath = path.join(REPO_ROOT, "skills", "kc-status", "SKILL.md");
   const sourceOutputScriptPath = path.join(REPO_ROOT, "scripts", "resolve-output.mjs");
   const sourceOutputShimPath = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
   const sourcePathCommandPath = path.join(REPO_ROOT, "bin", "knitten-path");
@@ -300,7 +297,7 @@ function main() {
     const targetRoot = path.join(REPO_ROOT, ".agent-local", "doctor-target-root");
     const output = runJson("node", [
       sourceOutputScriptPath,
-      "--skill=ah-report-finding",
+      "--skill=kc-report-finding",
       "--name=doctor-output",
       `--workspace-root=${REPO_ROOT}`,
       `--target-root=${targetRoot}`,

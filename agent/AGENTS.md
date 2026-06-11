@@ -17,7 +17,7 @@ plugin boundaries. Domain-specific behavior belongs in payload plugins.
 
 ## Mechanical Findings
 
-Use `knitten:ah-report-finding` only for checked mechanical errors: missing
+Use `knitten:kc-report-finding` only for checked mechanical errors: missing
 files/paths/scripts/configs, stale helper references, install/cache drift,
 validator failures, or plugin boundary failures.
 
@@ -30,6 +30,6 @@ not own or document the finding-report workflow.
 ## Promoted References
 
 Knitten core may place `reference-promoted.md` next to a payload skill, and
-Knitten core owns all CRUD for it. Use `ah-promote-reference` for creating,
+Knitten core owns all CRUD for it. Use `kc-promote-reference` for creating,
 editing, deleting, promoting, retiring, or moving entries. Payload plugins are
 skill storage only.

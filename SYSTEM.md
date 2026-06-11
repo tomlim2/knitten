@@ -26,7 +26,7 @@ Canonical boundary policy lives in
 
 ## Mechanical Finding Capture
 
-Use `knitten:ah-report-finding` only for checked mechanical errors:
+Use `knitten:kc-report-finding` only for checked mechanical errors:
 
 - missing file, path, script, config, skill, or command
 - stale skill reference to a moved config or helper
@@ -45,7 +45,7 @@ queue, not in the payload plugin.
 Knitten core may place `reference-promoted.md` next to a payload `SKILL.md`.
 Knitten core owns the CRUD workflow.
 
-Use `ah-promote-reference` for every create, update, delete, promotion,
+Use `kc-promote-reference` for every create, update, delete, promotion,
 retirement, or move involving `reference-promoted.md`. Payload plugins are skill
 storage only; they should not define an independent promoted-reference workflow.
 

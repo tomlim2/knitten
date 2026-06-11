@@ -52,7 +52,7 @@ Finding reports are Knitten core-owned.
 
 Rules:
 
-- Use `knitten:ah-report-finding` only for checked mechanical issues.
+- Use `knitten:kc-report-finding` only for checked mechanical issues.
 - Store all finding records in the Knitten hub queue.
 - Do not store finding reports in a payload plugin.
 - Payload plugins must not document or depend on the finding-report workflow.
@@ -65,7 +65,7 @@ be placed next to a payload skill.
 Rules:
 
 - Knitten core owns create, update, delete, promote, retire, and move.
-- Use `ah-promote-reference` for CRUD.
+- Use `kc-promote-reference` for CRUD.
 - Payload skills read `reference-promoted.md` when present.
 - Payload workflows must not create, edit, delete, promote, retire, or move it.
 - Entries need trigger, check, action, and retirement target.

@@ -1,11 +1,11 @@
 ---
-name: ah-promote-reference
-description: Manage Knitten-owned CRUD for skill-local reference-promoted.md gates and retirement.
+name: kc-promote-reference
+description: Manage temporary promoted reference gates.
 ---
 
-# AH Promote Reference
+# KC Promote Reference
 
-Use this leaf skill for every `reference-promoted.md` create, read review,
+Use for every `reference-promoted.md` create, read review,
 update, delete, promotion, retirement, or move.
 
 Knitten core owns this CRUD workflow. Payload plugins are skill storage only:
@@ -22,8 +22,8 @@ Knitten core hub.
 
 ## Input
 
-- Source context: report path, PR comment, review note, failing validation, or
-  user instruction.
+- Source context: report path, review note, failing validation, or user
+  instruction.
 - Target skill directory.
 - Concrete recurrence risk.
 - Proposed trigger, check, and action.

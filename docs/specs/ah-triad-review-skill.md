@@ -6,7 +6,7 @@ Draft.
 
 ## Goal
 
-Add a generic Knitten core skill, `ah-triad-review`, that runs a reusable
+Add a generic Knitten core skill, `kc-review`, that runs a reusable
 three-role review pass for AH and payload workflows.
 
 The skill should provide the common Triad pattern once:
@@ -38,8 +38,8 @@ skills, and PR reviews.
 
 In scope:
 
-- Create a Knitten core skill `skills/ah-triad-review/SKILL.md`.
-- Create `skills/ah-triad-review/references/triad.md`.
+- Create a Knitten core skill `skills/kc-review/SKILL.md`.
+- Create `skills/kc-review/references/triad.md`.
 - Define the generic Triad input packet.
 - Define dynamic role selection.
 - Define mandatory base review packet for every role.
@@ -51,7 +51,7 @@ In scope:
 
 Out of scope:
 
-- Rewriting Shotloom skills or AH umbrella skills to call `ah-triad-review` in
+- Rewriting Shotloom skills or AH umbrella skills to call `kc-review` in
   this implementation pass.
 - Posting GitHub reviews or comments.
 - Creating PR payloads.
@@ -106,12 +106,12 @@ the default AH finding schema.
 
 ## Contract
 
-- `ah-triad-review` is a review engine, not a workflow owner.
+- `kc-review` is a review engine, not a workflow owner.
 - The caller owns target discovery, repo checkout, diff generation, guideline
   loading, output persistence, fixes, commits, PR payloads, and external
   mutation.
 - The review target must already be materialized as inline content or a readable
-  path. `ah-triad-review` does not run `git diff`, fetch PRs, inspect branches,
+  path. `kc-review` does not run `git diff`, fetch PRs, inspect branches,
   or discover repositories.
 - The caller must make every required review document available as either:
   - a readable local path that this skill may inspect with `Read`, or
@@ -142,7 +142,7 @@ the default AH finding schema.
 ## Proposed Skill Shape
 
 ```text
-skills/ah-triad-review/
+skills/kc-review/
   SKILL.md
   references/triad.md
 ```
@@ -210,7 +210,7 @@ The caller should provide a compact packet with:
 ```
 
 The packet should be concise but source-cited. If the packet is too vague to
-choose roles or ground findings, `ah-triad-review` stops and asks the caller to
+choose roles or ground findings, `kc-review` stops and asks the caller to
 repair the packet.
 
 ## Default AH Finding Schema
@@ -352,8 +352,8 @@ Each role reports:
 - If `node scripts/doctor.mjs` fails only because the materialized local plugin
   copy is missing or stale, run `node scripts/materialize-local-plugin.mjs` and
   re-run doctor before treating the implementation as failed.
-- `rg -n "ah-triad-review|triad.md|activation-check" skills docs`
-- Manual review that `ah-triad-review` contains no mutation steps.
+- `rg -n "kc-review|triad.md|activation-check" skills docs`
+- Manual review that `kc-review` contains no mutation steps.
 - Manual review that `triad.md` separates caller responsibilities from Triad
   responsibilities.
 - Manual review that role prompts forbid subagent mutation.
@@ -362,8 +362,8 @@ Each role reports:
 
 ## Acceptance Criteria
 
-- `skills/ah-triad-review/SKILL.md` exists in Knitten core.
-- `skills/ah-triad-review/references/triad.md` exists.
+- `skills/kc-review/SKILL.md` exists in Knitten core.
+- `skills/kc-review/references/triad.md` exists.
 - The skill has `activation-check: loose`.
 - The skill has `Step 0: Activation Check`.
 - The skill states it is read-only and does not mutate files or external state.
@@ -383,10 +383,10 @@ Each role reports:
 
 ## Open Questions
 
-- Should `ah-review-work` mention `ah-triad-review` as the optional multi-lens
+- Should `ah-review-work` mention `kc-review` as the optional multi-lens
   review engine after the first implementation pass?
 - Should `ah-review-pr` support an explicit `--triad` style handoff later, or
-  should PR-specific skills call `ah-triad-review` directly?
+  should PR-specific skills call `kc-review` directly?
 - Should role reports be printed only, or should the skill optionally accept a
   caller-provided local output path in a later version?
 
@@ -403,8 +403,8 @@ Each role reports:
 
 ### Outputs
 
-- New `skills/ah-triad-review/SKILL.md`.
-- New `skills/ah-triad-review/references/triad.md`.
+- New `skills/kc-review/SKILL.md`.
+- New `skills/kc-review/references/triad.md`.
 - Optional targeted references in AH review umbrella docs if needed.
 - Validation evidence.
 
@@ -414,7 +414,7 @@ Each role reports:
 
 Files:
 
-- `skills/ah-triad-review/SKILL.md`
+- `skills/kc-review/SKILL.md`
 
 Changes:
 
@@ -441,7 +441,7 @@ Proof:
 
 Files:
 
-- `skills/ah-triad-review/references/triad.md`
+- `skills/kc-review/references/triad.md`
 
 Changes:
 
