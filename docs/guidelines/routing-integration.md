@@ -21,6 +21,15 @@ Knitten routing has three layers:
 Core should not own domain behavior. Payload plugins should not copy core path,
 output, or boundary policy.
 
+## Core Router Freeze
+
+Do not add new Knitten Core routers or route layers by default. Core should stay
+small enough that direct skill selection is cheaper than router indirection.
+
+Only add a Core router after an explicit spec and review show that it reduces
+loaded context and reasoning cost for repeated Core workflows. Payload plugins
+may still add routers when the Router Checklist below is satisfied.
+
 ## Payload Plugin Checklist
 
 When adding a payload plugin:
