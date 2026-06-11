@@ -1,12 +1,13 @@
 ---
 name: ah-implement-work
-description: Implement a reviewed AH spec or fix accepted review findings while keeping edits scoped and validation explicit.
+description: Route AH implementation work to first-pass implementation or accepted review-fix paths.
 ---
 
 # AH Implement Work
 
 Use this umbrella skill when the user asks to implement an accepted spec, apply
-a design plan, or fix accepted review findings.
+a design plan, or fix accepted review findings. This skill chooses the path;
+`ah-implement-plan` owns first-pass implementation details.
 
 ## Input
 

@@ -213,7 +213,6 @@ Initial leaf skills:
 - `ah-create-pr`
 - `ah-review-pr`
 - `ah-respond-pr`
-- `ah-close-work`
 - `ah-report-finding`
 - `ah-manage-milestone`
 - `ah-audit-skill`
@@ -257,7 +256,6 @@ optional in the normal path:
 | `ah-create-pr` | reviewed branch and PR context | PR URL and PR summary | `ah-manage-pr` |
 | `ah-review-pr` | PR URL/number | review findings or approval summary | `ah-manage-pr`, `ah-review-work` |
 | `ah-respond-pr` | PR review comments and accepted actions | posted replies or response plan | `ah-manage-pr` |
-| `ah-close-work` | merged PR or cancelled task state | wrapup summary and cleanup candidates | `ah-wrapup-work` |
 | `ah-report-finding` | recurring issue, failed assumption, or workflow gap | structured finding record and suggested next action | `ah-review-work`, `ah-manage-pr`, `ah-wrapup-work` |
 | `ah-manage-milestone` | milestone name/state or task list | updated milestone status and next-task ordering | `ah-prepare-work`, `ah-wrapup-work` |
 | `ah-audit-skill` | skill path or skill name | skill review findings and fix recommendations | `ah-review-work` |
@@ -270,7 +268,7 @@ optional in the normal path:
 | `ah-implement-work` | `ah-implement-plan` for first implementation, `ah-apply-review-fixes` when fixing review findings |
 | `ah-review-work` | `ah-gather-references` when extra context is needed, `ah-review-spec`, `ah-review-implementation`, `ah-review-pr` |
 | `ah-manage-pr` | `ah-create-pr`, `ah-review-pr`, `ah-respond-pr` |
-| `ah-wrapup-work` | `ah-close-work` |
+| `ah-wrapup-work` | `ah-report-finding` for recurring workflow issues, `ah-manage-milestone` when milestone state changes |
 
 Support leaves may be called from any umbrella when their input contract is
 met. Their table entries list primary callers, not exclusive callers. They

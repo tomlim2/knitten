@@ -1,6 +1,6 @@
 ---
 name: ah-implement-plan
-description: Implement a reviewed AH spec and design plan, keeping changes scoped and reporting validation evidence.
+description: Implement first-pass AH work from a reviewed spec and design plan.
 ---
 
 # AH Implement Plan

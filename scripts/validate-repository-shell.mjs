@@ -15,6 +15,7 @@ const requiredFiles = [
   "agent/config/local-artifact-paths.json",
   "agent/config/local-helper-paths.json",
   "agent/config/outputs.json",
+  "bin/knitten-path",
   "bin/knitten-resolve-output",
   "docs/guidelines/plugin-boundary-pr-check.md",
   "docs/specs/doctor-status-skill.md",
@@ -30,11 +31,15 @@ const requiredFiles = [
 function isAllowedFile(file) {
   if (requiredFiles.includes(file)) return true;
   if (file.startsWith("agent/config/") && file.endsWith(".json")) return true;
+  if (file.startsWith("bin/")) return true;
   if (file.startsWith("docs/guidelines/") && file.endsWith(".md")) return true;
   if (file.startsWith("docs/public-core/")) return true;
   if (file.startsWith("docs/specs/") && file.endsWith(".md")) return true;
   if (file.startsWith("document-templates/") && (file.endsWith(".md") || file.endsWith(".json"))) return true;
+  if (file.startsWith("scripts/")) return true;
   if (file.startsWith("skills/") && file.endsWith("/SKILL.md")) return true;
+  if (file.startsWith("skills/") && file.includes("/references/")) return true;
+  if (file.startsWith("skills/") && file.includes("/scripts/")) return true;
   return false;
 }
 
@@ -55,6 +60,18 @@ function helperPathAllowed(relativePath) {
     || relativePath.startsWith("skills/knitten-status/");
 }
 
+function outputOwnerAllowed(madeBy) {
+  if (madeBy === "workflow:agent-hub-session-handoff") return true;
+  if (madeBy.startsWith("workflow:")) return true;
+  if (madeBy.startsWith("ah-") && fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
+  if (madeBy.startsWith("shotloom-")) return true;
+  return false;
+}
+
+function localArtifactOwnerAllowed(owner) {
+  return owner === "ah" || owner === "shotloom";
+}
+
 function validateRoutingRegistryContract() {
   const outputs = readJson("agent/config/outputs.json");
   const localArtifacts = readJson("agent/config/local-artifact-paths.json");
@@ -64,11 +81,8 @@ function validateRoutingRegistryContract() {
   for (const entry of outputs.entries) {
     const id = entry.id || "<missing id>";
     const madeBy = String(entry.madeBy || "");
-    if (madeBy !== "workflow:agent-hub-session-handoff") {
-      const skillPath = path.join("skills", madeBy, "SKILL.md");
-      if (!madeBy.startsWith("ah-") || !fs.existsSync(skillPath)) {
-        problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
-      }
+    if (!outputOwnerAllowed(madeBy)) {
+      problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
     }
 
     if (entry.template) {
@@ -92,7 +106,7 @@ function validateRoutingRegistryContract() {
 
   for (const entry of localArtifacts.entries) {
     const label = `${entry.owner || "<missing owner>"}:${entry.artifactType || "<missing type>"}:${entry.item || "<missing item>"}`;
-    if (entry.owner !== "ah") {
+    if (!localArtifactOwnerAllowed(entry.owner)) {
       problems.push(`local-artifact:${label} has disallowed owner ${entry.owner || "<missing>"}`);
     }
     if (entry.template) {

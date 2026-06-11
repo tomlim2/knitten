@@ -4,11 +4,11 @@ status: accepted
 
 # AH Triad Review Reference
 
-Use this reference from `ah-triad-review`. It defines the reusable Triad review
-pattern:
+Use this reference from `ah-triad-review`. It defines the reusable AH role
+review pattern:
 
 ```text
-review packet -> role selection -> three read-only role reviews -> merged findings
+review packet -> mode selection -> role selection -> read-only role reviews -> merged findings
 ```
 
 The caller owns target discovery, diff generation, guideline loading, output
@@ -34,6 +34,9 @@ The caller should provide:
 
 ## Finding schema
 <optional caller schema; omitted means default AH finding schema>
+
+## Review mode
+single | triad
 
 ## Known constraints
 - <approval, scope, product, migration, or testing constraint>
@@ -88,16 +91,18 @@ Priority mapping:
 
 ## Role Selection
 
-Select exactly three roles.
+Select one role in `single` mode or exactly three roles in `triad` mode.
 
 Rules:
 
 - Name roles from the reviewed change, not from a fixed list.
 - Prefer concrete consumer roles over generic roles.
 - Include one role for the highest-risk technical boundary.
-- Include one role for the primary consumer.
-- Include one role for verification, maintainability, migration, security, or
-  docs depending on the changed surface.
+- In `single` mode, choose the one role that best covers the highest-risk
+  boundary and primary consumer.
+- In `triad` mode, include one role for the primary consumer and one role for
+  verification, maintainability, migration, security, or docs depending on the
+  changed surface.
 - Use a generic balanced set only when no specialized consumer dominates.
 
 Example fallback roles:
@@ -118,11 +123,14 @@ Example specialized role names:
 Mandatory output before dispatch:
 
 ```markdown
-## AH Triad role selection
+## AH role selection
+- mode: single|triad
 - <role> - <why this role matches the target and consumer>
 - <role> - <why this role matches the target and consumer>
 - <role> - <why this role matches the target and consumer>
 ```
+
+In `single` mode, print only the selected role row.
 
 ## Base Review Packet Rule
 

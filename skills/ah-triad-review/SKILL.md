@@ -1,6 +1,6 @@
 ---
 name: ah-triad-review
-description: Run a generic read-only three-role AH review pass from a caller-provided review packet and return merged findings.
+description: Run generic read-only AH single/triad role reviews from a caller-provided review packet and return merged findings.
 activation-check: loose
 allowed-tools: Read, Agent
 ---
@@ -8,7 +8,7 @@ allowed-tools: Read, Agent
 # AH Triad Review
 
 Use this leaf skill when a caller has already prepared a compact review packet
-and wants a reusable three-role review pass.
+and wants a reusable single-role or three-role review pass.
 
 This skill is a review engine, not a workflow owner. It does not discover
 repositories, run shell commands, edit files, commit, post comments, push,
@@ -26,14 +26,15 @@ external mutation.
 - Base review documents: readable paths, inline excerpts, or both.
 - Optional caller finding schema.
 - Optional role constraints.
+- Optional mode: `single` or `triad`. Default is `triad`.
 
 If no caller schema is supplied, use the default AH finding schema in
 [`references/triad.md`](references/triad.md).
 
 ## Output
 
-- Triad role selection.
-- Three role reports.
+- Role selection.
+- One role report in `single` mode or three role reports in `triad` mode.
 - Merged findings.
 - Residual risk notes.
 
@@ -42,8 +43,9 @@ write durable artifacts.
 
 ## Step 0: Activation Check
 
-Confirm the request is a read-only Triad review, the review packet is present,
-and no caller expects this skill to mutate files or external state.
+Confirm the request is a read-only AH role review, the review packet is present,
+the requested mode is `single` or `triad`, and no caller expects this skill to
+mutate files or external state.
 
 Stop and ask the caller to repair the packet when:
 
@@ -65,11 +67,12 @@ the default AH finding schema.
    discover repositories.
 3. Read only caller-provided readable paths and inline content. Do not broaden
    context on your own.
-4. Select exactly three roles using the reference's Role Selection rules.
+4. Select roles using the reference's Role Selection rules: one role for
+   `single`, or exactly three roles for `triad`.
 5. Print the role selection with a one-line reason for each role.
-6. Run three read-only role reviews. Use `Agent` when available; otherwise run
-   the same role reviews sequentially in the primary context and state that
-   limitation in residual risk.
+6. Run the selected read-only role reviews. Use `Agent` when available;
+   otherwise run the same role reviews sequentially in the primary context and
+   state that limitation in residual risk.
 7. Give every role the same base review packet before applying its role lens.
 8. Require every role prompt to include the read-only subagent contract from the
    reference.

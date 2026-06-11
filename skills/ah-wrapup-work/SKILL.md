@@ -1,6 +1,6 @@
 ---
 name: ah-wrapup-work
-description: Close out completed or cancelled AH work by summarizing outcome, identifying safe cleanup, recording lessons, and suggesting next tasks.
+description: Close completed or cancelled AH work with summary, cleanup, lessons, and next tasks.
 ---
 
 # AH Wrapup Work
@@ -22,9 +22,13 @@ out a task.
 
 ## Flow
 
-1. Use `ah-close-work` to summarize final state.
-2. Use `ah-report-finding` for recurring workflow issues.
-3. Use `ah-manage-milestone` when the user asks to update milestone state.
+1. Summarize what changed and why it is done or stopped.
+2. List validation and review evidence.
+3. Identify safe cleanup candidates without deleting them by default.
+4. Capture reusable lessons or route recurring workflow issues through
+   `ah-report-finding`.
+5. Use `ah-manage-milestone` when the user asks to update milestone state.
+6. Suggest the next task when useful.
 
 ## Rules
 
