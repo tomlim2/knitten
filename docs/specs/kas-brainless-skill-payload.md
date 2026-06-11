@@ -76,6 +76,12 @@ Out of scope:
   - `scripts/`, Python, or Node helpers that are specific to that skill
 - KAS skill-local helpers may not implement generic path resolution. They may
   call a Knitten-owned command and then use the returned path.
+- KAS active skill instructions and executable files must not contain legacy
+  path forms for current behavior. This includes `skills/kas-support`,
+  `agent/lib`, `agent/config`, `document-templates`, `agent/standards`,
+  `../knitten`, `plugins/knitten`, `bin/knitten-resolve-output`, direct KC
+  `scripts/resolve-*.mjs` calls, `KNITTEN_ROOT`, and historical harness paths
+  such as `.claude` for current plugin operation.
 - KAS may keep plugin packaging files required for Codex installation:
   `.codex-plugin/plugin.json`, `README.md`, and narrowly scoped packaging
   scripts. Those scripts must not own routing policy.
@@ -93,6 +99,14 @@ Out of scope:
   current KC/KAS boundary contracts by moving them to `knitten/docs/specs`;
   delete the rest from the payload plugin after the inventory records their
   disposition.
+- Legacy path mentions may remain only in clearly labeled historical evidence
+  outside active skill instructions and executable files. They must not appear
+  in examples that a user would copy for current work.
+- Multi-skill Shotloom helper code lives under one owning coordinator skill:
+  `skills/shotloom-references/`. Other Shotloom skills may call or import those
+  helpers through skill-relative paths. Do not create a new generic support
+  tree, and do not duplicate shared helpers across Shotloom skills unless a
+  helper becomes specific to one direct owning skill.
 
 ## Target Tree
 
@@ -130,6 +144,10 @@ Knitten must provide one stable interface for payload skills:
 <knitten-root>/bin/knitten-path <command> [args...]
 ```
 
+The command name is fixed as `knitten-path`. Existing
+`bin/knitten-resolve-output` remains only as a compatibility wrapper and must
+not become the new payload-facing interface.
+
 Payload skill snippets invoke it through `KNITTEN_PATH_BIN`:
 
 ```bash
@@ -140,6 +158,14 @@ knitten_path="${KNITTEN_PATH_BIN:?set KNITTEN_PATH_BIN to knitten/bin/knitten-pa
 KAS skills must not hardcode `<knitten-root>`, `../knitten`, installed plugin
 paths, or KC internal script paths. Local shell setup, Codex plugin activation,
 or the user environment owns setting `KNITTEN_PATH_BIN`.
+
+KC owns the bootstrap implementation. Materialized KC installs must provide a
+stable executable at `plugins/knitten/bin/knitten-path`, and KC doctor must
+check that path. Payload execution environments must set `KNITTEN_PATH_BIN` to
+that executable before skill snippets run. KAS may keep a thin setup wrapper
+only if it locates KC through plugin metadata or an already configured
+environment variable, exports `KNITTEN_PATH_BIN`, and contains no path policy of
+its own.
 
 Minimum commands:
 
@@ -224,6 +250,7 @@ Files:
 - `knitten/scripts/resolve-template.mjs`
 - `knitten/scripts/resolve-repo.mjs`
 - `knitten/scripts/resolve-plugin-root.mjs`
+- `knitten/scripts/setup-payload-env`
 - `knitten/scripts/validate-payload-boundary.mjs`
 - `knitten/scripts/doctor.mjs`
 
@@ -237,6 +264,8 @@ Changes:
 - Add template lookup for shared KC templates.
 - Add payload boundary validation as a KC-owned script, with KAS as an input
   path rather than as a policy owner.
+- Add or document KC-owned payload environment setup that exports
+  `KNITTEN_PATH_BIN` for materialized plugin sessions.
 
 Risk:
 
@@ -247,6 +276,7 @@ Proof:
 - `bin/knitten-path output --kind=review-json --name=smoke --create`
 - `bin/knitten-path repo shotloom` with env/config set.
 - `bin/knitten-path template review-code`
+- `test -x "$KNITTEN_PATH_BIN"` in a simulated materialized KAS skill shell.
 - `scripts/validate-payload-boundary.mjs --payload <kas-root> --warn-only`
 - `node scripts/doctor.mjs`
 
@@ -327,6 +357,9 @@ Changes:
 - Remove helper bin activation from KAS unless it is replaced by a KC-owned
   activation command.
 - Do not keep compatibility wrappers in KAS after consumers are migrated.
+- Remove legacy path text from active skill instructions, examples, shell
+  snippets, and executable helpers. Do not rewrite it to a new KAS-local
+  support path; replace it with `KNITTEN_PATH_BIN` or delete the stale step.
 
 Risk:
 
@@ -339,6 +372,8 @@ Proof:
   historical.
 - `rg -n "KNITTEN_PATH_BIN" knitten-all-skills/skills` shows every active
   generic path call uses the payload-facing command contract.
+- `! rg -n "KNITTEN_ROOT|\\.claude|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|bin/knitten-resolve-output|scripts/resolve-[a-z-]+\\.mjs" knitten-all-skills/skills`
+  passes for active skill instructions and executable files.
 - KAS doctor passes.
 
 ### 6. Move Skill-Owned Helpers To Owning Skills
@@ -352,7 +387,7 @@ Files:
 Changes:
 
 - Move Shotloom-only helpers under the owning Shotloom skill, or under a
-  clearly named Shotloom shared skill if multiple Shotloom skills need them.
+  `skills/shotloom-references/` when multiple Shotloom skills need them.
 - Move GitHub PR helpers under the skill that owns PR response/review behavior,
   or replace them with KC generic GitHub support only if they are domain-neutral.
 - Update imports and shell snippets.
@@ -432,13 +467,18 @@ Proof:
 - `node <knitten-root>/scripts/validate-payload-boundary.mjs --payload <kas-root>`
 - `test ! -e <kas-root>/skills/kas-support`
 - `rg -n "skills/kas-support|agent/lib/resolve|document-templates|agent/standards|activate-local-bin" <kas-root>/skills`
-- `rg -n "KNITTEN_PATH_BIN|knitten-path|scripts/resolve-|\\.\\.\\/knitten|plugins/knitten" <kas-root>/skills`
+- `rg -n "KNITTEN_PATH_BIN" <kas-root>/skills`
+- `! rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" <kas-root>/skills --glob 'SKILL.md' --glob '*.sh' --glob '*.mjs' --glob '*.py'`
+- `rg -n "Legacy evidence:" <kas-root>/skills --glob 'references/**'`
+- `sh -c 'rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" "$1"/skills --glob "references/**" | rg -qv "Legacy evidence:"; test $? -eq 1' sh <kas-root>`
+- `KNITTEN_PATH_BIN=<installed-kc>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
 
 The first `rg` is expected to return no active runtime references. The second
-`rg` must show active generic path calls using `KNITTEN_PATH_BIN`; direct
-`knitten-path` text is allowed only in setup instructions that define
-`KNITTEN_PATH_BIN`. Historical mentions are allowed only when explicitly
-labeled as legacy evidence under a skill reference file.
+`rg` confirms the allowed payload-facing variable is present where active
+generic path calls remain. The deny-list `rg` for active files must return no
+hits. Active files are `SKILL.md`, `*.sh`, `*.mjs`, and `*.py`. Historical
+mentions are allowed only under `skills/**/references/**` when the same line is
+explicitly labeled with `Legacy evidence:`.
 
 ## Acceptance Criteria
 
@@ -447,8 +487,13 @@ labeled as legacy evidence under a skill reference file.
 - KAS has no shared template directory.
 - KAS has no broad docs or standards directory.
 - KAS active skills resolve every generic path through KC.
+- KAS active skill instructions and executable files contain no legacy path
+  forms for current behavior.
 - KC exposes a stable path service for output, artifact, template, repo, and
   plugin-root questions.
+- The KC path command name is `knitten-path`.
+- Materialized plugin sessions provide executable `KNITTEN_PATH_BIN` before KAS
+  skill snippets run.
 - Private repo mappings are local config/env data, not committed KAS logic.
 - KC payload validator fails if `kas-support` or generic path helpers return.
 - KAS validation wrappers contain no boundary rule table; they delegate to KC
@@ -457,10 +502,7 @@ labeled as legacy evidence under a skill reference file.
 
 ## Open Questions
 
-- Should the KC path command be named `knitten-path`, or should existing
-  `knitten-resolve-output` grow subcommands?
-- Should multi-skill Shotloom helper code live under one Shotloom coordinator
-  skill, or be split per owning skill?
+- None.
 
 ## Design Plan
 
@@ -509,12 +551,15 @@ Files:
 - `knitten/bin/knitten-path`
 - `knitten/scripts/*.mjs`
 - `knitten/scripts/doctor.mjs`
+- KC-owned payload environment setup.
 
 Changes:
 
 - Add missing KC path service commands.
 - Keep existing output behavior compatible.
 - Add tests or doctor checks for every command consumed by KAS.
+- Add bootstrap that makes `KNITTEN_PATH_BIN` available in materialized payload
+  skill sessions.
 
 Risk:
 
@@ -522,7 +567,7 @@ Risk:
 
 Proof:
 
-- KC doctor and command smoke tests pass.
+- KC doctor, command smoke tests, and `KNITTEN_PATH_BIN` bootstrap smoke pass.
 
 #### 3. Rewrite Active KAS Skills
 
@@ -535,6 +580,8 @@ Changes:
 - Replace `kas-support` generic helper calls with `KNITTEN_PATH_BIN`.
 - Move skill-owned helpers under their owning skill.
 - Delete stale support docs instead of updating them.
+- Remove all legacy path forms from active skill instructions and executable
+  files.
 
 Risk:
 
