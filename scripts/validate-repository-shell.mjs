@@ -7,6 +7,7 @@ const requiredFiles = [
   ".codex-plugin/plugin.json",
   ".github/workflows/validate.yml",
   ".gitignore",
+  "CHANGELOG.md",
   "LICENSE",
   "MILESTONE.md",
   "README.md",
