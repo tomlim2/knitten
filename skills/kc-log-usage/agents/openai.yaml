@@ -1,0 +1,4 @@
+interface:
+  display_name: "KC Log Usage"
+  short_description: "Log agent usage into local ignored journals."
+  default_prompt: "Log this agent usage entry."
