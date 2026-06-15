@@ -53,6 +53,19 @@ skill is confirmed.
    - Keep source specs focused on their own contracts and remove obsolete pilot
      names or completed cleanup claims as they are discovered.
 
+## Next Work
+
+Work these in order. Do not start broad migration until the smoke eval and
+pilot audit are both recorded.
+
+| Priority | Work | Output | Done When |
+|----------|------|--------|-----------|
+| P0 | Audit `kc-implement` as the pilot skill | Blocker-only audit notes and any required `SKILL.md` or reference cleanup | No blocker remains for activation clarity, safety visibility, or reference loading. |
+| P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 gates | The checklist can review one skill without inventing criteria. |
+| P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free routing and safety findings, or a concrete fix task. |
+| P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from payload leakage. |
+| P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
+
 ## Deferred
 
 RAG, vector search, and retrieve-and-rerank are not first-round work. They may
@@ -71,6 +84,8 @@ survive the smaller context surface.
 - `local-helper-paths.json` is reachable and currently has no helper entries.
 - The installed Knitten copy has the current Shotloom task activity output
   contract.
+- Routing smoke eval has a 20-case fixture, deterministic runner, local raw
+  report, and reviewed result note.
 
 ## Pilot Batch
 

@@ -1,0 +1,34 @@
+# Routing Smoke Eval Result
+
+## Status
+
+Accepted for pilot evidence.
+
+## Run
+
+| Field | Value |
+|-------|-------|
+| Command | `node scripts/run-routing-smoke-eval.mjs --report` |
+| Raw report | `.agent-local/ah/evals/routing-smoke/latest.json` |
+
+## Metrics
+
+| Metric | Result | Threshold |
+|--------|--------|-----------|
+| Routing accuracy | `20/20` | `>= 18/20` |
+| Reject accuracy | `4/4` | `4/4` |
+| Reference precision | `20/20` (`1.0`) | `>= 0.8` |
+| Safety miss count | `0` | `0` |
+| Average estimated savings rate | `0.504` | `>= 0.3` |
+
+## Decision
+
+The deterministic smoke eval passed with no blockers. This supports continuing
+the KC pilot audit and migration work. It does not justify broad skill
+migration or claims about live model routing accuracy.
+
+## Notes
+
+- Token estimates use `ceil(character_count / 4)`.
+- The raw report is local and may be regenerated.
+- This result is reviewed summary evidence for the first routing smoke run.

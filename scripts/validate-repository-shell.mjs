@@ -36,6 +36,7 @@ function isAllowedFile(file) {
   if (file.startsWith("docs/guidelines/") && file.endsWith(".md")) return true;
   if (file.startsWith("docs/public-core/")) return true;
   if (file.startsWith("docs/specs/") && file.endsWith(".md")) return true;
+  if (file.startsWith("evals/routing-smoke/") && file.endsWith(".json")) return true;
   if (file.startsWith("document-templates/") && (file.endsWith(".md") || file.endsWith(".json"))) return true;
   if (file.startsWith("scripts/")) return true;
   if (file.startsWith("skills/") && file.endsWith("/SKILL.md")) return true;

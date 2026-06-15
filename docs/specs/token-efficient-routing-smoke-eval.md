@@ -2,7 +2,8 @@
 
 ## Status
 
-Active planning. The eval has not produced evidence yet.
+Implemented as a deterministic smoke eval. The first reviewed run is recorded in
+[`routing-smoke-eval-result.md`](routing-smoke-eval-result.md).
 
 ## Goal
 
@@ -125,22 +126,25 @@ tokenizer in the first round.
 
 ## Procedure
 
-1. Create a small JSON test set under a future eval location.
+1. Create a small JSON test set at `evals/routing-smoke/cases.json`.
 2. Measure current pilot `SKILL.md` sizes.
-3. Draft or identify the proposed activation-only sections and reference files
-   without relying on absent legacy pilot skills.
-4. Estimate baseline vs gated cost for every case.
-5. Review routing decisions manually against expected routes.
-6. Record misses and decide whether the pilot migration should proceed.
+3. Declare activation surfaces and counted references at
+   `evals/routing-smoke/activation-surfaces.json`.
+4. Run `node scripts/run-routing-smoke-eval.mjs --report`.
+5. Review the local report at `.agent-local/ah/evals/routing-smoke/latest.json`.
+6. Record the reviewed result and decide whether the pilot migration should
+   proceed.
 
 ## Outputs
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
 | Eval plan | durable | This document. |
-| Test cases JSON | durable, future | Request cases and expected routes. |
-| Cost report | durable | Baseline/gated token estimate and routing result summary. |
-| Review notes | durable | Findings before pilot migration. |
+| Test cases JSON | durable | `evals/routing-smoke/cases.json`. |
+| Activation surfaces JSON | durable | `evals/routing-smoke/activation-surfaces.json`. |
+| Runner | durable | `scripts/run-routing-smoke-eval.mjs`. |
+| Raw report | local | `.agent-local/ah/evals/routing-smoke/latest.json`. |
+| Reviewed result | durable | `docs/specs/routing-smoke-eval-result.md`. |
 
 ## Acceptance Criteria
 
@@ -184,8 +188,8 @@ skills that do not yet have deferred flow files.
 
 ### Readiness
 
-Ready as a planning artifact. Not ready as evidence until the test cases,
-reference stubs, and cost report are created.
+Ready as pilot evidence after the reviewed result is recorded. Not ready as a
+broad migration benchmark.
 
 ### Recommendation
 
