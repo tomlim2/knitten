@@ -159,6 +159,28 @@
       }
     },
     {
+      "id": "shotloom-task-activity-log",
+      "description": "Shotloom task timestamped artifact activity log",
+      "madeBy": "workflow:shotloom-task-artifact-log",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "shotloom",
+          "task",
+          "{task}",
+          "activity"
+        ]
+      },
+      "args": [
+        {
+          "name": "task",
+          "pattern": "^(stl-[0-9]+|[a-z0-9]+(-[a-z0-9]+)*)$",
+          "normalize": "lowercase"
+        }
+      ],
+      "format": "markdown"
+    },
+    {
       "id": "shotloom-before-pr-readiness",
       "description": "Shotloom before-PR readiness JSON",
       "madeBy": "shotloom-review-before-pr",
