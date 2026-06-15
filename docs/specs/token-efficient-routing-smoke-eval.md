@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft.
+Active planning. The eval has not produced evidence yet.
 
 ## Goal
 
@@ -45,9 +45,10 @@ Record:
 
 | Skill | Role | Why |
 |-------|------|-----|
-| `ah-review-work` | Read-only review umbrella | Tests routing among spec, implementation, PR, and skill review. |
 | `kc-implement` | Implementation umbrella | Tests scoped implementation routing and deferred detailed flow. |
-| `ah-create-pr` | Mutation-adjacent PR leaf | Tests explicit user-request, push, and PR safety gates. |
+| `kc-draft-spec` | Spec drafting | Tests plan/spec requests, activation policy guidance, and reusable-concept checks. |
+| `kc-review` | Read-only review | Tests single/triad review routing and prepared-packet rejection. |
+| `kc-report-finding` | Local finding capture | Tests evidence-gated local record writes without external mutation. |
 
 ### Test Set
 
@@ -55,11 +56,11 @@ Use 20 request cases:
 
 | Group | Count | Expected Behavior |
 |-------|-------|-------------------|
-| Matching review requests | 5 | Route to `ah-review-work`; select one review reference. |
-| Matching implementation requests | 5 | Route to `kc-implement`; select implementation reference. |
-| Matching PR creation requests | 4 | Route to `ah-create-pr`; require safety gate. |
-| Neighboring AH requests | 3 | Reject or route to a different AH skill. |
-| Non-AH/domain requests | 3 | Reject from the pilot set. |
+| Matching implementation requests | 5 | Route to `kc-implement`; select implementation reference when present. |
+| Matching spec requests | 4 | Route to `kc-draft-spec`; keep drafting constraints visible. |
+| Matching review requests | 4 | Route to `kc-review`; require a prepared packet or reject with missing packet. |
+| Matching finding-record requests | 3 | Route to `kc-report-finding`; require checked mechanical evidence. |
+| Neighboring/non-KC requests | 4 | Reject from the pilot set or name the better non-KC route. |
 
 Each case records:
 
@@ -69,7 +70,7 @@ Each case records:
 | `request` | User-like request text. |
 | `expectedSkill` | Pilot skill or `reject`. |
 | `expectedReferences` | References that should load after activation. |
-| `safetyGateRequired` | Whether mutation/external-state safety must remain visible. |
+| `safetyGateRequired` | Whether file, local-record, or external-state safety must remain visible. |
 | `notes` | Why the expected route is correct. |
 
 ## Token Cost Model
@@ -117,8 +118,8 @@ tokenizer in the first round.
 | Metric | Target | Meaning |
 |--------|--------|---------|
 | Routing accuracy | >= 18/20 | Matched requests choose the expected pilot skill. |
-| Reject accuracy | >= 5/6 | Neighboring/non-AH requests do not incorrectly enter a pilot skill. |
-| Safety miss count | 0 | PR/push/mutation-adjacent requests keep safety gates visible. |
+| Reject accuracy | >= 4/4 | Neighboring/non-KC requests do not incorrectly enter a pilot skill. |
+| Safety miss count | 0 | Implementation and local-record requests keep safety gates visible. |
 | Reference precision | >= 80% | Loaded references are expected by the test case. |
 | Average savings rate | >= 30% | Gated route loads substantially less context than baseline. |
 
@@ -126,8 +127,8 @@ tokenizer in the first round.
 
 1. Create a small JSON test set under a future eval location.
 2. Measure current pilot `SKILL.md` sizes.
-3. Draft the proposed activation-only sections and reference files without
-   migrating the real skills yet.
+3. Draft or identify the proposed activation-only sections and reference files
+   without relying on absent legacy pilot skills.
 4. Estimate baseline vs gated cost for every case.
 5. Review routing decisions manually against expected routes.
 6. Record misses and decide whether the pilot migration should proceed.
@@ -175,11 +176,11 @@ Twenty cases can justify a pilot, but it cannot prove Knitten is generally
 token-efficient. Any README claim should say "pilot smoke eval" until a larger
 eval exists.
 
-**[P2] Reference precision needs concrete reference files.**
+**[P2] Reference precision needs concrete KC references.**
 
-The milestone currently names examples such as `references/pr-create-flow.md`,
-but the files do not exist yet. The smoke eval should either use proposed
-reference stubs or wait until pilot references are drafted.
+The eval should use current KC references such as `kc-review/references/triad.md`
+and `kc-report-finding/references/flow.md`, plus proposed reference stubs for
+skills that do not yet have deferred flow files.
 
 ### Readiness
 

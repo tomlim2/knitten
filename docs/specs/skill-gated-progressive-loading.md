@@ -2,11 +2,12 @@
 
 ## Status
 
-Draft.
+Active planning. `MILESTONE.md` is the priority source of truth for current
+work ordering.
 
 ## Goal
 
-Define a milestone for making AH and payload skills more token-efficient by
+Define a milestone for making KC and payload skills more token-efficient by
 turning each `SKILL.md` into a short activation gate and loading detailed
 workflow references only after the request clearly matches the skill.
 
@@ -33,14 +34,14 @@ when the number of references makes manual conditional loading too noisy.
 
 In scope:
 
-- A generic `SKILL.md` shape for AH and payload skills.
+- A generic `SKILL.md` shape for KC and payload skills.
 - Activation checks, non-trigger rules, stop conditions, and progressive
   reference loading.
 - Guidance for moving detailed procedures into skill-local references or
   scripts.
 - Validation/audit criteria for identifying overlong or under-gated skills.
-- A first pilot batch that exercises read-only, implementation, and
-  mutation-adjacent skill surfaces.
+- A first pilot batch that starts with the current KC implementation skill and
+  then audits the remaining KC routing surfaces.
 
 Out of scope:
 
@@ -146,7 +147,8 @@ Do not use this skill when:
 - `rg -n "Step 0: Activation Check|Activation|Do not use this skill" skills -S`
 - Skill audit verifies that mutation-capable skills keep safety gates in
   `SKILL.md`.
-- Pilot migrated skills are reviewed with `ah-audit-skill`.
+- Pilot migrated skills are reviewed with the KC skill audit checklist or a
+  future KC audit helper.
 - Existing plugin validators still pass after any pilot migration.
 
 ## Acceptance Criteria
@@ -169,23 +171,29 @@ Do not use this skill when:
   pilot, or keep this as an audit guideline until the pattern stabilizes?
 - What rough size threshold should trigger review of an overlong `SKILL.md`?
 
-## Proposed Pilot Batch
+## Current Pilot Batch
 
 | Skill | Surface | Reason |
 |-------|---------|--------|
-| `ah-review-work` | read-only review umbrella | Tests fast routing between spec, implementation, PR, and skill review. |
 | `kc-implement` | implementation umbrella | Tests deferring detailed flow while keeping scoped-edit rules visible. |
-| `ah-create-pr` | mutation-adjacent PR leaf | Tests that explicit user-request and push/PR safety gates stay in `SKILL.md`. |
 
-These pilots cover the main risk classes without requiring payload-plugin
-migration in the first round.
+Candidate follow-up audits:
+
+| Skill | Surface | Reason |
+|-------|---------|--------|
+| `kc-draft-spec` | spec drafting | Verifies spec guidance, activation policy, and reuse-scan requirements stay findable without bloating routing. |
+| `kc-review` | read-only review | Verifies triad review detail stays deferred behind a prepared-packet gate. |
+| `kc-report-finding` | local finding capture | Verifies evidence requirements and local-write safety stay visible in `SKILL.md`. |
+
+Skills not present in the current KC plugin are excluded from this active
+pilot unless a future spec reintroduces them.
 
 ## Design Plan
 
 ### Inputs
 
 - This milestone draft.
-- Existing AH skills under `skills/`.
+- Existing KC skills under `skills/`.
 - `docs/specs/skill-activation-check-policy.md`.
 - Representative payload skills from installed payload plugins when a pilot is
   chosen.
@@ -224,13 +232,14 @@ Proof:
 
 Files:
 
-- `skills/ah-review-work/SKILL.md`
 - `skills/kc-implement/SKILL.md`
-- `skills/ah-create-pr/SKILL.md`
+- `skills/kc-draft-spec/SKILL.md`
+- `skills/kc-review/SKILL.md`
+- `skills/kc-report-finding/SKILL.md`
 
 Changes:
 
-- Confirm or revise the proposed pilot batch.
+- Confirm or revise the current KC pilot batch.
 - For each pilot, write trigger/non-trigger examples and expected reference
   files.
 
@@ -268,7 +277,7 @@ Risk:
 Proof:
 
 - Each pilot skill explicitly says which reference to read after activation.
-- `ah-audit-skill` review passes for every pilot.
+- The KC skill audit checklist finds no blocker for every pilot.
 
 #### 4. Add Audit Or Validator Support
 

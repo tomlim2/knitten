@@ -41,6 +41,7 @@ function isAllowedFile(file) {
   if (file.startsWith("skills/") && file.endsWith("/SKILL.md")) return true;
   if (file.startsWith("skills/") && file.includes("/references/")) return true;
   if (file.startsWith("skills/") && file.includes("/scripts/")) return true;
+  if (file.startsWith("skills/") && file.includes("/agents/") && file.endsWith(".yaml")) return true;
   return false;
 }
 
