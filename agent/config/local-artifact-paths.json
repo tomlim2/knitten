@@ -106,6 +106,27 @@
     },
     {
       "owner": "shotloom",
+      "artifactType": "task",
+      "item": "rca-briefing",
+      "kind": "file",
+      "args": [
+        {
+          "name": "task",
+          "pattern": "^(stl-[0-9]+|[a-z0-9]+(-[a-z0-9]+)*)$",
+          "normalize": "lowercase"
+        },
+        {
+          "name": "stamp",
+          "pattern": "^[0-9]{8}T[0-9]{6}Z$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/shotloom/tasks/{task}/rca/{stamp}-briefing.md",
+      "cleanupPath": ".agent-local/shotloom/tasks/{task}",
+      "description": "Shotloom triad RCA briefing document"
+    },
+    {
+      "owner": "shotloom",
       "artifactType": "before-pr",
       "item": "readiness",
       "kind": "file",

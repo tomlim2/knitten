@@ -181,6 +181,33 @@
       "format": "markdown"
     },
     {
+      "id": "shotloom-triad-rca-briefing",
+      "description": "Shotloom triad RCA briefing Markdown document",
+      "madeBy": "shotloom-triad-rca",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "shotloom",
+          "task",
+          "{task}",
+          "rca-briefing",
+          "{stamp}"
+        ]
+      },
+      "args": [
+        {
+          "name": "task",
+          "pattern": "^(stl-[0-9]+|[a-z0-9]+(-[a-z0-9]+)*)$",
+          "normalize": "lowercase"
+        },
+        {
+          "name": "stamp",
+          "pattern": "^[0-9]{8}T[0-9]{6}Z$"
+        }
+      ],
+      "format": "markdown"
+    },
+    {
       "id": "shotloom-before-pr-readiness",
       "description": "Shotloom before-PR readiness JSON",
       "madeBy": "shotloom-review-before-pr",
