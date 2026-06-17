@@ -27,6 +27,22 @@ user-directed scope changes.
 All finding records belong to the Knitten core plugin. Payload plugins should
 not own or document the finding-report workflow.
 
+## KC Review Protocol
+
+`kc-review` is a Knitten Core skill/protocol, not a shell command, executable,
+MCP tool, or PATH binary. Do not run `which kc-review`, do not search PATH for
+it, and do not report that it is unavailable as an executable.
+
+When a review asks for `kc-review`, `/kc-review`, `kc-review mode=single`, or
+`kc-review mode=triad`, read and apply:
+
+- `skills/kc-review/SKILL.md`
+- `skills/kc-review/references/triad.md`
+
+If the active session exposes `/kc-review` as a skill, using that skill is fine.
+If it does not, apply the same protocol inline from the files above. Do not
+call this a fallback or substitute review; it is the KC Review Protocol.
+
 ## Promoted References
 
 Payload plugins may place `reference-promoted.md` next to a payload skill, and
