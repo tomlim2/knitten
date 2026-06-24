@@ -29,7 +29,7 @@ These belong to `knitten`:
 - local artifact registries
 - shared document templates
 - finding report capture and storage
-- `reference-promoted.md` CRUD
+- promoted-reference policy
 - plugin installation and marketplace registration policy
 - validators that enforce core/payload separation
 
@@ -39,7 +39,7 @@ Payload plugins may contain:
 
 - `skills/<skill>/SKILL.md`
 - `skills/<skill>/reference.md`
-- `skills/<skill>/reference-promoted.md` placed by Knitten core
+- `skills/<skill>/reference-promoted.md`
 - `skills/<skill>/scripts/**`
 - `skills/<skill>/assets/**`
 - domain-specific standards or references that are owned by a skill
@@ -66,7 +66,8 @@ Rules:
 
 - The payload plugin owns create, update, delete, promote, retire, and move.
 - Use the payload plugin's promote-reference skill for CRUD.
-- Payload skills read `reference-promoted.md` when present.
+- Payload skills inspect the `reference-promoted.md` trigger index when present
+  and read only matching promoted sections.
 - Other plugins must not create, edit, delete, promote, retire, or move it.
 - Entries need trigger, check, action, and retirement target.
 - Retire entries into `SKILL.md`, `reference.md`, helper scripts, tests, or
@@ -110,4 +111,4 @@ Core checks should verify:
 - finding report hub storage
 - plugin marketplace registration
 - materialized plugin copy health
-- promoted-reference CRUD policy stays documented in core
+- promoted-reference ownership policy stays documented in core

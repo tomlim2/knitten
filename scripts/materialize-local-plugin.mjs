@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
 
@@ -12,6 +13,21 @@ const COPY_EXCLUDES = new Set([
   ".DS_Store",
   "node_modules",
 ]);
+
+function trackedFiles() {
+  const result = spawnSync("git", ["ls-files", "-z"], {
+    cwd: REPO_ROOT,
+    encoding: "buffer",
+  });
+  if (result.status !== 0) {
+    throw new Error((result.stderr.toString("utf8") || "git ls-files failed").trim());
+  }
+  return result.stdout
+    .toString("utf8")
+    .split("\0")
+    .filter(Boolean)
+    .filter((relative) => !relative.split("/").some((part) => COPY_EXCLUDES.has(part)));
+}
 
 function parseArgs(argv) {
   const args = {
@@ -143,16 +159,14 @@ async function copyPlugin(targetDir, dryRun) {
     console.log(`[dry-run] refresh ${targetDir} from ${REPO_ROOT}`);
     return;
   }
+  await fs.rm(targetDir, { recursive: true, force: true });
   await fs.mkdir(targetDir, { recursive: true });
-  for (const entry of await fs.readdir(targetDir, { withFileTypes: true })) {
-    if (COPY_EXCLUDES.has(entry.name)) continue;
-    await fs.rm(path.join(targetDir, entry.name), { recursive: true, force: true });
+  for (const relative of trackedFiles()) {
+    const source = path.join(REPO_ROOT, relative);
+    const target = path.join(targetDir, relative);
+    await fs.mkdir(path.dirname(target), { recursive: true });
+    await fs.cp(source, target, { force: true });
   }
-  await fs.cp(REPO_ROOT, targetDir, {
-    recursive: true,
-    force: true,
-    filter: (candidate) => !candidate.split(path.sep).some((part) => COPY_EXCLUDES.has(part)),
-  });
 }
 
 async function rewriteCopiedManifest(targetDir, sourceManifest, cachebuster, dryRun) {

@@ -16,7 +16,6 @@ const LEGACY_PATTERN = [
   "plugins/knitten",
   "scripts/resolve-[a-z-]+\\.mjs",
   "bin/knitten-resolve-output",
-  "\\bknitten-path\\b",
 ].join("|");
 
 function usage() {
@@ -59,6 +58,13 @@ function rg(root, args) {
 
 function checkPath(results, root, relativePath, detail) {
   if (exists(root, relativePath)) add(results, "fail", `forbidden:${relativePath}`, relativePath, detail);
+}
+
+function checkForbiddenDocs(results, root) {
+  const forbiddenDocDirs = ["docs/planning", "docs/plans", "docs/archive"];
+  for (const relativePath of forbiddenDocDirs) {
+    checkPath(results, root, relativePath, "Historical planning docs do not belong in the payload.");
+  }
 }
 
 function checkActiveLegacyContent(results, root) {
@@ -116,7 +122,7 @@ function main() {
   checkPath(results, payloadRoot, "agent/config/local-artifact-paths.json", "Generic artifact registry belongs to KC.");
   checkPath(results, payloadRoot, "agent/config/local-helper-paths.json", "Generic helper registry belongs to KC.");
   checkPath(results, payloadRoot, "document-templates", "Shared templates belong to KC or skill-local directories.");
-  checkPath(results, payloadRoot, "docs", "Historical planning docs do not belong in the payload.");
+  checkForbiddenDocs(results, payloadRoot);
   checkActiveLegacyContent(results, payloadRoot);
   checkReferenceLegacyContent(results, payloadRoot);
   checkBoundaryWrapper(results, payloadRoot);

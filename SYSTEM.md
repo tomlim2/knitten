@@ -59,5 +59,6 @@ Promotion criteria:
 - The rule is not already covered by a stable owner.
 - The entry has a clear retirement target.
 
-If `reference-promoted.md` exists, the payload skill must read it after
-`reference.md`. If it does not exist, skip it.
+If `reference-promoted.md` exists, the payload skill must inspect its trigger
+index after `reference.md` and read only matching promoted sections. If it does
+not exist, skip it.
