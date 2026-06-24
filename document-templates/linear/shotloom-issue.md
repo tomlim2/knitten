@@ -26,7 +26,7 @@ Shotloom's active Linear project is `Shotloom - bravo`.
 | Project | Shotloom - bravo |
 | Assignee | me |
 | Priority | 3 (Medium) |
-| State | Backlog |
+| State | Todo |
 
 ## Body Rules
 
