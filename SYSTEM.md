@@ -24,6 +24,23 @@ credentials, or legacy source checkouts for this plugin to load.
 Canonical boundary policy lives in
 `docs/guidelines/plugin-boundary.md`.
 
+## Long-Running Work
+
+Repositories hold code, specs, and committed durable docs. Registered local
+artifact paths hold rolling work context: decisions, open loops, verification
+state, review notes, briefings, and resume handoffs.
+
+Do not rely on chat history as the only memory for reusable task context. Write
+reusable context through KC-owned output contracts or the local artifact path
+registry.
+
+Codex may prepare summaries, evidence, drafts, patches, and next-step
+recommendations. User approval is required for publishing, external posting,
+deployment, destructive cleanup, or irreversible external-state changes unless
+the active skill documents a narrower explicit exemption. A direct current-turn
+instruction for an exact action counts as approval for that action only after
+the scoped command still matches the request.
+
 ## Mechanical Finding Capture
 
 Use `knitten:kc-report-finding` only for checked mechanical errors:

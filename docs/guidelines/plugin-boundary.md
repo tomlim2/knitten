@@ -27,6 +27,7 @@ These belong to `knitten`:
 - generic AH skills
 - output and path routing
 - local artifact registries
+- generic long-running work memory and decision contract
 - shared document templates
 - finding report capture and storage
 - promoted-reference policy
@@ -82,6 +83,22 @@ registries or path policy.
 
 Durable task documents belong to the target workspace when that workspace has a
 document convention. Generic local AH scratch belongs to the Knitten hub.
+
+## Long-Running Work Memory
+
+Knitten owns the generic contract for long-running task memory and user
+decision gates. Payload plugins may apply that contract inside domain workflows,
+but must not define independent generic memory, approval, or output policy.
+
+Repositories hold code, specs, and committed durable docs. Registered local
+artifact paths hold rolling work context such as decisions, open loops,
+verification state, review notes, briefings, and resume handoffs. Reusable task
+context should not exist only in chat history.
+
+Codex may prepare summaries, evidence, drafts, patches, reply plans, PR bodies,
+and next-step recommendations. Publishing, posting externally, deployment,
+destructive cleanup, and irreversible external-state changes require user
+approval unless the active skill documents a narrower explicit exemption.
 
 ## Legacy Payload Surfaces
 

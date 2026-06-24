@@ -32,6 +32,14 @@ Strengths:
 Weaknesses / risks:
 - <known trade-offs, blockers, or uncertainty>
 
+Prepared task goal:
+- Expected behavior: <observable outcome>
+- Definition of done: <done condition>
+- Verification target: <commands/checks/review proof>
+- Review criteria: <what reviewers should judge>
+- Constraints: <known constraints>
+- Must not change: <protected behavior/surface>
+
 Estimated change size:
 - LOC: <range, confidence, why>
 - Main files / areas: <areas>
@@ -50,6 +58,14 @@ Paths:
 - Reviewed spec: <path>
 - Planning manifest: <path>
 - Remaining P3/nit: <none|notes>
+
+Handoff:
+- Current state: <prepared / blocked / ready for implementation>
+- Last verified: <latest command/result or artifact review>
+- Next decision: <what the user must decide next>
+- Open loops: <none|items>
+- Artifact paths: <brief/spec/manifest/activity paths>
+- Resume context: <short instruction for the next session>
 ```
 
 ## Fill Rules
@@ -58,6 +74,8 @@ Paths:
 - Translate section labels naturally when rendering to the user; do not expose
   the English template headings unless the user asks for the raw template.
 - Do not invent implementation facts that are not in the prepared artifacts.
+- If a prepared task goal or handoff field is not present in the prepared artifacts,
+  write `unknown` or `not found` rather than guessing.
 - Label uncertain LOC as an estimate and explain the reason.
 - Treat LOC as one signal, not the PR-size gate by itself.
 - Prefer one PR only when the work is cohesive, reviewable, and testable as one
@@ -67,3 +85,5 @@ Paths:
   burden that would obscure the main implementation.
 - Define new terms and concepts only when they matter for implementation or
   review.
+- Keep handoff compact: it should make the next session resumable, not repeat
+  the whole spec.
