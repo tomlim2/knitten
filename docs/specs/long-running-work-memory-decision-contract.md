@@ -4,6 +4,13 @@
 
 Implemented.
 
+Compatibility note: this contract still describes the generic KC memory model
+and the KC-era Shotloom integration. Shotloom task artifacts are now amended by
+[`shotloom-owned-task-memory.md`](shotloom-owned-task-memory.md): new primary
+Shotloom task memory lives under the Shotloom checkout and is resolved by
+Shotloom's `scripts/agent-task-artifact.mjs`; KC Shotloom registry entries are
+compatibility-era surfaces during migration.
+
 ## Goal
 
 Define a small KC-owned contract for long-running Codex work, then apply it to
@@ -96,8 +103,11 @@ Out of scope:
 - Registered local artifact paths hold rolling task context: decisions, open
   loops, verification state, review notes, briefings, and resume handoffs.
 - Reusable task context must not exist only in chat history.
-- Task artifacts are written through KC-owned output contracts, the local
-  artifact path registry, or payload shims that delegate to KC.
+- Generic task artifacts are written through KC-owned output contracts, the
+  local artifact path registry, or payload shims that delegate to KC.
+- Shotloom task artifacts are the accepted target-workspace exception: after
+  migration they use the Shotloom repo task-memory resolver as primary storage,
+  while KC output/local-artifact entries remain compatibility-era only.
 - Codex may prepare summaries, evidence, patches, PR bodies, reply plans, and
   next-step recommendations.
 - User approval is required before publishing, posting externally, deploying,
@@ -155,6 +165,8 @@ Out of scope:
 - Existing KC and KSL validators pass.
 - KC and KSL materialized plugin copies and Codex plugin caches can be refreshed
   without source/copy drift.
+- Shotloom-specific storage language in this spec is compatibility-era and is
+  superseded for new task artifacts by `shotloom-owned-task-memory.md`.
 
 ## Open Questions
 

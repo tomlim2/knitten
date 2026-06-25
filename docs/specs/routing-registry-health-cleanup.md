@@ -4,6 +4,8 @@
 
 Partially implemented. Registry reachability and installed-copy checks exist;
 remaining work is contract reconciliation for compatibility Shotloom outputs.
+Current reconciliation requires each retained Shotloom registry entry to carry
+explicit compatibility metadata pointing to the Shotloom task artifact resolver.
 
 ## Goal
 
@@ -72,6 +74,11 @@ Out of scope:
   core compatibility.
 - Keep the three active registry files as compatibility surfaces for now:
   `outputs.json`, `local-artifact-paths.json`, and `local-helper-paths.json`.
+- Retained Shotloom output and local-artifact entries must be marked
+  `compatibility.status = "compatibility-era"`,
+  `compatibility.owner = "shotloom"`,
+  `compatibility.deprecatedBy = "shotloom-task-artifact-resolver"`, and
+  `compatibility.primaryStorage = false`.
 - `local-helper-paths.json` may be empty, but every retained entry must point to
   an existing source-relative file in this checkout.
 - This cleanup does not allow external helper entries. Any future external
@@ -111,6 +118,9 @@ Out of scope:
 - `outputs.json` and `local-artifact-paths.json` remain present as compatibility
   registries, and Shotloom entries are retained only when documented as active
   compatibility contracts.
+- Retained Shotloom entries include compatibility metadata with
+  `primaryStorage=false`; adding a new unmarked Shotloom entry fails doctor and
+  repository-shell validation.
 - `outputs.json` contains no non-`workflow:` `madeBy` value unless
   `<madeBy>` matches `kc-*` and `skills/<madeBy>/SKILL.md` exists, or the maker
   is documented as Shotloom compatibility.
@@ -168,7 +178,7 @@ Files:
 - `agent/config/local-artifact-paths.json`
 
 Status: implemented for current helper reachability; still active for
-compatibility documentation.
+compatibility documentation and metadata enforcement.
 
 Changes:
 
@@ -176,6 +186,8 @@ Changes:
   or unresolved.
 - Keep generic KC entries and documented compatibility outputs allowed by the
   contract.
+- Add compatibility metadata to every retained Shotloom output or local-artifact
+  entry.
 - Remove or defer CINEV-specific helper paths, missing helper paths, and
   payload skill paths from Knitten core registries rather than recreating
   payload behavior in core.
@@ -192,6 +204,7 @@ Proof:
 - A before/after count of registry entries by owner or maker.
 - Manual confirmation that retained Shotloom entries are compatibility outputs,
   not payload helper implementations.
+- Synthetic unmarked Shotloom entries fail validation.
 
 #### 2. Strengthen Doctor Checks
 

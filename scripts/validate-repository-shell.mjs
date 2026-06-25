@@ -62,16 +62,29 @@ function helperPathAllowed(relativePath) {
     || relativePath.startsWith("skills/kc-");
 }
 
-function outputOwnerAllowed(madeBy) {
+function isShotloomCompatibilityEntry(entry) {
+  const compatibility = entry.compatibility || {};
+  return compatibility.status === "compatibility-era"
+    && compatibility.owner === "shotloom"
+    && compatibility.deprecatedBy === "shotloom-task-artifact-resolver"
+    && compatibility.primaryStorage === false;
+}
+
+function isShotloomMaker(madeBy) {
+  return madeBy.startsWith("shotloom-") || madeBy.startsWith("workflow:shotloom-");
+}
+
+function outputOwnerAllowed(madeBy, entry) {
+  if (isShotloomMaker(madeBy)) return isShotloomCompatibilityEntry(entry);
   if (madeBy === "workflow:agent-hub-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
   if (madeBy.startsWith("kc-") && fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
-  if (madeBy.startsWith("shotloom-")) return true;
   return false;
 }
 
-function localArtifactOwnerAllowed(owner) {
-  return owner === "ah" || owner === "shotloom";
+function localArtifactOwnerAllowed(owner, entry) {
+  if (owner === "shotloom") return isShotloomCompatibilityEntry(entry);
+  return owner === "ah";
 }
 
 function validateRoutingRegistryContract() {
@@ -83,8 +96,8 @@ function validateRoutingRegistryContract() {
   for (const entry of outputs.entries) {
     const id = entry.id || "<missing id>";
     const madeBy = String(entry.madeBy || "");
-    if (!outputOwnerAllowed(madeBy)) {
-      problems.push(`outputs:${id} has disallowed madeBy ${madeBy || "<missing>"}`);
+    if (!outputOwnerAllowed(madeBy, entry)) {
+      problems.push(`outputs:${id} has disallowed or undocumented madeBy ${madeBy || "<missing>"}`);
     }
 
     if (entry.template) {
@@ -108,8 +121,8 @@ function validateRoutingRegistryContract() {
 
   for (const entry of localArtifacts.entries) {
     const label = `${entry.owner || "<missing owner>"}:${entry.artifactType || "<missing type>"}:${entry.item || "<missing item>"}`;
-    if (!localArtifactOwnerAllowed(entry.owner)) {
-      problems.push(`local-artifact:${label} has disallowed owner ${entry.owner || "<missing>"}`);
+    if (!localArtifactOwnerAllowed(entry.owner, entry)) {
+      problems.push(`local-artifact:${label} has disallowed or undocumented owner ${entry.owner || "<missing>"}`);
     }
     if (entry.template) {
       if (!isSafeRelativePath(entry.template)) {

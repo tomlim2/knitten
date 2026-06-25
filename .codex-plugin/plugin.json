@@ -1,6 +1,6 @@
 {
   "name": "knitten",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Agent Hub routing system for Codex plugins",
   "author": {
     "name": "tomlim2"

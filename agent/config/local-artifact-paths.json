@@ -18,7 +18,13 @@
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning brief",
       "template": "document-templates/agent-hub/json-handoff-packet.json",
-      "schemaKind": "shotloom-start-task-brief"
+      "schemaKind": "shotloom-start-task-brief",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -35,7 +41,13 @@
       "path": ".agent-local/shotloom/planning/{stl}/spec.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning spec",
-      "schemaKind": "shotloom-planning-spec"
+      "schemaKind": "shotloom-planning-spec",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -52,7 +64,13 @@
       "path": ".agent-local/shotloom/planning/{stl}/design-plan.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning design plan",
-      "schemaKind": "shotloom-planning-design-plan"
+      "schemaKind": "shotloom-planning-design-plan",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -69,7 +87,13 @@
       "path": ".agent-local/shotloom/planning/{stl}/questions.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning open questions",
-      "schemaKind": "shotloom-planning-questions"
+      "schemaKind": "shotloom-planning-questions",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -86,7 +110,13 @@
       "path": ".agent-local/shotloom/planning/{stl}/manifest.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning manifest",
-      "schemaKind": "shotloom-planning-manifest"
+      "schemaKind": "shotloom-planning-manifest",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -102,7 +132,13 @@
       ],
       "path": ".agent-local/shotloom/tasks/{task}/activity.md",
       "cleanupPath": ".agent-local/shotloom/tasks/{task}",
-      "description": "Shotloom task artifact activity log"
+      "description": "Shotloom task artifact activity log",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -123,7 +159,13 @@
       ],
       "path": ".agent-local/shotloom/tasks/{task}/rca/{stamp}-briefing.md",
       "cleanupPath": ".agent-local/shotloom/tasks/{task}",
-      "description": "Shotloom triad RCA briefing document"
+      "description": "Shotloom triad RCA briefing document",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -144,7 +186,13 @@
       "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/readiness.json",
       "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
       "description": "Shotloom before-PR readiness result",
-      "schemaKind": "shotloom-before-pr-readiness"
+      "schemaKind": "shotloom-before-pr-readiness",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -165,7 +213,13 @@
       "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/code-blockers.json",
       "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
       "description": "Shotloom before-PR code blockers",
-      "schemaKind": "shotloom-before-pr-code-blockers"
+      "schemaKind": "shotloom-before-pr-code-blockers",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -186,7 +240,13 @@
       "path": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}/docs-blockers.json",
       "cleanupPath": ".agent-local/shotloom/before-pr/{stl}/{safeBranch}",
       "description": "Shotloom before-PR docs blockers",
-      "schemaKind": "shotloom-before-pr-docs-blockers"
+      "schemaKind": "shotloom-before-pr-docs-blockers",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -201,7 +261,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/watcher.pid",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher pid"
+      "description": "Shotloom PR watcher pid",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -216,7 +282,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/watcher.log",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher log"
+      "description": "Shotloom PR watcher log",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -231,7 +303,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/react.log",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR reaction log"
+      "description": "Shotloom PR reaction log",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -247,7 +325,13 @@
       "path": ".agent-local/shotloom/pr/{pr}/state.json",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
       "description": "Shotloom PR watcher state",
-      "schemaKind": "shotloom-pr-state"
+      "schemaKind": "shotloom-pr-state",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -263,7 +347,13 @@
       "path": ".agent-local/shotloom/pr/{pr}/last-event.json",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
       "description": "Shotloom PR watcher last event",
-      "schemaKind": "shotloom-pr-last-event"
+      "schemaKind": "shotloom-pr-last-event",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -278,7 +368,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR local workflow cache directory"
+      "description": "Shotloom PR local workflow cache directory",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -294,7 +390,13 @@
       "path": ".agent-local/shotloom/pr/{pr}/reply-plan.json",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
       "description": "Shotloom PR response reply plan",
-      "schemaKind": "shotloom-pr-reply-plan"
+      "schemaKind": "shotloom-pr-reply-plan",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -309,7 +411,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/watcher.paused",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher pause marker"
+      "description": "Shotloom PR watcher pause marker",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -324,7 +432,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/watch.lock",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher flock lock"
+      "description": "Shotloom PR watcher flock lock",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -339,7 +453,13 @@
       ],
       "path": ".agent-local/shotloom/pr/{pr}/watch.lock.d",
       "cleanupPath": ".agent-local/shotloom/pr/{pr}",
-      "description": "Shotloom PR watcher mkdir lock"
+      "description": "Shotloom PR watcher mkdir lock",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -354,7 +474,13 @@
       ],
       "path": ".agent-local/shotloom/deploy/{key}/release-notes.md",
       "cleanupPath": ".agent-local/shotloom/deploy/{key}",
-      "description": "Shotloom deploy release notes"
+      "description": "Shotloom deploy release notes",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -370,7 +496,13 @@
       "path": ".agent-local/shotloom/deploy/{key}/manifest.json",
       "cleanupPath": ".agent-local/shotloom/deploy/{key}",
       "description": "Shotloom deploy manifest",
-      "schemaKind": "shotloom-deploy-manifest"
+      "schemaKind": "shotloom-deploy-manifest",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "shotloom",
@@ -386,7 +518,13 @@
       "path": ".agent-local/shotloom/deploy/{key}/rollback.json",
       "cleanupPath": ".agent-local/shotloom/deploy/{key}",
       "description": "Shotloom deploy rollback data",
-      "schemaKind": "shotloom-deploy-rollback"
+      "schemaKind": "shotloom-deploy-rollback",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "owner": "ah",

@@ -52,6 +52,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-start-task-brief"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -78,6 +84,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-spec"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -104,6 +116,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-design-plan"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -130,6 +148,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-questions"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -156,6 +180,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-manifest"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -178,7 +208,13 @@
           "normalize": "lowercase"
         }
       ],
-      "format": "markdown"
+      "format": "markdown",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "id": "shotloom-triad-rca-briefing",
@@ -205,7 +241,13 @@
           "pattern": "^[0-9]{8}T[0-9]{6}Z$"
         }
       ],
-      "format": "markdown"
+      "format": "markdown",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "id": "shotloom-before-pr-readiness",
@@ -236,6 +278,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-readiness"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -267,6 +315,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-code-blockers"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -298,6 +352,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-docs-blockers"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -319,7 +379,13 @@
           "pattern": "^[0-9]+$"
         }
       ],
-      "format": "directory"
+      "format": "directory",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "id": "shotloom-pr-reply-plan",
@@ -344,6 +410,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-pr-reply-plan"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -366,7 +438,13 @@
         }
       ],
       "template": "document-templates/agent-hub/release-notes.md",
-      "format": "markdown"
+      "format": "markdown",
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
+      }
     },
     {
       "id": "shotloom-deploy-manifest",
@@ -391,6 +469,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-deploy-manifest"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     },
     {
@@ -416,6 +500,12 @@
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-deploy-rollback"
+      },
+      "compatibility": {
+        "status": "compatibility-era",
+        "owner": "shotloom",
+        "deprecatedBy": "shotloom-task-artifact-resolver",
+        "primaryStorage": false
       }
     }
   ]

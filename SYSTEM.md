@@ -5,8 +5,8 @@
 | Rule | Meaning |
 |------|---------|
 | Plugin source | The checkout is loaded by Codex through `.codex-plugin/plugin.json`. |
-| Routing core | This repository contains plugin identity, entry guidance, validation, local registration, and generic AH routing. |
-| Path/output routing | Durable documents route to the target workspace; generic local AH outputs route to the Knitten hub. |
+| Routing core | This repository contains plugin identity, entry guidance, validation, local registration, and generic Agent Hub routing. |
+| Path/output routing | Durable documents route to the target workspace; generic local Agent Hub outputs route to the Knitten hub. |
 | Self-contained source | Operation does not require a second harness-specific source tree. |
 | Payload boundary | Skills, standards, domain workflows, and working documents live in separate payload plugins. |
 
@@ -24,6 +24,19 @@ credentials, or legacy source checkouts for this plugin to load.
 Canonical boundary policy lives in
 `docs/guidelines/plugin-boundary.md`.
 
+## Terms
+
+- Agent Hub (AH): the generic Codex workflow layer for preparing work, drafting
+  specs, implementing, reviewing, and wrapping up tasks.
+- Knitten hub: the Knitten-owned local storage root for generic Agent Hub local
+  outputs, including the finding report queue.
+- Output contract: a registered resolver entry exposed through
+  `KNITTEN_PATH_BIN output`.
+- Local artifact path registry: registered local path entries used for
+  task-scoped rolling context.
+- Payload source root: the source checkout for a payload plugin, distinct from
+  an installed plugin root or materialized copy.
+
 ## Long-Running Work
 
 Repositories hold code, specs, and committed durable docs. Registered local
@@ -33,6 +46,12 @@ state, review notes, briefings, and resume handoffs.
 Do not rely on chat history as the only memory for reusable task context. Write
 reusable context through KC-owned output contracts or the local artifact path
 registry.
+
+When a target workspace accepts its own local task-memory contract, that
+workspace owns the physical task artifact root. KC may keep old registry
+entries as explicit compatibility surfaces, but new primary storage should
+route to the target workspace. Shotloom task artifacts use the Shotloom
+`scripts/agent-task-artifact.mjs` contract for primary task memory.
 
 Codex may prepare summaries, evidence, drafts, patches, and next-step
 recommendations. User approval is required for publishing, external posting,
@@ -54,8 +73,8 @@ Do not record ideas, naming/style preferences, guesses, one-off confusion, or
 user-directed scope changes.
 
 All finding records belong to this Knitten core plugin. Even when the defect is
-observed while using a payload plugin, store the report in Knitten's local hub
-queue, not in the payload plugin.
+observed while using a payload plugin, store the report in Knitten's finding
+report queue, not in the payload plugin.
 
 ## Promoted References
 
