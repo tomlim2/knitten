@@ -27,7 +27,7 @@ user-directed scope changes.
 All finding records belong to the Knitten core plugin. Payload plugins should
 not own or document the finding-report workflow.
 
-## KC Review Protocol
+## KC Protocol Skills
 
 `kc-review` is a Knitten Core skill/protocol, not a shell command, executable,
 MCP tool, or PATH binary. Do not run `which kc-review`, do not search PATH for
@@ -42,6 +42,17 @@ When a review asks for `kc-review`, `/kc-review`, `kc-review mode=single`, or
 If the active session exposes `/kc-review` as a skill, using that skill is fine.
 If it does not, apply the same protocol inline from the files above. Do not
 call this a fallback or substitute review; it is the KC Review Protocol.
+
+`kc-review-fix-loop` follows the same rule. It is a skill/protocol that
+coordinates `kc-review`, `kc-implement`, validation, and checkpoint JSON. Do
+not search PATH for `kc-review-fix-loop` or report that the workflow is missing
+because no executable exists.
+
+When a loop asks for `kc-review-fix-loop`, `/kc-review-fix-loop`, "triad review
+fix loop", or "review until blockers disappear", read and apply:
+
+- `skills/kc-review-fix-loop/SKILL.md`
+- `skills/kc-review-fix-loop/references/flow.md`
 
 ## Promoted References
 

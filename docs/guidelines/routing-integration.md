@@ -15,7 +15,7 @@ Knitten routing has three layers:
 | Layer | Owns | Should load by default |
 |-------|------|------------------------|
 | Knitten Core | generic AH workflow, output/path policy, plugin boundary, validation | only compact core skills |
-| Payload router | domain intake, request classification, shared domain gate | compact router shell |
+| Payload router | domain intake, request classification, shared domain gate | compact script-backed shell |
 | Payload leaf | one concrete action after routing | compact activation shell |
 
 Core should not own domain behavior. Payload plugins should not copy core path,
@@ -26,9 +26,10 @@ output, or boundary policy.
 Do not add new Knitten Core routers or route layers by default. Core should stay
 small enough that direct skill selection is cheaper than router indirection.
 
-Only add a Core router after an explicit spec and review show that it reduces
-loaded context and reasoning cost for repeated Core workflows. Payload plugins
-may still add routers when the Router Checklist below is satisfied.
+Only add a Core router after an explicit spec and review show that a mechanical
+script reduces loaded context and reasoning cost for repeated Core workflows.
+Payload plugins may still add routers when the Router Checklist below is
+satisfied.
 
 ## Payload Plugin Checklist
 
@@ -36,8 +37,8 @@ When adding a payload plugin:
 
 1. Give the plugin a clear boundary in its README.
 2. Keep domain skills in the payload plugin, not in Knitten Core.
-3. Add one router skill when the payload has multiple related leaves.
-4. Keep the router's `SKILL.md` short and route to references after activation.
+3. Add one mechanical route script when the payload has multiple related leaves.
+4. Keep the router's `SKILL.md` short and run the script after activation.
 5. Keep each leaf's `SKILL.md` as an activation shell.
 6. Move unused or rarely needed skills out of the active plugin when possible.
 7. Materialize the payload plugin and run its local validator or doctor.
@@ -49,15 +50,15 @@ node <knitten-root>/scripts/validate-payload-boundary.mjs --payload <payload-roo
 
 ## Router Checklist
 
-A router is a skill when it performs meaningful request classification before
-loading leaf-specific workflow context.
+A router is a compact skill shell around a mechanical script. The script owns
+request classification before any leaf-specific workflow context is loaded.
 
 Add a router when:
 
 - many leaf skills share the same domain gate
 - leaf descriptions become repetitive
 - users ask broad domain requests that need classification
-- token cost improves by reading one router before any leaf references
+- token cost improves by running one router script before any leaf references
 
 Do not add a router when:
 
@@ -71,7 +72,7 @@ Router `SKILL.md` should contain:
 - short `description`
 - `Use for:` domain intake sentence
 - Step 0 domain activation gate
-- route table or pointer to `references/skill-map.md`
+- command for the mechanical route script
 - strict escalation rule for mutation-capable leaves
 - explicit stop condition for non-domain requests
 
@@ -114,34 +115,33 @@ match for this action. Do not read detailed references until it passes.
 
 This keeps repeated Step 0 text short while preserving the safety check.
 
-## Skill Map
+## Mechanical Route Script
 
-Routers should keep route tables in a small reference file when the map is more
-than a few entries.
+Routers should keep route policy in a script, not prose. The script must return
+machine-readable JSON and have route fixtures or validator coverage.
 
 Recommended path:
 
 ```text
-skills/<domain>-router/references/skill-map.md
+skills/<domain>-router/scripts/route.mjs
 ```
 
-The map should list:
+The script should expose:
 
-- user intent
-- target leaf skill
-- activation level
-- mutation surface
-- required approval, if any
+- `--request "<text>" --print-json`
+- `--list --print-json`
+- deterministic fail-closed output for no match or unsafe ambiguity
 
-The router may read this map after its own Step 0 passes. Leaf skills should not
-read the router map to decide whether they apply.
+Legacy Markdown maps may remain as pointers for old links, but they must not be
+the routing source of truth. Leaf skills should not read the router script or a
+route map to decide whether they apply.
 
 ## Moving Skills Between Plugins
 
 When moving a skill:
 
 1. Rename it to the destination plugin's naming convention.
-2. Update internal references and route maps.
+2. Update internal references and mechanical route scripts.
 3. Preserve long workflow text in a skill-local reference if the active file is
    being shortened.
 4. Remove old active skill exposure from the source plugin.
@@ -177,9 +177,10 @@ Before committing routing changes, check:
 
 - Does Core still avoid domain behavior?
 - Does the payload plugin own its domain skills and references?
-- Is there exactly one obvious router for a multi-leaf domain?
-- Can the router reject non-domain requests without reading leaf details?
+- Is there exactly one obvious route script for a multi-leaf domain?
+- Can the router script reject non-domain requests without reading leaf details?
 - Can each leaf reject mismatched requests without parent knowledge?
 - Are strict mutation gates visible before references load?
-- Are route maps and long workflows in references, not active skill bodies?
+- Are route decisions in scripts and long workflows in references, not active
+  skill bodies?
 - Did materialize and doctor pass for every changed plugin?

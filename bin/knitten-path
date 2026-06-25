@@ -7,9 +7,21 @@ resolve_plugin_root() {
     return 0
   fi
 
+  is_cache_root() {
+    case "$1" in
+      */.codex/plugins/cache/*) return 0 ;;
+      *) return 1 ;;
+    esac
+  }
+
   local script_dir repo_root
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   repo_root="$(cd "$script_dir/.." && pwd)"
+  if is_cache_root "$repo_root" && [[ -f "$HOME/plugins/knitten/.codex-plugin/plugin.json" ]]; then
+    printf '%s\n' "$HOME/plugins/knitten"
+    return 0
+  fi
+
   if [[ -f "$repo_root/.codex-plugin/plugin.json" ]]; then
     printf '%s\n' "$repo_root"
     return 0

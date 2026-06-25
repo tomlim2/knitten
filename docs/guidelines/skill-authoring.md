@@ -83,14 +83,14 @@ When in doubt, use `normal`. If external state can change, use `strict`.
 
 ## Router Rule
 
-Routers may know their leaves. Leaves should not need to know their parent
-router.
+Routers may know their leaves through a mechanical route script. Leaves should
+not need to know their parent router.
 
 A router's main job is to:
 
-- classify the request
 - run its own activation gate
-- route to the smallest matching leaf
+- run the mechanical route script
+- route to the smallest matching leaf returned by the script
 - apply the highest required activation check for the delegated action
 
 A leaf's main job is to:
@@ -106,6 +106,9 @@ registration instead of making every leaf explain its parent.
 Use `docs/guidelines/routing-integration.md` when adding a payload router,
 connecting leaves to a router, moving skills between plugins, or deciding
 whether a router is worth its token cost.
+
+Do not maintain route policy in Markdown tables. Markdown may point to the route
+script, but the script, fixtures, and validators own routing behavior.
 
 ## Reference Rule
 

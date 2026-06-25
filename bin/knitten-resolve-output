@@ -21,16 +21,28 @@ resolve_plugin_root() {
     return 0
   fi
 
+  is_cache_root() {
+    case "$1" in
+      */.codex/plugins/cache/*) return 0 ;;
+      *) return 1 ;;
+    esac
+  }
+
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local repo_root
   repo_root="$(cd "$script_dir/.." && pwd)"
+  local default_root="$HOME/plugins/knitten"
+  if is_cache_root "$repo_root" && [[ -x "$default_root/bin/knitten-path" ]]; then
+    printf '%s\n' "$default_root"
+    return 0
+  fi
+
   if [[ -x "$repo_root/bin/knitten-path" ]]; then
     printf '%s\n' "$repo_root"
     return 0
   fi
 
-  local default_root="$HOME/plugins/knitten"
   if [[ -x "$default_root/bin/knitten-path" ]]; then
     printf '%s\n' "$default_root"
     return 0

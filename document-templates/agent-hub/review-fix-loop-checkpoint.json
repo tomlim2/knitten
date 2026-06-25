@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "kind": "review-fix-loop-checkpoint",
+  "status": "continue",
+  "summary": "<one-line loop state summary>",
+  "loopKind": "review-fix",
+  "loopNumber": 1,
+  "reviewMode": "triad",
+  "target": {
+    "repo": "<repo key or absolute path>",
+    "branch": "<branch name>",
+    "taskKey": "<issue id, task key, or null>",
+    "base": "<base ref or sha>"
+  },
+  "fixedFindings": [
+    {
+      "id": "<finding id>",
+      "severity": "P1",
+      "source": "<reviewer or review pass>",
+      "summary": "<what was fixed>",
+      "files": []
+    }
+  ],
+  "remainingBlockers": [
+    {
+      "id": "<finding id>",
+      "severity": "P1",
+      "source": "<reviewer or review pass>",
+      "summary": "<what remains>",
+      "requiredFix": "<required next change>"
+    }
+  ],
+  "changedFiles": [],
+  "validation": [
+    {
+      "command": "<validation command>",
+      "result": "pass",
+      "notes": null
+    }
+  ],
+  "userApproval": {
+    "implementation": "implicit-current-turn",
+    "commitPush": "not-approved"
+  },
+  "nextAction": "<continue|review|fix|validate|ask_user|stop>",
+  "updatedAt": "YYYY-MM-DDTHH:mm:ssZ"
+}
