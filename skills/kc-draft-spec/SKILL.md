@@ -10,6 +10,13 @@ Use for: drafting compact specs, implementation contracts, or pre-work plans.
 Use when the user asks for a spec, plan, design plan, implementation contract,
 or pre-work document before editing.
 
+## Mode Contract
+
+Do not require or invoke Codex `/plan` mode. Perform planning as this skill's
+workflow in the current session mode, write the spec artifact, and stop before
+implementation. If scope or correctness remains uncertain, ask the user before
+locking the spec.
+
 ## Input
 
 - Task purpose.
