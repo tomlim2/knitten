@@ -1,7 +1,7 @@
 ---
 name: kc-review-fix-loop
-description: Run checkpointed review/fix/validate loops for repeated blocker cleanup.
-activation-check: normal
+description: Run review/fix loops until blockers clear.
+match-check: normal
 ---
 
 # KC Review Fix Loop
@@ -14,7 +14,7 @@ implementation repeatedly.
 
 This is a Knitten Core skill/protocol, not a shell command or PATH executable.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 Confirm:
 
@@ -39,7 +39,7 @@ Do not read detailed references until Step 0 passes.
 - Treat `/goal` as an optional progress guard only. The loop's source of truth
   is the checkpoint JSON.
 
-## After Activation
+## After Match
 
 Read [`references/flow.md`](references/flow.md), then run the checkpointed
 review/fix loop.

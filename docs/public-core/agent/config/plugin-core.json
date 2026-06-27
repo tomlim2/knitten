@@ -6,7 +6,7 @@
       "displayName": "Codex Plugin",
       "entryDocument": "agent/AGENTS.md",
       "firstRead": "First shared-policy read: `SYSTEM.md`.",
-      "adapter": "codex"
+      "runtime": "codex"
     }
   ],
   "sharedLayers": [
@@ -15,7 +15,7 @@
       "path": "agent/config",
       "kind": "config",
       "loadMode": "config",
-      "inventorySource": "agent/config/agent-hub.json"
+      "inventorySource": "agent/config/plugin-core.json"
     },
     {
       "id": "lib",
@@ -27,9 +27,9 @@
   ],
   "registries": [
     {
-      "id": "agent-hub",
-      "path": "agent/config/agent-hub.json",
-      "domain": "plugin core adapter metadata",
+      "id": "plugin-core",
+      "path": "agent/config/plugin-core.json",
+      "domain": "plugin core metadata",
       "format": "json",
       "secretPolicy": "no-secrets"
     },

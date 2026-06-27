@@ -2,17 +2,17 @@
 status: accepted
 ---
 
-# AH Triad Review Reference
+# KC Triad Review Reference
 
-Use this reference from `kc-review`. It defines the reusable AH role
-review pattern:
+Use this reference from `kc-review`. It defines the reusable KC role review
+pattern:
 
 ```text
 review packet -> mode selection -> role selection -> read-only role reviews -> merged findings
 ```
 
 The caller owns target discovery, diff generation, guideline loading, output
-persistence, fixes, commits, PR payloads, and external mutation. Triad only
+persistence, fixes, commits, PR bodies, and external mutation. Triad only
 reviews the supplied packet and reports findings.
 
 ## Review Packet
@@ -33,7 +33,7 @@ The caller should provide:
 - <name/path or inline label> - <why mandatory> - <path readable? yes/no>
 
 ## Finding schema
-<optional caller schema; omitted means default AH finding schema>
+<optional caller schema; omitted means default KC finding schema>
 
 ## Review mode
 single | triad
@@ -45,7 +45,7 @@ single | triad
 The packet should be concise and source-cited. If it is too vague to choose
 roles or ground findings, stop and ask the caller to repair it.
 
-## Default AH Finding Schema
+## Default KC Finding Schema
 
 Use this schema when the caller does not provide one:
 
@@ -123,7 +123,7 @@ Example specialized role names:
 Mandatory output before dispatch:
 
 ```markdown
-## AH role selection
+## KC role selection
 - mode: single|triad
 - <role> - <why this role matches the target and consumer>
 - <role> - <why this role matches the target and consumer>
@@ -183,7 +183,7 @@ Review is read-only.
 ## Role Report Template
 
 ```markdown
-## AH Triad role review - <role>
+## KC triad role review - <role>
 
 ### Applicability
 - Primary consumer: <consumer>

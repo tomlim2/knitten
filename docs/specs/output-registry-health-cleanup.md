@@ -18,11 +18,11 @@ explicit, and doctor checks catch stale registry paths before users hit them.
 Earlier drafts treated every Shotloom registry entry as accidental domain
 leakage. Current KC usage is more specific: some Shotloom output contracts are
 active compatibility surfaces resolved by `knitten-path`, while Shotloom skills,
-helpers, and detailed payload behavior remain payload-owned.
+helpers, and detailed domain behavior remain domain-owned.
 
 The remaining risk is ambiguity. If compatibility outputs are not documented as
 intentional, future cleanup can remove contracts that Shotloom skills rely on.
-If payload-owned helpers or skill paths reappear in the core registry, callers
+If domain-owned helpers or skill paths reappear in the core registry, callers
 can still hit stale paths that pass shape checks but fail at runtime.
 
 ## Boundary
@@ -38,20 +38,20 @@ In scope:
 
 Out of scope:
 
-- Moving or rewriting Shotloom payload skills.
+- Moving or rewriting Shotloom domain skills.
 - Creating replacement Shotloom or CINEV helper implementations inside
   Knitten.
 - Migrating historical specs that intentionally preserve old context.
 - Changing the generic `scripts/resolve-output.mjs` kind behavior unless a
   failing check proves it is necessary.
-- Adding a broad new routing framework.
+- Adding a broad new selection framework.
 
 ## Inputs
 
 | Input | Required | Meaning |
 |-------|----------|---------|
 | Current registry files | Yes | Source of output and local-artifact entries under `agent/config/`. |
-| Boundary policy | Yes | Expected core/payload ownership contract. |
+| Boundary policy | Yes | Expected core/domain plugin ownership contract. |
 | Doctor output | Yes | Existing validation baseline. |
 | Missing-path scan | Yes | Evidence that registered helper paths are stale. |
 
@@ -61,15 +61,15 @@ Out of scope:
 |--------|-------------|---------|
 | Updated registries | durable | Registry entries either point to existing generic core resources, documented compatibility outputs, or are removed/deferred. |
 | Stronger doctor checks | durable | Doctor fails on stale helper paths and undocumented domain registry entries. |
-| Updated shell validation | durable | Repository shell validation rejects newly introduced undocumented domain routing surfaces when appropriate. |
+| Updated shell validation | durable | Repository shell validation rejects newly introduced undocumented domain workflow surfaces when appropriate. |
 | Validation evidence | local | Command output proving the cleanup works. |
 
 ## Contract
 
 - Knitten core may own generic KC output kinds, generic KC skill aliases, plugin
   diagnostics, hub-local KC storage, and explicitly documented compatibility
-  outputs used by payload workflows.
-- Knitten core must not register payload skill paths, payload helper paths, or
+  outputs used by domain workflows.
+- Knitten core must not register domain skill paths, domain helper paths, or
   local artifact paths unless a separate accepted spec promotes that contract to
   core compatibility.
 - Keep the three active registry files as compatibility surfaces for now:
@@ -89,7 +89,7 @@ Out of scope:
 - The current allowlist is:
   - output `madeBy`: `workflow:*`, an existing `kc-*` skill under
     `skills/<madeBy>/SKILL.md`, or a documented Shotloom compatibility maker
-  - local artifact `owner`: `ah` or documented Shotloom compatibility storage
+  - local artifact `owner`: `workflow` or documented Shotloom compatibility storage
   - helper `path`: an existing source-relative path under `bin/`, `scripts/`,
     or `skills/kc-*`
 - Every retained `outputs.json` template path must exist in this checkout.
@@ -136,10 +136,10 @@ Out of scope:
   undocumented domain registry entry and passes after valid entries are
   restored.
 - `scripts/resolve-output.mjs` still resolves existing generic kinds, including
-  `spec`, `design-plan`, `review-json`, `response-json`, and
+  `spec`, `design-plan`, `review-json`, `temp-json`, and
   `operational-finding-json`.
-- Historical specs may still mention old Shotloom or legacy routing context.
-- No payload helper implementation is copied into Knitten to satisfy a stale
+- Historical specs may still mention old Shotloom or legacy selection context.
+- No domain helper implementation is copied into Knitten to satisfy a stale
   registry entry.
 - Compatibility output ids such as `shotloom-task-activity-log` resolve from
   both source and installed Knitten copies.
@@ -152,7 +152,7 @@ Out of scope:
 
 ### Inputs
 
-- Review findings from the routing triad pass.
+- Review findings from the review pass.
 - Current `doctor` and `validate-repository-shell` checks.
 - `docs/guidelines/plugin-boundary.md`.
 - `docs/guidelines/plugin-boundary-pr-check.md`.
@@ -164,7 +164,7 @@ Out of scope:
 
 - Cleaned and documented output registry files.
 - Doctor checks for helper reachability, installed-copy drift, and
-  undocumented core/payload boundary violations.
+  undocumented core/domain plugin boundary violations.
 - Validation evidence from the commands listed above.
 
 ### Implementation Sequence
@@ -189,21 +189,21 @@ Changes:
 - Add compatibility metadata to every retained Shotloom output or local-artifact
   entry.
 - Remove or defer CINEV-specific helper paths, missing helper paths, and
-  payload skill paths from Knitten core registries rather than recreating
-  payload behavior in core.
+  domain skill paths from Knitten core registries rather than recreating
+  domain behavior in core.
 - Preserve the registry files themselves as compatibility surfaces, even when a
   cleaned registry has zero entries.
 
 Risk:
 
-- A payload workflow may still assume an undocumented core registry entry
+- A domain plugin workflow may still assume an undocumented core registry entry
   exists.
 
 Proof:
 
 - A before/after count of registry entries by owner or maker.
 - Manual confirmation that retained Shotloom entries are compatibility outputs,
-  not payload helper implementations.
+  not domain helper implementations.
 - Synthetic unmarked Shotloom entries fail validation.
 
 #### 2. Strengthen Doctor Checks
@@ -310,13 +310,13 @@ Risk:
 Proof:
 
 - Boundary docs still state the short rule clearly: Knitten owns operation;
-  payload plugins contain skills.
+  domain plugins contain skills.
 
 ### Review Plan
 
 - Contract: verify active registries only contain reachable generic core output
   and local-artifact entries.
-- Boundary: verify no Shotloom, CINEV, or payload helper behavior is copied into
+- Boundary: verify no Shotloom, CINEV, or domain helper behavior is copied into
   Knitten to make validation pass.
 - Validation: require doctor, shell validation, Node syntax checks, and generic
   resolver smoke output.

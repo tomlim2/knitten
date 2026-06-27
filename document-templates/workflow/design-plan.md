@@ -35,7 +35,7 @@ Proof:
 S1 - <stage name>
 
 Input:
-- <typed data, existing function, command payload, file, or artifact consumed>
+- <typed data, existing function, command body, file, or artifact consumed>
 
 Output:
 - <state, file, event, diagnostic, test, or artifact produced>
@@ -59,4 +59,4 @@ Proof:
 - `Failure` states what happens when the stage cannot complete.
 - `Proof` names the check that shows the stage worked.
 - Use `None` only when a row truly does not apply.
-- Prefer concrete paths, symbols, commands, payload names, and artifact names.
+- Prefer concrete paths, symbols, commands, request body names, and artifact names.

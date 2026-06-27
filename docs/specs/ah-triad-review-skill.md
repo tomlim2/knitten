@@ -82,9 +82,9 @@ Out of scope:
 The default output is printed for the caller to capture. The skill does not
 write durable artifacts unless a future caller-specific wrapper does so.
 
-## Activation Check
+## Match Check
 
-`activation-check: loose`
+`match-check: loose`
 
 Rationale:
 
@@ -94,7 +94,7 @@ Rationale:
   GitHub/Linear.
 - It reports assumptions when the review packet is incomplete.
 
-The skill still needs an explicit `Step 0: Activation Check`:
+The skill still needs an explicit `Step 0: Match Check`:
 
 ```text
 Confirm the request is a read-only Triad review, the review packet is present,
@@ -151,7 +151,7 @@ skills/kc-review/
 
 Responsibilities:
 
-- Step 0 activation check.
+- Step 0 match check.
 - Require or derive the review packet.
 - Read `references/triad.md`.
 - Select three roles.
@@ -352,7 +352,7 @@ Each role reports:
 - If `node scripts/doctor.mjs` fails only because the materialized local plugin
   copy is missing or stale, run `node scripts/materialize-local-plugin.mjs` and
   re-run doctor before treating the implementation as failed.
-- `rg -n "kc-review|triad.md|activation-check" skills docs`
+- `rg -n "kc-review|triad.md|match-check" skills docs`
 - Manual review that `kc-review` contains no mutation steps.
 - Manual review that `triad.md` separates caller responsibilities from Triad
   responsibilities.
@@ -364,8 +364,8 @@ Each role reports:
 
 - `skills/kc-review/SKILL.md` exists in Knitten core.
 - `skills/kc-review/references/triad.md` exists.
-- The skill has `activation-check: loose`.
-- The skill has `Step 0: Activation Check`.
+- The skill has `match-check: loose`.
+- The skill has `Step 0: Match Check`.
 - The skill states it is read-only and does not mutate files or external state.
 - The reference requires dynamic role selection.
 - The reference requires the same base review packet for every role.
@@ -398,7 +398,7 @@ Each role reports:
 - Existing `skills/ah-review-work/SKILL.md`.
 - Existing `skills/ah-review-implementation/SKILL.md`.
 - Existing `skills/ah-review-pr/SKILL.md`.
-- `docs/specs/skill-activation-check-policy.md`.
+- `docs/specs/skill-match-check-policy.md`.
 - Payload examples such as Shotloom Triad review docs.
 
 ### Outputs
@@ -418,7 +418,7 @@ Files:
 
 Changes:
 
-- Add frontmatter with `activation-check: loose`.
+- Add frontmatter with `match-check: loose`.
 - Define purpose, input packet, output, Step 0, and read-only workflow.
 - State that caller workflows own mutation and persistence.
 - Define default AH finding schema fallback.

@@ -1,7 +1,7 @@
 ---
 name: kc-report-finding
 description: Record checked mechanical workflow findings.
-activation-check: normal
+match-check: normal
 ---
 
 # KC Report Finding
@@ -18,7 +18,7 @@ Use only for checked mechanical errors:
 Do not use this skill for ideas, naming/style preferences, guesses, one-off
 confusion, or user-directed scope changes.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 Confirm the failure is mechanically checkable, evidence or reproduction notes
 are available, and the affected workflow, plugin, skill, script, doc, or path is
@@ -29,7 +29,7 @@ scope change.
 
 Do not read detailed references until Step 0 passes.
 
-## After Activation
+## After Match
 
 Read [`references/flow.md`](references/flow.md), write the structured finding
 record to the Knitten core hub queue, and report the path.

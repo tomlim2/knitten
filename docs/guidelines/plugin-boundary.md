@@ -2,32 +2,32 @@
 
 ## Purpose
 
-This document defines the boundary between the Knitten core plugin and payload
+This document defines the boundary between the Knitten core plugin and domain
 plugins.
 
 ## Roles
 
 | Plugin | Role |
 |--------|------|
-| `knitten` | Core operating layer: policy, output paths, generic Agent Hub skills, CRUD workflows, validation, local installation. |
-| Payload plugin | Skill payload layer: skill files and skill-owned support files. |
+| `knitten` | Core operating layer: policy, output paths, shared workflow skills, CRUD workflows, validation, local installation. |
+| Domain plugin | Skill layer: skill files and skill-owned support files. |
 
 Short rule:
 
 ```text
 Knitten owns operation.
-Payload plugins contain skills.
+Domain plugins contain skills.
 ```
 
 ## Terminology
 
 Terminology follows `SYSTEM.md`.
 
-- Use `Agent Hub (AH)` for the generic Codex workflow layer.
+- Use `shared workflow` for the generic Codex workflow layer.
 - Use `Knitten hub` for the Knitten-owned local storage root.
 - Use `output contract` for `KNITTEN_PATH_BIN output` resolver entries.
 - Use `local artifact path registry` for task-scoped local path entries.
-- Use `payload source root` for an editable payload plugin checkout.
+- Use `domain plugin source root` for an editable domain plugin checkout.
 - Use `installed plugin root` or `materialized copy` for installed copies.
 
 ## Core-Owned Surfaces
@@ -35,7 +35,7 @@ Terminology follows `SYSTEM.md`.
 These belong to `knitten`:
 
 - plugin boundary policy
-- generic Agent Hub skills
+- shared workflow skills
 - output and path runtime
 - local artifact registries
 - generic long-running work memory and decision contract
@@ -43,11 +43,11 @@ These belong to `knitten`:
 - finding report capture and storage
 - promoted-reference policy
 - plugin installation and marketplace registration policy
-- validators that enforce core/payload separation
+- validators that enforce core/domain-plugin separation
 
-## Payload-Owned Surfaces
+## Domain-Plugin-Owned Surfaces
 
-Payload plugins may contain:
+Domain plugins may contain:
 
 - `skills/<skill>/SKILL.md`
 - `skills/<skill>/reference.md`
@@ -56,7 +56,7 @@ Payload plugins may contain:
 - `skills/<skill>/assets/**`
 - domain-specific standards or references that are owned by a skill
 
-Payload plugins should not define independent policy for generic Agent Hub
+Domain plugins should not define independent policy for shared workflow
 operation.
 
 ## Finding Reports
@@ -67,19 +67,19 @@ Rules:
 
 - Use `knitten:kc-report-finding` only for checked mechanical issues.
 - Store all finding records in the Knitten finding report queue.
-- Do not store finding reports in a payload plugin.
-- Payload plugins must not document or depend on the finding-report workflow.
+- Do not store finding reports in a domain plugin.
+- Domain plugins must not document or depend on the finding-report workflow.
 
 ## Promoted References
 
-`reference-promoted.md` is a payload-managed temporary reference file that may
-be placed next to a payload skill.
+`reference-promoted.md` is a domain-plugin-managed temporary reference file
+that may be placed next to a domain skill.
 
 Rules:
 
-- The payload plugin owns create, update, delete, promote, retire, and move.
-- Use the payload plugin's promote-reference skill for CRUD.
-- Payload skills inspect the `reference-promoted.md` trigger index when present
+- The domain plugin owns create, update, delete, promote, retire, and move.
+- Use the domain plugin's promote-reference skill for CRUD.
+- Domain skills inspect the `reference-promoted.md` trigger index when present
   and read only matching promoted sections.
 - Other plugins must not create, edit, delete, promote, retire, or move it.
 - Entries need trigger, check, action, and retirement target.
@@ -88,13 +88,13 @@ Rules:
 
 ## Output Paths
 
-Generic Agent Hub local outputs resolve through Knitten.
+Shared local workflow outputs resolve through Knitten.
 
-Payload plugins may use a forwarding shim, but must not own generic output
+Domain plugins may use a forwarding shim, but must not own generic output
 registries or path policy.
 
 Durable task documents belong to the target workspace when that workspace has a
-document convention. Generic Agent Hub local scratch belongs to the Knitten hub.
+document convention. Shared local scratch belongs to the Knitten hub.
 Shotloom task artifacts are a target-workspace-owned case: Knitten may keep
 compatibility output ids for old KSL flows, but primary task memory belongs to
 the Shotloom checkout through its `scripts/agent-task-artifact.mjs` resolver.
@@ -102,7 +102,7 @@ the Shotloom checkout through its `scripts/agent-task-artifact.mjs` resolver.
 ## Long-Running Work Memory
 
 Knitten owns the generic contract for long-running task memory and user
-decision gates. Payload plugins may apply that contract inside domain workflows,
+decision gates. Domain plugins may apply that contract inside domain workflows,
 but must not define independent generic memory, approval, or output policy.
 
 Repositories hold code, specs, and committed durable docs. Registered local
@@ -120,13 +120,13 @@ and next-step recommendations. Publishing, posting externally, deployment,
 destructive cleanup, and irreversible external-state changes require user
 approval unless the active skill documents a narrower explicit exemption.
 
-## Legacy Payload Surfaces
+## Legacy Domain Plugin Surfaces
 
-The following payload surfaces are legacy until migrated or reclassified:
+The following domain plugin surfaces are legacy until migrated or reclassified:
 
-- payload-level `agent/**`
-- payload-level `docs/**`
-- payload-level `document-templates/**`
+- domain-plugin-level `agent/**`
+- domain-plugin-level `docs/**`
+- domain-plugin-level `document-templates/**`
 - generic path/output helper copies
 
 During migration, validators may report these as warn-only. New work should not
@@ -134,9 +134,9 @@ add to these surfaces unless it is explicitly part of boundary cleanup.
 
 ## Validation
 
-Payload boundary checks should verify:
+Domain plugin boundary checks should verify:
 
-- no `skills/ah-*`
+- no legacy shared-workflow support skills
 - no finding-report workflow references
 - no tracked `.agent-local/**`
 - no new generic output/path registries

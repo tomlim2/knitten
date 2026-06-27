@@ -1,4 +1,4 @@
-# Skill Activation Check Policy
+# Skill Match Check Policy
 
 ## Status
 
@@ -7,17 +7,16 @@ Draft.
 ## Goal
 
 Define how Knitten skills decide whether they should activate for the current
-request. The policy should add activation checks when a skill is created,
+request. The policy should add match checks when a skill is created,
 updated, reviewed, or given new mutation capability without forcing a full
 metadata rewrite across all existing skills.
 
 ## Problem
 
-Knitten and payload plugins contain skills that need different activation
-checks:
+Knitten and domain plugins contain skills that need different match checks:
 read-only review skills, local document editors, GitHub/Linear mutators, Slack
-senders, deploy workflows, cleanup tools, and routers that can call strict leaf
-skills.
+senders, deploy workflows, cleanup tools, and entry skills that can delegate to
+strict internal flows.
 
 Today there is no uniform rule for when a skill must stop and validate:
 
@@ -25,7 +24,7 @@ Today there is no uniform rule for when a skill must stop and validate:
 - whether required inputs are present,
 - whether the action mutates local or external state,
 - whether user approval is required,
-- whether the skill should use a loose, normal, or strict activation check.
+- whether the skill should use a loose, normal, or strict match check.
 
 Adding strict preflight to every skill at once would be too expensive and noisy.
 The policy needs a gradual path.
@@ -34,12 +33,13 @@ The policy needs a gradual path.
 
 In scope:
 
-- Define optional `activation-check` metadata.
+- Define optional `match-check` metadata.
 - Define default inference when metadata is absent.
-- Define Step 0 behavior by activation check.
+- Define Step 0 behavior by match check.
 - Define when skill creation/update/review workflows must ask or infer
-  `activation-check`.
-- Define how routers inherit activation checks from delegated skills.
+  `match-check`.
+- Define how delegating entry skills inherit match checks from delegated skills
+  or internal flows.
 - Define validation and acceptance criteria for the first implementation pass.
 
 Out of scope:
@@ -47,46 +47,46 @@ Out of scope:
 - Bulk-tagging every existing skill.
 - Rewriting every skill body in one pass.
 - Changing Codex platform-level tool permissions.
-- Replacing existing repo-specific approval gates.
+- Replacing existing repo-specific approval checks.
 
 ## Inputs
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| Skill frontmatter | Yes | Existing metadata such as `allowed-tools`, `task-types`, `description`, and future `activation-check`. |
+| Skill frontmatter | Yes | Existing metadata such as `allowed-tools`, `task-types`, `description`, and future `match-check`. |
 | Skill body | Yes | Workflow steps and mutation behavior used for inference. |
 | User request | Yes | Determines whether a skill should run and whether ambiguity requires a question. |
-| Boundary policy | Yes | Core/payload ownership rules from `docs/guidelines/plugin-boundary.md`. |
+| Boundary policy | Yes | Core/domain-plugin ownership rules from `docs/guidelines/plugin-boundary.md`. |
 
 ## Outputs
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| Activation policy document | durable | Canonical rule for Step 0 and activation-check inference. |
-| Skill authoring guidance update | durable | Skill creation/update workflows ask or infer activation at the right time. |
+| Match policy document | durable | Canonical rule for Step 0 and match-check inference. |
+| Skill authoring guidance update | durable | Skill creation/update workflows ask or infer match at the right time. |
 | Optional validator checks | durable | Mechanical checks for strict skills and obvious missing Step 0 patterns. |
-| Targeted skill updates | durable | Strict example skills gain explicit `activation-check` and Step 0 text. |
+| Targeted skill updates | durable | Strict example skills gain explicit `match-check` and Step 0 text. |
 
 ## Contract
 
-- A skill may declare `activation-check: loose | normal | strict`.
-- Missing `activation-check` is not permission to skip activation checks.
-- If `activation-check` is absent, the caller infers activation from the requested action,
+- A skill may declare `match-check: loose | normal | strict`.
+- Missing `match-check` is not permission to skip match checks.
+- If `match-check` is absent, the caller infers match from the requested action,
   skill metadata, allowed tools, and workflow body.
 - Any external mutation is treated as strict.
-- Ambiguous inferred activation defaults to normal, unless external mutation is
+- Ambiguous inferred match defaults to normal, unless external mutation is
   possible.
-- Every skill conceptually has Step 0: Activation Check.
-- Step 0 strictness depends on activation check.
-- Skill creation workflows must ask or propose activation check.
-- Skill update workflows must re-check activation when behavior, tools, or mutation
+- Every skill conceptually has Step 0: Match Check.
+- Step 0 strictness depends on match check.
+- Skill creation workflows must ask or propose match check.
+- Skill update workflows must re-check match when behavior, tools, or mutation
   surface changes.
-- Review/promoted-reference workflows must flag missing or stale activation check when
+- Review/promoted-reference workflows must flag missing or stale match check when
   a skill can affect external state.
-- Routers inherit the highest activation check of the delegated action they are about
-  to invoke.
+- Delegating entry skills inherit the highest match check of the delegated
+  action they are about to invoke.
 
-## Activation Checks
+## Match Checks
 
 | Value | Typical actions | Step 0 behavior |
 |------|-----------------|-----------------|
@@ -123,12 +123,12 @@ If still unclear, use `normal`.
 
 ## Step 0 Shape
 
-Each explicit Step 0 should use the smallest useful form for its activation check.
+Each explicit Step 0 should use the smallest useful form for its match check.
 
 Loose shape:
 
 ```text
-### Step 0: Activation Check
+### Step 0: Match Check
 
 Confirm the request matches this skill and required input is present. If an
 assumption is needed, state it in the output.
@@ -137,7 +137,7 @@ assumption is needed, state it in the output.
 Normal shape:
 
 ```text
-### Step 0: Activation Check
+### Step 0: Match Check
 
 Confirm target workspace, target files, required input, and expected output.
 If target or scope is unclear, ask before editing.
@@ -146,7 +146,7 @@ If target or scope is unclear, ask before editing.
 Strict shape:
 
 ```text
-### Step 0: Activation Check
+### Step 0: Match Check
 
 Confirm target, account, authority, current branch/state, mutation surface, and
 required user approval. If any item is unclear, stop and ask before mutation.
@@ -154,63 +154,64 @@ required user approval. If any item is unclear, stop and ask before mutation.
 
 ## Ask / Infer Triggers
 
-Ask or infer `activation-check` when:
+Ask or infer `match-check` when:
 
 - creating a skill,
 - updating a skill with new behavior,
 - adding mutation-capable tools or external APIs,
 - changing `allowed-tools` or connector capabilities,
 - reviewing a skill that can affect external state,
-- promoting a mechanical issue into a skill-local gate,
-- turning a skill into a router or orchestrator,
+- promoting a mechanical issue into a skill-local check,
+- turning a skill into an entry skill or orchestrator,
 - changing deploy, Slack, PR response, issue state, cleanup, credential, config,
   or production behavior.
 
 The question should be short:
 
 ```text
-This skill can <mutation>. Should its activation-check be strict?
+This skill can <mutation>. Should its match-check be strict?
 ```
 
 When the answer is obvious from policy, infer and state the reason instead of
 asking.
 
-## Router Rule
+## Delegation Rule
 
-Routers and orchestrators do not get to stay loose just because they delegate
-work.
+Entry skills and orchestrators do not get to stay loose just because they
+delegate work.
 
 Contract:
 
-- Before calling a leaf skill, infer the delegated action's activation check.
-- Apply the highest relevant activation check for that invocation.
-- If the router can route to strict leaves, its Step 0 must identify when
+- Before calling a leaf skill or internal flow, infer the delegated action's
+  match check.
+- Apply the highest relevant match check for that invocation.
+- If the entry skill can delegate to strict work, its Step 0 must identify when
   strict confirmation is required.
 
 ## Validation
 
 - `node scripts/doctor.mjs`
-- For payload changes, run the payload plugin's doctor or skill validator.
-- `rg -n "activation-check|Step 0: Activation Check" skills docs`
+- For domain plugin changes, run the domain plugin's doctor or skill validator.
+- `rg -n "match-check|Step 0: Match Check" skills docs`
 - Manual review of strict skills touched in the implementation pass.
 
 ## Acceptance Criteria
 
 - Policy exists in a durable Knitten document.
-- Skill creation guidance asks or proposes `activation-check`.
-- Skill update/review guidance says to add or adjust `activation-check` when behavior
-  needs stricter activation.
+- Skill creation guidance asks or proposes `match-check`.
+- Skill update/review guidance says to add or adjust `match-check` when behavior
+  needs stricter match.
 - The policy does not require immediate tagging of every existing skill.
-- Missing `activation-check` explicitly falls back to inference.
+- Missing `match-check` explicitly falls back to inference.
 - Any external mutation is explicitly strict.
-- Router inheritance is documented.
+- Delegation inheritance is documented.
 - At least one strict example skill can be reviewed against the policy.
 
 ## Open Questions
 
-- Should `activation-check` live only in frontmatter, or may it also be documented in a
+- Should `match-check` live only in frontmatter, or may it also be documented in a
   reference file during migration?
-- Should the validator warn on strict keywords without `activation-check`, or only
+- Should the validator warn on strict keywords without `match-check`, or only
   after the first targeted implementation pass?
 
 ## Design Plan
@@ -232,11 +233,11 @@ Contract:
 
 ### Implementation Sequence
 
-#### 1. Add Canonical Activation Policy
+#### 1. Add Canonical Match Policy
 
 Files:
 
-- `docs/guidelines/skill-activation-check.md`
+- `docs/guidelines/skill-match-check.md`
 - `SYSTEM.md`
 
 Changes:
@@ -263,14 +264,14 @@ Files:
 
 Changes:
 
-- Add activation-check ask/infer triggers.
+- Add match-check ask/infer triggers.
 - Require Step 0 review when creating or updating skills.
 - Make promoted-reference CRUD consider whether the target skill needs a
   stricter Step 0.
 
 Risk:
 
-- These AH skills should not become too verbose for simple loose work.
+- These KC skills should not become too verbose for simple loose work.
 
 Proof:
 
@@ -286,7 +287,7 @@ Files:
 Changes:
 
 - Consider warn-only checks for obvious strict words or tools without
-  `activation-check`.
+  `match-check`.
 - Keep warnings targeted; do not fail the full repo at first.
 
 Risk:
@@ -302,27 +303,27 @@ Proof:
 
 Files:
 
-- Selected payload skill files, if scoped into implementation.
+- Selected domain skill files, if scoped into implementation.
 
 Changes:
 
-- Add explicit `activation-check: strict` and a Step 0 activation check to a
+- Add explicit `match-check: strict` and a Step 0 match check to a
   small number of strict skills.
 - Do not bulk-edit all skills.
 
 Risk:
 
-- Touching payload skill docs can cross plugin boundary if done outside
+- Touching domain plugin skill docs can cross plugin boundary if done outside
   Knitten-managed workflow.
 
 Proof:
 
-- Payload skill validator.
-- Payload boundary validator.
+- Domain skill validator.
+- Domain plugin boundary validator.
 
 ### Review Plan
 
-- Contract: confirm missing `activation-check` falls back to inference and external
+- Contract: confirm missing `match-check` falls back to inference and external
   mutation is strict.
 - Boundary: confirm Knitten owns policy; KAS only receives targeted
   Knitten-managed updates.

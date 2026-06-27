@@ -9,9 +9,9 @@ configuration for Codex plugin workflows.
 | Path | Purpose |
 |------|---------|
 | `SYSTEM.md` | Shared policy loaded before harness-specific behavior. |
-| `agent/AGENTS.md` | Codex adapter entry document. |
+| `agent/AGENTS.md` | Codex entry document. |
 | `agent/config/` | Machine-readable registries and plugin-local contracts. |
-| `agent/document-templates/agent-hub/` | Core document templates used by output contracts. |
+| `agent/document-templates/workflow/` | Core document templates used by output contracts. |
 | `agent/lib/` | Plugin-local resolver utilities. |
 | `docs/public-core/` | Source overlay used by the split synchronization job. |
 
@@ -28,7 +28,7 @@ Codex personal marketplace copy.
 ## Artifact Packs
 
 Artifact packs are manifest-declared collections of optional agent artifacts.
-Core keeps the resolver, installer, validation gates, and bootstrap workflows.
+Core keeps the resolver, installer, validation checks, and bootstrap workflows.
 Domain, company, personal, and repository-specific workflows should live in
 packs instead of the public core tree.
 

@@ -1,7 +1,7 @@
 {
   "name": "knitten",
   "version": "0.1.6",
-  "description": "Personal Agent Hub core for Codex plugins",
+  "description": "Lightweight Codex workflow core",
   "author": {
     "name": "tomlim2"
   },
@@ -13,14 +13,14 @@
     "codex",
     "plugin",
     "agent-core",
-    "adapters",
+    "domain-plugins",
     "path-output"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Knitten",
-    "shortDescription": "Personal Agent Hub core for Codex plugins.",
-    "longDescription": "Knitten is a small personal Codex core for shared Agent Hub workflows, output paths, validation, and plugin boundaries. Domain adapters keep project-specific behavior and load their detailed flows only when used.",
+    "shortDescription": "Lightweight Codex workflow core.",
+    "longDescription": "Knitten keeps shared Codex workflows small. Common steps, output paths, validation, and ownership rules live in the core, while domain plugins keep project-specific skills and load details only after a clear match.",
     "developerName": "tomlim2",
     "category": "Productivity",
     "capabilities": [
@@ -30,7 +30,7 @@
     "websiteURL": "https://github.com/tomlim2/knitten",
     "brandColor": "#3B82F6",
     "defaultPrompt": [
-      "Read SYSTEM.md, keep this plugin self-contained, and use domain adapters for project-specific workflows."
+      "Read SYSTEM.md, keep this plugin self-contained, and use domain plugins for project-specific workflows."
     ],
     "screenshots": []
   }

@@ -7,24 +7,24 @@ Implemented as a deterministic smoke eval. The first reviewed run is recorded in
 
 ## Goal
 
-Design a small experiment that can show whether Knitten's gated progressive
-loading direction produces measurable context savings without breaking routing
-match accuracy or safety gates.
+Design a small experiment that can show whether Knitten's match-based progressive
+loading direction produces measurable context savings without breaking skill
+match accuracy or safety checks.
 
 This is not a full product benchmark. It is a smoke eval for deciding whether
 the context-load direction is worth implementing in the first pilot batch.
 
 ## Hypothesis
 
-Knitten can reduce always-loaded instruction context by using short activation
-gates and loading detailed references only after a skill match.
+Knitten can reduce always-loaded instruction context by using short match
+checks and loading detailed references only after a skill match.
 
 The hypothesis is valid only if:
 
 - match and reject accuracy remain high,
-- mutation safety gates are never missed,
+- mutation safety checks are never missed,
 - selected references are narrower than the full skill body,
-- the activation overhead is smaller than the avoided context.
+- the match overhead is smaller than the avoided context.
 
 ## Recording Rule
 
@@ -47,9 +47,9 @@ Record:
 | Skill | Role | Why |
 |-------|------|-----|
 | `kc-implement` | Implementation umbrella | Tests scoped implementation matching and deferred detailed flow. |
-| `kc-draft-spec` | Spec drafting | Tests plan/spec requests, activation policy guidance, and reusable-concept checks. |
+| `kc-draft-spec` | Spec drafting | Tests plan/spec requests, match policy guidance, and reusable-concept checks. |
 | `kc-review` | Read-only review | Tests single/triad review matching and prepared-packet rejection. |
-| `kc-report-finding` | Local finding capture | Tests evidence-gated local record writes without external mutation. |
+| `kc-report-finding` | Local finding capture | Tests evidence-match-based local record writes without external mutation. |
 
 ### Test Set
 
@@ -70,8 +70,8 @@ Each case records:
 | `id` | Stable case id. |
 | `request` | User-like request text. |
 | `expectedSkill` | Pilot skill or `reject`. |
-| `expectedReferences` | References that should load after activation. |
-| `safetyGateRequired` | Whether file, local-record, or external-state safety must remain visible. |
+| `expectedReferences` | References that should load after match. |
+| `safetyCheckRequired` | Whether file, local-record, or external-state safety must remain visible. |
 | `notes` | Why the expected match is correct. |
 
 ## Token Cost Model
@@ -91,23 +91,23 @@ Baseline cost:
 baseline = full SKILL.md bodies for all pilot skills
 ```
 
-Gated cost:
+Match-Based cost:
 
 ```text
-gated = activation sections for all pilot skills
+match-based = match sections for all pilot skills
       + selected full skill/reference content for the matched skill
 ```
 
 Rejected-request cost:
 
 ```text
-reject_cost = activation sections for all pilot skills
+reject_cost = match sections for all pilot skills
 ```
 
 Context savings:
 
 ```text
-savings = baseline - gated
+savings = baseline - match-based
 savings_rate = savings / baseline
 ```
 
@@ -120,18 +120,18 @@ tokenizer in the first round.
 |--------|--------|---------|
 | Match accuracy | >= 18/20 | Matched requests choose the expected pilot skill. |
 | Reject accuracy | >= 4/4 | Neighboring/non-KC requests do not incorrectly enter a pilot skill. |
-| Safety miss count | 0 | Implementation and local-record requests keep safety gates visible. |
+| Safety miss count | 0 | Implementation and local-record requests keep safety checks visible. |
 | Reference precision | >= 80% | Loaded references are expected by the test case. |
-| Average savings rate | >= 30% | Gated path loads substantially less context than baseline. |
+| Average savings rate | >= 30% | Match-Based path loads substantially less context than baseline. |
 
 ## Procedure
 
 1. Create a small JSON test set at `evals/context-load-smoke/cases.json`.
 2. Measure current pilot `SKILL.md` sizes.
-3. Declare activation surfaces and counted references at
-   `evals/context-load-smoke/activation-surfaces.json`.
+3. Declare match surfaces and counted references at
+   `evals/context-load-smoke/match-surfaces.json`.
 4. Run `node scripts/run-context-load-smoke-eval.mjs --report`.
-5. Review the local report at `.agent-local/ah/evals/context-load-smoke/latest.json`.
+5. Review the local report at `.agent-local/workflow/evals/context-load-smoke/latest.json`.
 6. Record the reviewed result and decide whether the pilot migration should
    proceed.
 
@@ -141,9 +141,9 @@ tokenizer in the first round.
 |--------|-------------|---------|
 | Eval plan | durable | This document. |
 | Test cases JSON | durable | `evals/context-load-smoke/cases.json`. |
-| Activation surfaces JSON | durable | `evals/context-load-smoke/activation-surfaces.json`. |
+| Match surfaces JSON | durable | `evals/context-load-smoke/match-surfaces.json`. |
 | Runner | durable | `scripts/run-context-load-smoke-eval.mjs`. |
-| Raw report | local | `.agent-local/ah/evals/context-load-smoke/latest.json`. |
+| Raw report | local | `.agent-local/workflow/evals/context-load-smoke/latest.json`. |
 | Reviewed result | durable | `docs/specs/context-load-smoke-eval-result.md`. |
 
 ## Acceptance Criteria
@@ -171,7 +171,7 @@ behavior.
 **[P1] Accuracy cannot be proven with token counts alone.**
 
 Reduced context is useful only if matching and safety stay correct. The eval
-therefore needs expected-match assertions and safety-gate checks, not just
+therefore needs expected-match assertions and safety-check checks, not just
 before/after token estimates.
 
 **[P2] A 20-case set is too small for broad claims.**

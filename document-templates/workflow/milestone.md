@@ -11,7 +11,7 @@ status: accepted
 status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-owner: agent-hub
+owner: workflow
 target-date:
 ---
 
@@ -81,7 +81,7 @@ Required:
 status: active
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-owner: agent-hub
+owner: workflow
 target-date:
 ---
 ```

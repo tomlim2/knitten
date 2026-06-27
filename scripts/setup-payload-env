@@ -2,11 +2,4 @@
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-knitten_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
-
-if [ ! -x "$knitten_root/bin/knitten-path" ]; then
-  echo "missing executable: $knitten_root/bin/knitten-path" >&2
-  exit 1
-fi
-
-printf 'export KNITTEN_PATH_BIN=%s\n' "$knitten_root/bin/knitten-path"
+exec "$script_dir/setup-domain-plugin-env" "$@"

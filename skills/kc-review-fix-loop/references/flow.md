@@ -35,7 +35,7 @@ direct script execution is unavoidable, pass `--hub-root=<durable-knitten-root>`
 or set `KNITTEN_HUB_ROOT` first.
 
 Fill the selected path with the template at
-`document-templates/agent-hub/review-fix-loop-checkpoint.json`.
+`document-templates/workflow/review-fix-loop-checkpoint.json`.
 
 The checkpoint must record:
 

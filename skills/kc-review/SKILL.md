@@ -1,7 +1,7 @@
 ---
 name: kc-review
 description: Run read-only single/triad reviews from a prepared packet.
-activation-check: loose
+match-check: loose
 allowed-tools: Read, Agent
 ---
 
@@ -16,11 +16,11 @@ This is a review engine, not a workflow owner. It does not discover targets,
 run shell commands, write files, commit, post, push, merge, deploy, or mutate
 GitHub/Linear.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 Confirm:
 
-- the request is a read-only AH role review,
+- the request is a read-only KC role review,
 - the prepared packet is present and source-cited,
 - mode is `single` or `triad`; default `triad`,
 - no file or external mutation is expected.
@@ -36,7 +36,7 @@ Stop and ask the caller to repair the packet when:
 
 Do not read detailed references until Step 0 passes.
 
-## After Activation
+## After Match
 
 Read [`references/triad.md`](references/triad.md), then run the selected
 read-only `single` or `triad` review. Read only caller-supplied inline content

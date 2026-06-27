@@ -7,7 +7,7 @@
       "request": "Implement the accepted spec and run the nearest validation.",
       "expectedSkill": "kc-implement",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Implementation request from an accepted spec should stay in the active workspace."
     },
     {
@@ -16,7 +16,7 @@
       "request": "Apply the reviewed findings to the code with the smallest scoped edit.",
       "expectedSkill": "kc-implement",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Accepted review findings are an implementation input."
     },
     {
@@ -25,7 +25,7 @@
       "request": "Fix the blocker in the target files and report validation coverage.",
       "expectedSkill": "kc-implement",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Fixing a blocker in files is scoped implementation."
     },
     {
@@ -34,7 +34,7 @@
       "request": "Make the config change from the approved plan, but do not commit.",
       "expectedSkill": "kc-implement",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Mutation is allowed only as scoped workspace implementation."
     },
     {
@@ -43,7 +43,7 @@
       "request": "Update the script according to the accepted design plan.",
       "expectedSkill": "kc-implement",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Accepted design plan plus code change matches implementation."
     },
     {
@@ -52,7 +52,7 @@
       "request": "Draft a compact implementation spec for a context-load smoke eval.",
       "expectedSkill": "kc-draft-spec",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Spec drafting request should use the KC spec shape and path rules."
     },
     {
@@ -61,7 +61,7 @@
       "request": "Write a pre-work plan before editing the skill files.",
       "expectedSkill": "kc-draft-spec",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Pre-work plan before edits maps to draft spec."
     },
     {
@@ -70,17 +70,17 @@
       "request": "Create an implementation contract with goal, boundary, validation, and acceptance criteria.",
       "expectedSkill": "kc-draft-spec",
       "expectedReferences": [],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Implementation contract is a drafting task."
     },
     {
       "id": "spec-004",
       "group": "spec",
-      "request": "Make a design plan for updating a skill activation gate.",
+      "request": "Make a design plan for updating a skill match check.",
       "expectedSkill": "kc-draft-spec",
       "expectedReferences": [],
-      "safetyGateRequired": true,
-      "notes": "Skill-related design plan should keep activation policy visible."
+      "safetyCheckRequired": true,
+      "notes": "Skill-related design plan should keep match policy visible."
     },
     {
       "id": "review-001",
@@ -88,7 +88,7 @@
       "request": "Triad review the prepared packet and report blocker findings only.",
       "expectedSkill": "kc-review",
       "expectedReferences": ["skills/kc-review/references/triad.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Prepared packet plus triad review matches read-only review."
     },
     {
@@ -97,7 +97,7 @@
       "request": "Run a single read-only review from this source-cited target packet.",
       "expectedSkill": "kc-review",
       "expectedReferences": ["skills/kc-review/references/triad.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Single review is supported by the same review reference."
     },
     {
@@ -106,7 +106,7 @@
       "request": "Review this implementation diff without editing files.",
       "expectedSkill": "kc-review",
       "expectedReferences": ["skills/kc-review/references/triad.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Explicit read-only review should not match implementation."
     },
     {
@@ -115,7 +115,7 @@
       "request": "Find P0-P2 blockers in the supplied review target.",
       "expectedSkill": "kc-review",
       "expectedReferences": ["skills/kc-review/references/triad.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Blocker review of a supplied target is review work."
     },
     {
@@ -124,7 +124,7 @@
       "request": "Record this checked stale plugin cache finding with reproduction notes.",
       "expectedSkill": "kc-report-finding",
       "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Checked mechanical plugin/cache failure belongs in finding capture."
     },
     {
@@ -133,7 +133,7 @@
       "request": "Log a doctor failure finding after confirming the missing config path.",
       "expectedSkill": "kc-report-finding",
       "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Doctor and missing-path failures are reportable mechanical findings."
     },
     {
@@ -142,7 +142,7 @@
       "request": "Save a structured finding for a reproducible validator failure.",
       "expectedSkill": "kc-report-finding",
       "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
-      "safetyGateRequired": true,
+      "safetyCheckRequired": true,
       "notes": "Validator failure with evidence matches finding capture."
     },
     {
@@ -151,7 +151,7 @@
       "request": "What is the weather in Seoul today?",
       "expectedSkill": "reject",
       "expectedReferences": [],
-      "safetyGateRequired": false,
+      "safetyCheckRequired": false,
       "notes": "Weather request is outside the evaluated KC pilot skills."
     },
     {
@@ -160,7 +160,7 @@
       "request": "Commit and push the current repository changes.",
       "expectedSkill": "reject",
       "expectedReferences": [],
-      "safetyGateRequired": false,
+      "safetyCheckRequired": false,
       "notes": "Commit/push is not one of the evaluated KC pilot skills."
     },
     {
@@ -169,7 +169,7 @@
       "request": "Generate an image of a product mockup.",
       "expectedSkill": "reject",
       "expectedReferences": [],
-      "safetyGateRequired": false,
+      "safetyCheckRequired": false,
       "notes": "Image generation is outside the evaluated KC pilot skills."
     },
     {
@@ -178,7 +178,7 @@
       "request": "Install a new Codex plugin from a GitHub repository.",
       "expectedSkill": "reject",
       "expectedReferences": [],
-      "safetyGateRequired": false,
+      "safetyCheckRequired": false,
       "notes": "Plugin installation is not part of the KC smoke eval pilot set."
     }
   ]

@@ -1,7 +1,7 @@
 ---
 name: kc-implement
 description: Implement accepted specs or review findings.
-activation-check: strict
+match-check: strict
 ---
 
 # KC Implement
@@ -11,7 +11,7 @@ Use for: implementing accepted specs or review findings in the active workspace.
 Use when the user asks to implement, apply a plan, or fix accepted review
 findings.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 - Continue only when the user asks to implement, apply an accepted spec, or fix
   accepted review findings.

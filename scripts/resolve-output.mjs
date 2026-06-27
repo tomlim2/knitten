@@ -55,12 +55,12 @@ Skill defaults:
 Kinds:
   spec        <targetRoot>/docs/specs/<name>.md
   design-plan <targetRoot>/docs/design-plans/<name>.md
-  temp-json   <hubRoot>/.agent-local/ah/json/<name>.json
-  review-json <hubRoot>/.agent-local/ah/reviews/<name>.json
-  operational-finding-json <hubRoot>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/<name>.json
-  report-md   <hubRoot>/.agent-local/ah/reports/<name>.md
-  report-html <hubRoot>/.agent-local/ah/reports/<name>.html
-  task-json   <hubRoot>/.agent-local/ah/tasks/<name>.json`;
+  temp-json   <hubRoot>/.agent-local/workflow/json/<name>.json
+  review-json <hubRoot>/.agent-local/workflow/reviews/<name>.json
+  operational-finding-json <hubRoot>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/<name>.json
+  report-md   <hubRoot>/.agent-local/workflow/reports/<name>.md
+  report-html <hubRoot>/.agent-local/workflow/reports/<name>.html
+  task-json   <hubRoot>/.agent-local/workflow/tasks/<name>.json`;
 }
 
 function samePath(left, right) {
@@ -180,9 +180,9 @@ function main() {
   const hubRoot = resolveHubRoot(args.hubRoot);
   const workspaceRoot = path.resolve(args.workspaceRoot);
   const targetRoot = path.resolve(args.targetRoot || workspaceRoot);
-  const hubLocalRoot = path.join(hubRoot, ".agent-local", "ah");
-  const workspaceLocalRoot = path.join(workspaceRoot, ".agent-local", "ah");
-  const targetLocalRoot = path.join(targetRoot, ".agent-local", "ah");
+  const hubLocalRoot = path.join(hubRoot, ".agent-local", "workflow");
+  const workspaceLocalRoot = path.join(workspaceRoot, ".agent-local", "workflow");
+  const targetLocalRoot = path.join(targetRoot, ".agent-local", "workflow");
   const docsRoot = path.join(targetRoot, "docs");
   const specsRoot = path.join(docsRoot, "specs");
   const designPlansRoot = path.join(docsRoot, "design-plans");

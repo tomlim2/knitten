@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Codex adapter entry for the Knitten plugin core.
+Codex entry for the Knitten plugin core.
 
 First shared-policy read: `SYSTEM.md`.
 

@@ -2,9 +2,9 @@
 status: accepted
 ---
 
-# AH Spec Document Template
+# Workflow Spec Document Template
 
-Use this template for generic AH development specs. A spec document contains
+Use this template for shared workflow development specs. A spec document contains
 both the work contract and the design plan in one file.
 
 ## Generated Body

@@ -1,4 +1,4 @@
-# Skill Gated Progressive Loading
+# Skill Match-Based Progressive Loading
 
 ## Status
 
@@ -7,8 +7,8 @@ work ordering.
 
 ## Goal
 
-Define a milestone for making KC and payload skills more token-efficient by
-turning each `SKILL.md` into a short activation gate and loading detailed
+Define a milestone for making KC and domain skills more token-efficient by
+turning each `SKILL.md` into a short match check and loading detailed
 workflow references only after the request clearly matches the skill.
 
 ## Problem
@@ -18,10 +18,10 @@ right tool for the request. This creates two failure modes:
 
 - Misrouted requests pay the full cost of a long skill before being rejected.
 - Correctly routed requests load detailed implementation, review, and validation
-  instructions even when only the activation decision is needed.
+  instructions even when only the match decision is needed.
 
-Knitten already benefits from explicit routing and boundary rules. The next
-efficiency improvement is to make skill activation itself cheaper and more
+Knitten already benefits from explicit match and boundary rules. The next
+efficiency improvement is to make skill match itself cheaper and more
 mechanically auditable.
 
 This milestone intentionally starts with Claude-Skills-style progressive
@@ -34,14 +34,14 @@ when the number of references makes manual conditional loading too noisy.
 
 In scope:
 
-- A generic `SKILL.md` shape for KC and payload skills.
-- Activation checks, non-trigger rules, stop conditions, and progressive
+- A generic `SKILL.md` shape for KC and domain skills.
+- Match checks, non-trigger rules, stop conditions, and progressive
   reference loading.
 - Guidance for moving detailed procedures into skill-local references or
   scripts.
-- Validation/audit criteria for identifying overlong or under-gated skills.
+- Validation/audit criteria for identifying overlong or under-match-based skills.
 - A first pilot batch that starts with the current KC implementation skill and
-  then audits the remaining KC routing surfaces.
+  then audits the remaining KC match surfaces.
 
 Out of scope:
 
@@ -58,17 +58,17 @@ Out of scope:
 | Input | Required | Meaning |
 |-------|----------|---------|
 | Existing `SKILL.md` files | Yes | Skills to classify and eventually migrate. |
-| User trigger examples | Yes | Positive and negative examples for activation. |
+| User trigger examples | Yes | Positive and negative examples for match. |
 | Skill mutation surface | Yes | Whether the skill can edit files, push, deploy, delete, post, or mutate external state. |
-| Existing references/scripts | No | Detailed workflow material that can be loaded after activation. |
+| Existing references/scripts | No | Detailed workflow material that can be loaded after match. |
 
 ## Outputs
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| Milestone plan | durable | Ordered work for adopting gated progressive loading. |
+| Milestone plan | durable | Ordered work for adopting match-based progressive loading. |
 | Skill shape guideline | durable | A reusable contract for short skill bodies. |
-| Audit checklist | durable | Mechanical checks for activation clarity and reference loading. |
+| Audit checklist | durable | Mechanical checks for match clarity and reference loading. |
 | Migrated pilot skills | durable | A small first batch proving the pattern. |
 
 ## Contract
@@ -78,13 +78,13 @@ Out of scope:
   detail to reject mismatches without reading long references.
 - If the request matches, `SKILL.md` may instruct the model to read a specific
   skill-local reference, such as `references/flow.md`, before execution.
-- Mutation-capable skills must keep their activation check and safety gate in
+- Mutation-capable skills must keep their match check and safety check in
   `SKILL.md`, not only in a deferred reference.
 - Detailed procedures, review lenses, examples, output schemas, and validation
   matrices should move to references or scripts when they are not required for
-  the initial activation decision.
+  the initial match decision.
 - Scripts should own mechanically checkable validation whenever practical.
-- Payload skill references remain payload-owned. Knitten core may define the
+- Domain skill references remain domain-plugin-owned. Knitten core may define the
   generic pattern and audit criteria.
 - RAG is a later-stage optimization. The first adoption round should use
   explicit reference-selection rules inside `SKILL.md`, not implicit retrieval.
@@ -97,10 +97,10 @@ Adopt this order of investment:
 
 | Phase | Focus | Why |
 |-------|-------|-----|
-| 1 | Gated progressive loading | Immediate token savings without new infrastructure. |
+| 1 | Match-Based progressive loading | Immediate token savings without new infrastructure. |
 | 2 | Skill audit checklist | Finds long, ambiguous, or unsafe skills before broad migration. |
 | 3 | Lightweight reference index | Helps when explicit reference selection becomes repetitive. |
-| 4 | RAG or rerank | Only needed when skill/reference volume is too large for simple routing. |
+| 4 | RAG or rerank | Only needed when skill/reference volume is too large for simple match rules. |
 
 The first two phases are the current milestone. Phases 3 and 4 are deferred
 until repeated use shows that manual reference-selection rules are no longer
@@ -111,12 +111,12 @@ enough.
 ```markdown
 ---
 name: <skill-name>
-description: <short activation-oriented description>
+description: <short match-oriented description>
 ---
 
 # <Skill Name>
 
-## Activation
+## Match
 
 Use this skill when:
 
@@ -130,7 +130,7 @@ Do not use this skill when:
 
 - <minimum input needed to continue>
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 1. Decide whether the request matches this skill.
 2. If it does not match, stop and name the better route when obvious.
@@ -139,13 +139,13 @@ Do not use this skill when:
 
 ## Safety
 
-- <mutation, external-state, or approval gate>
+- <mutation, external-state, or approval check>
 ```
 
 ## Validation
 
-- `rg -n "Step 0: Activation Check|Activation|Do not use this skill" skills -S`
-- Skill audit verifies that mutation-capable skills keep safety gates in
+- `rg -n "Step 0: Match Check|Match|Do not use this skill" skills -S`
+- Skill audit verifies that mutation-capable skills keep safety checks in
   `SKILL.md`.
 - Pilot migrated skills are reviewed with the KC skill audit checklist or a
   future KC audit helper.
@@ -153,13 +153,13 @@ Do not use this skill when:
 
 ## Acceptance Criteria
 
-- A reusable gated skill shape is documented.
+- A reusable match-based skill shape is documented.
 - The first pilot batch is identified before broad migration.
 - Pilot skills have shorter `SKILL.md` bodies with explicit trigger and
   non-trigger rules.
-- Pilot skills load detailed references only after activation.
-- No mutation-capable skill loses its Step 0 safety gate.
-- No payload-owned reference is moved into Knitten core.
+- Pilot skills load detailed references only after match.
+- No mutation-capable skill loses its Step 0 safety check.
+- No domain-plugin-owned reference is moved into Knitten core.
 - No RAG or vector-search infrastructure is introduced in the first adoption
   round.
 - A follow-up decision point is documented for whether audit should become
@@ -167,7 +167,7 @@ Do not use this skill when:
 
 ## Open Questions
 
-- Should Knitten add a validator for required activation sections after the
+- Should Knitten add a validator for required match sections after the
   pilot, or keep this as an audit guideline until the pattern stabilizes?
 - What rough size threshold should trigger review of an overlong `SKILL.md`?
 
@@ -181,8 +181,8 @@ Candidate follow-up audits:
 
 | Skill | Surface | Reason |
 |-------|---------|--------|
-| `kc-draft-spec` | spec drafting | Verifies spec guidance, activation policy, and reuse-scan requirements stay findable without bloating routing. |
-| `kc-review` | read-only review | Verifies triad review detail stays deferred behind a prepared-packet gate. |
+| `kc-draft-spec` | spec drafting | Verifies spec guidance, match policy, and reuse-scan requirements stay findable without bloating skill matching. |
+| `kc-review` | read-only review | Verifies triad review detail stays deferred behind a prepared-packet check. |
 | `kc-report-finding` | local finding capture | Verifies evidence requirements and local-write safety stay visible in `SKILL.md`. |
 
 Skills not present in the current KC plugin are excluded from this active
@@ -194,8 +194,8 @@ pilot unless a future spec reintroduces them.
 
 - This milestone draft.
 - Existing KC skills under `skills/`.
-- `docs/specs/skill-activation-check-policy.md`.
-- Representative payload skills from installed payload plugins when a pilot is
+- `docs/specs/skill-match-check-policy.md`.
+- Representative domain skills from installed domain plugins when a pilot is
   chosen.
 
 ### Outputs
@@ -210,14 +210,14 @@ pilot unless a future spec reintroduces them.
 
 Files:
 
-- `docs/specs/skill-gated-progressive-loading.md`
-- `docs/specs/skill-activation-check-policy.md`
+- `docs/specs/skill-match-progressive-loading.md`
+- `docs/specs/skill-match-check-policy.md`
 
 Changes:
 
 - Resolve open questions.
 - Decide whether this pattern is advisory or validator-enforced.
-- Align terminology with the existing activation-check policy.
+- Align terminology with the existing match-check policy.
 - Keep RAG and rerank out of the first adoption round.
 
 Risk:
@@ -250,7 +250,7 @@ Risk:
 
 Proof:
 
-- Pilot list includes activation rationale and expected reference files.
+- Pilot list includes match rationale and expected reference files.
 
 #### 3. Migrate Pilot Skills
 
@@ -262,9 +262,9 @@ Files:
 
 Changes:
 
-- Reduce each pilot `SKILL.md` to activation, required input, Step 0, and safety.
+- Reduce each pilot `SKILL.md` to match, required input, Step 0, and safety.
 - Move detailed flow into a skill-local reference.
-- Keep mutation safety gates in the main skill file.
+- Keep mutation safety checks in the main skill file.
 - Make reference loading explicit, for example:
   - `references/spec-review-flow.md` for spec/design review
   - `references/implementation-flow.md` for implementation
@@ -276,7 +276,7 @@ Risk:
 
 Proof:
 
-- Each pilot skill explicitly says which reference to read after activation.
+- Each pilot skill explicitly says which reference to read after match.
 - The KC skill audit checklist finds no blocker for every pilot.
 
 #### 4. Add Audit Or Validator Support
@@ -298,13 +298,13 @@ Risk:
 
 Proof:
 
-- Validator, if added, catches missing activation gates without scanning
+- Validator, if added, catches missing match checks without scanning
   historical docs or banning words.
 
 ### Review Plan
 
-- Contract: verify `SKILL.md` remains sufficient for fast activation and safe
+- Contract: verify `SKILL.md` remains sufficient for fast match and safe
   rejection.
-- Token efficiency: verify detailed flow is deferred until after activation.
-- Safety: verify mutation gates remain in the main skill file.
-- Boundary: verify payload-owned detail stays in payload plugins.
+- Token efficiency: verify detailed flow is deferred until after match.
+- Safety: verify mutation checks remain in the main skill file.
+- Boundary: verify domain-owned detail stays in domain plugins.

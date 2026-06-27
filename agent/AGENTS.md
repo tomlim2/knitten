@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Codex adapter entry for Knitten Agent Hub core contracts.
+Codex entry for Knitten shared workflow core contracts.
 
 ## Load Order
 
@@ -12,9 +12,8 @@ Codex adapter entry for Knitten Agent Hub core contracts.
 This checkout is a Codex plugin source. It should load without external harness
 deploy folders, private paths, or domain-specific credentials.
 
-Knitten owns generic Agent Hub workflow contracts, path/output destinations,
-validation, and plugin boundaries. Domain-specific behavior belongs in payload
-plugins.
+Knitten owns shared workflow contracts, path/output destinations, validation,
+and plugin boundaries. Domain-specific behavior belongs in domain plugins.
 
 ## Mechanical Findings
 
@@ -25,7 +24,7 @@ validator failures, or plugin boundary failures.
 Do not report ideas, naming/style preferences, guesses, one-off confusion, or
 user-directed scope changes.
 
-All finding records belong to the Knitten core plugin. Payload plugins should
+All finding records belong to the Knitten core plugin. Domain plugins should
 not own or document the finding-report workflow.
 
 ## KC Protocol Skills
@@ -57,6 +56,6 @@ fix loop", or "review until blockers disappear", read and apply:
 
 ## Promoted References
 
-Payload plugins may place `reference-promoted.md` next to a payload skill, and
-the payload plugin owns CRUD for it. Use the payload plugin's promote-reference
+Domain plugins may place `reference-promoted.md` next to a domain skill, and
+the domain plugin owns CRUD for it. Use the domain plugin's promote-reference
 skill for creating, editing, deleting, promoting, retiring, or moving entries.

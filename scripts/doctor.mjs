@@ -18,7 +18,7 @@ function outputKinds() {
   const today = localDateString();
   const operationalFindingPath = path.join(
     ".agent-local",
-    "ah",
+    "workflow",
     "operational-findings",
     today,
     "doctor-output.json",
@@ -26,12 +26,12 @@ function outputKinds() {
   return [
     ["spec", path.join("docs", "specs", "doctor-output.md"), "durable"],
     ["design-plan", path.join("docs", "design-plans", "doctor-output.md"), "durable"],
-    ["temp-json", path.join(".agent-local", "ah", "json", "doctor-output.json"), "local"],
-    ["review-json", path.join(".agent-local", "ah", "reviews", "doctor-output.json"), "local"],
+    ["temp-json", path.join(".agent-local", "workflow", "json", "doctor-output.json"), "local"],
+    ["review-json", path.join(".agent-local", "workflow", "reviews", "doctor-output.json"), "local"],
     ["operational-finding-json", operationalFindingPath, "local"],
-    ["report-md", path.join(".agent-local", "ah", "reports", "doctor-output.md"), "local"],
-    ["report-html", path.join(".agent-local", "ah", "reports", "doctor-output.html"), "local"],
-    ["task-json", path.join(".agent-local", "ah", "tasks", "doctor-output.json"), "local"],
+    ["report-md", path.join(".agent-local", "workflow", "reports", "doctor-output.md"), "local"],
+    ["report-html", path.join(".agent-local", "workflow", "reports", "doctor-output.html"), "local"],
+    ["task-json", path.join(".agent-local", "workflow", "tasks", "doctor-output.json"), "local"],
   ];
 }
 
@@ -124,7 +124,7 @@ function isShotloomMaker(madeBy) {
 
 function outputOwnerAllowed(root, madeBy, entry) {
   if (isShotloomMaker(madeBy)) return isShotloomCompatibilityEntry(entry);
-  if (madeBy === "workflow:agent-hub-session-handoff") return true;
+  if (madeBy === "workflow:shared-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
   if (madeBy.startsWith("kc-") && fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
   return false;
@@ -132,7 +132,7 @@ function outputOwnerAllowed(root, madeBy, entry) {
 
 function localArtifactOwnerAllowed(owner, entry) {
   if (owner === "shotloom") return isShotloomCompatibilityEntry(entry);
-  return owner === "ah";
+  return owner === "workflow";
 }
 
 function validateOutputRegistryContract(root) {
@@ -242,7 +242,8 @@ function main() {
   const sourceOutputScriptPath = path.join(REPO_ROOT, "scripts", "resolve-output.mjs");
   const sourceOutputShimPath = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
   const sourcePathCommandPath = path.join(REPO_ROOT, "bin", "knitten-path");
-  const sourcePayloadValidatorPath = path.join(REPO_ROOT, "scripts", "validate-payload-boundary.mjs");
+  const sourceDomainPluginValidatorPath = path.join(REPO_ROOT, "scripts", "validate-domain-plugin-boundary.mjs");
+  const sourceLegacyBoundaryValidatorPath = path.join(REPO_ROOT, "scripts", "validate-payload-boundary.mjs");
   const marketplacePath = path.join(args.marketplaceRoot, ".agents", "plugins", "marketplace.json");
   const copiedRoot = path.join(args.marketplaceRoot, "plugins", PLUGIN_NAME);
   const copiedManifestPath = path.join(copiedRoot, ".codex-plugin", "plugin.json");
@@ -271,8 +272,9 @@ function main() {
     if (!fs.existsSync(sourceOutputScriptPath)) throw new Error(`missing ${sourceOutputScriptPath}`);
     if (!fs.existsSync(sourceOutputShimPath)) throw new Error(`missing ${sourceOutputShimPath}`);
     if (!fs.existsSync(sourcePathCommandPath)) throw new Error(`missing ${sourcePathCommandPath}`);
-    if (!fs.existsSync(sourcePayloadValidatorPath)) throw new Error(`missing ${sourcePayloadValidatorPath}`);
-    return `${sourceOutputScriptPath}, ${sourceOutputShimPath}, ${sourcePathCommandPath}, ${sourcePayloadValidatorPath}`;
+    if (!fs.existsSync(sourceDomainPluginValidatorPath)) throw new Error(`missing ${sourceDomainPluginValidatorPath}`);
+    if (!fs.existsSync(sourceLegacyBoundaryValidatorPath)) throw new Error(`missing ${sourceLegacyBoundaryValidatorPath}`);
+    return `${sourceOutputScriptPath}, ${sourceOutputShimPath}, ${sourcePathCommandPath}, ${sourceDomainPluginValidatorPath}`;
   });
 
   check(checks, "source-config-registries", () => {
@@ -318,7 +320,7 @@ function main() {
     const expectedPath = path.join(
       REPO_ROOT,
       ".agent-local",
-      "ah",
+      "workflow",
       "operational-findings",
       localDateString(),
       "doctor-output.json",
@@ -379,7 +381,7 @@ function main() {
         KNITTEN_PLUGINS_ROOT: path.join(args.marketplaceRoot, "plugins"),
       },
     });
-    const expectedPath = path.join(copiedRoot, ".agent-local", "ah", "reviews", "doctor-source-env-output.json");
+    const expectedPath = path.join(copiedRoot, ".agent-local", "workflow", "reviews", "doctor-source-env-output.json");
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`source shim plugins-root env pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
     }
@@ -397,12 +399,12 @@ function main() {
       `--workspace-root=${REPO_ROOT}`,
     ]);
     if (output.selectedKind !== "review-json") throw new Error("knitten-path output returned unexpected selectedKind");
-    const template = spawnSync(sourcePathCommandPath, ["template", "agent-hub/spec.md"], {
+    const template = spawnSync(sourcePathCommandPath, ["template", "workflow/spec.md"], {
       cwd: REPO_ROOT,
       encoding: "utf8",
     });
     if (template.status !== 0) throw new Error((template.stderr || template.stdout).trim());
-    if (!template.stdout.trim().endsWith("document-templates/agent-hub/spec.md")) {
+    if (!template.stdout.trim().endsWith("document-templates/workflow/spec.md")) {
       throw new Error(`unexpected template path: ${template.stdout.trim()}`);
     }
     return "output, template";
@@ -463,7 +465,7 @@ function main() {
     ], {
       cwd: REPO_ROOT,
     });
-    const expectedPath = path.join(copiedRoot, ".agent-local", "ah", "reviews", "doctor-output.json");
+    const expectedPath = path.join(copiedRoot, ".agent-local", "workflow", "reviews", "doctor-output.json");
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`copied shim pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
     }
@@ -502,7 +504,7 @@ function main() {
         KNITTEN_PLUGINS_ROOT: path.join(args.marketplaceRoot, "plugins"),
       },
     });
-    const expectedPath = path.join(copiedRoot, ".agent-local", "ah", "reviews", "doctor-env-output.json");
+    const expectedPath = path.join(copiedRoot, ".agent-local", "workflow", "reviews", "doctor-env-output.json");
     if (!sameRealPath(output.pluginRoot, copiedRoot)) {
       throw new Error(`plugins-root env pluginRoot expected ${copiedRoot}, got ${output.pluginRoot}`);
     }

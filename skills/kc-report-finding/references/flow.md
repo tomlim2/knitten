@@ -29,7 +29,7 @@ Record:
 
 Do not invent a storage path. Finding records always accumulate in the Knitten
 core hub queue, even when the observed mechanical error is in another repository
-or payload plugin.
+or domain plugin.
 
 Resolve the record path with:
 
@@ -40,12 +40,12 @@ Resolve the record path with:
 This writes under:
 
 ```text
-<knitten-plugin-root>/.agent-local/ah/operational-findings/<YYYY-MM-DD>/
+<knitten-plugin-root>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/
 ```
 
 Include the affected repository, plugin, skill, or path in the JSON body as
 metadata. Do not redirect the storage owner.
 
 If the record implies a temporary skill-local gate or check, send that follow-up
-to the payload plugin that owns the skill. Do not make a payload plugin own the
+to the domain plugin that owns the skill. Do not make a domain plugin own the
 finding report itself.

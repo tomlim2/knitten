@@ -9,14 +9,14 @@ Canonical home for document body templates used by Knitten.
 ## Rule
 
 When a command, skill, standard, or workflow needs a reusable document body, put
-the body in this folder. The caller stores routing, input parsing, validation,
+the body in this folder. The caller stores selection, input parsing, validation,
 and execution steps only.
 
 ## Inventory
 
 | Folder | Owns |
 |--------|------|
-| `agent-hub/` | specs, milestones, design plans, generated technical specs, JSON handoff packets |
+| `workflow/` | specs, milestones, design plans, generated technical specs, JSON handoff packets |
 | `consulting/` | consulting history records |
 | `github/` | GitHub pull request body templates |
 | `linear/` | Linear issue body templates |
@@ -26,13 +26,13 @@ and execution steps only.
 
 ## Consumption Phase
 
-Templates split by the phase that consumes them. This is a review and routing
+Templates split by the phase that consumes them. This is a review and selection
 classification only; current folder paths remain stable until a separate
 migration spec moves files.
 
 | Phase | Purpose | Families |
 |-------|---------|----------|
-| internal-consumption | Agent, workflow, tracker, PR, review, design plan, or spec output used to run work. Optimize for scriptability, status, and consumer fit. | `agent-hub/`, `github/`, `linear/`, `review/` |
+| internal-consumption | Agent, workflow, tracker, PR, review, design plan, or spec output used to run work. Optimize for scriptability, status, and consumer fit. | `workflow/`, `github/`, `linear/`, `review/` |
 | vault-assetization | Obsidian-facing notes meant for later retrieval, learning, or durable personal/project records. Optimize for tags, links, frontmatter, and search. | `obsidian/`, `consulting/`, `project/` |
 
 If a workflow starts as internal-consumption and later becomes knowledge worth
@@ -57,8 +57,8 @@ of making the operational template carry both purposes.
 | `obsidian/*.md` | Obsidian vault note | has `title`, `tags`, `date`, `source`; exactly one `type/` tag; exactly one `project/` tag; first body heading is one H1 |
 | `consulting/*.md` | Obsidian vault note | same as `obsidian/*.md` |
 | `project/*.md` | Obsidian vault note | same as `obsidian/*.md` |
-| `agent-hub/*.md` | agent-hub docs skill | has `status:` frontmatter; contains fenced generated-body examples |
-| `agent-hub/*.json` | local artifact resolver or JSON handoff writer | valid JSON; contains `schemaVersion`, `kind`, `status`, and `summary` |
+| `workflow/*.md` | workflow docs skill | has `status:` frontmatter; contains fenced generated-body examples |
+| `workflow/*.json` | local artifact resolver or JSON handoff writer | valid JSON; contains `schemaVersion`, `kind`, `status`, and `summary` |
 | `review/*.md` | review-output formatter | has `status:` frontmatter; contains review output sections |
 | `README.md` | LLM template index | has `status:` frontmatter; lists folders and consumer contract |
 

@@ -3,12 +3,12 @@
   "entries": [
     {
       "id": "local-session-handoff",
-      "description": "Agent-hub JSON-only cross-session handoff report",
-      "madeBy": "workflow:agent-hub-session-handoff",
+      "description": "Shared workflow JSON-only cross-session handoff report",
+      "madeBy": "workflow:shared-session-handoff",
       "writeTarget": {
         "kind": "local-artifact",
         "localArtifactTokens": [
-          "ah",
+          "workflow",
           "reports",
           "{date}",
           "handoff",
@@ -25,7 +25,7 @@
           "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
         }
       ],
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "format": "json"
     },
     {
@@ -48,7 +48,7 @@
           "normalize": "lowercase"
         }
       ],
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-start-task-brief"
@@ -80,7 +80,7 @@
           "normalize": "lowercase"
         }
       ],
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-spec"
@@ -112,7 +112,7 @@
           "normalize": "lowercase"
         }
       ],
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-design-plan"
@@ -144,7 +144,7 @@
           "normalize": "lowercase"
         }
       ],
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-questions"
@@ -176,7 +176,7 @@
           "normalize": "lowercase"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-planning-manifest.json",
+      "template": "document-templates/workflow/shotloom-planning-manifest.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-planning-manifest"
@@ -274,7 +274,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-before-pr-readiness.json",
+      "template": "document-templates/workflow/shotloom-before-pr-readiness.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-readiness"
@@ -311,7 +311,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-before-pr-findings.json",
+      "template": "document-templates/workflow/shotloom-before-pr-findings.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-code-blockers"
@@ -348,7 +348,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-before-pr-findings.json",
+      "template": "document-templates/workflow/shotloom-before-pr-findings.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-before-pr-docs-blockers"
@@ -406,7 +406,7 @@
           "pattern": "^[0-9]+$"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-pr-reply-plan.json",
+      "template": "document-templates/workflow/shotloom-pr-reply-plan.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-pr-reply-plan"
@@ -437,7 +437,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "document-templates/agent-hub/release-notes.md",
+      "template": "document-templates/workflow/release-notes.md",
       "format": "markdown",
       "compatibility": {
         "status": "compatibility-era",
@@ -465,7 +465,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-deploy-manifest.json",
+      "template": "document-templates/workflow/shotloom-deploy-manifest.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-deploy-manifest"
@@ -496,7 +496,7 @@
           "pattern": "^[a-zA-Z0-9._-]+$"
         }
       ],
-      "template": "document-templates/agent-hub/shotloom-deploy-rollback.json",
+      "template": "document-templates/workflow/shotloom-deploy-rollback.json",
       "format": "json",
       "formatOptions": {
         "schemaKind": "shotloom-deploy-rollback"

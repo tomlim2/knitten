@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CASES_PATH = "evals/context-load-smoke/cases.json";
-const SURFACES_PATH = "evals/context-load-smoke/activation-surfaces.json";
-const REPORT_PATH = ".agent-local/ah/evals/context-load-smoke/latest.json";
+const SURFACES_PATH = "evals/context-load-smoke/match-surfaces.json";
+const REPORT_PATH = ".agent-local/workflow/evals/context-load-smoke/latest.json";
 const PILOT_SKILLS = ["kc-implement", "kc-draft-spec", "kc-review", "kc-report-finding"];
 const GROUP_COUNTS = { implementation: 5, spec: 4, review: 4, finding: 3, reject: 4 };
 const THRESHOLDS = {
@@ -94,7 +94,7 @@ function validateCases(cases) {
   const counts = {};
   const ids = new Set();
   for (const item of cases) {
-    for (const key of ["id", "group", "request", "expectedSkill", "expectedReferences", "safetyGateRequired", "notes"]) {
+    for (const key of ["id", "group", "request", "expectedSkill", "expectedReferences", "safetyCheckRequired", "notes"]) {
       if (!Object.hasOwn(item, key)) problems.push(`${item.id || "<missing id>"} missing ${key}`);
     }
     if (ids.has(item.id)) problems.push(`duplicate case id: ${item.id}`);
@@ -104,7 +104,7 @@ function validateCases(cases) {
     if (item.group === "reject" && item.expectedSkill !== "reject") problems.push(`${item.id} reject group must expect reject`);
     if (item.expectedSkill !== "reject" && !PILOT_SKILLS.includes(item.expectedSkill)) problems.push(`${item.id} invalid expectedSkill ${item.expectedSkill}`);
     if (!Array.isArray(item.expectedReferences)) problems.push(`${item.id} expectedReferences must be an array`);
-    if (typeof item.safetyGateRequired !== "boolean") problems.push(`${item.id} safetyGateRequired must be boolean`);
+    if (typeof item.safetyCheckRequired !== "boolean") problems.push(`${item.id} safetyCheckRequired must be boolean`);
   }
   for (const [group, expected] of Object.entries(GROUP_COUNTS)) {
     if ((counts[group] || 0) !== expected) problems.push(`group ${group} count ${(counts[group] || 0)} != ${expected}`);
@@ -117,7 +117,7 @@ function validateSurfaces(surfaces) {
   const problems = [];
   const bySkill = new Map();
   for (const item of surfaces) {
-    for (const key of ["skill", "activationText", "references", "safetyTerms"]) {
+    for (const key of ["skill", "matchText", "references", "safetyTerms"]) {
       if (!Object.hasOwn(item, key)) problems.push(`${item.skill || "<missing skill>"} missing ${key}`);
     }
     if (bySkill.has(item.skill)) problems.push(`duplicate surface skill: ${item.skill}`);
@@ -132,7 +132,7 @@ function validateSurfaces(surfaces) {
     }
   }
   for (const skill of PILOT_SKILLS) {
-    if (!bySkill.has(skill)) problems.push(`missing activation surface for ${skill}`);
+    if (!bySkill.has(skill)) problems.push(`missing match surface for ${skill}`);
   }
   return { problems, bySkill };
 }
@@ -146,7 +146,7 @@ function runEval({ writeReport }) {
 
   const fullSkillTextBySkill = new Map(PILOT_SKILLS.map((skill) => [skill, readText(`skills/${skill}/SKILL.md`)]));
   const baselineTokens = [...fullSkillTextBySkill.values()].reduce((sum, text) => sum + estimateTokens(text), 0);
-  const activationTokens = [...bySkill.values()].reduce((sum, surface) => sum + estimateTokens(surface.activationText), 0);
+  const matchTokens = [...bySkill.values()].reduce((sum, surface) => sum + estimateTokens(surface.matchText), 0);
   const caseResults = [];
 
   for (const item of cases) {
@@ -155,13 +155,13 @@ function runEval({ writeReport }) {
     const loadedReferences = predictedSkill === "reject" ? [] : predictedSurface?.references || [];
     const referencePrecise = sameSet(loadedReferences, item.expectedReferences);
     const safetyMiss = Boolean(
-      item.safetyGateRequired
+      item.safetyCheckRequired
         && predictedSkill !== "reject"
-        && (!predictedSurface || !includesAny(predictedSurface.activationText, predictedSurface.safetyTerms || [])),
+        && (!predictedSurface || !includesAny(predictedSurface.matchText, predictedSurface.safetyTerms || [])),
     );
     const referenceTokens = loadedReferences.reduce((sum, reference) => sum + estimateTokens(readText(reference)), 0);
-    const gatedTokens = activationTokens + referenceTokens;
-    const savingsRate = baselineTokens === 0 ? 0 : (baselineTokens - gatedTokens) / baselineTokens;
+    const loadedTokens = matchTokens + referenceTokens;
+    const savingsRate = baselineTokens === 0 ? 0 : (baselineTokens - loadedTokens) / baselineTokens;
     caseResults.push({
       id: item.id,
       group: item.group,
@@ -172,10 +172,10 @@ function runEval({ writeReport }) {
       matchCorrect: predictedSkill === item.expectedSkill,
       rejectCorrect: item.group !== "reject" || predictedSkill === "reject",
       referencePrecise,
-      safetyGateRequired: item.safetyGateRequired,
+      safetyCheckRequired: item.safetyCheckRequired,
       safetyMiss,
       baselineTokens,
-      gatedTokens,
+      loadedTokens,
       savingsRate,
     });
   }
@@ -206,7 +206,7 @@ function runEval({ writeReport }) {
       safetyMissCount,
       averageSavingsRate,
       baselineTokens,
-      activationTokens,
+      matchTokens,
     },
     blockers,
     cases: caseResults,

@@ -1,7 +1,7 @@
 ---
 name: kc-draft-spec
 description: Draft a compact implementation spec.
-activation-check: normal
+match-check: normal
 ---
 
 # KC Draft Spec
@@ -11,7 +11,7 @@ Use for: drafting compact specs, implementation contracts, or pre-work plans.
 Use when the user asks for a spec, plan, design plan, implementation contract,
 or pre-work document before editing.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 - Continue only when the request asks for a spec, plan, design plan,
   implementation contract, or pre-work document.
@@ -44,7 +44,7 @@ locking the spec.
 
 ## Spec Shape
 
-Use `document-templates/agent-hub/spec.md` when available.
+Use `document-templates/workflow/spec.md` when available.
 
 Include:
 
@@ -63,22 +63,23 @@ unless it affects the contract.
 ## Skill Specs
 
 When the requested spec creates or updates a skill, include an
-`activation-check` decision and Step 0 decision in the spec.
+`match-check` decision and Step 0 decision in the spec.
 
 Ask or infer:
 
-- `activation-check: loose | normal | strict`
-- whether the skill needs an explicit `Step 0: Activation Check`
+- `match-check: loose | normal | strict`
+- whether the skill needs an explicit `Step 0: Match Check`
 - which user approval or stop condition applies before mutation
 
-Use `docs/specs/skill-activation-check-policy.md` as the source of truth.
+Use `docs/specs/skill-match-check-policy.md` as the source of truth.
 Use `docs/guidelines/skill-authoring.md` as the source of truth for keeping the
-active `SKILL.md` short, activation-gated, and reference-backed.
-Prefer direct skills, adapter plugins, and internal deferred flows. Do not add
-new broad pre-selection workflow surfaces; if a request asks for pre-selection
-behavior, draft the direct-skill, adapter, or internal-flow alternative first.
+active `SKILL.md` short, match-first, and reference-backed.
+Prefer direct skills, domain plugins, and internal deferred flows. Do not add
+new broad selection workflow surfaces; if a request asks for a selection layer
+behavior, draft the direct-skill, domain-plugin, or internal-flow alternative
+first.
 
-Question only when the activation check is not obvious. Infer `strict` without
+Question only when the match check is not obvious. Infer `strict` without
 asking when the skill can push, merge, deploy, delete, send external messages,
 mutate GitHub/Linear, change credentials/config, or affect production state.
 

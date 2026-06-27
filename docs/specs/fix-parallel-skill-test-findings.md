@@ -123,8 +123,8 @@ Files:
 
 Changes:
 
-- Add `activation-check` frontmatter.
-- Add concise `Step 0: Activation Check` sections.
+- Add `match-check` frontmatter.
+- Add concise `Step 0: Match Check` sections.
 
 Risk:
 

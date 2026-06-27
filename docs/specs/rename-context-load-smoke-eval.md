@@ -20,7 +20,7 @@ active runner and fixture paths still use routing names:
 - `.agent-local/ah/evals/context-load-smoke/latest.json`
 
 That keeps active tooling framed around routing even though the useful evidence
-is about activation surfaces, reject behavior, reference precision, safety
+is about match surfaces, reject behavior, reference precision, safety
 gates, and estimated context savings.
 
 ## Boundary
@@ -47,7 +47,7 @@ Out of scope:
 |-------|----------|---------|
 | `scripts/run-context-load-smoke-eval.mjs` | Yes | Current deterministic eval runner. |
 | `evals/context-load-smoke/cases.json` | Yes | Current request-case fixture. |
-| `evals/context-load-smoke/activation-surfaces.json` | Yes | Current activation surface fixture. |
+| `evals/context-load-smoke/activation-surfaces.json` | Yes | Current match surface fixture. |
 | `docs/specs/context-load-smoke-eval.md` | Yes | Current eval plan. |
 | `docs/specs/context-load-smoke-eval-result.md` | Yes | Current reviewed result summary. |
 | `scripts/validate-repository-shell.mjs` | Yes | Allows committed eval fixture paths. |

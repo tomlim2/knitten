@@ -14,8 +14,8 @@ skills.
 description: <one sentence trigger-facing summary>
 argument-hint: "<mode-or-args>"
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(node:*)
-domains: agent-hub
-repo-keys: agent-hub
+domains: workflow
+repo-keys: workflow
 languages: markdown,json
 task-types: authoring,review,implementation
 context-profile: <context-profile-id>

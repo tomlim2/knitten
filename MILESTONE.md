@@ -1,27 +1,27 @@
 # Knitten Milestone
 
-## Core + Adapter Discipline
+## Core + Domain Plugin Discipline
 
 Status: Active.
 
 Knitten's lead milestone is to keep the personal Codex core small while domain
-adapters own project-specific workflows and load detailed flow context only
-when used.
+plugins own project-specific workflows and load detailed flow context only when
+used.
 
 ## Position
 
-Knitten is a small personal Agent Hub core with pluggable domain adapters.
+Knitten is a small personal Codex workflow core with pluggable domain plugins.
 
 The system should help a large skill library stay usable without turning the
 core into a large prompt. The core keeps shared workflow contracts, output
-paths, validation, and plugin boundaries. Adapter plugins own domain behavior
-and keep long flow details behind activation gates or internal references.
+paths, validation, and ownership rules. Domain plugins own domain behavior and
+keep long flow details behind match checks or internal references.
 
 ## Current Focus
 
 1. **Context Load Smoke Eval**
    - Create a durable 20-case request set for current KC skills.
-   - Measure baseline versus gated context cost with a clearly labeled
+   - Measure baseline versus matched-context cost with a clearly labeled
      worst-case model.
    - Record match accuracy, reject accuracy, reference precision, safety misses,
      and the follow-up decision before expanding the pattern.
@@ -29,14 +29,14 @@ and keep long flow details behind activation gates or internal references.
 2. **Pilot Skill Audit And Migration**
    - Audit `kc-implement` first because it is the active implementation pilot.
    - Then audit `kc-draft-spec`, `kc-review`, and `kc-report-finding` as the
-     remaining core workflow surfaces with deferred references or safety gates.
-   - Keep mutation and external-state safety gates in `SKILL.md`; move only
+     remaining core workflow surfaces with deferred references or safety checks.
+   - Keep mutation and external-state safety checks in `SKILL.md`; move only
      detailed procedures into references.
 
 3. **Skill Audit Guidance**
    - Define a small checklist for overlong skill bodies, ambiguous triggers,
      missing non-trigger rules, missing required input, and missing Step 0
-     safety gates.
+     safety checks.
    - Start as guidance. Promote only mechanically checkable parts to `doctor`
      after the pilot is stable.
 
@@ -46,7 +46,7 @@ and keep long flow details behind activation gates or internal references.
    - Keep `doctor` and repository shell validation checking source and installed
      copies for reachable templates, allowed makers, helper reachability, and
      stale plugin copies.
-   - Document any future move from core compatibility outputs to payload-owned
+   - Document any future move from core compatibility outputs to domain-owned
      registries before changing active contracts.
 
 5. **Milestone Hygiene**
@@ -56,26 +56,26 @@ and keep long flow details behind activation gates or internal references.
 
 ## Next Work
 
-Work these in order. Do not start broad adapter migration until the smoke eval
+Work these in order. Do not start broad domain-plugin migration until the smoke eval
 and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P0 | Audit `kc-implement` as the pilot skill | Blocker-only audit notes and any required `SKILL.md` or reference cleanup | No blocker remains for activation clarity, safety visibility, or reference loading. |
-| P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 gates | The checklist can review one skill without inventing criteria. |
-| P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free activation, deferred-loading, and safety findings, or a concrete fix task. |
-| P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from payload leakage. |
+| P0 | Audit `kc-implement` as the pilot skill | Blocker-only audit notes and any required `SKILL.md` or reference cleanup | No blocker remains for match clarity, safety visibility, or reference loading. |
+| P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 checks | The checklist can review one skill without inventing criteria. |
+| P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free matching, deferred-loading, and safety findings, or a concrete fix task. |
+| P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
 
 ## Deferred
 
 RAG, vector search, and retrieve-and-rerank are not first-round work. They may
 be useful later when explicit reference-selection rules become too noisy, but
-the immediate milestone is to prove that simple gated loading works first.
+the immediate milestone is to prove that simple match-based loading works first.
 
-Broad payload migration is also deferred. Payload skills can adopt the pattern
+Broad domain-plugin migration is also deferred. Domain skills can adopt the pattern
 after the KC pilot and smoke eval show that match/reject accuracy and safety
-gates survive the smaller context surface.
+checks survive the smaller context surface.
 
 ## Done
 
@@ -98,16 +98,16 @@ Candidate follow-up audits:
 
 | Skill | Surface | Purpose |
 |-------|---------|---------|
-| `kc-draft-spec` | Spec drafting | Verify reusable concepts and activation policy stay visible without bloating the core. |
-| `kc-review` | Read-only review | Verify triad review details stay deferred behind a prepared-packet gate. |
+| `kc-draft-spec` | Spec drafting | Verify reusable concepts and match policy stay visible without bloating the core. |
+| `kc-review` | Read-only review | Verify triad review details stay deferred until a prepared packet exists. |
 | `kc-report-finding` | Finding capture | Verify mutation to local records keeps Step 0 evidence requirements visible. |
 
 ## Success Criteria
 
 - A top-level README clearly presents Knitten as a small personal core with
-  pluggable domain adapters.
-- Pilot skills use short activation gates and conditional reference loading.
-- Mutation-capable skills keep safety gates in the main skill file.
+  pluggable domain plugins.
+- Pilot skills use short match checks and conditional reference loading.
+- Mutation-capable skills keep safety checks in the main skill file.
 - `doctor` and shell validation catch stale, unreachable, or undocumented
   registry entries in source and installed copies.
 - Audit guidance exists before broad skill migration.
@@ -118,6 +118,6 @@ Candidate follow-up audits:
 
 ## Source Specs
 
-- [`docs/specs/skill-gated-progressive-loading.md`](docs/specs/skill-gated-progressive-loading.md)
+- [`docs/specs/skill-match-progressive-loading.md`](docs/specs/skill-match-progressive-loading.md)
 - [`docs/specs/context-load-smoke-eval.md`](docs/specs/context-load-smoke-eval.md)
 - [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)

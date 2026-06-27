@@ -1,7 +1,7 @@
 ---
 name: kc-status
 description: Check Knitten Core installation health.
-activation-check: normal
+match-check: normal
 ---
 
 # KC Status
@@ -11,7 +11,7 @@ Use for: checking Knitten Core source and installed plugin health.
 Use this skill when the user asks whether Knitten is installed, registered, or
 healthy as a Codex plugin.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 - Continue only when the request asks to check Knitten Core installation,
   registration, copied plugin state, or repository health.

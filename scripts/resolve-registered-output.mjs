@@ -21,8 +21,8 @@ Options:
 Examples:
   resolve-output.mjs --list
   resolve-output.mjs local-session-handoff date=20260531 slug=main-status
-  resolve-output.mjs agent-hub-spec-proposed slug=output-contract-registry
-  resolve-output.mjs agent-hub-design-plan-section slug=output-contract-registry`;
+  resolve-output.mjs local-session-handoff date=20260627 slug=output-contract-registry
+  resolve-output.mjs shotloom-deploy-release-notes key=example`;
 }
 
 function fail(error, detail, code = 2) {

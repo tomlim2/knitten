@@ -2,22 +2,22 @@
 
 ## Goal
 
-Keep Knitten and adapter skills cheap to discover, clear to activate, and safe
+Keep Knitten and domain skills cheap to discover, clear to activate, and safe
 to run. A skill's main `SKILL.md` should decide whether the skill applies
 before it loads detailed workflow context.
 
 ## Main Rule
 
-Write the active `SKILL.md` as an activation shell, not as the whole operating
+Write the active `SKILL.md` as a short match file, not as the whole operating
 manual.
 
 The main file should contain only:
 
 - frontmatter with a short `description`
 - a one-line `Use for:` statement
-- Step 0 activation check
-- required safety or approval gates
-- the pointer to the detailed reference to read after activation
+- Step 0 match check
+- required safety or approval checks
+- the pointer to the detailed reference to read after a match
 
 Move long workflow details, examples, scripts, schemas, and checklists into
 skill-local references such as `flow.md`, `reference.md`, or files under
@@ -29,24 +29,24 @@ skill-local references such as `flow.md`, `reference.md`, or files under
 ---
 name: example-skill
 description: Do one specific thing.
-activation-check: normal
+match-check: normal
 ---
 
 # Example Skill
 
 Use for: one specific request shape.
 
-## Step 0: Activation Check
+## Step 0: Match Check
 
 Confirm the request matches this skill, required inputs are present, and the
 target workspace is correct.
 
-If the request does not match, stop and name the clearer skill or adapter only
-when obvious.
+If the request does not match, stop and name the clearer skill or domain plugin
+only when obvious.
 
 Do not read detailed references until this check passes.
 
-## After Activation
+## After Match
 
 Read `flow.md`, then execute the requested workflow.
 ```
@@ -69,10 +69,10 @@ Review CINEV/shotloom-asset-library pull requests as a human reviewer with
 producer, engineer, and domain-specific validation rules...
 ```
 
-## Activation Rule
+## Match Rule
 
-Use `docs/specs/skill-activation-check-policy.md` as the source of truth for
-`activation-check`.
+Use `docs/specs/skill-match-check-policy.md` as the source of truth for
+`match-check`.
 
 - `loose`: read-only review, summarize, explain, draft, brainstorm
 - `normal`: local file edits, local scripts, generated artifacts
@@ -81,22 +81,22 @@ Use `docs/specs/skill-activation-check-policy.md` as the source of truth for
 
 When in doubt, use `normal`. If external state can change, use `strict`.
 
-## Adapter And Internal Flow Rule
+## Domain Plugin And Internal Flow Rule
 
-Do not add broad pre-selection layers. Prefer direct skill activation plus
-post-activation references. For a domain with many workflows, prefer one
-adapter skill with internal flow files only when that is cheaper and clearer
-than exposing many leaf skills. Existing pre-selection surfaces are legacy
+Do not add broad selection layers. Prefer direct skill matching plus
+post-match references. For a domain with many workflows, prefer one domain
+plugin skill with internal flow files only when that is cheaper and clearer
+than exposing many leaf skills. Existing broad selection surfaces are legacy
 surfaces to maintain only until their dependencies can be removed.
-Legacy adapter indexes may know their exposed workflows through a mechanical
-classification script. Exposed skills should not need parent-adapter knowledge.
+Legacy domain indexes may know their exposed workflows through a mechanical
+classification script. Exposed skills should not need parent-plugin knowledge.
 
-An adapter skill's main job is to:
+A domain plugin entry skill's main job is to:
 
-- run the shared domain activation gate
-- choose the smallest internal flow or direct child workflow after activation
+- run the shared domain match check
+- choose the smallest internal flow or direct child workflow after matching
 - keep long maps, checklists, and procedures in references
-- apply the highest required activation check for any delegated action
+- apply the highest required match check for any delegated action
 
 A directly exposed skill's main job is to:
 
@@ -104,11 +104,11 @@ A directly exposed skill's main job is to:
 - stop when it does not match
 - load detailed references only after Step 0 passes
 
-Do not put "prefer the adapter" boilerplate into exposed skills. If a workflow
-should be hidden from broad discovery, make it an internal flow/reference under
-the owning adapter instead of exposing it as a skill.
+Do not put "prefer the parent plugin" boilerplate into exposed skills. If a
+workflow should be hidden from broad discovery, make it an internal
+flow/reference under the owning domain plugin instead of exposing it as a skill.
 
-New work should first try direct skills, adapter plugins, or internal deferred
+New work should first try direct skills, domain plugins, or internal deferred
 flows.
 
 Do not maintain classification policy in Markdown tables. Markdown may point to
@@ -136,9 +136,9 @@ Before adding or updating a skill, check:
 
 - Is the `description` one short sentence?
 - Does `Use for:` say the request shape plainly?
-- Is there a Step 0 activation check?
+- Is there a Step 0 match check?
 - Does Step 0 stop before loading detailed references?
-- Are mutation and approval gates visible in `SKILL.md`?
+- Are mutation and approval checks visible in `SKILL.md`?
 - Are long details moved to skill-local references?
-- Does an exposed skill avoid depending on parent-adapter knowledge?
-- Does the activation level match the mutation surface?
+- Does an exposed skill avoid depending on parent-plugin knowledge?
+- Does the match level match the mutation surface?

@@ -21,10 +21,11 @@ const requiredFiles = [
   "docs/guidelines/plugin-boundary-pr-check.md",
   "docs/specs/doctor-status-skill.md",
   "docs/specs/plugin-native-core-reboot.md",
-  "document-templates/agent-hub/spec.md",
+  "document-templates/workflow/spec.md",
   "scripts/doctor.mjs",
   "scripts/materialize-local-plugin.mjs",
   "scripts/resolve-output.mjs",
+  "scripts/validate-domain-plugin-boundary.mjs",
   "scripts/validate-repository-shell.mjs",
   "skills/kc-status/SKILL.md",
 ];
@@ -76,7 +77,7 @@ function isShotloomMaker(madeBy) {
 
 function outputOwnerAllowed(madeBy, entry) {
   if (isShotloomMaker(madeBy)) return isShotloomCompatibilityEntry(entry);
-  if (madeBy === "workflow:agent-hub-session-handoff") return true;
+  if (madeBy === "workflow:shared-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
   if (madeBy.startsWith("kc-") && fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
   return false;
@@ -84,7 +85,7 @@ function outputOwnerAllowed(madeBy, entry) {
 
 function localArtifactOwnerAllowed(owner, entry) {
   if (owner === "shotloom") return isShotloomCompatibilityEntry(entry);
-  return owner === "ah";
+  return owner === "workflow";
 }
 
 function validateOutputRegistryContract() {

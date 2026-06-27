@@ -17,7 +17,7 @@
       "path": ".agent-local/shotloom/planning/{stl}/brief.json",
       "cleanupPath": ".agent-local/shotloom/planning/{stl}",
       "description": "Shotloom planning brief",
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "schemaKind": "shotloom-start-task-brief",
       "compatibility": {
         "status": "compatibility-era",
@@ -527,7 +527,7 @@
       }
     },
     {
-      "owner": "ah",
+      "owner": "workflow",
       "artifactType": "reports",
       "item": "handoff",
       "kind": "file",
@@ -544,12 +544,12 @@
       ],
       "path": ".agent-local/reports/{date}-{slug}.json",
       "cleanupPath": ".agent-local/reports",
-      "description": "Agent-hub JSON-only cross-session handoff report",
-      "template": "document-templates/agent-hub/json-handoff-packet.json",
+      "description": "Shared workflow JSON-only cross-session handoff report",
+      "template": "document-templates/workflow/json-handoff-packet.json",
       "schemaKind": "session-handoff"
     },
     {
-      "owner": "ah",
+      "owner": "workflow",
       "artifactType": "operational-findings",
       "item": "inbox",
       "kind": "file",
@@ -559,13 +559,13 @@
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         }
       ],
-      "path": ".agent-local/ah/operational-findings/{date}/inbox.json",
-      "cleanupPath": ".agent-local/ah/operational-findings/{date}",
-      "description": "Agent-hub operational findings inbox",
+      "path": ".agent-local/workflow/operational-findings/{date}/inbox.json",
+      "cleanupPath": ".agent-local/workflow/operational-findings/{date}",
+      "description": "Shared workflow operational findings inbox",
       "schemaKind": "operational-findings-inbox"
     },
     {
-      "owner": "ah",
+      "owner": "workflow",
       "artifactType": "operational-findings",
       "item": "report",
       "kind": "file",
@@ -580,9 +580,9 @@
           "position": "after-item"
         }
       ],
-      "path": ".agent-local/ah/operational-findings/{date}/reports/{slug}.json",
-      "cleanupPath": ".agent-local/ah/operational-findings/{date}",
-      "description": "Agent-hub operational finding report",
+      "path": ".agent-local/workflow/operational-findings/{date}/reports/{slug}.json",
+      "cleanupPath": ".agent-local/workflow/operational-findings/{date}",
+      "description": "Shared workflow operational finding report",
       "schemaKind": "operational-finding-report"
     }
   ]
