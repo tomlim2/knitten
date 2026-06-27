@@ -1,16 +1,30 @@
-# Knitten Core
+# Knitten
 
-Knitten is a lightweight Codex workflow core for small shared skills and
-domain plugins.
+Knitten is a lightweight Codex workflow core for compact, checked agent
+workflows.
 
-It solves a practical Codex problem: as a skill library grows, every exposed
-skill name, description, and eagerly loaded instruction competes for prompt
-budget. Knitten keeps shared workflow contracts, output paths, validation, and
-ownership rules in one small core. Domain plugins keep project-specific context
-behind match checks and deferred references.
+It keeps the common parts of Codex work small: deciding whether a workflow
+matches, drafting a spec, implementing accepted work, reviewing prepared
+artifacts, looping on blockers, resolving output paths, and checking plugin
+health. The goal is not to use the fewest possible tokens at all costs. The goal
+is to avoid loading instructions and doing work that the current request does
+not need.
 
-Token efficiency here means avoiding unnecessary context and work. It does not
-mean cutting validation, safety checks, or task-required implementation.
+## Why It Exists
+
+Codex skills are useful, but every exposed skill name, description, and eagerly
+loaded instruction competes for prompt budget. Knitten keeps its active workflow
+surface small and pushes detailed procedure into references that load only after
+a match check passes.
+
+Token efficiency here means:
+
+- short active skill files,
+- explicit Step 0 match checks,
+- deferred references for detailed procedure,
+- stable output paths for generated artifacts,
+- local validation for source, installed copies, and cache drift,
+- no reduction in safety checks, review quality, or required implementation.
 
 ## Current Proof
 
@@ -19,9 +33,21 @@ commands before changing public claims.
 
 | Check | Current result | Re-run |
 |-------|----------------|--------|
-| Core discovery surface | 7 skills, about 111 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Core skill bodies | about 3282 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Discovery surface | 7 skills, about 111 list tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Skill bodies | about 3282 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
 | Context-load smoke eval | 20/20 match accuracy, 63.0% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
+
+## Included Skills
+
+| Skill | Use it for |
+|-------|------------|
+| `draft-spec` | Draft compact implementation specs and pre-work plans. |
+| `implement` | Implement accepted specs or accepted review findings. |
+| `review` | Run read-only single/triad reviews from a prepared packet. |
+| `review-fix-loop` | Repeat review, fix, and validation until blockers clear. |
+| `report-finding` | Record checked mechanical workflow failures. |
+| `log-usage` | Log local Codex usage and cost notes. |
+| `status` | Check Knitten source, install, and runtime health. |
 
 ## Quickstart
 
@@ -54,10 +80,10 @@ Expected success signal: `Plugin validation passed`.
 Use Knitten when you want:
 
 - a small Codex core for shared workflow skills,
-- repeatable output paths for specs, reviews, reports, and local task records,
-- a clear split between shared workflow behavior and domain-specific skills,
+- compact specs, reviews, reports, and local task records,
+- repeatable output paths for generated workflow artifacts,
 - short skill files that load detailed references only after a match,
-- local validation for plugin health and core/domain-plugin boundaries.
+- local checks for plugin health, output contracts, and stale install state.
 
 ## When Not To Use
 
@@ -65,101 +91,72 @@ Do not use Knitten as:
 
 - a replacement for Codex skill discovery semantics,
 - a generic guarantee that every task will use fewer tokens,
-- a place to store project-specific workflows that belong in a domain plugin,
-- a reason to skip validation, safety checks, or required implementation work.
+- a place to hide task-required implementation or review work,
+- a reason to skip validation, safety checks, or evidence.
 
-## Core And Domain Plugins
+## Design
 
-Knitten's core claim is deliberately small: keep the personal core stable, plug
-in domain plugins only when needed, and load detailed workflow context after a
-skill or domain plugin has clearly matched.
+Knitten's active surface is deliberately small.
 
-Core principles:
-
-- **Small Core**: keep shared workflow behavior, output paths, validation, and
-  ownership rules in `knitten`.
-- **Domain Plugins**: keep project, company, and domain skills in separate
-  plugins such as `knitten-sl`.
-- **Match Check**: decide whether a skill or domain plugin applies before
-  reading detailed workflow material.
-- **Short Skill File**: keep the active `SKILL.md` short: description, `Use
-  for:`, Step 0, safety checks, and a pointer to references.
-- **Deferred Context**: load skill-local references only after the request
-  matches the skill.
-- **Safety First**: keep mutation, push, deploy, delete, and external-state
-  checks in the main skill file.
-- **Health Check**: validate that core paths stay reachable, generic, and
-  separate from domain behavior.
-- **Skill Size Checks**: identify skills that are too long, too ambiguous, or
-  missing clear non-trigger rules.
+- **Match Check**: each skill starts by deciding whether the request actually
+  belongs to that workflow.
+- **Short Skill File**: active `SKILL.md` files keep the trigger, required
+  inputs, safety checks, and reference pointer close to the top.
+- **Deferred Context**: detailed flow references are loaded only after the
+  request matches.
+- **Output Runtime**: `bin/knitten-resolve-output` and `bin/knitten-path`
+  provide stable locations for specs, reviews, reports, JSON handoffs, and
+  local workflow records.
+- **Health Checks**: `doctor`, repository-shell validation, exposure
+  measurement, and smoke evals catch broken paths, stale copies, and drift.
+- **Safety First**: mutation, push, deploy, delete, and external-state checks
+  stay in the main skill files.
 
 Current milestone: see [`MILESTONE.md`](MILESTONE.md).
 
-Use this repository when you need to change shared Codex workflow behavior:
-generic workflow skills, where generated specs or plans are saved, where
-temporary local outputs are written, or which plugin owns a workflow.
-
-Shared workflows are the common Codex-assisted steps around preparing work,
-drafting specs, implementing, reviewing artifacts, and wrapping up.
-
-Knitten Core keeps only the pieces that should work the same across projects.
-It does not contain a full private skill library. Domain skills live in domain
-plugins that are installed separately.
-
-Repository roles:
-
-| Repository | Role |
-|------------|------|
-| `knitten` | Knitten Core. Contains shared workflow skills, output-path scripts, document templates, and ownership rules. |
-| Domain plugins | Project, company, or personal skills and skill-owned support files. |
-| `knitten-archive` | Old combined repository kept for history after the core/domain-plugin split. |
-
-Quick rule: if the change affects where work goes or how shared workflows are
-structured, edit `knitten`. If the change affects what a specific skill does,
-edit the domain plugin that owns that skill.
-
-## Contents
+## Layout
 
 | Path | Purpose |
 |------|---------|
 | `.codex-plugin/plugin.json` | Codex plugin manifest. |
-| `MILESTONE.md` | Top-level core/domain-plugin milestone and roadmap. |
-| `SYSTEM.md` | Core and plugin boundary contract. |
+| `MILESTONE.md` | Current focus and success criteria. |
+| `SYSTEM.md` | Core workflow and ownership contract. |
 | `agent/AGENTS.md` | Codex entry document. |
 | `skills/` | Shared workflow skills. |
 | `document-templates/` | Shared workflow document templates. |
-| `bin/knitten-resolve-output` | Domain-plugin-facing path/output shim. |
-| `scripts/doctor.mjs` | Check source and personal-marketplace installation state. |
-| `scripts/materialize-local-plugin.mjs` | Register a local physical copy in the personal marketplace. |
-| `scripts/resolve-output.mjs` | Resolve durable target docs and core-owned local outputs. |
-| `docs/specs/` | Design notes for the core, domain plugins, and runtime. |
-| `docs/guidelines/skill-authoring.md` | Rules for short skill files and domain-owned flows. |
-| `docs/guidelines/public-metadata.md` | Recommended public GitHub metadata and claim guardrails. |
-| `examples/minimal-domain-plugin/` | Minimal copyable domain-plugin example. |
+| `bin/knitten-resolve-output` | Path/output shim for generated artifacts. |
+| `bin/knitten-path` | Stable path lookup surface. |
+| `scripts/doctor.mjs` | Check source and local installation health. |
+| `scripts/materialize-local-plugin.mjs` | Refresh the local plugin copy and marketplace entry. |
+| `scripts/resolve-output.mjs` | Resolve durable docs and local workflow outputs. |
+| `scripts/measure-skill-exposure.mjs` | Estimate skill-list and skill-body exposure. |
+| `scripts/run-context-load-smoke-eval.mjs` | Run the context-load smoke eval. |
+| `docs/guidelines/skill-authoring.md` | Rules for short, token-conscious skills. |
+| `docs/guidelines/public-metadata.md` | Public wording and claim guardrails. |
+| `docs/specs/` | Design notes for the core and runtime. |
 
-## Validate
+## Local Codex Install
+
+Knitten is designed for a local Codex marketplace.
 
 ```bash
-python3 <path-to-validate_plugin.py> .
-node scripts/validate-repository-shell.mjs
 node scripts/materialize-local-plugin.mjs
 node scripts/doctor.mjs
-node scripts/measure-skill-exposure.mjs .
-node scripts/run-context-load-smoke-eval.mjs
-node scripts/validate-domain-plugin-boundary.mjs --domain-plugin examples/minimal-domain-plugin --warn-only
 ```
 
-## Local Codex Installation
-
-Knitten Core is the core plugin. Domain plugins are installed separately in
-the same local marketplace when their skills are needed:
+The materialize script copies this checkout into:
 
 ```text
-knitten@knitten-local
-<domain-plugin>@knitten-local
+<home-directory>/plugins/knitten
 ```
 
-Codex reads the local marketplace from this config:
+It also updates the personal marketplace manifest:
+
+```text
+<home-directory>/.agents/plugins/marketplace.json
+```
+
+Codex can enable the local plugin with:
 
 ```toml
 [marketplaces.knitten-local]
@@ -168,61 +165,23 @@ source = "<home-directory>"
 
 [plugins."knitten@knitten-local"]
 enabled = true
-
-[plugins."<domain-plugin>@knitten-local"]
-enabled = true
-```
-
-The marketplace manifest lives at:
-
-```text
-<home-directory>/.agents/plugins/marketplace.json
-```
-
-Runtime plugin copies live under:
-
-```text
-<home-directory>/plugins/knitten
-<home-directory>/plugins/<domain-plugin>
-```
-
-Install or refresh the core plugin:
-
-```bash
-node scripts/materialize-local-plugin.mjs
-node scripts/doctor.mjs
-codex plugin add knitten@knitten-local
-codex plugin list
 ```
 
 The materialized copy receives a local `+codex.<timestamp>` version suffix. The
 source manifest stays stable.
 
-Install or refresh domain plugins from their own repositories using their own
-plugin documentation.
-
-Restart Codex after changing `~/.codex/config.toml` or refreshing plugin
-installations. Existing sessions may keep the old skill list until a new
-session starts.
+Restart Codex after refreshing plugin installations. Existing sessions may keep
+a cached skill list until a new session starts.
 
 ## Path Rules
 
-Active Knitten Core docs and helper scripts should avoid personal absolute
-paths. Use placeholders such as `<home-directory>`, `<plugins-root>`, and
-`<domain-plugin>`, or prefer explicit environment variables before `$HOME`
-fallbacks in executable helpers.
+Active Knitten docs and helper scripts should avoid personal absolute paths.
+Use markers such as `<home-directory>` and `<plugins-root>`, or prefer
+explicit environment variables before `$HOME` fallbacks in executable helpers.
 
-Historical specs may keep old local paths as evidence. Domain plugins
-may document private config paths when those paths are the actual external
-contract.
+Archived specs may keep local paths as evidence. Active setup
+instructions should not depend on machine-specific paths.
 
 ## License
 
 MIT License. See `LICENSE`.
-
-## Boundary
-
-Domain workflows, domain output registries, and artifact-pack lifecycle tools
-belong in domain plugins unless they are intentionally promoted into this core.
-Knitten Core owns shared workflow contracts, ownership rules, and the generic
-path/output runtime.

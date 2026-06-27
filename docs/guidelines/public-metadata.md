@@ -10,7 +10,7 @@ metadata, README copy, marketplace text, or release notes.
 Recommended:
 
 ```text
-Lightweight Codex workflow core for small shared skills and domain plugins.
+Lightweight Codex workflow core for compact checked agent workflows.
 ```
 
 Repo-file status:
@@ -35,6 +35,7 @@ Recommended topics:
 - `workflow-automation`
 - `prompt-engineering`
 - `token-optimization`
+- `compact-workflows`
 
 These topics are recommendations until the repository settings are updated.
 
@@ -43,9 +44,9 @@ These topics are recommendations until the repository settings are updated.
 Prefer:
 
 ```text
-Knitten is a lightweight Codex workflow core for small shared skills and domain
-plugins. It keeps common workflow contracts in the core while domain plugins
-load detailed context only after a clear match.
+Knitten is a lightweight Codex workflow core for compact checked agent
+workflows. It keeps common steps, output paths, validation, and ownership rules
+small, with detailed procedure loaded only after a clear match.
 ```
 
 ## Claim Guardrails
