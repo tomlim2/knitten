@@ -20,6 +20,8 @@
   `kc-report-finding` with no P0/P1/P2 blockers.
 - Documented retained Shotloom output/local-artifact entries as compatibility
   contracts with required metadata and migration rules.
+- Recorded the validator-promotion decision: keep mechanical repository health
+  checks automated and leave judgment-heavy skill quality checks in human audit.
 
 ## v0.1.6 - 2026-06-27
 
