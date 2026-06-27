@@ -2,9 +2,9 @@
 
 ## Goal
 
-Keep Knitten and payload skills cheap to discover, clear to route, and safe to
-run. A skill's main `SKILL.md` should decide whether the skill applies before it
-loads detailed workflow context.
+Keep Knitten and adapter skills cheap to discover, clear to activate, and safe
+to run. A skill's main `SKILL.md` should decide whether the skill applies
+before it loads detailed workflow context.
 
 ## Main Rule
 
@@ -41,8 +41,8 @@ Use for: one specific request shape.
 Confirm the request matches this skill, required inputs are present, and the
 target workspace is correct.
 
-If the request does not match, stop and say which skill or generic workflow is
-more appropriate.
+If the request does not match, stop and name the clearer skill or adapter only
+when obvious.
 
 Do not read detailed references until this check passes.
 
@@ -81,31 +81,35 @@ Use `docs/specs/skill-activation-check-policy.md` as the source of truth for
 
 When in doubt, use `normal`. If external state can change, use `strict`.
 
-## Router Rule
+## Adapter And Internal Flow Rule
 
-Routers may know their leaves through a mechanical route script. Leaves should
-not need to know their parent router.
+Do not add new routers. Prefer direct skill activation plus post-activation
+references. For a domain with many workflows, prefer one adapter skill with
+internal flow files only when that is cheaper and clearer than exposing many
+leaf skills. Existing routers are legacy surfaces to maintain only until their
+dependencies can be removed.
+Legacy routers may know their leaves through a mechanical route script. Leaves
+should not need to know their parent router.
 
-A router's main job is to:
+An adapter skill's main job is to:
 
-- run its own activation gate
-- run the mechanical route script
-- route to the smallest matching leaf returned by the script
-- apply the highest required activation check for the delegated action
+- run the shared domain activation gate
+- choose the smallest internal flow or direct child workflow after activation
+- keep long maps, checklists, and procedures in references
+- apply the highest required activation check for any delegated action
 
-A leaf's main job is to:
+A directly exposed skill's main job is to:
 
 - decide whether the current request matches itself
 - stop when it does not match
 - load detailed references only after Step 0 passes
 
-Do not put "prefer the router" boilerplate into every leaf. If the leaf should
-normally be hidden from broad discovery, fix plugin exposure or router
-registration instead of making every leaf explain its parent.
+Do not put "prefer the router" boilerplate into leaves. If a workflow should be
+hidden from broad discovery, make it an internal flow/reference under the
+owning adapter instead of exposing it as a leaf skill.
 
-Use `docs/guidelines/routing-integration.md` when adding a payload router,
-connecting leaves to a router, moving skills between plugins, or deciding
-whether a router is worth its token cost.
+Treat existing router docs as legacy migration guidance. New work should first
+try direct skills, adapter plugins, or internal deferred flows.
 
 Do not maintain route policy in Markdown tables. Markdown may point to the route
 script, but the script, fixtures, and validators own routing behavior.

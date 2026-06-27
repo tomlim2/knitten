@@ -1,4 +1,4 @@
-# Plugin-Native Routing Core Reboot
+# Plugin-Native Core Reboot
 
 ## Status
 
@@ -6,11 +6,11 @@ Draft.
 
 ## Goal
 
-Rebuild Knitten as the smallest useful Codex plugin for Agent Hub routing.
+Rebuild Knitten as the smallest useful Codex plugin for Agent Hub workflows.
 
-The first milestone is not the full routing system. It is a minimal plugin that
-Codex can discover from the personal marketplace, validate, and load without
-legacy harness deploy paths.
+The first milestone is not a broad workflow dispatcher. It is a minimal plugin
+that Codex can discover from the personal marketplace, validate, and load
+without legacy harness deploy paths.
 
 ## Problem
 
@@ -27,9 +27,9 @@ This makes `knitten` harder to reason about as a standalone Codex plugin.
 
 ## Desired Shape
 
-`knitten` is the Agent Hub routing system. The initial reboot owns only the
-minimum files needed for Codex plugin identity, entry guidance, validation, and
-local marketplace registration.
+`knitten` is the Agent Hub core plugin. The initial reboot owns only the minimum
+files needed for Codex plugin identity, entry guidance, validation, and local
+marketplace registration.
 
 `knitten-all-skills` is a payload plugin. It owns skills, standards, examples,
 domain workflows, and working documents.

@@ -143,6 +143,10 @@ Every role receives:
 - finding schema,
 - known constraints and non-goals,
 - role name, role scope, primary consumer, and explicit out-of-scope boundary.
+- scope-control lens: check whether the diff adds avoidable abstraction,
+  dependency, public surface, or duplicated helper logic when existing code,
+  standard-library behavior, or native platform features already cover the
+  accepted requirement.
 
 Only after that shared packet is loaded does the role apply its lens.
 

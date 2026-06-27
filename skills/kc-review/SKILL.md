@@ -42,3 +42,8 @@ Read [`references/triad.md`](references/triad.md), then run the selected
 read-only `single` or `triad` review. Read only caller-supplied inline content
 and readable paths. Print findings for the caller to capture; do not write
 durable artifacts.
+
+Every review includes a scope-control pass: flag over-engineering, unnecessary
+new dependencies, and missed reuse of existing helpers, native platform
+features, or standard-library behavior when the supplied packet proves a
+smaller correct path.

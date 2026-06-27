@@ -5,8 +5,8 @@
 | Rule | Meaning |
 |------|---------|
 | Plugin source | The checkout is loaded by Codex through `.codex-plugin/plugin.json`. |
-| Routing core | This repository contains plugin identity, entry guidance, validation, local registration, and generic Agent Hub routing. |
-| Path/output routing | Durable documents route to the target workspace; generic local Agent Hub outputs route to the Knitten hub. |
+| Core plugin | This repository contains plugin identity, entry guidance, validation, local registration, and generic AH workflows. |
+| Path/output core | Durable documents stay with the target workspace; generic local AH outputs stay in the Knitten hub. |
 | Self-contained source | Operation does not require a second harness-specific source tree. |
 | Payload boundary | Skills, standards, domain workflows, and working documents live in separate payload plugins. |
 

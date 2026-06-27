@@ -5,7 +5,7 @@ plugin changes.
 
 ## Core Boundary
 
-- Knitten owns generic runtime, output/path routing, shared config, shared
+- Knitten owns generic runtime, output/path resolution, shared config, shared
   document templates, public core overlays, and plugin diagnostics.
 - Payload plugins own concrete skills. Keep domain skills, skill-local
   references, and skill-local support files there.

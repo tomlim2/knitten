@@ -6,10 +6,10 @@ Draft.
 
 ## Goal
 
-Define the local-output hub behavior of Knitten's Agent Hub routing system.
+Define the local-output hub behavior of Knitten's Agent Hub core.
 
-Knitten owns generic AH path/output routing. Generic AH temporary files and
-operational records should therefore route to the current Knitten plugin root's
+Knitten owns generic AH path/output resolution. Generic AH temporary files and
+operational records should therefore resolve to the current Knitten plugin root's
 local AH storage, not scatter across every active or target workspace.
 
 This spec supersedes the local-output ownership parts of
@@ -40,7 +40,7 @@ records in the Knitten hub and keeps `targetRoot` as metadata only:
 - AH review plans, response plans, task JSON, and findings scatter across
   unrelated repositories.
 - A payload plugin can look like it owns AH storage even though Knitten owns
-  generic AH path/output routing.
+  generic AH path/output resolution.
 - Follow-up triage requires checking multiple `.agent-local/ah` trees.
 - The distinction between "where the record is stored" and "what the record is
   about" is not explicit enough.
@@ -64,7 +64,7 @@ Out of scope:
 - Writing AH output files into payload plugin workspaces.
 - Generic local-output content schemas beyond target metadata.
 - Migrating every existing old local artifact.
-- Adding a broad output contract system beyond generic path/output routing.
+- Adding a broad output contract system beyond generic path/output resolution.
 
 ## Inputs
 
@@ -363,7 +363,7 @@ Files:
 
 Changes:
 
-- Explain that Knitten routes generic AH local outputs to the hub.
+- Explain that Knitten resolves generic AH local outputs to the hub.
 - Explain that `targetRoot` is semantic attribution, not storage ownership.
 - Explain that payload plugin copies do not own generic AH local outputs.
 - Explain that Knitten materialization preserves `.agent-local`.

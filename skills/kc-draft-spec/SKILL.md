@@ -59,9 +59,10 @@ Ask or infer:
 
 Use `docs/specs/skill-activation-check-policy.md` as the source of truth.
 Use `docs/guidelines/skill-authoring.md` as the source of truth for keeping the
-active `SKILL.md` short, router-aware, and reference-backed.
-Use `docs/guidelines/routing-integration.md` when the requested spec adds a
-payload plugin, router, leaf skill, route map, or skill move between plugins.
+active `SKILL.md` short, activation-gated, and reference-backed.
+Prefer direct skills, adapter plugins, and internal deferred flows. Do not add
+new router-shaped workflow surfaces; if a request asks for router behavior,
+draft the direct-skill, adapter, or internal-flow alternative first.
 
 Question only when the activation check is not obvious. Infer `strict` without
 asking when the skill can push, merge, deploy, delete, send external messages,

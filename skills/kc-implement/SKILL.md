@@ -25,13 +25,17 @@ findings.
 
 1. Read the accepted contract or findings.
 2. Identify the smallest implementation surface.
-3. Edit source, docs, or config in the active workspace only.
-4. Fix blockers before nits.
-5. Run the nearest meaningful validation and report coverage limits.
+3. Before adding new code, check in order: existing repo helper/pattern,
+   standard library, native platform feature, already-installed dependency.
+4. Edit source, docs, or config in the active workspace only.
+5. Fix blockers before nits.
+6. Run the nearest meaningful validation and report coverage limits.
 
 ## Rules
 
 - Prefer the target repository's own conventions.
+- Avoid new abstractions, dependencies, or public surfaces unless the accepted
+  contract requires them or smaller existing options do not fit.
 - Keep edits scoped to the accepted task.
 - Do not create a PR or commit unless the user asks.
 

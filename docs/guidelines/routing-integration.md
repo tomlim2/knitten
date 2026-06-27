@@ -1,21 +1,29 @@
 # Routing Integration Guideline
 
+Status: legacy migration guidance.
+
+Knitten no longer treats routing as the primary product direction. New work
+should prefer direct skill activation, adapter plugins, and internal deferred
+flows. Use this file only when maintaining existing router-shaped payloads or
+removing router dependencies safely.
+
 ## Goal
 
-Define how a Knitten or payload skill joins the routing system without making
-every session pay for detailed skill context up front.
+Define how legacy Knitten or payload router-shaped skills should be maintained
+or retired without making every session pay for detailed skill context up front.
 
-Use this when creating a new payload plugin, adding a router, adding a leaf
-skill, moving a skill between plugins, or slimming an existing skill set.
+Use this when maintaining an existing router-shaped payload, moving an existing
+router into internal flows, moving a skill between plugins, or slimming an
+existing skill set.
 
 ## Integration Model
 
-Knitten routing has three layers:
+Legacy router-shaped payloads have three layers:
 
 | Layer | Owns | Should load by default |
 |-------|------|------------------------|
 | Knitten Core | generic AH workflow, output/path policy, plugin boundary, validation | only compact core skills |
-| Payload router | domain intake, request classification, shared domain gate | compact script-backed shell |
+| Payload adapter/index | domain intake, request classification, shared domain gate | compact activation or script-backed shell |
 | Payload leaf | one concrete action after routing | compact activation shell |
 
 Core should not own domain behavior. Payload plugins should not copy core path,
@@ -23,13 +31,12 @@ output, or boundary policy.
 
 ## Core Router Freeze
 
-Do not add new Knitten Core routers or route layers by default. Core should stay
-small enough that direct skill selection is cheaper than router indirection.
+Do not add new Knitten Core routers or route layers. Core should stay small
+enough that direct skill selection is cheaper than router indirection.
 
-Only add a Core router after an explicit spec and review show that a mechanical
-script reduces loaded context and reasoning cost for repeated Core workflows.
-Payload plugins may still add routers when the Router Checklist below is
-satisfied.
+When a request asks for router behavior, draft a direct-skill, adapter, or
+internal-flow alternative first. Touch existing router-shaped surfaces only to
+maintain compatibility or remove dependencies safely.
 
 ## Payload Plugin Checklist
 
@@ -37,8 +44,10 @@ When adding a payload plugin:
 
 1. Give the plugin a clear boundary in its README.
 2. Keep domain skills in the payload plugin, not in Knitten Core.
-3. Add one mechanical route script when the payload has multiple related leaves.
-4. Keep the router's `SKILL.md` short and run the script after activation.
+3. Prefer direct skills or one adapter skill with internal flow files.
+4. Keep the adapter/index `SKILL.md` short and load references after activation.
+   For existing legacy router-shaped payloads, keep classification in a
+   mechanical script rather than Markdown tables.
 5. Keep each leaf's `SKILL.md` as an activation shell.
 6. Move unused or rarely needed skills out of the active plugin when possible.
 7. Materialize the payload plugin and run its local validator or doctor.
@@ -48,22 +57,22 @@ When adding a payload plugin:
 node <knitten-root>/scripts/validate-payload-boundary.mjs --payload <payload-root>
 ```
 
-## Router Checklist
+## Legacy Router Checklist
 
 A router is a compact skill shell around a mechanical script. The script owns
 request classification before any leaf-specific workflow context is loaded.
 
-Add a router when:
+Keep a legacy router-shaped index only while:
 
 - many leaf skills share the same domain gate
 - leaf descriptions become repetitive
 - users ask broad domain requests that need classification
 - token cost improves by running one router script before any leaf references
 
-Do not add a router when:
+Do not keep a router-shaped index when:
 
 - there is only one leaf
-- the router would only repeat the leaf description
+- the router only repeats the leaf description
 - classification requires reading every leaf in detail
 - the router cannot reject non-domain requests cheaply
 

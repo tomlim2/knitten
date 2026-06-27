@@ -42,7 +42,7 @@ Out of scope:
   contract, such as `~/.config/cinev/...`.
 - Example user input paths such as `~/Downloads/file.exr` when they are clearly
   examples and not runtime defaults.
-- Replacing the full output/path routing system.
+- Replacing the full output/path runtime.
 
 ## Inputs
 

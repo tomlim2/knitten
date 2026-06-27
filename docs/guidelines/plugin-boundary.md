@@ -9,7 +9,7 @@ plugins.
 
 | Plugin | Role |
 |--------|------|
-| `knitten` | Core operating layer: policy, routing, output paths, generic Agent Hub skills, CRUD workflows, validation, local installation. |
+| `knitten` | Core operating layer: policy, output paths, generic Agent Hub skills, CRUD workflows, validation, local installation. |
 | Payload plugin | Skill payload layer: skill files and skill-owned support files. |
 
 Short rule:
@@ -36,7 +36,7 @@ These belong to `knitten`:
 
 - plugin boundary policy
 - generic Agent Hub skills
-- output and path routing
+- output and path runtime
 - local artifact registries
 - generic long-running work memory and decision contract
 - shared document templates
@@ -88,7 +88,7 @@ Rules:
 
 ## Output Paths
 
-Generic Agent Hub local outputs route through Knitten.
+Generic Agent Hub local outputs resolve through Knitten.
 
 Payload plugins may use a forwarding shim, but must not own generic output
 registries or path policy.

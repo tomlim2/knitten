@@ -1,34 +1,35 @@
 # Knitten Milestone
 
-## Token-Efficient Routing
+## Core + Adapter Discipline
 
 Status: Active.
 
-Knitten's lead milestone is to make Codex skill routing cheaper, safer, and
-more observable by loading only the context needed for the current request.
+Knitten's lead milestone is to keep the personal Codex core small while domain
+adapters own project-specific workflows and load detailed flow context only
+when used.
 
 ## Position
 
-Knitten routes Codex work to the right skill at the lowest useful context cost.
+Knitten is a small personal Agent Hub core with pluggable domain adapters.
 
-The system should help a large skill library stay usable without turning every
-request into a large prompt. The routing layer should decide quickly, reject
-wrong matches cheaply, and load detailed instructions only after the selected
-skill is confirmed.
+The system should help a large skill library stay usable without turning the
+core into a large prompt. The core keeps shared workflow contracts, output
+paths, validation, and plugin boundaries. Adapter plugins own domain behavior
+and keep long flow details behind activation gates or internal references.
 
 ## Current Focus
 
-1. **Routing Smoke Eval**
+1. **Context Load Smoke Eval**
    - Create a durable 20-case request set for current KC skills.
    - Measure baseline versus gated context cost with a clearly labeled
      worst-case model.
-   - Record routing accuracy, reject accuracy, reference precision, safety
-     misses, and the follow-up decision before expanding the pattern.
+   - Record match accuracy, reject accuracy, reference precision, safety misses,
+     and the follow-up decision before expanding the pattern.
 
 2. **Pilot Skill Audit And Migration**
    - Audit `kc-implement` first because it is the active implementation pilot.
    - Then audit `kc-draft-spec`, `kc-review`, and `kc-report-finding` as the
-     remaining routing surfaces with deferred references or safety gates.
+     remaining core workflow surfaces with deferred references or safety gates.
    - Keep mutation and external-state safety gates in `SKILL.md`; move only
      detailed procedures into references.
 
@@ -55,14 +56,14 @@ skill is confirmed.
 
 ## Next Work
 
-Work these in order. Do not start broad migration until the smoke eval and
-pilot audit are both recorded.
+Work these in order. Do not start broad adapter migration until the smoke eval
+and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
 | P0 | Audit `kc-implement` as the pilot skill | Blocker-only audit notes and any required `SKILL.md` or reference cleanup | No blocker remains for activation clarity, safety visibility, or reference loading. |
 | P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 gates | The checklist can review one skill without inventing criteria. |
-| P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free routing and safety findings, or a concrete fix task. |
+| P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free activation, deferred-loading, and safety findings, or a concrete fix task. |
 | P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from payload leakage. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
 
@@ -73,8 +74,8 @@ be useful later when explicit reference-selection rules become too noisy, but
 the immediate milestone is to prove that simple gated loading works first.
 
 Broad payload migration is also deferred. Payload skills can adopt the pattern
-after the KC pilot and smoke eval show that routing accuracy and safety gates
-survive the smaller context surface.
+after the KC pilot and smoke eval show that match/reject accuracy and safety
+gates survive the smaller context surface.
 
 ## Done
 
@@ -84,7 +85,7 @@ survive the smaller context surface.
 - `local-helper-paths.json` is reachable and currently has no helper entries.
 - The installed Knitten copy has the current Shotloom task activity output
   contract.
-- Routing smoke eval has a 20-case fixture, deterministic runner, local raw
+- Context-load smoke eval has a 20-case fixture, deterministic runner, local raw
   report, and reviewed result note.
 
 ## Pilot Batch
@@ -97,20 +98,20 @@ Candidate follow-up audits:
 
 | Skill | Surface | Purpose |
 |-------|---------|---------|
-| `kc-draft-spec` | Spec drafting | Verify reusable concepts and activation policy stay visible without bloating routing. |
+| `kc-draft-spec` | Spec drafting | Verify reusable concepts and activation policy stay visible without bloating the core. |
 | `kc-review` | Read-only review | Verify triad review details stay deferred behind a prepared-packet gate. |
 | `kc-report-finding` | Finding capture | Verify mutation to local records keeps Step 0 evidence requirements visible. |
 
 ## Success Criteria
 
-- A top-level README clearly presents Knitten as a token-efficient routing
-  system.
+- A top-level README clearly presents Knitten as a small personal core with
+  pluggable domain adapters.
 - Pilot skills use short activation gates and conditional reference loading.
 - Mutation-capable skills keep safety gates in the main skill file.
 - `doctor` and shell validation catch stale, unreachable, or undocumented
   registry entries in source and installed copies.
 - Audit guidance exists before broad skill migration.
-- Routing/token-efficiency experiments are recorded before their results are
+- Context-load/token-efficiency experiments are recorded before their results are
   used to change milestone direction.
 - The status of Shotloom compatibility output contracts is documented before
   any registry ownership change.
