@@ -1,6 +1,7 @@
 ---
 name: kc-implement
 description: Implement accepted specs or review findings.
+activation-check: strict
 ---
 
 # KC Implement
@@ -9,6 +10,19 @@ Use for: implementing accepted specs or review findings in the active workspace.
 
 Use when the user asks to implement, apply a plan, or fix accepted review
 findings.
+
+## Step 0: Activation Check
+
+- Continue only when the user asks to implement, apply an accepted spec, or fix
+  accepted review findings.
+- Confirm the accepted contract, target workspace, target files or modules, and
+  validation expectations before editing.
+- Stop and ask for a repaired contract when the request lacks an accepted spec,
+  actionable finding, or clear implementation target.
+- Stop before committing, pushing, merging, deploying, deleting, or mutating
+  external systems unless the user explicitly asks for that later action.
+- Do not edit files, run mutating commands, or follow later steps until this
+  check passes.
 
 ## Input
 

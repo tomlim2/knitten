@@ -1,12 +1,24 @@
 ---
 name: kc-log-usage
 description: Log Codex, Knitten, Goal, orchestrator, review-loop, token, and duration usage into a local gitignored usage journal. Use when the user asks to record usage or cost, including phrases like "이 사용량 로그로 남겨줘", "usage 로그 남겨줘", "Goal 사용량 기록해줘", "토큰/시간 kc에 모아줘", or "이번 작업 사용량 저장".
+activation-check: normal
 ---
 
 # KC Log Usage
 
 Use this skill to append concise operating-cost notes for agent work. The log is
 for local reflection, not source-controlled project documentation.
+
+## Step 0: Activation Check
+
+- Continue only when the request explicitly asks to record usage, cost, token,
+  duration, Goal, orchestrator, review-loop, or similar operating metadata.
+- Confirm the destination is local-only and ignored before writing inside a
+  repository.
+- Stop if the user is asking for project documentation, release notes, or a
+  source-controlled report instead of a local usage journal.
+- Do not create directories, inspect ignore state, or append entries until this
+  check passes.
 
 ## Destination
 

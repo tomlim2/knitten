@@ -9,6 +9,9 @@
 - Tightened KC review/implementation guidance around existing helpers,
   native/standard-library behavior, and avoiding unnecessary dependencies.
 - Added a post-cleanup release and exposure-audit spec for KC/KSL/KAS.
+- Added explicit activation gates to the remaining KC workflow skills after
+  parallel low-model skill testing.
+- Added a fix spec for the KC/KAS/Unreal parallel skill-test findings.
 
 ## v0.1.3 - 2026-06-16
 

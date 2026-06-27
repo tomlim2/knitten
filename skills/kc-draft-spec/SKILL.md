@@ -1,6 +1,7 @@
 ---
 name: kc-draft-spec
 description: Draft a compact implementation spec.
+activation-check: normal
 ---
 
 # KC Draft Spec
@@ -9,6 +10,19 @@ Use for: drafting compact specs, implementation contracts, or pre-work plans.
 
 Use when the user asks for a spec, plan, design plan, implementation contract,
 or pre-work document before editing.
+
+## Step 0: Activation Check
+
+- Continue only when the request asks for a spec, plan, design plan,
+  implementation contract, or pre-work document.
+- Confirm the active workspace and intended durable spec location before
+  writing.
+- Stop before implementation unless the user separately asks to implement after
+  the spec is accepted.
+- If the request is generic or better handled by another skill, stop and name
+  the better matching skill.
+- Do not read templates, create files, or follow later steps until this check
+  passes.
 
 ## Mode Contract
 
