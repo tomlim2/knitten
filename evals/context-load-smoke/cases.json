@@ -152,7 +152,7 @@
       "expectedSkill": "reject",
       "expectedReferences": [],
       "safetyGateRequired": false,
-      "notes": "Weather request is outside KC routing skills."
+      "notes": "Weather request is outside the evaluated KC pilot skills."
     },
     {
       "id": "reject-002",
@@ -170,7 +170,7 @@
       "expectedSkill": "reject",
       "expectedReferences": [],
       "safetyGateRequired": false,
-      "notes": "Image generation is outside KC routing skills."
+      "notes": "Image generation is outside the evaluated KC pilot skills."
     },
     {
       "id": "reject-004",

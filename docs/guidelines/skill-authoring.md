@@ -83,13 +83,13 @@ When in doubt, use `normal`. If external state can change, use `strict`.
 
 ## Adapter And Internal Flow Rule
 
-Do not add new routers. Prefer direct skill activation plus post-activation
-references. For a domain with many workflows, prefer one adapter skill with
-internal flow files only when that is cheaper and clearer than exposing many
-leaf skills. Existing routers are legacy surfaces to maintain only until their
-dependencies can be removed.
-Legacy routers may know their leaves through a mechanical classification script.
-Leaves should not need to know their parent router.
+Do not add broad pre-selection layers. Prefer direct skill activation plus
+post-activation references. For a domain with many workflows, prefer one
+adapter skill with internal flow files only when that is cheaper and clearer
+than exposing many leaf skills. Existing pre-selection surfaces are legacy
+surfaces to maintain only until their dependencies can be removed.
+Legacy adapter indexes may know their exposed workflows through a mechanical
+classification script. Exposed skills should not need parent-adapter knowledge.
 
 An adapter skill's main job is to:
 
@@ -104,12 +104,12 @@ A directly exposed skill's main job is to:
 - stop when it does not match
 - load detailed references only after Step 0 passes
 
-Do not put "prefer the router" boilerplate into leaves. If a workflow should be
-hidden from broad discovery, make it an internal flow/reference under the
-owning adapter instead of exposing it as a leaf skill.
+Do not put "prefer the adapter" boilerplate into exposed skills. If a workflow
+should be hidden from broad discovery, make it an internal flow/reference under
+the owning adapter instead of exposing it as a skill.
 
-Treat existing router docs as legacy migration guidance. New work should first
-try direct skills, adapter plugins, or internal deferred flows.
+New work should first try direct skills, adapter plugins, or internal deferred
+flows.
 
 Do not maintain classification policy in Markdown tables. Markdown may point to
 the classification script, but the script, fixtures, and validators own
@@ -140,5 +140,5 @@ Before adding or updating a skill, check:
 - Does Step 0 stop before loading detailed references?
 - Are mutation and approval gates visible in `SKILL.md`?
 - Are long details moved to skill-local references?
-- Does a leaf avoid depending on parent-router knowledge?
+- Does an exposed skill avoid depending on parent-adapter knowledge?
 - Does the activation level match the mutation surface?

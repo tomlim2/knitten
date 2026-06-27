@@ -61,8 +61,8 @@ Use `docs/specs/skill-activation-check-policy.md` as the source of truth.
 Use `docs/guidelines/skill-authoring.md` as the source of truth for keeping the
 active `SKILL.md` short, activation-gated, and reference-backed.
 Prefer direct skills, adapter plugins, and internal deferred flows. Do not add
-new router-shaped workflow surfaces; if a request asks for router behavior,
-draft the direct-skill, adapter, or internal-flow alternative first.
+new broad pre-selection workflow surfaces; if a request asks for pre-selection
+behavior, draft the direct-skill, adapter, or internal-flow alternative first.
 
 Question only when the activation check is not obvious. Infer `strict` without
 asking when the skill can push, merge, deploy, delete, send external messages,
