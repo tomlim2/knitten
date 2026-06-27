@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- Added a public repository readiness spec for the external-facing README,
+  measured proof block, quickstart, minimal domain-plugin example, and GitHub
+  metadata checklist.
+- Reworked README positioning around lightweight shared skills, domain plugins,
+  measured context loading, and "avoid unnecessary context/work" claim
+  guardrails.
+- Added a minimal domain-plugin example and public metadata guidance for GitHub
+  About/topics/release wording.
+
 ## v0.1.6 - 2026-06-27
 
 - Reframed Knitten Core as a lightweight shared skill core with domain plugins,

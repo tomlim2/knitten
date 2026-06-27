@@ -1,0 +1,35 @@
+{
+  "name": "knitten-minimal-domain-plugin",
+  "version": "0.1.0",
+  "description": "Minimal Knitten domain-plugin example",
+  "author": {
+    "name": "example"
+  },
+  "homepage": "https://github.com/tomlim2/knitten",
+  "repository": "https://github.com/tomlim2/knitten",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "codex-plugin",
+    "domain-plugin",
+    "skill-example"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Knitten Minimal Domain Plugin",
+    "shortDescription": "Minimal domain-plugin example for Knitten.",
+    "longDescription": "A copyable example showing one short skill, a match check, and one deferred reference.",
+    "developerName": "example",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/tomlim2/knitten",
+    "brandColor": "#3B82F6",
+    "defaultPrompt": [
+      "Use short skill files and load detailed references only after a match."
+    ],
+    "screenshots": []
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "knitten",
   "version": "0.1.6",
-  "description": "Lightweight Codex workflow core",
+  "description": "Lightweight Codex workflow core for small shared skills and domain plugins",
   "author": {
     "name": "tomlim2"
   },
@@ -9,17 +9,20 @@
   "repository": "https://github.com/tomlim2/knitten",
   "license": "MIT",
   "keywords": [
-    "agent",
     "codex",
-    "plugin",
-    "agent-core",
+    "codex-plugin",
+    "ai-agent",
+    "developer-tools",
+    "workflow-automation",
+    "prompt-engineering",
+    "token-optimization",
     "domain-plugins",
     "path-output"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Knitten",
-    "shortDescription": "Lightweight Codex workflow core.",
+    "shortDescription": "Lightweight Codex workflow core for small shared skills and domain plugins.",
     "longDescription": "Knitten keeps shared Codex workflows small. Common steps, output paths, validation, and ownership rules live in the core, while domain plugins keep project-specific skills and load details only after a clear match.",
     "developerName": "tomlim2",
     "category": "Productivity",
