@@ -2,28 +2,24 @@
 
 ## Unreleased
 
-- Added a public repository readiness spec for the external-facing README,
-  measured proof block, quickstart, minimal domain-plugin example, and GitHub
-  metadata checklist.
-- Reworked README positioning around lightweight shared skills, domain plugins,
-  measured context loading, and "avoid unnecessary context/work" claim
-  guardrails.
+- No unreleased changes.
+
+## v0.1.7 - 2026-06-28
+
+- Focused the README, plugin manifest, and public metadata on Knitten itself as
+  a compact checked workflow core.
 - Renamed exposed core skills to concise names such as `implement`, `review`,
-  and `draft-spec`.
-- Added a minimal domain-plugin example and public metadata guidance for GitHub
-  About/topics/release wording.
-- Updated repository validation and CI output-path checks for the public
-  example and current `.agent-local/workflow` runtime path.
-- Audited `implement` as the pilot skill and aligned its match check with
-  local implementation work while keeping external mutation gates visible.
-- Added a reusable skill audit checklist for blocker-oriented reviews of
-  discovery surface, match checks, context loading, and mutation safety.
-- Recorded follow-up Knitten Core skill audits for `draft-spec`, `review`, and
-  `report-finding` with no P0/P1/P2 blockers.
-- Documented retained Shotloom output/local-artifact entries as compatibility
-  contracts with required metadata and migration rules.
-- Recorded the validator-promotion decision: keep mechanical repository health
-  checks automated and leave judgment-heavy skill quality checks in human audit.
+  and `draft-spec`, and removed active `kc-*` naming from source, installed
+  copies, and the Codex cache.
+- Kept the public proof block current: 7 skills, about 111 list tokens, about
+  3282 `SKILL.md` tokens, and a 20/20 context-load smoke eval with 63.0%
+  average savings.
+- Added and validated public readiness, skill audit, and follow-up audit records
+  for `implement`, `draft-spec`, `review`, and `report-finding`.
+- Tightened repository validation, output-path checks, match checks, and
+  cache-drift diagnostics for the current `.agent-local/workflow` runtime.
+- Recorded the validator-promotion decision: mechanical repository health checks
+  stay automated while judgment-heavy skill quality checks stay in human audit.
 
 ## v0.1.6 - 2026-06-27
 
