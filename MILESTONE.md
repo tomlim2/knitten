@@ -72,7 +72,6 @@ and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
 
 ## Deferred
@@ -105,6 +104,8 @@ checks survive the smaller context surface.
   loading, mutation safety, implementation discipline, and audit completion.
 - Follow-up audit for `kc-draft-spec`, `kc-review`, and `kc-report-finding`
   found no P0/P1/P2 blockers.
+- Shotloom compatibility output contracts are documented as non-primary
+  compatibility surfaces with required metadata and migration rules.
 
 ## Pilot Batch
 
@@ -147,3 +148,4 @@ Candidate follow-up audits:
 - [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
 - [`docs/specs/kc-implement-pilot-audit.md`](docs/specs/kc-implement-pilot-audit.md)
 - [`docs/specs/kc-follow-up-skill-audit.md`](docs/specs/kc-follow-up-skill-audit.md)
+- [`docs/specs/shotloom-compatibility-output-contracts.md`](docs/specs/shotloom-compatibility-output-contracts.md)

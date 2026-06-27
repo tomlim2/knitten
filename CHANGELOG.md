@@ -18,6 +18,8 @@
   discovery surface, match checks, context loading, and mutation safety.
 - Recorded follow-up KC skill audits for `kc-draft-spec`, `kc-review`, and
   `kc-report-finding` with no P0/P1/P2 blockers.
+- Documented retained Shotloom output/local-artifact entries as compatibility
+  contracts with required metadata and migration rules.
 
 ## v0.1.6 - 2026-06-27
 
