@@ -54,6 +54,17 @@ keep long flow details behind match checks or internal references.
    - Keep source specs focused on their own contracts and remove obsolete pilot
      names or completed cleanup claims as they are discovered.
 
+6. **Public Adoption Readiness**
+   - Make the first README screen explain the problem, the concrete benefit, and
+     the quickest proof path for a new Codex user.
+   - Show measured evidence without over-claiming: current skill exposure,
+     context-load smoke eval result, and the "avoid unnecessary context/work"
+     framing.
+   - Add a copy-paste quickstart and a tiny domain-plugin example path so the
+     repository feels usable within minutes, not just internally coherent.
+   - Align GitHub About/topics/release wording with the lightweight workflow
+     core message.
+
 ## Next Work
 
 Work these in order. Do not start broad domain-plugin migration until the smoke eval
@@ -65,6 +76,9 @@ and pilot audit are both recorded.
 | P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 checks | The checklist can review one skill without inventing criteria. |
 | P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free matching, deferred-loading, and safety findings, or a concrete fix task. |
 | P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
+| P1 | Make README adoption-ready | First-viewport README copy, quickstart, measured proof block, and when-to-use/when-not-use section | A new Codex user can tell what Knitten does, why it helps, how to try it, and what the token-efficiency claim actually means in under one minute. |
+| P1 | Add minimal domain-plugin example path | Small example plugin with one short skill, match check, and deferred reference | A reader can copy the pattern without understanding private Shotloom/KAS history. |
+| P2 | Align GitHub discoverability surfaces | About text, topics recommendation, release-note wording, and README badges/links if useful | External surfaces consistently say lightweight Codex workflow core, domain plugins, match checks, and measured context loading. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
 
 ## Deferred
@@ -115,9 +129,15 @@ Candidate follow-up audits:
   used to change milestone direction.
 - The status of Shotloom compatibility output contracts is documented before
   any registry ownership change.
+- README and GitHub-facing wording make the project understandable to a
+  non-owner without reading internal history.
+- Public claims cite measured smoke-eval or exposure data and avoid promising
+  universal token reduction.
+- A minimal domain-plugin example exists before broad public promotion.
 
 ## Source Specs
 
 - [`docs/specs/skill-match-progressive-loading.md`](docs/specs/skill-match-progressive-loading.md)
 - [`docs/specs/context-load-smoke-eval.md`](docs/specs/context-load-smoke-eval.md)
 - [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)
+- [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
