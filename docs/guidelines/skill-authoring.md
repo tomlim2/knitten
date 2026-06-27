@@ -132,6 +132,9 @@ reference.
 
 ## Review Checklist
 
+For full audits, use
+[`docs/guidelines/skill-audit-checklist.md`](skill-audit-checklist.md).
+
 Before adding or updating a skill, check:
 
 - Is the `description` one short sentence?

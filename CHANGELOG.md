@@ -14,6 +14,8 @@
   example and current `.agent-local/workflow` runtime path.
 - Audited `kc-implement` as the pilot skill and aligned its match check with
   local implementation work while keeping external mutation gates visible.
+- Added a reusable skill audit checklist for blocker-oriented reviews of
+  discovery surface, match checks, context loading, and mutation safety.
 
 ## v0.1.6 - 2026-06-27
 

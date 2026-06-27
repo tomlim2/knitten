@@ -72,7 +72,6 @@ and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 checks | The checklist can review one skill without inventing criteria. |
 | P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free matching, deferred-loading, and safety findings, or a concrete fix task. |
 | P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
@@ -103,6 +102,8 @@ checks survive the smaller context surface.
   the current `.agent-local/workflow` output path.
 - `kc-implement` pilot audit is recorded and its match check now reflects local
   implementation work while keeping external mutation safety in Step 0.
+- Skill audit checklist exists for discovery surface, match checks, context
+  loading, mutation safety, implementation discipline, and audit completion.
 
 ## Pilot Batch
 
