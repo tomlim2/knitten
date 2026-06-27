@@ -50,7 +50,7 @@ registry.
 When a target workspace accepts its own local task-memory contract, that
 workspace owns the physical task artifact root. KC may keep old registry
 entries as explicit compatibility surfaces, but new primary storage should
-route to the target workspace. Shotloom task artifacts use the Shotloom
+resolve under the target workspace. Shotloom task artifacts use the Shotloom
 `scripts/agent-task-artifact.mjs` contract for primary task memory.
 
 Codex may prepare summaries, evidence, drafts, patches, and next-step

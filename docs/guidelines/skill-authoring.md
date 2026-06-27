@@ -88,8 +88,8 @@ references. For a domain with many workflows, prefer one adapter skill with
 internal flow files only when that is cheaper and clearer than exposing many
 leaf skills. Existing routers are legacy surfaces to maintain only until their
 dependencies can be removed.
-Legacy routers may know their leaves through a mechanical route script. Leaves
-should not need to know their parent router.
+Legacy routers may know their leaves through a mechanical classification script.
+Leaves should not need to know their parent router.
 
 An adapter skill's main job is to:
 
@@ -111,8 +111,9 @@ owning adapter instead of exposing it as a leaf skill.
 Treat existing router docs as legacy migration guidance. New work should first
 try direct skills, adapter plugins, or internal deferred flows.
 
-Do not maintain route policy in Markdown tables. Markdown may point to the route
-script, but the script, fixtures, and validators own routing behavior.
+Do not maintain classification policy in Markdown tables. Markdown may point to
+the classification script, but the script, fixtures, and validators own
+classification behavior.
 
 ## Reference Rule
 

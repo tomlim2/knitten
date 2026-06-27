@@ -44,12 +44,12 @@
       "expectedSkill": "kc-implement",
       "expectedReferences": [],
       "safetyGateRequired": true,
-      "notes": "Accepted design plan plus code change routes to implementation."
+      "notes": "Accepted design plan plus code change matches implementation."
     },
     {
       "id": "spec-001",
       "group": "spec",
-      "request": "Draft a compact implementation spec for a routing smoke eval.",
+      "request": "Draft a compact implementation spec for a context-load smoke eval.",
       "expectedSkill": "kc-draft-spec",
       "expectedReferences": [],
       "safetyGateRequired": true,
@@ -89,7 +89,7 @@
       "expectedSkill": "kc-review",
       "expectedReferences": ["skills/kc-review/references/triad.md"],
       "safetyGateRequired": true,
-      "notes": "Prepared packet plus triad review routes to read-only review."
+      "notes": "Prepared packet plus triad review matches read-only review."
     },
     {
       "id": "review-002",
@@ -107,7 +107,7 @@
       "expectedSkill": "kc-review",
       "expectedReferences": ["skills/kc-review/references/triad.md"],
       "safetyGateRequired": true,
-      "notes": "Explicit read-only review should not route to implementation."
+      "notes": "Explicit read-only review should not match implementation."
     },
     {
       "id": "review-004",
@@ -143,7 +143,7 @@
       "expectedSkill": "kc-report-finding",
       "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
       "safetyGateRequired": true,
-      "notes": "Validator failure with evidence routes to finding capture."
+      "notes": "Validator failure with evidence matches finding capture."
     },
     {
       "id": "reject-001",

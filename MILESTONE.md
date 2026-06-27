@@ -119,5 +119,5 @@ Candidate follow-up audits:
 ## Source Specs
 
 - [`docs/specs/skill-gated-progressive-loading.md`](docs/specs/skill-gated-progressive-loading.md)
-- [`docs/specs/token-efficient-routing-smoke-eval.md`](docs/specs/token-efficient-routing-smoke-eval.md)
-- [`docs/specs/routing-registry-health-cleanup.md`](docs/specs/routing-registry-health-cleanup.md)
+- [`docs/specs/context-load-smoke-eval.md`](docs/specs/context-load-smoke-eval.md)
+- [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)

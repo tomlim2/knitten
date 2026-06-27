@@ -22,7 +22,7 @@ function usage() {
   return `Usage:
   validate-payload-boundary.mjs --payload <payload-root> [--warn-only]
 
-Validates that a payload plugin does not own generic Knitten path, routing,
+Validates that a payload plugin does not own generic Knitten path/output runtime,
 template, standards, or local-runtime surfaces.`;
 }
 

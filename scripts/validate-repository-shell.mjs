@@ -36,7 +36,7 @@ function isAllowedFile(file) {
   if (file.startsWith("docs/guidelines/") && file.endsWith(".md")) return true;
   if (file.startsWith("docs/public-core/")) return true;
   if (file.startsWith("docs/specs/") && file.endsWith(".md")) return true;
-  if (file.startsWith("evals/routing-smoke/") && file.endsWith(".json")) return true;
+  if (file.startsWith("evals/context-load-smoke/") && file.endsWith(".json")) return true;
   if (file.startsWith("document-templates/") && (file.endsWith(".md") || file.endsWith(".json"))) return true;
   if (file.startsWith("scripts/")) return true;
   if (file.startsWith("skills/") && file.endsWith("/SKILL.md")) return true;
@@ -87,7 +87,7 @@ function localArtifactOwnerAllowed(owner, entry) {
   return owner === "ah";
 }
 
-function validateRoutingRegistryContract() {
+function validateOutputRegistryContract() {
   const outputs = readJson("agent/config/outputs.json");
   const localArtifacts = readJson("agent/config/local-artifact-paths.json");
   const localHelpers = readJson("agent/config/local-helper-paths.json");
@@ -174,6 +174,6 @@ for (const field of ["name", "version", "description", "interface"]) {
 }
 if (manifest.name !== "knitten") throw new Error("plugin manifest name must be knitten");
 
-validateRoutingRegistryContract();
+validateOutputRegistryContract();
 
 process.stdout.write(`repository shell ok: ${files.length} files\n`);

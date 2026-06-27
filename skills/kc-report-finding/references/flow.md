@@ -46,6 +46,6 @@ This writes under:
 Include the affected repository, plugin, skill, or path in the JSON body as
 metadata. Do not redirect the storage owner.
 
-If the record implies a temporary skill-local gate or check, route the follow-up
-to the payload plugin that owns that skill. Do not make a payload plugin own the
+If the record implies a temporary skill-local gate or check, send that follow-up
+to the payload plugin that owns the skill. Do not make a payload plugin own the
 finding report itself.

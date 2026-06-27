@@ -135,7 +135,7 @@ function localArtifactOwnerAllowed(owner, entry) {
   return owner === "ah";
 }
 
-function validateRoutingRegistryContract(root) {
+function validateOutputRegistryContract(root) {
   const outputsPath = path.join(root, "agent", "config", "outputs.json");
   const localArtifactsPath = path.join(root, "agent", "config", "local-artifact-paths.json");
   const localHelpersPath = path.join(root, "agent", "config", "local-helper-paths.json");
@@ -279,8 +279,8 @@ function main() {
     return checkConfigRegistries(REPO_ROOT);
   });
 
-  check(checks, "source-routing-registry-contract", () => {
-    return validateRoutingRegistryContract(REPO_ROOT);
+  check(checks, "source-output-registry-contract", () => {
+    return validateOutputRegistryContract(REPO_ROOT);
   });
 
   check(checks, "source-output-kinds", () => {
@@ -450,8 +450,8 @@ function main() {
     return checkConfigRegistries(copiedRoot);
   });
 
-  check(checks, "copied-routing-registry-contract", () => {
-    return validateRoutingRegistryContract(copiedRoot);
+  check(checks, "copied-output-registry-contract", () => {
+    return validateOutputRegistryContract(copiedRoot);
   });
 
   check(checks, "copied-output-shim", () => {

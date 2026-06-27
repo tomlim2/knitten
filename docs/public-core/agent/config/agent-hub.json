@@ -29,7 +29,7 @@
     {
       "id": "agent-hub",
       "path": "agent/config/agent-hub.json",
-      "domain": "plugin core routing metadata",
+      "domain": "plugin core adapter metadata",
       "format": "json",
       "secretPolicy": "no-secrets"
     },
