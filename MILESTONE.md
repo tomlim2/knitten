@@ -72,7 +72,6 @@ and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free matching, deferred-loading, and safety findings, or a concrete fix task. |
 | P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
 
@@ -104,6 +103,8 @@ checks survive the smaller context surface.
   implementation work while keeping external mutation safety in Step 0.
 - Skill audit checklist exists for discovery surface, match checks, context
   loading, mutation safety, implementation discipline, and audit completion.
+- Follow-up audit for `kc-draft-spec`, `kc-review`, and `kc-report-finding`
+  found no P0/P1/P2 blockers.
 
 ## Pilot Batch
 
@@ -145,3 +146,4 @@ Candidate follow-up audits:
 - [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)
 - [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
 - [`docs/specs/kc-implement-pilot-audit.md`](docs/specs/kc-implement-pilot-audit.md)
+- [`docs/specs/kc-follow-up-skill-audit.md`](docs/specs/kc-follow-up-skill-audit.md)

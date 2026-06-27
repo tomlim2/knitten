@@ -16,6 +16,8 @@
   local implementation work while keeping external mutation gates visible.
 - Added a reusable skill audit checklist for blocker-oriented reviews of
   discovery surface, match checks, context loading, and mutation safety.
+- Recorded follow-up KC skill audits for `kc-draft-spec`, `kc-review`, and
+  `kc-report-finding` with no P0/P1/P2 blockers.
 
 ## v0.1.6 - 2026-06-27
 
