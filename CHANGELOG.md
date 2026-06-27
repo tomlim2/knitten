@@ -12,6 +12,8 @@
   About/topics/release wording.
 - Updated repository validation and CI output-path checks for the public
   example and current `.agent-local/workflow` runtime path.
+- Audited `kc-implement` as the pilot skill and aligned its match check with
+  local implementation work while keeping external mutation gates visible.
 
 ## v0.1.6 - 2026-06-27
 

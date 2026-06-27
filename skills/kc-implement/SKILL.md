@@ -1,7 +1,7 @@
 ---
 name: kc-implement
 description: Implement accepted specs or review findings.
-match-check: strict
+match-check: normal
 ---
 
 # KC Implement

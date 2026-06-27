@@ -72,7 +72,6 @@ and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P0 | Audit `kc-implement` as the pilot skill | Blocker-only audit notes and any required `SKILL.md` or reference cleanup | No blocker remains for match clarity, safety visibility, or reference loading. |
 | P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 checks | The checklist can review one skill without inventing criteria. |
 | P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free matching, deferred-loading, and safety findings, or a concrete fix task. |
 | P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
@@ -102,6 +101,8 @@ checks survive the smaller context surface.
   public metadata note, and minimal domain-plugin example are implemented.
 - Repository validation allows the minimal domain-plugin example and CI expects
   the current `.agent-local/workflow` output path.
+- `kc-implement` pilot audit is recorded and its match check now reflects local
+  implementation work while keeping external mutation safety in Step 0.
 
 ## Pilot Batch
 
@@ -142,3 +143,4 @@ Candidate follow-up audits:
 - [`docs/specs/context-load-smoke-eval.md`](docs/specs/context-load-smoke-eval.md)
 - [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)
 - [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
+- [`docs/specs/kc-implement-pilot-audit.md`](docs/specs/kc-implement-pilot-audit.md)
