@@ -7,7 +7,7 @@ Implemented.
 ## Goal
 
 Decide which skill-audit and boundary checks belong in automated validators
-after the KC pilot audits.
+after the Knitten Core pilot audits.
 
 ## Decision
 
@@ -25,7 +25,7 @@ or similarly mechanical scripts:
 - output registries have valid shape,
 - output and local artifact templates are safe relative paths and exist,
 - Shotloom compatibility entries carry the required compatibility metadata,
-- new primary Shotloom task memory is rejected from KC registries,
+- new primary Shotloom task memory is rejected from Knitten Core registries,
 - local helper paths are safe, allowed, and reachable,
 - repository shell file allowlist catches accidental broad surfaces,
 - example plugin paths are intentionally allowed,

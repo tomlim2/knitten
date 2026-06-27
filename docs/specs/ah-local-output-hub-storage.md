@@ -50,7 +50,7 @@ records in the Knitten hub and keeps `targetRoot` as metadata only:
 In scope:
 
 - Generic AH local outputs resolved by `scripts/resolve-output.mjs`.
-- Operational finding storage for `kc-report-finding`.
+- Operational finding storage for `report-finding`.
 - Resolver metadata that records the active and target repositories even when
   storage is centralized.
 - Doctor checks and docs that prove local outputs no longer scatter by default.
@@ -176,13 +176,13 @@ root has a Knitten plugin manifest. It does not need Git metadata.
 
 | Skill | Kind | Owner |
 |-------|------|-------|
-| `kc-draft-spec` | `spec` | `targetRoot` |
+| `draft-spec` | `spec` | `targetRoot` |
 | `ah-add-design-plan` | `design-plan` | `targetRoot` |
 | `ah-review-spec` | `review-json` | `hubRoot` |
 | `ah-review-implementation` | `review-json` | `hubRoot` |
 | `ah-review-pr` | `review-json` | `hubRoot` |
 | `ah-respond-pr` | `response-json` | `hubRoot` |
-| `kc-report-finding` | `operational-finding-json` | `hubRoot` |
+| `report-finding` | `operational-finding-json` | `hubRoot` |
 
 ## Migration
 
@@ -210,10 +210,10 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 
 - `node scripts/resolve-output.mjs --kind=review-json --name=test --hub-root=<knitten-root>`
   returns `<knitten-root>/.agent-local/ah/reviews/test.json`.
-- `node scripts/resolve-output.mjs --skill=kc-report-finding --name=test --target-root=<knitten-all-skills> --hub-root=<knitten-root>`
+- `node scripts/resolve-output.mjs --skill=report-finding --name=test --target-root=<knitten-all-skills> --hub-root=<knitten-root>`
   returns `<knitten-root>/.agent-local/ah/operational-findings/<today>/test.json`
   and includes `selectedTargetRoot=<knitten-all-skills>`.
-- `node scripts/resolve-output.mjs --skill=kc-draft-spec --name=test --target-root=<target> --hub-root=<knitten-root>`
+- `node scripts/resolve-output.mjs --skill=draft-spec --name=test --target-root=<target> --hub-root=<knitten-root>`
   still returns `<target>/docs/specs/test.md`.
 - Running from the installed plugin copy resolves `hubRoot` to the installed
   Knitten plugin root.

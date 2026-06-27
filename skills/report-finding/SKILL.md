@@ -1,10 +1,10 @@
 ---
-name: kc-report-finding
+name: report-finding
 description: Record checked mechanical workflow findings.
 match-check: normal
 ---
 
-# KC Report Finding
+# Report Finding
 
 Use for: recording checked mechanical workflow or plugin failures.
 

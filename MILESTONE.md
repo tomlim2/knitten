@@ -20,15 +20,15 @@ keep long flow details behind match checks or internal references.
 ## Current Focus
 
 1. **Context Load Smoke Eval**
-   - Create a durable 20-case request set for current KC skills.
+   - Create a durable 20-case request set for current core skills.
    - Measure baseline versus matched-context cost with a clearly labeled
      worst-case model.
    - Record match accuracy, reject accuracy, reference precision, safety misses,
      and the follow-up decision before expanding the pattern.
 
 2. **Pilot Skill Audit And Migration**
-   - Audit `kc-implement` first because it is the active implementation pilot.
-   - Then audit `kc-draft-spec`, `kc-review`, and `kc-report-finding` as the
+   - Audit `implement` first because it is the active implementation pilot.
+   - Then audit `draft-spec`, `review`, and `report-finding` as the
      remaining core workflow surfaces with deferred references or safety checks.
    - Keep mutation and external-state safety checks in `SKILL.md`; move only
      detailed procedures into references.
@@ -72,7 +72,7 @@ and pilot audit are both recorded.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| - | No active next work | Add a new row from the next accepted spec or milestone decision. | The current KC cleanup batch remains complete. |
+| - | No active next work | Add a new row from the next accepted spec or milestone decision. | The current Knitten Core cleanup batch remains complete. |
 
 ## Deferred
 
@@ -81,7 +81,7 @@ be useful later when explicit reference-selection rules become too noisy, but
 the immediate milestone is to prove that simple match-based loading works first.
 
 Broad domain-plugin migration is also deferred. Domain skills can adopt the pattern
-after the KC pilot and smoke eval show that match/reject accuracy and safety
+after the Knitten Core pilot and smoke eval show that match/reject accuracy and safety
 checks survive the smaller context surface.
 
 ## Done
@@ -98,11 +98,11 @@ checks survive the smaller context surface.
   public metadata note, and minimal domain-plugin example are implemented.
 - Repository validation allows the minimal domain-plugin example and CI expects
   the current `.agent-local/workflow` output path.
-- `kc-implement` pilot audit is recorded and its match check now reflects local
+- `implement` pilot audit is recorded and its match check now reflects local
   implementation work while keeping external mutation safety in Step 0.
 - Skill audit checklist exists for discovery surface, match checks, context
   loading, mutation safety, implementation discipline, and audit completion.
-- Follow-up audit for `kc-draft-spec`, `kc-review`, and `kc-report-finding`
+- Follow-up audit for `draft-spec`, `review`, and `report-finding`
   found no P0/P1/P2 blockers.
 - Shotloom compatibility output contracts are documented as non-primary
   compatibility surfaces with required metadata and migration rules.
@@ -113,15 +113,15 @@ checks survive the smaller context surface.
 
 | Skill | Surface | Purpose |
 |-------|---------|---------|
-| `kc-implement` | Scoped implementation | Prove deleted implementation leaves are covered by one practical core skill. |
+| `implement` | Scoped implementation | Prove deleted implementation leaves are covered by one practical core skill. |
 
 Candidate follow-up audits:
 
 | Skill | Surface | Purpose |
 |-------|---------|---------|
-| `kc-draft-spec` | Spec drafting | Verify reusable concepts and match policy stay visible without bloating the core. |
-| `kc-review` | Read-only review | Verify triad review details stay deferred until a prepared packet exists. |
-| `kc-report-finding` | Finding capture | Verify mutation to local records keeps Step 0 evidence requirements visible. |
+| `draft-spec` | Spec drafting | Verify reusable concepts and match policy stay visible without bloating the core. |
+| `review` | Read-only review | Verify triad review details stay deferred until a prepared packet exists. |
+| `report-finding` | Finding capture | Verify mutation to local records keeps Step 0 evidence requirements visible. |
 
 ## Success Criteria
 
@@ -148,7 +148,7 @@ Candidate follow-up audits:
 - [`docs/specs/context-load-smoke-eval.md`](docs/specs/context-load-smoke-eval.md)
 - [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)
 - [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
-- [`docs/specs/kc-implement-pilot-audit.md`](docs/specs/kc-implement-pilot-audit.md)
-- [`docs/specs/kc-follow-up-skill-audit.md`](docs/specs/kc-follow-up-skill-audit.md)
+- [`docs/specs/implement-pilot-audit.md`](docs/specs/implement-pilot-audit.md)
+- [`docs/specs/follow-up-skill-audit.md`](docs/specs/follow-up-skill-audit.md)
 - [`docs/specs/shotloom-compatibility-output-contracts.md`](docs/specs/shotloom-compatibility-output-contracts.md)
 - [`docs/specs/validator-promotion-decision.md`](docs/specs/validator-promotion-decision.md)

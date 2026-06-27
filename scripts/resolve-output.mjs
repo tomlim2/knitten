@@ -48,9 +48,9 @@ function usage() {
 Prints Knitten plugin, workspace, and selected output destinations as JSON.
 
 Skill defaults:
-  kc-draft-spec -> spec
-  kc-report-finding -> operational-finding-json
-  kc-review-fix-loop -> review-json
+  draft-spec -> spec
+  report-finding -> operational-finding-json
+  review-fix-loop -> review-json
 
 Kinds:
   spec        <targetRoot>/docs/specs/<name>.md
@@ -163,9 +163,9 @@ function kindForSkill(skill) {
   if (!skill) return "";
 
   const skillKinds = {
-    "kc-draft-spec": "spec",
-    "kc-report-finding": "operational-finding-json",
-    "kc-review-fix-loop": "review-json",
+    "draft-spec": "spec",
+    "report-finding": "operational-finding-json",
+    "review-fix-loop": "review-json",
   };
 
   if (!Object.hasOwn(skillKinds, skill)) {

@@ -37,7 +37,7 @@ Approximation:
 
 Interpretation:
 
-- Default KC/KSL/KAS skill-list exposure is now roughly `1.2k` tokens.
+- Default Knitten Core/KSL/KAS skill-list exposure is now roughly `1.2k` tokens.
 - KAS is no longer large at the shallow list layer: about `426` tokens for
   21 exposed skills.
 - The remaining size is mostly selected-skill body size, especially KAS Unreal
@@ -53,9 +53,9 @@ Interpretation:
 
 | Plugin | Skill | Description chars | List approx tokens |
 |---|---|---:|---:|
-| `knitten` | `kc-log-usage` | 274 | 74 |
-| `knitten` | `kc-review-fix-loop` | 72 | 25 |
-| `knitten` | `kc-review` | 58 | 19 |
+| `knitten` | `log-usage` | 274 | 74 |
+| `knitten` | `review-fix-loop` | 72 | 25 |
+| `knitten` | `review` | 58 | 19 |
 | `knitten-sl` | `shotloom-triad-rca` | 218 | 62 |
 | `knitten-sl` | `shotloom-goal-orchestrator` | 156 | 49 |
 | `knitten-sl` | `shotloom-frontend-dev-mode` | 112 | 38 |
@@ -68,9 +68,9 @@ Interpretation:
 
 | Plugin | Skill | SKILL.md chars | Approx tokens |
 |---|---|---:|---:|
-| `knitten` | `kc-log-usage` | 2497 | 625 |
-| `knitten` | `kc-draft-spec` | 2403 | 601 |
-| `knitten` | `kc-review` | 1694 | 424 |
+| `knitten` | `log-usage` | 2497 | 625 |
+| `knitten` | `draft-spec` | 2403 | 601 |
+| `knitten` | `review` | 1694 | 424 |
 | `knitten-sl` | `shotloom-review-asset-library-pr` | 1158 | 290 |
 | `knitten-sl` | `shotloom-frontend-dev-mode` | 1090 | 273 |
 | `knitten-sl` | `shotloom-triad-rca` | 1074 | 269 |
@@ -102,11 +102,11 @@ Recommended next actions:
 - Treat Unreal/CINEV as the next candidate for a separate payload only if those
   skills are not needed in ordinary KAS sessions. The bigger gain would be
   avoiding accidental body reads, not shrinking descriptions.
-- `kc-log-usage` is the only KC description that stands out at the list layer;
-  trim it if KC default exposure needs another tiny cut.
+- `log-usage` is the only Knitten Core description that stands out at the list layer;
+  trim it if Knitten Core default exposure needs another tiny cut.
 
 ## Review
 
 No blocker found in the current exposure shape. The new direction is mostly
-working: KC/KSL/KAS default metadata exposure is small, and remaining cost is
+working: Knitten Core/KSL/KAS default metadata exposure is small, and remaining cost is
 task-triggered body/reference loading.

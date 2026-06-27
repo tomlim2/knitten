@@ -65,7 +65,7 @@ Finding reports are Knitten core-owned.
 
 Rules:
 
-- Use `knitten:kc-report-finding` only for checked mechanical issues.
+- Use `knitten:report-finding` only for checked mechanical issues.
 - Store all finding records in the Knitten finding report queue.
 - Do not store finding reports in a domain plugin.
 - Domain plugins must not document or depend on the finding-report workflow.
@@ -113,7 +113,7 @@ context should not exist only in chat history.
 For target workspaces that define their own local task-memory resolver,
 registered Knitten local artifact paths are compatibility-era only. They must
 be marked with compatibility metadata and a migration target, not treated as
-new KC-owned primary storage.
+new core-owned primary storage.
 
 Codex may prepare summaries, evidence, drafts, patches, reply plans, PR bodies,
 and next-step recommendations. Publishing, posting externally, deployment,

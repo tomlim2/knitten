@@ -6,16 +6,16 @@ Accepted.
 
 ## Goal
 
-Create short release notes and tags for the current KC/KSL cleanup state, then
-measure and audit the remaining KC/KSL/KAS skill exposure with the same
+Create short release notes and tags for the current Knitten Core/KSL cleanup state, then
+measure and audit the remaining Knitten Core/KSL/KAS skill exposure with the same
 lightweight-core framing.
 
 ## Problem
 
-KC and KSL have already removed the old broad pre-selection wording from active
+Knitten Core and KSL have already removed the old broad pre-selection wording from active
 surfaces, but the release state is not lined up with that work:
 
-- KC and KSL source manifests are ahead of the last pushed tags.
+- Knitten Core and KSL source manifests are ahead of the last pushed tags.
 - The user needs a short changelog/release note trail for the cleanup.
 - Current-session skill lists may not reflect what a fresh session will load.
 - KAS is likely the next large exposure source, so it needs the same measured
@@ -28,13 +28,13 @@ surfaces, but the release state is not lined up with that work:
 
 In scope:
 
-- KC release note/changelog and patch version tag.
+- Knitten Core release note/changelog and patch version tag.
 - KSL release note/changelog and patch version tag.
-- Fresh-source exposure measurement for KC, KSL, and KAS using a documented,
+- Fresh-source exposure measurement for Knitten Core, KSL, and KAS using a documented,
   repeatable command.
 - KAS audit notes for descriptions, stale references/specs, and low-value
   exposed skill metadata.
-- README and plugin manifest wording for KC/KSL/KAS where the old framing still
+- README and plugin manifest wording for Knitten Core/KSL/KAS where the old framing still
   appears.
 - Personal marketplace wording only when it is produced by the plugin
   materialization helpers.
@@ -52,7 +52,7 @@ Out of scope:
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| KC latest main commit | Yes | Release/tag target for Knitten Core. |
+| Knitten Core latest main commit | Yes | Release/tag target for Knitten Core. |
 | KSL latest main commit | Yes | Release/tag target for Knitten Shotloom. |
 | `.codex-plugin/plugin.json` | Yes | Source version and marketplace-facing About text. |
 | `CHANGELOG.md` | Yes | Durable release note location. |
@@ -63,9 +63,9 @@ Out of scope:
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| KC changelog/version/tag | durable/git | KC release marker for the cleanup work. |
+| Knitten Core changelog/version/tag | durable/git | Knitten Core release marker for the cleanup work. |
 | KSL changelog/version/tag | durable/git | KSL release marker for the cleanup work. |
-| Exposure measurement report | durable | Current source-level token/metadata estimate for KC/KSL/KAS. |
+| Exposure measurement report | durable | Current source-level token/metadata estimate for Knitten Core/KSL/KAS. |
 | KAS audit note | durable | Objective list of likely next trims or no-op findings. |
 | Updated README/About wording | durable | Lightweight-core message aligned across active plugin surfaces. |
 | Validation evidence | local | Commands proving plugin manifests and scripts still pass. |
@@ -74,7 +74,7 @@ Out of scope:
 
 - Tags must point at commits that contain the matching changelog and source
   manifest version.
-- Target tag names are `v0.1.6` for KC and `v0.1.4` for KSL, matching the next
+- Target tag names are `v0.1.6` for Knitten Core and `v0.1.4` for KSL, matching the next
   patch versions from their current source manifests.
 - Release notes stay short and factual; they should summarize the cleanup, not
   restate every historical spec.
@@ -91,8 +91,8 @@ Out of scope:
 
 - `git status --short --branch`
 - `python3 /Users/younsoolim/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .`
-- KC: `node scripts/validate-repository-shell.mjs`
-- KC: `node scripts/doctor.mjs`
+- Knitten Core: `node scripts/validate-repository-shell.mjs`
+- Knitten Core: `node scripts/doctor.mjs`
 - KSL: `node scripts/validate-activation.mjs`
 - KSL: `node scripts/test-shotloom-skills.mjs`
 - KSL: `node scripts/doctor.mjs`
@@ -102,11 +102,11 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- KC has a new patch version, short changelog entry, passing validation, and a
+- Knitten Core has a new patch version, short changelog entry, passing validation, and a
   pushed `v0.1.6` tag.
 - KSL has a new patch version, short changelog entry, passing validation, and a
   pushed `v0.1.4` tag.
-- A durable exposure report records KC/KSL/KAS counts and approximate tokens.
+- A durable exposure report records Knitten Core/KSL/KAS counts and approximate tokens.
 - KAS audit identifies whether the next best action is description trimming,
   skill movement, stale reference cleanup, or no-op.
 - Active README/About wording frames Knitten as a lightweight skill core plus
@@ -129,14 +129,14 @@ Out of scope:
 
 ### Outputs
 
-- Updated changelogs and manifests in KC/KSL.
-- Release tags in KC/KSL.
-- Measurement/audit docs in KC or the owning payload repo.
+- Updated changelogs and manifests in Knitten Core/KSL.
+- Release tags in Knitten Core/KSL.
+- Measurement/audit docs in Knitten Core or the owning payload repo.
 - Updated README/About wording where needed.
 
 ### Implementation Sequence
 
-#### 1. Release KC And KSL
+#### 1. Release Knitten Core And KSL
 
 Files:
 
@@ -145,9 +145,9 @@ Files:
 
 Changes:
 
-- Bump KC to the next patch version from the current source manifest.
+- Bump Knitten Core to the next patch version from the current source manifest.
 - Bump KSL to the next patch version from the current source manifest.
-- Use tag names `v0.1.6` for KC and `v0.1.4` for KSL.
+- Use tag names `v0.1.6` for Knitten Core and `v0.1.4` for KSL.
 - Add short changelog entries dated 2026-06-27.
 - Validate both plugin manifests and nearest repo checks.
 - Commit and tag after validation.
@@ -167,7 +167,7 @@ Proof:
 Files:
 
 - `docs/specs/post-cleanup-exposure-measurement.md`
-- Source skill files in KC/KSL/KAS.
+- Source skill files in Knitten Core/KSL/KAS.
 
 Changes:
 
@@ -211,13 +211,13 @@ Proof:
 
 Files:
 
-- KC/KSL/KAS `README.md`.
-- KC/KSL/KAS `.codex-plugin/plugin.json`.
+- Knitten Core/KSL/KAS `README.md`.
+- Knitten Core/KSL/KAS `.codex-plugin/plugin.json`.
 - Local marketplace output after materialization, if refreshed.
 
 Changes:
 
-- Describe KC as a lightweight shared skill core.
+- Describe Knitten Core as a lightweight shared skill core.
 - Describe KSL/KAS as payload adapters/collections that keep detailed context
   outside the core until used.
 - Remove active README/About language that still centers broad pre-selection as

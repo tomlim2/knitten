@@ -1,6 +1,6 @@
-# KC Report Finding Flow
+# Report Finding Flow
 
-Use this reference after `kc-report-finding` Step 0 passes.
+Use this reference after `report-finding` Step 0 passes.
 
 ## Input
 
@@ -34,7 +34,7 @@ or domain plugin.
 Resolve the record path with:
 
 ```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --skill=kc-report-finding --name=<finding-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=report-finding --name=<finding-name> --create
 ```
 
 This writes under:

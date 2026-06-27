@@ -1,10 +1,10 @@
 ---
-name: kc-review-fix-loop
+name: review-fix-loop
 description: Run review/fix loops until blockers clear.
 match-check: normal
 ---
 
-# KC Review Fix Loop
+# Review Fix Loop
 
 Use for: orchestrating blocker-driven review/fix loops across repositories.
 
@@ -31,9 +31,9 @@ Do not read detailed references until Step 0 passes.
 
 ## Boundary
 
-- Coordinate `kc-review` and `kc-implement`; do not replace either one.
-- Keep `kc-review` read-only. Use it only for review passes.
-- Use `kc-implement` behavior for accepted fixes.
+- Coordinate `review` and `implement`; do not replace either one.
+- Keep `review` read-only. Use it only for review passes.
+- Use `implement` behavior for accepted fixes.
 - Do not commit, push, create PRs, post comments, deploy, delete, or mutate
   external state unless the user explicitly asks for that exact action.
 - Treat `/goal` as an optional progress guard only. The loop's source of truth

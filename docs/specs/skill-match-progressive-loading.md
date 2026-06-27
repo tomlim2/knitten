@@ -7,7 +7,7 @@ work ordering.
 
 ## Goal
 
-Define a milestone for making KC and domain skills more token-efficient by
+Define a milestone for making Knitten Core and domain skills more token-efficient by
 turning each `SKILL.md` into a short match check and loading detailed
 workflow references only after the request clearly matches the skill.
 
@@ -34,14 +34,14 @@ when the number of references makes manual conditional loading too noisy.
 
 In scope:
 
-- A generic `SKILL.md` shape for KC and domain skills.
+- A generic `SKILL.md` shape for Knitten Core and domain skills.
 - Match checks, non-trigger rules, stop conditions, and progressive
   reference loading.
 - Guidance for moving detailed procedures into skill-local references or
   scripts.
 - Validation/audit criteria for identifying overlong or under-match-based skills.
-- A first pilot batch that starts with the current KC implementation skill and
-  then audits the remaining KC match surfaces.
+- A first pilot batch that starts with the current Knitten Core implementation skill and
+  then audits the remaining Knitten Core match surfaces.
 
 Out of scope:
 
@@ -147,8 +147,8 @@ Do not use this skill when:
 - `rg -n "Step 0: Match Check|Match|Do not use this skill" skills -S`
 - Skill audit verifies that mutation-capable skills keep safety checks in
   `SKILL.md`.
-- Pilot migrated skills are reviewed with the KC skill audit checklist or a
-  future KC audit helper.
+- Pilot migrated skills are reviewed with the Knitten Core skill audit checklist or a
+  future Knitten Core audit helper.
 - Existing plugin validators still pass after any pilot migration.
 
 ## Acceptance Criteria
@@ -175,17 +175,17 @@ Do not use this skill when:
 
 | Skill | Surface | Reason |
 |-------|---------|--------|
-| `kc-implement` | implementation umbrella | Tests deferring detailed flow while keeping scoped-edit rules visible. |
+| `implement` | implementation umbrella | Tests deferring detailed flow while keeping scoped-edit rules visible. |
 
 Candidate follow-up audits:
 
 | Skill | Surface | Reason |
 |-------|---------|--------|
-| `kc-draft-spec` | spec drafting | Verifies spec guidance, match policy, and reuse-scan requirements stay findable without bloating skill matching. |
-| `kc-review` | read-only review | Verifies triad review detail stays deferred behind a prepared-packet check. |
-| `kc-report-finding` | local finding capture | Verifies evidence requirements and local-write safety stay visible in `SKILL.md`. |
+| `draft-spec` | spec drafting | Verifies spec guidance, match policy, and reuse-scan requirements stay findable without bloating skill matching. |
+| `review` | read-only review | Verifies triad review detail stays deferred behind a prepared-packet check. |
+| `report-finding` | local finding capture | Verifies evidence requirements and local-write safety stay visible in `SKILL.md`. |
 
-Skills not present in the current KC plugin are excluded from this active
+Skills not present in the current Knitten Core plugin are excluded from this active
 pilot unless a future spec reintroduces them.
 
 ## Design Plan
@@ -193,7 +193,7 @@ pilot unless a future spec reintroduces them.
 ### Inputs
 
 - This milestone draft.
-- Existing KC skills under `skills/`.
+- Existing Knitten Core skills under `skills/`.
 - `docs/specs/skill-match-check-policy.md`.
 - Representative domain skills from installed domain plugins when a pilot is
   chosen.
@@ -232,14 +232,14 @@ Proof:
 
 Files:
 
-- `skills/kc-implement/SKILL.md`
-- `skills/kc-draft-spec/SKILL.md`
-- `skills/kc-review/SKILL.md`
-- `skills/kc-report-finding/SKILL.md`
+- `skills/implement/SKILL.md`
+- `skills/draft-spec/SKILL.md`
+- `skills/review/SKILL.md`
+- `skills/report-finding/SKILL.md`
 
 Changes:
 
-- Confirm or revise the current KC pilot batch.
+- Confirm or revise the current Knitten Core pilot batch.
 - For each pilot, write trigger/non-trigger examples and expected reference
   files.
 
@@ -277,7 +277,7 @@ Risk:
 Proof:
 
 - Each pilot skill explicitly says which reference to read after match.
-- The KC skill audit checklist finds no blocker for every pilot.
+- The Knitten Core skill audit checklist finds no blocker for every pilot.
 
 #### 4. Add Audit Or Validator Support
 

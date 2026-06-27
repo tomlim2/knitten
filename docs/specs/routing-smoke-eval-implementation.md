@@ -6,12 +6,12 @@ Accepted.
 
 ## Goal
 
-Create a small, durable smoke eval that checks whether shorter KC skill
+Create a small, durable smoke eval that checks whether shorter Knitten Core skill
 activation surfaces can route common requests without losing safety gates.
 
 ## Problem
 
-The token-efficient routing milestone needs evidence before KC skill bodies are
+The token-efficient routing milestone needs evidence before Knitten Core skill bodies are
 shortened further. Today the repo has a planning document for the eval, but no
 test cases, runner, report format, or repeatable validation command.
 
@@ -19,7 +19,7 @@ test cases, runner, report format, or repeatable validation command.
 
 In scope:
 
-- A 20-case eval set for current KC skills.
+- A 20-case eval set for current Knitten Core skills.
 - A local runner that checks expected skill, expected references, reject
   behavior, visible safety requirements, and approximate token cost.
 - A generated local report that records pass/fail metrics and blockers.
@@ -40,7 +40,7 @@ Out of scope:
 |-------|----------|---------|
 | `MILESTONE.md` | Yes | Priority source of truth for the token-efficient routing milestone. |
 | `docs/specs/token-efficient-routing-smoke-eval.md` | Yes | Existing eval plan and metrics. |
-| `skills/kc-*/SKILL.md` | Yes | Current KC skill activation surfaces and safety text. |
+| `skills/*/SKILL.md` | Yes | Current Knitten Core skill activation surfaces and safety text. |
 | `skills/*/references/*` | No | References expected to load after activation. |
 
 ## Outputs
@@ -57,8 +57,8 @@ Out of scope:
 ## Contract
 
 - The eval must run without network access or external services.
-- The eval must use only current KC skills: `kc-implement`, `kc-draft-spec`,
-  `kc-review`, and `kc-report-finding`.
+- The eval must use only current Knitten Core skills: `implement`, `draft-spec`,
+  `review`, and `report-finding`.
 - Each case must declare `id`, `request`, `expectedSkill`,
   `expectedReferences`, `safetyGateRequired`, and `notes`.
 - Each case must declare `group` as one of `implementation`, `spec`, `review`,
@@ -131,12 +131,12 @@ Out of scope:
 
 - `MILESTONE.md`
 - `docs/specs/token-efficient-routing-smoke-eval.md`
-- `skills/kc-implement/SKILL.md`
-- `skills/kc-draft-spec/SKILL.md`
-- `skills/kc-review/SKILL.md`
-- `skills/kc-report-finding/SKILL.md`
-- `skills/kc-review/references/triad.md`
-- `skills/kc-report-finding/references/flow.md`
+- `skills/implement/SKILL.md`
+- `skills/draft-spec/SKILL.md`
+- `skills/review/SKILL.md`
+- `skills/report-finding/SKILL.md`
+- `skills/review/references/triad.md`
+- `skills/report-finding/references/flow.md`
 
 ### Outputs
 
@@ -163,7 +163,7 @@ Changes:
   - 4 spec requests
   - 4 review requests
   - 3 finding-record requests
-  - 4 neighboring or non-KC reject requests
+  - 4 neighboring or non-Knitten Core reject requests
 - Include expected skill, expected references, safety requirement, and notes for
   each case.
 - Keep cases short and user-like rather than synthetic parser fixtures.
@@ -208,7 +208,7 @@ Files:
 
 Changes:
 
-- Load the cases and current KC skill/reference files.
+- Load the cases and current Knitten Core skill/reference files.
 - Load matcher rules from the runner or a runner-local constant, not from
   expected case results.
 - Compute `predictedSkill` from request text before comparing with

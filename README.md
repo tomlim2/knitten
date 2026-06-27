@@ -19,9 +19,9 @@ commands before changing public claims.
 
 | Check | Current result | Re-run |
 |-------|----------------|--------|
-| KC discovery surface | 7 skills, about 117 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| KC skill bodies | about 3290 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Context-load smoke eval | 20/20 match accuracy, 63.1% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
+| Core discovery surface | 7 skills, about 111 list tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Core skill bodies | about 3282 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Context-load smoke eval | 20/20 match accuracy, 63.0% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
 
 ## Quickstart
 
@@ -94,9 +94,6 @@ Core principles:
   missing clear non-trigger rules.
 
 Current milestone: see [`MILESTONE.md`](MILESTONE.md).
-
-`KC` is the short name for Knitten Core in local notes, commands, and task
-shorthand.
 
 Use this repository when you need to change shared Codex workflow behavior:
 generic workflow skills, where generated specs or plans are saved, where

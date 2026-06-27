@@ -1,11 +1,11 @@
 ---
-name: kc-review
+name: review
 description: Run read-only single/triad reviews from a prepared packet.
 match-check: loose
 allowed-tools: Read, Agent
 ---
 
-# KC Review
+# Review
 
 Use for: read-only single/triad reviews from a prepared packet.
 
@@ -20,7 +20,7 @@ GitHub/Linear.
 
 Confirm:
 
-- the request is a read-only KC role review,
+- the request is a read-only Knitten Core role review,
 - the prepared packet is present and source-cited,
 - mode is `single` or `triad`; default `triad`,
 - no file or external mutation is expected.

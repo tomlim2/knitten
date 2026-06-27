@@ -81,12 +81,12 @@ Out of scope:
   rather than "always uses fewer tokens."
 - Numeric claims must cite commands or recorded outputs that can be re-run from
   this repository.
-- The first proof block must include current source-level KC exposure and the
+- The first proof block must include current source-level core exposure and the
   20-case context-load smoke eval result.
 - The current measured values at spec acceptance are:
-  - KC skill list: about `117` tokens from `node scripts/measure-skill-exposure.mjs .`.
-  - KC `SKILL.md` bodies: about `3290` tokens from the same command.
-  - Context-load smoke eval: `20/20` match accuracy and `63.1%` average savings
+  - Core skill list: about `111` tokens from `node scripts/measure-skill-exposure.mjs .`.
+  - Core `SKILL.md` bodies: about `3282` tokens from the same command.
+  - Context-load smoke eval: `20/20` match accuracy and `63.0%` average savings
     from `node scripts/run-context-load-smoke-eval.mjs`.
   These values must be refreshed before public README claims are changed.
 - The quickstart must be copy-pasteable and include expected success signals.
@@ -118,7 +118,7 @@ Out of scope:
 
 - README first viewport states the lightweight Codex workflow core claim in one
   or two sentences.
-- README includes a measured proof block with the latest KC skill-list exposure
+- README includes a measured proof block with the latest core skill-list exposure
   and context-load smoke eval result.
 - README includes a short quickstart that runs local validation and explains the
   expected success output.
@@ -166,7 +166,7 @@ Changes:
   "Knitten is a lightweight Codex workflow core that keeps shared skills small
   and loads domain-specific context only after a clear match."
 - Add a compact proof block near the top:
-  - KC skill-list exposure from `measure-skill-exposure.mjs`.
+  - Core skill-list exposure from `measure-skill-exposure.mjs`.
   - Context-load smoke eval result from `run-context-load-smoke-eval.mjs`.
 - Move deeper architecture detail below quickstart.
 

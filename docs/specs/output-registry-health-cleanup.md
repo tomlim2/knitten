@@ -9,14 +9,14 @@ explicit compatibility metadata pointing to the Shotloom task artifact resolver.
 
 ## Goal
 
-Make Knitten's output registries match the core plugin contract: generic KC
+Make Knitten's output registries match the core plugin contract: generic Knitten Core
 output/path ownership stays in Knitten, documented compatibility outputs stay
 explicit, and doctor checks catch stale registry paths before users hit them.
 
 ## Problem
 
 Earlier drafts treated every Shotloom registry entry as accidental domain
-leakage. Current KC usage is more specific: some Shotloom output contracts are
+leakage. Current Knitten Core usage is more specific: some Shotloom output contracts are
 active compatibility surfaces resolved by `knitten-path`, while Shotloom skills,
 helpers, and detailed domain behavior remain domain-owned.
 
@@ -66,8 +66,8 @@ Out of scope:
 
 ## Contract
 
-- Knitten core may own generic KC output kinds, generic KC skill aliases, plugin
-  diagnostics, hub-local KC storage, and explicitly documented compatibility
+- Knitten core may own generic Knitten Core output kinds, generic Knitten Core skill aliases, plugin
+  diagnostics, hub-local Knitten Core storage, and explicitly documented compatibility
   outputs used by domain workflows.
 - Knitten core must not register domain skill paths, domain helper paths, or
   local artifact paths unless a separate accepted spec promotes that contract to
@@ -87,15 +87,15 @@ Out of scope:
 - Doctor must fail when core registries contain owners or makers that are not
   allowlisted.
 - The current allowlist is:
-  - output `madeBy`: `workflow:*`, an existing `kc-*` skill under
+  - output `madeBy`: `workflow:*`, an existing core skill under
     `skills/<madeBy>/SKILL.md`, or a documented Shotloom compatibility maker
   - local artifact `owner`: `workflow` or documented Shotloom compatibility storage
   - helper `path`: an existing source-relative path under `bin/`, `scripts/`,
-    or `skills/kc-*`
+    or `skills/*`
 - Every retained `outputs.json` template path must exist in this checkout.
 - Every retained `outputs.json` maker that is not prefixed with `workflow:` or
-  documented as Shotloom compatibility must match `kc-*` and resolve to an
-  existing skill directory in this checkout.
+  documented as Shotloom compatibility must resolve to an existing skill
+  directory in this checkout.
 - Retained durable output paths must match current Knitten generic document
   locations unless the entry is a section of another retained output.
 - Validation should remain mechanical: no word bans, no semantic guesses, and
@@ -122,12 +122,12 @@ Out of scope:
   `primaryStorage=false`; adding a new unmarked Shotloom entry fails doctor and
   repository-shell validation.
 - `outputs.json` contains no non-`workflow:` `madeBy` value unless
-  `<madeBy>` matches `kc-*` and `skills/<madeBy>/SKILL.md` exists, or the maker
-  is documented as Shotloom compatibility.
+  `skills/<madeBy>/SKILL.md` exists, or the maker is documented as Shotloom
+  compatibility.
 - `outputs.json` contains no retained template path that is missing from the
   checkout.
 - `local-helper-paths.json` contains no retained helper path outside `bin/`,
-  `scripts/`, or `skills/kc-*`.
+  `scripts/`, or `skills/*`.
 - `local-helper-paths.json` remains present as a compatibility registry; it may
   contain zero entries.
 - `node scripts/doctor.mjs` fails before the cleanup on a synthetic missing
@@ -182,9 +182,9 @@ compatibility documentation and metadata enforcement.
 
 Changes:
 
-- Classify each entry as generic KC, documented Shotloom compatibility, stale,
+- Classify each entry as generic Knitten Core, documented Shotloom compatibility, stale,
   or unresolved.
-- Keep generic KC entries and documented compatibility outputs allowed by the
+- Keep generic Knitten Core entries and documented compatibility outputs allowed by the
   contract.
 - Add compatibility metadata to every retained Shotloom output or local-artifact
   entry.
@@ -224,7 +224,7 @@ Changes:
   the owners and makers named in the contract allowlist.
 - Add a check that retained `outputs.json` template paths exist.
 - Add a check that retained non-`workflow:` `outputs.json` makers resolve to an
-  existing `kc-*` skill directory unless documented as Shotloom compatibility.
+  existing skill directory unless documented as Shotloom compatibility.
 - Add a check that retained helper paths stay inside the contract allowlist.
 - Keep failures concrete by reporting the entry id and path or owner that
   violates the contract.
@@ -285,8 +285,8 @@ Risk:
 
 Proof:
 
-- `node scripts/resolve-output.mjs --skill=kc-draft-spec --name=output-health-smoke`
-- `node scripts/resolve-output.mjs --skill=kc-report-finding --name=output-health-smoke`
+- `node scripts/resolve-output.mjs --skill=draft-spec --name=output-health-smoke`
+- `node scripts/resolve-output.mjs --skill=report-finding --name=output-health-smoke`
 - `node scripts/resolve-output.mjs --kind=review-json --name=output-health-smoke`
 
 #### 5. Update Boundary Notes If Needed

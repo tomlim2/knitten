@@ -1,6 +1,6 @@
-# KC Review Fix Loop Flow
+# Review Fix Loop Flow
 
-This reference defines the loop body for `kc-review-fix-loop`.
+This reference defines the loop body for `review-fix-loop`.
 
 ## Inputs
 
@@ -19,12 +19,12 @@ compaction, read the newest checkpoint before continuing.
 
 Prefer the target workspace's task artifact resolver when it exposes a
 checkpoint artifact. For Shotloom, use `scripts/agent-task-artifact.mjs` when
-that contract supports the needed artifact; otherwise write to the KC generic
+that contract supports the needed artifact; otherwise write to the Knitten Core generic
 checkpoint path:
 
 ```bash
 <knitten-plugin-root>/bin/knitten-resolve-output \
-  --skill=kc-review-fix-loop \
+  --skill=review-fix-loop \
   --name=<loop-name> \
   --create
 ```
@@ -51,13 +51,13 @@ The checkpoint must record:
 1. Restore the latest checkpoint when continuing an existing loop.
 2. Build a compact review packet: scope, changed files, relevant docs, base ref,
    validation evidence, and previous checkpoint summary.
-3. Run `kc-review` in `triad` mode unless the user requested `single` or the
+3. Run `review` in `triad` mode unless the user requested `single` or the
    scope is small and low-risk.
 4. Merge findings. Treat P1/P2 as blockers; record P3/nits without letting them
    drive the loop.
 5. If no P1/P2 blockers remain, run validation, write a `complete` checkpoint,
    and report the final state.
-6. Fix accepted blockers with `kc-implement` behavior. Keep edits scoped to the
+6. Fix accepted blockers with `implement` behavior. Keep edits scoped to the
    finding evidence and required fix.
 7. Run the nearest meaningful validation. Prefer fast targeted checks first,
    then broader checks when the surface is shared or user-facing.

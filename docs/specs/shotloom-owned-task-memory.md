@@ -14,13 +14,13 @@ owner.
 ## Problem
 
 Shotloom task preparation currently writes planning briefs, specs, manifests,
-review outputs, RCA briefings, and activity logs through KC-owned output
-contracts and the KC local artifact path registry. This keeps paths consistent,
+review outputs, RCA briefings, and activity logs through core-owned output
+contracts and the Knitten Core local artifact path registry. This keeps paths consistent,
 but it creates three problems:
 
 - The task memory is physically separated from the Shotloom repo and the
   worktree that produced it.
-- KSL workflows must keep reading KC output contract instructions and long flow
+- KSL workflows must keep reading Knitten Core output contract instructions and long flow
   documents even when the real need is only "append task context."
 - Plugin source, materialized copy, and Codex cache drift can block or confuse
   a Shotloom task even though the task documents are Shotloom-owned in meaning.
@@ -34,7 +34,7 @@ follow-ups, summaries, and infographics can find them.
 In scope:
 
 - Define a Shotloom repo-local task memory layout.
-- Add a migration plan from KC-hosted Shotloom local artifacts to
+- Add a migration plan from Knitten Core-hosted Shotloom local artifacts to
   Shotloom-owned task memory.
 - Keep Knitten/KSL usable as helper workflows during migration.
 - Slim KSL task workflows so they write through a small resolver/script instead
@@ -50,15 +50,15 @@ Out of scope:
   rules.
 - Creating a database, external service, or Notion dependency.
 - Making Shotloom source code depend on Codex plugins at runtime.
-- Moving generic KC finding reports into Shotloom.
+- Moving generic Knitten Core finding reports into Shotloom.
 
 ## Inputs
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| `agent/config/outputs.json` | Yes | Current KC compatibility output contracts for Shotloom artifacts. |
-| `agent/config/local-artifact-paths.json` | Yes | Current KC local artifact registry for Shotloom task memory. |
-| `docs/specs/long-running-work-memory-decision-contract.md` | Yes | Existing KC-era memory contract that this spec amends for Shotloom task artifacts. |
+| `agent/config/outputs.json` | Yes | Current Knitten Core compatibility output contracts for Shotloom artifacts. |
+| `agent/config/local-artifact-paths.json` | Yes | Current Knitten Core local artifact registry for Shotloom task memory. |
+| `docs/specs/long-running-work-memory-decision-contract.md` | Yes | Existing core-era memory contract that this spec amends for Shotloom task artifacts. |
 | `knitten-sl/skills/shotloom-prepare-task/flow.md` | Yes | Current orchestration that renders prepared briefings and appends task activity. |
 | `knitten-sl/skills/shotloom-start-task/flow.md` | Yes | Current start-task artifact and worktree preparation flow. |
 | `knitten-sl/skills/shotloom-draft-spec/flow.md` | Yes | Current planning artifact writer. |
@@ -73,10 +73,10 @@ Out of scope:
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
 | Shotloom task memory layout | durable docs/code | Canonical path convention under the Shotloom workspace. |
-| Shotloom task artifact resolver | durable code | Small script or command that resolves and creates task artifact paths without KC. |
+| Shotloom task artifact resolver | durable code | Small script or command that resolves and creates task artifact paths without Knitten Core. |
 | KSL workflow updates | durable plugin docs/scripts | KSL writes through the Shotloom resolver and no longer owns detailed path policy. |
-| KC compatibility deprecation | durable KC docs/config | KC keeps old output contracts temporarily but marks Shotloom task memory as Shotloom-owned. |
-| Optional migration index | local | Mapping from old KC artifact paths to new Shotloom task folders when migrated. |
+| Knitten Core compatibility deprecation | durable Knitten Core docs/config | Knitten Core keeps old output contracts temporarily but marks Shotloom task memory as Shotloom-owned. |
+| Optional migration index | local | Mapping from old Knitten Core artifact paths to new Shotloom task folders when migrated. |
 
 ## Contract
 
@@ -117,14 +117,14 @@ Out of scope:
   first migration pass, a KSL bridge may implement the same command contract
   only when the Shotloom repo resolver is unavailable; that bridge must resolve
   a Shotloom checkout and write only under the Shotloom `.agent-local/` task
-  memory root, never a new KC-owned primary root.
-- KC may provide generic templates and compatibility helpers, but it must not be
+  memory root, never a new core-owned primary root.
+- Knitten Core may provide generic templates and compatibility helpers, but it must not be
   required to locate or own Shotloom task memory.
-- Existing KC Shotloom output contracts remain compatibility surfaces until all
+- Existing Knitten Core Shotloom output contracts remain compatibility surfaces until all
   KSL workflows that use them have migrated.
-- This spec amends the Shotloom-specific storage portion of the existing KC
+- This spec amends the Shotloom-specific storage portion of the existing Knitten Core
   long-running work memory contract. Until the implementation lands, that older
-  KC contract remains the compatibility-era behavior; after migration, KC docs
+  Knitten Core contract remains the compatibility-era behavior; after migration, Knitten Core docs
   must point Shotloom task artifacts to this Shotloom-owned contract.
 - Durable publication is explicit and is not a default task-folder mirror.
   Selected task output becomes repo documentation only when it represents
@@ -135,16 +135,16 @@ Out of scope:
   standard update before any workflow may assume it.
 - Local task memory is not committed by default and must remain agent-local
   execution state.
-- Generic KC finding reports remain in the Knitten finding report queue.
+- Generic Knitten Core finding reports remain in the Knitten finding report queue.
 - Approval gates do not change: posting to GitHub/Linear, deploying, pushing,
   deleting, or other irreversible external mutations still require the existing
   skill approvals.
 
 ## Validation
 
-- `node scripts/doctor.mjs` from KC.
+- `node scripts/doctor.mjs` from Knitten Core.
 - `node scripts/validate-payload-boundary.mjs --payload <knitten-sl-root>` from
-  KC.
+  Knitten Core.
 - `node scripts/test-shotloom-skills.mjs` from KSL.
 - `node scripts/validate-routing.mjs` from KSL.
 - `node scripts/validate-boundary.mjs` from KSL.
@@ -153,13 +153,13 @@ Out of scope:
   - reject path traversal and invalid task keys
   - write or return `index.json` path
   - reject writes when `.agent-local/` is not ignored
-  - reopen a task by reading `index.json` without loading KC config
+  - reopen a task by reading `index.json` without loading Knitten Core config
   - run without Knitten installed
 - Manual proof that `git check-ignore .agent-local/example` succeeds in the
   Shotloom checkout or the resolver exits with a clear error.
 - Manual proof that `shotloom-prepare-task` can brief and append activity using
   the Shotloom task memory root.
-- Manual proof that old KC output contracts either still resolve or emit a
+- Manual proof that old Knitten Core output contracts either still resolve or emit a
   documented deprecation path during the migration window.
 - `git diff --check`.
 
@@ -167,7 +167,7 @@ Out of scope:
 
 - A new Shotloom-owned task memory path convention is documented and used by at
   least the prepare/start/draft-spec path.
-- `shotloom-prepare-task` no longer needs to read KC path policy to append task
+- `shotloom-prepare-task` no longer needs to read Knitten Core path policy to append task
   activity.
 - `shotloom-draft-spec` stores planning artifacts under the Shotloom task key
   or records a compatibility fallback path in the task index.
@@ -175,21 +175,21 @@ Out of scope:
   and names all compatibility fallback paths under `legacyArtifacts`.
 - KSL active `SKILL.md` files remain short activation shells; long path rules do
   not move into active skill bodies.
-- KC docs state that Shotloom task memory is Shotloom-owned, while generic KC
-  finding reports remain KC-owned.
-- The existing KC long-running work memory spec is updated or marked as
-  compatibility-era for Shotloom task artifacts, so KC docs do not publish two
+- Knitten Core docs state that Shotloom task memory is Shotloom-owned, while generic Knitten Core
+  finding reports remain core-owned.
+- The existing Knitten Core long-running work memory spec is updated or marked as
+  compatibility-era for Shotloom task artifacts, so Knitten Core docs do not publish two
   competing storage contracts.
-- Existing KC Shotloom output contracts are either preserved as compatibility
+- Existing Knitten Core Shotloom output contracts are either preserved as compatibility
   shims or explicitly marked deprecated with a migration target.
-- KC validators or doctor checks distinguish documented compatibility entries
-  from new primary Shotloom storage entries, and reject new KC-owned primary
+- Knitten Core validators or doctor checks distinguish documented compatibility entries
+  from new primary Shotloom storage entries, and reject new core-owned primary
   Shotloom task memory after the migration marker exists.
 - Repo-durable documents created from task output follow Shotloom's existing
   documentation standard; `docs/tasks/<task-key>/` is not created unless that
   convention is separately accepted by Shotloom.
 - No historical artifact rewrite is required for the first implementation.
-- Running the KSL and KC validators shows no source/copy/cache drift after
+- Running the KSL and Knitten Core validators shows no source/copy/cache drift after
   materialization.
 
 ## Open Questions
@@ -198,7 +198,7 @@ Out of scope:
   temporary bridge until the Shotloom repo accepts it?
 - Should Shotloom add a committed `.gitignore` rule for `.agent-local/`, or is a
   resolver-level `git check-ignore` refusal enough during the first pass?
-- Should old KC-hosted `.agent-local/shotloom/**` artifacts be migrated lazily
+- Should old Knitten Core-hosted `.agent-local/shotloom/**` artifacts be migrated lazily
   when a task is reopened, or left as historical records?
 
 ## Design Plan
@@ -206,8 +206,8 @@ Out of scope:
 ### Inputs
 
 - This spec.
-- Current KC output and local artifact registries.
-- Current KC long-running work memory decision contract.
+- Current Knitten Core output and local artifact registries.
+- Current Knitten Core long-running work memory decision contract.
 - Current KSL start/prepare/draft/review/RCA flows.
 - Shotloom repo `.gitignore`, docs layout, and existing `.agent-local` policy.
 - Shotloom project-management and documentation-standard guidelines.
@@ -217,10 +217,10 @@ Out of scope:
 
 - Shotloom-owned task memory resolver and path documentation.
 - KSL flow updates that call the resolver.
-- KC compatibility/deprecation notes for Shotloom local artifact outputs.
+- Knitten Core compatibility/deprecation notes for Shotloom local artifact outputs.
 - A documented durable-publication rule that keeps task execution state out of
   repo docs unless it becomes durable Shotloom truth.
-- Validation evidence from KC, KSL, and Shotloom resolver smoke tests.
+- Validation evidence from Knitten Core, KSL, and Shotloom resolver smoke tests.
 
 ### Implementation Sequence
 
@@ -314,12 +314,12 @@ Files:
 
 Changes:
 
-- Replace direct KC output contract writes for Shotloom task memory with the
+- Replace direct Knitten Core output contract writes for Shotloom task memory with the
   Shotloom resolver.
-- Keep KC output compatibility as fallback only when a migrated resolver is not
+- Keep Knitten Core output compatibility as fallback only when a migrated resolver is not
   available.
 - Make `activity.md` and `index.json` the resume entry points.
-- When fallback is used, record the old KC path under `legacyArtifacts` so the
+- When fallback is used, record the old Knitten Core path under `legacyArtifacts` so the
   next run has one task index to inspect.
 - Keep chat briefings compact; store full documents in task folders.
 
@@ -334,7 +334,7 @@ Proof:
 - Re-running prepare-task for the same task reads the existing index instead of
   creating a second root.
 
-#### 4. Reclassify KC Shotloom Outputs
+#### 4. Reclassify Knitten Core Shotloom Outputs
 
 Files:
 
@@ -350,7 +350,7 @@ Changes:
 
 - Mark Shotloom output contracts as compatibility only.
 - Add a deprecation target pointing to the Shotloom task memory resolver.
-- Update or annotate the KC long-running work memory contract so its
+- Update or annotate the Knitten Core long-running work memory contract so its
   Shotloom-specific storage language is compatibility-era, not the future
   contract.
 - Keep current contracts working during migration unless all KSL callers have
@@ -358,7 +358,7 @@ Changes:
 - Add explicit metadata or validator allowlists that separate historical
   compatibility entries from new primary-storage entries.
 - Ensure doctor permits documented compatibility but rejects new Shotloom
-  primary storage entries in KC.
+  primary storage entries in Knitten Core.
 
 Risk:
 
@@ -366,11 +366,11 @@ Risk:
 
 Proof:
 
-- KC doctor passes.
+- Knitten Core doctor passes.
 - Old output ids still resolve or produce a documented migration message.
-- KC docs no longer contain two active, contradictory Shotloom task-memory
+- Knitten Core docs no longer contain two active, contradictory Shotloom task-memory
   storage contracts.
-- Adding a new KC-owned Shotloom task-memory entry without compatibility
+- Adding a new core-owned Shotloom task-memory entry without compatibility
   metadata fails validation.
 
 #### 5. Slim KSL Workflow Loading
@@ -403,13 +403,13 @@ Proof:
 Files:
 
 - Optional migration report under Shotloom local task memory.
-- KC/KSL docs that mention old locations.
+- Knitten Core/KSL docs that mention old locations.
 
 Changes:
 
 - Do not bulk-move historical artifacts by default.
 - When reopening a task, write new artifacts to the Shotloom-owned root and add
-  old KC artifact paths to `index.json` as `legacyArtifacts`.
+  old Knitten Core artifact paths to `index.json` as `legacyArtifacts`.
 - Do not promote task folders into repo docs by default; promote only selected
   durable knowledge into the appropriate Shotloom docs category.
 - Delete large ignored temp files only by explicit cleanup request.
@@ -425,8 +425,8 @@ Proof:
 ### Review Plan
 
 - Contract: verify Shotloom task memory can function without Knitten installed.
-- Boundary: verify KC no longer owns new Shotloom task memory locations.
+- Boundary: verify Knitten Core no longer owns new Shotloom task memory locations.
 - Docs model: verify local task memory does not become a second repo task
   tracker and durable publications follow Shotloom's documentation standard.
-- Validation: verify existing KC/KSL validators pass and new resolver smoke
+- Validation: verify existing Knitten Core/KSL validators pass and new resolver smoke
   tests prove path safety.

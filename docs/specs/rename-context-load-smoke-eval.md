@@ -6,7 +6,7 @@ Accepted.
 
 ## Goal
 
-Rename the active KC smoke eval from `routing-smoke` to `context-load-smoke`
+Rename the active Knitten Core smoke eval from `routing-smoke` to `context-load-smoke`
 so the eval matches the current Core + Adapter direction and measures gated
 context loading rather than presenting routing as the product claim.
 

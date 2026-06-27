@@ -1,10 +1,10 @@
 ---
-name: kc-implement
+name: implement
 description: Implement accepted specs or review findings.
 match-check: normal
 ---
 
-# KC Implement
+# Implement
 
 Use for: implementing accepted specs or review findings in the active workspace.
 

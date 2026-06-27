@@ -1,10 +1,10 @@
 ---
-name: kc-draft-spec
+name: draft-spec
 description: Draft a compact implementation spec.
 match-check: normal
 ---
 
-# KC Draft Spec
+# Draft Spec
 
 Use for: drafting compact specs, implementation contracts, or pre-work plans.
 
@@ -89,7 +89,7 @@ When writing a spec file, use the active workspace's documented spec location.
 If no location is documented, use the helper default:
 
 ```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --skill=kc-draft-spec --name=<task-name> --create
+<knitten-plugin-root>/bin/knitten-resolve-output --skill=draft-spec --name=<task-name> --create
 ```
 
 Do not write specs into the plugin install path.

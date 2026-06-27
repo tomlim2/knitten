@@ -107,7 +107,7 @@ function isSafeRelativePath(value) {
 function helperPathAllowed(relativePath) {
   return relativePath.startsWith("bin/")
     || relativePath.startsWith("scripts/")
-    || relativePath.startsWith("skills/kc-");
+    || relativePath.startsWith("skills/");
 }
 
 function isShotloomCompatibilityEntry(entry) {
@@ -126,7 +126,7 @@ function outputOwnerAllowed(root, madeBy, entry) {
   if (isShotloomMaker(madeBy)) return isShotloomCompatibilityEntry(entry);
   if (madeBy === "workflow:shared-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
-  if (madeBy.startsWith("kc-") && fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
+  if (fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
   return false;
 }
 
@@ -238,7 +238,7 @@ function main() {
   const args = parseArgs(process.argv.slice(2));
   const checks = [];
   const sourceManifestPath = path.join(REPO_ROOT, ".codex-plugin", "plugin.json");
-  const sourceSkillPath = path.join(REPO_ROOT, "skills", "kc-status", "SKILL.md");
+  const sourceSkillPath = path.join(REPO_ROOT, "skills", "status", "SKILL.md");
   const sourceOutputScriptPath = path.join(REPO_ROOT, "scripts", "resolve-output.mjs");
   const sourceOutputShimPath = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
   const sourcePathCommandPath = path.join(REPO_ROOT, "bin", "knitten-path");
@@ -312,7 +312,7 @@ function main() {
     const targetRoot = path.join(REPO_ROOT, ".agent-local", "doctor-target-root");
     const output = runJson("node", [
       sourceOutputScriptPath,
-      "--skill=kc-report-finding",
+      "--skill=report-finding",
       "--name=doctor-output",
       `--workspace-root=${REPO_ROOT}`,
       `--target-root=${targetRoot}`,

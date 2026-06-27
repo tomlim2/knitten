@@ -2,9 +2,9 @@
 status: accepted
 ---
 
-# KC Triad Review Reference
+# Triad Review Reference
 
-Use this reference from `kc-review`. It defines the reusable KC role review
+Use this reference from `review`. It defines the reusable role review
 pattern:
 
 ```text
@@ -33,7 +33,7 @@ The caller should provide:
 - <name/path or inline label> - <why mandatory> - <path readable? yes/no>
 
 ## Finding schema
-<optional caller schema; omitted means default KC finding schema>
+<optional caller schema; omitted means default Knitten Core finding schema>
 
 ## Review mode
 single | triad
@@ -45,7 +45,7 @@ single | triad
 The packet should be concise and source-cited. If it is too vague to choose
 roles or ground findings, stop and ask the caller to repair it.
 
-## Default KC Finding Schema
+## Default Knitten Core Finding Schema
 
 Use this schema when the caller does not provide one:
 
@@ -123,7 +123,7 @@ Example specialized role names:
 Mandatory output before dispatch:
 
 ```markdown
-## KC role selection
+## Role selection
 - mode: single|triad
 - <role> - <why this role matches the target and consumer>
 - <role> - <why this role matches the target and consumer>
@@ -183,7 +183,7 @@ Review is read-only.
 ## Role Report Template
 
 ```markdown
-## KC triad role review - <role>
+## Triad role review - <role>
 
 ### Applicability
 - Primary consumer: <consumer>

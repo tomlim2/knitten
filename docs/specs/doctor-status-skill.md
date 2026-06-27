@@ -17,7 +17,7 @@ personal-marketplace installation state.
 Add:
 
 - `scripts/doctor.mjs`
-- `skills/kc-status/SKILL.md`
+- `skills/status/SKILL.md`
 
 Update:
 
@@ -50,7 +50,7 @@ It reports JSON:
 Required checks:
 
 - source manifest exists and has `name: "knitten"`
-- source skill exists at `skills/kc-status/SKILL.md`
+- source skill exists at `skills/status/SKILL.md`
 - marketplace file exists
 - marketplace has a `knitten` entry
 - entry path is `./plugins/knitten`
@@ -60,7 +60,7 @@ Required checks:
 
 ## Skill Contract
 
-`kc-status` is a minimal status/readiness skill.
+`status` is a minimal status/readiness skill.
 
 It should tell the agent to:
 

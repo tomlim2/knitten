@@ -27,7 +27,7 @@ const requiredFiles = [
   "scripts/resolve-output.mjs",
   "scripts/validate-domain-plugin-boundary.mjs",
   "scripts/validate-repository-shell.mjs",
-  "skills/kc-status/SKILL.md",
+  "skills/status/SKILL.md",
 ];
 
 function isAllowedFile(file) {
@@ -61,7 +61,7 @@ function isSafeRelativePath(value) {
 function helperPathAllowed(relativePath) {
   return relativePath.startsWith("bin/")
     || relativePath.startsWith("scripts/")
-    || relativePath.startsWith("skills/kc-");
+    || relativePath.startsWith("skills/");
 }
 
 function isShotloomCompatibilityEntry(entry) {
@@ -80,7 +80,7 @@ function outputOwnerAllowed(madeBy, entry) {
   if (isShotloomMaker(madeBy)) return isShotloomCompatibilityEntry(entry);
   if (madeBy === "workflow:shared-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
-  if (madeBy.startsWith("kc-") && fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
+  if (fs.existsSync(path.join("skills", madeBy, "SKILL.md"))) return true;
   return false;
 }
 

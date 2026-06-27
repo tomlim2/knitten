@@ -49,17 +49,17 @@ Out of scope:
 | `knitten-all-skills` source checkout | Yes | Payload plugin to slim down. |
 | Existing KAS references to `skills/kas-support` | Yes | Inventory of active consumers that must be moved, replaced, or deleted. |
 | Existing Knitten path/output runtime | Yes | `bin/knitten-resolve-output`, `scripts/resolve-output.mjs`, and related docs/tests. |
-| Existing KAS boundary checks | Yes | Current KAS-local checks to replace with KC-owned validation. |
+| Existing KAS boundary checks | Yes | Current KAS-local checks to replace with core-owned validation. |
 
 ## Outputs
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| Knitten path service additions | durable | KC-owned commands/APIs for output paths, local artifact paths, plugin roots, repository roots, and shared templates. |
-| KAS consumer rewrite | durable | Active KAS skills call KC path services or use skill-local files only. |
+| Knitten path service additions | durable | core-owned commands/APIs for output paths, local artifact paths, plugin roots, repository roots, and shared templates. |
+| KAS consumer rewrite | durable | Active KAS skills call Knitten Core path services or use skill-local files only. |
 | KAS support deletion | durable | `skills/kas-support/` is removed after all active consumers are migrated or deleted. |
-| KC-owned payload validator | durable | KC fails validation if KAS regrows generic runtime/helper/template/doc surfaces. |
-| Migration evidence | local | Doctor, validator, and targeted smoke output from KC and KAS. |
+| core-owned payload validator | durable | Knitten Core fails validation if KAS regrows generic runtime/helper/template/doc surfaces. |
+| Migration evidence | local | Doctor, validator, and targeted smoke output from Knitten Core and KAS. |
 
 ## Contract
 
@@ -79,24 +79,24 @@ Out of scope:
 - KAS active skill instructions and executable files must not contain legacy
   path forms for current behavior. This includes `skills/kas-support`,
   `agent/lib`, `agent/config`, `document-templates`, `agent/standards`,
-  `../knitten`, `plugins/knitten`, `bin/knitten-resolve-output`, direct KC
+  `../knitten`, `plugins/knitten`, `bin/knitten-resolve-output`, direct Knitten Core
   `scripts/resolve-*.mjs` calls, `KNITTEN_ROOT`, and historical harness paths
   such as `.claude` for current plugin operation.
 - KAS may keep plugin packaging files required for Codex installation:
   `.codex-plugin/plugin.json`, `README.md`, and narrowly scoped packaging
   scripts. Those scripts must not own routing policy.
 - KAS root `doctor` or `validate` scripts, if retained, are thin wrappers only.
-  They call KC-owned validation and may add packaging smoke checks, but they do
+  They call core-owned validation and may add packaging smoke checks, but they do
   not define boundary rules.
 - Shared document templates belong to `knitten` unless a template is used by
   exactly one skill and lives under that skill.
-- Historical planning docs about the KC/KAS boundary belong in
+- Historical planning docs about the Knitten Core/KAS boundary belong in
   `knitten/docs/specs` or outside the plugin payload, not in KAS.
 - Private repository keys such as `shotloom` are data, not KAS runtime logic.
-  KC owns the locator mechanism; private machine mappings stay in local config
+  Knitten Core owns the locator mechanism; private machine mappings stay in local config
   or environment variables.
 - Historical KAS support docs are not preserved in KAS. Keep only docs that are
-  current KC/KAS boundary contracts by moving them to `knitten/docs/specs`;
+  current Knitten Core/KAS boundary contracts by moving them to `knitten/docs/specs`;
   delete the rest from the payload plugin after the inventory records their
   disposition.
 - Legacy path mentions may remain only in clearly labeled historical evidence
@@ -133,7 +133,7 @@ knitten-all-skills/
 Allowed root scripts are packaging and thin validation wrappers only. They must
 not contain generic path policy, generic output policy, boundary policy, helper
 registries, or private repo-key lookup. `scripts/validate-boundary.mjs`, if it
-continues to exist, delegates to KC validation and contains no KAS-owned rule
+continues to exist, delegates to Knitten Core validation and contains no KAS-owned rule
 table.
 
 ## Required Knitten Services
@@ -156,14 +156,14 @@ knitten_path="${KNITTEN_PATH_BIN:?set KNITTEN_PATH_BIN to knitten/bin/knitten-pa
 ```
 
 KAS skills must not hardcode `<knitten-root>`, `../knitten`, installed plugin
-paths, or KC internal script paths. Local shell setup, Codex plugin activation,
+paths, or Knitten Core internal script paths. Local shell setup, Codex plugin activation,
 or the user environment owns setting `KNITTEN_PATH_BIN`.
 
-KC owns the bootstrap implementation. Materialized KC installs must provide a
-stable executable at `plugins/knitten/bin/knitten-path`, and KC doctor must
+Knitten Core owns the bootstrap implementation. Materialized Knitten Core installs must provide a
+stable executable at `plugins/knitten/bin/knitten-path`, and Knitten Core doctor must
 check that path. Payload execution environments must set `KNITTEN_PATH_BIN` to
 that executable before skill snippets run. KAS may keep a thin setup wrapper
-only if it locates KC through plugin metadata or an already configured
+only if it locates Knitten Core through plugin metadata or an already configured
 environment variable, exports `KNITTEN_PATH_BIN`, and contains no path policy of
 its own.
 
@@ -173,18 +173,18 @@ Minimum commands:
 |---------|---------|
 | `output` | Resolve generic output paths and create parent directories when requested. |
 | `artifact` | Resolve registered local artifact paths. |
-| `template` | Resolve KC-owned shared templates by id. |
+| `template` | Resolve core-owned shared templates by id. |
 | `repo` | Resolve repository keys from env or local-private config. |
 | `plugin-root` | Resolve known plugin roots such as `knitten` and `knitten-all-skills`. |
 
-The command may wrap existing KC scripts internally, but the payload contract is
-the single `knitten-path` surface. KAS skills should not call KC internal script
+The command may wrap existing Knitten Core scripts internally, but the payload contract is
+the single `knitten-path` surface. KAS skills should not call Knitten Core internal script
 paths directly after this migration.
 
 ## Repository Locator Contract
 
 `knitten-path repo <repo-key>` resolves arbitrary repo keys by mechanism only.
-KC must not commit private domain key defaults.
+Knitten Core must not commit private domain key defaults.
 
 Resolution order:
 
@@ -225,14 +225,14 @@ Changes:
 
 - Record that KAS final state has no `kas-support`.
 - Update KAS README to say the payload stores skills only.
-- Add KC-owned validator checks that can run in warn mode during migration and
+- Add core-owned validator checks that can run in warn mode during migration and
   hard-fail after `kas-support` is removed.
-- Replace KAS validator logic with a thin wrapper around the KC validator or
-  delete it if KC can validate KAS directly in doctor.
+- Replace KAS validator logic with a thin wrapper around the Knitten Core validator or
+  delete it if Knitten Core can validate KAS directly in doctor.
 
 Risk:
 
-- A strict boundary written before KC has replacement services can block useful
+- A strict boundary written before Knitten Core has replacement services can block useful
   intermediate work.
 
 Proof:
@@ -256,15 +256,15 @@ Files:
 
 Changes:
 
-- Add the KC-owned command surface for all path questions.
+- Add the core-owned command surface for all path questions.
 - Keep existing `bin/knitten-resolve-output` as a compatibility wrapper around
   `knitten-path output`.
 - Add repository lookup as a generic mechanism that reads environment variables
   and local-private config; do not commit private repo mappings.
-- Add template lookup for shared KC templates.
-- Add payload boundary validation as a KC-owned script, with KAS as an input
+- Add template lookup for shared Knitten Core templates.
+- Add payload boundary validation as a core-owned script, with KAS as an input
   path rather than as a policy owner.
-- Add or document KC-owned payload environment setup that exports
+- Add or document core-owned payload environment setup that exports
   `KNITTEN_PATH_BIN` for materialized plugin sessions.
 
 Risk:
@@ -276,7 +276,7 @@ Proof:
 - `bin/knitten-path output --kind=review-json --name=smoke --create`
 - `bin/knitten-path repo shotloom` with env/config set.
 - `bin/knitten-path template review-code`
-- `KNITTEN_PATH_BIN=<installed-kc>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
+- `KNITTEN_PATH_BIN=<installed-knitten>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
 - `scripts/validate-payload-boundary.mjs --payload <kas-root> --warn-only`
 - `node scripts/doctor.mjs`
 
@@ -291,10 +291,10 @@ Files:
 
 Changes:
 
-- Move shared templates from KAS to KC.
+- Move shared templates from KAS to Knitten Core.
 - Give each shared template a stable id.
-- Rewrite KAS skills to ask KC for template paths by id.
-- Move single-skill templates under the owning skill instead of KC.
+- Rewrite KAS skills to ask Knitten Core for template paths by id.
+- Move single-skill templates under the owning skill instead of Knitten Core.
 
 Risk:
 
@@ -318,9 +318,9 @@ Files:
 
 Changes:
 
-- Move current boundary specs and reusable policy docs to KC.
+- Move current boundary specs and reusable policy docs to Knitten Core.
 - Move skill-specific docs into `skills/<skill>/references/`.
-- Move only current KC/KAS boundary contracts to KC specs.
+- Move only current Knitten Core/KAS boundary contracts to Knitten Core specs.
 - Delete stale historical planning docs after the inventory records `deleted`
   as their disposition.
 - Do not keep a KAS docs archive inside the payload.
@@ -336,7 +336,7 @@ Proof:
 - KAS has no `skills/kas-support/agent/standards`.
 - Active KAS skills contain no `skills/kas-support/docs` or
   `skills/kas-support/agent/standards` refs.
-- The migration inventory records each removed support doc as `moved-to-kc-spec`
+- The migration inventory records each removed support doc as `moved-to-core-spec`
   or `deleted`.
 
 ### 5. Replace KAS Generic Helpers
@@ -354,7 +354,7 @@ Files:
 Changes:
 
 - Replace direct calls to KAS generic helpers with `KNITTEN_PATH_BIN`.
-- Remove helper bin activation from KAS unless it is replaced by a KC-owned
+- Remove helper bin activation from KAS unless it is replaced by a core-owned
   activation command.
 - Do not keep compatibility wrappers in KAS after consumers are migrated.
 - Remove legacy path text from active skill instructions, examples, shell
@@ -389,7 +389,7 @@ Changes:
 - Move Shotloom-only helpers under the owning Shotloom skill, or under a
   `skills/shotloom-references/` when multiple Shotloom skills need them.
 - Move GitHub PR helpers under the skill that owns PR response/review behavior,
-  or replace them with KC generic GitHub support only if they are domain-neutral.
+  or replace them with Knitten Core generic GitHub support only if they are domain-neutral.
 - Update imports and shell snippets.
 
 Risk:
@@ -415,12 +415,12 @@ Files:
 Changes:
 
 - Delete `skills/kas-support`.
-- Promote KC validator checks from warn to fail for:
+- Promote Knitten Core validator checks from warn to fail for:
   - `skills/kas-support`
   - generic resolver/helper filenames
   - shared template directories
   - broad docs/standards directories
-- Delete the KAS validator wrapper or keep it as a one-command call into KC.
+- Delete the KAS validator wrapper or keep it as a one-command call into Knitten Core.
 - Keep only plugin packaging and thin check scripts at root.
 
 Risk:
@@ -444,7 +444,7 @@ Files:
 Changes:
 
 - Refresh local plugin copies.
-- Confirm new sessions can see KC and KAS.
+- Confirm new sessions can see Knitten Core and KAS.
 - Run targeted smoke checks for skills touched by migration.
 
 Risk:
@@ -470,11 +470,11 @@ Proof:
 - `sh -c 'rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" "$1"/skills --glob "SKILL.md" --glob "*.sh" --glob "*.mjs" --glob "*.py"; test $? -eq 1' sh <kas-root>`
 - `rg -n "Legacy evidence:" <kas-root>/skills --glob 'references/**' || true`
 - `sh -c 'out=$(rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" "$1"/skills --glob "references/**"); rc=$?; test "$rc" -eq 1 && exit 0; test "$rc" -ne 0 && exit "$rc"; printf "%s\n" "$out" | awk "!/Legacy evidence:/ { print; bad=1 } END { exit bad ? 1 : 0 }"' sh <kas-root>`
-- `KNITTEN_PATH_BIN=<installed-kc>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
+- `KNITTEN_PATH_BIN=<installed-knitten>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
 
 The `KNITTEN_PATH_BIN` `rg` inventories allowed payload-facing calls where
-active generic path calls remain. The KC payload validator must enforce that
-any active generic path call uses `KNITTEN_PATH_BIN` rather than a direct KC or
+active generic path calls remain. The Knitten Core payload validator must enforce that
+any active generic path call uses `KNITTEN_PATH_BIN` rather than a direct Knitten Core or
 KAS path. The deny-list `rg` for active files must return no hits. Active files
 are `SKILL.md`, `*.sh`, `*.mjs`, and `*.py`. Historical mentions are allowed
 only under `skills/**/references/**` when the same line is explicitly labeled
@@ -486,19 +486,19 @@ with `Legacy evidence:`.
 - KAS has no generic path/output/helper runtime.
 - KAS has no shared template directory.
 - KAS has no broad docs or standards directory.
-- KAS active skills resolve every generic path through KC.
+- KAS active skills resolve every generic path through Knitten Core.
 - KAS active skill instructions and executable files contain no legacy path
   forms for current behavior.
-- KC exposes a stable path service for output, artifact, template, repo, and
+- Knitten Core exposes a stable path service for output, artifact, template, repo, and
   plugin-root questions.
-- The KC path command name is `knitten-path`.
+- The Knitten Core path command name is `knitten-path`.
 - Materialized plugin sessions provide executable `KNITTEN_PATH_BIN` before KAS
   skill snippets run.
 - Private repo mappings are local config/env data, not committed KAS logic.
-- KC payload validator fails if `kas-support` or generic path helpers return.
-- KAS validation wrappers contain no boundary rule table; they delegate to KC
+- Knitten Core payload validator fails if `kas-support` or generic path helpers return.
+- KAS validation wrappers contain no boundary rule table; they delegate to Knitten Core
   or are removed.
-- KC and KAS doctors pass in source and materialized plugin copies.
+- Knitten Core and KAS doctors pass in source and materialized plugin copies.
 
 ## Open Questions
 
@@ -511,14 +511,14 @@ with `Legacy evidence:`.
 - This spec.
 - `docs/specs/knitten-all-skills-payload-boundary-migration.md`.
 - Current KAS `skills/kas-support` inventory.
-- Current KC path/output runtime.
+- Current Knitten Core path/output runtime.
 
 ### Outputs
 
-- KC path service implementation.
+- Knitten Core path service implementation.
 - KAS consumer rewrites.
 - Deleted KAS support tree.
-- KC-owned payload boundary validator.
+- core-owned payload boundary validator.
 - Validation evidence for source and installed plugin copies.
 
 ### Implementation Sequence
@@ -533,7 +533,7 @@ Files:
 Changes:
 
 - Produce an inventory of every `kas-support` reference.
-- Classify each as KC path service, KC template, skill-owned helper,
+- Classify each as Knitten Core path service, Knitten Core template, skill-owned helper,
   skill-owned reference, stale doc, or delete.
 
 Risk:
@@ -544,18 +544,18 @@ Proof:
 
 - Inventory table or local report with owner/action for every active hit.
 
-#### 2. Build KC Replacement Surface
+#### 2. Build Knitten Core Replacement Surface
 
 Files:
 
 - `knitten/bin/knitten-path`
 - `knitten/scripts/*.mjs`
 - `knitten/scripts/doctor.mjs`
-- KC-owned payload environment setup.
+- core-owned payload environment setup.
 
 Changes:
 
-- Add missing KC path service commands.
+- Add missing Knitten Core path service commands.
 - Keep existing output behavior compatible.
 - Add tests or doctor checks for every command consumed by KAS.
 - Add bootstrap that makes `KNITTEN_PATH_BIN` available in materialized payload
@@ -563,11 +563,11 @@ Changes:
 
 Risk:
 
-- KC can accidentally absorb private domain policy instead of only mechanism.
+- Knitten Core can accidentally absorb private domain policy instead of only mechanism.
 
 Proof:
 
-- KC doctor, command smoke tests, and `KNITTEN_PATH_BIN` bootstrap smoke pass.
+- Knitten Core doctor, command smoke tests, and `KNITTEN_PATH_BIN` bootstrap smoke pass.
 
 #### 3. Rewrite Active KAS Skills
 
@@ -603,7 +603,7 @@ Files:
 Changes:
 
 - Delete `skills/kas-support`.
-- Fail KC-owned validation if broad support surfaces return.
+- Fail core-owned validation if broad support surfaces return.
 - Remove KAS-local boundary policy logic.
 
 Risk:
@@ -616,8 +616,8 @@ Proof:
 
 ### Review Plan
 
-- Contract: KAS stores skill payload only; KC answers generic path questions.
+- Contract: KAS stores skill payload only; Knitten Core answers generic path questions.
 - Boundary: no `kas-support`, no KAS generic resolver/helper/template/doc
   ownership.
-- Validation: both plugin doctors, KC payload boundary validator, targeted
+- Validation: both plugin doctors, Knitten Core payload boundary validator, targeted
   skill smoke checks, and source/materialized copy checks.

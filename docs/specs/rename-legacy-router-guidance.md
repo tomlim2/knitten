@@ -6,7 +6,7 @@ Accepted.
 
 ## Goal
 
-Rename the active KC guideline file `docs/guidelines/routing-integration.md` to
+Rename the active Knitten Core guideline file `docs/guidelines/routing-integration.md` to
 `docs/guidelines/legacy-router-migration.md` so it reads as legacy migration
 guidance instead of current routing integration guidance.
 
@@ -39,7 +39,7 @@ Out of scope:
 |-------|----------|---------|
 | `docs/guidelines/routing-integration.md` | Yes | Current legacy guidance with an outdated active-looking filename. |
 | `docs/guidelines/skill-authoring.md` | Yes | Active skill creation guidance that references legacy router docs. |
-| `skills/kc-draft-spec/SKILL.md` | Yes | Spec drafting guidance for new skills and plugin changes. |
+| `skills/draft-spec/SKILL.md` | Yes | Spec drafting guidance for new skills and plugin changes. |
 | `README.md` / `CHANGELOG.md` | Yes | Human-facing references that may mention the old filename. |
 
 ## Outputs
@@ -58,7 +58,7 @@ Out of scope:
   file.
 - Historical specs may keep old wording when they are clearly historical or
   experiment records.
-- Validation must pass for source and installed KC plugin copies.
+- Validation must pass for source and installed Knitten Core plugin copies.
 
 ## Plan
 
@@ -75,7 +75,7 @@ Out of scope:
 
 3. Update references:
    - Update `docs/guidelines/skill-authoring.md`.
-   - Update `skills/kc-draft-spec/SKILL.md` if it mentions the old file.
+   - Update `skills/draft-spec/SKILL.md` if it mentions the old file.
    - Update `README.md` or `CHANGELOG.md` references when they are active
      guidance rather than old release history.
 

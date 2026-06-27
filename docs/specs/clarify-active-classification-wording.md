@@ -6,20 +6,20 @@ Accepted.
 
 ## Goal
 
-Replace active KC authoring guidance that uses generic `route` wording with
+Replace active Knitten Core authoring guidance that uses generic `route` wording with
 classification, dispatch, or ownership wording where no router behavior is
 being introduced.
 
 ## Problem
 
-The active KC skill-authoring direction already says not to add new routers,
+The active Knitten Core skill-authoring direction already says not to add new routers,
 but nearby wording still says:
 
 - "mechanical route script"
 - "route policy"
 - "routing behavior"
 
-`kc-report-finding` also says to "route the follow-up" when it means assign or
+`report-finding` also says to "route the follow-up" when it means assign or
 send the follow-up to the owning payload plugin.
 
 These phrases are small, but they keep active guidance sounding like router
@@ -30,7 +30,7 @@ policy rather than direct activation plus internal flow selection.
 In scope:
 
 - `docs/guidelines/skill-authoring.md`.
-- `skills/kc-report-finding/references/flow.md`.
+- `skills/report-finding/references/flow.md`.
 
 Out of scope:
 
@@ -44,7 +44,7 @@ Out of scope:
 | Input | Required | Meaning |
 |-------|----------|---------|
 | `docs/guidelines/skill-authoring.md` | Yes | Active skill authoring guidance. |
-| `skills/kc-report-finding/references/flow.md` | Yes | Active operational finding workflow reference. |
+| `skills/report-finding/references/flow.md` | Yes | Active operational finding workflow reference. |
 
 ## Outputs
 
@@ -59,7 +59,7 @@ Out of scope:
 - Legacy router maintenance guidance may still say "router" where the subject
   is an actual legacy router.
 - Active guidance must not tell new work to maintain route policy in Markdown.
-- `kc-report-finding` must still direct follow-up gates/checks to the payload
+- `report-finding` must still direct follow-up gates/checks to the payload
   plugin that owns the affected skill.
 - No behavior or file ownership changes.
 
@@ -69,13 +69,13 @@ Out of scope:
 - `node scripts/doctor.mjs`
 - `python3 /Users/younsoolim/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .`
 - `git diff --check`
-- `! rg -n 'route policy|route script|routing behavior|route the follow-up' docs/guidelines/skill-authoring.md skills/kc-report-finding/references/flow.md`
+- `! rg -n 'route policy|route script|routing behavior|route the follow-up' docs/guidelines/skill-authoring.md skills/report-finding/references/flow.md`
 
 ## Acceptance Criteria
 
 - `docs/guidelines/skill-authoring.md` uses classification-script and
   classification-policy wording for non-new-router guidance.
-- `skills/kc-report-finding/references/flow.md` uses ownership/direct-follow-up
+- `skills/report-finding/references/flow.md` uses ownership/direct-follow-up
   wording instead of `route the follow-up`.
 - The old active phrases listed in validation no longer match.
 - No legacy migration document is rewritten in this pass.
@@ -89,7 +89,7 @@ Out of scope:
 ### Inputs
 
 - `docs/guidelines/skill-authoring.md`
-- `skills/kc-report-finding/references/flow.md`
+- `skills/report-finding/references/flow.md`
 
 ### Outputs
 
@@ -123,7 +123,7 @@ Proof:
 
 Files:
 
-- `skills/kc-report-finding/references/flow.md`
+- `skills/report-finding/references/flow.md`
 
 Changes:
 
@@ -136,7 +136,7 @@ Risk:
 
 Proof:
 
-- `! rg -n 'route the follow-up' skills/kc-report-finding/references/flow.md`
+- `! rg -n 'route the follow-up' skills/report-finding/references/flow.md`
 
 ### Review Plan
 

@@ -6,7 +6,7 @@ Accepted.
 
 ## Goal
 
-Update active KC entry documents so Knitten is described as a core Codex
+Update active Knitten Core entry documents so Knitten is described as a core Codex
 adapter and path/output contract owner, not as an Agent Hub routing system.
 
 ## Problem
@@ -43,7 +43,7 @@ Out of scope:
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| `SYSTEM.md` | Yes | Shared system contract read by KC users and agents. |
+| `SYSTEM.md` | Yes | Shared system contract read by Knitten Core users and agents. |
 | `agent/AGENTS.md` | Yes | Codex adapter entry document. |
 | `docs/public-core/agent/config/agent-hub.json` | Yes | Public-core metadata copy. |
 | `docs/guidelines/skill-authoring.md` | No | Boundary reference proving router language is already legacy-only. |
@@ -52,7 +52,7 @@ Out of scope:
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| Updated active wording | durable | Entry documents describe KC as adapter/path-output core. |
+| Updated active wording | durable | Entry documents describe Knitten Core as adapter/path-output core. |
 | Validation evidence | local | Commands proving docs/config stay valid. |
 
 ## Contract
@@ -60,7 +60,7 @@ Out of scope:
 - Active entry documents must not describe Knitten as a request routing system.
 - Knitten may still be described as owning generic AH workflow contracts,
   path/output resolution, validation, and plugin boundaries.
-- The wording must not imply that payload plugins live in KC or that KC owns
+- The wording must not imply that payload plugins live in Knitten Core or that Knitten Core owns
   domain behavior.
 - JSON syntax and plugin validation must remain valid.
 - Historical and legacy-router documents may keep router language when the
@@ -79,7 +79,7 @@ Out of scope:
 
 - `agent/AGENTS.md` describes Knitten as a Codex adapter entry for Knitten
   Agent Hub core contracts.
-- `agent/AGENTS.md` says KC handles generic AH workflow contracts,
+- `agent/AGENTS.md` says Knitten Core handles generic AH workflow contracts,
   path/output destinations, validation, and plugin boundaries without using
   route/routing wording.
 - `SYSTEM.md` uses "resolve" or equivalent path/output wording for primary
@@ -122,7 +122,7 @@ Changes:
 
 Risk:
 
-- Overcorrecting could hide that KC still owns generic workflow contracts.
+- Overcorrecting could hide that Knitten Core still owns generic workflow contracts.
 
 Proof:
 
@@ -149,6 +149,6 @@ Proof:
 
 ### Review Plan
 
-- Contract: active files no longer present KC as a routing system.
-- Boundary: payload/domain ownership remains separate from KC.
+- Contract: active files no longer present Knitten Core as a routing system.
+- Boundary: payload/domain ownership remains separate from Knitten Core.
 - Validation: JSON and repository/plugin checks pass.

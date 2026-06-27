@@ -258,7 +258,7 @@ Proof:
 
 Files:
 
-- `skills/kc-draft-spec/SKILL.md`
+- `skills/draft-spec/SKILL.md`
 - `skills/ah-audit-skill/SKILL.md`
 - `skills/ah-review-work/SKILL.md`
 
@@ -271,7 +271,7 @@ Changes:
 
 Risk:
 
-- These KC skills should not become too verbose for simple loose work.
+- These Knitten Core skills should not become too verbose for simple loose work.
 
 Proof:
 

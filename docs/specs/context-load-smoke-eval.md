@@ -46,10 +46,10 @@ Record:
 
 | Skill | Role | Why |
 |-------|------|-----|
-| `kc-implement` | Implementation umbrella | Tests scoped implementation matching and deferred detailed flow. |
-| `kc-draft-spec` | Spec drafting | Tests plan/spec requests, match policy guidance, and reusable-concept checks. |
-| `kc-review` | Read-only review | Tests single/triad review matching and prepared-packet rejection. |
-| `kc-report-finding` | Local finding capture | Tests evidence-match-based local record writes without external mutation. |
+| `implement` | Implementation umbrella | Tests scoped implementation matching and deferred detailed flow. |
+| `draft-spec` | Spec drafting | Tests plan/spec requests, match policy guidance, and reusable-concept checks. |
+| `review` | Read-only review | Tests single/triad review matching and prepared-packet rejection. |
+| `report-finding` | Local finding capture | Tests evidence-match-based local record writes without external mutation. |
 
 ### Test Set
 
@@ -57,11 +57,11 @@ Use 20 request cases:
 
 | Group | Count | Expected Behavior |
 |-------|-------|-------------------|
-| Matching implementation requests | 5 | Match `kc-implement`; select implementation reference when present. |
-| Matching spec requests | 4 | Match `kc-draft-spec`; keep drafting constraints visible. |
-| Matching review requests | 4 | Match `kc-review`; require a prepared packet or reject with missing packet. |
-| Matching finding-record requests | 3 | Match `kc-report-finding`; require checked mechanical evidence. |
-| Neighboring/non-KC requests | 4 | Reject from the pilot set or name the better non-KC match. |
+| Matching implementation requests | 5 | Match `implement`; select implementation reference when present. |
+| Matching spec requests | 4 | Match `draft-spec`; keep drafting constraints visible. |
+| Matching review requests | 4 | Match `review`; require a prepared packet or reject with missing packet. |
+| Matching finding-record requests | 3 | Match `report-finding`; require checked mechanical evidence. |
+| Neighboring/non-Knitten Core requests | 4 | Reject from the pilot set or name the better non-Knitten Core match. |
 
 Each case records:
 
@@ -119,7 +119,7 @@ tokenizer in the first round.
 | Metric | Target | Meaning |
 |--------|--------|---------|
 | Match accuracy | >= 18/20 | Matched requests choose the expected pilot skill. |
-| Reject accuracy | >= 4/4 | Neighboring/non-KC requests do not incorrectly enter a pilot skill. |
+| Reject accuracy | >= 4/4 | Neighboring/non-Knitten Core requests do not incorrectly enter a pilot skill. |
 | Safety miss count | 0 | Implementation and local-record requests keep safety checks visible. |
 | Reference precision | >= 80% | Loaded references are expected by the test case. |
 | Average savings rate | >= 30% | Match-Based path loads substantially less context than baseline. |
@@ -180,10 +180,10 @@ Twenty cases can justify a pilot, but it cannot prove Knitten is generally
 token-efficient. Any README claim should say "pilot smoke eval" until a larger
 eval exists.
 
-**[P2] Reference precision needs concrete KC references.**
+**[P2] Reference precision needs concrete Knitten Core references.**
 
-The eval should use current KC references such as `kc-review/references/triad.md`
-and `kc-report-finding/references/flow.md`, plus proposed reference stubs for
+The eval should use current Knitten Core references such as `review/references/triad.md`
+and `report-finding/references/flow.md`, plus proposed reference stubs for
 skills that do not yet have deferred flow files.
 
 ### Readiness

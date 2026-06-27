@@ -24,7 +24,7 @@ Accepted for pilot evidence.
 ## Decision
 
 The deterministic smoke eval passed with no blockers. This supports continuing
-the KC pilot audit and migration work. It does not justify broad skill
+the Knitten Core pilot audit and migration work. It does not justify broad skill
 migration or claims about live model match accuracy.
 
 ## Notes

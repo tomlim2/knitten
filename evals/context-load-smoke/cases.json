@@ -5,7 +5,7 @@
       "id": "impl-001",
       "group": "implementation",
       "request": "Implement the accepted spec and run the nearest validation.",
-      "expectedSkill": "kc-implement",
+      "expectedSkill": "implement",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Implementation request from an accepted spec should stay in the active workspace."
@@ -14,7 +14,7 @@
       "id": "impl-002",
       "group": "implementation",
       "request": "Apply the reviewed findings to the code with the smallest scoped edit.",
-      "expectedSkill": "kc-implement",
+      "expectedSkill": "implement",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Accepted review findings are an implementation input."
@@ -23,7 +23,7 @@
       "id": "impl-003",
       "group": "implementation",
       "request": "Fix the blocker in the target files and report validation coverage.",
-      "expectedSkill": "kc-implement",
+      "expectedSkill": "implement",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Fixing a blocker in files is scoped implementation."
@@ -32,7 +32,7 @@
       "id": "impl-004",
       "group": "implementation",
       "request": "Make the config change from the approved plan, but do not commit.",
-      "expectedSkill": "kc-implement",
+      "expectedSkill": "implement",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Mutation is allowed only as scoped workspace implementation."
@@ -41,7 +41,7 @@
       "id": "impl-005",
       "group": "implementation",
       "request": "Update the script according to the accepted design plan.",
-      "expectedSkill": "kc-implement",
+      "expectedSkill": "implement",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Accepted design plan plus code change matches implementation."
@@ -50,16 +50,16 @@
       "id": "spec-001",
       "group": "spec",
       "request": "Draft a compact implementation spec for a context-load smoke eval.",
-      "expectedSkill": "kc-draft-spec",
+      "expectedSkill": "draft-spec",
       "expectedReferences": [],
       "safetyCheckRequired": true,
-      "notes": "Spec drafting request should use the KC spec shape and path rules."
+      "notes": "Spec drafting request should use the Knitten Core spec shape and path rules."
     },
     {
       "id": "spec-002",
       "group": "spec",
       "request": "Write a pre-work plan before editing the skill files.",
-      "expectedSkill": "kc-draft-spec",
+      "expectedSkill": "draft-spec",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Pre-work plan before edits maps to draft spec."
@@ -68,7 +68,7 @@
       "id": "spec-003",
       "group": "spec",
       "request": "Create an implementation contract with goal, boundary, validation, and acceptance criteria.",
-      "expectedSkill": "kc-draft-spec",
+      "expectedSkill": "draft-spec",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Implementation contract is a drafting task."
@@ -77,7 +77,7 @@
       "id": "spec-004",
       "group": "spec",
       "request": "Make a design plan for updating a skill match check.",
-      "expectedSkill": "kc-draft-spec",
+      "expectedSkill": "draft-spec",
       "expectedReferences": [],
       "safetyCheckRequired": true,
       "notes": "Skill-related design plan should keep match policy visible."
@@ -86,8 +86,8 @@
       "id": "review-001",
       "group": "review",
       "request": "Triad review the prepared packet and report blocker findings only.",
-      "expectedSkill": "kc-review",
-      "expectedReferences": ["skills/kc-review/references/triad.md"],
+      "expectedSkill": "review",
+      "expectedReferences": ["skills/review/references/triad.md"],
       "safetyCheckRequired": true,
       "notes": "Prepared packet plus triad review matches read-only review."
     },
@@ -95,8 +95,8 @@
       "id": "review-002",
       "group": "review",
       "request": "Run a single read-only review from this source-cited target packet.",
-      "expectedSkill": "kc-review",
-      "expectedReferences": ["skills/kc-review/references/triad.md"],
+      "expectedSkill": "review",
+      "expectedReferences": ["skills/review/references/triad.md"],
       "safetyCheckRequired": true,
       "notes": "Single review is supported by the same review reference."
     },
@@ -104,8 +104,8 @@
       "id": "review-003",
       "group": "review",
       "request": "Review this implementation diff without editing files.",
-      "expectedSkill": "kc-review",
-      "expectedReferences": ["skills/kc-review/references/triad.md"],
+      "expectedSkill": "review",
+      "expectedReferences": ["skills/review/references/triad.md"],
       "safetyCheckRequired": true,
       "notes": "Explicit read-only review should not match implementation."
     },
@@ -113,8 +113,8 @@
       "id": "review-004",
       "group": "review",
       "request": "Find P0-P2 blockers in the supplied review target.",
-      "expectedSkill": "kc-review",
-      "expectedReferences": ["skills/kc-review/references/triad.md"],
+      "expectedSkill": "review",
+      "expectedReferences": ["skills/review/references/triad.md"],
       "safetyCheckRequired": true,
       "notes": "Blocker review of a supplied target is review work."
     },
@@ -122,8 +122,8 @@
       "id": "finding-001",
       "group": "finding",
       "request": "Record this checked stale plugin cache finding with reproduction notes.",
-      "expectedSkill": "kc-report-finding",
-      "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
+      "expectedSkill": "report-finding",
+      "expectedReferences": ["skills/report-finding/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Checked mechanical plugin/cache failure belongs in finding capture."
     },
@@ -131,8 +131,8 @@
       "id": "finding-002",
       "group": "finding",
       "request": "Log a doctor failure finding after confirming the missing config path.",
-      "expectedSkill": "kc-report-finding",
-      "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
+      "expectedSkill": "report-finding",
+      "expectedReferences": ["skills/report-finding/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Doctor and missing-path failures are reportable mechanical findings."
     },
@@ -140,8 +140,8 @@
       "id": "finding-003",
       "group": "finding",
       "request": "Save a structured finding for a reproducible validator failure.",
-      "expectedSkill": "kc-report-finding",
-      "expectedReferences": ["skills/kc-report-finding/references/flow.md"],
+      "expectedSkill": "report-finding",
+      "expectedReferences": ["skills/report-finding/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Validator failure with evidence matches finding capture."
     },
@@ -152,7 +152,7 @@
       "expectedSkill": "reject",
       "expectedReferences": [],
       "safetyCheckRequired": false,
-      "notes": "Weather request is outside the evaluated KC pilot skills."
+      "notes": "Weather request is outside the evaluated Knitten Core pilot skills."
     },
     {
       "id": "reject-002",
@@ -161,7 +161,7 @@
       "expectedSkill": "reject",
       "expectedReferences": [],
       "safetyCheckRequired": false,
-      "notes": "Commit/push is not one of the evaluated KC pilot skills."
+      "notes": "Commit/push is not one of the evaluated Knitten Core pilot skills."
     },
     {
       "id": "reject-003",
@@ -170,7 +170,7 @@
       "expectedSkill": "reject",
       "expectedReferences": [],
       "safetyCheckRequired": false,
-      "notes": "Image generation is outside the evaluated KC pilot skills."
+      "notes": "Image generation is outside the evaluated Knitten Core pilot skills."
     },
     {
       "id": "reject-004",
@@ -179,7 +179,7 @@
       "expectedSkill": "reject",
       "expectedReferences": [],
       "safetyCheckRequired": false,
-      "notes": "Plugin installation is not part of the KC smoke eval pilot set."
+      "notes": "Plugin installation is not part of the Knitten Core smoke eval pilot set."
     }
   ]
 }

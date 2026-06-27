@@ -4,16 +4,16 @@
 
 Implemented.
 
-Compatibility note: this contract still describes the generic KC memory model
-and the KC-era Shotloom integration. Shotloom task artifacts are now amended by
+Compatibility note: this contract still describes the generic Knitten Core memory model
+and the core-era Shotloom integration. Shotloom task artifacts are now amended by
 [`shotloom-owned-task-memory.md`](shotloom-owned-task-memory.md): new primary
 Shotloom task memory lives under the Shotloom checkout and is resolved by
-Shotloom's `scripts/agent-task-artifact.mjs`; KC Shotloom registry entries are
+Shotloom's `scripts/agent-task-artifact.mjs`; Knitten Core Shotloom registry entries are
 compatibility-era surfaces during migration.
 
 ## Goal
 
-Define a small KC-owned contract for long-running Codex work, then apply it to
+Define a small core-owned contract for long-running Codex work, then apply it to
 Shotloom preparation and handoff flows without creating a larger dossier system.
 
 The result should make task memory, user decision gates, prepared task goals,
@@ -25,7 +25,7 @@ sessions without depending on chat history alone.
 Knitten already owns generic output routing and Shotloom already writes several
 task artifacts, but the long-running work contract is implicit:
 
-- KC says durable documents and local outputs route through different systems,
+- Knitten Core says durable documents and local outputs route through different systems,
   but it does not yet name the broader memory rule: code belongs in repos and
   rolling task context belongs in registered local artifact paths.
 - Shotloom prepare-task already appends a briefing entry, but the briefing
@@ -50,21 +50,21 @@ https://cdn.openai.com/pdf/8a9f00cf-d379-4e20-b06f-dd7ba5196a11/OAI_WhitePaper_C
 
 In scope:
 
-- KC-owned long-running work contract text.
-- KC plugin boundary guidance for repo memory vs registered local artifact
+- core-owned long-running work contract text.
+- Knitten Core plugin boundary guidance for repo memory vs registered local artifact
   memory.
-- KC-owned Shotloom prepare briefing template fields.
-- KSL process policy applying the KC contract to Shotloom task loops.
+- core-owned Shotloom prepare briefing template fields.
+- KSL process policy applying the Knitten Core contract to Shotloom task loops.
 - KSL prepare-task flow updates that require the new briefing and activity-log
   fields.
-- Validation through existing KC and KSL doctor/validator commands.
+- Validation through existing Knitten Core and KSL doctor/validator commands.
 
 Out of scope:
 
 - New automation scheduling behavior.
 - New connector workflows.
 - New task dossier database or broad artifact taxonomy.
-- Moving Shotloom domain-specific runtime caches into KC.
+- Moving Shotloom domain-specific runtime caches into Knitten Core.
 - Making KAS own generic long-running work policy.
 - Enforcing every field through a new validator in the first pass.
 - Rewriting historical task artifacts.
@@ -74,12 +74,12 @@ Out of scope:
 | Input | Required | Meaning |
 |-------|----------|---------|
 | OpenAI Codex-maxxing white paper | Yes | Source idea for durable loops, reviewable memory, verifiable task goals, and user decision gates. |
-| Knitten core source checkout | Yes | Active KC workspace that owns generic policy, templates, and validators. |
-| Knitten Shotloom source checkout | Yes | Active KSL workspace that applies the KC contract to Shotloom workflows. |
-| `SYSTEM.md` | Yes | First KC policy read and shortest place to state the generic contract. |
-| `docs/guidelines/plugin-boundary.md` | Yes | Canonical KC/payload ownership boundary. |
+| Knitten core source checkout | Yes | Active Knitten Core workspace that owns generic policy, templates, and validators. |
+| Knitten Shotloom source checkout | Yes | Active KSL workspace that applies the Knitten Core contract to Shotloom workflows. |
+| `SYSTEM.md` | Yes | First Knitten Core policy read and shortest place to state the generic contract. |
+| `docs/guidelines/plugin-boundary.md` | Yes | Canonical Knitten Core/payload ownership boundary. |
 | `agent/config/local-artifact-paths.json` | Yes | Existing registered local artifact paths for Shotloom task memory. |
-| `document-templates/agent-hub/shotloom-prepare-task-briefing.md` | Yes | KC-owned template for the user-facing Shotloom prepare briefing. |
+| `document-templates/agent-hub/shotloom-prepare-task-briefing.md` | Yes | core-owned template for the user-facing Shotloom prepare briefing. |
 | `knitten-sl/skills/shotloom-references/references/PROCESS_POLICY.md` | Yes | KSL shared operational policy for Shotloom review/task loops. |
 | `knitten-sl/skills/shotloom-prepare-task/flow.md` | Yes | Flow that renders the briefing and appends task activity. |
 
@@ -87,27 +87,27 @@ Out of scope:
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| KC system contract update | durable | Short statement of long-running work memory and decision boundaries. |
-| KC boundary guideline update | durable | Clarifies that KC owns generic memory/output contract while payloads apply it. |
-| KC prepare briefing template update | durable | Adds prepared task goal and handoff fields to the Shotloom briefing template. |
+| Knitten Core system contract update | durable | Short statement of long-running work memory and decision boundaries. |
+| Knitten Core boundary guideline update | durable | Clarifies that Knitten Core owns generic memory/output contract while payloads apply it. |
+| Knitten Core prepare briefing template update | durable | Adds prepared task goal and handoff fields to the Shotloom briefing template. |
 | KSL process policy update | durable | Adds Shotloom steering, prepared work/user decision, and handoff rules. |
 | KSL prepare-task flow update | durable | Requires the new template fields and logs the handoff/open-loop summary. |
 | Validation evidence | local / chat | Existing doctor and routing checks proving no plugin boundary regression. |
 
 ## Contract
 
-- KC owns the generic long-running work contract.
+- Knitten Core owns the generic long-running work contract.
 - Payload plugins may apply the contract to domain workflows, but must not own a
   separate generic memory/output policy.
 - Repositories hold code, specs, and committed durable docs.
 - Registered local artifact paths hold rolling task context: decisions, open
   loops, verification state, review notes, briefings, and resume handoffs.
 - Reusable task context must not exist only in chat history.
-- Generic task artifacts are written through KC-owned output contracts, the
-  local artifact path registry, or payload shims that delegate to KC.
+- Generic task artifacts are written through core-owned output contracts, the
+  local artifact path registry, or payload shims that delegate to Knitten Core.
 - Shotloom task artifacts are the accepted target-workspace exception: after
   migration they use the Shotloom repo task-memory resolver as primary storage,
-  while KC output/local-artifact entries remain compatibility-era only.
+  while Knitten Core output/local-artifact entries remain compatibility-era only.
 - Codex may prepare summaries, evidence, patches, PR bodies, reply plans, and
   next-step recommendations.
 - User approval is required before publishing, posting externally, deploying,
@@ -137,9 +137,9 @@ Out of scope:
 
 ## Validation
 
-- `node scripts/doctor.mjs` from KC.
+- `node scripts/doctor.mjs` from Knitten Core.
 - `node scripts/validate-payload-boundary.mjs --payload <knitten-sl-root>` from
-  KC.
+  Knitten Core.
 - `node scripts/test-shotloom-skills.mjs` from KSL.
 - `node scripts/validate-routing.mjs` from KSL.
 - `node scripts/validate-boundary.mjs` from KSL.
@@ -150,9 +150,9 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- KC states the generic long-running work contract without importing Shotloom
+- Knitten Core states the generic long-running work contract without importing Shotloom
   execution details into core policy.
-- KC boundary guidance explains that payloads apply, but do not own, generic
+- Knitten Core boundary guidance explains that payloads apply, but do not own, generic
   memory/output policy.
 - The Shotloom prepare briefing template contains prepared task goal and handoff
   sections.
@@ -162,8 +162,8 @@ Out of scope:
   work/user decision, and one for handoff.
 - No new broad dossier system, automation, connector dependency, or validator is
   introduced in the first pass.
-- Existing KC and KSL validators pass.
-- KC and KSL materialized plugin copies and Codex plugin caches can be refreshed
+- Existing Knitten Core and KSL validators pass.
+- Knitten Core and KSL materialized plugin copies and Codex plugin caches can be refreshed
   without source/copy drift.
 - Shotloom-specific storage language in this spec is compatibility-era and is
   superseded for new task artifacts by `shotloom-owned-task-memory.md`.
@@ -185,23 +185,23 @@ Deferred decisions:
 ### Inputs
 
 - This spec.
-- Current KC policy and boundary docs.
-- Current KC Shotloom prepare briefing template.
+- Current Knitten Core policy and boundary docs.
+- Current Knitten Core Shotloom prepare briefing template.
 - Current KSL shared process policy and prepare-task flow.
-- Existing KC/KSL validation scripts.
-- The active KC and KSL source checkouts; do not edit installed plugin cache
+- Existing Knitten Core/KSL validation scripts.
+- The active Knitten Core and KSL source checkouts; do not edit installed plugin cache
   copies directly.
 
 ### Outputs
 
-- Updated KC docs/templates.
+- Updated Knitten Core docs/templates.
 - Updated KSL shared policy/flow docs.
 - Validation evidence in the final handoff.
 - Optional follow-up decision for KAS pointer or validator enforcement.
 
 ### Implementation Sequence
 
-#### 1. Add KC Core Contract
+#### 1. Add Core Contract
 
 Files:
 
@@ -212,13 +212,13 @@ Changes:
 
 - Add a short `Long-Running Work` section to `SYSTEM.md`.
 - Add detailed boundary language to `plugin-boundary.md`:
-  - KC owns generic memory/output/decision contract.
+  - Knitten Core owns generic memory/output/decision contract.
   - Payloads apply it through domain workflows.
   - Repos and task artifacts have different responsibilities.
 
 Risk:
 
-- KC policy could become too domain-specific if Shotloom examples dominate.
+- Knitten Core policy could become too domain-specific if Shotloom examples dominate.
 
 Proof:
 
@@ -226,7 +226,7 @@ Proof:
   `SYSTEM.md`.
 - `node scripts/doctor.mjs`.
 
-#### 2. Update KC Prepare Briefing Template
+#### 2. Update Knitten Core Prepare Briefing Template
 
 Files:
 
@@ -304,14 +304,14 @@ Proof:
 
 Files:
 
-- KC and KSL source checkouts.
+- Knitten Core and KSL source checkouts.
 - Local materialized plugin copies.
 
 Changes:
 
-- Run KC validation.
+- Run Knitten Core validation.
 - Run KSL validation.
-- Materialize KC and KSL if their source changed.
+- Materialize Knitten Core and KSL if their source changed.
 - Refresh Codex plugin cache for each changed plugin.
 
 Risk:
@@ -320,14 +320,14 @@ Risk:
 
 Proof:
 
-- KC `doctor` passes.
+- Knitten Core `doctor` passes.
 - KSL `doctor` passes with copied-source parity.
-- `codex plugin list` shows refreshed KC and KSL versions when both changed.
+- `codex plugin list` shows refreshed Knitten Core and KSL versions when both changed.
 
 ### Review Plan
 
-- Contract: Verify KC owns the generic policy and KSL only applies it.
+- Contract: Verify Knitten Core owns the generic policy and KSL only applies it.
 - Boundary: Verify no payload-owned generic output/path registry is added.
-- Validation: Verify existing KC/KSL validators pass.
+- Validation: Verify existing Knitten Core/KSL validators pass.
 - Scope: Verify no new automation, broad dossier system, or connector
   dependency is introduced.

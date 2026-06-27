@@ -1,4 +1,4 @@
-# KC/KAS Hardcoded Path Cleanup
+# Knitten Core/KAS Hardcoded Path Cleanup
 
 ## Status
 
@@ -6,15 +6,15 @@ Draft.
 
 ## Goal
 
-Reduce hardcoded machine-local paths in Knitten Core (KC) and Knitten All
-Skills (KAS) without removing useful installation contracts or historical
+Reduce hardcoded machine-local paths in Knitten Core and Knitten All Skills
+without removing useful installation contracts or historical
 evidence. Active code and active user-facing docs should use configurable
 roots, placeholders, or documented platform paths instead of personal absolute
 paths.
 
 ## Problem
 
-KC and KAS both contain path strings such as `/Users/...`, `~/.claude`,
+Knitten Core and KAS both contain path strings such as `/Users/...`, `~/.claude`,
 `~/.codex`, `$HOME/plugins/knitten`, and `/tmp/...`. Some are legitimate
 platform or local-config contracts, but others are stale examples, legacy
 Claude-era paths, or machine assumptions that make the plugin split feel less
@@ -27,8 +27,8 @@ completed plans would be noisy and low value.
 
 In scope:
 
-- KC active README and public-core docs that show local installation paths.
-- KC and KAS executable helper scripts that locate plugin roots, local
+- Knitten Core active README and public-core docs that show local installation paths.
+- Knitten Core and KAS executable helper scripts that locate plugin roots, local
   marketplaces, output folders, or temporary files.
 - KAS active skill code and active skill instructions that rely on legacy
   `.claude` or machine-local paths.
@@ -48,25 +48,25 @@ Out of scope:
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| KC source checkout | Yes | `<kc-root>`, the active Knitten Core source checkout. |
+| Knitten Core source checkout | Yes | `<knitten-root>`, the active Knitten Core source checkout. |
 | KAS source checkout | Yes | `<kas-root>`, the active Knitten All Skills source checkout. |
 | Path scan results | Yes | Current `rg` hits for local absolute paths, home paths, plugin install paths, and temp paths. |
-| Existing output/path runtime | Yes | KC `bin/knitten-resolve-output`, KC `scripts/resolve-output.mjs`, and KAS forwarding helpers. |
+| Existing output/path runtime | Yes | Knitten Core `bin/knitten-resolve-output`, Knitten Core `scripts/resolve-output.mjs`, and KAS forwarding helpers. |
 
 ## Outputs
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| KC doc/code cleanup | durable | KC active docs and helper behavior no longer expose personal absolute paths where placeholders or env vars should be used. |
+| Knitten Core doc/code cleanup | durable | Knitten Core active docs and helper behavior no longer expose personal absolute paths where placeholders or env vars should be used. |
 | KAS doc/code cleanup | durable | KAS active helpers and skills use Knitten-aware or configurable paths where practical. |
 | Intentional path contract list | durable | A short rule in docs or README that distinguishes platform paths, private config paths, examples, and forbidden machine paths. |
 | Validation evidence | local | Commands proving docs, scripts, and plugin diagnostics still pass. |
 
 ## Contract
 
-- KC must not name KAS as a required dependency in active core instructions.
-- Payload plugins may know how to attach to KC, including the local marketplace
-  plugin id and the KC output/path shim.
+- Knitten Core must not name KAS as a required dependency in active core instructions.
+- Payload plugins may know how to attach to Knitten Core, including the local marketplace
+  plugin id and the Knitten Core output/path shim.
 - Active docs must avoid personal absolute paths like `/Users/deem...` and
   `/Users/younsoolim...`; use `$HOME`, `<marketplace-root>`,
   `<plugins-root>`, or `<payload-plugin>` instead.
@@ -81,18 +81,18 @@ Out of scope:
 
 ## Validation
 
-- `git -C <kc-root> diff --check`
+- `git -C <knitten-root> diff --check`
 - `git -C <kas-root> diff --check`
-- `node <kc-root>/scripts/doctor.mjs`
+- `node <knitten-root>/scripts/doctor.mjs`
 - `node <kas-root>/scripts/doctor.mjs`
 - Targeted `rg` scans showing no personal absolute paths remain in active docs
   or executable path defaults, except allowlisted platform/private-config paths.
 
 ## Acceptance Criteria
 
-- KC active README and public-core docs use placeholders or `$HOME` instead of
+- Knitten Core active README and public-core docs use placeholders or `$HOME` instead of
   personal absolute paths.
-- KAS README documents the payload install contract without copying KC policy.
+- KAS README documents the payload install contract without copying Knitten Core policy.
 - KAS active code no longer depends on `~/.claude/private/...` for current
   plugin operation.
 - KAS temp-producing scripts avoid hardcoded `/tmp/...` when a Knitten-local or
@@ -112,16 +112,16 @@ Out of scope:
 
 ### Inputs
 
-- KC and KAS path scan output.
-- Current KC/KAS README installation sections.
+- Knitten Core and KAS path scan output.
+- Current Knitten Core/KAS README installation sections.
 - KAS helper files under `scripts/` and `agent/lib/`.
 - Active KAS skill code with legacy `.claude` or `/tmp` defaults.
 
 ### Outputs
 
-- Updated KC docs.
+- Updated Knitten Core docs.
 - Updated KAS docs and targeted helper/skill code.
-- Validation output from KC and KAS.
+- Validation output from Knitten Core and KAS.
 - A short residual-risk note for intentional paths left in place.
 
 ### Implementation Sequence
@@ -154,7 +154,7 @@ Proof:
 
 - `rg` scan grouped by repository and category.
 
-#### 2. Clean KC Active Docs
+#### 2. Clean Knitten Core Active Docs
 
 Files:
 
@@ -165,8 +165,8 @@ Changes:
 
 - Replace personal absolute paths with `$HOME`, `<marketplace-root>`,
   `<plugins-root>`, and `<payload-plugin>`.
-- Keep KC/KAS dependency direction clear: KC knows payload plugins generally;
-  payload plugins document their KC attachment.
+- Keep Knitten Core/KAS dependency direction clear: Knitten Core knows payload plugins generally;
+  payload plugins document their Knitten Core attachment.
 
 Risk:
 
@@ -192,7 +192,7 @@ Files:
 
 Changes:
 
-- Keep `KNITTEN_PLUGINS_ROOT` as the first-class KC locator.
+- Keep `KNITTEN_PLUGINS_ROOT` as the first-class Knitten Core locator.
 - Keep `$HOME/plugins/knitten` only as a fallback where the local marketplace
   contract requires it.
 - Replace legacy `.claude/private/...` active config lookup with a current
@@ -214,7 +214,7 @@ Proof:
 
 Files:
 
-- KC boundary or README documentation.
+- Knitten Core boundary or README documentation.
 - KAS README when the rule is payload-specific.
 
 Changes:
@@ -226,11 +226,11 @@ Changes:
 
 Risk:
 
-- Duplicating policy in KAS could make the payload plugin own KC policy.
+- Duplicating policy in KAS could make the payload plugin own Knitten Core policy.
 
 Proof:
 
-- KAS refers back to KC for boundary policy and only documents payload-local
+- KAS refers back to Knitten Core for boundary policy and only documents payload-local
   install needs.
 
 #### 5. Validate And Review
@@ -241,7 +241,7 @@ Files:
 
 Changes:
 
-- Run KC and KAS diagnostics.
+- Run Knitten Core and KAS diagnostics.
 - Run path scans after cleanup and list intentional leftovers.
 
 Risk:
@@ -250,14 +250,14 @@ Risk:
 
 Proof:
 
-- KC `node scripts/doctor.mjs`
+- Knitten Core `node scripts/doctor.mjs`
 - KAS `node scripts/doctor.mjs`
 - `git diff --check` in both repositories.
 - Targeted `rg` scans for personal absolute paths in active surfaces.
 
 ### Review Plan
 
-- Contract: verify KC remains generic and KAS owns only payload install
+- Contract: verify Knitten Core remains generic and KAS owns only payload install
   attachment details.
 - Boundary: verify historical docs are not rewritten without value.
 - Validation: verify both repositories pass diagnostics and path scans have

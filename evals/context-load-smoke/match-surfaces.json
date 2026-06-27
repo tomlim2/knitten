@@ -2,27 +2,27 @@
   "schemaVersion": 1,
   "surfaces": [
     {
-      "skill": "kc-implement",
+      "skill": "implement",
       "matchText": "Use for implementing accepted specs or review findings in the active workspace. Use when the user asks to implement, apply a plan, or fix accepted review findings. Input: reviewed spec and design plan, or accepted review findings. Rules: keep edits scoped to the accepted task; do not create a PR or commit unless the user asks; user work belongs in the active workspace, not the plugin install path.",
       "references": [],
       "safetyTerms": ["do not create a PR or commit", "active workspace", "keep edits scoped"]
     },
     {
-      "skill": "kc-draft-spec",
+      "skill": "draft-spec",
       "matchText": "Use for drafting compact specs, implementation contracts, or pre-work plans before editing. Include status, goal, boundary, inputs, outputs, plan, validation, and acceptance criteria. For skill specs, include match-check and Step 0 decisions. Do not write specs into the plugin install path.",
       "references": [],
       "safetyTerms": ["before editing", "match-check", "Do not write specs into the plugin install path"]
     },
     {
-      "skill": "kc-review",
+      "skill": "review",
       "matchText": "Use for read-only single or triad reviews from a prepared packet. Confirm the request is read-only, the prepared packet is present and source-cited, mode is single or triad, and no file or external mutation is expected. Do not read detailed references until Step 0 passes.",
-      "references": ["skills/kc-review/references/triad.md"],
+      "references": ["skills/review/references/triad.md"],
       "safetyTerms": ["read-only", "prepared packet", "no file or external mutation"]
     },
     {
-      "skill": "kc-report-finding",
+      "skill": "report-finding",
       "matchText": "Use for recording checked mechanical workflow or plugin failures. Confirm the failure is mechanically checkable, evidence or reproduction notes are available, and the affected workflow, plugin, skill, script, doc, or path is known. Stop if the issue is only a preference, hypothesis, broad idea, or user-directed scope change.",
-      "references": ["skills/kc-report-finding/references/flow.md"],
+      "references": ["skills/report-finding/references/flow.md"],
       "safetyTerms": ["mechanically checkable", "evidence or reproduction notes", "Stop if the issue is only a preference"]
     }
   ]

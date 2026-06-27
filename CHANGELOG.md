@@ -8,16 +8,18 @@
 - Reworked README positioning around lightweight shared skills, domain plugins,
   measured context loading, and "avoid unnecessary context/work" claim
   guardrails.
+- Renamed exposed core skills to concise names such as `implement`, `review`,
+  and `draft-spec`.
 - Added a minimal domain-plugin example and public metadata guidance for GitHub
   About/topics/release wording.
 - Updated repository validation and CI output-path checks for the public
   example and current `.agent-local/workflow` runtime path.
-- Audited `kc-implement` as the pilot skill and aligned its match check with
+- Audited `implement` as the pilot skill and aligned its match check with
   local implementation work while keeping external mutation gates visible.
 - Added a reusable skill audit checklist for blocker-oriented reviews of
   discovery surface, match checks, context loading, and mutation safety.
-- Recorded follow-up KC skill audits for `kc-draft-spec`, `kc-review`, and
-  `kc-report-finding` with no P0/P1/P2 blockers.
+- Recorded follow-up Knitten Core skill audits for `draft-spec`, `review`, and
+  `report-finding` with no P0/P1/P2 blockers.
 - Documented retained Shotloom output/local-artifact entries as compatibility
   contracts with required metadata and migration rules.
 - Recorded the validator-promotion decision: keep mechanical repository health
@@ -27,27 +29,27 @@
 
 - Reframed Knitten Core as a lightweight shared skill core with domain plugins,
   focusing on avoiding unnecessary context and implementation work.
-- Removed remaining active old route-selection names from KC README, docs, skill
+- Removed remaining active old route-selection names from Knitten Core README, docs, skill
   guidance, eval notes, and scripts while leaving historical specs intact.
-- Tightened KC review/implementation guidance around existing helpers,
+- Tightened Knitten Core review/implementation guidance around existing helpers,
   native/standard-library behavior, and avoiding unnecessary dependencies.
-- Added a post-cleanup release and exposure-audit spec for KC/KSL/KAS.
-- Added explicit match checks to the remaining KC workflow skills after
+- Added a post-cleanup release and exposure-audit spec for Knitten Core/KSL/KAS.
+- Added explicit match checks to the remaining Knitten Core workflow skills after
   parallel low-model skill testing.
-- Added a fix spec for the KC/KAS/Unreal parallel skill-test findings.
-- Simplified KC's external README/About wording around shared workflows,
+- Added a fix spec for the Knitten Core/KAS/Unreal parallel skill-test findings.
+- Simplified Knitten Core external README/About wording around shared workflows,
   domain plugins, match checks, and deferred context.
-- Renamed active KC contracts toward shared workflow, domain plugin, workflow
+- Renamed active Knitten Core contracts toward shared workflow, domain plugin, workflow
   template, and match-check names, while keeping legacy CLI aliases for
   compatibility.
 
 ## v0.1.3 - 2026-06-16
 
-- Added context-load smoke eval coverage for KC review match
+- Added context-load smoke eval coverage for Knitten Core review match
   surfaces.
 - Added local output entries and templates for Shotloom RCA briefings, task
   activity, and prepare-task briefings.
-- Added `kc-log-usage` for local usage journaling and refreshed KC review/report
+- Added `log-usage` for local usage journaling and refreshed Knitten Core review/report
   guidance.
 - Refreshed domain-plugin integration, token-efficient skill loading, and
   repository shell validation docs.
@@ -56,10 +58,10 @@
 
 ## v0.1.2 - 2026-06-11
 
-- Slimmed Knitten Core to the compact KC skill set.
-- Removed `kc-promote-reference` from Core so domain plugins own their own
+- Slimmed Knitten Core to the compact Knitten Core skill set.
+- Removed `promote-reference` from Core so domain plugins own their own
   promoted-reference CRUD.
-- Added `Use for:` lines to active KC skills for cheaper shallow discovery.
+- Added `Use for:` lines to active Knitten Core skills for cheaper shallow discovery.
 - Added `docs/guidelines/skill-authoring.md` for short, token-conscious skill
   authoring.
 - Added domain-plugin integration guidance for connecting domain skills,

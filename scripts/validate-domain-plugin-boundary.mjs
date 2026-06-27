@@ -108,7 +108,7 @@ function checkBoundaryWrapper(results, root) {
       "fail",
       "domain-validator-owns-boundary-policy",
       "scripts/validate-boundary.mjs",
-      "Domain plugin validator must delegate to KC validation instead of owning a boundary rule table.",
+      "Domain plugin validator must delegate to Knitten Core validation instead of owning a boundary rule table.",
     );
   }
 }
@@ -122,10 +122,10 @@ function main() {
   }
 
   checkPath(results, pluginRoot, "skills/kas-support", "KAS domain plugin must not contain generic support skill.");
-  checkPath(results, pluginRoot, "agent/config/outputs.json", "Generic output registry belongs to KC.");
-  checkPath(results, pluginRoot, "agent/config/local-artifact-paths.json", "Generic artifact registry belongs to KC.");
-  checkPath(results, pluginRoot, "agent/config/local-helper-paths.json", "Generic helper registry belongs to KC.");
-  checkPath(results, pluginRoot, "document-templates", "Shared templates belong to KC or skill-local directories.");
+  checkPath(results, pluginRoot, "agent/config/outputs.json", "Generic output registry belongs to Knitten Core.");
+  checkPath(results, pluginRoot, "agent/config/local-artifact-paths.json", "Generic artifact registry belongs to Knitten Core.");
+  checkPath(results, pluginRoot, "agent/config/local-helper-paths.json", "Generic helper registry belongs to Knitten Core.");
+  checkPath(results, pluginRoot, "document-templates", "Shared templates belong to Knitten Core or skill-local directories.");
   checkForbiddenDocs(results, pluginRoot);
   checkActiveLegacyContent(results, pluginRoot);
   checkReferenceLegacyContent(results, pluginRoot);

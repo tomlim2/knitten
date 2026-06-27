@@ -6,15 +6,15 @@ Accepted.
 
 ## Goal
 
-Fix every actionable finding from the low-model parallel skill sweep across KC,
+Fix every actionable finding from the low-model parallel skill sweep across Knitten Core,
 KAS, and Knitten Unreal.
 
 ## Problem
 
 The read-only sweep found:
 
-- KC skill convention gaps in `kc-draft-spec`, `kc-log-usage`, `kc-implement`,
-  and `kc-status`.
+- Knitten Core skill convention gaps in `draft-spec`, `log-usage`, `implement`,
+  and `status`.
 - KAS strict payload boundary failure from an empty local `docs/plans`
   directory.
 - KAS false-positive risk in ad-hoc markdown link checks.
@@ -24,7 +24,7 @@ The read-only sweep found:
 
 In scope:
 
-- Add activation frontmatter and Step 0 gates to the four KC skills reported by
+- Add activation frontmatter and Step 0 gates to the four Knitten Core skills reported by
   the sweep.
 - Remove the empty local KAS `docs/plans` directory and add a repo-owned skill
   link checker that understands code fences/placeholders.
@@ -51,14 +51,14 @@ Out of scope:
 
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
-| KC skill gate edits | durable | All active KC skills have explicit activation gates. |
+| Knitten Core skill gate edits | durable | All active Knitten Core skills have explicit activation gates. |
 | KAS boundary/link-check cleanup | durable/local | Strict boundary passes locally and link checking is repeatable. |
 | Unreal activation naming cleanup | durable | Placeholder validator naming matches current activation language. |
 | Validation evidence | local | Commands proving each edited repo still passes. |
 
 ## Contract
 
-- KC mutation-capable skills must say when to proceed, when to stop, and when
+- Knitten Core mutation-capable skills must say when to proceed, when to stop, and when
   not to read later instructions.
 - KAS link checking must ignore markdown links inside fenced code blocks and
   placeholder destinations such as `{url}`.
@@ -69,9 +69,9 @@ Out of scope:
 
 ## Validation
 
-- KC: `python3 /Users/younsoolim/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .`
-- KC: `node scripts/validate-repository-shell.mjs`
-- KC: `node scripts/doctor.mjs`
+- Knitten Core: `python3 /Users/younsoolim/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py .`
+- Knitten Core: `node scripts/validate-repository-shell.mjs`
+- Knitten Core: `node scripts/doctor.mjs`
 - KAS: `node scripts/validate-activation.mjs`
 - KAS: `node scripts/check-skill-links.mjs`
 - KAS: `node scripts/validate-boundary.mjs`
@@ -83,7 +83,7 @@ Out of scope:
 
 ## Acceptance Criteria
 
-- KC sweep failures are resolved for the four reported skills.
+- Knitten Core sweep failures are resolved for the four reported skills.
 - KAS strict boundary no longer reports `docs/plans`.
 - KAS link checker reports no broken active skill links and avoids the previous
   `{url}` false positive.
@@ -105,21 +105,21 @@ Out of scope:
 
 ### Outputs
 
-- Updated KC `SKILL.md` files.
+- Updated Knitten Core `SKILL.md` files.
 - New KAS link checker script and doctor integration.
 - Removed empty local KAS `docs/plans`.
 - Renamed Unreal activation validator and README/doctor references.
 
 ### Implementation Sequence
 
-#### 1. KC Activation Gates
+#### 1. Knitten Core Activation Gates
 
 Files:
 
-- `skills/kc-draft-spec/SKILL.md`
-- `skills/kc-log-usage/SKILL.md`
-- `skills/kc-implement/SKILL.md`
-- `skills/kc-status/SKILL.md`
+- `skills/draft-spec/SKILL.md`
+- `skills/log-usage/SKILL.md`
+- `skills/implement/SKILL.md`
+- `skills/status/SKILL.md`
 
 Changes:
 

@@ -1,10 +1,10 @@
 ---
-name: kc-status
+name: status
 description: Check Knitten Core installation health.
 match-check: normal
 ---
 
-# KC Status
+# Status
 
 Use for: checking Knitten Core source and installed plugin health.
 
@@ -29,7 +29,7 @@ healthy as a Codex plugin.
    ```
 
    Resolve `<knitten-plugin-root>` as the plugin checkout containing this
-   `skills/kc-status/SKILL.md` file.
+   `skills/status/SKILL.md` file.
 
 2. Report whether `ok` is true.
 3. If any check failed, report the failed check ids and details.

@@ -56,7 +56,7 @@ Purpose:
 - point to the next candidate AH skills
 - avoid file edits unless explicitly requested
 
-This mirrors the successful `kc-status` approach and proves the AH skill
+This mirrors the successful `status` approach and proves the AH skill
 surface before importing heavier workflows.
 
 ## Candidate Migration Order
@@ -68,7 +68,7 @@ and choose the smallest useful next skill.
 | Order | Skill | Reason |
 |-------|-------|--------|
 | 1 | `ah-manage-spec` | Core AH authoring workflow, but needs resolver/template cleanup first. |
-| 2 | `kc-report-finding` | Useful operational capture, but depends on missing scripts today. |
+| 2 | `report-finding` | Useful operational capture, but depends on missing scripts today. |
 | 3 | `ah-manage-milestone` | Useful after spec handling is stable. |
 | 4 | `ah-audit-skill` | Useful review skill, but has legacy fallback paths to remove. |
 | 5 | `ah-edit-skill` | Higher mutation risk; move after audit and spec flows are stable. |

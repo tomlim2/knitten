@@ -44,11 +44,11 @@ artifact paths hold rolling work context: decisions, open loops, verification
 state, review notes, briefings, and resume handoffs.
 
 Do not rely on chat history as the only memory for reusable task context. Write
-reusable context through KC-owned output contracts or the local artifact path
+reusable context through core-owned output contracts or the local artifact path
 registry.
 
 When a target workspace accepts its own local task-memory contract, that
-workspace owns the physical task artifact root. KC may keep old registry
+workspace owns the physical task artifact root. Knitten Core may keep old registry
 entries as explicit compatibility surfaces, but new primary storage should
 resolve under the target workspace. Shotloom task artifacts use the Shotloom
 `scripts/agent-task-artifact.mjs` contract for primary task memory.
@@ -62,7 +62,7 @@ the scoped command still matches the request.
 
 ## Mechanical Finding Capture
 
-Use `knitten:kc-report-finding` only for checked mechanical errors:
+Use `knitten:report-finding` only for checked mechanical errors:
 
 - missing file, path, script, config, skill, or command
 - stale skill reference to a moved config or helper

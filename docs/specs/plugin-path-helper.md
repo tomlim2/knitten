@@ -50,12 +50,12 @@ Outputs:
 
 Skill defaults:
 
-- `kc-draft-spec`: `spec`
+- `draft-spec`: `spec`
 - `ah-add-design-plan`: `design-plan`
 - `ah-review-pr`: `review-json`
 - `ah-review-implementation`: `review-json`
 - `ah-respond-pr`: `temp-json`
-- `kc-report-finding`: `finding-json`
+- `report-finding`: `finding-json`
 
 Kinds:
 
@@ -85,7 +85,7 @@ Kinds:
 - `node scripts/resolve-paths.mjs` returns JSON.
 - `node scripts/resolve-paths.mjs --create` creates `.agent-local/knitten` in
   the selected workspace.
-- `node scripts/resolve-paths.mjs --skill=kc-draft-spec --name=test-task`
+- `node scripts/resolve-paths.mjs --skill=draft-spec --name=test-task`
   returns `docs/specs/test-task.md`.
 - `node scripts/resolve-paths.mjs --kind=spec --name=test-task` returns
   `docs/specs/test-task.md`.

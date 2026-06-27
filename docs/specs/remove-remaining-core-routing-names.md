@@ -12,7 +12,7 @@ index, and path/output infrastructure.
 
 ## Problem
 
-After the main terminology cleanup, a few active or user-facing KC files still
+After the main terminology cleanup, a few active or user-facing Knitten Core files still
 carry old routing names:
 
 - `docs/guidelines/routing-integration.md` is a compatibility pointer.
@@ -20,9 +20,9 @@ carry old routing names:
   guideline file.
 - `docs/guidelines/skill-authoring.md` still talks about routers as the
   explicit policy name.
-- `skills/kc-draft-spec/SKILL.md` still says `router-shaped` and `router
+- `skills/draft-spec/SKILL.md` still says `router-shaped` and `router
   behavior`.
-- `evals/context-load-smoke/cases.json` still says requests are outside KC
+- `evals/context-load-smoke/cases.json` still says requests are outside Knitten Core
   routing skills.
 - `CHANGELOG.md` still describes the old guideline as connecting payload
   routers.
@@ -39,7 +39,7 @@ In scope:
 - `docs/guidelines/routing-integration.md`.
 - `docs/guidelines/legacy-router-migration.md`.
 - `docs/guidelines/skill-authoring.md`.
-- `skills/kc-draft-spec/SKILL.md`.
+- `skills/draft-spec/SKILL.md`.
 - `evals/context-load-smoke/cases.json`.
 
 Out of scope:
@@ -52,9 +52,9 @@ Out of scope:
 
 | Input | Required | Meaning |
 |-------|----------|---------|
-| Current KC active-name scan | Yes | Source list of remaining old names. |
+| Current Knitten Core active-name scan | Yes | Source list of remaining old names. |
 | `docs/guidelines/skill-authoring.md` | Yes | Active skill creation guidance. |
-| `skills/kc-draft-spec/SKILL.md` | Yes | Active spec drafting skill. |
+| `skills/draft-spec/SKILL.md` | Yes | Active spec drafting skill. |
 
 ## Outputs
 
@@ -63,13 +63,13 @@ Out of scope:
 | Removed compatibility guideline files | durable | Old active old-name docs are deleted. |
 | Updated active guidance | durable | Skill authoring and spec drafting use direct activation / adapter wording. |
 | Updated eval notes and changelog wording | durable | User-facing names no longer say routing/router. |
-| Validation evidence | local | Commands proving KC remains valid. |
+| Validation evidence | local | Commands proving Knitten Core remains valid. |
 
 ## Contract
 
-- Active KC files outside `docs/specs/**` must not contain `routing`, `router`,
+- Active Knitten Core files outside `docs/specs/**` must not contain `routing`, `router`,
   or `route` unless the term appears inside a different domain word that is not
-  part of the old KC routing direction.
+  part of the old Knitten Core routing direction.
 - Deleting old guideline files must not leave active references to them.
 - Skill-authoring guidance must still clearly forbid broad pre-selection layers
   and parent-aware leaf skills.
@@ -91,8 +91,8 @@ Out of scope:
 - `skill-authoring.md` describes direct activation, adapters, internal flows,
   classification scripts, and parent-independent exposed skills without old
   routing names.
-- `kc-draft-spec` uses the same direct activation / adapter wording.
-- Context-load smoke eval notes use "evaluated KC pilot skills" or equivalent.
+- `draft-spec` uses the same direct activation / adapter wording.
+- Context-load smoke eval notes use "evaluated Knitten Core pilot skills" or equivalent.
 - The targeted active-name scan returns no matches.
 - Validation passes.
 - Commit the completed cycle before starting the next cycle.
@@ -109,13 +109,13 @@ Out of scope:
 - `docs/guidelines/routing-integration.md`
 - `docs/guidelines/legacy-router-migration.md`
 - `docs/guidelines/skill-authoring.md`
-- `skills/kc-draft-spec/SKILL.md`
+- `skills/draft-spec/SKILL.md`
 - `evals/context-load-smoke/cases.json`
 
 ### Outputs
 
 - Deleted old-name guideline files.
-- Updated wording in active KC guidance, skill, eval fixtures, and changelog.
+- Updated wording in active Knitten Core guidance, skill, eval fixtures, and changelog.
 - Validation output.
 
 ### Implementation Sequence
@@ -145,7 +145,7 @@ Proof:
 Files:
 
 - `docs/guidelines/skill-authoring.md`
-- `skills/kc-draft-spec/SKILL.md`
+- `skills/draft-spec/SKILL.md`
 
 Changes:
 
@@ -159,7 +159,7 @@ Risk:
 
 Proof:
 
-- `! rg -n 'routing|router|route|Routing|Router|Route' docs/guidelines/skill-authoring.md skills/kc-draft-spec/SKILL.md`
+- `! rg -n 'routing|router|route|Routing|Router|Route' docs/guidelines/skill-authoring.md skills/draft-spec/SKILL.md`
 
 #### 3. Clean User-Facing Notes
 
@@ -183,6 +183,6 @@ Proof:
 
 ### Review Plan
 
-- Contract: active KC files outside `docs/specs/**` have no old routing names.
+- Contract: active Knitten Core files outside `docs/specs/**` have no old routing names.
 - Boundary: historical specs are not rewritten in this cycle.
 - Validation: shell, doctor, plugin validation, and diff check pass.

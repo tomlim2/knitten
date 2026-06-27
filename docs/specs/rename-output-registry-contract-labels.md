@@ -6,7 +6,7 @@ Accepted.
 
 ## Goal
 
-Rename active KC validation labels from `routing registry` to `output registry`
+Rename active Knitten Core validation labels from `routing registry` to `output registry`
 terms so the tooling describes what it actually checks: output, local artifact,
 and local helper registries.
 
@@ -29,7 +29,7 @@ In scope:
 - Active repository shell validator function names in
   `scripts/validate-repository-shell.mjs`.
 - Doctor check ids printed to users and copied-plugin validation output.
-- The payload-boundary usage text when it names generic KC ownership.
+- The payload-boundary usage text when it names generic Knitten Core ownership.
 - Current milestone source-spec references if they point at the renamed
   registry spec.
 

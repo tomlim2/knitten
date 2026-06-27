@@ -7,7 +7,7 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..
 const CASES_PATH = "evals/context-load-smoke/cases.json";
 const SURFACES_PATH = "evals/context-load-smoke/match-surfaces.json";
 const REPORT_PATH = ".agent-local/workflow/evals/context-load-smoke/latest.json";
-const PILOT_SKILLS = ["kc-implement", "kc-draft-spec", "kc-review", "kc-report-finding"];
+const PILOT_SKILLS = ["implement", "draft-spec", "review", "report-finding"];
 const GROUP_COUNTS = { implementation: 5, spec: 4, review: 4, finding: 3, reject: 4 };
 const THRESHOLDS = {
   matchCorrect: 18,
@@ -21,7 +21,7 @@ function usage() {
   return `Usage:
   run-context-load-smoke-eval.mjs [--report] [--print-json]
 
-Runs the deterministic KC context-load smoke eval.`;
+Runs the deterministic Knitten context-load smoke eval.`;
 }
 
 function parseArgs(argv) {
@@ -72,19 +72,19 @@ function predictedSkillFor(request) {
   const text = String(request).toLowerCase();
   if (/\b(weather|image|install)\b/.test(text) || /\b(commit and push|commit\/push)\b/.test(text)) return "reject";
   if (/\b(record|log|save)\b/.test(text) && /\b(finding|failure|stale|doctor|validator|reproducible|missing config)\b/.test(text)) {
-    return "kc-report-finding";
+    return "report-finding";
   }
   if (/\b(make|create|draft|write)\b/.test(text) && /\b(spec|pre-work plan|implementation contract|design plan)\b/.test(text)) {
-    return "kc-draft-spec";
+    return "draft-spec";
   }
   if (/\b(implement|apply|fix|update|make)\b/.test(text) && /\b(spec|plan|finding|blocker|config|script|code|files?)\b/.test(text)) {
-    return "kc-implement";
+    return "implement";
   }
   if (/\b(triad review|single read-only review|read-only review|review|find p0-p2 blockers?)\b/.test(text)) {
-    return "kc-review";
+    return "review";
   }
   if (/\b(draft|spec|pre-work|implementation contract|design plan|plan)\b/.test(text)) {
-    return "kc-draft-spec";
+    return "draft-spec";
   }
   return "reject";
 }

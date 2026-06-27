@@ -1,4 +1,4 @@
-# KC Implement Pilot Audit
+# Knitten Core Implement Pilot Audit
 
 ## Status
 
@@ -6,20 +6,20 @@ Implemented.
 
 ## Goal
 
-Audit `kc-implement` as the first pilot skill for short match files,
+Audit `implement` as the first pilot skill for short match files,
 deferred-loading discipline, and visible mutation safety.
 
 ## Scope
 
 Reviewed:
 
-- `skills/kc-implement/SKILL.md`
+- `skills/implement/SKILL.md`
 - `docs/specs/skill-match-check-policy.md`
 - `docs/guidelines/skill-authoring.md`
 
 Out of scope:
 
-- Rewriting other KC skills.
+- Rewriting other Knitten Core skills.
 - Adding automated validators before the pilot checklist is stable.
 - Changing commit, push, PR, deploy, or external mutation behavior.
 
@@ -27,11 +27,11 @@ Out of scope:
 
 | Priority | Finding | Action |
 |----------|---------|--------|
-| P2 | `kc-implement` declared `match-check: strict`, but its normal path is local file edits and local validation. Strict external-state actions are already stopped by Step 0 unless explicitly approved. | Changed frontmatter to `match-check: normal`. |
+| P2 | `implement` declared `match-check: strict`, but its normal path is local file edits and local validation. Strict external-state actions are already stopped by Step 0 unless explicitly approved. | Changed frontmatter to `match-check: normal`. |
 
 ## Result
 
-No P0/P1/P2 blockers remain for `kc-implement`.
+No P0/P1/P2 blockers remain for `implement`.
 
 The skill keeps the important safety rules in the main file:
 

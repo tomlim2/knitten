@@ -1,10 +1,10 @@
 ---
-name: kc-log-usage
+name: log-usage
 description: Log local Codex usage and cost notes.
 match-check: normal
 ---
 
-# KC Log Usage
+# Log Usage
 
 Use this skill to append concise operating-cost notes for agent work. The log is
 for local reflection, not source-controlled project documentation.
@@ -25,19 +25,19 @@ for local reflection, not source-controlled project documentation.
 Prefer the current repository's local ignored journal:
 
 ```text
-.agent-local/kc/usage-log.md
+.agent-local/knitten/usage-log.md
 ```
 
 If there is no current repository, use:
 
 ```text
-~/.codex/local/kc/usage-log.md
+~/.codex/local/knitten/usage-log.md
 ```
 
 Before writing inside a repository, confirm the chosen path is ignored:
 
 ```bash
-git check-ignore -v .agent-local/kc/usage-log.md
+git check-ignore -v .agent-local/knitten/usage-log.md
 ```
 
 If it is not ignored, create or use an already ignored local-only directory only
