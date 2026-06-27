@@ -54,7 +54,7 @@ jobs:
           const fs = require("fs");
           const path = require("path");
           const output = JSON.parse(fs.readFileSync("/tmp/knitten-output.json", "utf8"));
-          const expectedPath = path.join(process.cwd(), ".agent-local", "ah", "reviews", "ci.json");
+          const expectedPath = path.join(process.cwd(), ".agent-local", "workflow", "reviews", "ci.json");
           if (fs.realpathSync(output.pluginRoot) !== fs.realpathSync(process.cwd())) {
             throw new Error(`unexpected pluginRoot: ${output.pluginRoot}`);
           }

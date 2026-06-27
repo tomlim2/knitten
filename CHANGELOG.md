@@ -10,6 +10,8 @@
   guardrails.
 - Added a minimal domain-plugin example and public metadata guidance for GitHub
   About/topics/release wording.
+- Updated repository validation and CI output-path checks for the public
+  example and current `.agent-local/workflow` runtime path.
 
 ## v0.1.6 - 2026-06-27
 

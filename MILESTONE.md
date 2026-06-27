@@ -76,9 +76,6 @@ and pilot audit are both recorded.
 | P1 | Create the skill audit checklist | Durable checklist for overlong skills, ambiguous triggers, missing non-triggers, missing input, and missing Step 0 checks | The checklist can review one skill without inventing criteria. |
 | P1 | Audit follow-up KC skills | Audit notes for `kc-draft-spec`, `kc-review`, and `kc-report-finding` | Each skill has blocker-free matching, deferred-loading, and safety findings, or a concrete fix task. |
 | P1 | Document Shotloom compatibility outputs | Short contract note for retained Shotloom output ids in Knitten core | Future registry cleanup can tell compatibility outputs from domain leakage. |
-| P1 | Make README adoption-ready | First-viewport README copy, quickstart, measured proof block, and when-to-use/when-not-use section | A new Codex user can tell what Knitten does, why it helps, how to try it, and what the token-efficiency claim actually means in under one minute. |
-| P1 | Add minimal domain-plugin example path | Small example plugin with one short skill, match check, and deferred reference | A reader can copy the pattern without understanding private Shotloom/KAS history. |
-| P2 | Align GitHub discoverability surfaces | About text, topics recommendation, release-note wording, and README badges/links if useful | External surfaces consistently say lightweight Codex workflow core, domain plugins, match checks, and measured context loading. |
 | P2 | Decide validator promotion | Decision note on which audit checks belong in `doctor` | Only mechanically checkable, stable rules are selected for validation. |
 
 ## Deferred
@@ -101,6 +98,10 @@ checks survive the smaller context surface.
   contract.
 - Context-load smoke eval has a 20-case fixture, deterministic runner, local raw
   report, and reviewed result note.
+- README first screen, quickstart, measured proof block, when-to-use guidance,
+  public metadata note, and minimal domain-plugin example are implemented.
+- Repository validation allows the minimal domain-plugin example and CI expects
+  the current `.agent-local/workflow` output path.
 
 ## Pilot Batch
 
