@@ -8,15 +8,19 @@ match-check: normal
 
 Use for: implementing accepted specs or review findings in the active workspace.
 
-Use when the user asks to implement, apply a plan, or fix accepted review
-findings.
+Use when the user asks to implement an accepted spec, apply a user-approved
+plan, or fix accepted review findings.
 
 ## Step 0: Match Check
 
-- Continue only when the user asks to implement, apply an accepted spec, or fix
-  accepted review findings.
+- Continue only when the user asks to implement an accepted spec, apply a
+  user-approved plan, or fix accepted review findings.
+- Treat a spec, plan, or finding as accepted only when the user approved it in
+  this task context or provided it as the implementation target.
 - Confirm the accepted contract, target workspace, target files or modules, and
   validation expectations before editing.
+- If validation expectations are missing, infer the nearest meaningful
+  validation and state that assumption before editing.
 - Stop and ask for a repaired contract when the request lacks an accepted spec,
   actionable finding, or clear implementation target.
 - Stop before committing, pushing, merging, deploying, deleting, or mutating

@@ -6,7 +6,8 @@ match-check: normal
 
 # Status
 
-Use for: checking Knitten Core source and installed plugin health.
+Use for: checking whether Knitten Core is installed, registered, or healthy as a
+Codex plugin.
 
 Use this skill when the user asks whether Knitten is installed, registered, or
 healthy as a Codex plugin.
@@ -14,7 +15,7 @@ healthy as a Codex plugin.
 ## Step 0: Match Check
 
 - Continue only when the request asks to check Knitten Core installation,
-  registration, copied plugin state, or repository health.
+  registration, copied plugin state, or installed plugin health.
 - Resolve the active Knitten Core checkout before running diagnostics.
 - Stop if the user wants to modify, materialize, reinstall, or repair the
   plugin; name the requested mutation separately before proceeding.

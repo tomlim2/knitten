@@ -41,7 +41,7 @@ keep long flow details behind match checks or internal references.
      after the pilot is stable.
 
 4. **Registry Contract Reconciliation**
-   - Treat current Shotloom output entries in Knitten as explicit compatibility
+   - Treat current legacy domain output entries in Knitten as explicit compatibility
      contracts, not accidental domain leakage.
    - Keep `doctor` and repository shell validation checking source and installed
      copies for reachable templates, allowed makers, helper reachability, and
@@ -90,7 +90,7 @@ checks survive the smaller context surface.
 - `doctor` checks source and installed plugin copies.
 - Repository shell validation checks active registry shape and ownership.
 - `local-helper-paths.json` is reachable and currently has no helper entries.
-- The installed Knitten copy has the current Shotloom task activity output
+- The installed Knitten copy has the current legacy task activity output
   contract.
 - Context-load smoke eval has a 20-case fixture, deterministic runner, local raw
   report, and reviewed result note.
@@ -104,9 +104,9 @@ checks survive the smaller context surface.
   loading, mutation safety, implementation discipline, and audit completion.
 - Follow-up audit for `draft-spec`, `review`, and `report-finding`
   found no P0/P1/P2 blockers.
-- Shotloom compatibility output contracts are documented as non-primary
+- Legacy domain compatibility output contracts are documented as non-primary
   compatibility surfaces with required metadata and migration rules.
-- Validator promotion decision is recorded: mechanical repository health checks
+- Validator promotion decision is recorded: mechanical repository checks
   stay in validators, judgment-heavy skill quality checks stay in human audits.
 
 ## Pilot Batch
@@ -134,7 +134,7 @@ Candidate follow-up audits:
 - Audit guidance exists before broad skill migration.
 - Context-load/token-efficiency experiments are recorded before their results are
   used to change milestone direction.
-- The status of Shotloom compatibility output contracts is documented before
+- The status of legacy domain compatibility output contracts is documented before
   any registry ownership change.
 - README and GitHub-facing wording make the project understandable to a
   non-owner without reading internal history.
@@ -150,5 +150,4 @@ Candidate follow-up audits:
 - [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
 - [`docs/specs/implement-pilot-audit.md`](docs/specs/implement-pilot-audit.md)
 - [`docs/specs/follow-up-skill-audit.md`](docs/specs/follow-up-skill-audit.md)
-- [`docs/specs/shotloom-compatibility-output-contracts.md`](docs/specs/shotloom-compatibility-output-contracts.md)
 - [`docs/specs/validator-promotion-decision.md`](docs/specs/validator-promotion-decision.md)

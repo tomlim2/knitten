@@ -34,15 +34,15 @@ commands before changing public claims.
 | Check | Current result | Re-run |
 |-------|----------------|--------|
 | Discovery surface | 7 skills, about 111 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Skill bodies | about 3282 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Context-load smoke eval | 20/20 match accuracy, 63.0% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
+| Skill bodies | about 3536 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Context-load smoke eval | 20/20 match accuracy, 65.7% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
 
 ## Included Skills
 
 | Skill | Use it for |
 |-------|------------|
-| `draft-spec` | Draft compact implementation specs and pre-work plans. |
-| `implement` | Implement accepted specs or accepted review findings. |
+| `draft-spec` | Draft compact spec artifacts. |
+| `implement` | Implement accepted specs, approved plans, or review findings. |
 | `review` | Run read-only single/triad reviews from a prepared packet. |
 | `review-fix-loop` | Repeat review, fix, and validation until blockers clear. |
 | `report-finding` | Record checked mechanical workflow failures. |

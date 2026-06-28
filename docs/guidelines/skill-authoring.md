@@ -59,14 +59,14 @@ discovery.
 Prefer:
 
 ```text
-Review Shotloom asset-library PRs.
+Review API migration PRs.
 ```
 
 Avoid:
 
 ```text
-Review CINEV/shotloom-asset-library pull requests as a human reviewer with
-producer, engineer, and domain-specific validation rules...
+Review all pull requests in this product area as a human reviewer with
+engineering, product, and domain-specific validation rules...
 ```
 
 ## Match Rule

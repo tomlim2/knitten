@@ -50,8 +50,7 @@ registry.
 When a target workspace accepts its own local task-memory contract, that
 workspace owns the physical task artifact root. Knitten Core may keep old registry
 entries as explicit compatibility surfaces, but new primary storage should
-resolve under the target workspace. Shotloom task artifacts use the Shotloom
-`scripts/agent-task-artifact.mjs` contract for primary task memory.
+resolve under the target workspace through that workspace's resolver contract.
 
 Codex may prepare summaries, evidence, drafts, patches, and next-step
 recommendations. User approval is required for publishing, external posting,

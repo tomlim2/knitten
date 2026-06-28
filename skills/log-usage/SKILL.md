@@ -17,6 +17,8 @@ for local reflection, not source-controlled project documentation.
   repository.
 - Stop if the user is asking for project documentation, release notes, or a
   source-controlled report instead of a local usage journal.
+- Match local usage journal requests; reject release notes, project docs, and
+  tracked reports.
 - Do not create directories, inspect ignore state, or append entries until this
   check passes.
 

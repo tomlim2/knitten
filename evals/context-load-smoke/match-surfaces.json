@@ -3,7 +3,7 @@
   "surfaces": [
     {
       "skill": "implement",
-      "matchText": "Use for implementing accepted specs or review findings in the active workspace. Use when the user asks to implement, apply a plan, or fix accepted review findings. Input: reviewed spec and design plan, or accepted review findings. Rules: keep edits scoped to the accepted task; do not create a PR or commit unless the user asks; user work belongs in the active workspace, not the plugin install path.",
+      "matchText": "Use for implementing accepted specs or review findings in the active workspace. Use when the user asks to implement an accepted spec, apply a user-approved plan, or fix accepted review findings. Input: reviewed spec and design plan, or accepted review findings. Rules: keep edits scoped to the accepted task; do not create a PR or commit unless the user asks; user work belongs in the active workspace, not the plugin install path.",
       "references": [],
       "safetyTerms": ["do not create a PR or commit", "active workspace", "keep edits scoped"]
     },

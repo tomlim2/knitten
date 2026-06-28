@@ -14,13 +14,19 @@ implementation repeatedly.
 
 This is a Knitten Core skill/protocol, not a shell command or PATH executable.
 
+Review packet means target, scope, source citations, changed-surface context,
+and findings format are supplied. Checkpoint JSON records review attempts,
+accepted fixes, validations, and remaining blockers.
+
 ## Step 0: Match Check
 
 Confirm:
 
 - the request needs repeated review, fix, validation, and checkpointing,
-- the target workspace is writable and identifiable,
-- review mode is `single` or `triad`, defaulting to `triad`,
+- the target workspace is writable and identifiable from the current workspace
+  or an explicit path,
+- review mode is `single` or `triad`; use the requested mode, defaulting to
+  `triad`,
 - mutation is limited to local files unless the user explicitly approved an
   exact external action.
 

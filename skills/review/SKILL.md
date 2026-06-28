@@ -12,6 +12,10 @@ Use for: read-only single/triad reviews from a prepared packet.
 Use when a caller has already prepared the review target, brief, changed
 surface inventory, base documents, and optional finding schema.
 
+Prepared packet means target, scope, source citations, and changed-surface
+context are supplied. Role review means read-only single/triad review, not
+target discovery or workflow ownership.
+
 This is a review engine, not a workflow owner. It does not discover targets,
 run shell commands, write files, commit, post, push, merge, deploy, or mutate
 GitHub/Linear.
@@ -22,7 +26,7 @@ Confirm:
 
 - the request is a read-only Knitten Core role review,
 - the prepared packet is present and source-cited,
-- mode is `single` or `triad`; default `triad`,
+- mode is `single` or `triad`; use the requested mode, defaulting to `triad`,
 - no file or external mutation is expected.
 
 Stop and ask the caller to repair the packet when:

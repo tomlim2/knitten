@@ -95,9 +95,9 @@ registries or path policy.
 
 Durable task documents belong to the target workspace when that workspace has a
 document convention. Shared local scratch belongs to the Knitten hub.
-Shotloom task artifacts are a target-workspace-owned case: Knitten may keep
-compatibility output ids for old KSL flows, but primary task memory belongs to
-the Shotloom checkout through its `scripts/agent-task-artifact.mjs` resolver.
+Legacy domain task artifacts are target-workspace-owned cases: Knitten may keep
+compatibility output ids for old flows, but primary task memory belongs to the
+target checkout through its own resolver.
 
 ## Long-Running Work Memory
 

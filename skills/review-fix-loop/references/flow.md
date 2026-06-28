@@ -18,9 +18,8 @@ Before each next loop, write a compact JSON checkpoint. On resume or after
 compaction, read the newest checkpoint before continuing.
 
 Prefer the target workspace's task artifact resolver when it exposes a
-checkpoint artifact. For Shotloom, use `scripts/agent-task-artifact.mjs` when
-that contract supports the needed artifact; otherwise write to the Knitten Core generic
-checkpoint path:
+checkpoint artifact. When that contract does not support the needed artifact,
+write to the Knitten Core generic checkpoint path:
 
 ```bash
 <knitten-plugin-root>/bin/knitten-resolve-output \

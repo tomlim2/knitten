@@ -6,17 +6,18 @@ match-check: normal
 
 # Draft Spec
 
-Use for: drafting compact specs, implementation contracts, or pre-work plans.
+Use for: drafting compact spec artifacts.
 
 Use when the user asks for a spec, plan, design plan, implementation contract,
 or pre-work document before editing.
 
 ## Step 0: Match Check
 
-- Continue only when the request asks for a spec, plan, design plan,
+- Continue only when the request asks for a written spec artifact, design plan,
   implementation contract, or pre-work document.
 - Confirm the active workspace and intended durable spec location before
   writing.
+- If the workspace or spec path is unclear, ask before writing.
 - Stop before implementation unless the user separately asks to implement after
   the spec is accepted.
 - If the request is generic or better handled by another skill, stop and name
@@ -44,7 +45,7 @@ locking the spec.
 
 ## Spec Shape
 
-Use `document-templates/workflow/spec.md` when available.
+After Step 0 passes, use `document-templates/workflow/spec.md` when available.
 
 Include:
 

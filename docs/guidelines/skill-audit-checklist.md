@@ -77,7 +77,7 @@ Flag as blocker when:
 
 - a non-matching request would still cause large references to be read,
 - the skill repeats long flow details that could live behind a match,
-- a leaf skill only makes sense after reading a parent router or domain index.
+- a leaf skill only makes sense after reading a parent domain index or selector.
 
 ### 4. Mutation Safety
 
