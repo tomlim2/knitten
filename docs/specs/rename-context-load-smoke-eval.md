@@ -17,7 +17,7 @@ active runner and fixture paths still use routing names:
 
 - `scripts/run-context-load-smoke-eval.mjs`
 - `evals/context-load-smoke/*.json`
-- `.agent-local/ah/evals/context-load-smoke/latest.json`
+- `.agent-local/workflow/evals/context-load-smoke/latest.json`
 
 That keeps active tooling framed around routing even though the useful evidence
 is about match surfaces, reject behavior, reference precision, safety
@@ -29,7 +29,7 @@ In scope:
 
 - Rename the canonical runner to `scripts/run-context-load-smoke-eval.mjs`.
 - Rename canonical fixtures to `evals/context-load-smoke/*.json`.
-- Rename the local report path to `.agent-local/ah/evals/context-load-smoke/latest.json`.
+- Rename the local report path to `.agent-local/workflow/evals/context-load-smoke/latest.json`.
 - Keep `scripts/run-context-load-smoke-eval.mjs` as a compatibility wrapper if small.
 - Update active docs and result summaries to use context-load wording.
 - Update repository shell validation to allow the new fixture path.

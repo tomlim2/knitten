@@ -1,15 +1,16 @@
-# AH Skill Minimal Adoption
+# Shared Workflow Skill Minimal Adoption
 
 ## Status
 
-Draft.
+Implemented/historical. Current Knitten skill names no longer use the old
+`ah-*` prefix.
 
 ## Goal
 
-Migrate Knitten/agent-hub `ah-*` skills into the existing `knitten` plugin one
-at a time.
+Migrate old Knitten `ah-*` workflow skills into the existing `knitten` plugin
+one at a time.
 
-The first milestone should add one minimal AH status skill to `knitten`. It
+The first milestone should add one minimal status skill to `knitten`. It
 should not import company, personal, hobby, Shotloom, tutoring, drink, or other
 domain-specific skills.
 

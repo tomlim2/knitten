@@ -1,12 +1,13 @@
-# KAS Brainless Skill Payload
+# KAS Domain Skill Boundary
 
 ## Status
 
-Draft.
+Implemented/historical. This document used the older `payload plugin` term while
+defining the boundary now called `domain plugin` in `SYSTEM.md`.
 
 ## Goal
 
-Make `knitten-all-skills` a brainless payload plugin: it stores private skill
+Make `knitten-all-skills` a domain plugin: it stores private skill
 content only, while `knitten` owns every generic path, routing, output,
 repository-location, template, validation, and local-runtime concern.
 
@@ -237,7 +238,7 @@ Risk:
 
 Proof:
 
-- `knitten/scripts/validate-payload-boundary.mjs --payload <kas-root> --warn-only`
+- `knitten/scripts/validate-domain-plugin-boundary.mjs --domain-plugin <kas-root> --warn-only`
   reports every remaining non-skill support surface.
 
 ### 2. Add Knitten Path Command
@@ -277,7 +278,7 @@ Proof:
 - `bin/knitten-path repo shotloom` with env/config set.
 - `bin/knitten-path template review-code`
 - `KNITTEN_PATH_BIN=<installed-knitten>/bin/knitten-path sh -c 'test -x "$KNITTEN_PATH_BIN"'`
-- `scripts/validate-payload-boundary.mjs --payload <kas-root> --warn-only`
+- `scripts/validate-domain-plugin-boundary.mjs --domain-plugin <kas-root> --warn-only`
 - `node scripts/doctor.mjs`
 
 ### 3. Move Shared Templates To Knitten
@@ -430,7 +431,7 @@ Risk:
 Proof:
 
 - `test ! -e skills/kas-support`
-- `knitten/scripts/validate-payload-boundary.mjs --payload <kas-root>`
+- `knitten/scripts/validate-domain-plugin-boundary.mjs --domain-plugin <kas-root>`
 - `node scripts/doctor.mjs`
 
 ### 8. Materialize And Smoke Both Plugins
@@ -464,7 +465,7 @@ Proof:
 - `git -C <kas-root> diff --check`
 - `node <knitten-root>/scripts/doctor.mjs`
 - `node <kas-root>/scripts/doctor.mjs`
-- `node <knitten-root>/scripts/validate-payload-boundary.mjs --payload <kas-root>`
+- `node <knitten-root>/scripts/validate-domain-plugin-boundary.mjs --domain-plugin <kas-root>`
 - `test ! -e <kas-root>/skills/kas-support`
 - `rg -n "KNITTEN_PATH_BIN" <kas-root>/skills --glob "SKILL.md" --glob "*.sh" --glob "*.mjs" --glob "*.py" || true`
 - `sh -c 'rg -n "KNITTEN_ROOT|\\.claude|skills/kas-support|agent/lib|agent/config|document-templates|agent/standards|\\.\\.\\/knitten|plugins/knitten|scripts/resolve-[a-z-]+\\.mjs|bin/knitten-resolve-output|\\bknitten-path\\b" "$1"/skills --glob "SKILL.md" --glob "*.sh" --glob "*.mjs" --glob "*.py"; test $? -eq 1' sh <kas-root>`

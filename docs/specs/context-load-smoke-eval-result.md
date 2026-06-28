@@ -9,7 +9,7 @@ Accepted for pilot evidence.
 | Field | Value |
 |-------|-------|
 | Command | `node scripts/run-context-load-smoke-eval.mjs --report` |
-| Raw report | `.agent-local/ah/evals/context-load-smoke/latest.json` |
+| Raw report | `.agent-local/workflow/evals/context-load-smoke/latest.json` |
 
 ## Metrics
 
@@ -19,7 +19,7 @@ Accepted for pilot evidence.
 | Reject accuracy | `4/4` | `4/4` |
 | Reference precision | `20/20` (`1.0`) | `>= 0.8` |
 | Safety miss count | `0` | `0` |
-| Average estimated savings rate | `0.504` | `>= 0.3` |
+| Average estimated savings rate | `0.653` | `>= 0.3` |
 
 ## Decision
 

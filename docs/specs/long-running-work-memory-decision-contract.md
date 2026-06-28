@@ -79,7 +79,7 @@ Out of scope:
 | `SYSTEM.md` | Yes | First Knitten Core policy read and shortest place to state the generic contract. |
 | `docs/guidelines/plugin-boundary.md` | Yes | Canonical Knitten Core/payload ownership boundary. |
 | `agent/config/local-artifact-paths.json` | Yes | Existing registered local artifact paths for Shotloom task memory. |
-| `document-templates/agent-hub/shotloom-prepare-task-briefing.md` | Yes | core-owned template for the user-facing Shotloom prepare briefing. |
+| `document-templates/workflow/shotloom-prepare-task-briefing.md` | Yes | core-owned template for the user-facing Shotloom prepare briefing. |
 | `knitten-sl/skills/shotloom-references/references/PROCESS_POLICY.md` | Yes | KSL shared operational policy for Shotloom review/task loops. |
 | `knitten-sl/skills/shotloom-prepare-task/flow.md` | Yes | Flow that renders the briefing and appends task activity. |
 
@@ -97,7 +97,7 @@ Out of scope:
 ## Contract
 
 - Knitten Core owns the generic long-running work contract.
-- Payload plugins may apply the contract to domain workflows, but must not own a
+- Domain plugins may apply the contract to domain workflows, but must not own a
   separate generic memory/output policy.
 - Repositories hold code, specs, and committed durable docs.
 - Registered local artifact paths hold rolling task context: decisions, open
@@ -138,10 +138,10 @@ Out of scope:
 ## Validation
 
 - `node scripts/doctor.mjs` from Knitten Core.
-- `node scripts/validate-payload-boundary.mjs --payload <knitten-sl-root>` from
+- `node scripts/validate-domain-plugin-boundary.mjs --domain-plugin <knitten-sl-root>` from
   Knitten Core.
 - `node scripts/test-shotloom-skills.mjs` from KSL.
-- `node scripts/validate-routing.mjs` from KSL.
+- `node scripts/validate-activation.mjs` from KSL.
 - `node scripts/validate-boundary.mjs` from KSL.
 - `node scripts/doctor.mjs` from KSL after materialization.
 - `rg -n "Long-Running Work|Prepared task goal|Handoff|Prepared Work|Steering" ...`
@@ -230,7 +230,7 @@ Proof:
 
 Files:
 
-- `document-templates/agent-hub/shotloom-prepare-task-briefing.md`
+- `document-templates/workflow/shotloom-prepare-task-briefing.md`
 
 Changes:
 
@@ -270,7 +270,7 @@ Risk:
 Proof:
 
 - Confirm wording says exemptions must be documented by the active skill.
-- `node scripts/validate-routing.mjs`.
+- `node scripts/validate-activation.mjs`.
 
 #### 4. Update KSL Prepare Flow
 

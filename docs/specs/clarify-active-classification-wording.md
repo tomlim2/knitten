@@ -20,7 +20,7 @@ but nearby wording still says:
 - "routing behavior"
 
 `report-finding` also says to "route the follow-up" when it means assign or
-send the follow-up to the owning payload plugin.
+send the follow-up to the owning domain plugin.
 
 These phrases are small, but they keep active guidance sounding like router
 policy rather than direct activation plus internal flow selection.
@@ -128,7 +128,7 @@ Files:
 Changes:
 
 - Replace `route the follow-up` with wording that sends the follow-up to the
-  owning payload plugin.
+  owning domain plugin.
 
 Risk:
 

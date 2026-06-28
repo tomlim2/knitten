@@ -1,13 +1,14 @@
-# Knitten All Skills Payload Boundary Migration
+# Knitten All Skills Domain Boundary Migration
 
 ## Status
 
-Draft.
+Implemented/historical. This document used the older `payload plugin` term while
+defining the boundary now called `domain plugin` in `SYSTEM.md`.
 
 ## Goal
 
-Migrate `knitten-all-skills` into a payload plugin that contains only skill
-payloads and skill-owned support files.
+Migrate `knitten-all-skills` into a domain plugin that contains only domain
+skills and skill-owned support files.
 
 `knitten` owns generic path/output routing, shared AH templates, core
 validators, and plugin boundary rules. `knitten-all-skills` owns private domain

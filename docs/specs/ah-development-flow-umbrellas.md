@@ -1,19 +1,21 @@
-# AH Development Flow Umbrellas
+# Shared Workflow Development Flow Umbrellas
 
 ## Status
 
-Draft.
+Superseded/historical. The current core skill surface is `draft-spec`,
+`implement`, `review`, and `review-fix-loop`; do not create new `ah-*` umbrella
+skills from this plan.
 
 ## Goal
 
-Define the default generic AH development workflow as five umbrella skills in
-the `knitten` plugin.
+Define the default generic shared workflow as five umbrella skills in the
+`knitten` plugin.
 
 The goal is not to port every legacy `ah-*` skill. The goal is to provide a
 small, predictable workflow that covers normal development from task definition
 to post-merge wrapup.
 
-Generic AH development workflow skills may live in `knitten` as plugin
+Generic shared workflow skills may live in `knitten` as plugin
 operation skills. They must not require domain payloads, private paths, external
 credentials, or a legacy source checkout.
 

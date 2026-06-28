@@ -65,7 +65,7 @@ Out of scope:
 ## Contract
 
 - Knitten Core must not name KAS as a required dependency in active core instructions.
-- Payload plugins may know how to attach to Knitten Core, including the local marketplace
+- Domain plugins may know how to attach to Knitten Core, including the local marketplace
   plugin id and the Knitten Core output/path shim.
 - Active docs must avoid personal absolute paths like `/Users/deem...` and
   `/Users/younsoolim...`; use `$HOME`, `<marketplace-root>`,
@@ -165,8 +165,8 @@ Changes:
 
 - Replace personal absolute paths with `$HOME`, `<marketplace-root>`,
   `<plugins-root>`, and `<payload-plugin>`.
-- Keep Knitten Core/KAS dependency direction clear: Knitten Core knows payload plugins generally;
-  payload plugins document their Knitten Core attachment.
+- Keep Knitten Core/KAS dependency direction clear: Knitten Core knows domain plugins generally;
+  domain plugins document their Knitten Core attachment.
 
 Risk:
 
@@ -226,7 +226,7 @@ Changes:
 
 Risk:
 
-- Duplicating policy in KAS could make the payload plugin own Knitten Core policy.
+- Duplicating policy in KAS could make the domain plugin own Knitten Core policy.
 
 Proof:
 

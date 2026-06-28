@@ -41,6 +41,8 @@ For domain plugin boundary work, also run the domain repository's boundary
 checks when present, for example:
 
 ```bash
-node scripts/validate-boundary.mjs --warn-only
-node scripts/doctor.mjs
+node <knitten-root>/scripts/validate-domain-plugin-boundary.mjs \
+  --domain-plugin <domain-plugin-root> \
+  --warn-only
+cd <domain-plugin-root> && node scripts/doctor.mjs
 ```

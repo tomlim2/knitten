@@ -2,11 +2,12 @@
 
 ## Status
 
-Draft.
+Implemented/historical. Current active terminology is in `SYSTEM.md`; this
+document records the reboot plan that led to the current core plugin shape.
 
 ## Goal
 
-Rebuild Knitten as the smallest useful Codex plugin for Agent Hub workflows.
+Rebuild Knitten as the smallest useful Codex plugin for shared workflows.
 
 The first milestone is not a broad workflow dispatcher. It is a minimal plugin
 that Codex can discover from the personal marketplace, validate, and load
@@ -27,11 +28,11 @@ This makes `knitten` harder to reason about as a standalone Codex plugin.
 
 ## Desired Shape
 
-`knitten` is the Agent Hub core plugin. The initial reboot owns only the minimum
+`knitten` is the core workflow plugin. The initial reboot owns only the minimum
 files needed for Codex plugin identity, entry guidance, validation, and local
 marketplace registration.
 
-`knitten-all-skills` is a payload plugin. It owns skills, standards, examples,
+`knitten-all-skills` is a domain plugin. It owns skills, standards, examples,
 domain workflows, and working documents.
 
 `knitten-all` is a legacy reference/archive. It should not be required at
@@ -65,7 +66,7 @@ registration milestone:
 
 | Surface | Reason |
 |---------|--------|
-| `agent/skills/` | Skills belong in payload plugins. |
+| `agent/skills/` | Skills belong in domain plugins. |
 | Shotloom artifacts | Domain workflow, not core. |
 | Domain service config | Slack, Linear, CINEV, and repo-specific config are payload/private concerns. |
 | Legacy deploy wording | New plugin core should not explain old mirror setup as active behavior. |

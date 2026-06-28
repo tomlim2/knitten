@@ -11,11 +11,13 @@ const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 
 function usage() {
   return `Usage:
+  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] workflow reports YYYYMMDD handoff <slug>
+
+Compatibility path examples:
   resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom planning stl-123 brief|spec|design-plan|questions|manifest
   resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom before-pr stl-123 <safe-branch> readiness|code-blockers|docs-blockers
   resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom pr <number> watcher-pid|watcher-log|react-log|state|last-event|cache|reply-plan|pause|lock|lock-dir
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom deploy <date-or-version> release-notes|manifest|rollback
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] workflow reports YYYYMMDD handoff <slug>`;
+  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom deploy <date-or-version> release-notes|manifest|rollback`;
 }
 
 function fail(error, detail, code = 2) {

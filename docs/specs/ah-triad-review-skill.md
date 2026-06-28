@@ -1,13 +1,14 @@
-# AH Triad Review Skill
+# Shared Workflow Triad Review Skill
 
 ## Status
 
-Draft.
+Implemented/historical. The active skill is `review`; current docs should use
+shared workflow and domain plugin terminology.
 
 ## Goal
 
 Add a generic Knitten core skill, `review`, that runs a reusable
-three-role review pass for AH and payload workflows.
+three-role review pass for shared workflow and domain plugin workflows.
 
 The skill should provide the common Triad pattern once:
 
@@ -31,7 +32,7 @@ PR review workflows need the same review pattern:
 - merge duplicate findings and preserve disagreement.
 
 Keeping that logic inside each payload skill creates drift. It also makes the
-core AH review flow less reusable for specs, implementation diffs, imported
+core shared workflow review flow less reusable for specs, implementation diffs, imported
 skills, and PR reviews.
 
 ## Boundary

@@ -143,10 +143,10 @@ Out of scope:
 ## Validation
 
 - `node scripts/doctor.mjs` from Knitten Core.
-- `node scripts/validate-payload-boundary.mjs --payload <knitten-sl-root>` from
+- `node scripts/validate-domain-plugin-boundary.mjs --domain-plugin <knitten-sl-root>` from
   Knitten Core.
 - `node scripts/test-shotloom-skills.mjs` from KSL.
-- `node scripts/validate-routing.mjs` from KSL.
+- `node scripts/validate-activation.mjs` from KSL.
 - `node scripts/validate-boundary.mjs` from KSL.
 - Shotloom resolver smoke tests:
   - create `activity.md` parent directories for `stl-<N>`

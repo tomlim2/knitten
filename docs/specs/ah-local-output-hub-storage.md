@@ -1,16 +1,19 @@
-# AH Local Output Hub Storage
+# Shared Workflow Local Output Hub Storage
 
 ## Status
 
-Draft.
+Implemented, with historical `AH` file naming retained for link stability.
+Current active terminology is `shared workflow`, and current local output paths
+use `.agent-local/workflow`. Do not introduce new `ah-*` skill names or
+`.agent-local/ah` paths from this historical file name.
 
 ## Goal
 
-Define the local-output hub behavior of Knitten's Agent Hub core.
+Define the local-output hub behavior of Knitten shared workflow core.
 
-Knitten owns generic AH path/output resolution. Generic AH temporary files and
+Knitten owns shared workflow path/output resolution. Shared temporary files and
 operational records should therefore resolve to the current Knitten plugin root's
-local AH storage, not scatter across every active or target workspace.
+local workflow storage, not scatter across every active or target workspace.
 
 This spec supersedes the local-output ownership parts of
 [AH Output Location Plugin Boundary](ah-output-location-plugin-boundary.md).
@@ -24,24 +27,24 @@ The current resolver treats the active workspace as the default local output
 owner:
 
 ```text
-<workspace>/.agent-local/ah/...
+<workspace>/.agent-local/workflow/...
 ```
 
 Previous designs considered using `targetRoot` as the operational finding owner:
 
 ```text
-<targetRoot>/.agent-local/ah/operational-findings/YYYY-MM-DD/<slug>.json
+<targetRoot>/.agent-local/workflow/operational-findings/YYYY-MM-DD/<slug>.json
 ```
 
 That kept files near the repository being worked on, but it made the generic
-AH operational layer harder to inspect. Current policy stores all finding
+shared workflow operational layer harder to inspect. Current policy stores all finding
 records in the Knitten hub and keeps `targetRoot` as metadata only:
 
-- AH review plans, response plans, task JSON, and findings scatter across
+- shared workflow review plans, response plans, task JSON, and findings scatter across
   unrelated repositories.
-- A payload plugin can look like it owns AH storage even though Knitten owns
-  generic AH path/output resolution.
-- Follow-up triage requires checking multiple `.agent-local/ah` trees.
+- A domain plugin can look like it owns workflow storage even though Knitten owns
+  shared workflow path/output resolution.
+- Follow-up triage requires checking multiple `.agent-local/workflow` trees.
 - The distinction between "where the record is stored" and "what the record is
   about" is not explicit enough.
 
@@ -49,19 +52,19 @@ records in the Knitten hub and keeps `targetRoot` as metadata only:
 
 In scope:
 
-- Generic AH local outputs resolved by `scripts/resolve-output.mjs`.
+- shared workflow local outputs resolved by `scripts/resolve-output.mjs`.
 - Operational finding storage for `report-finding`.
 - Resolver metadata that records the active and target repositories even when
   storage is centralized.
 - Doctor checks and docs that prove local outputs no longer scatter by default.
 - Marking older location specs as superseded where they describe
-  workspace-owned generic AH local outputs.
+  workspace-owned shared workflow local outputs.
 
 Out of scope:
 
 - Durable workspace documents such as specs and design plans.
-- Domain-specific payload plugin caches, such as Shotloom PR watcher state.
-- Writing AH output files into payload plugin workspaces.
+- Domain-specific domain plugin caches, such as Shotloom PR watcher state.
+- Writing shared workflow output files into domain plugin workspaces.
 - Generic local-output content schemas beyond target metadata.
 - Migrating every existing old local artifact.
 - Adding a broad output contract system beyond generic path/output resolution.
@@ -82,23 +85,23 @@ Out of scope:
 | Output | Persistence | Meaning |
 |--------|-------------|---------|
 | Durable specs/design plans | durable | Continue to resolve under `targetRoot/docs/...`. |
-| Generic AH local files | local | Resolve under the current Knitten plugin root's `.agent-local/ah/...`. |
-| Operational findings | local | Resolve under the current Knitten plugin root's `.agent-local/ah/operational-findings/YYYY-MM-DD/...`. |
+| shared workflow local files | local | Resolve under the current Knitten plugin root's `.agent-local/workflow/...`. |
+| Operational findings | local | Resolve under the current Knitten plugin root's `.agent-local/workflow/operational-findings/YYYY-MM-DD/...`. |
 | Target metadata | local JSON metadata | Resolver output records what repository the file is about. |
 
 ## Contract
 
-- Payload plugin copies and workspaces are never generic AH output write targets.
-- The current Knitten plugin root is the AH local storage hub.
+- Domain plugin copies and workspaces are never shared workflow output write targets.
+- The current Knitten plugin root is the shared workflow local storage hub.
 - `workspaceRoot` means where the user is working.
 - `targetRoot` means what repository, plugin, or domain surface the output is
   about.
-- `hubRoot` means the current Knitten plugin root that owns local AH storage.
-- Generic local outputs use `hubRoot/.agent-local/ah/...`.
+- `hubRoot` means the current Knitten plugin root that owns local workflow storage.
+- Generic local outputs use `hubRoot/.agent-local/workflow/...`.
 - `hubRoot/.agent-local/**` is gitignored and never committed.
 - Durable `spec` and `design-plan` outputs continue to use `targetRoot/docs/...`.
-- Domain-specific payload caches remain domain-local unless they are explicitly
-  converted into generic AH outputs.
+- Domain-specific caches remain domain-local unless they are explicitly
+  converted into shared workflow outputs.
 - Resolver JSON must make storage owner and semantic target separate.
 
 ## Proposed Resolver Fields
@@ -106,12 +109,12 @@ Out of scope:
 | Field | Meaning |
 |-------|---------|
 | `pluginRoot` | Physical Knitten runtime root used by the command. May be installed or source. |
-| `hubRoot` | Current Knitten plugin root used for writable local AH storage. |
+| `hubRoot` | Current Knitten plugin root used for writable local workflow storage. |
 | `workspaceRoot` | Active workspace. |
 | `targetRoot` | Repository or plugin the output is about. |
-| `hubLocalRoot` | `hubRoot/.agent-local/ah`. |
-| `workspaceLocalRoot` | Optional metadata: `workspaceRoot/.agent-local/ah`, not the default write target. |
-| `targetLocalRoot` | Optional metadata: `targetRoot/.agent-local/ah`, not the default write target. |
+| `hubLocalRoot` | `hubRoot/.agent-local/workflow`. |
+| `workspaceLocalRoot` | Optional metadata: `workspaceRoot/.agent-local/workflow`, not the default write target. |
+| `targetLocalRoot` | Optional metadata: `targetRoot/.agent-local/workflow`, not the default write target. |
 | `selectedOwnerRoot` | `hubRoot` for local outputs, `targetRoot` for durable docs. |
 | `selectedTargetRoot` | `targetRoot` for semantic attribution. |
 | `selectedPath` | Concrete output path. |
@@ -129,26 +132,26 @@ Durable documents stay with the repository that owns the work:
 | `spec` | `<targetRoot>/docs/specs/<slug>.md` |
 | `design-plan` | `<targetRoot>/docs/design-plans/<slug>.md` |
 
-### Generic AH Local Outputs
+### Shared Workflow Local Outputs
 
 Generic local outputs move to the hub:
 
 | Kind | Path |
 |------|------|
-| `temp-json` | `<hubRoot>/.agent-local/ah/json/<slug>.json` |
-| `review-json` | `<hubRoot>/.agent-local/ah/reviews/<slug>.json` |
-| `response-json` | `<hubRoot>/.agent-local/ah/responses/<slug>.json` |
-| `report-md` | `<hubRoot>/.agent-local/ah/reports/<slug>.md` |
-| `report-html` | `<hubRoot>/.agent-local/ah/reports/<slug>.html` |
-| `pull-request-json` | `<hubRoot>/.agent-local/ah/pull-requests/<slug>.json` |
-| `task-json` | `<hubRoot>/.agent-local/ah/tasks/<slug>.json` |
+| `temp-json` | `<hubRoot>/.agent-local/workflow/json/<slug>.json` |
+| `review-json` | `<hubRoot>/.agent-local/workflow/reviews/<slug>.json` |
+| `response-json` | `<hubRoot>/.agent-local/workflow/responses/<slug>.json` |
+| `report-md` | `<hubRoot>/.agent-local/workflow/reports/<slug>.md` |
+| `report-html` | `<hubRoot>/.agent-local/workflow/reports/<slug>.html` |
+| `pull-request-json` | `<hubRoot>/.agent-local/workflow/pull-requests/<slug>.json` |
+| `task-json` | `<hubRoot>/.agent-local/workflow/tasks/<slug>.json` |
 
 ### Operational Findings
 
 Operational findings also live in the hub:
 
 ```text
-<hubRoot>/.agent-local/ah/operational-findings/YYYY-MM-DD/<slug>.json
+<hubRoot>/.agent-local/workflow/operational-findings/YYYY-MM-DD/<slug>.json
 ```
 
 The finding content should include target metadata when useful:
@@ -172,7 +175,10 @@ Resolution order:
 The resolver must validate the selected hub root before using it. A valid hub
 root has a Knitten plugin manifest. It does not need Git metadata.
 
-## Skill Alias Behavior
+## Historical Skill Alias Behavior
+
+These aliases document the migration-era `ah-*` skill names. New shared
+workflow skills should use current Knitten skill names and resolver entries.
 
 | Skill | Kind | Owner |
 |-------|------|-------|
@@ -192,16 +198,16 @@ Existing scattered local artifacts may remain where they are until deleted or
 manually promoted. New resolver calls should write generic local outputs to the
 hub.
 
-For the existing Shotloom wrapup finding, the old payload-owned path was:
+For the existing Shotloom wrapup finding, the old domain-owned path was:
 
 ```text
-knitten-all-skills/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
+knitten-all-skills/.agent-local/workflow/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
 ```
 
 the next implementation may move or copy it into:
 
 ```text
-knitten/.agent-local/ah/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
+knitten/.agent-local/workflow/operational-findings/2026-06-02/shotloom-wrapup-task-pr-433-usability-gaps.json
 ```
 
 and keep `targetRoot` metadata pointing at `knitten-all-skills`.
@@ -209,15 +215,15 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 ## Validation
 
 - `node scripts/resolve-output.mjs --kind=review-json --name=test --hub-root=<knitten-root>`
-  returns `<knitten-root>/.agent-local/ah/reviews/test.json`.
+  returns `<knitten-root>/.agent-local/workflow/reviews/test.json`.
 - `node scripts/resolve-output.mjs --skill=report-finding --name=test --target-root=<knitten-all-skills> --hub-root=<knitten-root>`
-  returns `<knitten-root>/.agent-local/ah/operational-findings/<today>/test.json`
+  returns `<knitten-root>/.agent-local/workflow/operational-findings/<today>/test.json`
   and includes `selectedTargetRoot=<knitten-all-skills>`.
 - `node scripts/resolve-output.mjs --skill=draft-spec --name=test --target-root=<target> --hub-root=<knitten-root>`
   still returns `<target>/docs/specs/test.md`.
 - Running from the installed plugin copy resolves `hubRoot` to the installed
   Knitten plugin root.
-- Running from a payload plugin shim does not emit the Knitten source checkout
+- Running from a domain plugin shim does not emit the Knitten source checkout
   path unless the caller explicitly passes it as `--hub-root` or
   `KNITTEN_HUB_ROOT`.
 - `node scripts/doctor.mjs` proves source and materialized-copy behavior.
@@ -227,12 +233,12 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
 
 ## Acceptance Criteria
 
-- Generic AH local output paths are centralized under the current Knitten plugin
+- shared workflow local output paths are centralized under the current Knitten plugin
   root.
 - Hub-local files under `.agent-local/**` are ignored by git.
 - Durable docs still resolve to the target workspace.
-- Payload plugin copies remain free of generic AH output ownership.
-- Materialized Knitten copies do not need source-root metadata for AH output
+- Domain plugin copies remain free of shared workflow output ownership.
+- Materialized Knitten copies do not need source-root metadata for shared workflow output
   resolution.
 - Resolver JSON clearly separates `selectedOwnerRoot` from
   `selectedTargetRoot`.
@@ -246,7 +252,7 @@ and keep `targetRoot` metadata pointing at `knitten-all-skills`.
   default storage hub is the current Knitten plugin root.
 - Materialized plugin copies should not include generated source-root metadata
   for hub resolution.
-- Do not automatically delete old scattered `.agent-local/ah` trees. Leave them
+- Do not automatically delete old scattered `.agent-local/workflow` trees. Leave them
   as historical scratch unless a separate cleanup task is requested.
 
 ## Design Plan
@@ -325,7 +331,7 @@ Proof:
 - `node scripts/materialize-local-plugin.mjs`
 - `node scripts/doctor.mjs`
 - `node /Users/younsoolim/plugins/knitten/scripts/doctor.mjs`
-- A file created under `/Users/younsoolim/plugins/knitten/.agent-local/ah/`
+- A file created under `/Users/younsoolim/plugins/knitten/.agent-local/workflow/`
   still exists after materialization.
 
 #### 3. Move Generic Local Kinds To Hub
@@ -359,13 +365,13 @@ Files:
 - `docs/specs/plugin-output-runtime.md`
 - `docs/specs/ah-output-location-plugin-boundary.md`
 - `docs/specs/plugin-path-helper.md`
-- AH skill docs that mention local scratch ownership.
+- shared workflow skill docs that mention local scratch ownership.
 
 Changes:
 
-- Explain that Knitten resolves generic AH local outputs to the hub.
+- Explain that Knitten resolves shared workflow local outputs to the hub.
 - Explain that `targetRoot` is semantic attribution, not storage ownership.
-- Explain that payload plugin copies do not own generic AH local outputs.
+- Explain that domain plugin copies do not own shared workflow local outputs.
 - Explain that Knitten materialization preserves `.agent-local`.
 - Mark older location docs as superseded instead of leaving competing current
   rules.
@@ -377,7 +383,7 @@ Risk:
 
 Proof:
 
-- Search has no active docs claiming generic AH local outputs default to every
+- Search has no active docs claiming shared workflow local outputs default to every
   active workspace.
 
 #### 5. Confirm Gitignore Contract
@@ -393,11 +399,11 @@ Changes:
 
 Risk:
 
-- Without this, hub-local AH files can accidentally enter commits.
+- Without this, hub-local workflow files can accidentally enter commits.
 
 Proof:
 
-- `git check-ignore .agent-local/ah/reviews/example.json`
+- `git check-ignore .agent-local/workflow/reviews/example.json`
 - `git status --short` does not show generated hub-local files.
 
 #### 6. Migrate Active Finding If Needed
@@ -423,7 +429,7 @@ Proof:
 
 ### Review Plan
 
-- Contract: local AH outputs are hub-owned; durable docs are target-owned.
+- Contract: local workflow outputs are hub-owned; durable docs are target-owned.
 - Boundary: no write path points at installed plugin copies.
 - Usability: resolver JSON gives enough metadata to know both where the file is
   stored and what it is about.

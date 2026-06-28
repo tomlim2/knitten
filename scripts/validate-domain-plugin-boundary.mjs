@@ -21,11 +21,10 @@ const LEGACY_PATTERN = [
 function usage() {
   return `Usage:
   validate-domain-plugin-boundary.mjs --domain-plugin <plugin-root> [--warn-only]
-  validate-domain-plugin-boundary.mjs --payload <plugin-root> [--warn-only]
 
 Validates that a domain plugin does not own generic Knitten path/output runtime,
 template, standards, or local-runtime surfaces. The --payload alias is retained
-for legacy compatibility.`;
+only for legacy callers; new docs and wrappers must use --domain-plugin.`;
 }
 
 function parseArgs(argv) {

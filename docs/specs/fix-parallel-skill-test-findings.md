@@ -162,14 +162,14 @@ Proof:
 
 Files:
 
-- `scripts/validate-routing.mjs`
+- `scripts/validate-activation.mjs`
 - `scripts/doctor.mjs`
 - `README.md`
 - `CHANGELOG.md`
 
 Changes:
 
-- Rename validator to `validate-activation.mjs`.
+- Keep activation validation under `validate-activation.mjs`.
 - Update doctor check ids/messages and README/changelog text.
 
 Risk:

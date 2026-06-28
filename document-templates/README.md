@@ -52,7 +52,7 @@ of making the operational template carry both purposes.
 
 | Template path | Consumer | Format check |
 |---------------|----------|--------------|
-| `github/*.md` | GitHub PR body | no YAML frontmatter; `.github/pull_request_template.md` mirrors the body shape |
+| `github/*.md` | GitHub PR body | no YAML frontmatter; compatible with GitHub PR body fields |
 | `linear/*.md` | Linear issue body builder | has `status:` frontmatter; contains fenced `markdown` body examples |
 | `obsidian/*.md` | Obsidian vault note | has `title`, `tags`, `date`, `source`; exactly one `type/` tag; exactly one `project/` tag; first body heading is one H1 |
 | `consulting/*.md` | Obsidian vault note | same as `obsidian/*.md` |
@@ -73,4 +73,4 @@ of making the operational template carry both purposes.
 
 | Mirror | Canonical template | Reason |
 |--------|--------------------|--------|
-| `.github/pull_request_template.md` | `github/pull-request.md` | GitHub reads only `.github/pull_request_template.md` |
+| optional `.github/pull_request_template.md` | `github/pull-request.md` | create only when a repository wants GitHub to auto-load a PR template |

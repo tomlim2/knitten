@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted.
+Superseded. The active eval is `context-load-smoke`; this document is retained
+as historical implementation context for the earlier routing-smoke plan.
 
 ## Goal
 
