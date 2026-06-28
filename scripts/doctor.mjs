@@ -110,28 +110,14 @@ function helperPathAllowed(relativePath) {
     || relativePath.startsWith("skills/");
 }
 
-function isShotloomCompatibilityEntry(entry) {
-  const compatibility = entry.compatibility || {};
-  return compatibility.status === "compatibility-era"
-    && compatibility.owner === "shotloom"
-    && compatibility.deprecatedBy === "shotloom-task-artifact-resolver"
-    && compatibility.primaryStorage === false;
-}
-
-function isShotloomMaker(madeBy) {
-  return madeBy.startsWith("shotloom-") || madeBy.startsWith("workflow:shotloom-");
-}
-
 function outputOwnerAllowed(root, madeBy, entry) {
-  if (isShotloomMaker(madeBy)) return isShotloomCompatibilityEntry(entry);
   if (madeBy === "workflow:shared-session-handoff") return true;
   if (madeBy.startsWith("workflow:")) return true;
   if (fs.existsSync(path.join(root, "skills", madeBy, "SKILL.md"))) return true;
   return false;
 }
 
-function localArtifactOwnerAllowed(owner, entry) {
-  if (owner === "shotloom") return isShotloomCompatibilityEntry(entry);
+function localArtifactOwnerAllowed(owner, _entry) {
   return owner === "workflow";
 }
 

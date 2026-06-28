@@ -29,10 +29,17 @@ function fail(error, detail, code = 2) {
   process.exit(code);
 }
 
-function validateRoot(root) {
+function registryExists(root, registryPath = REGISTRY_PATH) {
   const resolved = path.resolve(root);
-  if (!existsSync(path.join(resolved, ".codex-plugin/plugin.json")) || !existsSync(path.join(resolved, "agent/config/outputs.json"))) {
-    throw new Error("root is not a plugin checkout with agent/config/outputs.json");
+  const selected = registryPath || REGISTRY_PATH;
+  const absoluteRegistry = path.isAbsolute(selected) ? selected : path.join(resolved, selected);
+  return existsSync(absoluteRegistry);
+}
+
+function validateRoot(root, registryPath = REGISTRY_PATH) {
+  const resolved = path.resolve(root);
+  if (!existsSync(path.join(resolved, ".codex-plugin/plugin.json")) || !registryExists(resolved, registryPath)) {
+    throw new Error("root is not a plugin checkout with the selected output registry");
   }
   return resolved;
 }
@@ -60,7 +67,7 @@ function resolveRoot(rootOption = null, cwd = process.cwd(), registryPath = REGI
     cwd,
     encoding: "utf8",
   }).trim();
-  return validateRoot(gitRoot);
+  return validateRoot(gitRoot, registryPath);
 }
 
 function parseOptions(argv) {

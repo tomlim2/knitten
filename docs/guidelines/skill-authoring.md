@@ -86,8 +86,8 @@ When in doubt, use `normal`. If external state can change, use `strict`.
 Do not add broad selection layers. Prefer direct skill matching plus
 post-match references. For a domain with many workflows, prefer one domain
 plugin skill with internal flow files only when that is cheaper and clearer
-than exposing many leaf skills. Existing broad selection surfaces are legacy
-surfaces to maintain only until their dependencies can be removed.
+than exposing many specialized skills. Existing broad selection surfaces are
+legacy surfaces to maintain only until their dependencies can be removed.
 Legacy domain indexes may know their exposed workflows through a mechanical
 classification script. Exposed skills should not need parent-plugin knowledge.
 

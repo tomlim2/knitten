@@ -11,13 +11,7 @@ const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 
 function usage() {
   return `Usage:
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] workflow reports YYYYMMDD handoff <slug>
-
-Compatibility path examples:
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom planning stl-123 brief|spec|design-plan|questions|manifest
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom before-pr stl-123 <safe-branch> readiness|code-blockers|docs-blockers
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom pr <number> watcher-pid|watcher-log|react-log|state|last-event|cache|reply-plan|pause|lock|lock-dir
-  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] shotloom deploy <date-or-version> release-notes|manifest|rollback`;
+  resolve-local-artifact-path.mjs [--root <config-root>] [--registry <path>] [--create] workflow reports YYYYMMDD handoff <slug>`;
 }
 
 function fail(error, detail, code = 2) {
@@ -25,10 +19,17 @@ function fail(error, detail, code = 2) {
   process.exit(code);
 }
 
-function validateRoot(root) {
+function registryExists(root, registryPath = REGISTRY_PATH) {
   const resolved = path.resolve(root);
-  if (!existsSync(path.join(resolved, ".codex-plugin/plugin.json")) || !existsSync(path.join(resolved, "agent/config/local-artifact-paths.json"))) {
-    throw new Error("root is not a plugin checkout with agent/config/local-artifact-paths.json");
+  const selected = registryPath || REGISTRY_PATH;
+  const absoluteRegistry = path.isAbsolute(selected) ? selected : path.join(resolved, selected);
+  return existsSync(absoluteRegistry);
+}
+
+function validateRoot(root, registryPath = REGISTRY_PATH) {
+  const resolved = path.resolve(root);
+  if (!existsSync(path.join(resolved, ".codex-plugin/plugin.json")) || !registryExists(resolved, registryPath)) {
+    throw new Error("root is not a plugin checkout with the selected local artifact registry");
   }
   return resolved;
 }
@@ -36,7 +37,7 @@ function validateRoot(root) {
 function rootHasRegistry(root, registryPath = REGISTRY_PATH) {
   const resolved = path.resolve(root);
   return existsSync(path.join(resolved, ".codex-plugin/plugin.json"))
-    && existsSync(path.join(resolved, registryPath));
+    && registryExists(resolved, registryPath);
 }
 
 function parseOptions(argv) {
@@ -63,7 +64,7 @@ function parseOptions(argv) {
   return options;
 }
 
-function resolveRoot(rootOption = null, cwd = process.cwd()) {
+function resolveRoot(rootOption = null, cwd = process.cwd(), registryPath = REGISTRY_PATH) {
   const candidates = [
     rootOption,
     process.env.KNITTEN_CONFIG_ROOT,
@@ -74,13 +75,13 @@ function resolveRoot(rootOption = null, cwd = process.cwd()) {
   ];
   for (const candidate of candidates) {
     if (!candidate) continue;
-    if (rootHasRegistry(candidate)) return path.resolve(candidate);
+    if (rootHasRegistry(candidate, registryPath)) return path.resolve(candidate);
   }
   const gitRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
     cwd,
     encoding: "utf8",
   }).trim();
-  return validateRoot(gitRoot);
+  return validateRoot(gitRoot, registryPath);
 }
 
 function resolveRegistryPath(root, registryPath = null) {
@@ -202,7 +203,7 @@ function parseCommand(registry, args) {
 }
 
 export function resolveLocalArtifactPath({ root = null, registryPath = null, create = false, args = [], cwd = process.cwd() }) {
-  const knittenRoot = resolveRoot(root, cwd);
+  const knittenRoot = resolveRoot(root, cwd, registryPath || REGISTRY_PATH);
   const registry = loadValidatedRegistry(knittenRoot, registryPath);
   const { entry, values } = parseCommand(registry, args);
   if (!["file", "directory"].includes(entry.kind)) {

@@ -16,7 +16,7 @@
   "interface": {
     "displayName": "Knitten",
     "shortDescription": "Agent operating core for Codex.",
-    "longDescription": "Knitten provides the core policy, routing, resolver, and validation skeleton used before optional skill packs load.",
+    "longDescription": "Knitten provides lightweight workflow policy, output and path resolution, and validation skeletons used before optional skill packs load.",
     "developerName": "tomlim2",
     "category": "Productivity",
     "capabilities": [
@@ -25,7 +25,7 @@
     "websiteURL": "https://github.com/tomlim2/knitten",
     "brandColor": "#3B82F6",
     "defaultPrompt": [
-      "Use Knitten core policy and routing for this task."
+      "Use Knitten core workflow policy and output/path resolution for this task."
     ],
     "screenshots": []
   }

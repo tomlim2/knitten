@@ -4,7 +4,7 @@
   "status": "ready",
   "created": "YYYY-MM-DDTHH:mm:ssZ",
   "updated": "YYYY-MM-DDTHH:mm:ssZ",
-  "summary": "<one-line route summary for the next LLM>",
+  "summary": "<one-line handoff summary for the next LLM>",
   "task": {
     "intent": "<why this handoff exists>",
     "scope": "<what is in scope>",

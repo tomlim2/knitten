@@ -7,7 +7,6 @@ const ACTIVE_GLOBS = ["SKILL.md", "*.sh", "*.mjs", "*.py"];
 const LEGACY_PATTERN = [
   "KNITTEN_ROOT",
   "\\.claude",
-  "skills/kas-support",
   "agent/lib",
   "agent/config",
   "document-templates",
@@ -120,7 +119,6 @@ function main() {
     throw new Error(`domain plugin root missing .codex-plugin/plugin.json: ${pluginRoot}`);
   }
 
-  checkPath(results, pluginRoot, "skills/kas-support", "KAS domain plugin must not contain generic support skill.");
   checkPath(results, pluginRoot, "agent/config/outputs.json", "Generic output registry belongs to Knitten Core.");
   checkPath(results, pluginRoot, "agent/config/local-artifact-paths.json", "Generic artifact registry belongs to Knitten Core.");
   checkPath(results, pluginRoot, "agent/config/local-helper-paths.json", "Generic helper registry belongs to Knitten Core.");

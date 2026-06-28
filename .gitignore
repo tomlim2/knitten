@@ -3,12 +3,6 @@ agent/private/*
 !agent/private/learnings/
 !agent/private/specs/
 !agent/private/skill-usage/
-# Shared cross-machine doc routing registry (per-purpose subpaths)
-!agent/private/agent-hub-config/
-agent/private/agent-hub-config/*
-!agent/private/agent-hub-config/doc-paths.json
-!agent/private/agent-hub-config/vault-structure.json
-
 # Secrets
 *.env
 credentials*.json

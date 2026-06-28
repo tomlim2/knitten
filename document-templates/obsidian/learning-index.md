@@ -61,6 +61,6 @@ append-only. Each entry = one ### subsection.
 - Every entry MUST end with `> [!abstract] Rule` + inline #rule tag.
   That's the takeaway anyone (incl. future-you) skim-reads first.
 - Update top-level `updated:` field on every append.
-- Cross-project learnings use the flat shape instead — see
-  skills/kas-support/document-templates/obsidian/cross-project-learning.md.
+- Cross-project learnings use the flat shape instead; load the owning
+  skill-local cross-project learning template when needed.
 -->

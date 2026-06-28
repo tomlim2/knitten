@@ -416,5 +416,5 @@ db.execute(query, [email, hashedPassword]);
 
 - This template is for **review output format**, not review checklist
 - For detailed review checklists, see domain-specific standards (e.g. review-code-unreal-cpp.md)
-- All reviews must reference applicable standards from `skills/kas-support/agent/standards/` or skill-owned references.
+- All reviews must reference applicable standards from skill-owned references or supplied review documents.
 - Severity levels: CRITICAL (security/bugs), ERROR (standard violations), WARNING (suggestions)
