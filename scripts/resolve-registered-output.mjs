@@ -40,10 +40,10 @@ function validateRoot(root) {
 function rootHasRegistry(root, registryPath = REGISTRY_PATH) {
   const resolved = path.resolve(root);
   return existsSync(path.join(resolved, ".codex-plugin/plugin.json"))
-    && existsSync(path.join(resolved, registryPath));
+    && existsSync(resolveRegistryPath(resolved, registryPath));
 }
 
-function resolveRoot(rootOption = null, cwd = process.cwd()) {
+function resolveRoot(rootOption = null, cwd = process.cwd(), registryPath = REGISTRY_PATH) {
   const candidates = [
     rootOption,
     process.env.KNITTEN_CONFIG_ROOT,
@@ -54,7 +54,7 @@ function resolveRoot(rootOption = null, cwd = process.cwd()) {
   ];
   for (const candidate of candidates) {
     if (!candidate) continue;
-    if (rootHasRegistry(candidate)) return path.resolve(candidate);
+    if (rootHasRegistry(candidate, registryPath)) return path.resolve(candidate);
   }
   const gitRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
     cwd,
@@ -228,7 +228,7 @@ function baseResult(root, entry) {
 }
 
 export function resolveOutput({ root = null, outputsRegistryPath = null, localArtifactRegistryPath = null, create = false, id, values = {}, cwd = process.cwd() }) {
-  const knittenRoot = resolveRoot(root, cwd);
+  const knittenRoot = resolveRoot(root, cwd, outputsRegistryPath);
   const registry = loadRegistry(knittenRoot, outputsRegistryPath);
   const entry = findEntry(registry, id);
   const normalizedValues = validateArgs(entry, values);
@@ -289,7 +289,7 @@ function main() {
   const [id, ...assignmentTokens] = options.args;
   try {
     if (options.list) {
-      const root = resolveRoot(options.root);
+      const root = resolveRoot(options.root, process.cwd(), options.outputsRegistry);
       const registry = loadRegistry(root, options.outputsRegistry);
       process.stdout.write(`${JSON.stringify({ ok: true, outputs: listOutputs(registry) }, null, 2)}\n`);
       return;
