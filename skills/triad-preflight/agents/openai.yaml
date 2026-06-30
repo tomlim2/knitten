@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triad Preflight"
+  short_description: "Run a lightweight pre-triad review"
+  default_prompt: "Use $triad-preflight to find cheap blockers before a full triad review."
