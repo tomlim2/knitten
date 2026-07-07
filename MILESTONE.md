@@ -81,7 +81,6 @@ prove one repeated workflow before any broad migration.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P1 | Compact collector pilot | One repeated workflow pilot, preferably Shotloom Linear/PR triage, that writes raw evidence and prints a compact summary. | The pilot replaces manual multi-tool context buildup for one real workflow without adding RAG, vector search, or a broad router. |
 | P2 | Skill-shape validator warnings | Warning-only checks for active skills missing `match-check`, `Step 0: Match Check`, or post-match reference guards when references exist. | `doctor` or repository validation can surface obvious drift without hard-failing judgment-heavy skill quality questions. |
 | P2 | Triad packet budget | Updated review/triad guidance for compact packets, role-specific context, and when full base docs are justified. | Triad review can avoid sending every large base document to every role by default while preserving read-only safety. |
 | P3 | Domain exposure audit plan | Measured KSL/KAS exposure note with candidates for internal flow consolidation. | Candidate reductions are ranked by measured exposure and usefulness; no broad domain-plugin migration starts without a separate accepted target list. |
@@ -129,6 +128,9 @@ existing harness with small contracts, warnings, and one workflow pilot.
 - Workflow run artifacts are registered for `root`, `raw`, `summary`,
   `handoff`, and `next` through the local artifact registry and
   `workflow-run-*` output ids.
+- Compact collector pilot exists for the repeated Knitten health workflow:
+  raw validation output is written under a workflow run artifact while the
+  active response carries summary, handoff, next-action, and evidence paths.
 
 ## Pilot Batch
 

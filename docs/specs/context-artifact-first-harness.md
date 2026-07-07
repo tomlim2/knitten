@@ -116,6 +116,12 @@ Domain collectors should return compact summaries and artifact paths. They
 should avoid making Knitten Core know domain-specific issue labels, PR states,
 deployment semantics, or product workflows.
 
+The first Core pilot is `scripts/run-compact-collector-pilot.mjs`. Its
+`knitten-health` preset captures the repeated local validation workflow as raw
+command artifacts, then returns only compact summary, handoff, next-action, and
+evidence paths. Domain plugins can reuse the same artifact contract while owning
+their own source-specific collectors.
+
 ## Review And Subagent Boundary
 
 Review and triad workflows should treat review packets as compact inputs, not as
@@ -157,11 +163,10 @@ Trade-offs:
 
 ## Adoption Path
 
-1. Implement one compact collector pilot for a repeated domain workflow.
-2. Add warning-level validation for obvious skill-shape drift.
-3. Update review/triad guidance to prefer compact packets and role-specific
+1. Add warning-level validation for obvious skill-shape drift.
+2. Update review/triad guidance to prefer compact packets and role-specific
    context.
-4. Revisit domain-plugin exposure only after the pilot proves the pattern.
+3. Revisit domain-plugin exposure only after the pilot proves the pattern.
 
 ## Acceptance Criteria
 

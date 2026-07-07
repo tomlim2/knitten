@@ -57,6 +57,7 @@ node scripts/materialize-local-plugin.mjs
 node scripts/doctor.mjs
 node scripts/measure-skill-exposure.mjs .
 node scripts/run-context-load-smoke-eval.mjs
+node scripts/run-compact-collector-pilot.mjs --run=knitten-health-pilot
 ```
 
 Expected success signals:
@@ -66,6 +67,8 @@ Expected success signals:
 - `node scripts/doctor.mjs` returns JSON with `"ok": true`
 - `measure-skill-exposure.mjs` prints a `knitten` row with 8 skills
 - `run-context-load-smoke-eval.mjs` returns `"ok": true`
+- `run-compact-collector-pilot.mjs` prints compact JSON with summary,
+  handoff, next-action, and raw artifact paths
 
 If you have the Codex plugin validator available, also run:
 
@@ -107,6 +110,9 @@ Knitten's active surface is deliberately small.
 - **Output Runtime**: `bin/knitten-resolve-output` and `bin/knitten-path`
   provide stable locations for specs, reviews, reports, JSON handoffs, and
   local workflow records.
+- **Compact Collector Pilot**: `scripts/run-compact-collector-pilot.mjs`
+  stores raw command output under a workflow run artifact and returns only
+  compact summary, handoff, next-action, and evidence paths.
 - **Health Checks**: `doctor`, repository-shell validation, exposure
   measurement, and smoke evals catch broken paths, stale copies, and drift.
 - **Safety First**: mutation, push, deploy, delete, and external-state checks
@@ -131,6 +137,7 @@ Current milestone: see [`MILESTONE.md`](MILESTONE.md).
 | `scripts/resolve-output.mjs` | Resolve durable docs and local workflow outputs. |
 | `scripts/measure-skill-exposure.mjs` | Estimate skill-list and skill-body exposure. |
 | `scripts/run-context-load-smoke-eval.mjs` | Run the context-load smoke eval. |
+| `scripts/run-compact-collector-pilot.mjs` | Capture repeated workflow raw output as local artifacts and print a compact summary. |
 | `docs/guidelines/skill-authoring.md` | Rules for short, token-conscious skills. |
 | `docs/guidelines/public-metadata.md` | Public wording and claim guardrails. |
 | `docs/specs/` | Design notes for the core and runtime. |
