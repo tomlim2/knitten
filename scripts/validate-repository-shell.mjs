@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -75,6 +75,45 @@ function localArtifactOwnerAllowed(owner, _entry) {
   return owner === "workflow";
 }
 
+function sampleForArg(arg) {
+  const candidates = [
+    "doctor-output",
+    "doctor-run",
+    "20260707",
+    "2026-07-07",
+    "x",
+    "x-1",
+    "x_1",
+    "x.1",
+  ];
+  const pattern = new RegExp(arg.pattern);
+  for (const candidate of candidates) {
+    const value = arg.normalize === "lowercase" ? candidate.toLowerCase() : candidate;
+    if (!value.includes("/") && !value.includes("..") && pattern.test(value)) {
+      return value;
+    }
+  }
+  throw new Error(`${arg.name} has unsupported sample pattern ${arg.pattern}`);
+}
+
+function validateRegisteredOutputResolves(entry, problems) {
+  if (entry.writeTarget?.kind !== "local-artifact") return;
+  const scriptPath = "scripts/resolve-registered-output.mjs";
+  if (!fs.existsSync(scriptPath)) {
+    problems.push(`outputs:${entry.id || "<missing id>"} missing resolver ${scriptPath}`);
+    return;
+  }
+  const assignments = (entry.args || []).map((arg) => `${arg.name}=${sampleForArg(arg)}`);
+  const result = spawnSync("node", [scriptPath, entry.id, ...assignments], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+  });
+  if (result.status !== 0) {
+    const detail = (result.stderr || result.stdout || "registered output resolution failed").trim();
+    problems.push(`outputs:${entry.id || "<missing id>"} failed local-artifact resolution: ${detail}`);
+  }
+}
+
 function validateOutputRegistryContract() {
   const outputs = readJson("agent/config/outputs.json");
   const localArtifacts = readJson("agent/config/local-artifact-paths.json");
@@ -105,6 +144,8 @@ function validateOutputRegistryContract() {
         problems.push(`outputs:${id} has non-generic durable path ${outputPath || "<missing>"}`);
       }
     }
+
+    validateRegisteredOutputResolves(entry, problems);
   }
 
   for (const entry of localArtifacts.entries) {

@@ -121,6 +121,45 @@ function localArtifactOwnerAllowed(owner, _entry) {
   return owner === "workflow";
 }
 
+function sampleForArg(arg) {
+  const candidates = [
+    "doctor-output",
+    "doctor-run",
+    "20260707",
+    "2026-07-07",
+    "x",
+    "x-1",
+    "x_1",
+    "x.1",
+  ];
+  const pattern = new RegExp(arg.pattern);
+  for (const candidate of candidates) {
+    const value = arg.normalize === "lowercase" ? candidate.toLowerCase() : candidate;
+    if (!value.includes("/") && !value.includes("..") && pattern.test(value)) {
+      return value;
+    }
+  }
+  throw new Error(`${arg.name} has unsupported sample pattern ${arg.pattern}`);
+}
+
+function validateRegisteredOutputResolves(root, entry, problems) {
+  if (entry.writeTarget?.kind !== "local-artifact") return;
+  const scriptPath = path.join(root, "scripts", "resolve-registered-output.mjs");
+  if (!fs.existsSync(scriptPath)) {
+    problems.push(`outputs:${entry.id || "<missing id>"} missing resolver ${scriptPath}`);
+    return;
+  }
+  const assignments = (entry.args || []).map((arg) => `${arg.name}=${sampleForArg(arg)}`);
+  const result = spawnSync("node", [scriptPath, "--root", root, entry.id, ...assignments], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  if (result.status !== 0) {
+    const detail = (result.stderr || result.stdout || "registered output resolution failed").trim();
+    problems.push(`outputs:${entry.id || "<missing id>"} failed local-artifact resolution: ${detail}`);
+  }
+}
+
 function validateOutputRegistryContract(root) {
   const outputsPath = path.join(root, "agent", "config", "outputs.json");
   const localArtifactsPath = path.join(root, "agent", "config", "local-artifact-paths.json");
@@ -154,6 +193,8 @@ function validateOutputRegistryContract(root) {
         problems.push(`outputs:${id} has non-generic durable path ${outputPath || "<missing>"}`);
       }
     }
+
+    validateRegisteredOutputResolves(root, entry, problems);
   }
 
   for (const entry of localArtifacts.entries) {
