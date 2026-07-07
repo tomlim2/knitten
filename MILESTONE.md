@@ -65,14 +65,28 @@ keep long flow details behind match checks or internal references.
    - Align GitHub About/topics/release wording with the lightweight workflow
      core message.
 
+7. **Mild Context Harness Hardening**
+   - Improve context handling without turning Knitten into a new agent framework.
+   - Keep raw high-volume tool results out of the active conversation when a
+     compact artifact and summary will do.
+   - Add warning-level checks for obvious skill-shape drift before promoting any
+     new hard validator rules.
+   - Prove any domain-plugin exposure change with measurement and one small
+     pilot before broad migration.
+
 ## Next Work
 
-Work these in order. Do not start broad domain-plugin migration until the smoke eval
-and pilot audit are both recorded.
+Work these in order. Keep this batch small: fix measured drift, add compact
+artifact contracts, and prove one repeated workflow before any broad migration.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| - | No active next work | Add a new row from the next accepted spec or milestone decision. | The current Knitten Core cleanup batch remains complete. |
+| P0 | Refresh exposure proof | Updated README/milestone measurement notes, or a short spec if the proof block should move out of README. | `node scripts/measure-skill-exposure.mjs .` matches the public proof text, including skill count and approximate tokens. |
+| P1 | Large tool-output artifact contract | Document a small `.agent-local/workflow/runs/<run-id>/` shape with `raw/`, `summary.md`, `handoff.json`, and `next.md`. | Linear/GitHub/shell-heavy workflows have a clear rule: store raw output locally, keep only compact summary/path/next action in the active context. |
+| P1 | Compact collector pilot | One repeated workflow pilot, preferably Shotloom Linear/PR triage, that writes raw evidence and prints a compact summary. | The pilot replaces manual multi-tool context buildup for one real workflow without adding RAG, vector search, or a broad router. |
+| P2 | Skill-shape validator warnings | Warning-only checks for active skills missing `match-check`, `Step 0: Match Check`, or post-match reference guards when references exist. | `doctor` or repository validation can surface obvious drift without hard-failing judgment-heavy skill quality questions. |
+| P2 | Triad packet budget | Updated review/triad guidance for compact packets, role-specific context, and when full base docs are justified. | Triad review can avoid sending every large base document to every role by default while preserving read-only safety. |
+| P3 | Domain exposure audit plan | Measured KSL/KAS exposure note with candidates for internal flow consolidation. | Candidate reductions are ranked by measured exposure and usefulness; no broad domain-plugin migration starts without a separate accepted target list. |
 
 ## Deferred
 
@@ -83,6 +97,10 @@ the immediate milestone is to prove that simple match-based loading works first.
 Broad domain-plugin migration is also deferred. Domain skills can adopt the pattern
 after the Knitten Core pilot and smoke eval show that match/reject accuracy and safety
 checks survive the smaller context surface.
+
+Custom compaction engines, cache layers, model-specific prompt tuning systems,
+and all-skill rewrites are also deferred. The next batch should improve the
+existing harness with small contracts, warnings, and one workflow pilot.
 
 ## Done
 
@@ -141,6 +159,12 @@ Candidate follow-up audits:
 - Public claims cite measured smoke-eval or exposure data and avoid promising
   universal token reduction.
 - A minimal domain-plugin example exists before broad public promotion.
+- Large tool outputs have a documented artifact-and-summary path before more
+  Linear/GitHub-heavy workflows are added.
+- Validator promotion remains warning-first for skill-shape drift until repeated
+  audits prove a low false-positive hard rule.
+- Domain plugin exposure reductions are based on measured usefulness, not token
+  count alone.
 
 ## Source Specs
 
@@ -151,3 +175,4 @@ Candidate follow-up audits:
 - [`docs/specs/implement-pilot-audit.md`](docs/specs/implement-pilot-audit.md)
 - [`docs/specs/follow-up-skill-audit.md`](docs/specs/follow-up-skill-audit.md)
 - [`docs/specs/validator-promotion-decision.md`](docs/specs/validator-promotion-decision.md)
+- [`docs/specs/context-artifact-first-harness.md`](docs/specs/context-artifact-first-harness.md)
