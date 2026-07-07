@@ -163,10 +163,9 @@ Trade-offs:
 
 ## Adoption Path
 
-1. Add warning-level validation for obvious skill-shape drift.
-2. Update review/triad guidance to prefer compact packets and role-specific
+1. Update review/triad guidance to prefer compact packets and role-specific
    context.
-3. Revisit domain-plugin exposure only after the pilot proves the pattern.
+2. Revisit domain-plugin exposure only after the pilot proves the pattern.
 
 ## Acceptance Criteria
 

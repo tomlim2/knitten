@@ -30,6 +30,9 @@ or similarly mechanical scripts:
 - repository shell file allowlist catches accidental broad surfaces,
 - example plugin paths are intentionally allowed,
 - output resolver smoke checks return expected paths and persistence.
+- active skill files emit warnings, not hard failures, when they are missing
+  `match-check`, `Step 0: Match Check`, or post-match reference guards for
+  skill-local references.
 
 ## Keep In Human Audit
 
@@ -48,11 +51,8 @@ produce a stable mechanical rule with low false-positive risk.
 
 ## Future Candidates
 
-Consider adding validator warnings, not hard failures, after more audits:
+Consider adding more validator warnings, not hard failures, after more audits:
 
-- active `skills/**/SKILL.md` files include `match-check`,
-- active `skills/**/SKILL.md` files include `Step 0: Match Check`,
-- skills with `references/` include a post-match loading guard,
 - strict external-mutation keywords require explicit approval wording.
 
 Do not promote these as hard failures until the rule can distinguish active

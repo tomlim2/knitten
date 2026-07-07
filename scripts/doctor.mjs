@@ -237,6 +237,62 @@ function validateOutputRegistryContract(root) {
   ].join(", ");
 }
 
+function skillShapeWarnings(root) {
+  const warnings = [];
+  const skillsRoot = path.join(root, "skills");
+  if (!fs.existsSync(skillsRoot)) return [`${skillsRoot} does not exist`];
+  const skills = fs.readdirSync(skillsRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  for (const skillName of skills) {
+    const skillPath = path.join(skillsRoot, skillName, "SKILL.md");
+    if (!fs.existsSync(skillPath)) continue;
+    const relativeSkillPath = path.relative(root, skillPath);
+    const body = fs.readFileSync(skillPath, "utf8");
+    const frontmatter = body.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!frontmatter) {
+      warnings.push(`${relativeSkillPath} missing YAML frontmatter`);
+    } else if (!/^match-check:\s*(loose|normal|strict)\s*$/m.test(frontmatter[1])) {
+      warnings.push(`${relativeSkillPath} missing match-check frontmatter`);
+    }
+    if (!body.includes("## Step 0: Match Check")) {
+      warnings.push(`${relativeSkillPath} missing Step 0: Match Check`);
+    }
+
+    const referencesRoot = path.join(skillsRoot, skillName, "references");
+    if (!fs.existsSync(referencesRoot)) continue;
+    const referenceFiles = fs.readdirSync(referencesRoot, { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name);
+    if (referenceFiles.length === 0) continue;
+    if (!body.includes("Do not read detailed references until Step 0 passes.")) {
+      warnings.push(`${relativeSkillPath} missing pre-reference Step 0 guard`);
+    }
+    if (!/## After Match[\s\S]*references\//.test(body)) {
+      warnings.push(`${relativeSkillPath} missing post-match reference load instruction`);
+    }
+  }
+
+  return warnings;
+}
+
+function warningCheck(checks, id, run) {
+  try {
+    const warnings = run();
+    const check = {
+      id,
+      ok: true,
+      detail: `${warnings.length} warnings`,
+    };
+    if (warnings.length > 0) check.warnings = warnings;
+    checks.push(check);
+  } catch (error) {
+    checks.push({ id, ok: true, detail: `warning scan failed: ${error.message}` });
+  }
+}
+
 function checkConfigRegistries(root) {
   const required = [
     ["agent/config/outputs.json", (value) => value.schemaVersion === 1 && Array.isArray(value.entries)],
@@ -310,6 +366,10 @@ function main() {
 
   check(checks, "source-output-registry-contract", () => {
     return validateOutputRegistryContract(REPO_ROOT);
+  });
+
+  warningCheck(checks, "source-skill-shape-warnings", () => {
+    return skillShapeWarnings(REPO_ROOT);
   });
 
   check(checks, "source-output-kinds", () => {
@@ -481,6 +541,10 @@ function main() {
 
   check(checks, "copied-output-registry-contract", () => {
     return validateOutputRegistryContract(copiedRoot);
+  });
+
+  warningCheck(checks, "copied-skill-shape-warnings", () => {
+    return skillShapeWarnings(copiedRoot);
   });
 
   check(checks, "copied-output-shim", () => {

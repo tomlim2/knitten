@@ -182,6 +182,46 @@ function validateOutputRegistryContract() {
   }
 }
 
+function skillShapeWarnings() {
+  const warnings = [];
+  const skillsRoot = "skills";
+  if (!fs.existsSync(skillsRoot)) return [`${skillsRoot} does not exist`];
+  const skills = fs.readdirSync(skillsRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  for (const skillName of skills) {
+    const skillPath = path.join(skillsRoot, skillName, "SKILL.md");
+    if (!fs.existsSync(skillPath)) continue;
+    const body = fs.readFileSync(skillPath, "utf8");
+    const frontmatter = body.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!frontmatter) {
+      warnings.push(`${skillPath} missing YAML frontmatter`);
+    } else if (!/^match-check:\s*(loose|normal|strict)\s*$/m.test(frontmatter[1])) {
+      warnings.push(`${skillPath} missing match-check frontmatter`);
+    }
+    if (!body.includes("## Step 0: Match Check")) {
+      warnings.push(`${skillPath} missing Step 0: Match Check`);
+    }
+
+    const referencesRoot = path.join(skillsRoot, skillName, "references");
+    if (!fs.existsSync(referencesRoot)) continue;
+    const referenceFiles = fs.readdirSync(referencesRoot, { withFileTypes: true })
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name);
+    if (referenceFiles.length === 0) continue;
+    if (!body.includes("Do not read detailed references until Step 0 passes.")) {
+      warnings.push(`${skillPath} missing pre-reference Step 0 guard`);
+    }
+    if (!/## After Match[\s\S]*references\//.test(body)) {
+      warnings.push(`${skillPath} missing post-match reference load instruction`);
+    }
+  }
+
+  return warnings;
+}
+
 for (const file of requiredFiles) {
   if (!fs.existsSync(file)) throw new Error(`missing required file: ${file}`);
 }
@@ -204,5 +244,10 @@ for (const field of ["name", "version", "description", "interface"]) {
 if (manifest.name !== "knitten") throw new Error("plugin manifest name must be knitten");
 
 validateOutputRegistryContract();
+
+const warnings = skillShapeWarnings();
+for (const warning of warnings) {
+  process.stderr.write(`warning: ${warning}\n`);
+}
 
 process.stdout.write(`repository shell ok: ${files.length} files\n`);
