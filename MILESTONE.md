@@ -81,7 +81,6 @@ prove one repeated workflow before any broad migration.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P1 | Large tool-output artifact contract | Document a small `.agent-local/workflow/runs/<run-id>/` shape with `raw/`, `summary.md`, `handoff.json`, and `next.md`. | Linear/GitHub/shell-heavy workflows have a clear rule: store raw output locally, keep only compact summary/path/next action in the active context. |
 | P1 | Compact collector pilot | One repeated workflow pilot, preferably Shotloom Linear/PR triage, that writes raw evidence and prints a compact summary. | The pilot replaces manual multi-tool context buildup for one real workflow without adding RAG, vector search, or a broad router. |
 | P2 | Skill-shape validator warnings | Warning-only checks for active skills missing `match-check`, `Step 0: Match Check`, or post-match reference guards when references exist. | `doctor` or repository validation can surface obvious drift without hard-failing judgment-heavy skill quality questions. |
 | P2 | Triad packet budget | Updated review/triad guidance for compact packets, role-specific context, and when full base docs are justified. | Triad review can avoid sending every large base document to every role by default while preserving read-only safety. |
@@ -127,6 +126,9 @@ existing harness with small contracts, warnings, and one workflow pilot.
   stay in validators, judgment-heavy skill quality checks stay in human audits.
 - README exposure proof is refreshed against `node scripts/measure-skill-exposure.mjs .`:
   8 skills, about 135 list tokens, and about 3826 `SKILL.md` tokens.
+- Workflow run artifacts are registered for `root`, `raw`, `summary`,
+  `handoff`, and `next` through the local artifact registry and
+  `workflow-run-*` output ids.
 
 ## Pilot Batch
 

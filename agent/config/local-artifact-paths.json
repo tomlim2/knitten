@@ -26,6 +26,91 @@
     },
     {
       "owner": "workflow",
+      "artifactType": "runs",
+      "item": "root",
+      "kind": "directory",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/runs/{slug}",
+      "cleanupPath": ".agent-local/workflow/runs/{slug}",
+      "description": "Shared workflow run artifact root",
+      "schemaKind": "workflow-run-root"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "runs",
+      "item": "raw",
+      "kind": "directory",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/runs/{slug}/raw",
+      "cleanupPath": ".agent-local/workflow/runs/{slug}",
+      "description": "Raw evidence directory for a shared workflow run",
+      "schemaKind": "workflow-run-raw"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "runs",
+      "item": "summary",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/runs/{slug}/summary.md",
+      "cleanupPath": ".agent-local/workflow/runs/{slug}",
+      "description": "Compact human-readable summary for a shared workflow run",
+      "schemaKind": "workflow-run-summary"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "runs",
+      "item": "handoff",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/runs/{slug}/handoff.json",
+      "cleanupPath": ".agent-local/workflow/runs/{slug}",
+      "description": "Machine-readable resume state for a shared workflow run",
+      "schemaKind": "workflow-run-handoff"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "runs",
+      "item": "next",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/runs/{slug}/next.md",
+      "cleanupPath": ".agent-local/workflow/runs/{slug}",
+      "description": "Immediate next action or blocker for a shared workflow run",
+      "schemaKind": "workflow-run-next"
+    },
+    {
+      "owner": "workflow",
       "artifactType": "operational-findings",
       "item": "inbox",
       "kind": "file",

@@ -49,9 +49,10 @@ domain-specific collectors, labels, and interpretation.
 - Avoid broad retrieval infrastructure until simple artifact contracts and one
   workflow pilot prove insufficient.
 
-## Artifact Shape
+## Registered Artifact Shape
 
-For tool-heavy or long-running work, use a run-local artifact folder:
+For tool-heavy or long-running work, Knitten Core registers a run-local
+artifact folder:
 
 ```text
 .agent-local/workflow/runs/<run-id>/
@@ -72,6 +73,11 @@ The shape is intentionally small:
 
 Workflows may add domain-owned files under the run folder, but they should not
 replace the generic summary, handoff, or next-action files.
+
+The shape is registered through the `workflow/runs` local artifact entries and
+the `workflow-run-*` output ids. Skills and workflow scripts should resolve
+these paths through `KNITTEN_PATH_BIN artifact` or `KNITTEN_PATH_BIN output`
+instead of hard-coding the physical path.
 
 ## Skill Behavior
 
@@ -151,13 +157,11 @@ Trade-offs:
 
 ## Adoption Path
 
-1. Add or update the generic run artifact contract.
-2. Refresh public proof text so it does not drift from source measurements.
-3. Implement one compact collector pilot for a repeated domain workflow.
-4. Add warning-level validation for obvious skill-shape drift.
-5. Update review/triad guidance to prefer compact packets and role-specific
+1. Implement one compact collector pilot for a repeated domain workflow.
+2. Add warning-level validation for obvious skill-shape drift.
+3. Update review/triad guidance to prefer compact packets and role-specific
    context.
-6. Revisit domain-plugin exposure only after the pilot proves the pattern.
+4. Revisit domain-plugin exposure only after the pilot proves the pattern.
 
 ## Acceptance Criteria
 

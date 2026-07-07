@@ -27,6 +27,111 @@
       ],
       "template": "document-templates/workflow/json-handoff-packet.json",
       "format": "json"
+    },
+    {
+      "id": "workflow-run-root",
+      "description": "Shared workflow run artifact root",
+      "madeBy": "workflow:context-artifact-harness",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "runs",
+          "root",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      ],
+      "format": "directory"
+    },
+    {
+      "id": "workflow-run-raw-dir",
+      "description": "Raw evidence directory for a shared workflow run",
+      "madeBy": "workflow:context-artifact-harness",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "runs",
+          "raw",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      ],
+      "format": "directory"
+    },
+    {
+      "id": "workflow-run-summary-md",
+      "description": "Compact human-readable summary for a shared workflow run",
+      "madeBy": "workflow:context-artifact-harness",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "runs",
+          "summary",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      ],
+      "format": "markdown"
+    },
+    {
+      "id": "workflow-run-handoff-json",
+      "description": "Machine-readable resume state for a shared workflow run",
+      "madeBy": "workflow:context-artifact-harness",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "runs",
+          "handoff",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      ],
+      "format": "json"
+    },
+    {
+      "id": "workflow-run-next-md",
+      "description": "Immediate next action or blocker for a shared workflow run",
+      "madeBy": "workflow:context-artifact-harness",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "runs",
+          "next",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        }
+      ],
+      "format": "markdown"
     }
   ]
 }
