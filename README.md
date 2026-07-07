@@ -33,8 +33,8 @@ commands before changing public claims.
 
 | Check | Current result | Re-run |
 |-------|----------------|--------|
-| Discovery surface | 7 skills, about 111 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Skill bodies | about 3536 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Discovery surface | 8 skills, about 135 list tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Skill bodies | about 3826 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
 | Context-load smoke eval | 20/20 match accuracy, 65.3% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
 
 ## Included Skills
@@ -64,7 +64,7 @@ Expected success signals:
 - `repository shell ok`
 - `materialize-local-plugin.mjs` writes or updates the local marketplace entry
 - `node scripts/doctor.mjs` returns JSON with `"ok": true`
-- `measure-skill-exposure.mjs` prints a `knitten` row with 7 skills
+- `measure-skill-exposure.mjs` prints a `knitten` row with 8 skills
 - `run-context-load-smoke-eval.mjs` returns `"ok": true`
 
 If you have the Codex plugin validator available, also run:

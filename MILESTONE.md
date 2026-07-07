@@ -76,12 +76,11 @@ keep long flow details behind match checks or internal references.
 
 ## Next Work
 
-Work these in order. Keep this batch small: fix measured drift, add compact
-artifact contracts, and prove one repeated workflow before any broad migration.
+Work these in order. Keep this batch small: add compact artifact contracts and
+prove one repeated workflow before any broad migration.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P0 | Refresh exposure proof | Updated README/milestone measurement notes, or a short spec if the proof block should move out of README. | `node scripts/measure-skill-exposure.mjs .` matches the public proof text, including skill count and approximate tokens. |
 | P1 | Large tool-output artifact contract | Document a small `.agent-local/workflow/runs/<run-id>/` shape with `raw/`, `summary.md`, `handoff.json`, and `next.md`. | Linear/GitHub/shell-heavy workflows have a clear rule: store raw output locally, keep only compact summary/path/next action in the active context. |
 | P1 | Compact collector pilot | One repeated workflow pilot, preferably Shotloom Linear/PR triage, that writes raw evidence and prints a compact summary. | The pilot replaces manual multi-tool context buildup for one real workflow without adding RAG, vector search, or a broad router. |
 | P2 | Skill-shape validator warnings | Warning-only checks for active skills missing `match-check`, `Step 0: Match Check`, or post-match reference guards when references exist. | `doctor` or repository validation can surface obvious drift without hard-failing judgment-heavy skill quality questions. |
@@ -126,6 +125,8 @@ existing harness with small contracts, warnings, and one workflow pilot.
   compatibility surfaces with required metadata and migration rules.
 - Validator promotion decision is recorded: mechanical repository checks
   stay in validators, judgment-heavy skill quality checks stay in human audits.
+- README exposure proof is refreshed against `node scripts/measure-skill-exposure.mjs .`:
+  8 skills, about 135 list tokens, and about 3826 `SKILL.md` tokens.
 
 ## Pilot Batch
 
