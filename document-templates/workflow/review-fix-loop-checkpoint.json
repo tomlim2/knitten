@@ -31,6 +31,13 @@
     }
   ],
   "changedFiles": [],
+  "reviewPacketBudget": {
+    "shared": [],
+    "roleSpecific": [],
+    "artifactOnly": [],
+    "fullShared": [],
+    "rawArtifactPaths": []
+  },
   "validation": [
     {
       "command": "<validation command>",

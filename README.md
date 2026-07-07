@@ -34,8 +34,8 @@ commands before changing public claims.
 | Check | Current result | Re-run |
 |-------|----------------|--------|
 | Discovery surface | 8 skills, about 135 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Skill bodies | about 3826 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Context-load smoke eval | 20/20 match accuracy, 65.3% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
+| Skill bodies | about 3929 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Context-load smoke eval | 20/20 match accuracy, 62.3% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
 
 ## Included Skills
 

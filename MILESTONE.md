@@ -76,12 +76,11 @@ keep long flow details behind match checks or internal references.
 
 ## Next Work
 
-Work these in order. Keep this batch small: add compact artifact contracts and
-prove one repeated workflow before any broad migration.
+Work this next. Keep the batch small: use measured exposure before any broad
+domain-plugin migration.
 
 | Priority | Work | Output | Done When |
 |----------|------|--------|-----------|
-| P2 | Triad packet budget | Updated review/triad guidance for compact packets, role-specific context, and when full base docs are justified. | Triad review can avoid sending every large base document to every role by default while preserving read-only safety. |
 | P3 | Domain exposure audit plan | Measured KSL/KAS exposure note with candidates for internal flow consolidation. | Candidate reductions are ranked by measured exposure and usefulness; no broad domain-plugin migration starts without a separate accepted target list. |
 
 ## Deferred
@@ -123,7 +122,7 @@ existing harness with small contracts, warnings, and one workflow pilot.
 - Validator promotion decision is recorded: mechanical repository checks
   stay in validators, judgment-heavy skill quality checks stay in human audits.
 - README exposure proof is refreshed against `node scripts/measure-skill-exposure.mjs .`:
-  8 skills, about 135 list tokens, and about 3826 `SKILL.md` tokens.
+  8 skills, about 135 list tokens, and about 3929 `SKILL.md` tokens.
 - Workflow run artifacts are registered for `root`, `raw`, `summary`,
   `handoff`, and `next` through the local artifact registry and
   `workflow-run-*` output ids.
@@ -133,6 +132,9 @@ existing harness with small contracts, warnings, and one workflow pilot.
 - Skill-shape validator warnings surface active skills missing `match-check`,
   `Step 0: Match Check`, or post-match reference guards without hard-failing
   repository validation.
+- Triad packet budget guidance lets review roles share compact context while
+  keeping role-specific documents, raw artifact evidence, and justified full
+  shared context separate by default.
 
 ## Pilot Batch
 

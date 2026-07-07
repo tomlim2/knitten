@@ -130,6 +130,9 @@ unbounded bundles.
 Role-specific subagents should receive the smallest packet that preserves their
 review responsibility. Full raw evidence should be available by artifact path
 when needed, but it should not be copied into every role prompt by default.
+Triad packet guidance classifies inputs as `shared`, `role-specific`,
+`artifact-only`, or `full-shared`; full shared raw context requires a short
+justification.
 
 The parent workflow should keep merged findings, residual risks, and artifact
 paths. It should not need to keep every role's full raw trace in active context.
@@ -163,8 +166,9 @@ Trade-offs:
 
 ## Adoption Path
 
-1. Update review/triad guidance to prefer compact packets and role-specific
-   context.
+1. Review/triad guidance now prefers compact packets, role-specific context,
+   artifact paths for raw evidence, and justified full shared context only when
+   every role must inspect exact text.
 2. Revisit domain-plugin exposure only after the pilot proves the pattern.
 
 ## Acceptance Criteria

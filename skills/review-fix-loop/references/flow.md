@@ -9,6 +9,8 @@ Confirm or infer:
 - target repo, branch, base ref, and changed surface,
 - task key or issue id when available,
 - review mode: `triad` by default, `single` for low-risk or explicit requests,
+- review packet budget expectations for base documents and raw evidence:
+  `shared`, `role-specific`, `artifact-only`, or `full-shared`,
 - validation commands or the nearest meaningful repository checks,
 - checkpoint location or target workspace task-artifact resolver.
 
@@ -42,14 +44,17 @@ The checkpoint must record:
 - review mode and target repo/branch/base/task key,
 - fixed findings and remaining P1/P2 blockers,
 - changed files and validation results,
+- compact review packet budget summary and raw artifact paths used as evidence,
 - whether commit/push approval exists,
 - next action and timestamp.
 
 ## Loop
 
 1. Restore the latest checkpoint when continuing an existing loop.
-2. Build a compact review packet: scope, changed files, relevant docs, base ref,
-   validation evidence, and previous checkpoint summary.
+2. Build a compact review packet: scope, changed files, shared compact docs,
+   role-specific docs, artifact-only raw evidence summaries and paths, any
+   justified full-shared docs, base ref, validation evidence, and previous
+   checkpoint summary.
 3. Run `review` in `triad` mode unless the user requested `single` or the
    scope is small and low-risk.
 4. Merge findings. Treat P1/P2 as blockers; record P3/nits without letting them
@@ -63,6 +68,11 @@ The checkpoint must record:
 8. Write a `continue` checkpoint with fixed findings, remaining blockers,
    changed files, validation results, and next action.
 9. Repeat until the loop reaches a stop condition.
+
+Do not copy every readable base document, raw trace, connector response, or
+validation log into every role prompt by default. Keep large evidence as
+artifact paths plus compact summaries unless exact text is needed to ground a
+specific finding or the packet justifies it as `full-shared`.
 
 ## Stop Conditions
 

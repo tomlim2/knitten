@@ -30,7 +30,7 @@ The caller should provide:
 - <path or artifact> - <surface> - <primary consumer> - <risk>
 
 ## Base review documents
-- <name/path or inline label> - <why mandatory> - <path readable? yes/no>
+- <name/path or inline label> - <why useful; include justification when full-shared> - <budget: shared|role-specific|artifact-only|full-shared> - <path readable? yes/no>
 
 ## Finding schema
 <optional caller schema; omitted means default Knitten Core finding schema>
@@ -43,7 +43,35 @@ single | triad
 ```
 
 The packet should be concise and source-cited. If it is too vague to choose
-roles or ground findings, stop and ask the caller to repair it.
+roles, assign context budgets, or ground findings, stop and ask the caller to
+repair it.
+
+## Packet Budget
+
+Triad review should preserve review quality without copying every large base
+document into every role prompt.
+
+Classify each supplied base document or evidence source before dispatch:
+
+| Budget | Use For | Role Handling |
+|--------|---------|---------------|
+| `shared` | Compact contracts, specs, schemas, or summaries every role needs. | Send to every role. |
+| `role-specific` | Detailed docs relevant to one or two role lenses. | Send only to matching roles. |
+| `artifact-only` | Raw logs, inventories, long diffs, command output, or connector snapshots that have a compact summary. | Send summary/path to every role; load raw content only when a role needs it to verify a finding. |
+| `full-shared` | Source-of-truth text that every role must inspect directly. | Send to every role, but require a short justification. |
+
+Default large or raw inputs to `artifact-only`. Escalate to `full-shared` only
+when one of these is true:
+
+- the reviewed target is the full document itself,
+- every role must inspect the exact text to verify the same contract,
+- summarizing would hide security, safety, API, migration, or data-loss
+  semantics,
+- the caller explicitly marks the document as mandatory full shared context and
+  cites why.
+
+If the packet cannot show enough compact context to choose roles and budgets,
+ask the caller to repair the packet instead of widening every role prompt.
 
 ## Default Knitten Core Finding Schema
 
@@ -139,7 +167,8 @@ Every role receives:
 - review target,
 - review brief,
 - changed surface inventory,
-- every base review document supplied by the caller,
+- shared compact base documents,
+- artifact paths and summaries for raw evidence,
 - finding schema,
 - known constraints and non-goals,
 - role name, role scope, primary consumer, and explicit out-of-scope boundary.
@@ -150,6 +179,14 @@ Every role receives:
 
 Only after that shared packet is loaded does the role apply its lens.
 
+Each role also receives:
+
+- role-specific base documents selected for that role,
+- any `full-shared` documents with the caller's justification,
+- raw artifact content only when needed to verify a grounded finding.
+
+Do not send every readable base document to every role by default.
+
 ## Role Prompt Contract
 
 Every role prompt must include:
@@ -159,8 +196,8 @@ You are a read-only review subagent.
 Do not edit files.
 Do not run mutation commands.
 Do not post comments, push, merge, deploy, or mutate GitHub/Linear.
-Use only the supplied review packet, readable paths explicitly provided by the
-caller, and the role lens.
+Use only the supplied compact review packet, role-selected readable paths
+explicitly provided by the caller, and the role lens.
 Report grounded findings only.
 ```
 
@@ -169,12 +206,15 @@ Report grounded findings only.
 ```text
 Read this Triad reference.
 Read the caller-provided review packet.
-Read every readable base review document explicitly supplied by the caller.
+Read the shared packet first, then read only base documents selected for this
+role or justified as full-shared.
 Review the target as Role: <role>.
 Use the shared packet first, then apply this role lens: <role lens>.
 Use the Review Brief as a navigation index, not finding evidence.
 Report only P0-P3 findings grounded in the target, supplied documents, or
 directly provided content.
+Use artifact paths for raw evidence; inspect raw content only when needed to
+verify a specific finding.
 Suppress weak, speculative, or unanchored findings.
 Render the Role Report Template.
 Review is read-only.
