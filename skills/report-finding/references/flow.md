@@ -40,7 +40,7 @@ Resolve the record path with:
 This writes under:
 
 ```text
-<knitten-plugin-root>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/
+<knitten-plugin-root>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/reports/
 ```
 
 Include the affected repository, plugin, skill, or path in the JSON body as

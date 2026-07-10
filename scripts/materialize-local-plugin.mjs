@@ -1,34 +1,13 @@
 #!/usr/bin/env node
 import fs from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { spawnSync } from "node:child_process";
+import { existsSync, realpathSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { sourcePluginFiles } from "./plugin-source-files.mjs";
 
 const PLUGIN_NAME = "knitten";
-const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
-const COPY_EXCLUDES = new Set([
-  ".agent-local",
-  ".git",
-  ".DS_Store",
-  "node_modules",
-]);
-
-function trackedFiles() {
-  const result = spawnSync("git", ["ls-files", "-z"], {
-    cwd: REPO_ROOT,
-    encoding: "buffer",
-  });
-  if (result.status !== 0) {
-    throw new Error((result.stderr.toString("utf8") || "git ls-files failed").trim());
-  }
-  return result.stdout
-    .toString("utf8")
-    .split("\0")
-    .filter(Boolean)
-    .filter((relative) => !relative.split("/").some((part) => COPY_EXCLUDES.has(part)));
-}
-
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 function parseArgs(argv) {
   const args = {
     dryRun: false,
@@ -88,9 +67,29 @@ function withCachebuster(version, cachebuster) {
 }
 
 function assertTargetOutsideRepo(targetDir) {
-  const relative = path.relative(REPO_ROOT, targetDir);
+  const sourceRoot = canonicalPath(REPO_ROOT);
+  const canonicalTarget = canonicalPath(targetDir);
+  const relative = path.relative(sourceRoot, canonicalTarget);
   if (relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative))) {
-    throw new Error(`target plugin directory must be outside this checkout: ${targetDir}`);
+    throw new Error(`target plugin directory must be outside this checkout: ${canonicalTarget}`);
+  }
+}
+
+function canonicalPath(value) {
+  let current = path.resolve(value);
+  const suffix = [];
+  while (!existsSync(current)) {
+    const parent = path.dirname(current);
+    if (parent === current) return path.resolve(value);
+    suffix.unshift(path.basename(current));
+    current = parent;
+  }
+  return path.join(realpathSync(current), ...suffix);
+}
+
+function injectTestFailure(stage) {
+  if (process.env.KNITTEN_MATERIALIZE_TEST_FAIL === stage) {
+    throw new Error(`injected materialization failure: ${stage}`);
   }
 }
 
@@ -154,18 +153,72 @@ function upsertMarketplaceEntry(marketplace) {
   return "updated";
 }
 
-async function copyPlugin(targetDir, dryRun) {
-  if (dryRun) {
-    console.log(`[dry-run] refresh ${targetDir} from ${REPO_ROOT}`);
-    return;
-  }
-  await fs.rm(targetDir, { recursive: true, force: true });
+async function copyPluginFiles(targetDir) {
   await fs.mkdir(targetDir, { recursive: true });
-  for (const relative of trackedFiles()) {
+  for (const relative of sourcePluginFiles(REPO_ROOT)) {
     const source = path.join(REPO_ROOT, relative);
     const target = path.join(targetDir, relative);
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.cp(source, target, { force: true });
+  }
+}
+
+async function refreshPlugin(targetDir, sourceManifest, cachebuster, dryRun) {
+  if (dryRun) {
+    console.log(`[dry-run] refresh ${targetDir} from ${REPO_ROOT}`);
+    if (cachebuster) {
+      console.log(`[dry-run] set ${PLUGIN_NAME} version: ${sourceManifest.version} -> ${withCachebuster(sourceManifest.version, cachebuster)}`);
+    }
+    return;
+  }
+
+  const parentDir = path.dirname(targetDir);
+  const transactionId = `${process.pid}-${Date.now()}`;
+  const stageDir = path.join(parentDir, `.${PLUGIN_NAME}.stage-${transactionId}`);
+  const backupDir = path.join(parentDir, `.${PLUGIN_NAME}.backup-${transactionId}`);
+  const targetLocalRoot = path.join(targetDir, ".agent-local");
+  let movedExisting = false;
+
+  await fs.mkdir(parentDir, { recursive: true });
+  await fs.rm(stageDir, { recursive: true, force: true });
+  await fs.rm(backupDir, { recursive: true, force: true });
+
+  try {
+    await copyPluginFiles(stageDir);
+    if (existsSync(targetLocalRoot)) {
+      await fs.cp(targetLocalRoot, path.join(stageDir, ".agent-local"), {
+        recursive: true,
+        force: true,
+      });
+    }
+    await rewriteCopiedManifest(stageDir, sourceManifest, cachebuster, false);
+    await readManifest(stageDir);
+    injectTestFailure("before-swap");
+
+    if (existsSync(targetDir)) {
+      await fs.rename(targetDir, backupDir);
+      movedExisting = true;
+      injectTestFailure("after-backup");
+    }
+    try {
+      injectTestFailure("before-promote");
+      await fs.rename(stageDir, targetDir);
+    } catch (error) {
+      if (movedExisting && !existsSync(targetDir) && existsSync(backupDir)) {
+        await fs.rename(backupDir, targetDir);
+        movedExisting = false;
+      }
+      throw error;
+    }
+    if (movedExisting) {
+      await fs.rm(backupDir, { recursive: true, force: true });
+    }
+  } catch (error) {
+    await fs.rm(stageDir, { recursive: true, force: true });
+    if (movedExisting && !existsSync(targetDir) && existsSync(backupDir)) {
+      await fs.rename(backupDir, targetDir);
+    }
+    throw error;
   }
 }
 
@@ -183,6 +236,17 @@ async function rewriteCopiedManifest(targetDir, sourceManifest, cachebuster, dry
   console.log(`set ${PLUGIN_NAME} version: ${sourceManifest.version} -> ${nextVersion}`);
 }
 
+async function writeJsonAtomic(file, value) {
+  const temporary = `${file}.tmp-${process.pid}-${Date.now()}`;
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  try {
+    await fs.writeFile(temporary, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+    await fs.rename(temporary, file);
+  } finally {
+    await fs.rm(temporary, { force: true });
+  }
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const sourceManifest = await readManifest(REPO_ROOT);
@@ -191,17 +255,16 @@ async function main() {
   assertTargetOutsideRepo(targetDir);
   const marketplace = await readMarketplace(marketplacePath);
   const action = upsertMarketplaceEntry(marketplace);
+  const cachebuster = args.useCachebuster ? args.cachebuster : "";
 
   console.log(`${action} marketplace entry: ${PLUGIN_NAME}`);
-  await copyPlugin(targetDir, args.dryRun);
-  await rewriteCopiedManifest(targetDir, sourceManifest, args.useCachebuster ? args.cachebuster : "", args.dryRun);
+  await refreshPlugin(targetDir, sourceManifest, cachebuster, args.dryRun);
 
   if (args.dryRun) {
     console.log(`[dry-run] write ${marketplacePath}`);
     return;
   }
-  await fs.mkdir(path.dirname(marketplacePath), { recursive: true });
-  await fs.writeFile(marketplacePath, `${JSON.stringify(marketplace, null, 2)}\n`, "utf8");
+  await writeJsonAtomic(marketplacePath, marketplace);
   console.log(`wrote marketplace: ${marketplacePath}`);
 }
 

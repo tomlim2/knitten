@@ -2,6 +2,7 @@
 name: draft-spec
 description: Draft a compact implementation spec.
 match-check: normal
+allowed-tools: Read, Write, Agent, Bash
 ---
 
 # Draft Spec
@@ -32,65 +33,9 @@ workflow in the current session mode, write the spec artifact, and stop before
 implementation. If scope or correctness remains uncertain, ask the user before
 locking the spec.
 
-## Input
+Do not read detailed references until Step 0 passes.
 
-- Task purpose.
-- Known references or constraints.
-- Chosen approach, if already decided.
+## After Match
 
-## Output
-
-- Spec with goal, boundary, inputs, outputs, plan, validation, acceptance
-  criteria, and open blockers.
-
-## Spec Shape
-
-After Step 0 passes, use `document-templates/workflow/spec.md` when available.
-
-Include:
-
-- status
-- goal
-- boundary
-- inputs
-- outputs
-- plan
-- validation
-- acceptance criteria
-
-Keep the spec dry and implementation-oriented. Do not add broad background
-unless it affects the contract.
-
-## Skill Specs
-
-When the requested spec creates or updates a skill, include an
-`match-check` decision and Step 0 decision in the spec.
-
-Ask or infer:
-
-- `match-check: loose | normal | strict`
-- whether the skill needs an explicit `Step 0: Match Check`
-- which user approval or stop condition applies before mutation
-
-Use `docs/specs/skill-match-check-policy.md` as the source of truth.
-Use `docs/guidelines/skill-authoring.md` as the source of truth for keeping the
-active `SKILL.md` short, match-first, and reference-backed.
-Prefer direct skills, domain plugins, and internal deferred flows. Do not add
-new broad selection workflow surfaces; if a request asks for a selection layer
-behavior, draft the direct-skill, domain-plugin, or internal-flow alternative
-first.
-
-Question only when the match check is not obvious. Infer `strict` without
-asking when the skill can push, merge, deploy, delete, send external messages,
-mutate GitHub/Linear, change credentials/config, or affect production state.
-
-## Path Handling
-
-When writing a spec file, use the active workspace's documented spec location.
-If no location is documented, use the helper default:
-
-```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --skill=draft-spec --name=<task-name> --create
-```
-
-Do not write specs into the plugin install path.
+Read [`references/flow.md`](references/flow.md), then write the compact spec
+artifact and stop before implementation.

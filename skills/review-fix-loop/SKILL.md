@@ -27,8 +27,10 @@ Confirm:
   or an explicit path,
 - review mode is `single` or `triad`; use the requested mode, defaulting to
   `triad`,
-- mutation is limited to local files unless the user explicitly approved an
-  exact external action.
+- mutation is limited to local files,
+- the checkpoint owner and absolute location are resolved through the target
+  workspace task-artifact contract or the Knitten Core fallback before the
+  first write; stop when ownership cannot be determined safely.
 
 Stop and ask for the smallest missing item when the target, review packet, or
 writable workspace cannot be inferred safely.
@@ -40,8 +42,9 @@ Do not read detailed references until Step 0 passes.
 - Coordinate `review` and `implement`; do not replace either one.
 - Keep `review` read-only. Use it only for review passes.
 - Use `implement` behavior for accepted fixes.
-- Do not commit, push, create PRs, post comments, deploy, delete, or mutate
-  external state unless the user explicitly asks for that exact action.
+- Never commit, push, create PRs, post comments, deploy, delete, or mutate
+  external state in this normal-gated loop. Hand any requested external action
+  to its owning strict workflow for a fresh gate.
 - Treat `/goal` as an optional progress guard only. The loop's source of truth
   is the checkpoint JSON.
 

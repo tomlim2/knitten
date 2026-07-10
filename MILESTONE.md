@@ -76,12 +76,11 @@ keep long flow details behind match checks or internal references.
 
 ## Next Work
 
-Work this next. Keep the batch small: use measured exposure before any broad
-domain-plugin migration.
+No accepted implementation remains in this batch.
 
-| Priority | Work | Output | Done When |
-|----------|------|--------|-----------|
-| P3 | Domain exposure audit plan | Measured KSL/KAS exposure note with candidates for internal flow consolidation. | Candidate reductions are ranked by measured exposure and usefulness; no broad domain-plugin migration starts without a separate accepted target list. |
+Future domain-plugin work needs a separate accepted target list. `dev-generate-spec`
+is the next measured KAS candidate if more selected-body exposure reduction is
+worth doing.
 
 ## Deferred
 
@@ -122,7 +121,7 @@ existing harness with small contracts, warnings, and one workflow pilot.
 - Validator promotion decision is recorded: mechanical repository checks
   stay in validators, judgment-heavy skill quality checks stay in human audits.
 - README exposure proof is refreshed against `node scripts/measure-skill-exposure.mjs .`:
-  8 skills, about 135 list tokens, and about 3929 `SKILL.md` tokens.
+  8 skills, about 135 list tokens, and about 3193 `SKILL.md` tokens.
 - Workflow run artifacts are registered for `root`, `raw`, `summary`,
   `handoff`, and `next` through the local artifact registry and
   `workflow-run-*` output ids.
@@ -135,6 +134,12 @@ existing harness with small contracts, warnings, and one workflow pilot.
 - Triad packet budget guidance lets review roles share compact context while
   keeping role-specific documents, raw artifact evidence, and justified full
   shared context separate by default.
+- Domain exposure audit plan is recorded with fresh Knitten Core/KSL/KAS
+  measurements, ranked KSL/KAS candidates, and a gate requiring a separate
+  accepted target list before any domain-plugin migration.
+- KAS Unreal/CINEV body extraction is implemented for eight accepted target
+  skills: default list exposure stayed flat while KAS total `SKILL.md` body
+  exposure fell from about 10448 to 7026 tokens.
 
 ## Pilot Batch
 
@@ -185,3 +190,5 @@ Candidate follow-up audits:
 - [`docs/specs/follow-up-skill-audit.md`](docs/specs/follow-up-skill-audit.md)
 - [`docs/specs/validator-promotion-decision.md`](docs/specs/validator-promotion-decision.md)
 - [`docs/specs/context-artifact-first-harness.md`](docs/specs/context-artifact-first-harness.md)
+- [`docs/specs/domain-exposure-audit-plan.md`](docs/specs/domain-exposure-audit-plan.md)
+- [`docs/specs/kas-unreal-cinev-body-extraction-target-list.md`](docs/specs/kas-unreal-cinev-body-extraction-target-list.md)

@@ -172,6 +172,11 @@ Assign the model before dispatching each read-only role subagent:
   `model_reasoning_effort = "medium"` for the other two roles.
 - Use a read-only sandbox/profile for every role.
 
+If the dispatcher cannot enforce a read-only sandbox/profile, do not spawn
+role subagents. Run the same role lenses sequentially in the primary read-only
+review workflow and record the unavailable sandbox/profile in merged residual
+risk. A prompt-only prohibition is not an effective read-only profile.
+
 When multiple triad roles have equal technical risk, assign `gpt-5.6` to the
 primary-consumer role. If an exact model is unavailable, preserve the routing
 intent: use the strongest available review-capable model at `high` effort for
@@ -179,10 +184,12 @@ the deep role and the fastest available review-capable model at `medium` effort
 for scan roles. Record the requested and effective model/profile in the role
 report `Notes`.
 
-If per-agent model selection is unavailable, keep the selected roles separate,
-use the available agent model, and report the fallback in each role's `Notes`.
-If role subagents are unavailable, run the same role lenses sequentially in the
-current session and report that fallback in the merged residual risk.
+If per-agent model selection is unavailable but a read-only profile is
+enforceable, keep the selected roles separate, use the available agent model,
+and report the requested and effective model/profile in each role's `Notes`.
+If role subagents or an enforceable read-only profile are unavailable, run the
+same role lenses sequentially in the current session and report that fallback
+in the merged residual risk.
 
 ## Base Review Packet Rule
 

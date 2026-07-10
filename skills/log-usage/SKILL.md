@@ -6,6 +6,8 @@ match-check: normal
 
 # Log Usage
 
+Use for: appending concise local operating-cost notes for agent work.
+
 Use this skill to append concise operating-cost notes for agent work. The log is
 for local reflection, not source-controlled project documentation.
 
@@ -13,30 +15,20 @@ for local reflection, not source-controlled project documentation.
 
 - Continue only when the request explicitly asks to record usage, cost, token,
   duration, Goal, orchestrator, review-loop, or similar operating metadata.
-- Confirm the destination is local-only and ignored before writing inside a
-  repository.
+- Identify the candidate local-only destination. Repository ignore state is a
+  post-match, read-only safety check and must pass before writing.
 - Stop if the user is asking for project documentation, release notes, or a
   source-controlled report instead of a local usage journal.
 - Match local usage journal requests; reject release notes, project docs, and
   tracked reports.
-- Do not create directories, inspect ignore state, or append entries until this
-  check passes.
+- Do not create directories or append entries until this request-fit check
+  passes.
 
-## Destination
+## Destination Safety
 
-Prefer the current repository's local ignored journal:
-
-```text
-.agent-local/knitten/usage-log.md
-```
-
-If there is no current repository, use:
-
-```text
-~/.codex/local/knitten/usage-log.md
-```
-
-Before writing inside a repository, confirm the chosen path is ignored:
+Prefer `.agent-local/knitten/usage-log.md` in the current repository. If there
+is no current repository, use `~/.codex/local/knitten/usage-log.md`. Before a
+repository write, confirm the path is ignored:
 
 ```bash
 git check-ignore -v .agent-local/knitten/usage-log.md
@@ -46,53 +38,9 @@ If it is not ignored, create or use an already ignored local-only directory only
 after checking repository rules. Do not write usage logs into tracked docs unless
 the user explicitly asks.
 
-## Entry Format
+Do not read detailed references until Step 0 passes.
 
-Append a dated Markdown entry. Include only fields supported by the user's
-message or visible conversation context. Use `unknown` for important missing
-values; do not invent exact token counts, durations, skill names, file lists, or
-outcomes.
+## After Match
 
-```markdown
-## YYYY-MM-DD HH:mm TZ - <Short Title>
-
-### Summary
-- Goal: <goal or request>
-- Outcome: <completed / partial / blocked / unknown>
-- Usage: <token count or unknown>
-- Duration: <duration or unknown>
-
-### Skills / Agents
-- Skills:
-  - `<skill-name>`
-- Agents:
-  - `<agent/orchestrator/review mode>`
-- Mode: <triad review / goal orchestrator / implementation / debug / docs / unknown>
-
-### Work
-- Category: <spec / review / implementation / verification / commit / web debug / unknown>
-- Domain: <project area or unknown>
-- Files:
-  - `<path>`
-
-### Notes
-- <why this usage was notable or useful>
-
-### Follow-up
-- <next action, if any>
-```
-
-Omit empty optional sections when they would only contain `unknown`.
-
-## Workflow
-
-1. Parse the user's usage data, such as token count, elapsed time, goal name,
-   skills, agents, review mode, outcome, and follow-up.
-2. Resolve the destination path.
-3. Create the parent directory if needed.
-4. Verify the repository destination is ignored before writing.
-5. Append one entry using the template.
-6. Report the absolute path and a short summary of what was recorded.
-
-Keep entries compact. The goal is to reveal cost patterns across work types,
-not to preserve the full transcript.
+Read [`references/flow.md`](references/flow.md), append one compact entry, and
+report the absolute path.

@@ -42,7 +42,7 @@ The checkpoint must record:
 
 - loop number and status: `continue`, `blocked`, or `complete`,
 - review mode and target repo/branch/base/task key,
-- fixed findings and remaining P1/P2 blockers,
+- fixed findings and remaining P0/P1/P2 blockers,
 - changed files and validation results,
 - compact review packet budget summary and raw artifact paths used as evidence,
 - whether commit/push approval exists,
@@ -57,9 +57,9 @@ The checkpoint must record:
    checkpoint summary.
 3. Run `review` in `triad` mode unless the user requested `single` or the
    scope is small and low-risk.
-4. Merge findings. Treat P1/P2 as blockers; record P3/nits without letting them
+4. Merge findings. Treat P0/P1/P2 as blockers and handle P0 first; record P3/nits without letting them
    drive the loop.
-5. If no P1/P2 blockers remain, run validation, write a `complete` checkpoint,
+5. If no P0/P1/P2 blockers remain, run validation, write a `complete` checkpoint,
    and report the final state.
 6. Fix accepted blockers with `implement` behavior. Keep edits scoped to the
    finding evidence and required fix.
@@ -78,7 +78,7 @@ specific finding or the packet justifies it as `full-shared`.
 
 Stop when:
 
-- P1/P2 blockers are gone and validation passed,
+- P0/P1/P2 blockers are gone and validation passed,
 - a user decision is required,
 - the next required action would commit, push, post, deploy, delete, or mutate
   external state without explicit approval,

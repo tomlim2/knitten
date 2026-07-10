@@ -2,7 +2,8 @@
 
 ## Status
 
-Draft.
+Implemented/historical. The canonical active policy is
+`docs/guidelines/skill-match-check.md`.
 
 ## Goal
 
@@ -209,10 +210,8 @@ Contract:
 
 ## Open Questions
 
-- Should `match-check` live only in frontmatter, or may it also be documented in a
-  reference file during migration?
-- Should the validator warn on strict keywords without `match-check`, or only
-  after the first targeted implementation pass?
+- None. New and updated skills declare `match-check` in frontmatter; mechanical
+  checks remain warning-first unless a separate accepted change promotes them.
 
 ## Design Plan
 

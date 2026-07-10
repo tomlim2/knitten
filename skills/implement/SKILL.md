@@ -23,40 +23,16 @@ plan, or fix accepted review findings.
   validation and state that assumption before editing.
 - Stop and ask for a repaired contract when the request lacks an accepted spec,
   actionable finding, or clear implementation target.
-- Stop before committing, pushing, merging, deploying, deleting, or mutating
-  external systems unless the user explicitly asks for that later action.
+- This skill is local-only. Never commit, push, merge, deploy, delete, or mutate
+  external systems from this workflow. Hand an explicitly requested later
+  action to an owning `strict` skill, which must re-check target, account,
+  authority, current state, mutation surface, and approval.
 - Do not edit files, run mutating commands, or follow later steps until this
   check passes.
 
-## Input
+Do not read detailed references until Step 0 passes.
 
-- Reviewed spec and design plan, or accepted review findings.
-- Target files, behavior, or validation expectations when known.
+## After Match
 
-## Output
-
-- Changed files.
-- Validation commands and results.
-- Remaining blockers or questions.
-
-## Flow
-
-1. Read the accepted contract or findings.
-2. Identify the smallest implementation surface.
-3. Before adding new code, check in order: existing repo helper/pattern,
-   standard library, native platform feature, already-installed dependency.
-4. Edit source, docs, or config in the active workspace only.
-5. Fix blockers before nits.
-6. Run the nearest meaningful validation and report coverage limits.
-
-## Rules
-
-- Prefer the target repository's own conventions.
-- Avoid new abstractions, dependencies, or public surfaces unless the accepted
-  contract requires them or smaller existing options do not fit.
-- Keep edits scoped to the accepted task.
-- Do not create a PR or commit unless the user asks.
-
-## Path Handling
-
-User work belongs in the active workspace, not the plugin install path.
+Read [`references/flow.md`](references/flow.md), then implement and validate the
+accepted local change.

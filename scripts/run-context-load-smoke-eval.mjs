@@ -68,7 +68,7 @@ function includesAny(haystack, needles) {
   return needles.some((needle) => lower.includes(String(needle).toLowerCase()));
 }
 
-function predictedSkillFor(request) {
+export function predictedSkillFor(request) {
   const text = String(request).toLowerCase();
   if (/\b(weather|image|install)\b/.test(text) || /\b(commit and push|commit\/push)\b/.test(text)) return "reject";
   if (/\b(record|log|save)\b/.test(text) && /\b(finding|failure|stale|doctor|validator|reproducible|missing config)\b/.test(text)) {
@@ -137,7 +137,7 @@ function validateSurfaces(surfaces) {
   return { problems, bySkill };
 }
 
-function runEval({ writeReport }) {
+export function runEval({ writeReport = false, predictSkill = predictedSkillFor } = {}) {
   const cases = readJson(CASES_PATH).cases;
   const surfaces = readJson(SURFACES_PATH).surfaces;
   const problems = [...validateCases(cases)];
@@ -145,22 +145,31 @@ function runEval({ writeReport }) {
   problems.push(...surfaceProblems);
 
   const fullSkillTextBySkill = new Map(PILOT_SKILLS.map((skill) => [skill, readText(`skills/${skill}/SKILL.md`)]));
-  const baselineTokens = [...fullSkillTextBySkill.values()].reduce((sum, text) => sum + estimateTokens(text), 0);
+  const baselineSkillTokens = [...fullSkillTextBySkill.values()].reduce((sum, text) => sum + estimateTokens(text), 0);
+  const baselineReferences = uniqueSorted(surfaces.flatMap((surface) => surface.references || []));
+  const baselineReferenceTokens = baselineReferences.reduce((sum, reference) => sum + estimateTokens(readText(reference)), 0);
+  const baselineTokens = baselineSkillTokens + baselineReferenceTokens;
   const matchTokens = [...bySkill.values()].reduce((sum, surface) => sum + estimateTokens(surface.matchText), 0);
   const caseResults = [];
 
   for (const item of cases) {
-    const predictedSkill = predictedSkillFor(item.request);
+    const predictedSkill = predictSkill(item.request);
     const predictedSurface = bySkill.get(predictedSkill);
     const loadedReferences = predictedSkill === "reject" ? [] : predictedSurface?.references || [];
     const referencePrecise = sameSet(loadedReferences, item.expectedReferences);
     const safetyMiss = Boolean(
       item.safetyCheckRequired
-        && predictedSkill !== "reject"
-        && (!predictedSurface || !includesAny(predictedSurface.matchText, predictedSurface.safetyTerms || [])),
+        && (
+          predictedSkill === "reject"
+          || !predictedSurface
+          || !includesAny(predictedSurface.matchText, predictedSurface.safetyTerms || [])
+        ),
     );
     const referenceTokens = loadedReferences.reduce((sum, reference) => sum + estimateTokens(readText(reference)), 0);
-    const loadedTokens = matchTokens + referenceTokens;
+    const selectedSkillTokens = predictedSkill === "reject"
+      ? 0
+      : estimateTokens(fullSkillTextBySkill.get(predictedSkill) || "");
+    const loadedTokens = matchTokens + selectedSkillTokens + referenceTokens;
     const savingsRate = baselineTokens === 0 ? 0 : (baselineTokens - loadedTokens) / baselineTokens;
     caseResults.push({
       id: item.id,
@@ -175,6 +184,7 @@ function runEval({ writeReport }) {
       safetyCheckRequired: item.safetyCheckRequired,
       safetyMiss,
       baselineTokens,
+      selectedSkillTokens,
       loadedTokens,
       savingsRate,
     });
@@ -206,6 +216,8 @@ function runEval({ writeReport }) {
       safetyMissCount,
       averageSavingsRate,
       baselineTokens,
+      baselineSkillTokens,
+      baselineReferenceTokens,
       matchTokens,
     },
     blockers,
@@ -229,4 +241,6 @@ function main() {
   if (!report.ok) process.exitCode = 1;
 }
 
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}

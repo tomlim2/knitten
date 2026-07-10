@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveLocalArtifactPath } from "./resolve-local-artifact-path.mjs";
@@ -51,8 +51,11 @@ function rootHasRegistry(root, registryPath = REGISTRY_PATH) {
 }
 
 function resolveRoot(rootOption = null, cwd = process.cwd(), registryPath = REGISTRY_PATH) {
+  if (rootOption !== null) {
+    if (!String(rootOption || "").trim()) throw new Error("--root requires a value");
+    return validateRoot(rootOption, registryPath);
+  }
   const candidates = [
-    rootOption,
     process.env.KNITTEN_CONFIG_ROOT,
     process.env.KNITTEN_CORE_ROOT,
     PLUGIN_ROOT,
@@ -77,17 +80,17 @@ function parseOptions(argv) {
     if (arg === "--create") {
       options.create = true;
     } else if (arg === "--root") {
-      options.root = argv[++index];
+      options.root = requiredOptionValue(argv, ++index, "--root");
     } else if (arg?.startsWith("--root=")) {
-      options.root = arg.slice("--root=".length);
+      options.root = requiredEqualsValue(arg, "--root=");
     } else if (arg === "--outputs-registry") {
-      options.outputsRegistry = argv[++index];
+      options.outputsRegistry = requiredOptionValue(argv, ++index, "--outputs-registry");
     } else if (arg?.startsWith("--outputs-registry=")) {
-      options.outputsRegistry = arg.slice("--outputs-registry=".length);
+      options.outputsRegistry = requiredEqualsValue(arg, "--outputs-registry=");
     } else if (arg === "--local-artifact-registry") {
-      options.localArtifactRegistry = argv[++index];
+      options.localArtifactRegistry = requiredOptionValue(argv, ++index, "--local-artifact-registry");
     } else if (arg?.startsWith("--local-artifact-registry=")) {
-      options.localArtifactRegistry = arg.slice("--local-artifact-registry=".length);
+      options.localArtifactRegistry = requiredEqualsValue(arg, "--local-artifact-registry=");
     } else if (arg === "--list") {
       options.list = true;
     } else if (arg === "-h" || arg === "--help") {
@@ -98,6 +101,22 @@ function parseOptions(argv) {
     }
   }
   return options;
+}
+
+function requiredOptionValue(argv, index, option) {
+  const value = argv[index];
+  if (!String(value || "").trim() || String(value).startsWith("--")) {
+    throw new Error(`${option} requires a value`);
+  }
+  return value;
+}
+
+function requiredEqualsValue(arg, prefix) {
+  const value = arg.slice(prefix.length);
+  if (!String(value || "").trim()) {
+    throw new Error(`${prefix.slice(0, -1)} requires a value`);
+  }
+  return value;
 }
 
 function resolveRegistryPath(root, registryPath = null) {
@@ -146,7 +165,7 @@ function validateArgs(entry, rawValues) {
       throw new Error(`${entry.id} missing arg: ${arg.name}`);
     }
     const rawValue = String(rawValues[arg.name]);
-    if (rawValue.includes("/") || rawValue.includes("..")) {
+    if (rawValue.includes("/") || rawValue.includes("\\") || rawValue.includes("..")) {
       throw new Error(`${arg.name} contains invalid path characters`);
     }
     const value = arg.normalize === "lowercase" ? rawValue.toLowerCase() : rawValue;
@@ -234,8 +253,9 @@ function baseResult(root, entry) {
   return result;
 }
 
-export function resolveOutput({ root = null, outputsRegistryPath = null, localArtifactRegistryPath = null, create = false, id, values = {}, cwd = process.cwd() }) {
+export function resolveOutput({ root = null, destinationRoot = null, outputsRegistryPath = null, localArtifactRegistryPath = null, create = false, id, values = {}, cwd = process.cwd() }) {
   const knittenRoot = resolveRoot(root, cwd, outputsRegistryPath);
+  const selectedDestinationRoot = destinationRoot ? path.resolve(destinationRoot) : knittenRoot;
   const registry = loadRegistry(knittenRoot, outputsRegistryPath);
   const entry = findEntry(registry, id);
   const normalizedValues = validateArgs(entry, values);
@@ -247,10 +267,12 @@ export function resolveOutput({ root = null, outputsRegistryPath = null, localAr
     if (!isSafeRepoRelativePath(relativePath)) {
       throw new Error(`${entry.id} resolved unsafe repo path: ${relativePath}`);
     }
+    const absolutePath = path.join(selectedDestinationRoot, relativePath);
+    if (create) mkdirSync(path.dirname(absolutePath), { recursive: true });
     return {
       ...result,
       path: relativePath,
-      absolutePath: path.join(knittenRoot, relativePath),
+      absolutePath,
     };
   }
 
@@ -269,6 +291,7 @@ export function resolveOutput({ root = null, outputsRegistryPath = null, localAr
   if (writeTarget.kind === "document-section") {
     const parent = resolveOutput({
       root: knittenRoot,
+      destinationRoot: selectedDestinationRoot,
       outputsRegistryPath,
       localArtifactRegistryPath,
       id: writeTarget.parentOutput,
@@ -292,9 +315,9 @@ export function resolveOutput({ root = null, outputsRegistryPath = null, localAr
 }
 
 function main() {
-  const options = parseOptions(process.argv.slice(2));
-  const [id, ...assignmentTokens] = options.args;
   try {
+    const options = parseOptions(process.argv.slice(2));
+    const [id, ...assignmentTokens] = options.args;
     if (options.list) {
       const root = resolveRoot(options.root, process.cwd(), options.outputsRegistry);
       const registry = loadRegistry(root, options.outputsRegistry);

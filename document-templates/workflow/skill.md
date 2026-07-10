@@ -11,58 +11,33 @@ skills.
 
 ```markdown
 ---
+name: <skill-name>
 description: <one sentence trigger-facing summary>
-argument-hint: "<mode-or-args>"
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git:*), Bash(rg:*), Bash(node:*)
-domains: workflow
-repo-keys: workflow
-languages: markdown,json
-task-types: authoring,review,implementation
-context-profile: <context-profile-id>
-context-standards: <comma-separated standards or blank>
-context-references: <comma-separated references or blank>
+match-check: <loose|normal|strict>
 ---
 
 # <skill-name>
 
-## Purpose
+Use for: <one specific request shape>.
 
-Use this skill when <trigger condition>.
+## Step 0: Match Check
 
-## Inputs
+- Confirm the request matches, required input is present, and the target is known.
+- Keep required mutation and approval gates visible here.
+- Stop when the target, scope, or authority is unclear.
 
-| Input | Required | Meaning |
-|---|---|---|
-| `<input>` | yes | <meaning> |
+Do not read detailed references until Step 0 passes.
 
-## Workflow
+## After Match
 
-1. <first action>
-2. <second action>
-3. <validation or handoff action>
-
-## Outputs
-
-| Output | Contract |
-|---|---|
-| <file, comment, report, or state> | <output id, path, or validation evidence> |
-
-## Validation
-
-Command:
-- `<command>`
-
-## Handoff
-
-- Report changed files.
-- Report validation evidence.
-- Name any remaining blocker or next owner.
+Read [`references/flow.md`](references/flow.md), then execute the matched workflow.
 ```
 
 ## Fill Rules
 
 - Keep the description trigger-facing and short.
+- Choose `loose`, `normal`, or `strict` from `docs/guidelines/skill-match-check.md`.
+- Keep mutation, approval, and stop conditions in the active `SKILL.md`.
 - Prefer output ids over repeated path/template prose when an output contract exists.
-- Keep workflow steps executable, not aspirational.
-- Put reusable policy in standards or references, not in long skill prose.
+- Put workflow steps, schemas, examples, and command recipes in the post-match reference.
 - Keep HTML-like structure out of this official template.

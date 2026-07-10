@@ -16,6 +16,7 @@ const LEGACY_PATTERN = [
   "scripts/resolve-[a-z-]+\\.mjs",
   "bin/knitten-resolve-output",
 ].join("|");
+const FINDING_WORKFLOW_PATTERN = "report-finding|finding[- ]report|operational-findings";
 
 function usage() {
   return `Usage:
@@ -111,6 +112,35 @@ function checkBoundaryWrapper(results, root) {
   }
 }
 
+function checkTrackedLocalArtifacts(results, root) {
+  const result = spawnSync("git", ["ls-files", "-z", "--", ".agent-local"], {
+    cwd: root,
+    encoding: "buffer",
+  });
+  if (result.status !== 0) {
+    add(results, "fail", "scan:tracked-agent-local", ".agent-local", (result.stderr || Buffer.from("git ls-files failed")).toString("utf8").trim());
+    return;
+  }
+  for (const relativePath of result.stdout.toString("utf8").split("\0").filter(Boolean)) {
+    add(results, "fail", "tracked-agent-local", relativePath, "Domain plugins must not track local runtime artifacts.");
+  }
+}
+
+function checkFindingWorkflowReferences(results, root) {
+  const candidates = ["README.md", "AGENTS.md", "SYSTEM.md", "skills", "scripts"]
+    .filter((relativePath) => exists(root, relativePath));
+  if (candidates.length === 0) return;
+  const result = rg(root, ["-n", "-i", FINDING_WORKFLOW_PATTERN, ...candidates]);
+  if (result.status === 1) return;
+  if (result.status !== 0) {
+    add(results, "fail", "scan:finding-workflow-references", candidates.join(","), (result.stderr || result.stdout).trim());
+    return;
+  }
+  for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
+    add(results, "fail", "finding-workflow-reference", line.split(":", 1)[0], line);
+  }
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const pluginRoot = path.resolve(args.pluginRoot);
@@ -127,6 +157,8 @@ function main() {
   checkActiveLegacyContent(results, pluginRoot);
   checkReferenceLegacyContent(results, pluginRoot);
   checkBoundaryWrapper(results, pluginRoot);
+  checkTrackedLocalArtifacts(results, pluginRoot);
+  checkFindingWorkflowReferences(results, pluginRoot);
 
   const effective = results.map((result) => ({
     ...result,

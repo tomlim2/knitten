@@ -6,7 +6,7 @@ plugin changes.
 ## Core Boundary
 
 - Knitten owns generic runtime, output/path resolution, shared config, shared
-  document templates, public core overlays, and plugin diagnostics.
+  document templates, and plugin diagnostics.
 - Domain plugins own concrete skills. Keep domain skills, skill-local
   references, and skill-local support files there.
 - Do not add root-level `agent/config`, `document-templates`, durable planning

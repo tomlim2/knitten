@@ -44,11 +44,12 @@ jobs:
 
       - name: Check scripts
         run: |
-          node --check scripts/doctor.mjs
-          node --check scripts/materialize-local-plugin.mjs
-          node --check scripts/resolve-output.mjs
-          node --check scripts/validate-repository-shell.mjs
-          bash -n bin/knitten-resolve-output
+          for file in scripts/*.mjs; do node --check "$file"; done
+          for file in bin/* scripts/setup-domain-plugin-env scripts/setup-payload-env; do bash -n "$file"; done
+          node scripts/validate-runtime-contracts.mjs
+          node scripts/run-context-load-smoke-eval.mjs
+          node scripts/measure-skill-exposure.mjs .
+          node scripts/validate-domain-plugin-boundary.mjs --domain-plugin examples/minimal-domain-plugin
           bin/knitten-resolve-output --kind=review-json --name=ci --workspace-root="$PWD" >/tmp/knitten-output.json
           node - <<'NODE'
           const fs = require("fs");

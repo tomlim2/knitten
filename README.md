@@ -23,7 +23,7 @@ Token efficiency here means:
 - explicit Step 0 match checks,
 - deferred references for detailed procedure,
 - stable output paths for generated artifacts,
-- local validation for source, installed copies, and cache drift,
+- local validation for source and installed-copy drift,
 - no reduction in safety checks, review quality, or required implementation.
 
 ## Current Proof
@@ -34,8 +34,8 @@ commands before changing public claims.
 | Check | Current result | Re-run |
 |-------|----------------|--------|
 | Discovery surface | 8 skills, about 135 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Skill bodies | about 3929 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Context-load smoke eval | 20/20 match accuracy, 62.3% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
+| Skill bodies | about 3193 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Context-load smoke eval | 20/20 match accuracy, 72.8% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
 
 ## Included Skills
 
@@ -48,6 +48,7 @@ commands before changing public claims.
 | `report-finding` | Record checked mechanical workflow failures. |
 | `log-usage` | Log local Codex usage and cost notes. |
 | `status` | Check Knitten source, install, and runtime health. |
+| `triad-preflight` | Run a lightweight role-split review preflight. |
 
 ## Quickstart
 
@@ -114,7 +115,7 @@ Knitten's active surface is deliberately small.
   stores raw command output under a workflow run artifact and returns only
   compact summary, handoff, next-action, and evidence paths.
 - **Health Checks**: `doctor`, repository-shell validation, exposure
-  measurement, and smoke evals catch broken paths, stale copies, and drift.
+  measurement, and smoke evals catch broken paths and installed-copy drift.
 - **Safety First**: mutation, push, deploy, delete, and external-state checks
   stay in the main skill files.
 

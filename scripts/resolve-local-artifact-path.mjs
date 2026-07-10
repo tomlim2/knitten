@@ -47,13 +47,13 @@ function parseOptions(argv) {
     if (arg === "--create") {
       options.create = true;
     } else if (arg === "--root") {
-      options.root = argv[++index];
+      options.root = requiredOptionValue(argv, ++index, "--root");
     } else if (arg?.startsWith("--root=")) {
-      options.root = arg.slice("--root=".length);
+      options.root = requiredEqualsValue(arg, "--root=");
     } else if (arg === "--registry") {
-      options.registry = argv[++index];
+      options.registry = requiredOptionValue(argv, ++index, "--registry");
     } else if (arg?.startsWith("--registry=")) {
-      options.registry = arg.slice("--registry=".length);
+      options.registry = requiredEqualsValue(arg, "--registry=");
     } else if (arg === "-h" || arg === "--help") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -64,9 +64,28 @@ function parseOptions(argv) {
   return options;
 }
 
+function requiredOptionValue(argv, index, option) {
+  const value = argv[index];
+  if (!String(value || "").trim() || String(value).startsWith("--")) {
+    throw new Error(`${option} requires a value`);
+  }
+  return value;
+}
+
+function requiredEqualsValue(arg, prefix) {
+  const value = arg.slice(prefix.length);
+  if (!String(value || "").trim()) {
+    throw new Error(`${prefix.slice(0, -1)} requires a value`);
+  }
+  return value;
+}
+
 function resolveRoot(rootOption = null, cwd = process.cwd(), registryPath = REGISTRY_PATH) {
+  if (rootOption !== null) {
+    if (!String(rootOption || "").trim()) throw new Error("--root requires a value");
+    return validateRoot(rootOption, registryPath);
+  }
   const candidates = [
-    rootOption,
     process.env.KNITTEN_CONFIG_ROOT,
     process.env.KNITTEN_CORE_ROOT,
     PLUGIN_ROOT,
@@ -122,7 +141,7 @@ function normalizeArg(value, arg) {
 }
 
 function assertCleanSegment(value, label) {
-  if (!value || value.includes("/") || value.includes("..")) {
+  if (!value || value.includes("/") || value.includes("\\") || value.includes("..")) {
     throw new Error(`${label} contains invalid path characters`);
   }
 }
@@ -243,8 +262,8 @@ export function resolveLocalArtifactPath({ root = null, registryPath = null, cre
 }
 
 function main() {
-  const options = parseOptions(process.argv.slice(2));
   try {
+    const options = parseOptions(process.argv.slice(2));
     const result = resolveLocalArtifactPath({
       root: options.root,
       registryPath: options.registry,

@@ -14,7 +14,7 @@ visible safety checks. Keep wording nits as P3.
 - The target `SKILL.md`.
 - Any directly referenced `references/**`, `flow.md`, scripts, or assets needed
   to understand the matched workflow.
-- `docs/specs/skill-match-check-policy.md`.
+- `docs/guidelines/skill-match-check.md`.
 - `docs/guidelines/skill-authoring.md`.
 
 ## Review Steps
@@ -54,7 +54,7 @@ Flag as blocker when:
 ### 2. Match Check
 
 - `match-check` is `loose`, `normal`, or `strict`.
-- The value matches `docs/specs/skill-match-check-policy.md`.
+- The value matches `docs/guidelines/skill-match-check.md`.
 - Step 0 states the required target, input, and expected output.
 - Step 0 stops when the target, scope, or required input is missing.
 - The skill has non-trigger or stop wording when its name could over-match.

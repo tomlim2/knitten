@@ -6,7 +6,7 @@
       "group": "implementation",
       "request": "Implement the accepted spec and run the nearest validation.",
       "expectedSkill": "implement",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/implement/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Implementation request from an accepted spec should stay in the active workspace."
     },
@@ -15,7 +15,7 @@
       "group": "implementation",
       "request": "Apply the reviewed findings to the code with the smallest scoped edit.",
       "expectedSkill": "implement",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/implement/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Accepted review findings are an implementation input."
     },
@@ -24,7 +24,7 @@
       "group": "implementation",
       "request": "Fix the blocker in the target files and report validation coverage.",
       "expectedSkill": "implement",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/implement/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Fixing a blocker in files is scoped implementation."
     },
@@ -33,7 +33,7 @@
       "group": "implementation",
       "request": "Make the config change from the approved plan, but do not commit.",
       "expectedSkill": "implement",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/implement/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Mutation is allowed only as scoped workspace implementation."
     },
@@ -42,7 +42,7 @@
       "group": "implementation",
       "request": "Update the script according to the accepted design plan.",
       "expectedSkill": "implement",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/implement/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Accepted design plan plus code change matches implementation."
     },
@@ -51,7 +51,7 @@
       "group": "spec",
       "request": "Draft a compact implementation spec for a context-load smoke eval.",
       "expectedSkill": "draft-spec",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/draft-spec/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Spec drafting request should use the Knitten Core spec shape and path rules."
     },
@@ -60,7 +60,7 @@
       "group": "spec",
       "request": "Write a pre-work plan before editing the skill files.",
       "expectedSkill": "draft-spec",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/draft-spec/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Pre-work plan before edits maps to draft spec."
     },
@@ -69,7 +69,7 @@
       "group": "spec",
       "request": "Create an implementation contract with goal, boundary, validation, and acceptance criteria.",
       "expectedSkill": "draft-spec",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/draft-spec/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Implementation contract is a drafting task."
     },
@@ -78,7 +78,7 @@
       "group": "spec",
       "request": "Make a design plan for updating a skill match check.",
       "expectedSkill": "draft-spec",
-      "expectedReferences": [],
+      "expectedReferences": ["skills/draft-spec/references/flow.md"],
       "safetyCheckRequired": true,
       "notes": "Skill-related design plan should keep match policy visible."
     },

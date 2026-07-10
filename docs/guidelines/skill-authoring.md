@@ -44,7 +44,7 @@ target workspace is correct.
 If the request does not match, stop and name the clearer skill or domain plugin
 only when obvious.
 
-Do not read detailed references until this check passes.
+Do not read detailed references until Step 0 passes.
 
 ## After Match
 
@@ -71,7 +71,7 @@ engineering, product, and domain-specific validation rules...
 
 ## Match Rule
 
-Use `docs/specs/skill-match-check-policy.md` as the source of truth for
+Use `docs/guidelines/skill-match-check.md` as the source of truth for
 `match-check`.
 
 - `loose`: read-only review, summarize, explain, draft, brainstorm

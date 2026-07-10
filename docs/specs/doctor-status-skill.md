@@ -57,6 +57,8 @@ Required checks:
 - copied plugin manifest exists
 - copied plugin manifest has `name: "knitten"`
 - copied plugin version contains `+codex.` unless `--allow-source-version` is set
+- copied tracked files match the active source checkout after normalizing only
+  the manifest cachebuster version
 
 ## Skill Contract
 

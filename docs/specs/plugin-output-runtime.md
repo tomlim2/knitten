@@ -197,7 +197,7 @@ The command returns JSON with at least:
 | `temp-json` | `<hubRoot>/.agent-local/workflow/json/<slug>.json` |
 | `review-json` | `<hubRoot>/.agent-local/workflow/reviews/<slug>.json` |
 | `response-json` | `<hubRoot>/.agent-local/workflow/responses/<slug>.json` |
-| `operational-finding-json` | `<hubRoot>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/<slug>.json` |
+| `operational-finding-json` | `<hubRoot>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/reports/<slug>.json` |
 | `report-md` | `<hubRoot>/.agent-local/workflow/reports/<slug>.md` |
 | `report-html` | `<hubRoot>/.agent-local/workflow/reports/<slug>.html` |
 | `pull-request-json` | `<hubRoot>/.agent-local/workflow/pull-requests/<slug>.json` |

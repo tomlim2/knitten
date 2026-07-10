@@ -27,6 +27,7 @@ const requiredFiles = [
   "scripts/resolve-output.mjs",
   "scripts/validate-domain-plugin-boundary.mjs",
   "scripts/validate-repository-shell.mjs",
+  "scripts/validate-runtime-contracts.mjs",
   "skills/status/SKILL.md",
 ];
 
@@ -35,7 +36,6 @@ function isAllowedFile(file) {
   if (file.startsWith("agent/config/") && file.endsWith(".json")) return true;
   if (file.startsWith("bin/")) return true;
   if (file.startsWith("docs/guidelines/") && file.endsWith(".md")) return true;
-  if (file.startsWith("docs/public-core/")) return true;
   if (file.startsWith("docs/specs/") && file.endsWith(".md")) return true;
   if (file.startsWith("evals/context-load-smoke/") && file.endsWith(".json")) return true;
   if (file.startsWith("examples/minimal-domain-plugin/")) return true;
@@ -229,7 +229,8 @@ for (const file of requiredFiles) {
 const files = execFileSync("git", ["ls-files"], { encoding: "utf8" })
   .trim()
   .split("\n")
-  .filter(Boolean);
+  .filter(Boolean)
+  .filter((file) => fs.existsSync(file));
 
 for (const file of files) {
   if (!isAllowedFile(file)) {
@@ -238,10 +239,35 @@ for (const file of files) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(".codex-plugin/plugin.json", "utf8"));
-for (const field of ["name", "version", "description", "interface"]) {
+for (const field of ["name", "version", "description", "skills", "interface"]) {
   if (!manifest[field]) throw new Error(`plugin manifest missing ${field}`);
 }
 if (manifest.name !== "knitten") throw new Error("plugin manifest name must be knitten");
+if (!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(manifest.version)) {
+  throw new Error("plugin manifest version must be semver");
+}
+if (typeof manifest.skills !== "string" || !isSafeRelativePath(manifest.skills)) {
+  throw new Error("plugin manifest skills must be a safe relative path");
+}
+const skillsPath = path.resolve(manifest.skills);
+if (!fs.existsSync(skillsPath) || !fs.statSync(skillsPath).isDirectory()) {
+  throw new Error(`plugin manifest skills path is not a directory: ${manifest.skills}`);
+}
+if (!manifest.interface || typeof manifest.interface !== "object" || Array.isArray(manifest.interface)) {
+  throw new Error("plugin manifest interface must be an object");
+}
+for (const field of ["displayName", "shortDescription", "longDescription", "developerName", "category"]) {
+  if (typeof manifest.interface[field] !== "string" || !manifest.interface[field].trim()) {
+    throw new Error(`plugin manifest interface.${field} must be a non-empty string`);
+  }
+}
+if (!Array.isArray(manifest.interface.capabilities) || !manifest.interface.capabilities.every((value) => typeof value === "string" && value.trim())) {
+  throw new Error("plugin manifest interface.capabilities must be an array of strings");
+}
+const defaultPrompt = manifest.interface.defaultPrompt || manifest.interface.default_prompt;
+if (!defaultPrompt || (Array.isArray(defaultPrompt) && defaultPrompt.length === 0)) {
+  throw new Error("plugin manifest interface default prompt is required");
+}
 
 validateOutputRegistryContract();
 

@@ -132,6 +132,170 @@
         }
       ],
       "format": "markdown"
+    },
+    {
+      "id": "spec",
+      "description": "Durable implementation spec in the target workspace",
+      "madeBy": "draft-spec",
+      "writeTarget": {
+        "kind": "repo-template",
+        "path": "docs/specs/{slug}.md"
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "template": "document-templates/workflow/spec.md",
+      "format": "markdown"
+    },
+    {
+      "id": "design-plan",
+      "description": "Durable design plan in the target workspace",
+      "madeBy": "workflow:shared-design-plan",
+      "writeTarget": {
+        "kind": "repo-template",
+        "path": "docs/design-plans/{slug}.md"
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "markdown"
+    },
+    {
+      "id": "temp-json",
+      "description": "Temporary shared workflow JSON",
+      "madeBy": "workflow:shared-temp-json",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "json",
+          "temp",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "json"
+    },
+    {
+      "id": "review-json",
+      "description": "Shared workflow review JSON",
+      "madeBy": "workflow:shared-review",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "reviews",
+          "review",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "json"
+    },
+    {
+      "id": "operational-finding-json",
+      "description": "Checked mechanical finding report",
+      "madeBy": "report-finding",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "operational-findings",
+          "{date}",
+          "report",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "json"
+    },
+    {
+      "id": "report-md",
+      "description": "Shared workflow Markdown report",
+      "madeBy": "workflow:shared-report",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "reports",
+          "markdown",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "markdown"
+    },
+    {
+      "id": "report-html",
+      "description": "Shared workflow HTML report",
+      "madeBy": "workflow:shared-report",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "reports",
+          "html",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "html"
+    },
+    {
+      "id": "task-json",
+      "description": "Shared workflow task JSON",
+      "madeBy": "workflow:shared-task",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "tasks",
+          "task",
+          "{slug}"
+        ]
+      },
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$"
+        }
+      ],
+      "format": "json"
     }
   ]
 }

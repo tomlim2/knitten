@@ -53,12 +53,17 @@ three roles independently with:
 - `model_reasoning_effort`: `medium`,
 - sandbox/profile: read-only.
 
+If a read-only sandbox/profile cannot be enforced, do not spawn agents. Run
+the three lenses sequentially in the primary read-only workflow and record the
+unavailable profile in `residualRisk`.
+
 If `gpt-5.6-terra` is unavailable, use the fastest available review-capable
 model at `medium` or the closest supported reasoning effort. Record the
-requested and effective model/profile in `residualRisk`. If subagents or
-per-agent model selection are unavailable, run the same three lenses
-sequentially in the current session, keep the same JSON contracts, and record
-that fallback in `residualRisk`.
+requested and effective model/profile in `residualRisk`. If per-agent model
+selection is unavailable, keep the three agents separate with the available
+model and record that fallback. If subagents are unavailable, run the same
+three lenses sequentially in the current session, keep the same JSON
+contracts, and record that fallback in `residualRisk`.
 
 ## Role Prompt Contract
 

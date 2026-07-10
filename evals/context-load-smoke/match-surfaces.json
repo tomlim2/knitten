@@ -3,14 +3,14 @@
   "surfaces": [
     {
       "skill": "implement",
-      "matchText": "Use for implementing accepted specs or review findings in the active workspace. Use when the user asks to implement an accepted spec, apply a user-approved plan, or fix accepted review findings. Input: reviewed spec and design plan, or accepted review findings. Rules: keep edits scoped to the accepted task; do not create a PR or commit unless the user asks; user work belongs in the active workspace, not the plugin install path.",
-      "references": [],
-      "safetyTerms": ["do not create a PR or commit", "active workspace", "keep edits scoped"]
+      "matchText": "Use for implementing accepted specs or review findings in the active workspace. Confirm the accepted contract, target workspace, target files or modules, and validation expectations before editing. This skill is local-only. Hand commit, push, merge, deploy, deletion, and external mutation to an owning strict skill.",
+      "references": ["skills/implement/references/flow.md"],
+      "safetyTerms": ["local-only", "active workspace", "owning strict skill"]
     },
     {
       "skill": "draft-spec",
       "matchText": "Use for drafting compact specs, implementation contracts, or pre-work plans before editing. Include status, goal, boundary, inputs, outputs, plan, validation, and acceptance criteria. For skill specs, include match-check and Step 0 decisions. Do not write specs into the plugin install path.",
-      "references": [],
+      "references": ["skills/draft-spec/references/flow.md"],
       "safetyTerms": ["before editing", "match-check", "Do not write specs into the plugin install path"]
     },
     {

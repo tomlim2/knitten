@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { resolveOutput as resolveRegisteredOutput } from "./resolve-registered-output.mjs";
 
-const PLUGIN_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const PLUGIN_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function parseArgs(argv) {
   const args = {
@@ -25,11 +27,11 @@ function parseArgs(argv) {
     } else if (arg.startsWith("--skill=")) {
       args.skill = arg.slice("--skill=".length);
     } else if (arg.startsWith("--hub-root=")) {
-      args.hubRoot = arg.slice("--hub-root=".length);
+      args.hubRoot = requiredEqualsValue(arg, "--hub-root=");
     } else if (arg.startsWith("--target-root=")) {
-      args.targetRoot = arg.slice("--target-root=".length);
+      args.targetRoot = requiredEqualsValue(arg, "--target-root=");
     } else if (arg.startsWith("--workspace-root=")) {
-      args.workspaceRoot = arg.slice("--workspace-root=".length);
+      args.workspaceRoot = requiredEqualsValue(arg, "--workspace-root=");
     } else if (arg === "-h" || arg === "--help") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -39,6 +41,14 @@ function parseArgs(argv) {
   }
 
   return args;
+}
+
+function requiredEqualsValue(arg, prefix) {
+  const value = arg.slice(prefix.length);
+  if (!String(value || "").trim()) {
+    throw new Error(`${prefix.slice(0, -1)} requires a value`);
+  }
+  return value;
 }
 
 function usage() {
@@ -57,7 +67,7 @@ Kinds:
   design-plan <targetRoot>/docs/design-plans/<name>.md
   temp-json   <hubRoot>/.agent-local/workflow/json/<name>.json
   review-json <hubRoot>/.agent-local/workflow/reviews/<name>.json
-  operational-finding-json <hubRoot>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/<name>.json
+  operational-finding-json <hubRoot>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/reports/<name>.json
   report-md   <hubRoot>/.agent-local/workflow/reports/<name>.md
   report-html <hubRoot>/.agent-local/workflow/reports/<name>.html
   task-json   <hubRoot>/.agent-local/workflow/tasks/<name>.json`;
@@ -103,8 +113,14 @@ function hasKnittenManifest(root) {
 }
 
 function resolveHubRoot(explicitHubRoot) {
+  if (String(explicitHubRoot || "").trim()) {
+    const hubRoot = path.resolve(explicitHubRoot);
+    if (!hasKnittenManifest(hubRoot)) {
+      throw new Error(`explicit Knitten hub root is invalid: ${hubRoot}`);
+    }
+    return hubRoot;
+  }
   const candidateReaders = [
-    () => explicitHubRoot,
     () => process.env.KNITTEN_HUB_ROOT,
     () => PLUGIN_ROOT,
   ];
@@ -121,7 +137,7 @@ function resolveHubRoot(explicitHubRoot) {
   );
 }
 
-function selectedPathFor({ kind, name, hubLocalRoot, targetRoot }) {
+function selectedPathFor({ kind, name, hubRoot, targetRoot, create }) {
   if (!kind) return null;
   if (!String(name || "").trim()) {
     throw new Error("--name is required when --kind or --skill selects an output file");
@@ -129,22 +145,30 @@ function selectedPathFor({ kind, name, hubLocalRoot, targetRoot }) {
 
   const slug = slugifyName(name);
   const today = localDateString();
-  const paths = {
-    "spec": path.join(targetRoot, "docs", "specs", `${slug}.md`),
-    "design-plan": path.join(targetRoot, "docs", "design-plans", `${slug}.md`),
-    "temp-json": path.join(hubLocalRoot, "json", `${slug}.json`),
-    "review-json": path.join(hubLocalRoot, "reviews", `${slug}.json`),
-    "operational-finding-json": path.join(hubLocalRoot, "operational-findings", today, `${slug}.json`),
-    "report-md": path.join(hubLocalRoot, "reports", `${slug}.md`),
-    "report-html": path.join(hubLocalRoot, "reports", `${slug}.html`),
-    "task-json": path.join(hubLocalRoot, "tasks", `${slug}.json`),
-  };
-
-  if (!Object.hasOwn(paths, kind)) {
+  const registeredIds = new Set([
+    "spec",
+    "design-plan",
+    "temp-json",
+    "review-json",
+    "operational-finding-json",
+    "report-md",
+    "report-html",
+    "task-json",
+  ]);
+  if (!registeredIds.has(kind)) {
     throw new Error(`unknown kind: ${kind}`);
   }
-
-  return paths[kind];
+  const values = kind === "operational-finding-json"
+    ? { date: today, slug }
+    : { slug };
+  const output = resolveRegisteredOutput({
+    root: hubRoot,
+    destinationRoot: targetRoot,
+    create,
+    id: kind,
+    values,
+  });
+  return output.absolutePath;
 }
 
 function durableOwnerRootFor(kind, targetRoot) {
@@ -196,18 +220,15 @@ function main() {
   const selectedPath = selectedPathFor({
     kind: selectedKind,
     name: args.name,
-    hubLocalRoot,
+    hubRoot,
     targetRoot,
+    create: args.create,
   });
   const selectedDir = selectedPath ? path.dirname(selectedPath) : hubLocalRoot;
   const selectedPersistence = persistenceFor(selectedKind);
   const selectedOwnerRoot = selectedPersistence === "local"
     ? hubRoot
     : durableOwnerRootFor(selectedKind, targetRoot);
-
-  if (args.create) {
-    fs.mkdirSync(selectedDir, { recursive: true });
-  }
 
   process.stdout.write(`${JSON.stringify({
     pluginRoot: PLUGIN_ROOT,

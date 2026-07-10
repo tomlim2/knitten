@@ -2,10 +2,16 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import crypto from "node:crypto";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import {
+  filesystemPluginFiles,
+  sourcePluginFiles,
+} from "./plugin-source-files.mjs";
 
 const PLUGIN_NAME = "knitten";
-const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 function localDateString(date = new Date()) {
   const year = date.getFullYear();
@@ -21,6 +27,7 @@ function outputKinds() {
     "workflow",
     "operational-findings",
     today,
+    "reports",
     "doctor-output.json",
   );
   return [
@@ -84,6 +91,30 @@ function canonicalOutputPath(value) {
 
 function sameOutputPath(left, right) {
   return canonicalOutputPath(left) === canonicalOutputPath(right);
+}
+
+function comparableFileHash(root, relative) {
+  const absolute = path.join(root, relative);
+  if (relative === ".codex-plugin/plugin.json") {
+    const manifest = readJson(absolute);
+    manifest.version = String(manifest.version).split("+", 1)[0];
+    return crypto.createHash("sha256").update(JSON.stringify(manifest)).digest("hex");
+  }
+  return crypto.createHash("sha256").update(fs.readFileSync(absolute)).digest("hex");
+}
+
+function comparePluginTrees(sourceRoot, copiedRoot) {
+  const sourceFiles = sourcePluginFiles(sourceRoot);
+  const copiedFiles = filesystemPluginFiles(copiedRoot);
+  const sourceSet = new Set(sourceFiles);
+  const copiedSet = new Set(copiedFiles);
+  const missing = sourceFiles.filter((relative) => !copiedSet.has(relative));
+  const extra = copiedFiles.filter((relative) => !sourceSet.has(relative));
+  const changed = sourceFiles.filter((relative) => (
+    copiedSet.has(relative)
+    && comparableFileHash(sourceRoot, relative) !== comparableFileHash(copiedRoot, relative)
+  ));
+  return { missing, extra, changed };
 }
 
 function runJson(command, args, options = {}) {
@@ -410,6 +441,7 @@ function main() {
       "workflow",
       "operational-findings",
       localDateString(),
+      "reports",
       "doctor-output.json",
     );
     if (!sameOutputPath(output.selectedPath, expectedPath)) {
@@ -533,6 +565,17 @@ function main() {
       throw new Error(`copied version lacks +codex. cachebuster: ${copiedManifest.version}`);
     }
     return copiedManifest.version;
+  });
+
+  check(checks, "copied-files-match-source", () => {
+    const diff = comparePluginTrees(REPO_ROOT, copiedRoot);
+    if (diff.missing.length || diff.extra.length || diff.changed.length) {
+      throw new Error(
+        `copied plugin differs from source; missing=${diff.missing.join(",") || "none"} `
+        + `extra=${diff.extra.join(",") || "none"} changed=${diff.changed.join(",") || "none"}`,
+      );
+    }
+    return `${sourcePluginFiles(REPO_ROOT).length} copied files match source`;
   });
 
   check(checks, "copied-config-registries", () => {

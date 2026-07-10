@@ -145,6 +145,91 @@
       "cleanupPath": ".agent-local/workflow/operational-findings/{date}",
       "description": "Shared workflow operational finding report",
       "schemaKind": "operational-finding-report"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "json",
+      "item": "temp",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/json/{slug}.json",
+      "cleanupPath": ".agent-local/workflow/json",
+      "description": "Temporary shared workflow JSON",
+      "schemaKind": "workflow-temp-json"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "reviews",
+      "item": "review",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/reviews/{slug}.json",
+      "cleanupPath": ".agent-local/workflow/reviews",
+      "description": "Shared workflow review JSON",
+      "schemaKind": "workflow-review-json"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "reports",
+      "item": "markdown",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/reports/{slug}.md",
+      "cleanupPath": ".agent-local/workflow/reports",
+      "description": "Shared workflow Markdown report",
+      "schemaKind": "workflow-report-markdown"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "reports",
+      "item": "html",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/reports/{slug}.html",
+      "cleanupPath": ".agent-local/workflow/reports",
+      "description": "Shared workflow HTML report",
+      "schemaKind": "workflow-report-html"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "tasks",
+      "item": "task",
+      "kind": "file",
+      "args": [
+        {
+          "name": "slug",
+          "pattern": "^[^/]+$",
+          "position": "after-item"
+        }
+      ],
+      "path": ".agent-local/workflow/tasks/{slug}.json",
+      "cleanupPath": ".agent-local/workflow/tasks",
+      "description": "Shared workflow task JSON",
+      "schemaKind": "workflow-task-json"
     }
   ]
 }

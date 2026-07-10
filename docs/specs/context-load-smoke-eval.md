@@ -89,6 +89,7 @@ Baseline cost:
 
 ```text
 baseline = full SKILL.md bodies for all pilot skills
+      + all references those skills would otherwise load eagerly
 ```
 
 Match-Based cost:
