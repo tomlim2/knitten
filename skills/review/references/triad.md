@@ -160,6 +160,30 @@ Mandatory output before dispatch:
 
 In `single` mode, print only the selected role row.
 
+## Agent Model Routing
+
+Assign the model before dispatching each read-only role subagent:
+
+- In `single` mode, use `gpt-5.6` with `model_reasoning_effort = "high"`.
+- In `triad` mode, use `gpt-5.6` with
+  `model_reasoning_effort = "high"` for the role covering the highest-risk
+  technical boundary.
+- In `triad` mode, use `gpt-5.6-terra` with
+  `model_reasoning_effort = "medium"` for the other two roles.
+- Use a read-only sandbox/profile for every role.
+
+When multiple triad roles have equal technical risk, assign `gpt-5.6` to the
+primary-consumer role. If an exact model is unavailable, preserve the routing
+intent: use the strongest available review-capable model at `high` effort for
+the deep role and the fastest available review-capable model at `medium` effort
+for scan roles. Record the requested and effective model/profile in the role
+report `Notes`.
+
+If per-agent model selection is unavailable, keep the selected roles separate,
+use the available agent model, and report the fallback in each role's `Notes`.
+If role subagents are unavailable, run the same role lenses sequentially in the
+current session and report that fallback in the merged residual risk.
+
 ## Base Review Packet Rule
 
 Every role receives:

@@ -46,10 +46,19 @@ Use exactly three shallow roles:
 
 Keep role prompts narrow. Prefer short role reports over broad reasoning.
 
-When role subagents are available, dispatch the three roles independently and
-request the cheapest review-capable model/profile the environment supports. If
-subagents or model selection are unavailable, run the same three lenses
-sequentially in the current session and keep the same JSON contracts.
+When role subagents and per-agent model selection are available, dispatch the
+three roles independently with:
+
+- model: `gpt-5.6-terra`,
+- `model_reasoning_effort`: `medium`,
+- sandbox/profile: read-only.
+
+If `gpt-5.6-terra` is unavailable, use the fastest available review-capable
+model at `medium` or the closest supported reasoning effort. Record the
+requested and effective model/profile in `residualRisk`. If subagents or
+per-agent model selection are unavailable, run the same three lenses
+sequentially in the current session, keep the same JSON contracts, and record
+that fallback in `residualRisk`.
 
 ## Role Prompt Contract
 
