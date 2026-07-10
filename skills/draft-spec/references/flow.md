@@ -21,27 +21,20 @@ specs.
 
 When needed, spawn two independent read-only agents:
 
-- Reuse/precedent scout: `gpt-5.6-terra` with
-  `model_reasoning_effort = "medium"`; map existing helpers, primitives,
-  contracts, and patterns that could satisfy the request.
-- Validation/proof scout: `gpt-5.6-terra` with
-  `model_reasoning_effort = "medium"`; map tests, fixtures, validators, and
-  executable acceptance evidence.
+- Reuse/precedent scout: use Core profile `scan-fast-readonly`; map existing
+  helpers, primitives, contracts, and patterns that could satisfy the request.
+- Validation/proof scout: use Core profile `scan-fast-readonly`; map tests,
+  fixtures, validators, and executable acceptance evidence.
 
 Give each agent only the task purpose, known constraints, explicit readable
 paths, and its narrow lens. The primary agent owns approach selection, boundary
 decisions, and every spec write.
 
-If a read-only sandbox/profile cannot be enforced, do not spawn agents. Run
-both lenses sequentially in the primary workflow and record the unavailable
-profile.
-
-If the exact model is unavailable, use the fastest available read-capable model
-at `medium` or the closest supported reasoning effort. Record the requested and
-effective model/profile in the spec notes. If per-agent model selection is
-unavailable, keep both agents separate with the available model and record that
-fallback. If subagents are unavailable, run the two lenses sequentially in the
-current session and record that fallback.
+Resolve the profile through `knitten-path agent-profile scan-fast-readonly`
+before dispatch. Apply the returned model, reasoning, sandbox, and fallback
+policy as one tuple, and record the requested profile plus effective settings
+in the spec notes. If profile resolution fails, do not spawn agents; run both
+lenses sequentially in the primary workflow.
 
 ## Skill Specs
 

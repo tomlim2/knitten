@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "owner": "knitten-core",
+  "source": "https://developers.openai.com/codex/multi-agent",
+  "lastVerifiedAt": "2026-07-10",
+  "profiles": [
+    {
+      "id": "review-deep-readonly",
+      "purpose": "High-risk review, security, boundary, and ambiguous multi-step reasoning.",
+      "model": "gpt-5.6",
+      "model_reasoning_effort": "high",
+      "sandbox_mode": "read-only",
+      "fallback": {
+        "modelUnavailable": "strongest-available-review-capable",
+        "perAgentModelSelectionUnavailable": "keep-agents-separate-with-available-model",
+        "sandboxUnavailable": "do-not-spawn-run-sequential-primary-readonly",
+        "subagentsUnavailable": "run-lenses-sequentially"
+      },
+      "recordRequestedAndEffective": true
+    },
+    {
+      "id": "scan-fast-readonly",
+      "purpose": "Read-heavy exploration, evidence mapping, documentation checks, and supporting scans.",
+      "model": "gpt-5.6-terra",
+      "model_reasoning_effort": "medium",
+      "sandbox_mode": "read-only",
+      "fallback": {
+        "modelUnavailable": "fastest-available-review-capable",
+        "perAgentModelSelectionUnavailable": "keep-agents-separate-with-available-model",
+        "sandboxUnavailable": "do-not-spawn-run-sequential-primary-readonly",
+        "subagentsUnavailable": "run-lenses-sequentially"
+      },
+      "recordRequestedAndEffective": true
+    },
+    {
+      "id": "causal-analysis-readonly",
+      "purpose": "Independent root-cause analysis requiring deep causal reasoning.",
+      "model": "gpt-5.6",
+      "model_reasoning_effort": "high",
+      "sandbox_mode": "read-only",
+      "fallback": {
+        "modelUnavailable": "strongest-available-reasoning-capable",
+        "perAgentModelSelectionUnavailable": "keep-agents-separate-with-available-model",
+        "sandboxUnavailable": "do-not-spawn-run-sequential-primary-readonly",
+        "subagentsUnavailable": "run-lenses-sequentially"
+      },
+      "recordRequestedAndEffective": true
+    }
+  ]
+}

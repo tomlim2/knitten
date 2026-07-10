@@ -17,6 +17,7 @@ const LEGACY_PATTERN = [
   "bin/knitten-resolve-output",
 ].join("|");
 const FINDING_WORKFLOW_PATTERN = "report-finding|finding[- ]report|operational-findings";
+const DIRECT_AGENT_MODEL_PATTERN = "gpt-[0-9]|model_reasoning_effort|sandbox_mode";
 
 function usage() {
   return `Usage:
@@ -141,6 +142,31 @@ function checkFindingWorkflowReferences(results, root) {
   }
 }
 
+function checkDirectAgentModelSettings(results, root) {
+  if (!exists(root, "skills")) return;
+  const result = rg(root, [
+    "-n",
+    DIRECT_AGENT_MODEL_PATTERN,
+    "skills",
+    "--glob",
+    "*.md",
+  ]);
+  if (result.status === 1) return;
+  if (result.status !== 0) {
+    add(results, "fail", "scan:direct-agent-model-settings", "skills", (result.stderr || result.stdout).trim());
+    return;
+  }
+  for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
+    add(
+      results,
+      "fail",
+      "direct-agent-model-setting",
+      line.split(":", 1)[0],
+      `${line}; use a Knitten Core agent profile id instead`,
+    );
+  }
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const pluginRoot = path.resolve(args.pluginRoot);
@@ -159,6 +185,7 @@ function main() {
   checkBoundaryWrapper(results, pluginRoot);
   checkTrackedLocalArtifacts(results, pluginRoot);
   checkFindingWorkflowReferences(results, pluginRoot);
+  checkDirectAgentModelSettings(results, pluginRoot);
 
   const effective = results.map((result) => ({
     ...result,

@@ -100,12 +100,15 @@ Flag as blocker when:
   features, and installed dependencies before adding new code or dependencies.
 - New abstractions are required by the accepted contract, not by habit.
 - The skill's validation advice matches the actual changed surface.
+- Subagent workflows select registered Core agent profiles by purpose instead
+  of embedding model, reasoning, sandbox, or fallback settings.
 
 Flag as blocker when:
 
 - the skill encourages unnecessary dependencies or duplicate helpers,
 - validation is absent for a mutation-capable workflow,
 - the workflow asks for broad refactors when a scoped fix is enough.
+- a Core or domain skill pins a model id instead of resolving an agent profile.
 
 ## Finding Template
 

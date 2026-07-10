@@ -46,6 +46,7 @@ usage() {
 Usage:
   knitten-path output [resolve-output args...]
   knitten-path artifact [resolve-local-artifact args...]
+  knitten-path agent-profile <profile-id|--list>
   knitten-path template <template-id-or-path>
   knitten-path repo <repo-key>
   knitten-path plugin-root <knitten|knitten-all-skills>
@@ -76,6 +77,9 @@ case "$command" in
     ;;
   artifact)
     exec node "$plugin_root/scripts/resolve-local-artifact-path.mjs" "$@"
+    ;;
+  agent-profile)
+    exec node "$plugin_root/scripts/resolve-agent-profile.mjs" "$@"
     ;;
   template)
     exec node "$plugin_root/scripts/resolve-template.mjs" "$@"

@@ -9,7 +9,11 @@ const DEFAULT_COPY_EXCLUDES = new Set([
   "__pycache__",
   "node_modules",
 ]);
-const SELF_RELATIVE = "scripts/plugin-source-files.mjs";
+const BOOTSTRAP_RELATIVES = [
+  "agent/config/agent-profiles.json",
+  "scripts/plugin-source-files.mjs",
+  "scripts/resolve-agent-profile.mjs",
+];
 
 function normalizedRelative(value) {
   return value.split(path.sep).join("/");
@@ -146,12 +150,14 @@ export function sourcePluginFiles(root, {
     .filter((relative) => !relative.split("/").some((part) => copyExcludes.has(part)))
     .filter((relative) => !isOmitted(relative, omitPrefixes))
     .filter((relative) => fs.lstatSync(path.join(root, relative)).isFile());
-  if (
-    fs.existsSync(path.join(root, SELF_RELATIVE))
-    && !tracked.includes(SELF_RELATIVE)
-    && !isOmitted(SELF_RELATIVE, omitPrefixes)
-  ) {
-    tracked.push(SELF_RELATIVE);
+  for (const relative of BOOTSTRAP_RELATIVES) {
+    if (
+      fs.existsSync(path.join(root, relative))
+      && !tracked.includes(relative)
+      && !isOmitted(relative, omitPrefixes)
+    ) {
+      tracked.push(relative);
+    }
   }
   return [...new Set([
     ...tracked,

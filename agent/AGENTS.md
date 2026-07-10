@@ -15,6 +15,15 @@ deploy folders, private paths, or domain-specific credentials.
 Knitten owns shared workflow contracts, path/output destinations, validation,
 and plugin boundaries. Domain-specific behavior belongs in domain plugins.
 
+## Agent Profiles
+
+Use `agent/config/agent-profiles.json` as the only model-routing source. Skills
+select `review-deep-readonly`, `scan-fast-readonly`, or
+`causal-analysis-readonly` by purpose and resolve the selection with
+`bin/knitten-path agent-profile <profile-id>` before dispatch. Keep role names,
+spawn triggers, and packets in the owning skill; do not copy model ids,
+reasoning effort, sandbox mode, or fallback policy into skill files.
+
 ## Mechanical Findings
 
 Use `knitten:report-finding` only for checked mechanical errors: missing

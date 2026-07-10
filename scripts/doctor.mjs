@@ -326,6 +326,7 @@ function warningCheck(checks, id, run) {
 
 function checkConfigRegistries(root) {
   const required = [
+    ["agent/config/agent-profiles.json", (value) => value.schemaVersion === 1 && value.owner === "knitten-core" && Array.isArray(value.profiles)],
     ["agent/config/outputs.json", (value) => value.schemaVersion === 1 && Array.isArray(value.entries)],
     ["agent/config/local-artifact-paths.json", (value) => value.schemaVersion === 1 && value.root === ".agent-local" && Array.isArray(value.entries)],
     ["agent/config/local-helper-paths.json", (value) => value.schemaVersion === 1 && Array.isArray(value.entries)],
@@ -337,6 +338,29 @@ function checkConfigRegistries(root) {
     if (!isValid(parsed)) throw new Error(`invalid registry shape: ${relativePath}`);
   }
   return `${required.length} registries`;
+}
+
+function checkAgentProfiles(root) {
+  const resolver = path.join(root, "scripts", "resolve-agent-profile.mjs");
+  const result = runJson("node", [resolver, "--list"], { cwd: root });
+  const expected = [
+    "causal-analysis-readonly",
+    "review-deep-readonly",
+    "scan-fast-readonly",
+  ];
+  const actual = result.profiles.map((profile) => profile.id).sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(`unexpected agent profiles: ${actual.join(", ")}`);
+  }
+  const forbidden = /gpt-[0-9]|model_reasoning_effort|sandbox_mode/;
+  for (const relative of filesystemPluginFiles(path.join(root, "skills"))) {
+    if (!relative.endsWith(".md")) continue;
+    const absolute = path.join(root, "skills", relative);
+    if (forbidden.test(fs.readFileSync(absolute, "utf8"))) {
+      throw new Error(`skill pins model settings instead of a Core profile: skills/${relative}`);
+    }
+  }
+  return `${actual.length} Core agent profiles`;
 }
 
 function check(checks, id, run) {
@@ -393,6 +417,10 @@ function main() {
 
   check(checks, "source-config-registries", () => {
     return checkConfigRegistries(REPO_ROOT);
+  });
+
+  check(checks, "source-agent-profiles", () => {
+    return checkAgentProfiles(REPO_ROOT);
   });
 
   check(checks, "source-output-registry-contract", () => {
@@ -526,7 +554,14 @@ function main() {
     if (!template.stdout.trim().endsWith("document-templates/workflow/spec.md")) {
       throw new Error(`unexpected template path: ${template.stdout.trim()}`);
     }
-    return "output, template";
+    const profile = runJson(sourcePathCommandPath, [
+      "agent-profile",
+      "scan-fast-readonly",
+    ]);
+    if (profile.profile?.id !== "scan-fast-readonly") {
+      throw new Error("knitten-path agent-profile returned unexpected profile");
+    }
+    return "output, template, agent-profile";
   });
 
   check(checks, "marketplace-file", () => {
@@ -582,6 +617,10 @@ function main() {
     return checkConfigRegistries(copiedRoot);
   });
 
+  check(checks, "copied-agent-profiles", () => {
+    return checkAgentProfiles(copiedRoot);
+  });
+
   check(checks, "copied-output-registry-contract", () => {
     return validateOutputRegistryContract(copiedRoot);
   });
@@ -621,6 +660,13 @@ function main() {
       `--workspace-root=${REPO_ROOT}`,
     ]);
     if (output.selectedKind !== "review-json") throw new Error("copied knitten-path output returned unexpected selectedKind");
+    const profile = runJson(copiedPathCommandPath, [
+      "agent-profile",
+      "scan-fast-readonly",
+    ]);
+    if (profile.profile?.id !== "scan-fast-readonly") {
+      throw new Error("copied knitten-path agent-profile returned unexpected profile");
+    }
     return copiedPathCommandPath;
   });
 

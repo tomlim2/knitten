@@ -1,4 +1,9 @@
 {
   "schemaVersion": 1,
-  "entries": []
+  "entries": [
+    {
+      "id": "agent-profile-resolver",
+      "path": "scripts/resolve-agent-profile.mjs"
+    }
+  ]
 }

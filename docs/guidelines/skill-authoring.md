@@ -130,6 +130,19 @@ Use references for context that is useful only after the skill matches:
 The active `SKILL.md` may name the reference but should not summarize the whole
 reference.
 
+## Agent Profile Rule
+
+When a skill spawns subagents, keep role selection and the complexity trigger
+in the skill, but select a semantic profile from
+`agent/config/agent-profiles.json`. Resolve it with
+`knitten-path agent-profile <profile-id>` before dispatch and apply the returned
+model, reasoning, sandbox, and fallback policy as one tuple.
+
+Do not write model ids or duplicate profile fields in Core or domain skill
+instructions. If no registered profile fits, update the Core registry first.
+If profile resolution fails, do not spawn; use the owning workflow's sequential
+fallback.
+
 ## Review Checklist
 
 For full audits, use
@@ -145,3 +158,4 @@ Before adding or updating a skill, check:
 - Are long details moved to skill-local references?
 - Does an exposed skill avoid depending on parent-plugin knowledge?
 - Does the match level match the mutation surface?
+- Do subagents use registered Core profile ids without copying model settings?

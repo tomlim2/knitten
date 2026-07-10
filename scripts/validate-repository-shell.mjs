@@ -13,6 +13,7 @@ const requiredFiles = [
   "README.md",
   "SYSTEM.md",
   "agent/AGENTS.md",
+  "agent/config/agent-profiles.json",
   "agent/config/local-artifact-paths.json",
   "agent/config/local-helper-paths.json",
   "agent/config/outputs.json",
@@ -25,6 +26,7 @@ const requiredFiles = [
   "scripts/doctor.mjs",
   "scripts/materialize-local-plugin.mjs",
   "scripts/resolve-output.mjs",
+  "scripts/resolve-agent-profile.mjs",
   "scripts/validate-domain-plugin-boundary.mjs",
   "scripts/validate-repository-shell.mjs",
   "scripts/validate-runtime-contracts.mjs",
@@ -182,6 +184,33 @@ function validateOutputRegistryContract() {
   }
 }
 
+function validateAgentProfiles(files) {
+  const result = spawnSync("node", ["scripts/resolve-agent-profile.mjs", "--list"], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+  });
+  if (result.status !== 0) {
+    throw new Error((result.stderr || result.stdout || "agent profile validation failed").trim());
+  }
+  const resolved = JSON.parse(result.stdout);
+  const expected = [
+    "causal-analysis-readonly",
+    "review-deep-readonly",
+    "scan-fast-readonly",
+  ];
+  const actual = resolved.profiles.map((profile) => profile.id).sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(`unexpected agent profiles: ${actual.join(", ")}`);
+  }
+
+  const forbidden = /gpt-[0-9]|model_reasoning_effort|sandbox_mode/;
+  for (const file of files.filter((entry) => entry.startsWith("skills/") && entry.endsWith(".md"))) {
+    if (forbidden.test(fs.readFileSync(file, "utf8"))) {
+      throw new Error(`skill pins agent model settings instead of a Core profile: ${file}`);
+    }
+  }
+}
+
 function skillShapeWarnings() {
   const warnings = [];
   const skillsRoot = "skills";
@@ -270,6 +299,7 @@ if (!defaultPrompt || (Array.isArray(defaultPrompt) && defaultPrompt.length === 
 }
 
 validateOutputRegistryContract();
+validateAgentProfiles(files);
 
 const warnings = skillShapeWarnings();
 for (const warning of warnings) {

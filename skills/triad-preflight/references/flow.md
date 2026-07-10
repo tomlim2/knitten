@@ -46,24 +46,15 @@ Use exactly three shallow roles:
 
 Keep role prompts narrow. Prefer short role reports over broad reasoning.
 
-When role subagents and per-agent model selection are available, dispatch the
-three roles independently with:
+When role subagents are available, dispatch the three roles independently with
+Core profile `scan-fast-readonly`. Resolve it through
+`knitten-path agent-profile scan-fast-readonly` and apply its returned model,
+reasoning, sandbox, and fallback policy as one tuple. Record the requested
+profile and effective settings in `residualRisk`.
 
-- model: `gpt-5.6-terra`,
-- `model_reasoning_effort`: `medium`,
-- sandbox/profile: read-only.
-
-If a read-only sandbox/profile cannot be enforced, do not spawn agents. Run
-the three lenses sequentially in the primary read-only workflow and record the
-unavailable profile in `residualRisk`.
-
-If `gpt-5.6-terra` is unavailable, use the fastest available review-capable
-model at `medium` or the closest supported reasoning effort. Record the
-requested and effective model/profile in `residualRisk`. If per-agent model
-selection is unavailable, keep the three agents separate with the available
-model and record that fallback. If subagents are unavailable, run the same
-three lenses sequentially in the current session, keep the same JSON
-contracts, and record that fallback in `residualRisk`.
+If profile resolution fails, do not spawn agents. Run the same three lenses
+sequentially in the primary read-only workflow, keep the same JSON contracts,
+and record that fallback in `residualRisk`.
 
 ## Role Prompt Contract
 

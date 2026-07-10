@@ -111,6 +111,9 @@ Knitten's active surface is deliberately small.
 - **Output Runtime**: `bin/knitten-resolve-output` and `bin/knitten-path`
   provide stable locations for specs, reviews, reports, JSON handoffs, and
   local workflow records.
+- **Agent Profiles**: `agent/config/agent-profiles.json` centralizes subagent
+  model, reasoning, sandbox, and fallback settings behind
+  `knitten-path agent-profile`.
 - **Compact Collector Pilot**: `scripts/run-compact-collector-pilot.mjs`
   stores raw command output under a workflow run artifact and returns only
   compact summary, handoff, next-action, and evidence paths.
@@ -129,6 +132,7 @@ Current milestone: see [`MILESTONE.md`](MILESTONE.md).
 | `MILESTONE.md` | Current focus and success criteria. |
 | `SYSTEM.md` | Core workflow and ownership contract. |
 | `agent/AGENTS.md` | Codex entry document. |
+| `agent/config/agent-profiles.json` | Core-owned semantic subagent profiles. |
 | `skills/` | Shared workflow skills. |
 | `document-templates/` | Shared workflow document templates. |
 | `bin/knitten-resolve-output` | Path/output shim for generated artifacts. |
@@ -136,6 +140,7 @@ Current milestone: see [`MILESTONE.md`](MILESTONE.md).
 | `scripts/doctor.mjs` | Check source and local installation health. |
 | `scripts/materialize-local-plugin.mjs` | Refresh the local plugin copy and marketplace entry. |
 | `scripts/resolve-output.mjs` | Resolve durable docs and local workflow outputs. |
+| `scripts/resolve-agent-profile.mjs` | Resolve a semantic subagent profile. |
 | `scripts/measure-skill-exposure.mjs` | Estimate skill-list and skill-body exposure. |
 | `scripts/run-context-load-smoke-eval.mjs` | Run the context-load smoke eval. |
 | `scripts/run-compact-collector-pilot.mjs` | Capture repeated workflow raw output as local artifacts and print a compact summary. |

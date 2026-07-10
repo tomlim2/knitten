@@ -34,6 +34,8 @@ Canonical boundary policy lives in
   `KNITTEN_PATH_BIN output`.
 - Local artifact path registry: registered local path entries used for
   task-scoped rolling context.
+- Agent profile: a Core-owned semantic execution profile that resolves to one
+  model, reasoning effort, sandbox mode, and fallback policy.
 - Domain plugin source root: the source checkout for a domain plugin, distinct
   from an installed plugin root or materialized copy.
 
@@ -58,6 +60,14 @@ deployment, destructive cleanup, or irreversible external-state changes unless
 the active skill documents a narrower explicit exemption. A direct current-turn
 instruction for an exact action counts as approval for that action only after
 the scoped command still matches the request.
+
+## Agent Profiles
+
+`agent/config/agent-profiles.json` is the single source of truth for subagent
+model, reasoning, sandbox, and fallback settings. Core and domain skills select
+profiles by purpose and resolve them through `knitten-path agent-profile`; they
+must not pin model ids in skill instructions. Skills retain ownership of role
+selection, spawn conditions, task packets, and mutation boundaries.
 
 ## Mechanical Finding Capture
 

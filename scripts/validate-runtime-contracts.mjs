@@ -271,7 +271,7 @@ function validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot) {
   );
   fs.writeFileSync(
     path.join(domainRoot, "skills", "example", "SKILL.md"),
-    "Use report-finding for failures.\n",
+    `Use report-finding for failures with ${"gpt-" + "5.6"}.\n`,
     "utf8",
   );
   fs.writeFileSync(path.join(domainRoot, ".agent-local", "tracked.json"), "{}\n", "utf8");
@@ -289,6 +289,7 @@ function validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot) {
   const ids = new Set(report.results.map((item) => item.id));
   assert.equal(ids.has("tracked-agent-local"), true);
   assert.equal(ids.has("finding-workflow-reference"), true);
+  assert.equal(ids.has("direct-agent-model-setting"), true);
 }
 
 function validateSafetyRejectCannotPass() {
@@ -338,14 +339,38 @@ function validateCoreSkillSafetyContracts() {
   const draftFrontmatter = draft.slice(0, draft.indexOf("\n---", 4));
   assert.match(draftFrontmatter, /^allowed-tools:.*\bAgent\b/m);
   assert.match(draftFlow, /two independent read-only agents/);
-  assert.match(draftFlow, /gpt-5\.6-terra/);
-  assert.match(draftFlow, /model_reasoning_effort = "medium"/);
+  assert.match(draftFlow, /scan-fast-readonly/);
+  assert.match(draftFlow, /knitten-path agent-profile scan-fast-readonly/);
   assert.match(draftFlow, /primary agent owns approach selection/);
-  assert.match(draftFlow, /cannot be enforced, do not spawn agents/);
-  assert.match(draftFlow, /keep both agents separate with the available model/);
-  assert.match(draftFlow, /If subagents are unavailable/);
-  assert.match(reviewTriad, /cannot enforce a read-only sandbox\/profile, do not spawn/);
-  assert.match(reviewTriad, /prompt-only prohibition is not an effective read-only profile/);
+  assert.match(draftFlow, /Apply the returned model, reasoning, sandbox, and fallback/);
+  assert.match(reviewTriad, /review-deep-readonly/);
+  assert.match(reviewTriad, /scan-fast-readonly/);
+  assert.match(reviewTriad, /knitten-path agent-profile <profile-id>/);
+
+  for (const relative of sourcePluginFiles(REPO_ROOT)) {
+    if (!relative.startsWith("skills/") || !relative.endsWith(".md")) continue;
+    assert.doesNotMatch(
+      fs.readFileSync(path.join(REPO_ROOT, relative), "utf8"),
+      /gpt-[0-9]|model_reasoning_effort|sandbox_mode/,
+      `${relative} must use Core agent profile ids`,
+    );
+  }
+}
+
+function validateAgentProfileResolution() {
+  const list = runJson(["scripts/resolve-agent-profile.mjs", "--list"]);
+  assert.equal(list.ok, true);
+  assert.equal(list.owner, "knitten-core");
+  assert.deepEqual(
+    list.profiles.map((profile) => profile.id).sort(),
+    ["causal-analysis-readonly", "review-deep-readonly", "scan-fast-readonly"],
+  );
+  for (const profile of list.profiles) {
+    const resolved = runJson(["scripts/resolve-agent-profile.mjs", profile.id]);
+    assert.equal(resolved.profile.id, profile.id);
+    assert.equal(resolved.profile.recordRequestedAndEffective, true);
+  }
+  run(["scripts/resolve-agent-profile.mjs", "missing-profile"], { expectSuccess: false });
 }
 
 function validateMarkdownLinkParser() {
@@ -369,6 +394,7 @@ function main() {
     validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot);
     validateSafetyRejectCannotPass();
     validateCoreSkillSafetyContracts();
+    validateAgentProfileResolution();
     validateMarkdownLinkParser();
     process.stdout.write("runtime contracts ok\n");
   } finally {
