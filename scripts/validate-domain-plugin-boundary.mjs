@@ -3,8 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
-const ACTIVE_GLOBS = ["SKILL.md", "*.sh", "*.mjs", "*.py"];
-const LEGACY_PATTERN = [
+const LEGACY_PATTERN = new RegExp([
   "KNITTEN_ROOT",
   "\\.claude",
   "agent/lib",
@@ -15,9 +14,9 @@ const LEGACY_PATTERN = [
   "plugins/knitten",
   "scripts/resolve-[a-z-]+\\.mjs",
   "bin/knitten-resolve-output",
-].join("|");
-const FINDING_WORKFLOW_PATTERN = "report-finding|finding[- ]report|operational-findings";
-const DIRECT_AGENT_MODEL_PATTERN = "gpt-[0-9]|model_reasoning_effort|sandbox_mode";
+].join("|"));
+const FINDING_WORKFLOW_PATTERN = /report-finding|finding[- ]report|operational-findings/i;
+const DIRECT_AGENT_MODEL_PATTERN = /gpt-[0-9]|model_reasoning_effort|sandbox_mode/;
 
 function usage() {
   return `Usage:
@@ -56,8 +55,46 @@ function exists(root, relativePath) {
   return fs.existsSync(path.join(root, relativePath));
 }
 
-function rg(root, args) {
-  return spawnSync("rg", args, { cwd: root, encoding: "utf8" });
+function listFiles(root, candidates) {
+  const files = [];
+
+  function visit(relativePath) {
+    const absolutePath = path.join(root, relativePath);
+    const stat = fs.lstatSync(absolutePath);
+    if (stat.isSymbolicLink()) return;
+    if (stat.isFile()) {
+      files.push(relativePath.split(path.sep).join("/"));
+      return;
+    }
+    if (!stat.isDirectory()) return;
+    for (const entry of fs.readdirSync(absolutePath, { withFileTypes: true })
+      .sort((left, right) => left.name.localeCompare(right.name))) {
+      if (entry.name.startsWith(".")) continue;
+      visit(path.join(relativePath, entry.name));
+    }
+  }
+
+  for (const candidate of candidates) {
+    if (exists(root, candidate)) visit(candidate);
+  }
+  return files;
+}
+
+function scanLines(root, candidates, pattern, includeFile = () => true) {
+  try {
+    const matches = [];
+    for (const relativePath of listFiles(root, candidates)) {
+      if (!includeFile(relativePath)) continue;
+      const text = fs.readFileSync(path.join(root, relativePath), "utf8");
+      if (text.includes("\0")) continue;
+      for (const [index, line] of text.split(/\r?\n/).entries()) {
+        if (pattern.test(line)) matches.push(`${relativePath}:${index + 1}:${line}`);
+      }
+    }
+    return { matches, error: "" };
+  } catch (error) {
+    return { matches: [], error: error.message };
+  }
 }
 
 function checkPath(results, root, relativePath, detail) {
@@ -72,27 +109,27 @@ function checkForbiddenDocs(results, root) {
 }
 
 function checkActiveLegacyContent(results, root) {
-  const args = ["-n", LEGACY_PATTERN, "skills"];
-  for (const glob of ACTIVE_GLOBS) args.push("--glob", glob);
-  const result = rg(root, args);
-  if (result.status === 1) return;
-  if (result.status !== 0) {
-    add(results, "fail", "scan:active-legacy-paths", "skills", (result.stderr || result.stdout).trim());
+  const result = scanLines(root, ["skills"], LEGACY_PATTERN, (relativePath) => (
+    path.basename(relativePath) === "SKILL.md" || /\.(?:sh|mjs|py)$/.test(relativePath)
+  ));
+  if (result.error) {
+    add(results, "fail", "scan:active-legacy-paths", "skills", result.error);
     return;
   }
-  for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
+  for (const line of result.matches) {
     add(results, "fail", "active-legacy-path", line.split(":", 1)[0], line);
   }
 }
 
 function checkReferenceLegacyContent(results, root) {
-  const result = rg(root, ["-n", LEGACY_PATTERN, "skills", "--glob", "*/references/**", "--glob", "*/reference.md"]);
-  if (result.status === 1) return;
-  if (result.status !== 0) {
-    add(results, "fail", "scan:reference-legacy-paths", "skills", (result.stderr || result.stdout).trim());
+  const result = scanLines(root, ["skills"], LEGACY_PATTERN, (relativePath) => (
+    relativePath.includes("/references/") || relativePath.endsWith("/reference.md")
+  ));
+  if (result.error) {
+    add(results, "fail", "scan:reference-legacy-paths", "skills", result.error);
     return;
   }
-  for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
+  for (const line of result.matches) {
     if (line.includes("Legacy evidence:")) continue;
     add(results, "fail", "reference-legacy-path-without-label", line.split(":", 1)[0], line);
   }
@@ -131,32 +168,29 @@ function checkFindingWorkflowReferences(results, root) {
   const candidates = ["README.md", "AGENTS.md", "SYSTEM.md", "skills", "scripts"]
     .filter((relativePath) => exists(root, relativePath));
   if (candidates.length === 0) return;
-  const result = rg(root, ["-n", "-i", FINDING_WORKFLOW_PATTERN, ...candidates]);
-  if (result.status === 1) return;
-  if (result.status !== 0) {
-    add(results, "fail", "scan:finding-workflow-references", candidates.join(","), (result.stderr || result.stdout).trim());
+  const result = scanLines(root, candidates, FINDING_WORKFLOW_PATTERN);
+  if (result.error) {
+    add(results, "fail", "scan:finding-workflow-references", candidates.join(","), result.error);
     return;
   }
-  for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
+  for (const line of result.matches) {
     add(results, "fail", "finding-workflow-reference", line.split(":", 1)[0], line);
   }
 }
 
 function checkDirectAgentModelSettings(results, root) {
   if (!exists(root, "skills")) return;
-  const result = rg(root, [
-    "-n",
+  const result = scanLines(
+    root,
+    ["skills"],
     DIRECT_AGENT_MODEL_PATTERN,
-    "skills",
-    "--glob",
-    "*.md",
-  ]);
-  if (result.status === 1) return;
-  if (result.status !== 0) {
-    add(results, "fail", "scan:direct-agent-model-settings", "skills", (result.stderr || result.stdout).trim());
+    (relativePath) => relativePath.endsWith(".md"),
+  );
+  if (result.error) {
+    add(results, "fail", "scan:direct-agent-model-settings", "skills", result.error);
     return;
   }
-  for (const line of result.stdout.split(/\r?\n/).filter(Boolean)) {
+  for (const line of result.matches) {
     add(
       results,
       "fail",

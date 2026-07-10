@@ -63,6 +63,19 @@ function git(cwd, args) {
   }
 }
 
+function executablePath(command) {
+  for (const directory of (process.env.PATH || "").split(path.delimiter).filter(Boolean)) {
+    const candidate = path.join(directory, command);
+    try {
+      fs.accessSync(candidate, fs.constants.X_OK);
+      return candidate;
+    } catch {
+      // Continue searching PATH.
+    }
+  }
+  throw new Error(`unable to resolve executable from PATH: ${command}`);
+}
+
 function runJson(args) {
   const result = run(args);
   return JSON.parse(result.stdout);
@@ -261,9 +274,12 @@ function validateRegisteredAndCompatibilityOutputsAgree() {
 
 function validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot) {
   const domainRoot = path.join(tempRoot, "domain-fixture");
+  const isolatedBin = path.join(tempRoot, "boundary-tools");
   fs.mkdirSync(path.join(domainRoot, ".codex-plugin"), { recursive: true });
   fs.mkdirSync(path.join(domainRoot, "skills", "example"), { recursive: true });
   fs.mkdirSync(path.join(domainRoot, ".agent-local"), { recursive: true });
+  fs.mkdirSync(isolatedBin, { recursive: true });
+  fs.symlinkSync(executablePath("git"), path.join(isolatedBin, "git"));
   fs.writeFileSync(
     path.join(domainRoot, ".codex-plugin", "plugin.json"),
     `${JSON.stringify({ name: "domain-fixture", version: "0.0.0" }, null, 2)}\n`,
@@ -284,7 +300,10 @@ function validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot) {
     "scripts/validate-domain-plugin-boundary.mjs",
     "--domain-plugin",
     domainRoot,
-  ], { expectSuccess: false });
+  ], {
+    expectSuccess: false,
+    env: { ...process.env, PATH: isolatedBin },
+  });
   const report = JSON.parse(result.stdout);
   const ids = new Set(report.results.map((item) => item.id));
   assert.equal(ids.has("tracked-agent-local"), true);
