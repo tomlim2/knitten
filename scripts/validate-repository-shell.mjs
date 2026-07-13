@@ -38,6 +38,7 @@ function isAllowedFile(file) {
   if (file.startsWith("agent/config/") && file.endsWith(".json")) return true;
   if (file.startsWith("bin/")) return true;
   if (file.startsWith("docs/guidelines/") && file.endsWith(".md")) return true;
+  if (file.startsWith("docs/milestones/") && file.endsWith(".md")) return true;
   if (file.startsWith("docs/specs/") && file.endsWith(".md")) return true;
   if (file.startsWith("evals/context-load-smoke/") && file.endsWith(".json")) return true;
   if (file.startsWith("examples/minimal-domain-plugin/")) return true;

@@ -122,7 +122,9 @@ Knitten's active surface is deliberately small.
 - **Safety First**: mutation, push, deploy, delete, and external-state checks
   stay in the main skill files.
 
-Current milestone: see [`MILESTONE.md`](MILESTONE.md).
+Current milestone: see [`MILESTONE.md`](MILESTONE.md). Completed milestone
+evidence is archived in
+[`docs/milestones/completed.md`](docs/milestones/completed.md).
 
 ## Layout
 
@@ -130,6 +132,7 @@ Current milestone: see [`MILESTONE.md`](MILESTONE.md).
 |------|---------|
 | `.codex-plugin/plugin.json` | Codex plugin manifest. |
 | `MILESTONE.md` | Current focus and success criteria. |
+| `docs/milestones/completed.md` | Completed milestone evidence and historical decisions. |
 | `SYSTEM.md` | Core workflow and ownership contract. |
 | `agent/AGENTS.md` | Codex entry document. |
 | `agent/config/agent-profiles.json` | Core-owned semantic subagent profiles. |

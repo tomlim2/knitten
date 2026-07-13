@@ -1,194 +1,65 @@
+---
+status: active
+created: 2026-06-08
+updated: 2026-07-10
+owner: workflow
+target-date:
+---
+
 # Knitten Milestone
 
-## Core + Domain Plugin Discipline
+## Purpose
 
-Status: Active.
+Close the `v0.1.8` public baseline with current release metadata and measured
+Core/domain-plugin evidence. This file contains only work with a concrete next
+action, output, and verification. Completed work moves to
+[`docs/milestones/completed.md`](docs/milestones/completed.md).
 
-Knitten's lead milestone is to keep the personal Codex core small while domain
-plugins own project-specific workflows and load detailed flow context only when
-used.
+## Active Work
 
-## Position
+| Priority | Work | Next action | Done when |
+|----------|------|-------------|-----------|
+| P1 | Public release alignment | Align GitHub About description/topics with the lightweight Codex workflow core message and publish the `v0.1.8` GitHub Release. | `gh repo view tomlim2/knitten --json description,repositoryTopics,latestRelease` reports aligned wording and `latestRelease.tagName == "v0.1.8"`. |
+| P1 | Released exposure proof alignment | Use the archived three-plugin measurement for Core `v0.1.8`, KSL `v0.1.5`, and KAS `v0.1.2` to update README proof text that still cites superseded values. | README and milestone claims match the archived release baseline and distinguish historical pilot measurements from the current 20-skill KAS set. |
 
-Knitten is a small personal Codex workflow core with pluggable domain plugins.
+Do not add an item here unless it has an accepted target, a concrete output,
+and a verification command or observable completion condition.
 
-The system should help a large skill library stay usable without turning the
-core into a large prompt. The core keeps shared workflow contracts, output
-paths, validation, and ownership rules. Domain plugins own domain behavior and
-keep long flow details behind match checks or internal references.
+## Specs
 
-## Current Focus
+| Spec | Status | Role |
+|------|--------|------|
+| [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md) | active | Public metadata and release closure. |
+| [`docs/specs/domain-exposure-audit-plan.md`](docs/specs/domain-exposure-audit-plan.md) | reference | Measurement method and historical baseline. |
 
-1. **Context Load Smoke Eval**
-   - Create a durable 20-case request set for current core skills.
-   - Measure baseline versus matched-context cost with a clearly labeled
-     worst-case model.
-   - Record match accuracy, reject accuracy, reference precision, safety misses,
-     and the follow-up decision before expanding the pattern.
+## Progress
 
-2. **Pilot Skill Audit And Migration**
-   - Audit `implement` first because it is the active implementation pilot.
-   - Then audit `draft-spec`, `review`, and `report-finding` as the
-     remaining core workflow surfaces with deferred references or safety checks.
-   - Keep mutation and external-state safety checks in `SKILL.md`; move only
-     detailed procedures into references.
+| Phase | State | Evidence |
+|-------|-------|----------|
+| Public release alignment | pending | Git tag `v0.1.8` exists, while GitHub still reports `v0.1.7` as the latest Release and uses the older Agent Hub description. |
+| Released exposure proof alignment | in progress | The released-tag measurement is archived; README still reports the older Core selected-body value. |
 
-3. **Skill Audit Guidance**
-   - Define a small checklist for overlong skill bodies, ambiguous triggers,
-     missing non-trigger rules, missing required input, and missing Step 0
-     safety checks.
-   - Start as guidance. Promote only mechanically checkable parts to `doctor`
-     after the pilot is stable.
+## Acceptance Criteria
 
-4. **Registry Contract Reconciliation**
-   - Treat current legacy domain output entries in Knitten as explicit compatibility
-     contracts, not accidental domain leakage.
-   - Keep `doctor` and repository shell validation checking source and installed
-     copies for reachable templates, allowed makers, helper reachability, and
-     stale plugin copies.
-   - Document any future move from core compatibility outputs to domain-owned
-     registries before changing active contracts.
+- GitHub About description/topics use the lightweight personal Codex workflow
+  core positioning without the superseded Agent Hub framing.
+- The latest GitHub Release is `v0.1.8` and its wording matches the current
+  README positioning.
+- A durable measurement records released Core, KSL, and KAS refs together with
+  list and selected-body exposure.
+- Public proof text cites current evidence and labels historical measurements
+  as historical instead of silently replacing their baseline.
+- When both active items pass, set this milestone to `completed` and move its
+  final evidence summary to the completed-work log.
 
-5. **Milestone Hygiene**
-   - Keep this milestone as the priority source of truth.
-   - Keep source specs focused on their own contracts and remove obsolete pilot
-     names or completed cleanup claims as they are discovered.
+## Blockers
 
-6. **Public Adoption Readiness**
-   - Make the first README screen explain the problem, the concrete benefit, and
-     the quickest proof path for a new Codex user.
-   - Show measured evidence without over-claiming: current skill exposure,
-     context-load smoke eval result, and the "avoid unnecessary context/work"
-     framing.
-   - Add a copy-paste quickstart and a tiny domain-plugin example path so the
-     repository feels usable within minutes, not just internally coherent.
-   - Align GitHub About/topics/release wording with the lightweight workflow
-     core message.
+| Blocker | Impact |
+|---------|--------|
+| External publication approval | GitHub About and Release writes require explicit user approval at execution time. |
 
-7. **Mild Context Harness Hardening**
-   - Improve context handling without turning Knitten into a new agent framework.
-   - Keep raw high-volume tool results out of the active conversation when a
-     compact artifact and summary will do.
-   - Add warning-level checks for obvious skill-shape drift before promoting any
-     new hard validator rules.
-   - Prove any domain-plugin exposure change with measurement and one small
-     pilot before broad migration.
+## Completed Work
 
-## Next Work
-
-No accepted implementation remains in this batch.
-
-Future domain-plugin work needs a separate accepted target list. `dev-generate-spec`
-is the next measured KAS candidate if more selected-body exposure reduction is
-worth doing.
-
-## Deferred
-
-RAG, vector search, and retrieve-and-rerank are not first-round work. They may
-be useful later when explicit reference-selection rules become too noisy, but
-the immediate milestone is to prove that simple match-based loading works first.
-
-Broad domain-plugin migration is also deferred. Domain skills can adopt the pattern
-after the Knitten Core pilot and smoke eval show that match/reject accuracy and safety
-checks survive the smaller context surface.
-
-Custom compaction engines, cache layers, model-specific prompt tuning systems,
-and all-skill rewrites are also deferred. The next batch should improve the
-existing harness with small contracts, warnings, and one workflow pilot.
-
-## Done
-
-- Knitten core exposes the current output runtime through `knitten-path`.
-- `doctor` checks source and installed plugin copies.
-- Repository shell validation checks active registry shape and ownership.
-- `local-helper-paths.json` is reachable and currently has no helper entries.
-- The installed Knitten copy has the current legacy task activity output
-  contract.
-- Context-load smoke eval has a 20-case fixture, deterministic runner, local raw
-  report, and reviewed result note.
-- README first screen, quickstart, measured proof block, when-to-use guidance,
-  public metadata note, and minimal domain-plugin example are implemented.
-- Repository validation allows the minimal domain-plugin example and CI expects
-  the current `.agent-local/workflow` output path.
-- `implement` pilot audit is recorded and its match check now reflects local
-  implementation work while keeping external mutation safety in Step 0.
-- Skill audit checklist exists for discovery surface, match checks, context
-  loading, mutation safety, implementation discipline, and audit completion.
-- Follow-up audit for `draft-spec`, `review`, and `report-finding`
-  found no P0/P1/P2 blockers.
-- Legacy domain compatibility output contracts are documented as non-primary
-  compatibility surfaces with required metadata and migration rules.
-- Validator promotion decision is recorded: mechanical repository checks
-  stay in validators, judgment-heavy skill quality checks stay in human audits.
-- README exposure proof is refreshed against `node scripts/measure-skill-exposure.mjs .`:
-  8 skills, about 135 list tokens, and about 3193 `SKILL.md` tokens.
-- Workflow run artifacts are registered for `root`, `raw`, `summary`,
-  `handoff`, and `next` through the local artifact registry and
-  `workflow-run-*` output ids.
-- Compact collector pilot exists for the repeated Knitten health workflow:
-  raw validation output is written under a workflow run artifact while the
-  active response carries summary, handoff, next-action, and evidence paths.
-- Skill-shape validator warnings surface active skills missing `match-check`,
-  `Step 0: Match Check`, or post-match reference guards without hard-failing
-  repository validation.
-- Triad packet budget guidance lets review roles share compact context while
-  keeping role-specific documents, raw artifact evidence, and justified full
-  shared context separate by default.
-- Domain exposure audit plan is recorded with fresh Knitten Core/KSL/KAS
-  measurements, ranked KSL/KAS candidates, and a gate requiring a separate
-  accepted target list before any domain-plugin migration.
-- KAS Unreal/CINEV body extraction is implemented for eight accepted target
-  skills: default list exposure stayed flat while KAS total `SKILL.md` body
-  exposure fell from about 10448 to 7026 tokens.
-
-## Pilot Batch
-
-| Skill | Surface | Purpose |
-|-------|---------|---------|
-| `implement` | Scoped implementation | Prove deleted implementation leaves are covered by one practical core skill. |
-
-Candidate follow-up audits:
-
-| Skill | Surface | Purpose |
-|-------|---------|---------|
-| `draft-spec` | Spec drafting | Verify reusable concepts and match policy stay visible without bloating the core. |
-| `review` | Read-only review | Verify triad review details stay deferred until a prepared packet exists. |
-| `report-finding` | Finding capture | Verify mutation to local records keeps Step 0 evidence requirements visible. |
-
-## Success Criteria
-
-- A top-level README clearly presents Knitten as a small personal core with
-  pluggable domain plugins.
-- Pilot skills use short match checks and conditional reference loading.
-- Mutation-capable skills keep safety checks in the main skill file.
-- `doctor` and shell validation catch stale, unreachable, or undocumented
-  registry entries in source and installed copies.
-- Audit guidance exists before broad skill migration.
-- Context-load/token-efficiency experiments are recorded before their results are
-  used to change milestone direction.
-- The status of legacy domain compatibility output contracts is documented before
-  any registry ownership change.
-- README and GitHub-facing wording make the project understandable to a
-  non-owner without reading internal history.
-- Public claims cite measured smoke-eval or exposure data and avoid promising
-  universal token reduction.
-- A minimal domain-plugin example exists before broad public promotion.
-- Large tool outputs have a documented artifact-and-summary path before more
-  Linear/GitHub-heavy workflows are added.
-- Validator promotion remains warning-first for skill-shape drift until repeated
-  audits prove a low false-positive hard rule.
-- Domain plugin exposure reductions are based on measured usefulness, not token
-  count alone.
-
-## Source Specs
-
-- [`docs/specs/skill-match-progressive-loading.md`](docs/specs/skill-match-progressive-loading.md)
-- [`docs/specs/context-load-smoke-eval.md`](docs/specs/context-load-smoke-eval.md)
-- [`docs/specs/output-registry-health-cleanup.md`](docs/specs/output-registry-health-cleanup.md)
-- [`docs/specs/public-repository-readiness.md`](docs/specs/public-repository-readiness.md)
-- [`docs/specs/implement-pilot-audit.md`](docs/specs/implement-pilot-audit.md)
-- [`docs/specs/follow-up-skill-audit.md`](docs/specs/follow-up-skill-audit.md)
-- [`docs/specs/validator-promotion-decision.md`](docs/specs/validator-promotion-decision.md)
-- [`docs/specs/context-artifact-first-harness.md`](docs/specs/context-artifact-first-harness.md)
-- [`docs/specs/domain-exposure-audit-plan.md`](docs/specs/domain-exposure-audit-plan.md)
-- [`docs/specs/kas-unreal-cinev-body-extraction-target-list.md`](docs/specs/kas-unreal-cinev-body-extraction-target-list.md)
+Completed phases, pilot results, historical measurements, non-goals, and source
+specs are maintained in
+[`docs/milestones/completed.md`](docs/milestones/completed.md).
