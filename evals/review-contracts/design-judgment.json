@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "caseId": "design-judgment",
+  "inventory": [
+    {
+      "surfaceId": "src/_z.ts#changed-lines",
+      "path": "src/_z.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    },
+    {
+      "surfaceId": "src/-a.ts#changed-lines",
+      "path": "src/-a.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    },
+    {
+      "surfaceId": "generated/_schema.json#all",
+      "path": "generated/_schema.json",
+      "kind": "generated",
+      "reviewRequired": false,
+      "exclusionReason": "generated from reviewed source"
+    },
+    {
+      "surfaceId": "generated/-types.json#all",
+      "path": "generated/-types.json",
+      "kind": "generated",
+      "reviewRequired": false,
+      "exclusionReason": "generated from reviewed source"
+    }
+  ],
+  "roleCoverage": [
+    {
+      "role": "Contract reviewer",
+      "assignedSurfaceIds": ["src/_z.ts#changed-lines", "src/-a.ts#changed-lines"],
+      "checkedSurfaceIds": ["src/_z.ts#changed-lines", "src/-a.ts#changed-lines"],
+      "skippedSurfaces": []
+    }
+  ],
+  "normalizedFindings": [
+    { "fixtureFindingId": "F_3", "priority": "P2", "blocker": true },
+    { "fixtureFindingId": "F1", "priority": "P1", "blocker": true },
+    { "fixtureFindingId": "F-2", "priority": "P2", "blocker": true }
+  ],
+  "needsDesignJudgmentCount": 1,
+  "handoff": { "descriptionRefreshRequired": false, "reason": null },
+  "expected": {
+    "coverage": {
+      "assigned": ["src/-a.ts#changed-lines", "src/_z.ts#changed-lines"],
+      "checked": ["src/-a.ts#changed-lines", "src/_z.ts#changed-lines"],
+      "skipped": [],
+      "excluded": [
+        { "surfaceId": "generated/-types.json#all", "reason": "generated from reviewed source" },
+        { "surfaceId": "generated/_schema.json#all", "reason": "generated from reviewed source" }
+      ],
+      "uncovered": [],
+      "complete": true
+    },
+    "handoff": { "descriptionRefreshRequired": false, "reason": null },
+    "loopEligibleFindingIds": ["F1", "F-2", "F_3"],
+    "ready": false,
+    "nextAction": "ask"
+  }
+}

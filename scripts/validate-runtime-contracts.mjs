@@ -348,6 +348,7 @@ function validateCoreSkillSafetyContracts() {
     "utf8",
   );
   const reviewFix = fs.readFileSync(path.join(REPO_ROOT, "skills/review-fix-loop/SKILL.md"), "utf8");
+  const preflight = fs.readFileSync(path.join(REPO_ROOT, "skills/triad-preflight/SKILL.md"), "utf8");
   const usage = fs.readFileSync(path.join(REPO_ROOT, "skills/log-usage/SKILL.md"), "utf8");
   const draft = fs.readFileSync(path.join(REPO_ROOT, "skills/draft-spec/SKILL.md"), "utf8");
   const draftFlow = fs.readFileSync(
@@ -356,6 +357,35 @@ function validateCoreSkillSafetyContracts() {
   );
   const reviewTriad = fs.readFileSync(
     path.join(REPO_ROOT, "skills/review/references/triad.md"),
+    "utf8",
+  );
+  const review = fs.readFileSync(path.join(REPO_ROOT, "skills/review/SKILL.md"), "utf8");
+  const reviewPrinciples = fs.readFileSync(
+    path.join(REPO_ROOT, "skills/review/references/code-review-principles.md"),
+    "utf8",
+  );
+  const preflightFlow = fs.readFileSync(
+    path.join(REPO_ROOT, "skills/triad-preflight/references/flow.md"),
+    "utf8",
+  );
+  const reviewFixFlow = fs.readFileSync(
+    path.join(REPO_ROOT, "skills/review-fix-loop/references/flow.md"),
+    "utf8",
+  );
+  const legacyReviewTemplate = fs.readFileSync(
+    path.join(REPO_ROOT, "document-templates/review/code-review.md"),
+    "utf8",
+  );
+  const checkpointTemplate = JSON.parse(fs.readFileSync(
+    path.join(REPO_ROOT, "document-templates/workflow/review-fix-loop-checkpoint.json"),
+    "utf8",
+  ));
+  const reviewContractValidator = fs.readFileSync(
+    path.join(REPO_ROOT, "scripts/validate-review-contracts.mjs"),
+    "utf8",
+  );
+  const forwardPacketRenderer = fs.readFileSync(
+    path.join(REPO_ROOT, "scripts/render-review-forward-packet.mjs"),
     "utf8",
   );
 
@@ -378,6 +408,94 @@ function validateCoreSkillSafetyContracts() {
   assert.match(reviewTriad, /review-deep-readonly/);
   assert.match(reviewTriad, /scan-fast-readonly/);
   assert.match(reviewTriad, /knitten-path agent-profile <profile-id>/);
+  const principlesLoadIndex = review.indexOf("references/code-review-principles.md");
+  const triadLoadIndex = review.indexOf("references/triad.md");
+  const reviewAfterMatchIndex = review.indexOf("## After Match");
+  assert.ok(principlesLoadIndex >= 0, "review must load canonical principles");
+  assert.ok(reviewAfterMatchIndex >= 0, "review must define After Match");
+  assert.ok(principlesLoadIndex > reviewAfterMatchIndex, "review principles must load after Step 0");
+  assert.ok(triadLoadIndex > principlesLoadIndex, "review must load principles before triad");
+  for (const [name, skill] of [["triad-preflight", preflight], ["review-fix-loop", reviewFix]]) {
+    const afterMatchIndex = skill.indexOf("## After Match");
+    const flowLoadIndex = skill.indexOf("references/flow.md");
+    assert.ok(afterMatchIndex >= 0, `${name} must define After Match`);
+    assert.ok(flowLoadIndex > afterMatchIndex, `${name} flow must load after Step 0`);
+  }
+  for (const [name, flow] of [["triad-preflight", preflightFlow], ["review-fix-loop", reviewFixFlow]]) {
+    const postStepZeroIndex = flow.indexOf("After Step 0 passes");
+    const canonicalLoadIndex = flow.indexOf("../../review/references/code-review-principles.md");
+    assert.ok(postStepZeroIndex >= 0, `${name} flow must state the Step 0 boundary`);
+    assert.ok(canonicalLoadIndex > postStepZeroIndex, `${name} canonical load must follow Step 0`);
+  }
+  assert.match(reviewPrinciples, /improves or preserves overall code health/);
+  assert.match(reviewPrinciples, /P0, P1, and P2 findings use `blocker=true`/);
+  assert.match(reviewPrinciples, /Optional:.*Nit:.*FYI:/s);
+  assert.match(reviewPrinciples, /Review Navigation And Coverage/);
+  assert.match(reviewPrinciples, /Review every human-written changed line/);
+  assert.match(reviewPrinciples, /Do not use a hard line-count threshold/);
+  assert.match(reviewPrinciples, /Positive evidence:/);
+  assert.match(reviewPrinciples, /descriptionRefreshRequired/);
+  assert.match(reviewTriad, /assignedSurfaceIds/);
+  assert.match(reviewTriad, /checkedSurfaceIds/);
+  assert.match(reviewTriad, /skippedSurfaces/);
+  assert.match(reviewTriad, /blocker=<true\|false>/);
+  assert.match(reviewTriad, /Impact: <technical or consumer consequence>/);
+  assert.match(reviewTriad, /excluded IDs are invalid/i);
+  assert.match(reviewTriad, /coverage\.complete/);
+  const readinessFormula = `coverage.complete = uncovered is empty
+ready = no P0-P2 blocker
+        AND coverage.complete
+        AND needsDesignJudgment is empty
+nextAction = ask      when needsDesignJudgment is non-empty
+             fix      when no design judgment remains and a P0-P2 blocker exists
+             review   when no blocker remains and coverage.complete is false
+             complete otherwise`;
+  assert.ok(reviewPrinciples.includes(readinessFormula), "canonical readiness formula drifted");
+  assert.match(reviewPrinciples, /Never substitute synonyms/);
+  assert.match(reviewPrinciples, /excluded surface must not appear in any role's assigned, checked, or skipped/i);
+  assert.match(reviewTriad, /exact `ask`, `fix`, `review`, or `complete` literal/);
+  assert.match(
+    reviewFixFlow,
+    /Only when `ready=true`, run validation\. Write a `complete` checkpoint only\s+when readiness is true and validation passes\./,
+  );
+  assert.match(reviewFixFlow, /When validation fails, normalize each actionable failure as a P2 finding/);
+  assert.match(reviewFixFlow, /`status=blocked` and `nextAction=fix`/);
+  assert.match(reviewFixFlow, /schema-version-1 checkpoint/);
+  assert.match(reviewFixFlow, /Ignore the legacy `nextAction`/);
+  assert.match(reviewFixFlow, /Run a fresh full review to reconstruct/);
+  assert.match(reviewFixFlow, /`status=blocked` requires a non-null `blockedHandoff`/);
+  assert.match(reviewFixFlow, /P0-P2 findings with\s+`blocker=true`/);
+  assert.equal(checkpointTemplate.schemaVersion, 2);
+  assert.deepEqual(
+    Object.keys(checkpointTemplate.remainingBlockers[0]),
+    ["id", "priority", "blocker", "source", "summary", "requiredFix"],
+  );
+  assert.equal(checkpointTemplate.remainingBlockers[0].priority, "P0|P1|P2");
+  assert.equal(checkpointTemplate.remainingBlockers[0].blocker, true);
+  assert.equal(Object.hasOwn(checkpointTemplate.remainingBlockers[0], "severity"), false);
+  assert.deepEqual(
+    Object.keys(checkpointTemplate.coverage),
+    ["assigned", "checked", "skipped", "excluded", "uncovered", "complete"],
+  );
+  assert.equal(checkpointTemplate.needsDesignJudgmentCount, 0);
+  assert.equal(checkpointTemplate.ready, false);
+  assert.deepEqual(checkpointTemplate.handoff, {
+    descriptionRefreshRequired: false,
+    reason: null,
+  });
+  assert.equal(checkpointTemplate.blockedHandoff, null);
+  assert.equal(checkpointTemplate.nextAction, "<ask|fix|review|complete>");
+  assert.match(reviewContractValidator, /excluded-surface-id/);
+  assert.match(reviewContractValidator, /handoff: \{ \.\.\.input\.handoff \}/);
+  assert.match(reviewContractValidator, /evals\/review-forward-packets/);
+  assert.match(reviewContractValidator, /compareCodeUnits/);
+  assert.doesNotMatch(reviewContractValidator, /localeCompare/);
+  assert.match(reviewContractValidator, /expectedNextAction/);
+  assert.doesNotMatch(forwardPacketRenderer, /expected/);
+  assert.match(legacyReviewTemplate, /not a runtime dependency/);
+  assert.match(legacyReviewTemplate, /State supported required actions directly/);
+  assert.match(legacyReviewTemplate, /No emotional language or generic praise/);
+  assert.doesNotMatch(reviewPrinciples, /\bLGTM\b|\bOWNERS\b|one-business-day|staffing policy/i);
 
   for (const relative of sourcePluginFiles(REPO_ROOT)) {
     if (!relative.startsWith("skills/") || !relative.endsWith(".md")) continue;
@@ -385,6 +503,303 @@ function validateCoreSkillSafetyContracts() {
       fs.readFileSync(path.join(REPO_ROOT, relative), "utf8"),
       /gpt-[0-9]|model_reasoning_effort|sandbox_mode/,
       `${relative} must use Core agent profile ids`,
+    );
+  }
+}
+
+function requireClosedKeys(value, allowed) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("unknown-key");
+  }
+  const actual = Object.keys(value).sort();
+  const expected = [...allowed].sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error("unknown-key");
+  }
+}
+
+function normalizeLegacyRemainingBlockers(findings) {
+  return findings.map((finding) => {
+    requireClosedKeys(finding, ["id", "severity", "source", "summary", "requiredFix"]);
+    if (!["P0", "P1", "P2"].includes(finding.severity)) {
+      throw new Error("invalid-legacy-blocker-priority");
+    }
+    const { severity, ...rest } = finding;
+    return { id: rest.id, priority: severity, blocker: true, ...rest };
+  });
+}
+
+function validateBlockedCheckpointState(state) {
+  requireClosedKeys(
+    state,
+    ["status", "remainingBlockers", "ready", "nextAction", "blockedHandoff"],
+  );
+  for (const finding of state.remainingBlockers) {
+    requireClosedKeys(
+      finding,
+      ["id", "priority", "blocker", "source", "summary", "requiredFix"],
+    );
+    if (!["P0", "P1", "P2"].includes(finding.priority) || finding.blocker !== true) {
+      throw new Error("invalid-blocked-state");
+    }
+  }
+  if (state.status !== "blocked") {
+    if (state.blockedHandoff !== null) throw new Error("unexpected-blocked-handoff");
+    return;
+  }
+  if (state.blockedHandoff === null) throw new Error("missing-blocked-handoff");
+  requireClosedKeys(state.blockedHandoff, ["owner", "requiredAction", "reason"]);
+  if (!Object.values(state.blockedHandoff)
+    .every((value) => typeof value === "string" && value.length > 0)) {
+    throw new Error("invalid-blocked-handoff");
+  }
+  if (state.remainingBlockers.length === 0 || state.ready !== false || state.nextAction !== "fix") {
+    throw new Error("invalid-blocked-state");
+  }
+}
+
+function validateFreshReviewState(state) {
+  requireClosedKeys(state, [
+    "remainingBlockers",
+    "coverage",
+    "needsDesignJudgmentCount",
+    "ready",
+    "handoff",
+    "blockedHandoff",
+    "nextAction",
+  ]);
+  for (const finding of state.remainingBlockers) {
+    requireClosedKeys(
+      finding,
+      ["id", "priority", "blocker", "source", "summary", "requiredFix"],
+    );
+    if (!["P0", "P1", "P2"].includes(finding.priority) || finding.blocker !== true) {
+      throw new Error("invalid-blocked-state");
+    }
+  }
+  requireClosedKeys(
+    state.coverage,
+    ["assigned", "checked", "skipped", "excluded", "uncovered", "complete"],
+  );
+  for (const key of ["assigned", "checked", "skipped", "excluded", "uncovered"]) {
+    assert.ok(Array.isArray(state.coverage[key]), `coverage.${key} must be an array`);
+  }
+  assert.equal(state.coverage.complete, state.coverage.uncovered.length === 0);
+  requireClosedKeys(state.handoff, ["descriptionRefreshRequired", "reason"]);
+  assert.equal(typeof state.handoff.descriptionRefreshRequired, "boolean");
+  if (state.handoff.descriptionRefreshRequired) {
+    assert.equal(typeof state.handoff.reason, "string");
+    assert.ok(state.handoff.reason.length > 0);
+  } else {
+    assert.equal(state.handoff.reason, null);
+  }
+  if (state.blockedHandoff !== null) {
+    requireClosedKeys(state.blockedHandoff, ["owner", "requiredAction", "reason"]);
+  }
+  assert.ok(Number.isInteger(state.needsDesignJudgmentCount));
+  assert.ok(state.needsDesignJudgmentCount >= 0);
+  const expectedReady = state.remainingBlockers.length === 0
+    && state.coverage.complete
+    && state.needsDesignJudgmentCount === 0;
+  const expectedNextAction = state.needsDesignJudgmentCount > 0
+    ? "ask"
+    : state.remainingBlockers.length > 0
+      ? "fix"
+      : !state.coverage.complete
+        ? "review"
+        : "complete";
+  assert.equal(state.ready, expectedReady);
+  assert.equal(state.nextAction, expectedNextAction);
+}
+
+function validateReviewCheckpointMigration() {
+  const fixture = JSON.parse(fs.readFileSync(
+    path.join(REPO_ROOT, "evals/review-checkpoints/schema-v1-migration.json"),
+    "utf8",
+  ));
+  requireClosedKeys(
+    fixture,
+    ["schemaVersion", "caseId", "legacyCheckpoint", "expectedMigration", "invalidCases"],
+  );
+  assert.equal(fixture.schemaVersion, 1);
+  assert.equal(fixture.caseId, "schema-v1-migration");
+  const legacy = fixture.legacyCheckpoint;
+  requireClosedKeys(legacy, [
+    "schemaVersion",
+    "kind",
+    "status",
+    "summary",
+    "loopKind",
+    "loopNumber",
+    "reviewMode",
+    "target",
+    "fixedFindings",
+    "remainingBlockers",
+    "changedFiles",
+    "reviewPacketBudget",
+    "validation",
+    "userApproval",
+    "nextAction",
+    "updatedAt",
+  ]);
+  assert.equal(legacy.schemaVersion, 1);
+  for (const missing of [
+    "coverage",
+    "needsDesignJudgmentCount",
+    "ready",
+    "handoff",
+    "blockedHandoff",
+  ]) {
+    assert.equal(Object.hasOwn(legacy, missing), false, `legacy checkpoint unexpectedly has ${missing}`);
+  }
+  requireClosedKeys(fixture.expectedMigration, [
+    "carryForwardFields",
+    "recomputeFields",
+    "normalizedRemainingBlockers",
+    "freshReviewResult",
+    "v2WriteTime",
+    "expectedV2State",
+    "discardLegacyNextAction",
+    "requiresFreshFullReview",
+    "writeSchemaVersion",
+  ]);
+  const expectedCarryForwardFields = [
+    "kind",
+    "loopKind",
+    "reviewMode",
+    "target",
+    "fixedFindings",
+    "changedFiles",
+    "reviewPacketBudget",
+    "validation",
+    "userApproval",
+  ];
+  const expectedRecomputeFields = [
+    "status",
+    "summary",
+    "loopNumber",
+    "coverage",
+    "needsDesignJudgmentCount",
+    "ready",
+    "handoff",
+    "blockedHandoff",
+    "nextAction",
+    "updatedAt",
+  ];
+  assert.deepEqual(fixture.expectedMigration.carryForwardFields, expectedCarryForwardFields);
+  assert.deepEqual(fixture.expectedMigration.recomputeFields, expectedRecomputeFields);
+  for (const field of fixture.expectedMigration.carryForwardFields) {
+    assert.equal(Object.hasOwn(legacy, field), true, `legacy checkpoint missing ${field}`);
+  }
+  for (const disallowed of ["schemaVersion", "remainingBlockers", "nextAction"]) {
+    assert.equal(
+      fixture.expectedMigration.carryForwardFields.includes(disallowed),
+      false,
+      `${disallowed} must not be carried forward`,
+    );
+  }
+  const recomputed = new Set(fixture.expectedMigration.recomputeFields);
+  assert.equal(
+    fixture.expectedMigration.carryForwardFields.some((field) => recomputed.has(field)),
+    false,
+    "carry-forward and recompute fields must be disjoint",
+  );
+  const classifiedLegacyFields = new Set([
+    ...fixture.expectedMigration.carryForwardFields,
+    ...fixture.expectedMigration.recomputeFields.filter((field) => Object.hasOwn(legacy, field)),
+    "schemaVersion",
+    "remainingBlockers",
+    "nextAction",
+  ]);
+  assert.deepEqual([...classifiedLegacyFields].sort(), Object.keys(legacy).sort());
+  const normalizedRemainingBlockers = normalizeLegacyRemainingBlockers(legacy.remainingBlockers);
+  assert.deepEqual(
+    normalizedRemainingBlockers,
+    fixture.expectedMigration.normalizedRemainingBlockers,
+  );
+  assert.equal(legacy.nextAction, "validate");
+  assert.equal(fixture.expectedMigration.discardLegacyNextAction, true);
+  assert.equal(fixture.expectedMigration.requiresFreshFullReview, true);
+  assert.equal(fixture.expectedMigration.writeSchemaVersion, 2);
+  const freshReview = fixture.expectedMigration.freshReviewResult;
+  validateFreshReviewState(freshReview);
+  const blockerCount = freshReview.remainingBlockers.length;
+  const carriedState = Object.fromEntries(
+    fixture.expectedMigration.carryForwardFields.map((field) => [field, legacy[field]]),
+  );
+  const migratedState = {
+    ...carriedState,
+    ...freshReview,
+    schemaVersion: 2,
+    status: freshReview.blockedHandoff ? "blocked" : "continue",
+    summary: `Fresh review: ${blockerCount} ${blockerCount === 1 ? "blocker" : "blockers"}, coverage ${freshReview.coverage.complete ? "complete" : "incomplete"}, nextAction=${freshReview.nextAction}.`,
+    loopNumber: legacy.loopNumber + 1,
+    updatedAt: fixture.expectedMigration.v2WriteTime,
+  };
+  requireClosedKeys(migratedState, [
+    "schemaVersion",
+    "kind",
+    "status",
+    "summary",
+    "loopKind",
+    "loopNumber",
+    "reviewMode",
+    "target",
+    "fixedFindings",
+    "remainingBlockers",
+    "coverage",
+    "needsDesignJudgmentCount",
+    "ready",
+    "handoff",
+    "blockedHandoff",
+    "changedFiles",
+    "reviewPacketBudget",
+    "validation",
+    "userApproval",
+    "nextAction",
+    "updatedAt",
+  ]);
+  requireClosedKeys(fixture.expectedMigration.expectedV2State, Object.keys(migratedState));
+  validateFreshReviewState({
+    remainingBlockers: migratedState.remainingBlockers,
+    coverage: migratedState.coverage,
+    needsDesignJudgmentCount: migratedState.needsDesignJudgmentCount,
+    ready: migratedState.ready,
+    handoff: migratedState.handoff,
+    blockedHandoff: migratedState.blockedHandoff,
+    nextAction: migratedState.nextAction,
+  });
+  validateBlockedCheckpointState({
+    status: migratedState.status,
+    remainingBlockers: migratedState.remainingBlockers,
+    ready: migratedState.ready,
+    nextAction: migratedState.nextAction,
+    blockedHandoff: migratedState.blockedHandoff,
+  });
+  assert.deepEqual(migratedState, fixture.expectedMigration.expectedV2State);
+  for (const invalid of fixture.invalidCases) {
+    requireClosedKeys(invalid, ["caseId", "remainingBlockers", "expectedError"]);
+    assert.throws(
+      () => normalizeLegacyRemainingBlockers(invalid.remainingBlockers),
+      new RegExp(invalid.expectedError),
+      invalid.caseId,
+    );
+  }
+
+  const blockedFixture = JSON.parse(fs.readFileSync(
+    path.join(REPO_ROOT, "evals/review-checkpoints/schema-v2-blocked.json"),
+    "utf8",
+  ));
+  requireClosedKeys(blockedFixture, ["schemaVersion", "caseId", "validState", "invalidCases"]);
+  assert.equal(blockedFixture.schemaVersion, 2);
+  assert.equal(blockedFixture.caseId, "schema-v2-blocked");
+  validateBlockedCheckpointState(blockedFixture.validState);
+  for (const invalid of blockedFixture.invalidCases) {
+    requireClosedKeys(invalid, ["caseId", "input", "expectedError"]);
+    assert.throws(
+      () => validateBlockedCheckpointState(invalid.input),
+      new RegExp(invalid.expectedError),
+      invalid.caseId,
     );
   }
 }
@@ -427,6 +842,8 @@ function main() {
     validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot);
     validateSafetyRejectCannotPass();
     validateCoreSkillSafetyContracts();
+    validateReviewCheckpointMigration();
+    run(["scripts/validate-review-contracts.mjs"]);
     validateAgentProfileResolution();
     validateMarkdownLinkParser();
     process.stdout.write("runtime contracts ok\n");

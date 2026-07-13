@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "caseId": "unsupported-complexity",
+  "inventory": [
+    {
+      "surfaceId": "src/router.ts#changed-lines",
+      "path": "src/router.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "roleCoverage": [
+    {
+      "role": "Contract maintainer",
+      "assignedSurfaceIds": ["src/router.ts#changed-lines"],
+      "checkedSurfaceIds": ["src/router.ts#changed-lines"],
+      "skippedSurfaces": []
+    }
+  ],
+  "normalizedFindings": [
+    { "fixtureFindingId": "F1", "priority": "P2", "blocker": true }
+  ],
+  "needsDesignJudgmentCount": 0,
+  "handoff": { "descriptionRefreshRequired": false, "reason": null },
+  "expected": {
+    "coverage": {
+      "assigned": ["src/router.ts#changed-lines"],
+      "checked": ["src/router.ts#changed-lines"],
+      "skipped": [],
+      "excluded": [],
+      "uncovered": [],
+      "complete": true
+    },
+    "handoff": { "descriptionRefreshRequired": false, "reason": null },
+    "loopEligibleFindingIds": ["F1"],
+    "ready": false,
+    "nextAction": "fix"
+  }
+}

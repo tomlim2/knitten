@@ -4,6 +4,12 @@ This reference defines the lightweight role-split review that runs before a full
 triad review. It is intentionally shallow: find cheap, grounded issues that are
 worth fixing before invoking `review` or `review-fix-loop`.
 
+After Step 0 passes, read
+[`../../review/references/code-review-principles.md`](../../review/references/code-review-principles.md)
+and apply its Approval Standard, Review Navigation steps 1-2, and Design,
+Complexity, And Change Size sections. This preflight keeps the local candidate
+schema below and never claims final blockers, every-line coverage, or readiness.
+
 ## Boundary
 
 - Read-only only.
@@ -24,6 +30,7 @@ Include:
 
 - target repo or artifact path,
 - task or PR purpose,
+- concise what/why context and primary consumer,
 - base ref or comparison source when available,
 - changed surface inventory,
 - relevant specs, docs, PR body, review comments, or test evidence supplied by
@@ -37,7 +44,7 @@ path list, stop and ask for it.
 
 Use exactly three shallow roles:
 
-- `scope`: checks task fit, changed-surface drift, PR size, unnecessary new
+- `scope`: checks task fit, changed-surface drift, conceptual change size, unnecessary new
   public surface, dependency creep, and whether one PR is still plausible.
 - `evidence`: checks tests, validation evidence, docs/CLI/help/briefing sync,
   and whether user-visible behavior has proof.

@@ -3,14 +3,16 @@ status: accepted
 ---
 # Code Review Output Template
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 
-Output format template for all code reviews.
+Legacy/manual output format for code reviews. Runtime Knitten reviews use
+`skills/review/references/triad.md`; this template is not a runtime dependency.
 
 ---
 
 ## Changelog
 
+- **1.1.0** - Direct required actions, genuine questions, and factual positive evidence
 - **1.0.0** - Initial release with facts-based feedback approach
 
 ---
@@ -27,7 +29,7 @@ This template defines the **output format** for code reviews. When conducting a 
 
 ## Core Principles: Facts-Based Feedback
 
-> **"Technical facts and data overrule opinions and personal preferences"** — Google Engineering Practices
+Technical evidence and applicable standards outrank personal preferences.
 
 ### Rules
 
@@ -43,12 +45,14 @@ This template defines the **output format** for code reviews. When conducting a 
    - ✅ "Variable name doesn't follow camelCase convention"
    - ❌ "You didn't follow naming conventions"
 
-4. **Ask questions instead of making demands**
-   - ✅ "Should this use async/await per javascript.md:L234? Current implementation blocks event loop."
-   - ❌ "Change this to use async/await"
+4. **State supported required actions directly**
+   - ✅ "Replace the blocking read with an asynchronous API; this call blocks the event loop."
+   - ❌ "Should this maybe use async/await?"
+   - Use a question only when product intent, trade-offs, or required behavior
+     is genuinely ambiguous.
 
-5. **No emotional language or praise**
-   - ✅ "Implementation matches design-system.md specifications"
+5. **No emotional language or generic praise**
+   - ✅ "Positive evidence: The shared parser removes duplicate behavior and keeps validation consistent."
    - ❌ "Great work on this!" ✨
 
 ---
@@ -192,7 +196,9 @@ Header.propTypes = {
 
 ### Section 4: Questions
 
-**Purpose**: Clarifying questions about design choices or implementation details
+**Purpose**: Questions only for genuine ambiguity in product intent, trade-offs,
+or required behavior. Supported corrective actions belong in Critical Issues or
+Suggestions and should be stated directly.
 
 **Format**:
 ```markdown
@@ -218,8 +224,8 @@ Header.propTypes = {
 ### src/components/ProductList.jsx:156 — Re-render Optimization
 
 **Context**: Component re-renders on every parent state change despite using React.memo
-**Question**: Should this use useMemo for the `filteredProducts` calculation? Current implementation recalculates on every render.
-**Reason**: Performance impact. Calculating 1000+ product filters on every render may cause UI lag.
+**Question**: Can this view receive 1000+ products, or does its pagination contract keep the list below 100 items?
+**Reason**: The supported list-size requirement determines whether recalculating the filter on every render is a blocker.
 
 ### Content/Materials/M_Character.uasset — Material Complexity
 
@@ -366,8 +372,8 @@ db.execute(query, [email, hashedPassword]);
 ### src/components/LoginForm.jsx:67 — Form Validation
 
 **Context**: Email validation uses simple regex pattern
-**Question**: Should this use a library like validator.js for email validation? Current regex may miss edge cases.
-**Reason**: javascript.md:L678 recommends well-tested libraries over custom regex for common tasks.
+**Question**: Which email-address formats must this input accept, and is internationalized address support required?
+**Reason**: The accepted input contract determines whether the current regex rejects supported users.
 
 ---
 
@@ -399,7 +405,9 @@ db.execute(query, [email, hashedPassword]);
 - **Reference specific lines**: "src/app.js:45" instead of "in the app file"
 - **Cite standards**: "javascript.md:L789" instead of "best practice says"
 - **Use measurements**: "150 lines, complexity 18" instead of "too complex"
-- **Ask questions**: "Should this...?" instead of "Change this to..."
+- **Be direct when required**: state the smallest corrective outcome and why
+- **Ask only for genuine ambiguity**: do not disguise supported findings as questions
+- **Reinforce factually**: use `Positive evidence:` with the engineering benefit
 - **Explain impact**: "Blocks event loop, degrades performance" instead of "bad performance"
 
 ### Don'ts ❌

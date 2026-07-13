@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 2,
+  "caseId": "schema-v2-blocked",
+  "validState": {
+    "status": "blocked",
+    "remainingBlockers": [
+      {
+        "id": "V1",
+        "priority": "P2",
+        "blocker": true,
+        "source": "validation",
+        "summary": "External signing service is unavailable.",
+        "requiredFix": "Restore the signing service before local validation can continue."
+      }
+    ],
+    "ready": false,
+    "nextAction": "fix",
+    "blockedHandoff": {
+      "owner": "release operations",
+      "requiredAction": "Restore the signing service.",
+      "reason": "The local workflow cannot mutate the external service."
+    }
+  },
+  "invalidCases": [
+    {
+      "caseId": "missing-owner",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "unknown-key"
+    },
+    {
+      "caseId": "extra-handoff-key",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable.", "extra": true }
+      },
+      "expectedError": "unknown-key"
+    },
+    {
+      "caseId": "extra-state-key",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." },
+        "extra": true
+      },
+      "expectedError": "unknown-key"
+    },
+    {
+      "caseId": "extra-blocker-key",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it.", "extra": true }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "unknown-key"
+    },
+    {
+      "caseId": "non-blocked-handoff",
+      "input": {
+        "status": "continue",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Actionable locally.", "requiredFix": "Fix it." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "unexpected-blocked-handoff"
+    },
+    {
+      "caseId": "blocked-without-handoff",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": null
+      },
+      "expectedError": "missing-blocked-handoff"
+    },
+    {
+      "caseId": "blocked-without-blocker",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "invalid-blocked-state"
+    },
+    {
+      "caseId": "blocked-ready",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it." }],
+        "ready": true,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "invalid-blocked-state"
+    },
+    {
+      "caseId": "blocked-wrong-action",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": true, "source": "validation", "summary": "Unavailable service.", "requiredFix": "Restore it." }],
+        "ready": false,
+        "nextAction": "complete",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "invalid-blocked-state"
+    },
+    {
+      "caseId": "blocked-p3-priority",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P3", "blocker": true, "source": "validation", "summary": "Optional issue.", "requiredFix": "Do not block." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "invalid-blocked-state"
+    },
+    {
+      "caseId": "blocked-unknown-priority",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "critical", "blocker": true, "source": "validation", "summary": "Unknown priority.", "requiredFix": "Re-review." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "invalid-blocked-state"
+    },
+    {
+      "caseId": "blocked-non-blocking-entry",
+      "input": {
+        "status": "blocked",
+        "remainingBlockers": [{ "id": "V1", "priority": "P2", "blocker": false, "source": "validation", "summary": "Not marked blocking.", "requiredFix": "Re-review." }],
+        "ready": false,
+        "nextAction": "fix",
+        "blockedHandoff": { "owner": "ops", "requiredAction": "Restore it.", "reason": "Not locally mutable." }
+      },
+      "expectedError": "invalid-blocked-state"
+    }
+  ]
+}

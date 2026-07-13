@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "caseId": "clarity-explanation",
+  "dispatch": {
+    "reviewMode": "single",
+    "role": "Future parser maintainer",
+    "assignedSurfaceIds": ["src/parser.ts#changed-lines"]
+  },
+  "reviewBrief": {
+    "purpose": "Judge whether a review-thread-only explanation is durable enough for a non-obvious fallback.",
+    "what": "Add a parser fallback for a documented external provider quirk.",
+    "why": "The fallback preserves supported provider responses that otherwise fail parsing.",
+    "primaryConsumer": "Future parser maintainer",
+    "nonGoals": ["Redesign the provider protocol", "Document unrelated parser branches"]
+  },
+  "inventory": [
+    {
+      "surfaceId": "src/parser.ts#changed-lines",
+      "path": "src/parser.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "evidence": [
+    "Behavior tests pass, but the provider quirk and reason for preserving the fallback appear only in the review conversation.",
+    "The code, fixture name, and durable documentation do not explain why simplifying the condition would break supported responses."
+  ],
+  "expected": {
+    "requiredFindings": [
+      {
+        "priority": "P2",
+        "blocker": true,
+        "correctiveOutcome": "Record the provider quirk and fallback reason next to the condition and in durable regression evidence."
+      }
+    ],
+    "optionalFindingAllowed": false,
+    "needsDesignJudgmentCount": 0,
+    "coverageComplete": true,
+    "ready": false,
+    "nextAction": "fix"
+  }
+}

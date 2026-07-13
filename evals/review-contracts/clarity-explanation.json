@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "caseId": "clarity-explanation",
+  "inventory": [
+    {
+      "surfaceId": "src/parser.ts#changed-lines",
+      "path": "src/parser.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "roleCoverage": [
+    {
+      "role": "Future maintainer",
+      "assignedSurfaceIds": ["src/parser.ts#changed-lines"],
+      "checkedSurfaceIds": ["src/parser.ts#changed-lines"],
+      "skippedSurfaces": []
+    }
+  ],
+  "normalizedFindings": [
+    { "fixtureFindingId": "F1", "priority": "P2", "blocker": true }
+  ],
+  "needsDesignJudgmentCount": 0,
+  "handoff": { "descriptionRefreshRequired": false, "reason": null },
+  "expected": {
+    "coverage": {
+      "assigned": ["src/parser.ts#changed-lines"],
+      "checked": ["src/parser.ts#changed-lines"],
+      "skipped": [],
+      "excluded": [],
+      "uncovered": [],
+      "complete": true
+    },
+    "handoff": { "descriptionRefreshRequired": false, "reason": null },
+    "loopEligibleFindingIds": ["F1"],
+    "ready": false,
+    "nextAction": "fix"
+  }
+}

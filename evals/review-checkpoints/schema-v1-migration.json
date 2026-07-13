@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "caseId": "schema-v1-migration",
+  "legacyCheckpoint": {
+    "schemaVersion": 1,
+    "kind": "review-fix-loop-checkpoint",
+    "status": "continue",
+    "summary": "Legacy checkpoint awaiting validation.",
+    "loopKind": "review-fix",
+    "loopNumber": 4,
+    "reviewMode": "triad",
+    "target": {
+      "repo": "/workspace/example",
+      "branch": "main",
+      "taskKey": null,
+      "base": "HEAD"
+    },
+    "fixedFindings": [],
+    "remainingBlockers": [
+      {
+        "id": "B1",
+        "severity": "P2",
+        "source": "legacy-review",
+        "summary": "Validation evidence is stale.",
+        "requiredFix": "Refresh validation evidence."
+      }
+    ],
+    "changedFiles": ["src/example.ts"],
+    "reviewPacketBudget": {
+      "shared": ["docs/spec.md"],
+      "roleSpecific": [],
+      "artifactOnly": [],
+      "fullShared": [],
+      "rawArtifactPaths": []
+    },
+    "validation": [],
+    "userApproval": {
+      "implementation": "explicit-current-turn",
+      "commitPush": "not-approved"
+    },
+    "nextAction": "validate",
+    "updatedAt": "2026-07-01T00:00:00Z"
+  },
+  "expectedMigration": {
+    "carryForwardFields": [
+      "kind",
+      "loopKind",
+      "reviewMode",
+      "target",
+      "fixedFindings",
+      "changedFiles",
+      "reviewPacketBudget",
+      "validation",
+      "userApproval"
+    ],
+    "recomputeFields": [
+      "status",
+      "summary",
+      "loopNumber",
+      "coverage",
+      "needsDesignJudgmentCount",
+      "ready",
+      "handoff",
+      "blockedHandoff",
+      "nextAction",
+      "updatedAt"
+    ],
+    "normalizedRemainingBlockers": [
+      {
+        "id": "B1",
+        "priority": "P2",
+        "blocker": true,
+        "source": "legacy-review",
+        "summary": "Validation evidence is stale.",
+        "requiredFix": "Refresh validation evidence."
+      }
+    ],
+    "freshReviewResult": {
+      "remainingBlockers": [
+        {
+          "id": "B1",
+          "priority": "P2",
+          "blocker": true,
+          "source": "legacy-review",
+          "summary": "Validation evidence is stale.",
+          "requiredFix": "Refresh validation evidence."
+        }
+      ],
+      "coverage": {
+        "assigned": ["src/example.ts#changed-lines"],
+        "checked": ["src/example.ts#changed-lines"],
+        "skipped": [],
+        "excluded": [],
+        "uncovered": [],
+        "complete": true
+      },
+      "needsDesignJudgmentCount": 0,
+      "ready": false,
+      "handoff": { "descriptionRefreshRequired": false, "reason": null },
+      "blockedHandoff": null,
+      "nextAction": "fix"
+    },
+    "v2WriteTime": "2026-07-01T00:05:00Z",
+    "expectedV2State": {
+      "schemaVersion": 2,
+      "kind": "review-fix-loop-checkpoint",
+      "status": "continue",
+      "summary": "Fresh review: 1 blocker, coverage complete, nextAction=fix.",
+      "loopKind": "review-fix",
+      "loopNumber": 5,
+      "reviewMode": "triad",
+      "target": {
+        "repo": "/workspace/example",
+        "branch": "main",
+        "taskKey": null,
+        "base": "HEAD"
+      },
+      "fixedFindings": [],
+      "remainingBlockers": [
+        {
+          "id": "B1",
+          "priority": "P2",
+          "blocker": true,
+          "source": "legacy-review",
+          "summary": "Validation evidence is stale.",
+          "requiredFix": "Refresh validation evidence."
+        }
+      ],
+      "coverage": {
+        "assigned": ["src/example.ts#changed-lines"],
+        "checked": ["src/example.ts#changed-lines"],
+        "skipped": [],
+        "excluded": [],
+        "uncovered": [],
+        "complete": true
+      },
+      "needsDesignJudgmentCount": 0,
+      "ready": false,
+      "handoff": { "descriptionRefreshRequired": false, "reason": null },
+      "blockedHandoff": null,
+      "changedFiles": ["src/example.ts"],
+      "reviewPacketBudget": {
+        "shared": ["docs/spec.md"],
+        "roleSpecific": [],
+        "artifactOnly": [],
+        "fullShared": [],
+        "rawArtifactPaths": []
+      },
+      "validation": [],
+      "userApproval": {
+        "implementation": "explicit-current-turn",
+        "commitPush": "not-approved"
+      },
+      "nextAction": "fix",
+      "updatedAt": "2026-07-01T00:05:00Z"
+    },
+    "discardLegacyNextAction": true,
+    "requiresFreshFullReview": true,
+    "writeSchemaVersion": 2
+  },
+  "invalidCases": [
+    {
+      "caseId": "p3-is-not-a-legacy-blocker",
+      "remainingBlockers": [
+        {
+          "id": "B2",
+          "severity": "P3",
+          "source": "legacy-review",
+          "summary": "Optional polish.",
+          "requiredFix": "Do not drive the loop."
+        }
+      ],
+      "expectedError": "invalid-legacy-blocker-priority"
+    },
+    {
+      "caseId": "unknown-legacy-severity",
+      "remainingBlockers": [
+        {
+          "id": "B3",
+          "severity": "critical",
+          "source": "legacy-review",
+          "summary": "Unknown historical severity.",
+          "requiredFix": "Re-review from source evidence."
+        }
+      ],
+      "expectedError": "invalid-legacy-blocker-priority"
+    },
+    {
+      "caseId": "legacy-blocker-unknown-key",
+      "remainingBlockers": [
+        {
+          "id": "B4",
+          "severity": "P2",
+          "source": "legacy-review",
+          "summary": "Has an unknown field.",
+          "requiredFix": "Re-review from source evidence.",
+          "extra": true
+        }
+      ],
+      "expectedError": "unknown-key"
+    }
+  ]
+}

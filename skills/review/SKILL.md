@@ -27,6 +27,8 @@ Confirm:
 
 - the request is a read-only Knitten Core role review,
 - the prepared packet is present and source-cited,
+- the review brief includes enough concise what/why context to judge purpose,
+  accepted scope, and primary consumers,
 - mode is `single` or `triad`; use the requested mode, defaulting to `triad`,
 - large raw evidence is summarized or available by artifact path unless full
   text is explicitly justified,
@@ -45,10 +47,13 @@ Do not read detailed references until Step 0 passes.
 
 ## After Match
 
-Read [`references/triad.md`](references/triad.md), then run the selected
-read-only `single` or `triad` review. Read only caller-supplied inline content
-and readable paths. Print findings for the caller to capture; do not write
-durable artifacts.
+Read the canonical [`references/code-review-principles.md`](references/code-review-principles.md)
+first, then [`references/triad.md`](references/triad.md). Run the selected
+read-only `single` or `triad` review using the canonical approval, navigation,
+complexity, comment, and description-handoff sections plus Triad's local role,
+packet, output, merge, and coverage rules. Read only caller-supplied inline
+content and readable paths. Print findings for the caller to capture; do not
+write durable artifacts.
 
 Use the triad packet budget rules from the reference: every role gets the
 compact shared packet, while large base documents or raw evidence are loaded

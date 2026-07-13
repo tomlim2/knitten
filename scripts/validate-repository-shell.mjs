@@ -27,9 +27,12 @@ const requiredFiles = [
   "scripts/materialize-local-plugin.mjs",
   "scripts/resolve-output.mjs",
   "scripts/resolve-agent-profile.mjs",
+  "scripts/render-review-forward-packet.mjs",
   "scripts/validate-domain-plugin-boundary.mjs",
   "scripts/validate-repository-shell.mjs",
   "scripts/validate-runtime-contracts.mjs",
+  "scripts/validate-review-contracts.mjs",
+  "skills/review/references/code-review-principles.md",
   "skills/status/SKILL.md",
 ];
 
@@ -41,6 +44,9 @@ function isAllowedFile(file) {
   if (file.startsWith("docs/milestones/") && file.endsWith(".md")) return true;
   if (file.startsWith("docs/specs/") && file.endsWith(".md")) return true;
   if (file.startsWith("evals/context-load-smoke/") && file.endsWith(".json")) return true;
+  if (file.startsWith("evals/review-contracts/") && file.endsWith(".json")) return true;
+  if (file.startsWith("evals/review-checkpoints/") && file.endsWith(".json")) return true;
+  if (file.startsWith("evals/review-forward-packets/") && file.endsWith(".json")) return true;
   if (file.startsWith("examples/minimal-domain-plugin/")) return true;
   if (file.startsWith("document-templates/") && (file.endsWith(".md") || file.endsWith(".json"))) return true;
   if (file.startsWith("scripts/")) return true;

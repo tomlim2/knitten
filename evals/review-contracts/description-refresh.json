@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "caseId": "description-refresh",
+  "inventory": [
+    {
+      "surfaceId": "docs/contract.md#changed-lines",
+      "path": "docs/contract.md",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    },
+    {
+      "surfaceId": "generated/schema.json#generated",
+      "path": "generated/schema.json",
+      "kind": "generated",
+      "reviewRequired": false,
+      "exclusionReason": "deterministically generated from the reviewed contract"
+    }
+  ],
+  "roleCoverage": [
+    {
+      "role": "Documentation consumer",
+      "assignedSurfaceIds": ["docs/contract.md#changed-lines"],
+      "checkedSurfaceIds": ["docs/contract.md#changed-lines"],
+      "skippedSurfaces": []
+    }
+  ],
+  "normalizedFindings": [],
+  "needsDesignJudgmentCount": 0,
+  "handoff": {
+    "descriptionRefreshRequired": true,
+    "reason": "accepted behavior now includes the documented compatibility path"
+  },
+  "expected": {
+    "coverage": {
+      "assigned": ["docs/contract.md#changed-lines"],
+      "checked": ["docs/contract.md#changed-lines"],
+      "skipped": [],
+      "excluded": [
+        {
+          "surfaceId": "generated/schema.json#generated",
+          "reason": "deterministically generated from the reviewed contract"
+        }
+      ],
+      "uncovered": [],
+      "complete": true
+    },
+    "handoff": {
+      "descriptionRefreshRequired": true,
+      "reason": "accepted behavior now includes the documented compatibility path"
+    },
+    "loopEligibleFindingIds": [],
+    "ready": true,
+    "nextAction": "complete"
+  }
+}

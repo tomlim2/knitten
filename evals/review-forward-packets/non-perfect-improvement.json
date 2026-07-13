@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "caseId": "non-perfect-improvement",
+  "dispatch": {
+    "reviewMode": "single",
+    "role": "Configuration runtime maintainer",
+    "assignedSurfaceIds": ["src/config.ts#changed-lines"]
+  },
+  "reviewBrief": {
+    "purpose": "Judge whether a code-health improvement is ready despite bounded polish.",
+    "what": "Replace duplicate configuration lookup branches with the existing shared helper.",
+    "why": "The helper removes divergent behavior and reduces maintenance cost without changing the supported contract.",
+    "primaryConsumer": "Configuration runtime maintainer",
+    "nonGoals": ["Rename every nearby local variable", "Refactor unrelated configuration code"]
+  },
+  "inventory": [
+    {
+      "surfaceId": "src/config.ts#changed-lines",
+      "path": "src/config.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "evidence": [
+    "The pre-change test reproduces divergent lookup behavior and passes after helper reuse.",
+    "A nearby variable name could be polished, but no supplied rule or behavior depends on it."
+  ],
+  "expected": {
+    "requiredFindings": [],
+    "optionalFindingAllowed": true,
+    "needsDesignJudgmentCount": 0,
+    "coverageComplete": true,
+    "ready": true,
+    "nextAction": "complete"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "caseId": "unsupported-complexity",
+  "dispatch": {
+    "reviewMode": "single",
+    "role": "Routing contract maintainer",
+    "assignedSurfaceIds": ["src/router.ts#changed-lines"]
+  },
+  "reviewBrief": {
+    "purpose": "Judge speculative abstraction introduced by a current single-backend change.",
+    "what": "Add routing behavior for the currently supported backend.",
+    "why": "The accepted task requires only the existing backend path.",
+    "primaryConsumer": "Routing contract maintainer",
+    "nonGoals": ["Support hypothetical future backends", "Add a new public extension contract"]
+  },
+  "inventory": [
+    {
+      "surfaceId": "src/router.ts#changed-lines",
+      "path": "src/router.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "evidence": [
+    "The change adds a generic adapter and public extension surface only for hypothetical future backends.",
+    "The existing helper satisfies the accepted single-backend behavior, and current tests pass with it."
+  ],
+  "expected": {
+    "requiredFindings": [
+      {
+        "priority": "P2",
+        "blocker": true,
+        "correctiveOutcome": "Remove the speculative adapter and public surface; implement the accepted route with the existing helper."
+      }
+    ],
+    "optionalFindingAllowed": false,
+    "needsDesignJudgmentCount": 0,
+    "coverageComplete": true,
+    "ready": false,
+    "nextAction": "fix"
+  }
+}

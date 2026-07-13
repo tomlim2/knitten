@@ -13,13 +13,16 @@ review packet -> mode selection -> role selection -> read-only role reviews -> m
 
 The caller owns target discovery, diff generation, guideline loading, output
 persistence, fixes, commits, PR bodies, and external mutation. Triad only
-reviews the supplied packet and reports findings.
+reviews the supplied packet and reports findings. Apply the canonical approval,
+navigation, complexity, comment, and description-handoff rules from
+[`code-review-principles.md`](code-review-principles.md); this reference owns the
+runtime packet, role, coverage, and merge output shapes.
 
 ## Review Packet
 
 The caller should provide:
 
-```markdown
+~~~markdown
 ## Review target
 <already materialized diff/content, or readable path to prepared artifact>
 
@@ -27,7 +30,17 @@ The caller should provide:
 <purpose, changed behavior, touched surfaces, non-goals>
 
 ## Changed surfaces
-- <path or artifact> - <surface> - <primary consumer> - <risk>
+```json
+[
+  {
+    "surfaceId": "src/example.ts#changed-lines",
+    "path": "src/example.ts",
+    "kind": "human|generated|data",
+    "reviewRequired": true,
+    "exclusionReason": null
+  }
+]
+```
 
 ## Base review documents
 - <name/path or inline label> - <why useful; include justification when full-shared> - <budget: shared|role-specific|artifact-only|full-shared> - <path readable? yes/no>
@@ -40,11 +53,12 @@ single | triad
 
 ## Known constraints
 - <approval, scope, product, migration, or testing constraint>
-```
+~~~
 
-The packet should be concise and source-cited. If it is too vague to choose
-roles, assign context budgets, or ground findings, stop and ask the caller to
-repair it.
+The packet should be concise and source-cited. Every review-required changed
+surface must be assigned to at least one selected role before dispatch. If the
+packet is too vague to choose roles, assign coverage, allocate context budgets,
+or ground findings, stop and ask the caller to repair it.
 
 ## Packet Budget
 
@@ -90,6 +104,7 @@ Use this schema when the caller does not provide one:
       },
       "evidence": "<target/diff/spec/document evidence>",
       "rule": "<source rule, checklist item, or contract>",
+      "impact": "<technical or consumer consequence>",
       "recommendation": "<minimal corrective action>",
       "roles": ["<role that reported or confirmed it>"]
     }
@@ -115,7 +130,11 @@ Priority mapping:
 - `P3`: nit, wording, local cleanup, or optional improvement.
 
 `P0`, `P1`, and `P2` default to `blocker=true`. `P3` defaults to
-`blocker=false`.
+`blocker=false`. Runtime roles must emit those exact combinations; the generic
+Core fix loop does not downgrade P0-P2. Optional, Nit, and FYI are P3
+presentation labels only. When a caller supplies another schema, that schema
+remains authoritative here, but the caller must fully normalize findings to
+P0-P3 plus `blocker` before entering the generic Core loop.
 
 ## Role Selection
 
@@ -191,6 +210,7 @@ Every role receives:
 - finding schema,
 - known constraints and non-goals,
 - role name, role scope, primary consumer, and explicit out-of-scope boundary.
+- assigned changed-surface IDs from the pre-dispatch coverage manifest.
 - scope-control lens: check whether the diff adds avoidable abstraction,
   dependency, public surface, or duplicated helper logic when existing code,
   standard-library behavior, or native platform features already cover the
@@ -230,6 +250,8 @@ role or justified as full-shared.
 Review the target as Role: <role>.
 Use the shared packet first, then apply this role lens: <role lens>.
 Use the Review Brief as a navigation index, not finding evidence.
+Follow the canonical navigation order within the assigned surfaces and check
+every human-written changed line in scope.
 Report only P0-P3 findings grounded in the target, supplied documents, or
 directly provided content.
 Use artifact paths for raw evidence; inspect raw content only when needed to
@@ -241,7 +263,7 @@ Review is read-only.
 
 ## Role Report Template
 
-```markdown
+~~~markdown
 ## Triad role review - <role>
 
 ### Applicability
@@ -250,13 +272,39 @@ Review is read-only.
 - Files/artifacts checked: <paths or ids>
 - Context checked: <review docs, specs, contracts, schemas, or none>
 
+### Coverage
+```json
+{
+  "role": "<role name>",
+  "assignedSurfaceIds": ["<surface id>"],
+  "checkedSurfaceIds": ["<surface id>"],
+  "skippedSurfaces": [
+    { "surfaceId": "<surface id>", "reason": "<reason>" }
+  ]
+}
+```
+
 ### Findings
-- <priority> <path-or-artifact>:<line-or-section> - <defect> - <source rule/check>
+- <priority> blocker=<true|false> <path-or-artifact>:<line-or-section> - <title>
+  - Evidence: <target/diff/spec/document evidence>
+  - Rule: <source rule, checklist item, or contract>
+  - Impact: <technical or consumer consequence>
+  - Recommendation: <smallest corrective outcome>
 - OR none
 
 ### Notes
-- <false-positive rationale, skipped surface, residual risk, or design judgment>
-```
+- <false-positive rationale or residual risk>
+- Positive evidence: <specific practice and its code-health benefit>
+- Genuine ambiguity: <question for needsDesignJudgment>
+~~~
+
+Coverage IDs must exist in inventory and must have `reviewRequired=true`.
+Excluded IDs are invalid in assigned, checked, or skipped role coverage.
+Checked and skipped IDs must be assigned to the role; each list is
+duplicate-free and checked/skipped do not overlap. A skipped required surface
+remains uncovered even when its reason is recorded.
+Generic praise is omitted. Factual reinforcement stays in `Notes`, while a
+genuine question is merged into `needsDesignJudgment` rather than findings.
 
 ## Merge Rules
 
@@ -269,6 +317,51 @@ Review is read-only.
 - Keep P3/nit findings separate from blocker findings when the caller schema
   supports it.
 - Include role names that reported or confirmed each merged finding.
+- Merge factual `Positive evidence:` notes only as notes; never promote them to
+  findings, blockers, or residual risk.
+- Merge genuine ambiguity into `needsDesignJudgment` and do not send it to an
+  automatic fix loop.
+
+## Merged Coverage And Readiness Output
+
+Return the default finding schema together with this top-level output:
+
+```json
+{
+  "coverage": {
+    "assigned": [],
+    "checked": [],
+    "skipped": [],
+    "excluded": [],
+    "uncovered": [],
+    "complete": true
+  },
+  "handoff": {
+    "descriptionRefreshRequired": false,
+    "reason": null
+  },
+  "ready": true,
+  "nextAction": "complete|fix|review|ask"
+}
+```
+
+Reconcile coverage as follows:
+
+- Validate unique inventory IDs and closed inventory/role coverage shapes.
+- Human surfaces require review. Excluded generated/data surfaces require a
+  non-empty reason, appear in `excluded` as `{surfaceId, reason}` objects, and
+  are rejected if any role reports them as assigned, checked, or skipped.
+- De-duplicate and lexicographically sort `assigned`, `checked`, `skipped`, and
+  `uncovered`. `uncovered` is every review-required inventory ID not present in
+  `checked`; required skipped surfaces therefore remain uncovered.
+- Compute `coverage.complete`, `ready`, and `nextAction` with the authoritative
+  formula in the canonical Review Navigation And Coverage section. Emit only
+  the exact `ask`, `fix`, `review`, or `complete` literal; never a synonym.
+- Set `handoff.descriptionRefreshRequired=true` with a grounded reason only when
+  accepted scope or behavior changed. Core does not update an owning PR or spec.
+
+Full review must not claim completion without this reconciliation. Preflight
+does not emit or claim this full-review coverage contract.
 
 ## Weak-Finding Suppression
 

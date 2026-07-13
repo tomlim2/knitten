@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "caseId": "invalid-cases",
+  "cases": [
+    {
+      "caseId": "unknown-top-level-key",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "unknown-top-level-key",
+        "inventory": [],
+        "roleCoverage": [],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": true },
+          "loopEligibleFindingIds": [],
+          "ready": true,
+          "nextAction": "complete"
+        },
+        "extra": true
+      },
+      "expectedError": "unknown-key"
+    },
+    {
+      "caseId": "duplicate-surface-id",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "duplicate-surface-id",
+        "inventory": [
+          { "surfaceId": "src/a.ts#changed-lines", "path": "src/a.ts", "kind": "human", "reviewRequired": true, "exclusionReason": null },
+          { "surfaceId": "src/a.ts#changed-lines", "path": "src/a.ts", "kind": "human", "reviewRequired": true, "exclusionReason": null }
+        ],
+        "roleCoverage": [],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": false },
+          "loopEligibleFindingIds": [],
+          "ready": false,
+          "nextAction": "review"
+        }
+      },
+      "expectedError": "duplicate-surface-id"
+    },
+    {
+      "caseId": "unknown-surface-id",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "unknown-surface-id",
+        "inventory": [],
+        "roleCoverage": [
+          { "role": "Reviewer", "assignedSurfaceIds": ["missing#surface"], "checkedSurfaceIds": [], "skippedSurfaces": [] }
+        ],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": true },
+          "loopEligibleFindingIds": [],
+          "ready": true,
+          "nextAction": "complete"
+        }
+      },
+      "expectedError": "unknown-surface-id"
+    },
+    {
+      "caseId": "coverage-overlap",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "coverage-overlap",
+        "inventory": [
+          { "surfaceId": "src/a.ts#changed-lines", "path": "src/a.ts", "kind": "human", "reviewRequired": true, "exclusionReason": null }
+        ],
+        "roleCoverage": [
+          {
+            "role": "Reviewer",
+            "assignedSurfaceIds": ["src/a.ts#changed-lines"],
+            "checkedSurfaceIds": ["src/a.ts#changed-lines"],
+            "skippedSurfaces": [{ "surfaceId": "src/a.ts#changed-lines", "reason": "conflicting report" }]
+          }
+        ],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": true },
+          "loopEligibleFindingIds": [],
+          "ready": true,
+          "nextAction": "complete"
+        }
+      },
+      "expectedError": "coverage-overlap"
+    },
+    {
+      "caseId": "p2-cannot-be-non-blocking",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "p2-cannot-be-non-blocking",
+        "inventory": [],
+        "roleCoverage": [],
+        "normalizedFindings": [{ "fixtureFindingId": "F1", "priority": "P2", "blocker": false }],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": true },
+          "loopEligibleFindingIds": [],
+          "ready": true,
+          "nextAction": "complete"
+        }
+      },
+      "expectedError": "invalid-blocker-priority"
+    },
+    {
+      "caseId": "p3-cannot-block",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "p3-cannot-block",
+        "inventory": [],
+        "roleCoverage": [],
+        "normalizedFindings": [{ "fixtureFindingId": "F1", "priority": "P3", "blocker": true }],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": true },
+          "loopEligibleFindingIds": [],
+          "ready": true,
+          "nextAction": "complete"
+        }
+      },
+      "expectedError": "invalid-blocker-priority"
+    },
+    {
+      "caseId": "nested-unknown-key",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "nested-unknown-key",
+        "inventory": [
+          { "surfaceId": "src/a.ts#changed-lines", "path": "src/a.ts", "kind": "human", "reviewRequired": true, "exclusionReason": null, "extra": true }
+        ],
+        "roleCoverage": [],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": false },
+          "loopEligibleFindingIds": [],
+          "ready": false,
+          "nextAction": "review"
+        }
+      },
+      "expectedError": "unknown-key"
+    },
+    {
+      "caseId": "checked-surface-not-assigned",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "checked-surface-not-assigned",
+        "inventory": [
+          { "surfaceId": "src/a.ts#changed-lines", "path": "src/a.ts", "kind": "human", "reviewRequired": true, "exclusionReason": null }
+        ],
+        "roleCoverage": [
+          { "role": "Reviewer", "assignedSurfaceIds": [], "checkedSurfaceIds": ["src/a.ts#changed-lines"], "skippedSurfaces": [] }
+        ],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": false },
+          "loopEligibleFindingIds": [],
+          "ready": false,
+          "nextAction": "review"
+        }
+      },
+      "expectedError": "unknown-surface-id"
+    },
+    {
+      "caseId": "skipped-surface-not-assigned",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "skipped-surface-not-assigned",
+        "inventory": [
+          { "surfaceId": "src/a.ts#changed-lines", "path": "src/a.ts", "kind": "human", "reviewRequired": true, "exclusionReason": null }
+        ],
+        "roleCoverage": [
+          { "role": "Reviewer", "assignedSurfaceIds": [], "checkedSurfaceIds": [], "skippedSurfaces": [{ "surfaceId": "src/a.ts#changed-lines", "reason": "not available" }] }
+        ],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": false },
+          "loopEligibleFindingIds": [],
+          "ready": false,
+          "nextAction": "review"
+        }
+      },
+      "expectedError": "unknown-surface-id"
+    },
+    {
+      "caseId": "excluded-surface-in-role-coverage",
+      "input": {
+        "schemaVersion": 1,
+        "caseId": "excluded-surface-in-role-coverage",
+        "inventory": [
+          { "surfaceId": "generated/schema.json#all", "path": "generated/schema.json", "kind": "generated", "reviewRequired": false, "exclusionReason": "generated from reviewed source" }
+        ],
+        "roleCoverage": [
+          { "role": "Reviewer", "assignedSurfaceIds": ["generated/schema.json#all"], "checkedSurfaceIds": ["generated/schema.json#all"], "skippedSurfaces": [] }
+        ],
+        "normalizedFindings": [],
+        "needsDesignJudgmentCount": 0,
+        "handoff": { "descriptionRefreshRequired": false, "reason": null },
+        "expected": {
+          "coverage": { "assigned": [], "checked": [], "skipped": [], "excluded": [], "uncovered": [], "complete": true },
+          "loopEligibleFindingIds": [],
+          "ready": true,
+          "nextAction": "complete"
+        }
+      },
+      "expectedError": "excluded-surface-id"
+    }
+  ]
+}

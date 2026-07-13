@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "caseId": "non-perfect-improvement",
+  "inventory": [
+    {
+      "surfaceId": "src/formatter.ts#changed-lines",
+      "path": "src/formatter.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "roleCoverage": [
+    {
+      "role": "Primary consumer",
+      "assignedSurfaceIds": ["src/formatter.ts#changed-lines"],
+      "checkedSurfaceIds": ["src/formatter.ts#changed-lines"],
+      "skippedSurfaces": []
+    }
+  ],
+  "normalizedFindings": [
+    { "fixtureFindingId": "F1", "priority": "P3", "blocker": false },
+    { "fixtureFindingId": "F2", "priority": "P3", "blocker": false }
+  ],
+  "needsDesignJudgmentCount": 0,
+  "handoff": { "descriptionRefreshRequired": false, "reason": null },
+  "expected": {
+    "coverage": {
+      "assigned": ["src/formatter.ts#changed-lines"],
+      "checked": ["src/formatter.ts#changed-lines"],
+      "skipped": [],
+      "excluded": [],
+      "uncovered": [],
+      "complete": true
+    },
+    "handoff": { "descriptionRefreshRequired": false, "reason": null },
+    "loopEligibleFindingIds": [],
+    "ready": true,
+    "nextAction": "complete"
+  }
+}

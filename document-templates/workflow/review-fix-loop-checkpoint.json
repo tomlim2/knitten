@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "kind": "review-fix-loop-checkpoint",
   "status": "continue",
   "summary": "<one-line loop state summary>",
@@ -24,12 +24,28 @@
   "remainingBlockers": [
     {
       "id": "<finding id>",
-      "severity": "P1",
+      "priority": "P0|P1|P2",
+      "blocker": true,
       "source": "<reviewer or review pass>",
       "summary": "<what remains>",
       "requiredFix": "<required next change>"
     }
   ],
+  "coverage": {
+    "assigned": [],
+    "checked": [],
+    "skipped": [],
+    "excluded": [],
+    "uncovered": [],
+    "complete": false
+  },
+  "needsDesignJudgmentCount": 0,
+  "ready": false,
+  "handoff": {
+    "descriptionRefreshRequired": false,
+    "reason": null
+  },
+  "blockedHandoff": null,
   "changedFiles": [],
   "reviewPacketBudget": {
     "shared": [],
@@ -49,6 +65,6 @@
     "implementation": "implicit-current-turn",
     "commitPush": "not-approved"
   },
-  "nextAction": "<continue|review|fix|validate|ask_user|stop>",
+  "nextAction": "<ask|fix|review|complete>",
   "updatedAt": "YYYY-MM-DDTHH:mm:ssZ"
 }

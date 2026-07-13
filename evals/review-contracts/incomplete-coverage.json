@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "caseId": "incomplete-coverage",
+  "inventory": [
+    {
+      "surfaceId": "src/_b.ts#changed-lines",
+      "path": "src/_b.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    },
+    {
+      "surfaceId": "src/-a.ts#changed-lines",
+      "path": "src/-a.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    },
+    {
+      "surfaceId": "src/.c.ts#changed-lines",
+      "path": "src/.c.ts",
+      "kind": "human",
+      "reviewRequired": true,
+      "exclusionReason": null
+    }
+  ],
+  "roleCoverage": [
+    {
+      "role": "Runtime reviewer",
+      "assignedSurfaceIds": ["src/_b.ts#changed-lines", "src/.c.ts#changed-lines", "src/-a.ts#changed-lines"],
+      "checkedSurfaceIds": ["src/_b.ts#changed-lines"],
+      "skippedSurfaces": [
+        { "surfaceId": "src/.c.ts#changed-lines", "reason": "artifact unavailable" },
+        { "surfaceId": "src/-a.ts#changed-lines", "reason": "artifact unavailable" }
+      ]
+    }
+  ],
+  "normalizedFindings": [],
+  "needsDesignJudgmentCount": 0,
+  "handoff": { "descriptionRefreshRequired": false, "reason": null },
+  "expected": {
+    "coverage": {
+      "assigned": ["src/-a.ts#changed-lines", "src/.c.ts#changed-lines", "src/_b.ts#changed-lines"],
+      "checked": ["src/_b.ts#changed-lines"],
+      "skipped": ["src/-a.ts#changed-lines", "src/.c.ts#changed-lines"],
+      "excluded": [],
+      "uncovered": ["src/-a.ts#changed-lines", "src/.c.ts#changed-lines"],
+      "complete": false
+    },
+    "handoff": { "descriptionRefreshRequired": false, "reason": null },
+    "loopEligibleFindingIds": [],
+    "ready": false,
+    "nextAction": "review"
+  }
+}
