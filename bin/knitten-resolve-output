@@ -53,4 +53,14 @@ resolve_plugin_root() {
 }
 
 plugin_root="$(resolve_plugin_root)"
+
+if [[ $# -eq 1 && ( "$1" == "-h" || "$1" == "--help" ) ]]; then
+  printf 'Knitten output resolver supports two modes.\n\n'
+  printf 'Skill/kind mode:\n'
+  node "$plugin_root/scripts/resolve-output.mjs" --help
+  printf '\nRegistered output-id mode:\n'
+  node "$plugin_root/scripts/resolve-registered-output.mjs" --help
+  exit 0
+fi
+
 exec "$plugin_root/bin/knitten-path" output "$@"

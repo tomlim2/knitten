@@ -272,6 +272,19 @@ function validateRegisteredAndCompatibilityOutputsAgree() {
   assert.equal(compatibility.selectedPath, registered.absolutePath);
 }
 
+function validateOutputShimHelpContract() {
+  const shim = path.join(REPO_ROOT, "bin", "knitten-resolve-output");
+  const result = spawnSync(shim, ["--help"], {
+    cwd: REPO_ROOT,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.match(result.stdout, /Skill\/kind mode:/);
+  assert.match(result.stdout, /--skill=<skill>/);
+  assert.match(result.stdout, /Registered output-id mode:/);
+  assert.match(result.stdout, /<output-id>/);
+}
+
 function validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot) {
   const domainRoot = path.join(tempRoot, "domain-fixture");
   const isolatedBin = path.join(tempRoot, "boundary-tools");
@@ -410,6 +423,7 @@ function main() {
     validateCompleteSourceSnapshot(tempRoot);
     validateExplicitRootFailures();
     validateRegisteredAndCompatibilityOutputsAgree();
+    validateOutputShimHelpContract();
     validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot);
     validateSafetyRejectCannotPass();
     validateCoreSkillSafetyContracts();
