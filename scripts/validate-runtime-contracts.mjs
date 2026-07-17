@@ -465,6 +465,8 @@ nextAction = ask      when needsDesignJudgment is non-empty
   assert.match(reviewFixFlow, /Run a fresh full review to reconstruct/);
   assert.match(reviewFixFlow, /`status=blocked` requires a non-null `blockedHandoff`/);
   assert.match(reviewFixFlow, /P0-P2 findings with\s+`blocker=true`/);
+  assert.match(reviewFixFlow, /Merge every grounded P0-P3 finding/);
+  assert.match(reviewFixFlow, /documentation-and-maintainability lens/);
   assert.equal(checkpointTemplate.schemaVersion, 2);
   assert.deepEqual(
     Object.keys(checkpointTemplate.remainingBlockers[0]),
@@ -473,6 +475,16 @@ nextAction = ask      when needsDesignJudgment is non-empty
   assert.equal(checkpointTemplate.remainingBlockers[0].priority, "P0|P1|P2");
   assert.equal(checkpointTemplate.remainingBlockers[0].blocker, true);
   assert.equal(Object.hasOwn(checkpointTemplate.remainingBlockers[0], "severity"), false);
+  assert.deepEqual(
+    Object.keys(checkpointTemplate.nonBlockingFindings[0]),
+    ["id", "priority", "blocker", "source", "summary", "recommendation"],
+  );
+  assert.equal(checkpointTemplate.nonBlockingFindings[0].priority, "P3");
+  assert.equal(checkpointTemplate.nonBlockingFindings[0].blocker, false);
+  assert.deepEqual(
+    Object.keys(checkpointTemplate.documentationCoverage),
+    ["required", "checked", "skipped", "notApplicableReason", "complete"],
+  );
   assert.deepEqual(
     Object.keys(checkpointTemplate.coverage),
     ["assigned", "checked", "skipped", "excluded", "uncovered", "complete"],
@@ -529,6 +541,43 @@ function normalizeLegacyRemainingBlockers(findings) {
   });
 }
 
+function validateNonBlockingFindings(findings) {
+  assert.ok(Array.isArray(findings), "nonBlockingFindings must be an array");
+  for (const finding of findings) {
+    requireClosedKeys(
+      finding,
+      ["id", "priority", "blocker", "source", "summary", "recommendation"],
+    );
+    if (finding.priority !== "P3" || finding.blocker !== false) {
+      throw new Error("invalid-non-blocking-finding");
+    }
+  }
+}
+
+function validateDocumentationCoverage(coverage) {
+  requireClosedKeys(
+    coverage,
+    ["required", "checked", "skipped", "notApplicableReason", "complete"],
+  );
+  for (const key of ["required", "checked", "skipped"]) {
+    assert.ok(Array.isArray(coverage[key]), `documentationCoverage.${key} must be an array`);
+    assert.equal(new Set(coverage[key]).size, coverage[key].length);
+  }
+  const required = new Set(coverage.required);
+  assert.ok(coverage.checked.every((item) => required.has(item)));
+  assert.ok(coverage.skipped.every((item) => required.has(item)));
+  assert.ok(coverage.checked.every((item) => !coverage.skipped.includes(item)));
+  const expectedComplete = coverage.required.length === 0
+    ? typeof coverage.notApplicableReason === "string"
+      && coverage.notApplicableReason.length > 0
+      && coverage.checked.length === 0
+      && coverage.skipped.length === 0
+    : coverage.required.every((item) => coverage.checked.includes(item))
+      && coverage.skipped.length === 0
+      && coverage.notApplicableReason === null;
+  assert.equal(coverage.complete, expectedComplete);
+}
+
 function validateBlockedCheckpointState(state) {
   requireClosedKeys(
     state,
@@ -561,6 +610,8 @@ function validateBlockedCheckpointState(state) {
 function validateFreshReviewState(state) {
   requireClosedKeys(state, [
     "remainingBlockers",
+    "nonBlockingFindings",
+    "documentationCoverage",
     "coverage",
     "needsDesignJudgmentCount",
     "ready",
@@ -577,6 +628,8 @@ function validateFreshReviewState(state) {
       throw new Error("invalid-blocked-state");
     }
   }
+  validateNonBlockingFindings(state.nonBlockingFindings);
+  validateDocumentationCoverage(state.documentationCoverage);
   requireClosedKeys(
     state.coverage,
     ["assigned", "checked", "skipped", "excluded", "uncovered", "complete"],
@@ -644,6 +697,8 @@ function validateReviewCheckpointMigration() {
   ]);
   assert.equal(legacy.schemaVersion, 1);
   for (const missing of [
+    "nonBlockingFindings",
+    "documentationCoverage",
     "coverage",
     "needsDesignJudgmentCount",
     "ready",
@@ -678,6 +733,8 @@ function validateReviewCheckpointMigration() {
     "status",
     "summary",
     "loopNumber",
+    "nonBlockingFindings",
+    "documentationCoverage",
     "coverage",
     "needsDesignJudgmentCount",
     "ready",
@@ -747,6 +804,8 @@ function validateReviewCheckpointMigration() {
     "target",
     "fixedFindings",
     "remainingBlockers",
+    "nonBlockingFindings",
+    "documentationCoverage",
     "coverage",
     "needsDesignJudgmentCount",
     "ready",
@@ -762,6 +821,8 @@ function validateReviewCheckpointMigration() {
   requireClosedKeys(fixture.expectedMigration.expectedV2State, Object.keys(migratedState));
   validateFreshReviewState({
     remainingBlockers: migratedState.remainingBlockers,
+    nonBlockingFindings: migratedState.nonBlockingFindings,
+    documentationCoverage: migratedState.documentationCoverage,
     coverage: migratedState.coverage,
     needsDesignJudgmentCount: migratedState.needsDesignJudgmentCount,
     ready: migratedState.ready,

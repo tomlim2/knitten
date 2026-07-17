@@ -234,6 +234,14 @@ Non-local validation failures use a dedicated nullable `blockedHandoff` with
 `owner`, `requiredAction`, and `reason`; they never overload the description
 refresh handoff.
 
+Current `review-fix-loop` checkpoints also preserve every grounded P3 finding
+as `priority=P3`, `blocker=false` in `nonBlockingFindings`; these findings are
+reported but never affect readiness or automatic fix selection. Every full loop
+also records `documentationCoverage` for changed or behavior-adjacent docs,
+comments, API references, contracts, specs, tests, and fixtures. Empty
+documentation coverage requires an explicit non-applicability reason rather
+than silently assuming that no documentation work exists.
+
 `triad-preflight` remains shallow. It applies steps 1-2 plus cheap evidence and
 surface checks, then hands off to full review. It does not claim every-line
 coverage and keeps its existing `candidateBlockers`/`warnings` schema.

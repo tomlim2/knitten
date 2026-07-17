@@ -1,6 +1,6 @@
 ---
 name: review-fix-loop
-description: Run review/fix loops until blockers clear.
+description: Run review/fix loops until blockers clear while reporting grounded P3 findings and documentation coherence issues.
 match-check: normal
 ---
 
@@ -27,6 +27,10 @@ Confirm:
   or an explicit path,
 - review mode is `single` or `triad`; use the requested mode, defaulting to
   `triad`,
+- every full review will actively inspect and report grounded P0-P3 findings,
+  while only P0-P2 blockers can drive automatic fixes,
+- documentation impact can be assessed for changed behavior, including related
+  docs, comments, API references, contracts, specs, tests, and fixtures,
 - mutation is limited to local files,
 - the checkpoint owner and absolute location are resolved through the target
   workspace task-artifact contract or the Knitten Core fallback before the
@@ -42,6 +46,8 @@ Do not read detailed references until Step 0 passes.
 - Coordinate `review` and `implement`; do not replace either one.
 - Keep `review` read-only. Use it only for review passes.
 - Use `implement` behavior for accepted fixes.
+- Preserve P3 findings in the checkpoint and final report as non-blocking
+  findings. Do not let them delay readiness or enter the automatic fix loop.
 - Never commit, push, create PRs, post comments, deploy, delete, or mutate
   external state in this normal-gated loop. Hand any requested external action
   to its owning strict workflow for a fresh gate.

@@ -57,6 +57,8 @@
       "status",
       "summary",
       "loopNumber",
+      "nonBlockingFindings",
+      "documentationCoverage",
       "coverage",
       "needsDesignJudgmentCount",
       "ready",
@@ -86,6 +88,23 @@
           "requiredFix": "Refresh validation evidence."
         }
       ],
+      "nonBlockingFindings": [
+        {
+          "id": "N1",
+          "priority": "P3",
+          "blocker": false,
+          "source": "documentation-review",
+          "summary": "The example could use a clearer label.",
+          "recommendation": "Clarify the example label when convenient."
+        }
+      ],
+      "documentationCoverage": {
+        "required": ["docs/spec.md"],
+        "checked": ["docs/spec.md"],
+        "skipped": [],
+        "notApplicableReason": null,
+        "complete": true
+      },
       "coverage": {
         "assigned": ["src/example.ts#changed-lines"],
         "checked": ["src/example.ts#changed-lines"],
@@ -126,6 +145,23 @@
           "requiredFix": "Refresh validation evidence."
         }
       ],
+      "nonBlockingFindings": [
+        {
+          "id": "N1",
+          "priority": "P3",
+          "blocker": false,
+          "source": "documentation-review",
+          "summary": "The example could use a clearer label.",
+          "recommendation": "Clarify the example label when convenient."
+        }
+      ],
+      "documentationCoverage": {
+        "required": ["docs/spec.md"],
+        "checked": ["docs/spec.md"],
+        "skipped": [],
+        "notApplicableReason": null,
+        "complete": true
+      },
       "coverage": {
         "assigned": ["src/example.ts#changed-lines"],
         "checked": ["src/example.ts#changed-lines"],

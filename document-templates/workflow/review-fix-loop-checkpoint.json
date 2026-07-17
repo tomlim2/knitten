@@ -31,6 +31,23 @@
       "requiredFix": "<required next change>"
     }
   ],
+  "nonBlockingFindings": [
+    {
+      "id": "<finding id>",
+      "priority": "P3",
+      "blocker": false,
+      "source": "<reviewer or review pass>",
+      "summary": "<optional issue or improvement>",
+      "recommendation": "<smallest optional improvement>"
+    }
+  ],
+  "documentationCoverage": {
+    "required": [],
+    "checked": [],
+    "skipped": [],
+    "notApplicableReason": "<reason when required is empty; otherwise null>",
+    "complete": false
+  },
   "coverage": {
     "assigned": [],
     "checked": [],
