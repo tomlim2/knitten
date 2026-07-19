@@ -217,6 +217,7 @@ function calculate(input) {
   requireArray(input.normalizedFindings, "normalizedFindings");
   const findingIds = new Set();
   const eligible = [];
+  const blockers = [];
   for (const [index, finding] of input.normalizedFindings.entries()) {
     closedKeys(finding, ["fixtureFindingId", "priority", "blocker"], `normalizedFindings[${index}]`);
     if (typeof finding.fixtureFindingId !== "string" || finding.fixtureFindingId.length === 0) {
@@ -233,7 +234,8 @@ function calculate(input) {
     if (finding.blocker !== shouldBlock) {
       fail("invalid-blocker-priority", finding.fixtureFindingId);
     }
-    if (shouldBlock) eligible.push(finding);
+    eligible.push(finding);
+    if (shouldBlock) blockers.push(finding);
   }
 
   if (!Number.isInteger(input.needsDesignJudgmentCount) || input.needsDesignJudgmentCount < 0) {
@@ -252,7 +254,7 @@ function calculate(input) {
     .filter((item) => !item.reviewRequired)
     .map((item) => ({ surfaceId: item.surfaceId, reason: item.exclusionReason }))
     .sort((left, right) => compareCodeUnits(left.surfaceId, right.surfaceId));
-  const blockers = eligible.sort((left, right) => (
+  const loopEligible = eligible.sort((left, right) => (
     PRIORITY_RANK.get(left.priority) - PRIORITY_RANK.get(right.priority)
     || compareCodeUnits(left.fixtureFindingId, right.fixtureFindingId)
   ));
@@ -260,7 +262,7 @@ function calculate(input) {
   const ready = blockers.length === 0 && complete && input.needsDesignJudgmentCount === 0;
   const nextAction = input.needsDesignJudgmentCount > 0
     ? "ask"
-    : blockers.length > 0
+    : loopEligible.length > 0
       ? "fix"
       : !complete
         ? "review"
@@ -276,7 +278,7 @@ function calculate(input) {
       complete,
     },
     handoff: { ...input.handoff },
-    loopEligibleFindingIds: blockers.map((finding) => finding.fixtureFindingId),
+    loopEligibleFindingIds: loopEligible.map((finding) => finding.fixtureFindingId),
     ready,
     nextAction,
   };

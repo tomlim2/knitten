@@ -131,8 +131,11 @@ Priority mapping:
 
 `P0`, `P1`, and `P2` default to `blocker=true`. `P3` defaults to
 `blocker=false`. Runtime roles must emit those exact combinations; the generic
-Core fix loop does not downgrade P0-P2. Optional, Nit, and FYI are P3
-presentation labels only. When a caller supplies another schema, that schema
+Core fix loop does not downgrade P0-P2 and applies grounded, locally actionable
+P3 findings after blockers. Optional, Nit, and FYI are P3 presentation labels
+only and never change readiness. A purely educational or subjective note with
+no concrete local correction belongs in `Notes` or `residualRisk`, not in the
+fix-loop finding list. When a caller supplies another schema, that schema
 remains authoritative here, but the caller must fully normalize findings to
 P0-P3 plus `blocker` before entering the generic Core loop.
 
@@ -316,6 +319,8 @@ genuine question is merged into `needsDesignJudgment` rather than findings.
   review document.
 - Keep P3/nit findings separate from blocker findings when the caller schema
   supports it.
+- Keep only P3 findings that have a concrete, safe, in-scope recommendation;
+  put non-corrective observations in `Notes` or `residualRisk`.
 - Include role names that reported or confirmed each merged finding.
 - Merge factual `Positive evidence:` notes only as notes; never promote them to
   findings, blockers, or residual risk.
@@ -357,6 +362,9 @@ Reconcile coverage as follows:
 - Compute `coverage.complete`, `ready`, and `nextAction` with the authoritative
   formula in the canonical Review Navigation And Coverage section. Emit only
   the exact `ask`, `fix`, `review`, or `complete` literal; never a synonym.
+- `ready=true` and `nextAction=fix` may coexist when only actionable P3 findings
+  remain: readiness is blocker-based, while the fix loop still applies the
+  grounded local improvements before completion.
 - Set `handoff.descriptionRefreshRequired=true` with a grounded reason only when
   accepted scope or behavior changed. Core does not update an owning PR or spec.
 

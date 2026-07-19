@@ -20,7 +20,9 @@ Use this flow only after `implement` Step 0 passes.
 3. Before adding code, check in order: existing repository helper or pattern,
    standard library, native platform feature, already-installed dependency.
 4. Edit source, docs, or config in the active workspace only.
-5. Fix blockers before nits.
+5. Fix blockers before grounded, locally actionable P3 findings and bounded
+   documentation cleanup; do not leave either category unfinished merely
+   because it is non-blocking.
 6. Run the nearest meaningful validation and report coverage limits.
 
 ## Rules

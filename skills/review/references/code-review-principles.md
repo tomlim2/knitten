@@ -14,7 +14,8 @@ may explain its provenance, but this local contract is normative at runtime.
   all review-required coverage is complete, no supported P0-P2 blocker remains,
   and no product or design judgment is unresolved.
 - Do not require perfection. P3 polish, optional alternatives, and educational
-  notes do not delay readiness.
+  notes do not delay readiness, even when `review-fix-loop` elects to apply a
+  grounded local improvement before it completes.
 - Do not accept a demonstrated reduction in correctness, safety,
   maintainability, readability, testability, or supported behavior under the
   non-perfection rule.
@@ -29,10 +30,15 @@ may explain its provenance, but this local contract is normative at runtime.
 - P0, P1, and P2 findings use `blocker=true`; the generic Core loop never
   downgrades them. P3 uses `blocker=false`.
 - `Optional:`, `Nit:`, and `FYI:` are presentation labels for P3 only. They do
-  not affect readiness, merge priority, or loop selection.
-- A finding enters the generic fix loop only when it is P0-P2 and
-  `blocker=true`. Custom callers fully normalize their own schema before entry;
-  Core does not interpret custom mapping objects.
+  not affect readiness or merge priority.
+- Every grounded P0-P3 finding with a concrete, safe, in-scope correction enters
+  the generic fix loop. Apply P0-P2 blockers first, then P3 findings. P3 remains
+  `blocker=false`, so applying it does not change approval readiness.
+- Purely educational, subjective, pre-existing, or out-of-scope observations
+  without a local corrective action belong in notes or residual risk rather
+  than the fix-loop finding list.
+- Custom callers fully normalize their own schema before entry; Core does not
+  interpret custom mapping objects.
 - Genuine product or design ambiguity goes to `needsDesignJudgment` and stops
   for caller judgment instead of becoming an automatic fix.
 
@@ -84,15 +90,16 @@ ready = no P0-P2 blocker
         AND coverage.complete
         AND needsDesignJudgment is empty
 nextAction = ask      when needsDesignJudgment is non-empty
-             fix      when no design judgment remains and a P0-P2 blocker exists
-             review   when no blocker remains and coverage.complete is false
+             fix      when no design judgment remains and any P0-P3 finding exists
+             review   when no finding remains and coverage.complete is false
              complete otherwise
 ```
 
 Emit the exact `nextAction` literals `ask`, `fix`, `review`, or `complete`.
 Never substitute synonyms such as `ready`, `fix-blocker`, or `needs-review`.
 Validation is a separate completion gate: a fix loop may write a complete
-checkpoint only when `ready=true` and validation passes.
+checkpoint only when `ready=true`, no actionable P0-P3 finding remains, and
+validation passes.
 
 ## Design, Complexity, And Change Size
 

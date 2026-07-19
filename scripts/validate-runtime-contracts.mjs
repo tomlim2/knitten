@@ -447,8 +447,8 @@ ready = no P0-P2 blocker
         AND coverage.complete
         AND needsDesignJudgment is empty
 nextAction = ask      when needsDesignJudgment is non-empty
-             fix      when no design judgment remains and a P0-P2 blocker exists
-             review   when no blocker remains and coverage.complete is false
+             fix      when no design judgment remains and any P0-P3 finding exists
+             review   when no finding remains and coverage.complete is false
              complete otherwise`;
   assert.ok(reviewPrinciples.includes(readinessFormula), "canonical readiness formula drifted");
   assert.match(reviewPrinciples, /Never substitute synonyms/);
@@ -456,7 +456,7 @@ nextAction = ask      when needsDesignJudgment is non-empty
   assert.match(reviewTriad, /exact `ask`, `fix`, `review`, or `complete` literal/);
   assert.match(
     reviewFixFlow,
-    /Only when `ready=true`, run validation\. Write a `complete` checkpoint only\s+when readiness is true and validation passes\./,
+    /Only when `ready=true`, `nonBlockingFindings` is empty, and documentation\s+coverage is complete, run validation\./,
   );
   assert.match(reviewFixFlow, /When validation fails, normalize each actionable failure as a P2 finding/);
   assert.match(reviewFixFlow, /`status=blocked` and `nextAction=fix`/);
@@ -464,7 +464,8 @@ nextAction = ask      when needsDesignJudgment is non-empty
   assert.match(reviewFixFlow, /Ignore the legacy `nextAction`/);
   assert.match(reviewFixFlow, /Run a fresh full review to reconstruct/);
   assert.match(reviewFixFlow, /`status=blocked` requires a non-null `blockedHandoff`/);
-  assert.match(reviewFixFlow, /P0-P2 findings with\s+`blocker=true`/);
+  assert.match(reviewFixFlow, /P0-P2\s+findings with `blocker=true` in `remainingBlockers`/);
+  assert.match(reviewFixFlow, /concrete, safe, in-scope correction/);
   assert.match(reviewFixFlow, /Merge every grounded P0-P3 finding/);
   assert.match(reviewFixFlow, /documentation-and-maintainability lens/);
   assert.equal(checkpointTemplate.schemaVersion, 2);
@@ -481,6 +482,7 @@ nextAction = ask      when needsDesignJudgment is non-empty
   );
   assert.equal(checkpointTemplate.nonBlockingFindings[0].priority, "P3");
   assert.equal(checkpointTemplate.nonBlockingFindings[0].blocker, false);
+  assert.equal(checkpointTemplate.fixedFindings[0].severity, "P0|P1|P2|P3");
   assert.deepEqual(
     Object.keys(checkpointTemplate.documentationCoverage),
     ["required", "checked", "skipped", "notApplicableReason", "complete"],
@@ -656,7 +658,7 @@ function validateFreshReviewState(state) {
     && state.needsDesignJudgmentCount === 0;
   const expectedNextAction = state.needsDesignJudgmentCount > 0
     ? "ask"
-    : state.remainingBlockers.length > 0
+    : state.remainingBlockers.length > 0 || state.nonBlockingFindings.length > 0
       ? "fix"
       : !state.coverage.complete
         ? "review"

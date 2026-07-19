@@ -34,8 +34,8 @@
       "complete": true
     },
     "handoff": { "descriptionRefreshRequired": false, "reason": null },
-    "loopEligibleFindingIds": [],
+    "loopEligibleFindingIds": ["F1", "F2"],
     "ready": true,
-    "nextAction": "complete"
+    "nextAction": "fix"
   }
 }

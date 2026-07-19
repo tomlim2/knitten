@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Updated `review-fix-loop` to fix grounded, locally actionable P3 and
+  documentation findings after blockers while keeping P3 non-blocking for
+  readiness.
 - Tightened active skill wording for low-model match checks and removed
   domain-specific examples from generic guidance.
 

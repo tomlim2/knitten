@@ -1,6 +1,6 @@
 ---
 name: review-fix-loop
-description: Run review/fix loops until blockers clear while reporting grounded P3 findings and documentation coherence issues.
+description: Run review/fix loops until blockers clear and locally actionable P3 and documentation findings are fixed.
 match-check: normal
 ---
 
@@ -27,10 +27,11 @@ Confirm:
   or an explicit path,
 - review mode is `single` or `triad`; use the requested mode, defaulting to
   `triad`,
-- every full review will actively inspect and report grounded P0-P3 findings,
-  while only P0-P2 blockers can drive automatic fixes,
+- every full review will actively inspect and report grounded P0-P3 findings;
+  fix P0-P2 blockers first, then every locally actionable, in-scope P3 finding,
 - documentation impact can be assessed for changed behavior, including related
-  docs, comments, API references, contracts, specs, tests, and fixtures,
+  docs, comments, API references, contracts, specs, tests, and fixtures, and
+  every grounded, locally actionable documentation finding can be fixed,
 - mutation is limited to local files,
 - the checkpoint owner and absolute location are resolved through the target
   workspace task-artifact contract or the Knitten Core fallback before the
@@ -46,8 +47,11 @@ Do not read detailed references until Step 0 passes.
 - Coordinate `review` and `implement`; do not replace either one.
 - Keep `review` read-only. Use it only for review passes.
 - Use `implement` behavior for accepted fixes.
-- Preserve P3 findings in the checkpoint and final report as non-blocking
-  findings. Do not let them delay readiness or enter the automatic fix loop.
+- Keep P3 findings non-blocking for readiness, but include every grounded P3
+  with a concrete, safe, in-scope correction in the automatic fix loop after
+  blockers. Preserve only informational, pre-existing, or out-of-scope P3
+  notes without local correction as residual risk with a reason.
+- Do not finish while an actionable P3 or documentation finding remains.
 - Never commit, push, create PRs, post comments, deploy, delete, or mutate
   external state in this normal-gated loop. Hand any requested external action
   to its owning strict workflow for a fresh gate.

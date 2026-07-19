@@ -53,8 +53,8 @@ The checkpoint must record:
 
 - loop number and status: `continue`, `blocked`, or `complete`,
 - review mode and target repo/branch/base/task key,
-- fixed findings, remaining P0/P1/P2 blockers, and every grounded P3
-  non-blocking finding from the latest full review,
+- fixed P0-P3 findings, remaining P0/P1/P2 blockers, and every grounded,
+  locally actionable P3 non-blocking finding from the latest full review,
 - documentation coverage, including required and checked artifacts, skipped
   artifacts, and a reason when documentation is not applicable,
 - merged coverage, unresolved design judgment count, readiness, and description
@@ -88,8 +88,11 @@ Set `updatedAt` to the version-2 write time. The executable example in
 
 Current schema-version-2 writes also store `nonBlockingFindings` and
 `documentationCoverage`. Each non-blocking finding uses `priority=P3` and
-`blocker=false`; preserve it for reporting but never use it in readiness or
-automatic fix-loop selection. Documentation coverage has this shape:
+`blocker=false`; it does not affect readiness, but it does select `nextAction=fix`
+until the locally actionable correction is applied. Educational, subjective,
+pre-existing, or out-of-scope observations without a safe local correction
+belong in review notes or residual risk instead of this collection.
+Documentation coverage has this shape:
 
 ```json
 {
@@ -138,38 +141,46 @@ blocker, `ready=false`, and `nextAction=fix`. Every non-blocked checkpoint keeps
    explicit documentation-and-maintainability lens. In single mode, the one
    role owns that lens.
 4. Merge every grounded P0-P3 finding. Require caller schemas to be fully
-   normalized to P0-P3 plus `blocker` before generic loop entry. Select only
-   P0-P2 findings with `blocker=true`; store every P3 Optional/Nit/FYI item in
-   `nonBlockingFindings` with `blocker=false`, including an empty array when no
-   P3 is found.
+   normalized to P0-P3 plus `blocker` before generic loop entry. Store P0-P2
+   findings with `blocker=true` in `remainingBlockers`. Store each P3 that has a
+   concrete, safe, in-scope correction in `nonBlockingFindings` with
+   `blocker=false`. Keep an empty array when no actionable P3 is found. Put
+   educational, subjective, pre-existing, or out-of-scope observations without
+   local correction in review notes or residual risk with a reason instead of
+   manufacturing a loop item.
 5. Reconcile documentation coverage. A role may claim its assigned changed
    surface as checked only after assessing documentation impact. Treat stale or
    missing documentation required for correct use, contracts, or maintenance
-   as a P2 blocker. Treat wording, local clarity, and optional polish as P3.
-   Record a reason when documentation is not applicable; never infer
+   as a P2 blocker. Treat grounded wording, local clarity, and bounded polish
+   with a concrete correction as actionable P3. Fix both categories in the
+   loop. Record a reason when documentation is not applicable; never infer
    non-applicability from an empty inventory.
 6. Reconcile coverage and readiness using the canonical calculation. If design
-   judgment remains, stop with `nextAction=ask`. If coverage is incomplete and
-   blockers are clear, repair the packet or run another read-only review pass
-   with `nextAction=review`.
-7. Only when `ready=true`, run validation. Write a `complete` checkpoint only
-   when readiness is true and validation passes.
-8. When validation fails, normalize each actionable failure as a P2 finding
+   judgment remains, stop with `nextAction=ask`. If no finding remains and
+   coverage is incomplete, repair the packet or run another read-only review
+   pass with `nextAction=review`.
+7. When design judgment is clear, fix P0-P2 blockers first, then every
+   actionable P3 and documentation finding with `implement` behavior. Keep
+   edits scoped to the finding evidence and smallest safe correction.
+8. Only when `ready=true`, `nonBlockingFindings` is empty, and documentation
+   coverage is complete, run validation. Write a `complete` checkpoint only
+   when those conditions hold and validation passes.
+9. When validation fails, normalize each actionable failure as a P2 finding
    with `blocker=true`, command/output evidence, the expected validation rule,
    impact, and the smallest corrective outcome. Write `status=continue`,
    `ready=false`, and `nextAction=fix` before implementation. When no local
    corrective action exists, preserve the normalized blocker, write
    `status=blocked` and `nextAction=fix`, fill `blockedHandoff` with its owner,
    required action, and reason, and stop instead of looping without a target.
-9. Fix accepted blockers with `implement` behavior. Keep edits scoped to the
-   finding evidence and required fix.
 10. Run the nearest meaningful validation, including repository documentation
    checks when documentation or documented behavior is affected. Prefer fast
    targeted checks first, then broader checks when the surface is shared or
    user-facing.
-11. Write a `continue` checkpoint with fixed findings, remaining blockers,
+11. Write the next checkpoint with fixed P0-P3 findings, remaining blockers,
    non-blocking P3 findings, documentation coverage, merged coverage, design
-   judgment, handoff, changed files, validation results, and next action.
+   judgment, handoff, changed files, validation results, and next action. Use
+   `complete` only when every completion gate is satisfied; otherwise use
+   `continue` or the explicitly owned `blocked` state.
 12. Repeat until the loop reaches a stop condition.
 
 Do not copy every readable base document, raw trace, connector response, or
@@ -181,7 +192,8 @@ specific finding or the packet justifies it as `full-shared`.
 
 Stop when:
 
-- readiness is true and validation passed,
+- readiness is true, validation passed, documentation coverage is complete,
+  and no actionable P3 or documentation finding remains,
 - a user decision is required,
 - the next required action would commit, push, post, deploy, delete, or mutate
   external state without explicit approval,
@@ -195,7 +207,8 @@ Report briefly:
 - current loop number and status,
 - fixed findings,
 - remaining blockers,
-- non-blocking P3 findings, including an explicit `none` when empty,
+- fixed P3 findings and any still-actionable non-blocking P3 findings, including
+  an explicit `none` when empty,
 - documentation artifacts checked or the non-applicability reason,
 - validation commands and results,
 - checkpoint path,

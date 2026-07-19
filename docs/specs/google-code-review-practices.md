@@ -3,6 +3,8 @@
 ## Status
 
 Accepted on 2026-07-13 by the user's explicit implementation start instruction.
+Amended on 2026-07-19 by explicit instruction to fix grounded, locally
+actionable P3 and documentation findings before the review/fix loop completes.
 
 ## Goal
 
@@ -36,7 +38,9 @@ In scope:
 - Standardize review navigation: intent, main design, tests, remaining changed
   lines, and wider file/system context where needed.
 - Preserve P0-P3 and `blocker` as the only machine-readable loop eligibility
-  contract; standardize Optional, Nit, and FYI as presentation labels only.
+  contract; keep P3 non-blocking while allowing grounded local P3 corrections
+  to enter the fix loop after blockers, and standardize Optional, Nit, and FYI
+  as presentation labels only.
 - Clarify when review feedback should request code/docs changes rather than an
   explanation that exists only in the review conversation.
 - Add conceptual change-size and split guidance.
@@ -117,10 +121,14 @@ Rules:
 - `Nit:` is bounded local polish.
 - `FYI:` is educational or future-facing context and is not a corrective task.
 - Presentation labels never override `priority` or `blocker` and are ignored by
-  readiness, merge priority, and fix-loop selection.
-- A `review-fix-loop` iteration is eligible only when `priority` is P0-P2 and
-  `blocker=true`. A product/design decision still stops for caller judgment
-  instead of being fixed automatically.
+  readiness and merge priority.
+- Every grounded P0-P3 finding with a concrete, safe, in-scope correction enters
+  `review-fix-loop`. P0-P2 blockers are fixed first; P3 remains
+  `blocker=false` and is fixed afterward without changing readiness.
+- Educational, subjective, pre-existing, or out-of-scope observations without
+  a local corrective action remain notes or residual risk instead of loop
+  findings. A product/design decision still stops for caller judgment instead
+  of being fixed automatically.
 - Caller-provided schemas remain authoritative in their owning workflow. Before
   entering a generic Core loop, the caller must supply fully normalized
   P0-P3-plus-`blocker` findings. Core does not accept or interpret a custom
@@ -206,12 +214,13 @@ ready = no P0-P2 blocker
         AND coverage.complete
         AND needsDesignJudgment is empty
 nextAction = ask    when needsDesignJudgment is non-empty
-             fix    when no design judgment remains and a P0-P2 blocker exists
-             review when no blocker remains and coverage.complete is false
+             fix    when no design judgment remains and any P0-P3 finding exists
+             review when no finding remains and coverage.complete is false
              complete otherwise
 ```
 
-`review-fix-loop` may write a `complete` checkpoint only when `ready=true` and
+`review-fix-loop` may write a `complete` checkpoint only when `ready=true`, no
+actionable P0-P3 finding remains, documentation coverage is complete, and
 validation passes. Incomplete coverage triggers packet repair or another
 read-only review pass; it is not an implementation finding.
 
@@ -235,12 +244,14 @@ Non-local validation failures use a dedicated nullable `blockedHandoff` with
 refresh handoff.
 
 Current `review-fix-loop` checkpoints also preserve every grounded P3 finding
-as `priority=P3`, `blocker=false` in `nonBlockingFindings`; these findings are
-reported but never affect readiness or automatic fix selection. Every full loop
-also records `documentationCoverage` for changed or behavior-adjacent docs,
-comments, API references, contracts, specs, tests, and fixtures. Empty
-documentation coverage requires an explicit non-applicability reason rather
-than silently assuming that no documentation work exists.
+with a concrete, safe, in-scope correction as `priority=P3`, `blocker=false` in
+`nonBlockingFindings`; these findings do not affect readiness but select
+`nextAction=fix` until corrected. Every full loop also records
+`documentationCoverage` for changed or behavior-adjacent docs, comments, API
+references, contracts, specs, tests, and fixtures. Required documentation
+mismatches and grounded local clarity issues are both fixed before completion.
+Empty documentation coverage requires an explicit non-applicability reason
+rather than silently assuming that no documentation work exists.
 
 `triad-preflight` remains shallow. It applies steps 1-2 plus cheap evidence and
 surface checks, then hands off to full review. It does not claim every-line
@@ -405,8 +416,8 @@ state only the consumer-specific behavior needed by that protocol.
   runtime finding schema. Allowed top-level and nested keys in both fixture
   shapes are closed.
 - Fixtures cover:
-  - `non-perfect-improvement.json`: zero blockers; P3 Optional/Nit does not
-    enter the loop;
+  - `non-perfect-improvement.json`: zero blockers; grounded P3 Optional/Nit
+    enters the loop while readiness remains true;
   - `unsupported-complexity.json`: one P2 blocker enters the loop;
   - `clarity-explanation.json`: durable code/docs clarification is required and
     a review-thread-only explanation does not clear the finding;
@@ -449,13 +460,14 @@ state only the consumer-specific behavior needed by that protocol.
 - The finding schema remains P0-P3 plus `blocker`; no independent intent field
   is added.
 - Generic Core normalization accepts P0-P2 only with `blocker=true` and P3 only
-  with `blocker=false`; P3 and presentation-only Optional/Nit/FYI labels never
-  drive a fix loop.
+  with `blocker=false`; every grounded finding with a concrete local correction
+  drives the fix loop, while presentation labels do not alter readiness.
 - Full review requires every review-required human-written surface to be
   checked. Required skipped surfaces remain uncovered; generated/data exclusions
   are separate and reason-bearing. Preflight does not claim this coverage.
-- Readiness and loop completion require zero P0-P2 blockers, complete coverage,
-  no unresolved design judgment, and passing validation.
+- Readiness requires zero P0-P2 blockers, complete coverage, and no unresolved
+  design judgment. Loop completion additionally requires zero actionable P3 or
+  documentation findings and passing validation.
 - Runtime output from `triad.md` allows factual positive reinforcement but
   rejects generic praise and personal commentary. Positive evidence stays in
   role `Notes`; genuine questions use `needsDesignJudgment`.
@@ -554,7 +566,9 @@ Changes:
   and the authoritative readiness/next-action calculation.
 - Require `review-fix-loop` completion to consume `coverage.complete` and
   unresolved design judgment as well as blocker count.
-- Keep Optional/Nit/FYI as P3 presentation labels ignored by loop selection.
+- Keep Optional/Nit/FYI as P3 presentation labels that do not affect readiness;
+  send grounded, locally actionable P3 findings through the fix loop after
+  blockers.
 - Add the caller-facing `descriptionRefreshRequired` handoff.
 
 Risk:
