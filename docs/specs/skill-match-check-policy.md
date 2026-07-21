@@ -93,12 +93,20 @@ Out of scope:
 |------|-----------------|-----------------|
 | `loose` | read-only review, summarize, analyze, draft, brainstorm | Self-check request fit and inputs. Continue with stated assumptions when ambiguity is low. |
 | `normal` | local file edit, local script run, spec/doc generation, local artifact creation | Validate target path, required input, workspace, and reversibility. Ask when target/scope is unclear. |
-| `strict` | push, merge, deploy, delete, Slack send, PR reply, GitHub/Linear mutation, credential/config change, production/cluster change | Stop unless target, account, permission, dirty state, and explicit approval rules are satisfied. Ask user when any decision can affect external state. |
+| `strict` | commit, push, merge, deploy, delete, Slack send, PR reply, GitHub/Linear mutation, credential/config change, production/cluster change | Stop unless target, account, permission, dirty state, and explicit approval rules are satisfied. Ask user when any decision can affect external state. |
+
+An exact current-turn instruction or documented caller approval satisfies the
+strict approval rule for that same verified action. Do not prompt again merely
+to echo the resolved repository, branch, paths, diff, or generated commit
+message. Ask when verification discovers a changed target or state, expanded
+mutation surface, destructive target list, or newly composed external payload
+that was not part of the approval.
 
 ## Inference Rules
 
 Classify as `strict` when any of these are true:
 
+- Commits prepared local changes.
 - Sends Slack or other team notification.
 - Pushes, merges, tags, creates releases, or mutates PR/review state.
 - Changes Linear/GitHub issue state.
@@ -150,7 +158,9 @@ Strict shape:
 ### Step 0: Match Check
 
 Confirm target, account, authority, current branch/state, mutation surface, and
-required user approval. If any item is unclear, stop and ask before mutation.
+required user approval. Reuse an exact current-turn or documented caller
+approval while the verified scope is unchanged. If any item is unclear or the
+mutation expands, stop and ask before mutation.
 ```
 
 ## Ask / Infer Triggers

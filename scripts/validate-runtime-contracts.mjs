@@ -342,6 +342,15 @@ function validateSafetyRejectCannotPass() {
 }
 
 function validateCoreSkillSafetyContracts() {
+  const system = fs.readFileSync(path.join(REPO_ROOT, "SYSTEM.md"), "utf8");
+  const matchCheck = fs.readFileSync(
+    path.join(REPO_ROOT, "docs/guidelines/skill-match-check.md"),
+    "utf8",
+  );
+  const auditChecklist = fs.readFileSync(
+    path.join(REPO_ROOT, "docs/guidelines/skill-audit-checklist.md"),
+    "utf8",
+  );
   const implement = fs.readFileSync(path.join(REPO_ROOT, "skills/implement/SKILL.md"), "utf8");
   const implementFlow = fs.readFileSync(
     path.join(REPO_ROOT, "skills/implement/references/flow.md"),
@@ -389,6 +398,12 @@ function validateCoreSkillSafetyContracts() {
     "utf8",
   );
 
+  assert.match(system, /Do not ask again for that same\s+action/);
+  assert.match(system, /generated local commit\s+message/);
+  assert.match(matchCheck, /`strict` \| Commit, push, merge/);
+  assert.match(matchCheck, /do not ask again for the same action/);
+  assert.match(matchCheck, /child re-verifies them but must not request\s+the same approval again/);
+  assert.match(auditChecklist, /re-asks for an already approved exact action/);
   assert.match(implement, /This skill is local-only/);
   assert.match(implement, /owning `strict` skill/);
   assert.match(implement, /references\/flow\.md/);

@@ -84,6 +84,9 @@ Flag as blocker when:
 - Local file edits require a known workspace and target surface.
 - Commit, push, PR, merge, deploy, delete, external messages, credentials, and
   production changes require explicit user approval.
+- An exact current-turn instruction or documented caller approval satisfies
+  that requirement for the same verified action. Showing the resolved target,
+  diff, or message is a progress update, not a mandatory second prompt.
 - The skill distinguishes local durable outputs from local scratch artifacts.
 - The skill does not claim external actions are complete when only repo docs
   changed.
@@ -91,6 +94,9 @@ Flag as blocker when:
 Flag as blocker when:
 
 - external mutation could happen without an explicit approval gate,
+- a skill re-asks for an already approved exact action without a changed
+  target, mutation surface, destructive list, or newly composed external
+  payload,
 - deletion or cleanup can run without target confirmation,
 - generated outputs can land in the wrong repo or plugin root.
 

@@ -59,7 +59,11 @@ recommendations. User approval is required for publishing, external posting,
 deployment, destructive cleanup, or irreversible external-state changes unless
 the active skill documents a narrower explicit exemption. A direct current-turn
 instruction for an exact action counts as approval for that action only after
-the scoped command still matches the request.
+the scoped command still matches the request. Do not ask again for that same
+action merely to restate its repository, branch, paths, generated local commit
+message, or other implementation details. Ask only when the target, mutation
+surface, or user-visible external payload expands or materially changes beyond
+the approved action.
 
 ## Agent Profiles
 
