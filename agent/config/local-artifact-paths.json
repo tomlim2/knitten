@@ -230,6 +230,17 @@
       "cleanupPath": ".agent-local/workflow/tasks",
       "description": "Shared workflow task JSON",
       "schemaKind": "workflow-task-json"
+    },
+    {
+      "owner": "workflow",
+      "artifactType": "gallery",
+      "item": "root",
+      "kind": "directory",
+      "args": [],
+      "path": ".agent-local/gallery",
+      "cleanupPath": ".agent-local/gallery",
+      "description": "Knitten daily image gallery root",
+      "schemaKind": "knitten-gallery-root"
     }
   ]
 }

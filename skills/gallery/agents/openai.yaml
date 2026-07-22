@@ -1,0 +1,4 @@
+interface:
+  display_name: "Knitten Gallery"
+  short_description: "Collect daily images with dates, intent, and prompts"
+  default_prompt: "Use $gallery to show or add to my Knitten daily image gallery."

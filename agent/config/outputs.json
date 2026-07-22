@@ -296,6 +296,21 @@
         }
       ],
       "format": "json"
+    },
+    {
+      "id": "knitten-gallery-root",
+      "description": "Knitten daily image gallery root",
+      "madeBy": "gallery",
+      "writeTarget": {
+        "kind": "local-artifact",
+        "localArtifactTokens": [
+          "workflow",
+          "gallery",
+          "root"
+        ]
+      },
+      "args": [],
+      "format": "directory"
     }
   ]
 }
