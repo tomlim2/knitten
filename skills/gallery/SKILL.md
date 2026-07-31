@@ -6,16 +6,19 @@ match-check: normal
 
 # Knitten Gallery
 
-Use for: viewing, backfilling, or adding daily generated images to the Knitten
-gallery.
+Use for: viewing, backfilling, or adding daily generated images and Daily Visual
+Story adaptation visualization test cases to the Knitten gallery.
 
 ## Step 0: Match Check
 
 - Continue only for a Knitten gallery request or for an owning skill that has
-  just generated an image intended for the daily gallery.
+  just generated an image intended for the daily gallery or an adaptation
+  visualization test case.
 - For `add`, require the image, date, creative direction, rationale, joke, and
-  exact final generation prompt. Do not reconstruct a missing prompt and label
-  it as exact.
+  exact final generation prompt. For adaptation visualization tests, also
+  require the evaluated case id, expected and actual outcome, gate evidence,
+  exact evaluation prompt, and exact image prompt. Do not reconstruct a missing
+  prompt and label it as exact.
 - Include older images only when their daily-gallery provenance is explicit.
   Do not sweep unrelated files from a generated-image cache.
 - Gallery writes are local-only. Do not publish, commit generated images, or

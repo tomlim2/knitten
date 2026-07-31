@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daily Visual Story"
+  short_description: "Create a three-engine daily visual story"
+  default_prompt: "Use $daily-visual-story to create today’s four-panel visual story through Narrative, Adaptation-owned rough Storyboard validation, and closed-input Output."

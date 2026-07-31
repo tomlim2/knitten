@@ -285,6 +285,25 @@ function validateOutputShimHelpContract() {
   assert.match(result.stdout, /<output-id>/);
 }
 
+function validateFindingQueueLocationContract() {
+  const system = fs.readFileSync(path.join(REPO_ROOT, "SYSTEM.md"), "utf8");
+  const skill = fs.readFileSync(
+    path.join(REPO_ROOT, "skills", "report-finding", "SKILL.md"),
+    "utf8",
+  );
+  const flow = fs.readFileSync(
+    path.join(REPO_ROOT, "skills", "report-finding", "references", "flow.md"),
+    "utf8",
+  );
+
+  assert.match(system, /explicit existing finding path supplied by the\s+user is authoritative/);
+  assert.match(system, /Do not infer the active\s+queue from the current working directory/);
+  assert.match(skill, /resolved by the runtime plugin shim/);
+  assert.match(flow, /runtime Knitten plugin root that supplied the currently\s+loaded `report-finding` skill/);
+  assert.match(flow, /\.operationalFindingsRoot/);
+  assert.match(flow, /<resolved-hub-root>\/\.agent-local\/workflow\/operational-findings/);
+}
+
 function validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot) {
   const domainRoot = path.join(tempRoot, "domain-fixture");
   const isolatedBin = path.join(tempRoot, "boundary-tools");
@@ -351,6 +370,10 @@ function validateCoreSkillSafetyContracts() {
     path.join(REPO_ROOT, "docs/guidelines/skill-audit-checklist.md"),
     "utf8",
   );
+  const skillAuthoring = fs.readFileSync(
+    path.join(REPO_ROOT, "docs/guidelines/skill-authoring.md"),
+    "utf8",
+  );
   const implement = fs.readFileSync(path.join(REPO_ROOT, "skills/implement/SKILL.md"), "utf8");
   const implementFlow = fs.readFileSync(
     path.join(REPO_ROOT, "skills/implement/references/flow.md"),
@@ -404,6 +427,7 @@ function validateCoreSkillSafetyContracts() {
   assert.match(matchCheck, /do not ask again for the same action/);
   assert.match(matchCheck, /child re-verifies them but must not request\s+the same approval again/);
   assert.match(auditChecklist, /re-asks for an already approved exact action/);
+  assert.match(skillAuthoring, /`strict`: commit, push, merge/);
   assert.match(implement, /This skill is local-only/);
   assert.match(implement, /owning `strict` skill/);
   assert.match(implement, /references\/flow\.md/);
@@ -898,6 +922,155 @@ function validateAgentProfileResolution() {
   run(["scripts/resolve-agent-profile.mjs", "missing-profile"], { expectSuccess: false });
 }
 
+function validateDailyVisualStoryContract() {
+  const root = path.join(REPO_ROOT, "skills", "daily-visual-story");
+  const required = [
+    "SKILL.md",
+    "agents/openai.yaml",
+    "references/engine-contracts.md",
+    "references/flow.md",
+    "references/storyboard-style-research.md",
+    "references/story-legacy-deck.json",
+    "references/story-theme-reservoir.json",
+    "references/visual-style-core-deck.json",
+    "references/visual-style-reservoir.json",
+    "scripts/daily-creative-seed.mjs",
+    "scripts/daily-creative-seed.test.mjs",
+    "scripts/engine-contracts.mjs",
+    "scripts/engine-contracts.test.mjs",
+    "scripts/validate-engine-packet.mjs",
+  ];
+  for (const relative of required) {
+    assert.equal(fs.existsSync(path.join(root, relative)), true, `missing daily visual story file: ${relative}`);
+  }
+  const materializedInventory = new Set(sourcePluginFiles(REPO_ROOT));
+  for (const relative of required) {
+    const pluginRelative = `skills/daily-visual-story/${relative}`;
+    assert.equal(
+      materializedInventory.has(pluginRelative),
+      true,
+      `daily visual story file is not in materialization inventory: ${pluginRelative}`,
+    );
+  }
+
+  const skill = fs.readFileSync(path.join(root, "SKILL.md"), "utf8");
+  const flow = fs.readFileSync(path.join(root, "references", "flow.md"), "utf8");
+  const storyboardStyleResearch = fs.readFileSync(
+    path.join(root, "references", "storyboard-style-research.md"),
+    "utf8",
+  );
+  for (const pattern of [
+    /name: daily-visual-story/,
+    /match-check: normal/,
+    /daily creative result independently of any work dashboard/,
+    /Narrative\s+domain\s+owns[\s\S]{0,220}story-theme-reservoir\.json/,
+    /Output domain\s+owns[\s\S]{0,220}visual-style-reservoir\.json/,
+  ]) {
+    assert.match(skill, pattern);
+  }
+  for (const pattern of [
+    /Narrative → Adaptation \(rough Storyboard and validation included\) → Output/,
+    /--stage <narrative\|adaptation\|output>/,
+    /Storyboard generation and visible inspection\s+belong to Adaptation/,
+    /storyboard-style-research\.md/,
+    /strict black, white, and neutral gray only; color is forbidden/,
+    /Causal Legibility Plan/,
+    /no future solved state shown before its cause/,
+    /actor\/token-to-object relationship legibility/,
+    /visible human actors must use sparse human construction armatures/,
+    /at most two storyboard attempts/,
+    /blocked: storyboard-validation-failed/,
+    /Start a fresh Output call with exactly/,
+    /StoryboardHandoff \+ OutputStyle/,
+    /When invoked by a parent, return this block unchanged/,
+  ]) {
+    assert.match(flow, pattern);
+  }
+  for (const pattern of [
+    /Actor Notation Rule/,
+    /Human actor notation is sparse construction armature/,
+    /Causal Legibility Rule/,
+    /Construction armatures must not become finished stick figures/,
+    /Do not show future solved state early/,
+  ]) {
+    assert.match(storyboardStyleResearch, pattern);
+  }
+
+  const expectedKeys = new Map([
+    ["story-legacy-deck.json", ["dramaturgies", "id", "schemaVersion", "sourcePolicy"]],
+    ["story-theme-reservoir.json", [
+      "castPatterns",
+      "id",
+      "motions",
+      "researchBasis",
+      "scales",
+      "schemaVersion",
+      "sourcePolicy",
+      "tensions",
+      "worlds",
+    ]],
+    ["visual-style-core-deck.json", ["compositions", "id", "media", "schemaVersion", "sourcePolicy"]],
+    ["visual-style-reservoir.json", ["id", "media", "schemaVersion", "sourcePolicy", "treatments"]],
+  ]);
+  for (const [filename, keys] of expectedKeys) {
+    const value = JSON.parse(fs.readFileSync(path.join(root, "references", filename), "utf8"));
+    assert.deepEqual(Object.keys(value).sort(), keys);
+  }
+
+  const seedSource = fs.readFileSync(path.join(root, "scripts", "daily-creative-seed.mjs"), "utf8");
+  assert.match(seedSource, /const LEGACY_SEED_NAMESPACE = "shotloom-today"/);
+  assert.match(seedSource, /firstTimeReaderCausality/);
+  assert.match(seedSource, /stateTimingNoAnticipation/);
+  assert.match(seedSource, /actorObjectRelationshipLegibility/);
+  assert.match(seedSource, /human construction armatures/);
+  run([
+    "--test",
+    path.join(root, "scripts", "daily-creative-seed.test.mjs"),
+    path.join(root, "scripts", "engine-contracts.test.mjs"),
+  ]);
+}
+
+function validateGalleryContract() {
+  const root = path.join(REPO_ROOT, "skills", "gallery");
+  const required = [
+    "SKILL.md",
+    "references/flow.md",
+    "scripts/manage-gallery.mjs",
+    "scripts/manage-gallery.test.mjs",
+  ];
+  for (const relative of required) {
+    assert.equal(fs.existsSync(path.join(root, relative)), true, `missing gallery file: ${relative}`);
+  }
+  const skill = fs.readFileSync(path.join(root, "SKILL.md"), "utf8");
+  const flow = fs.readFileSync(path.join(root, "references", "flow.md"), "utf8");
+  const manager = fs.readFileSync(path.join(root, "scripts", "manage-gallery.mjs"), "utf8");
+  for (const pattern of [
+    /adaptation visualization test cases/,
+    /exact evaluation prompt/,
+    /exact image prompt/,
+  ]) {
+    assert.match(skill, pattern);
+  }
+  for (const pattern of [
+    /schema v3/,
+    /<date>-v<narrativeVariant>-a<adaptationVariant>-eval-<caseId>/,
+    /caseKind.*positive.*negative.*comparison.*diagnostic/s,
+    /expectedOutcome.*actualOutcome.*pass.*fail.*mixed/s,
+  ]) {
+    assert.match(flow, pattern);
+  }
+  for (const pattern of [
+    /ENTRY_ID_V3/,
+    /ADAPTATION_EVAL_KEYS/,
+    /VISUALIZATION_PROVENANCE_KEYS/,
+    /metadata schemaVersion must be 1, 2, or 3/,
+    /id eval case does not match/,
+  ]) {
+    assert.match(manager, pattern);
+  }
+  run(["skills/gallery/scripts/manage-gallery.test.mjs"]);
+}
+
 function validateMarkdownLinkParser() {
   assert.deepEqual(
     markdownLinkDestinations(
@@ -917,12 +1090,15 @@ function main() {
     validateExplicitRootFailures();
     validateRegisteredAndCompatibilityOutputsAgree();
     validateOutputShimHelpContract();
+    validateFindingQueueLocationContract();
     validateBoundaryRejectsCoreOwnedFindingSurfaces(tempRoot);
     validateSafetyRejectCannotPass();
     validateCoreSkillSafetyContracts();
     validateReviewCheckpointMigration();
     run(["scripts/validate-review-contracts.mjs"]);
     validateAgentProfileResolution();
+    validateGalleryContract();
+    validateDailyVisualStoryContract();
     validateMarkdownLinkParser();
     process.stdout.write("runtime contracts ok\n");
   } finally {

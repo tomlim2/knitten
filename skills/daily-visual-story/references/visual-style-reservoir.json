@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "id": "visual-style-reservoir-v1",
+  "sourcePolicy": "Curated from common material and image-making process vocabularies across painting, printmaking, textiles, photographic processes, paper craft, sculpture, and miniature staging. Never store artist names or imitation instructions.",
+  "media": [
+    {
+      "id": "wax-resist-watercolor",
+      "label": "밀랍 방염 자국이 드러나는 수채",
+      "family": "painting",
+      "tags": ["warm", "playful", "nostalgia", "release"]
+    },
+    {
+      "id": "egg-tempera-gesso",
+      "label": "석고 바탕의 얇은 에그 템페라",
+      "family": "painting",
+      "tags": ["quiet", "tender", "tense", "warm"]
+    },
+    {
+      "id": "salt-crystal-watercolor",
+      "label": "소금 결정 무늬가 번지는 수채",
+      "family": "painting",
+      "tags": ["airy", "quiet", "release", "tender"]
+    },
+    {
+      "id": "linocut-handprint",
+      "label": "칼자국과 잉크 뭉침이 남은 리노컷 판화",
+      "family": "printmaking",
+      "tags": ["sharp", "tense", "playful", "absurd"]
+    },
+    {
+      "id": "drypoint-tint",
+      "label": "거친 선의 드라이포인트와 옅은 손채색",
+      "family": "printmaking",
+      "tags": ["quiet", "distance", "uneasy", "nostalgia"]
+    },
+    {
+      "id": "gel-plate-monoprint",
+      "label": "겹친 자국이 우연히 남는 젤 플레이트 모노프린트",
+      "family": "printmaking",
+      "tags": ["playful", "release", "sharp", "warm"]
+    },
+    {
+      "id": "cyanotype-handcolor",
+      "label": "청사진 위에 더한 절제된 손채색",
+      "family": "photographic-process",
+      "tags": ["nostalgia", "airy", "distance", "quiet"]
+    },
+    {
+      "id": "lumen-print-collage",
+      "label": "햇빛 자국을 겹친 루멘 프린트 콜라주",
+      "family": "photographic-process",
+      "tags": ["airy", "nostalgia", "tender", "uneasy"]
+    },
+    {
+      "id": "needle-felt-miniature",
+      "label": "보풀이 살아 있는 니들펠트 미니어처",
+      "family": "textile",
+      "tags": ["tender", "warm", "playful", "absurd"]
+    },
+    {
+      "id": "embroidered-tableau",
+      "label": "실의 방향과 매듭이 보이는 자수 타블로",
+      "family": "textile",
+      "tags": ["tender", "warm", "nostalgia", "quiet"]
+    },
+    {
+      "id": "punch-needle-relief",
+      "label": "루프 질감이 도드라진 펀치니들 부조",
+      "family": "textile",
+      "tags": ["playful", "warm", "absurd", "release"]
+    },
+    {
+      "id": "block-printed-fabric-stage",
+      "label": "손판화 천으로 세운 작은 무대",
+      "family": "textile",
+      "tags": ["playful", "sharp", "warm", "distance"]
+    },
+    {
+      "id": "paper-quilling-shadowbox",
+      "label": "말린 종이 띠의 퀼링 섀도박스",
+      "family": "paper-craft",
+      "tags": ["playful", "airy", "tender", "absurd"]
+    },
+    {
+      "id": "tissue-lightbox",
+      "label": "반투명 한지를 겹친 라이트박스",
+      "family": "paper-craft",
+      "tags": ["airy", "tender", "distance", "quiet"]
+    },
+    {
+      "id": "paper-marbling-cutout",
+      "label": "마블링 종이를 잘라 만든 콜라주",
+      "family": "paper-craft",
+      "tags": ["playful", "release", "sharp", "warm"]
+    },
+    {
+      "id": "pressed-flower-collage",
+      "label": "눌린 꽃과 얇은 종이의 식물 콜라주",
+      "family": "paper-craft",
+      "tags": ["tender", "nostalgia", "quiet", "distance"]
+    },
+    {
+      "id": "ceramic-slip-relief",
+      "label": "유약 흐름이 남은 도자 슬립 부조",
+      "family": "sculpture",
+      "tags": ["warm", "quiet", "absurd", "tender"]
+    },
+    {
+      "id": "sand-animation-still",
+      "label": "유리판 위 모래 애니메이션의 한 프레임",
+      "family": "sculpture",
+      "tags": ["distance", "uneasy", "release", "quiet"]
+    },
+    {
+      "id": "cardboard-automaton",
+      "label": "골판지 관절이 보이는 수동 오토마타",
+      "family": "miniature",
+      "tags": ["absurd", "playful", "warm", "tense"]
+    },
+    {
+      "id": "shadow-puppet-miniature",
+      "label": "종이 인형과 실제 빛으로 만든 그림자극 미니어처",
+      "family": "miniature",
+      "tags": ["distance", "absurd", "tense", "nostalgia"]
+    },
+    {
+      "id": "charcoal-erasure",
+      "label": "목탄을 지워 빛을 꺼낸 드로잉",
+      "family": "drawing",
+      "tags": ["tense", "quiet", "release", "uneasy"]
+    },
+    {
+      "id": "scratchboard",
+      "label": "검은 면을 긁어 선을 드러낸 스크래치보드",
+      "family": "drawing",
+      "tags": ["sharp", "tense", "distance", "absurd"]
+    },
+    {
+      "id": "frottage-graphite-collage",
+      "label": "생활 표면을 뜬 프로타주와 흑연 콜라주",
+      "family": "drawing",
+      "tags": ["uneasy", "nostalgia", "quiet", "sharp"]
+    },
+    {
+      "id": "stained-cellophane-collage",
+      "label": "색 셀로판의 투과광으로 만든 콜라주",
+      "family": "mixed-media",
+      "tags": ["sharp", "airy", "playful", "release"]
+    }
+  ],
+  "treatments": [
+    {
+      "id": "matte-handmade-surface",
+      "label": "무광 표면과 손으로 남긴 미세한 불균일",
+      "compatibleFamilies": ["*"],
+      "tags": ["quiet", "tender", "warm"]
+    },
+    {
+      "id": "translucent-layer-shadows",
+      "label": "반투명 층이 만드는 겹친 색 그림자",
+      "compatibleFamilies": ["*"],
+      "tags": ["airy", "distance", "nostalgia"]
+    },
+    {
+      "id": "dry-edge-grain",
+      "label": "마른 가장자리와 굵게 살아 있는 입자",
+      "compatibleFamilies": ["*"],
+      "tags": ["sharp", "uneasy", "tense"]
+    },
+    {
+      "id": "soft-pigment-bloom",
+      "label": "빛 주변의 부드러운 안료 번짐",
+      "compatibleFamilies": ["*"],
+      "tags": ["warm", "tender", "release"]
+    },
+    {
+      "id": "limited-color-drift",
+      "label": "제한된 색과 아주 작은 판맞춤 어긋남",
+      "compatibleFamilies": ["printmaking", "paper-craft", "textile", "mixed-media"],
+      "tags": ["playful", "sharp", "absurd"]
+    },
+    {
+      "id": "visible-repair-seams",
+      "label": "숨기지 않은 봉합선과 수선 자국",
+      "compatibleFamilies": ["textile", "paper-craft", "mixed-media", "miniature"],
+      "tags": ["tender", "nostalgia", "uneasy"]
+    },
+    {
+      "id": "burnished-highlights",
+      "label": "문질러 낸 하이라이트와 깊은 무광",
+      "compatibleFamilies": ["*"],
+      "tags": ["tense", "quiet", "warm"]
+    },
+    {
+      "id": "rough-cut-silhouette",
+      "label": "손으로 자른 듯한 거친 실루엣",
+      "compatibleFamilies": ["paper-craft", "textile", "printmaking", "mixed-media", "miniature"],
+      "tags": ["playful", "absurd", "sharp"]
+    },
+    {
+      "id": "sun-faded-pigment",
+      "label": "햇빛에 바랜 안료와 생활 얼룩",
+      "compatibleFamilies": ["*"],
+      "tags": ["nostalgia", "quiet", "distance"]
+    },
+    {
+      "id": "scale-making-errors",
+      "label": "축척을 드러내는 작고 다정한 제작 오차",
+      "compatibleFamilies": ["sculpture", "miniature", "paper-craft", "textile", "mixed-media"],
+      "tags": ["playful", "tender", "absurd"]
+    }
+  ]
+}

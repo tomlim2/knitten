@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "id": "visual-style-core-deck-v1",
+  "sourcePolicy": "Frozen core visual-output cards. Preserve order and content so legacy gallery seeds remain reproducible.",
+  "media": [
+    {
+      "id": "gouache-pencil",
+      "label": "절제된 과슈와 색연필",
+      "family": "painting",
+      "tags": ["quiet", "tender", "warm", "nostalgia"]
+    },
+    {
+      "id": "paper-collage",
+      "label": "질감이 분명한 종이 콜라주",
+      "family": "paper-craft",
+      "tags": ["playful", "sharp", "absurd", "release"]
+    },
+    {
+      "id": "ink-wash",
+      "label": "여백 중심의 먹과 옅은 채색",
+      "family": "painting",
+      "tags": ["quiet", "distance", "airy", "nostalgia"]
+    },
+    {
+      "id": "clay-diorama",
+      "label": "손자국이 남은 클레이 디오라마",
+      "family": "sculpture",
+      "tags": ["playful", "tender", "absurd", "warm"]
+    },
+    {
+      "id": "cinematic-still",
+      "label": "절제된 영화 스틸 같은 회화",
+      "family": "mixed-media",
+      "tags": ["tense", "quiet", "distance", "uneasy"]
+    },
+    {
+      "id": "risograph",
+      "label": "제한된 색의 리소그래프",
+      "family": "printmaking",
+      "tags": ["playful", "sharp", "warm", "release"]
+    },
+    {
+      "id": "soft-3d",
+      "label": "부드러운 재질의 미니어처 3D",
+      "family": "miniature",
+      "tags": ["playful", "tender", "airy", "absurd"]
+    },
+    {
+      "id": "graphite-watercolor",
+      "label": "연필 선과 번지는 수채",
+      "family": "drawing",
+      "tags": ["quiet", "uneasy", "tender", "nostalgia"]
+    },
+    {
+      "id": "pastel-chalk",
+      "label": "빛의 온도가 살아 있는 파스텔",
+      "family": "drawing",
+      "tags": ["warm", "tender", "airy", "release"]
+    },
+    {
+      "id": "cut-paper-stage",
+      "label": "레이어가 보이는 컷페이퍼 무대",
+      "family": "paper-craft",
+      "tags": ["sharp", "absurd", "distance", "playful"]
+    }
+  ],
+  "compositions": [
+    {
+      "id": "strict-symmetry",
+      "rule": "관계축을 중심으로 엄격한 대칭을 세운다",
+      "tags": ["quiet", "tender", "absurd"],
+      "breakPoint": "오직 한 소품만 축에서 벗어난다"
+    },
+    {
+      "id": "deep-negative-space",
+      "rule": "주체 사이의 넓은 여백을 감정의 거리로 쓴다",
+      "tags": ["quiet", "distance", "tender"],
+      "breakPoint": "작은 물체 하나만 빈 공간을 건넌다"
+    },
+    {
+      "id": "repeated-rhythm",
+      "rule": "동작과 사물의 반복으로 화면 리듬을 만든다",
+      "tags": ["playful", "warm", "release"],
+      "breakPoint": "마지막 반복 하나만 박자를 놓친다"
+    },
+    {
+      "id": "compressed-crop",
+      "rule": "답답한 근접 크롭으로 압력을 유지한다",
+      "tags": ["tense", "uneasy", "sharp"],
+      "breakPoint": "펀치라인에서 작은 틈 하나만 열린다"
+    },
+    {
+      "id": "frame-within-frame",
+      "rule": "문과 창의 겹을 이용해 감정을 안쪽에 가둔다",
+      "tags": ["quiet", "tense", "distance"],
+      "breakPoint": "시선 하나만 프레임 경계를 넘는다"
+    },
+    {
+      "id": "temperature-split",
+      "rule": "따뜻한 영역과 차가운 영역을 명확히 나눈다",
+      "tags": ["tender", "sharp", "uneasy"],
+      "breakPoint": "중성색 소품 하나가 두 영역을 연결한다"
+    },
+    {
+      "id": "centered-tableau",
+      "rule": "모든 요소를 정면의 정돈된 타블로로 고정한다",
+      "tags": ["absurd", "playful", "quiet"],
+      "breakPoint": "한 요소만 정면 포즈를 거부한다"
+    },
+    {
+      "id": "diagonal-pressure",
+      "rule": "대각선의 힘으로 감정을 한쪽에 몰아붙인다",
+      "tags": ["tense", "sharp", "release"],
+      "breakPoint": "작은 수평선 하나가 압력을 멈춘다"
+    },
+    {
+      "id": "foreground-occlusion",
+      "rule": "전경의 가림으로 말하지 않은 감정을 남긴다",
+      "tags": ["distance", "uneasy", "nostalgia"],
+      "breakPoint": "반사면 하나만 숨은 표정을 보여 준다"
+    },
+    {
+      "id": "depth-layers",
+      "rule": "전경·중경·배경에 서로 다른 시간을 겹친다",
+      "tags": ["nostalgia", "distance", "quiet"],
+      "breakPoint": "현재의 사소한 물건 하나가 모든 층을 가로지른다"
+    }
+  ]
+}
