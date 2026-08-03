@@ -54,6 +54,65 @@ workspace owns the physical task artifact root. Knitten Core may keep old regist
 entries as explicit compatibility surfaces, but new primary storage should
 resolve under the target workspace through that workspace's resolver contract.
 
+## Operation Room Status
+
+When a local Knitten Operation Room is configured, the primary user-owned
+Codex task publishes a compact snapshot of its current state. Subagents do not
+publish separate entries.
+
+- Use `bin/knitten-opr-status publish`; never rewrite the shared JSON directly.
+- The publisher keys entries by `CODEX_THREAD_ID` and replaces the prior entry,
+  so the file contains current state rather than an activity log.
+- Publish after the target is known, at material phase changes, when waiting on
+  the user or an external system, when blocked, and immediately before the
+  final response.
+- Keep only the current target, phase, concise summary, next action, blocker,
+  and user-input requirement. Do not include completed-action history,
+  transcripts, commentary, test logs, or prior statuses.
+- Treat publishing as best-effort observability. A missing configuration,
+  workspace-filter skip, or transient publisher failure must not expand or
+  block the primary task.
+
+The publisher resolves its destination from `KNITTEN_OPR_STATUS_FILE` or the
+user-local Knitten configuration. Core source must not contain a personal
+absolute destination path.
+
+### Thread Assignment Model
+
+Every published thread declares exactly one `threadKind`: `work`, `pr`, or
+`review`. Inference is not allowed. The board derives its four visible states
+from the declared kind and lifecycle:
+
+- an active `work` thread appears as work
+- an active `pr` thread appears as PR
+- an active `review` thread appears as requested PR review
+- every waiting thread appears as waiting
+
+Waiting threads declare `availability=reserved` while CI, review, author
+changes, merge, user input, or another current dependency is outstanding.
+They declare `availability=available` only when the current assignment is
+released and the slot can accept unrelated work. Work threads remain reserved
+to their working branch until the user explicitly releases them.
+
+### Reassignment Gate
+
+Assigning new work to an available thread requires both gates below. This is a
+mandatory transition contract, not a recommendation.
+
+1. Check the exact target worktree with Git. It must have no staged, unstaged,
+   or untracked changes and no merge, rebase, cherry-pick, revert, or sequencer
+   operation in progress. Never clean, reset, stash, switch, or delete merely
+   to make this gate pass; report the dirty state and stop the assignment.
+2. Send an explicit reset packet containing a unique packet id, thread id,
+   declared thread kind, new assignment id and objective, repository,
+   worktree, expected branch and base, PR/Linear targets when present, scope
+   constraints, and confirmation that the previous assignment is closed.
+
+Only after both gates pass may the thread clear its previous current-state
+fields, accept the new assignment, and publish an active status. The OPR JSON
+stores only the new current assignment and the reset packet id; it does not
+retain the previous assignment as history.
+
 Codex may prepare summaries, evidence, drafts, patches, and next-step
 recommendations. User approval is required for publishing, external posting,
 deployment, destructive cleanup, or irreversible external-state changes unless

@@ -142,6 +142,7 @@ evidence is archived in
 | `document-templates/` | Shared workflow document templates. |
 | `bin/knitten-resolve-output` | Path/output shim for generated artifacts. |
 | `bin/knitten-path` | Stable path lookup surface. |
+| `bin/knitten-opr-status` | Merge one task's latest state into a configured Operation Room JSON. |
 | `scripts/doctor.mjs` | Check source and local installation health. |
 | `scripts/materialize-local-plugin.mjs` | Refresh the local plugin copy and marketplace entry. |
 | `scripts/resolve-output.mjs` | Resolve durable docs and local workflow outputs. |
@@ -190,6 +191,30 @@ source manifest stays stable.
 
 Restart Codex after refreshing plugin installations. Existing sessions may keep
 a cached skill list until a new session starts.
+
+## Operation Room Status
+
+Knitten can publish the latest state of each primary Codex thread to one local
+Operation Room JSON. Configure the destination outside the plugin source at
+`~/.config/knitten/operation-room.json`:
+
+```json
+{
+  "schemaVersion": 1,
+  "statusFile": "/absolute/path/to/opr.json",
+  "includeWorkspaceBasenames": ["shotloom-github"]
+}
+```
+
+`bin/knitten-opr-status publish` reads `CODEX_THREAD_ID`, locks the shared file,
+and replaces only that thread's entry. It does not append history. Every update
+explicitly declares `threadKind=work|pr|review`; waiting entries also declare
+whether the slot is reserved or available.
+
+Activating a new assignment requires `--reset-packet-id`. The publisher rejects
+the transition unless the exact current Git worktree is clean and has no Git
+operation in progress. It never cleans or resets a worktree for the caller. The
+`KNITTEN_OPR_STATUS_FILE` environment variable overrides the configured file.
 
 ## Path Rules
 
