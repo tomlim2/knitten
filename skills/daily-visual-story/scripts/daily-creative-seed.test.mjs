@@ -52,6 +52,8 @@ function storyDeckOf(result) {
       researchLane: brief.world.researchLane,
       tensionId: brief.tension.id,
       tensionFamily: brief.tension.family,
+      structureFamilyId: brief.structureFamily.id,
+      structureMovement: brief.structureFamily.movement,
       castId: brief.cast.id,
       cast: brief.cast.label,
       scaleId: brief.scale.id,
@@ -547,6 +549,8 @@ test("three-engine v5 exposes only Narrative, Adaptation-with-Storyboard, or Out
   assert.equal(narrative.contractVersion, "creative-deck-v5");
   assert.equal(narrative.stage, "narrative");
   assert.ok(narrative.narrative.storyBrief);
+  assert.ok(narrative.narrative.storyBrief.structureFamily.id);
+  assert.ok(narrative.narrative.storyBrief.structureFamily.movement);
   assert.equal(narrative.adaptation, undefined);
   assert.equal(narrative.output, undefined);
   assert.deepEqual(
@@ -574,7 +578,15 @@ test("three-engine v5 exposes only Narrative, Adaptation-with-Storyboard, or Out
   assert.equal(adaptation.adaptation.storyboardPolicy.maximumAttempts, 2);
   assert.match(adaptation.adaptation.storyboardPolicy.actorPolicy, /human construction armatures/);
   assert.match(adaptation.adaptation.storyboardPolicy.actorPolicy, /non-human geometric tokens/);
-  assert.match(adaptation.adaptation.storyboardPolicy.causalityPreflight.join(" "), /no future solved state/);
+  assert.match(
+    adaptation.adaptation.storyboardPolicy.causalityPreflight.join(" "),
+    /NarrativeSpec\.structureMode/,
+  );
+  assert.match(
+    adaptation.adaptation.storyboardPolicy.causalityPreflight.join(" "),
+    /do not force problem\/cause\/action\/result/,
+  );
+  assert.match(adaptation.adaptation.storyboardPolicy.causalityPreflight.join(" "), /no final meaning state/);
   assert.equal(adaptation.adaptation.formatContract.formatId, "four-panel-comic");
   assert.equal(adaptation.adaptation.formatContract.unitCount, 4);
   assert.ok(adaptation.adaptation.storyboardHandoffContract.requiredFields.includes("lockedCamera"));
@@ -595,6 +607,39 @@ test("three-engine v5 exposes only Narrative, Adaptation-with-Storyboard, or Out
     JSON.stringify(output),
     /NarrativeSpec|StoryBrief|AdaptationSpec|changeLedger|humanTension|adaptationVariant/,
   );
+});
+
+test("three-engine narrative seeds vary story structure families instead of defaulting to repair loop", () => {
+  const families = new Set();
+  for (const date of ["2026-07-31", "2026-08-01", "2026-08-02", "2026-08-03"]) {
+    for (const variant of [0, 1, 2]) {
+      const result = buildDailyCreativeSeed({ date, variant, stage: "narrative" });
+      const family = result.narrative.storyBrief.structureFamily;
+      assert.ok(family.id);
+      assert.ok(family.label);
+      assert.ok(family.movement);
+      assert.ok(family.guardrail);
+      families.add(family.id);
+    }
+  }
+
+  assert.ok(families.size >= 4);
+  assert.ok(families.has("repair-chain"));
+  assert.notDeepEqual([...families], ["repair-chain"]);
+});
+
+test("three-engine structure families are balanced across each v5 week", () => {
+  for (const startDate of ["2026-07-31", "2026-08-07"]) {
+    const families = [];
+    const start = Date.parse(`${startDate}T00:00:00Z`);
+    for (let offset = 0; offset < 7; offset += 1) {
+      const date = new Date(start + offset * 86400000).toISOString().slice(0, 10);
+      const result = buildDailyCreativeSeed({ date, variant: 0, stage: "narrative" });
+      families.push(result.narrative.storyBrief.structureFamily.id);
+    }
+    assert.equal(new Set(families).size, 7, `${startDate}: ${families.join(", ")}`);
+    assert.ok(families.includes("repair-chain"), `${startDate}: ${families.join(", ")}`);
+  }
 });
 
 test("adaptation reroll is independent from Narrative and OutputStyle selection", () => {

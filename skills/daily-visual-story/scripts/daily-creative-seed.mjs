@@ -26,6 +26,50 @@ const DAY_MS = 86_400_000;
 const FOUR_PANEL_STAGES = new Set(["story", "adaptation", "storyboard", "output"]);
 const THREE_ENGINE_STAGES = new Set(["narrative", "adaptation", "output"]);
 const DEFAULT_FORMAT_ID = "four-panel-comic";
+const NARRATIVE_STRUCTURE_FAMILIES = Object.freeze([
+  {
+    id: "misread-reveal-residue",
+    label: "오해가 정답이 되는 이야기",
+    movement: "assumption -> contradictory detail -> reveal -> residue",
+    guardrail: "Do not solve an external problem; let a mistaken reading become meaningful.",
+  },
+  {
+    id: "accumulation-threshold-aftertaste",
+    label: "반복이 쌓이다가 작은 차이로 뜻이 바뀌는 이야기",
+    movement: "repetition -> pressure -> tiny threshold change -> aftertaste",
+    guardrail: "Do not end with a repair; make the final state a changed reading of the repeated action.",
+  },
+  {
+    id: "exchange-reframe-quiet-cost",
+    label: "교환이나 양보가 관계의 무게를 바꾸는 이야기",
+    movement: "offer -> mismatched return -> reframe -> quiet cost",
+    guardrail: "Do not make the exchange a transaction that fixes everything.",
+  },
+  {
+    id: "expectation-deflation-reinterpretation",
+    label: "기대가 김빠진 뒤 다르게 이해되는 이야기",
+    movement: "anticipation -> anticlimax -> reinterpretation -> small joke",
+    guardrail: "Do not turn the anticlimax into a task to repair.",
+  },
+  {
+    id: "parallel-actions-converge-late",
+    label: "서로 다른 행동이 뒤늦게 한 장면으로 만나는 이야기",
+    movement: "parallel intention -> accidental overlap -> recognition -> shared residue",
+    guardrail: "Do not make convergence depend on coordinated problem solving.",
+  },
+  {
+    id: "loss-of-control-acceptance",
+    label: "통제하려던 것이 벗어나고 받아들이는 이야기",
+    movement: "attempted control -> drift -> surrender -> changed residue",
+    guardrail: "Do not restore control as the success state.",
+  },
+  {
+    id: "repair-chain",
+    label: "문제를 발견하고 실제로 고치는 이야기",
+    movement: "blocked state -> cause clue -> corrective action -> resolved consequence",
+    guardrail: "Use sparingly; this is the repair-loop structure and must not be the default.",
+  },
+]);
 // Immutable seed namespace: changing this would rewrite already archived daily
 // selections even though workflow ownership moved out of Shotloom Today.
 const LEGACY_SEED_NAMESPACE = "shotloom-today";
@@ -260,6 +304,15 @@ function balancedCompatiblePick(date, variant, label, values, predicate) {
     if (predicate(candidate)) return candidate;
   }
   throw new Error(`no compatible story card: ${label} on ${date}`);
+}
+
+function balancedThreeEnginePick(date, variant, label, values) {
+  const offset = daysBetween(THREE_ENGINE_CUTOVER_DATE, date);
+  if (offset < 0) throw new Error(`balanced three-engine draw before cutover: ${date}`);
+  const cycle = Math.floor(offset / values.length);
+  const position = offset % values.length;
+  const cycleSeed = `${LEGACY_SEED_NAMESPACE}|${THREE_ENGINE_CONTRACT_VERSION}|${label}|variant=${variant}|cycle=${cycle}`;
+  return shuffled(cycleSeed, label, values)[position];
 }
 
 function selectDramaturgy(seed) {
@@ -555,7 +608,7 @@ function buildFourPanelStoryboard() {
       causalityPreflight: [
         "name one first-time-viewer beat purpose per unit",
         "build a state-timing table for repeated visual tokens and causal objects",
-        "do not show a future solved state before the visible action that causes it",
+        "do not show a final meaning state before the visible action that causes it",
         "connect actors or tokens to objects through sight-lines, contact points, pull-lines, or alignments",
         "rhyme first and final unit layout when possible to make before/after change visible",
       ],
@@ -780,6 +833,12 @@ function buildThreeEngineNarrative(selectedDate, narrativeVariant) {
   const seed = seedFor(selectedDate, narrativeVariant, THREE_ENGINE_CONTRACT_VERSION);
   const theme = selectStoryTheme(selectedDate, narrativeVariant);
   const tension = theme.tension;
+  const structureFamily = balancedThreeEnginePick(
+    selectedDate,
+    narrativeVariant,
+    "narrative-structure-family",
+    NARRATIVE_STRUCTURE_FAMILIES,
+  );
   const narrativeSeedFingerprint = createHash("sha256")
     .update(seed)
     .digest("hex")
@@ -794,6 +853,7 @@ function buildThreeEngineNarrative(selectedDate, narrativeVariant) {
         storyScene: pick(seed, "story-scene", theme.world.settings),
         worldLogic: pick(seed, "world-logic", theme.world.realityRules),
         comicTurn: pick(seed, "comic-turn", tension.turns),
+        structureFamily,
         world: {
           id: theme.world.id,
           label: theme.world.label,
@@ -832,6 +892,7 @@ function buildThreeEngineNarrative(selectedDate, narrativeVariant) {
           "emotional movement supported by events",
           "world-rule sufficiency",
           "preserved ambiguity distinguished from omission",
+          "selected structure family is followed without collapsing to a default repair loop",
           "no recent-result imitation",
         ],
       },
@@ -841,7 +902,7 @@ function buildThreeEngineNarrative(selectedDate, narrativeVariant) {
         closed: true,
         requiredFields: NARRATIVE_SPEC_KEYS,
         freezeBeforeAdaptation: true,
-        rule: "Create and review a causally complete story in its own domain. Record the effective author model at runtime and freeze the result before any visual target is selected.",
+        rule: "Create and review a causally complete story in its own domain using the selected structureFamily. Do not default to blocked-problem/corrective-action/resolved-state unless structureFamily.id is repair-chain. Record the effective author model at runtime and freeze the result before any visual target is selected.",
       },
     },
   };
@@ -896,9 +957,11 @@ function buildThreeEngineAdaptation(selectedDate, narrativeVariant, adaptationVa
         detailBudget: "action-token positions, causal-object movement, screen direction, and minimum orientation geometry only",
         actorPolicy: "use sparse human construction armatures for visible human actors; use non-human geometric tokens for nonhuman, object, crowd, or impersonal actors; no finished figures, faces, hair, hands, fingers, feet, clothing, body outlines, costumes, character designs, or silhouette fill",
         causalityPreflight: [
-          "one first-time-viewer beat purpose per panel",
+          "one first-time-viewer beat purpose per panel derived from NarrativeSpec.structureMode",
+          "do not force problem/cause/action/result unless NarrativeSpec.structureMode is explicitly repair-chain",
           "state-timing table for each repeated visual token or causal object",
-          "no future solved state before the visible action that causes it",
+          "no final meaning state before the visible turn that causes it",
+          "prop-to-prop mechanism chain for consequential props when the selected structure uses a physical cause",
           "actor/token-to-object sight-line, contact point, pull-line, or alignment for every action",
           "first/final panel before-after rhyme when the format allows",
         ],
@@ -912,8 +975,9 @@ function buildThreeEngineAdaptation(selectedDate, narrativeVariant, adaptationVa
           "within-panel and cross-panel spatial relationships",
           "Narrative invariant preservation",
           "all four panels present exactly once",
-          "first-time viewer causal readability",
-          "state timing, with no future solved state shown before its cause",
+          "first-time viewer readability of the selected narrative structure movement",
+          "state timing, with no final meaning state shown before its visible turn",
+          "prop-mechanism chain legibility when physical props carry the turn",
           "actor/token-to-object relationship legibility",
         ],
       },

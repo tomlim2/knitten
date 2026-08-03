@@ -74,6 +74,7 @@ export const STORYBOARD_VALIDATION_GATES = Object.freeze([
   "required-units-present-once",
   "first-time-reader-causality",
   "state-timing-no-anticipation",
+  "prop-mechanism-chain-legibility",
   "actor-object-relationship-legibility",
 ]);
 
@@ -91,7 +92,7 @@ export const FOUR_PANEL_FORMAT_CONTRACT = Object.freeze({
     "causal-object continuity",
     "screen-direction continuity",
     "visible state transitions",
-    "state timing does not reveal solved outcomes before their visible cause",
+    "state timing does not reveal final outcomes before their visible turn",
     "actor or token relationships to causal objects are legible",
   ],
   textPolicy: "no dialogue, captions, panel numbers, sound effects, logos, signatures, or watermarks",
@@ -103,8 +104,9 @@ export const FOUR_PANEL_FORMAT_CONTRACT = Object.freeze({
     "movement direction is consistent",
     "within-panel and cross-panel spatial relationships are legible",
     "Narrative invariants remain visibly preserved",
-    "first-time viewer can read problem, cause, corrective action, and result without prose",
-    "future solved states do not appear before their causal action",
+    "first-time viewer can read the selected Narrative structure movement without prose",
+    "final meaning states do not appear before their causal visible turn",
+    "consequential props connect as one readable mechanism chain from cause to result",
     "actor/token sight-lines, contact points, pull-lines, or alignments connect action to effect",
   ],
 });

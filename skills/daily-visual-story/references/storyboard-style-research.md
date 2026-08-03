@@ -129,10 +129,12 @@ For each route, queue, shadow, door, sign, bridge, key, tool, or residue mark,
 decide what state it has before, during, and after the visible action that
 changes it.
 
-Do not show future solved state early. If a path changes because an object is
-fixed in panel 3, the path must remain blocked or ambiguous before panel 3,
-may appear as a ghost or partial intent during panel 3, and may become a solid
-resolved path only in panel 4.
+Do not show a future final meaning state early. If a path changes because an
+object is fixed in panel 3, the path must remain blocked or ambiguous before
+panel 3, may appear as a ghost or partial intent during panel 3, and may become
+a solid resolved path only in panel 4. For non-repair structures, apply the
+same timing rule to recognition, reinterpretation, residue, acceptance, or a
+changed relationship.
 
 Every actor mark must relate to the scene through a visible mechanism:
 
@@ -141,6 +143,14 @@ Every actor mark must relate to the scene through a visible mechanism:
 - pull-line, cord, lever, hinge, or tool that connects action to effect;
 - before/after object alignment;
 - first/final panel rhyme that makes the changed state obvious.
+
+Every consequential prop must also relate to the next prop. A storyboard can
+contain many recognizable objects and still fail if they sit beside each other
+without a visible handoff. Prefer fewer props with stronger relations: one
+rope, one lever, one pulley, one gate, or one repeated object chain that can be
+followed across panels. Show the relation through direct contact, taut/slack
+contrast, shared axis, before/after alignment, or a single clear motion path.
+Keep irrelevant tools visibly inactive or remove them from the action area.
 
 If a first-time viewer can identify the objects but not why the state changes,
 the storyboard fails even if the sketch style is attractive.
@@ -172,4 +182,5 @@ If the model drifts toward a clean diagram, ask for more hand-drawn production
 thumbnail marks, wobbling panel borders, construction lines, and value blocks.
 If the model drifts toward finished people or character design, fail the
 attempt and regenerate within the two-attempt limit. If the model shows the
-solved state before its cause, fail the attempt even when the drawing is clear.
+final meaning state before its cause, fail the attempt even when the drawing is
+clear.

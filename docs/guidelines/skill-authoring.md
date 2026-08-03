@@ -76,7 +76,7 @@ Use `docs/guidelines/skill-match-check.md` as the source of truth for
 
 - `loose`: read-only review, summarize, explain, draft, brainstorm
 - `normal`: local file edits, local scripts, generated artifacts
-- `strict`: push, merge, deploy, delete, external messages, PR/GitHub/Linear
+- `strict`: commit, push, merge, deploy, delete, external messages, PR/GitHub/Linear
   mutation, credential/config changes, production changes
 
 When in doubt, use `normal`. If external state can change, use `strict`.

@@ -33,15 +33,17 @@ commands before changing public claims.
 
 | Check | Current result | Re-run |
 |-------|----------------|--------|
-| Discovery surface | 8 skills, about 135 list tokens | `node scripts/measure-skill-exposure.mjs .` |
-| Skill bodies | about 3193 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Discovery surface | 10 skills, about 221 list tokens | `node scripts/measure-skill-exposure.mjs .` |
+| Skill bodies | about 4283 `SKILL.md` tokens | `node scripts/measure-skill-exposure.mjs .` |
 | Context-load smoke eval | 20/20 match accuracy, 72.8% average savings | `node scripts/run-context-load-smoke-eval.mjs` |
 
 ## Included Skills
 
 | Skill | Use it for |
 |-------|------------|
+| `daily-visual-story` | Create a three-engine daily four-panel story: Narrative, Adaptation-owned Storyboard proof, then closed-input Output. |
 | `draft-spec` | Draft compact spec artifacts. |
+| `gallery` | Preserve and show dated creative results with exact prompts. |
 | `implement` | Implement accepted specs, approved plans, or review findings. |
 | `review` | Run read-only single/triad reviews from a prepared packet. |
 | `review-fix-loop` | Repeat review, fix, and validation until blockers clear. |

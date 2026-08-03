@@ -155,6 +155,11 @@ schema v2:
   `processArtifacts` item. The gallery manager copies each source image into
   `assets/` and stores only the copied filename, digest, and byte size in the
   canonical entry.
+- Treat `processArtifacts` as the visual evidence ledger for the entry, not as
+  a single selected preview. When multiple visual attempts or examples are used
+  to judge a layer, include all deliberate evidence images: approved
+  storyboards, rejected styling attempts, diagnostic variants, and the final
+  approved styling example when it clarifies the decision.
 - Use `stylingHandoff` to show what Adaptation passes to Styling: the UI-like
   screen specification that Styling turns into GUI-like final art.
 - Use

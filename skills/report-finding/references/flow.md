@@ -31,16 +31,35 @@ Do not invent a storage path. Finding records always accumulate in the Knitten
 core hub queue, even when the observed mechanical error is in another repository
 or domain plugin.
 
-Resolve the record path with:
+If the user supplied an existing finding path, use that exact record and its
+`operational-findings` ancestor for this task. Do not redirect it to another
+checkout.
+
+Otherwise, use the runtime Knitten plugin root that supplied the currently
+loaded `report-finding` skill. Do not substitute the current working directory,
+the checkout containing `SYSTEM.md`, a domain plugin root, or a guessed
+`$HOME` path. When the runtime root is a Codex cache entry, its shim resolves the
+active installed Knitten hub.
+
+Locate an existing queue without creating a record:
 
 ```bash
-<knitten-plugin-root>/bin/knitten-resolve-output --skill=report-finding --name=<finding-name> --create
+resolver="<runtime-knitten-plugin-root>/bin/knitten-resolve-output"
+resolution="$("$resolver" --skill=report-finding --name=queue-location-probe)"
+queue_root="$(printf '%s' "$resolution" | jq -er '.operationalFindingsRoot')"
 ```
 
-This writes under:
+Resolve a new record path with:
+
+```bash
+"$resolver" --skill=report-finding --name=<finding-name> --create
+```
+
+Treat the resolver JSON fields `hubRoot`, `operationalFindingsRoot`, and
+`selectedPath` as authoritative. This writes under:
 
 ```text
-<knitten-plugin-root>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/reports/
+<resolved-hub-root>/.agent-local/workflow/operational-findings/<YYYY-MM-DD>/reports/
 ```
 
 Include the affected repository, plugin, skill, or path in the JSON body as

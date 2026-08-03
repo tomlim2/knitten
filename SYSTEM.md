@@ -89,6 +89,15 @@ All finding records belong to this Knitten core plugin. Even when the defect is
 observed while using a domain plugin, store the report in Knitten's finding
 report queue, not in the domain plugin.
 
+When locating that queue, an explicit existing finding path supplied by the
+user is authoritative. Otherwise run `bin/knitten-resolve-output` from the
+runtime Knitten plugin root that supplied the loaded `report-finding` skill and
+trust its `operationalFindingsRoot` or `selectedPath`. Do not infer the active
+queue from the current working directory, the checkout containing this
+`SYSTEM.md`, another plugin, or a manually assembled `.agent-local` path. A
+source checkout's `.agent-local` is its own queue only when that checkout was
+explicitly selected as the hub.
+
 ## Promoted References
 
 Domain plugins may place `reference-promoted.md` next to a domain skill's

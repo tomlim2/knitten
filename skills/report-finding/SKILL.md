@@ -32,4 +32,6 @@ Do not read detailed references until Step 0 passes.
 ## After Match
 
 Read [`references/flow.md`](references/flow.md), write the structured finding
-record to the Knitten core hub queue, and report the path.
+record to the Knitten core hub queue resolved by the runtime plugin shim, and
+report the resolver-returned path. Never infer the queue from the current
+checkout.

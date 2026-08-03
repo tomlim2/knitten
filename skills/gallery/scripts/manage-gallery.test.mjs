@@ -65,6 +65,22 @@ try {
         description: "The rough board passed to Output.",
         sourcePath: image,
       },
+      {
+        schemaVersion: 1,
+        layer: "styling",
+        role: "rejected-styling-v1",
+        title: "Rejected styling v1",
+        description: "The first styling attempt looked like a colored storyboard.",
+        sourcePath: image,
+      },
+      {
+        schemaVersion: 1,
+        layer: "styling",
+        role: "approved-styling-v2",
+        title: "Approved styling v2",
+        description: "The accepted styling attempt converts the handoff into final visual elements.",
+        sourcePath: image,
+      },
     ],
     stylingHandoff: {
       schemaVersion: 1,
@@ -152,6 +168,10 @@ try {
   assert.match(threeEngineHtml, /Adaptation and rough storyboard prompt/);
   assert.match(threeEngineHtml, /Approved rough storyboard/);
   assert.match(threeEngineHtml, /2026-07-31-v3-a2-v5-seed--adaptation-approved-storyboard.png/);
+  assert.match(threeEngineHtml, /Rejected styling v1/);
+  assert.match(threeEngineHtml, /2026-07-31-v3-a2-v5-seed--styling-rejected-styling-v1.png/);
+  assert.match(threeEngineHtml, /Approved styling v2/);
+  assert.match(threeEngineHtml, /2026-07-31-v3-a2-v5-seed--styling-approved-styling-v2.png/);
   assert.match(threeEngineHtml, /paper-and-ink/);
   assert.match(threeEngineHtml, /각색에서 스타일링으로 넘긴 UI 명세/);
   assert.match(threeEngineHtml, /simple figures/);

@@ -155,10 +155,11 @@ test("Output receives exactly StoryboardHandoff and OutputStyle", () => {
 
 test("Storyboard approval blocks Output when any visible gate fails", () => {
   assert.deepEqual(
-    STORYBOARD_VALIDATION_GATES.slice(-3),
+    STORYBOARD_VALIDATION_GATES.slice(-4),
     [
       "first-time-reader-causality",
       "state-timing-no-anticipation",
+      "prop-mechanism-chain-legibility",
       "actor-object-relationship-legibility",
     ],
   );

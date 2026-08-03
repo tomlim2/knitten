@@ -134,13 +134,23 @@ Build a closed NarrativeSpec with:
 - consequence, residue, and the joke's meaning;
 - Narrative prompt and authoring review provenance.
 
+Use the `StoryBrief.structureFamily` selection as the first guard against
+repertoire collapse. The structure family may be misread/reveal/residue,
+accumulation/threshold/aftertaste, exchange/reframe/quiet cost,
+expectation/deflation/reinterpretation, parallel convergence, loss of
+control/acceptance, or explicit repair-chain. Only repair-chain should read as
+`안됐다 → 문제를 발견했다 → 다 같이 해결한다 → 해결했다`. For every other
+family, the final movement should be recognition, reinterpretation, residue,
+acceptance, or changed relation, not a fixed external problem.
+
 Write one original Korean joke of one or two short sentences. Let the emotion
 land before a gentle comic turn. Use no humiliation, cruelty, sexual content,
 political provocation, or exploitation of trauma.
 
 Run a separate authoring review pass. It must verify causal completeness, state
 change, event-supported emotion, sufficient world rules, deliberate ambiguity,
-and distance from recent results. Revise within Narrative until it passes.
+selected structure-family fidelity, non-collapse into the repair loop, and
+distance from recent results. Revise within Narrative until it passes.
 
 Narrative must remain understandable after every target-format and rendering
 term is removed. Save the frozen JSON and validate it:
@@ -194,20 +204,30 @@ Build:
 The Causal Legibility Plan is a compact preflight for the storyboard prompt.
 It must include:
 
-- one first-time-viewer beat purpose per unit;
+- one first-time-viewer beat purpose per unit derived from
+  `NarrativeSpec.structureMode`;
+- an explicit statement when the unit progression is not
+  problem/cause/action/result, and a rejection if the adapted board silently
+  collapses into that template;
 - a state-timing table for each repeated visual token or causal object,
   especially paths, queues, doors, signs, tools, keys, shadows, or residue;
+- a prop-to-prop mechanism chain for every consequential object, with the
+  visible contact, tension, alignment, handoff, or before/after relation that
+  explains why the next prop changes;
 - explicit actor-to-object relationships for every action, with the intended
   sight-line, contact point, pull-line, or alignment named;
 - a before/after contrast plan, preferably using the same or rhymed camera
   layout for the first and final unit.
 
-Do not let solved state appear before the visible action that causes it. If a
-route, queue, door, bridge, shadow, sign, or other token changes because a
-panel-3 action fixes it, the finished changed state may appear only in that
-action panel as a partial, ghost, or intent mark, or in the resolved panel as a
-solid state. A first-time viewer must be able to read the causal chain without
-knowing the Narrative prose.
+Do not let the final meaning appear before the visible turn that causes it. In
+a repair-chain, this means the solved state must not appear early: if a route,
+queue, door, bridge, shadow, sign, or other token changes because a panel-3
+action fixes it, the finished changed state may appear only in that action
+panel as a partial, ghost, or intent mark, or in the resolved panel as a solid
+state. In non-repair families, the equivalent rule applies to recognition,
+reinterpretation, residue, acceptance, or changed relation. A first-time viewer
+must be able to read the selected structure movement without knowing the
+Narrative prose.
 
 Do not choose medium, palette, lighting, texture, or final finish here.
 
@@ -225,6 +245,9 @@ Generate one storyboard raster as Adaptation's completion proof:
 - rough hand-drawn thumbnail or underdrawing construction lines;
 - action-token positions, causal-object movement, screen direction, and
   minimum background geometry only;
+- a small number of consequential props arranged as one readable mechanism
+  chain from cause to result; avoid decorative or parallel props whose relation
+  to the next prop is not visually connected;
 - no finished human figures, humanoid silhouettes, faces, hair, hands,
   fingers, feet, clothing, costume, character designs, body outlines, muscle
   detail, or silhouette fill;
@@ -248,8 +271,10 @@ Visually inspect the raster itself and record `pass` or `fail` with evidence:
 5. Narrative invariant preservation;
 6. all four panels present exactly once.
 7. first-time viewer causal readability;
-8. state timing, with no future solved state shown before its cause;
-9. actor/token-to-object relationship legibility.
+8. state timing, with no final meaning state shown before its visible turn;
+9. prop-mechanism chain legibility, with consequential props visibly connected
+   by contact, tension, alignment, handoff, or before/after relation;
+10. actor/token-to-object relationship legibility.
 
 All storyboard gates must pass. A failed prompt is not evidence and finish
 cannot hide an unclear board. Revise AdaptationSpec, Causal Legibility Plan, or
@@ -333,6 +358,13 @@ Do not quote, summarize, inspect, or reconstruct NarrativeSpec, StoryBrief,
 AdaptationSpec, change ledger, omitted material, references, or alternatives
 from conversation memory.
 
+Treat the approved storyboard raster as a UI wireframe and visible-lock proof,
+not as final visual language. The Output prompt must explicitly convert
+storyboard scaffolding into final visual elements: armature people into simple
+finished amateur human marks, arrows into diegetic motion or cause evidence,
+and placeholder shapes into finished subjects, materials, and background facts.
+Do not ask the image model to colorize or trace the storyboard.
+
 Generate one high-resolution raster with exactly four panels, preserving locked
 geometry, camera, crop, positions, movement, order, continuity, visible state
 changes, and final residue. Output may change only permitted finish fields.
@@ -342,7 +374,10 @@ signature, or watermark.
 Inspect the result and record OutputProof: handoff fingerprint, style id,
 effective generation model, exact final prompt, visible lock-preservation
 checks, and artifact SHA-256. Any new, removed, reordered, or substituted event
-fails Output.
+fails Output. A result that still reads as a colored storyboard also fails
+Output: reject visible arrows, construction circles, joint dots, skeletal stick
+limbs, rough thumbnail marks, wireframe bodies, or placeholder geometry left as
+final finish, then regenerate from the same validated packet.
 
 If image generation is unavailable, return the story and joke with both images
 marked `unavailable`. Do not substitute stock art or claim validation passed.
