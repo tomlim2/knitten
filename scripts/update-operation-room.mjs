@@ -7,6 +7,9 @@ import path from "node:path";
 const THREAD_KINDS = new Set(["work", "pr", "review"]);
 const LIFECYCLE_STATUSES = new Set(["active", "waiting"]);
 const AVAILABILITIES = new Set(["reserved", "available"]);
+const WORK_STATES = new Set(["working", "completed"]);
+const AUTOMATION_STATES = new Set(["automatic", "human_confirmation"]);
+const RESPONSE_STATES = new Set(["responding", "approval_required", "complete"]);
 const WAIT_REASONS = new Set([
   "ci",
   "human_review",
@@ -32,7 +35,6 @@ Required:
   --thread-kind <work|pr|review>
   --status <active|waiting>
   --phase <slug>
-  --summary <text>
 
 Assignment and waiting:
   --assignment-id <id>
@@ -40,16 +42,39 @@ Assignment and waiting:
   --waiting-for <ci|human_review|author_changes|merge|user_input|external_dependency>
   --reset-packet-id <id>
 
+Work status:
+  --work-state <working|completed>
+  --last-linear-id <issue-id>
+  --last-linear-name <text>
+  --linear-split-at <ISO timestamp>
+  --base-ref <ref>          Defaults to origin/main.
+  --web-app-url <http(s) URL>
+
+PR status:
+  --pr <repo#number[:role]>
+  --pr-title <text>
+  --automation <automatic|human_confirmation>
+  --response-state <responding|approval_required|complete>
+  --human-review-round <count>
+  --bot-review-round <count>
+  --comment-count <count>
+  --merged                  Clean this exact worktree's target/ and release it.
+
+Requested review status:
+  --pr <repo#number[:role]>
+  --pr-title <text>
+  --response-state <responding|approval_required|complete>
+
 Optional:
   --thread-id <id>          Defaults to CODEX_THREAD_ID.
   --file <absolute-path>    Overrides environment and user-local config.
   --config <absolute-path>  Defaults to ~/.config/knitten/operation-room.json.
   --project <name>          Defaults to the cwd basename.
-  --next-action <text>
-  --blocked-by <text>
   --needs-user-input
-  --pr <repo#number[:role]>
   --linear <issue-id[:role]>
+  --summary <text>          Accepted for compatibility; not stored.
+  --next-action <text>      Accepted for compatibility; not stored.
+  --blocked-by <text>       Accepted for compatibility; not stored.
   --dry-run`;
 }
 
@@ -80,6 +105,19 @@ function parseArgs(argv) {
     needsUserInput: false,
     prs: [],
     linears: [],
+    workState: null,
+    lastLinearId: null,
+    lastLinearName: null,
+    linearSplitAt: null,
+    baseRef: "origin/main",
+    webAppUrl: null,
+    prTitle: null,
+    automation: null,
+    responseState: null,
+    humanReviewRound: null,
+    botReviewRound: null,
+    commentCount: null,
+    merged: false,
     dryRun: false,
   };
 
@@ -94,6 +132,8 @@ function parseArgs(argv) {
       options.dryRun = true;
     } else if (arg === "--needs-user-input") {
       options.needsUserInput = true;
+    } else if (arg === "--merged") {
+      options.merged = true;
     } else if (arg === "--file") {
       options.file = takeValue(argv, index, arg);
       index += 1;
@@ -127,6 +167,42 @@ function parseArgs(argv) {
     } else if (arg === "--reset-packet-id") {
       options.resetPacketId = takeValue(argv, index, arg);
       index += 1;
+    } else if (arg === "--work-state") {
+      options.workState = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--last-linear-id") {
+      options.lastLinearId = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--last-linear-name") {
+      options.lastLinearName = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--linear-split-at") {
+      options.linearSplitAt = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--base-ref") {
+      options.baseRef = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--web-app-url") {
+      options.webAppUrl = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--pr-title") {
+      options.prTitle = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--automation") {
+      options.automation = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--response-state") {
+      options.responseState = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--human-review-round") {
+      options.humanReviewRound = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--bot-review-round") {
+      options.botReviewRound = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--comment-count") {
+      options.commentCount = takeValue(argv, index, arg);
+      index += 1;
     } else if (arg === "--phase") {
       options.phase = takeValue(argv, index, arg);
       index += 1;
@@ -151,7 +227,7 @@ function parseArgs(argv) {
   }
 
   if (options.command !== "publish") throw new Error("publish command is required");
-  for (const key of ["threadId", "title", "threadKind", "status", "phase", "summary"]) {
+  for (const key of ["threadId", "title", "threadKind", "status", "phase"]) {
     if (!options[key]) throw new Error(`${key} is required`);
   }
   if (!/^[0-9a-zA-Z._:-]+$/.test(options.threadId)) throw new Error("threadId contains unsupported characters");
@@ -166,6 +242,33 @@ function parseArgs(argv) {
   }
   if (options.resetPacketId && !/^[0-9a-zA-Z._:-]+$/.test(options.resetPacketId)) {
     throw new Error("resetPacketId contains unsupported characters");
+  }
+  if (options.workState && !WORK_STATES.has(options.workState)) {
+    throw new Error(`unsupported work state: ${options.workState}`);
+  }
+  if (options.automation && !AUTOMATION_STATES.has(options.automation)) {
+    throw new Error(`unsupported automation state: ${options.automation}`);
+  }
+  if (options.responseState && !RESPONSE_STATES.has(options.responseState)) {
+    throw new Error(`unsupported response state: ${options.responseState}`);
+  }
+  for (const key of ["humanReviewRound", "botReviewRound", "commentCount"]) {
+    if (options[key] !== null) {
+      if (!/^[0-9]+$/.test(options[key])) throw new Error(`${key} must be a non-negative integer`);
+      options[key] = Number(options[key]);
+    }
+  }
+  if (options.lastLinearId && !/^[A-Z][A-Z0-9]*-[1-9][0-9]*$/.test(options.lastLinearId)) {
+    throw new Error("invalid lastLinearId");
+  }
+  if (options.linearSplitAt && Number.isNaN(Date.parse(options.linearSplitAt))) {
+    throw new Error("linearSplitAt must be an ISO timestamp");
+  }
+  if (options.webAppUrl) {
+    const url = new URL(options.webAppUrl);
+    if (!new Set(["http:", "https:"]).has(url.protocol)) {
+      throw new Error("webAppUrl must use http or https");
+    }
   }
   return options;
 }
@@ -293,7 +396,82 @@ async function verifyCleanWorktree(cwd, now) {
   };
 }
 
+async function workBranchStatus(cwd, options) {
+  const branch = git(cwd, ["symbolic-ref", "--quiet", "--short", "HEAD"]);
+  const baseCommit = git(cwd, ["merge-base", "HEAD", options.baseRef]);
+  const numstat = git(cwd, ["diff", "--numstat", baseCommit]);
+  let added = 0;
+  let deleted = 0;
+  for (const line of numstat.split("\n").filter(Boolean)) {
+    const [nextAdded, nextDeleted] = line.split("\t", 2);
+    if (/^[0-9]+$/.test(nextAdded)) added += Number(nextAdded);
+    if (/^[0-9]+$/.test(nextDeleted)) deleted += Number(nextDeleted);
+  }
+  return {
+    branch,
+    baseRef: options.baseRef,
+    baseCommit,
+    loc: { added, deleted },
+  };
+}
+
+async function cleanMergedTarget(cwd, now, dryRun) {
+  try {
+    const worktree = await fs.realpath(cwd);
+    const gitTopLevel = await fs.realpath(git(cwd, ["rev-parse", "--show-toplevel"]));
+    if (worktree !== gitTopLevel) throw new Error("cwd must be the exact Git worktree root");
+    const target = path.join(worktree, "target");
+    let targetStat;
+    try {
+      targetStat = await fs.lstat(target);
+    } catch (error) {
+      if (error.code === "ENOENT") return { status: "empty", cleanedAt: now };
+      throw error;
+    }
+    if (targetStat.isSymbolicLink() || !targetStat.isDirectory()) {
+      throw new Error("target cache must be a real directory");
+    }
+    if (dryRun) return { status: "dry_run", cleanedAt: now };
+    execFileSync(process.env.KNITTEN_OPR_CARGO_BIN || "cargo", ["clean", "--target-dir", target], {
+      cwd: worktree,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    return { status: "cleaned", cleanedAt: now };
+  } catch {
+    return { status: "failed", attemptedAt: now };
+  }
+}
+
+function validateKindState(options) {
+  if (options.merged) {
+    if (options.threadKind !== "pr") throw new Error("merged transition is only valid for PR threads");
+    return;
+  }
+  if (options.status === "waiting" && options.availability === "available") return;
+  if (options.threadKind === "work") {
+    if (!options.workState) throw new Error("work thread requires workState");
+    if (Boolean(options.lastLinearId) !== Boolean(options.lastLinearName)) {
+      throw new Error("lastLinearId and lastLinearName must be provided together");
+    }
+    if (options.linearSplitAt && !options.lastLinearId) {
+      throw new Error("linearSplitAt requires a last Linear task");
+    }
+    return;
+  }
+  if (options.prs.length === 0) throw new Error(`${options.threadKind} thread requires a PR target`);
+  if (!options.prTitle) throw new Error(`${options.threadKind} thread requires prTitle`);
+  if (!options.responseState) throw new Error(`${options.threadKind} thread requires responseState`);
+  if (options.threadKind === "pr") {
+    if (!options.automation) throw new Error("PR thread requires automation state");
+    for (const key of ["humanReviewRound", "botReviewRound", "commentCount"]) {
+      if (options[key] === null) throw new Error(`PR thread requires ${key}`);
+    }
+  }
+}
+
 function validateState(options) {
+  validateKindState(options);
   const targetCount = options.prs.length + options.linears.length;
   if (options.status === "active") {
     if (options.availability) throw new Error("active status must not declare availability");
@@ -323,7 +501,7 @@ function resetRequired(previous, options) {
   return previous.status === "waiting" && previous.availability === "available";
 }
 
-async function entryFor(options, cwd, now, previous) {
+async function entryFor(options, cwd, now, previous, cacheCleanup = null) {
   validateState(options);
   const requiresReset = resetRequired(previous, options);
   let assignmentGate = previous?.assignmentGate ?? null;
@@ -339,7 +517,53 @@ async function entryFor(options, cwd, now, previous) {
   if (options.status === "waiting" && options.availability === "available") {
     assignmentGate = null;
   }
+  const parsedPrs = options.preservePreviousTargets
+    ? (previous?.targets?.pullRequests ?? [])
+    : options.prs.map(parsePr);
+  const parsedLinears = options.preservePreviousTargets
+    ? (previous?.targets?.linearIssues ?? [])
+    : options.linears.map(parseLinear);
+  const primaryPr = parsedPrs[0] ?? null;
+  const released = options.status === "waiting" && options.availability === "available";
+  const work = options.threadKind === "work" && !released
+    ? {
+        state: options.workState,
+        lastLinear: options.lastLinearId
+          ? { id: options.lastLinearId, name: options.lastLinearName }
+          : null,
+        linearSplitAt: options.linearSplitAt,
+        ...(await workBranchStatus(cwd, options)),
+        webAppUrl: options.webAppUrl,
+      }
+    : null;
+  const pr = options.threadKind === "pr" && primaryPr && !released
+    ? (options.preservePreviousTargets && previous?.pr
+        ? previous.pr
+        : {
+            title: options.prTitle,
+            repository: primaryPr.repository,
+            number: primaryPr.number,
+            url: primaryPr.url,
+            automation: options.automation,
+            responseState: options.responseState,
+            reviewRounds: {
+              human: options.humanReviewRound,
+              bot: options.botReviewRound,
+            },
+            commentCount: options.commentCount,
+          })
+    : null;
+  const review = options.threadKind === "review" && primaryPr && !released
+    ? {
+        title: options.prTitle,
+        repository: primaryPr.repository,
+        number: primaryPr.number,
+        url: primaryPr.url,
+        responseState: options.responseState,
+      }
+    : null;
   const active = options.status === "active";
+  const working = active && !(options.threadKind === "work" && options.workState === "completed");
   return {
     threadId: options.threadId,
     title: options.title,
@@ -351,19 +575,64 @@ async function entryFor(options, cwd, now, previous) {
     waitingFor: [...new Set(options.waitingFor)],
     assignmentId: options.assignmentId,
     assignmentGate,
-    runtimeStatus: active ? "active" : "idle",
-    turnStatus: active ? "inProgress" : "completed",
+    runtimeStatus: working ? "active" : "idle",
+    turnStatus: working ? "inProgress" : "completed",
     workflowStatus: active ? "working" : "waiting_external",
     phase: options.phase,
     targets: {
-      pullRequests: options.prs.map(parsePr),
-      linearIssues: options.linears.map(parseLinear),
+      pullRequests: parsedPrs,
+      linearIssues: parsedLinears,
     },
-    summary: options.summary,
-    nextAction: options.nextAction,
-    blockedBy: options.blockedBy,
+    work,
+    pr,
+    review,
+    cacheCleanup,
     needsUserInput: options.needsUserInput,
     updatedAt: now,
+  };
+}
+
+function stripNarrative(entry) {
+  const { summary: _summary, nextAction: _nextAction, blockedBy: _blockedBy, ...statusOnly } = entry;
+  return statusOnly;
+}
+
+async function mergedTransition(options, cwd, now, previous) {
+  if (!options.merged) return { options, cacheCleanup: null };
+  if (!previous || previous.threadKind !== "pr") {
+    throw new Error("merged transition requires an existing PR thread assignment");
+  }
+  const cacheCleanup = await cleanMergedTarget(cwd, now, options.dryRun);
+  if (cacheCleanup.status === "failed") {
+    if (!previous.assignmentId) throw new Error("failed cache cleanup requires the previous assignment");
+    return {
+      cacheCleanup,
+      options: {
+        ...options,
+        status: "waiting",
+        availability: "reserved",
+        waitingFor: ["external_dependency"],
+        assignmentId: previous.assignmentId,
+        phase: "cache_cleanup_failed",
+        needsUserInput: false,
+        preservePreviousTargets: true,
+      },
+    };
+  }
+  return {
+    cacheCleanup,
+    options: {
+      ...options,
+      status: "waiting",
+      availability: "available",
+      waitingFor: [],
+      assignmentId: null,
+      phase: "available",
+      prs: [],
+      linears: [],
+      needsUserInput: false,
+      preservePreviousTargets: false,
+    },
   };
 }
 
@@ -386,8 +655,11 @@ async function publish(file, options, cwd) {
     };
     validateRoom(room);
     const previous = room.threads.find((item) => item?.threadId === options.threadId) ?? null;
-    const entry = await entryFor(options, cwd, now, previous);
-    const threads = room.threads.filter((item) => item?.threadId !== entry.threadId);
+    const transition = await mergedTransition(options, cwd, now, previous);
+    const entry = await entryFor(transition.options, cwd, now, previous, transition.cacheCleanup);
+    const threads = room.threads
+      .filter((item) => item?.threadId !== entry.threadId)
+      .map(stripNarrative);
     threads.push(entry);
     threads.sort((left, right) => {
       const stateDelta = (BOARD_ORDER.get(boardState(left)) ?? 99)

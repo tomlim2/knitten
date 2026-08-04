@@ -211,10 +211,21 @@ and replaces only that thread's entry. It does not append history. Every update
 explicitly declares `threadKind=work|pr|review`; waiting entries also declare
 whether the slot is reserved or available.
 
+The JSON is status-only. Work entries carry Linear identity/name, split time,
+main branch-point commit, current `+/- LOC`, and an optional explicit web-app
+URL. PR entries carry PR identity, automation/response state, human and bot
+review rounds, and total comment count. Requested-review entries carry PR
+identity and response state. Narrative summaries and response bodies are not
+stored.
+
 Activating a new assignment requires `--reset-packet-id`. The publisher rejects
 the transition unless the exact current Git worktree is clean and has no Git
 operation in progress. It never cleans or resets a worktree for the caller. The
 `KNITTEN_OPR_STATUS_FILE` environment variable overrides the configured file.
+Publishing `--merged` validates the exact worktree root and cleans only its real
+`target/` with `cargo clean`; success clears targets and releases the slot,
+while a symlinked or failed cleanup keeps the slot reserved for attention. An
+absent `target/` is already clean and releases the slot.
 
 ## Path Rules
 

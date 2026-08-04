@@ -66,9 +66,9 @@ publish separate entries.
 - Publish after the target is known, at material phase changes, when waiting on
   the user or an external system, when blocked, and immediately before the
   final response.
-- Keep only the current target, phase, concise summary, next action, blocker,
-  and user-input requirement. Do not include completed-action history,
-  transcripts, commentary, test logs, or prior statuses.
+- Publish only typed status, identifiers, counts, timestamps, branch/LOC data,
+  and explicit links. Do not publish summaries, next-action prose, response
+  bodies, transcripts, commentary, test logs, or activity history.
 - Treat publishing as best-effort observability. A missing configuration,
   workspace-filter skip, or transient publisher failure must not expand or
   block the primary task.
@@ -76,6 +76,22 @@ publish separate entries.
 The publisher resolves its destination from `KNITTEN_OPR_STATUS_FILE` or the
 user-local Knitten configuration. Core source must not contain a personal
 absolute destination path.
+
+### Status Payload
+
+- Work threads declare `working` or `completed`, the last Linear id and name,
+  an optional Linear split timestamp, the branch point against an explicit main
+  ref, current `+/- LOC`, and an optional explicit local web-app URL.
+- PR threads declare only PR title/number/link, automatic-vs-human confirmation,
+  response lifecycle, human and bot review-round counts, and total comment
+  count. Review response prose is forbidden.
+- Requested-review threads declare only the PR identity/link and response
+  lifecycle.
+- A merged PR moves to waiting only after Core validates the exact Git
+  worktree root and runs `cargo clean` against that worktree's real `target/`
+  directory. It never removes `node_modules`, global Cargo caches, another
+  worktree's cache, or a symlinked target. Successful cleanup clears assignment,
+  PR, and Linear targets; failed cleanup keeps the slot reserved.
 
 ### Thread Assignment Model
 
