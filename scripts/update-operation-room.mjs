@@ -29,8 +29,10 @@ const DEFAULT_CONFIG_PATH = path.join(os.homedir(), ".config", "knitten", "opera
 function usage() {
   return `Usage:
   knitten-opr-status publish [options]
+  knitten-opr-status set-thread-name --thread-id <id> --thread-name <exact Codex title>
 
 Required:
+  --thread-name <text>      Exact Codex task title resolved by thread id.
   --title <text>
   --thread-kind <work|pr|review>
   --status <active|waiting>
@@ -90,6 +92,7 @@ function parseArgs(argv) {
     file: null,
     config: DEFAULT_CONFIG_PATH,
     threadId: process.env.CODEX_THREAD_ID || null,
+    threadName: null,
     title: null,
     project: null,
     threadKind: null,
@@ -123,7 +126,7 @@ function parseArgs(argv) {
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
-    if (index === 0 && arg === "publish") {
+    if (index === 0 && new Set(["publish", "set-thread-name"]).has(arg)) {
       options.command = arg;
     } else if (arg === "-h" || arg === "--help") {
       process.stdout.write(`${usage()}\n`);
@@ -142,6 +145,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === "--thread-id") {
       options.threadId = takeValue(argv, index, arg);
+      index += 1;
+    } else if (arg === "--thread-name") {
+      options.threadName = takeValue(argv, index, arg);
       index += 1;
     } else if (arg === "--title") {
       options.title = takeValue(argv, index, arg);
@@ -226,11 +232,14 @@ function parseArgs(argv) {
     }
   }
 
-  if (options.command !== "publish") throw new Error("publish command is required");
-  for (const key of ["threadId", "title", "threadKind", "status", "phase"]) {
+  if (!options.command) throw new Error("publish or set-thread-name command is required");
+  if (!options.threadId) throw new Error("threadId is required");
+  if (!/^[0-9a-zA-Z._:-]+$/.test(options.threadId)) throw new Error("threadId contains unsupported characters");
+  if (!options.threadName) throw new Error("threadName is required");
+  if (options.command === "set-thread-name") return options;
+  for (const key of ["title", "threadKind", "status", "phase"]) {
     if (!options[key]) throw new Error(`${key} is required`);
   }
-  if (!/^[0-9a-zA-Z._:-]+$/.test(options.threadId)) throw new Error("threadId contains unsupported characters");
   if (!THREAD_KINDS.has(options.threadKind)) throw new Error(`unsupported thread kind: ${options.threadKind}`);
   if (!LIFECYCLE_STATUSES.has(options.status)) throw new Error(`unsupported lifecycle status: ${options.status}`);
   if (!/^[a-z0-9][a-z0-9._-]*$/.test(options.phase)) throw new Error("phase must be a lowercase slug");
@@ -566,6 +575,7 @@ async function entryFor(options, cwd, now, previous, cacheCleanup = null) {
   const working = active && !(options.threadKind === "work" && options.workState === "completed");
   return {
     threadId: options.threadId,
+    threadName: options.threadName,
     title: options.title,
     hostId: "local",
     cwd,
@@ -687,6 +697,38 @@ async function publish(file, options, cwd) {
   }
 }
 
+async function setThreadName(file, options) {
+  const lockFile = `${file}.lock`;
+  const release = await acquireLock(lockFile);
+  try {
+    const now = new Date().toISOString();
+    const room = await readJsonIfPresent(file);
+    validateRoom(room);
+    const index = room.threads.findIndex((item) => item?.threadId === options.threadId);
+    if (index === -1) throw new Error(`operation-room thread not found: ${options.threadId}`);
+    const entry = stripNarrative({
+      ...room.threads[index],
+      threadName: options.threadName,
+      threadNameUpdatedAt: now,
+    });
+    const threads = room.threads.map((item, itemIndex) => (
+      itemIndex === index ? entry : stripNarrative(item)
+    ));
+    const next = { ...room, observedAt: now, threads };
+    if (options.dryRun) return { file, entry, room: next, dryRun: true };
+    const temporary = `${file}.tmp-${process.pid}-${Date.now()}`;
+    try {
+      await fs.writeFile(temporary, `${JSON.stringify(next, null, 2)}\n`, "utf8");
+      await fs.rename(temporary, file);
+    } finally {
+      await fs.rm(temporary, { force: true });
+    }
+    return { file, entry, threadCount: threads.length, dryRun: false };
+  } finally {
+    await release();
+  }
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   const cwd = path.resolve(process.cwd());
@@ -695,7 +737,9 @@ async function main() {
     process.stdout.write(`${JSON.stringify({ ok: true, configured: false, ...destination })}\n`);
     return;
   }
-  const result = await publish(destination, options, cwd);
+  const result = options.command === "set-thread-name"
+    ? await setThreadName(destination, options)
+    : await publish(destination, options, cwd);
   process.stdout.write(`${JSON.stringify({ ok: true, configured: true, ...result })}\n`);
 }
 

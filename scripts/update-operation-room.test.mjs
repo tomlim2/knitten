@@ -69,6 +69,7 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
     "publish",
     "--file", file,
     "--thread-id", "thread-a",
+    "--thread-name", "Camera responder",
     "--title", "camera",
     "--thread-kind", "pr",
     "--status", "active",
@@ -95,7 +96,7 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
   await run([...active, "--summary", "same assignment update"], workspace);
   await run([
     "publish", "--file", file,
-    "--thread-id", "thread-a", "--title", "camera",
+    "--thread-id", "thread-a", "--thread-name", "Camera responder", "--title", "camera",
     "--thread-kind", "pr", "--status", "waiting",
     "--availability", "reserved", "--waiting-for", "human_review",
     "--assignment-id", "pr:CINEV/shotloom#894",
@@ -113,7 +114,7 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
   await fs.writeFile(path.join(workspace, "target", "cache.bin"), "cache");
   await run([
     "publish", "--file", file,
-    "--thread-id", "thread-a", "--title", "camera",
+    "--thread-id", "thread-a", "--thread-name", "Camera responder", "--title", "camera",
     "--thread-kind", "pr", "--status", "waiting",
     "--availability", "available", "--phase", "available",
     "--merged",
@@ -133,7 +134,7 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
   await fs.symlink(externalCache, path.join(workspace, "target"));
   await run([
     "publish", "--file", file,
-    "--thread-id", "thread-d", "--title", "unsafe cache",
+    "--thread-id", "thread-d", "--thread-name", "Unsafe cache responder", "--title", "unsafe cache",
     "--thread-kind", "pr", "--status", "waiting",
     "--availability", "available", "--phase", "available",
     "--merged",
@@ -151,6 +152,7 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
   const room = JSON.parse(await fs.readFile(file, "utf8"));
   assert.equal(room.threads.length, 5);
   const available = room.threads.find((item) => item.threadId === "thread-a");
+  assert.equal(available.threadName, "Camera responder");
   assert.equal(available.status, "waiting");
   assert.equal(available.availability, "available");
   assert.equal(available.assignmentId, null);
@@ -169,7 +171,7 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
   await git(workspace, ["commit", "-m", "feature"]);
   await run([
     "publish", "--file", file,
-    "--thread-id", "thread-work", "--title", "work status",
+    "--thread-id", "thread-work", "--thread-name", "Work thread", "--title", "work status",
     "--thread-kind", "work", "--status", "active",
     "--assignment-id", "work:STL-1", "--reset-packet-id", "reset:work",
     "--phase", "working", "--work-state", "working",
@@ -185,9 +187,16 @@ await fs.rm(process.argv[targetIndex + 1], { recursive: true, force: true });
   assert.equal(work.loc.added, 1);
   assert.equal(work.loc.deleted, 0);
 
+  await run([
+    "set-thread-name", "--file", file,
+    "--thread-id", "thread-work", "--thread-name", "Renamed work thread",
+  ], workspace);
+  const renamedRoom = JSON.parse(await fs.readFile(file, "utf8"));
+  assert.equal(renamedRoom.threads.find((item) => item.threadId === "thread-work").threadName, "Renamed work thread");
+
   const skipped = await run([
     "publish", "--config", config,
-    "--thread-id", "filtered", "--title", "filtered",
+    "--thread-id", "filtered", "--thread-name", "Filtered thread", "--title", "filtered",
     "--thread-kind", "work", "--status", "waiting",
     "--availability", "available", "--phase", "available",
     "--summary", "must not be written",

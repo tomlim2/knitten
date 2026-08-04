@@ -69,6 +69,9 @@ publish separate entries.
 - Publish only typed status, identifiers, counts, timestamps, branch/LOC data,
   and explicit links. Do not publish summaries, next-action prose, response
   bodies, transcripts, commentary, test logs, or activity history.
+- Resolve the exact user-facing Codex task title by matching `CODEX_THREAD_ID`
+  in the Codex thread list, then publish it as `--thread-name`. Never substitute
+  a Linear title, PR title, assignment objective, or inferred label.
 - Treat publishing as best-effort observability. A missing configuration,
   workspace-filter skip, or transient publisher failure must not expand or
   block the primary task.
@@ -79,6 +82,8 @@ absolute destination path.
 
 ### Status Payload
 
+- Every entry carries the exact Codex task title separately from work, Linear,
+  and PR target titles. The board uses that task title as the card heading.
 - Work threads declare `working` or `completed`, the last Linear id and name,
   an optional Linear split timestamp, the branch point against an explicit main
   ref, current `+/- LOC`, and an optional explicit local web-app URL.

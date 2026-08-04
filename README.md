@@ -218,6 +218,10 @@ review rounds, and total comment count. Requested-review entries carry PR
 identity and response state. Narrative summaries and response bodies are not
 stored.
 
+Every publish also carries the exact user-facing Codex task title, resolved by
+matching `CODEX_THREAD_ID` against the Codex thread list. The board heading must
+not reuse a Linear title, PR title, or assignment objective as the task name.
+
 Activating a new assignment requires `--reset-packet-id`. The publisher rejects
 the transition unless the exact current Git worktree is clean and has no Git
 operation in progress. It never cleans or resets a worktree for the caller. The
