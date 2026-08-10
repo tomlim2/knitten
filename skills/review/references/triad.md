@@ -141,61 +141,57 @@ P0-P3 plus `blocker` before entering the generic Core loop.
 
 ## Role Selection
 
-Select one role in `single` mode or exactly three roles in `triad` mode.
+Use `Target-Matched Expert Reviewer` as the only role in `single` mode. Use
+exactly these three canonical roles in `triad` mode:
 
-Rules:
+- `Adversarial Reviewer` challenges assumptions and actively tries to falsify
+  the proposed behavior. Inspect realistic misuse, boundary values, failure
+  paths, regressions, security or safety exposure, and evidence that tests can
+  pass while the consumer contract still fails. Keep findings grounded; an
+  adversarial lens does not permit speculative findings.
+- `Cold-Start Reviewer` approaches the supplied packet as an informed reviewer
+  with no author context or hidden repository history. Inspect whether the
+  what/why, contract, naming, navigation, tests, errors, and documentation let a
+  first-time consumer understand and verify the change. Do not require context
+  outside the packet unless a supplied contract proves that context must be
+  present.
+- `Target-Matched Expert Reviewer` reviews the primary consumer and highest-risk
+  technical boundary with a specialty derived from the changed surface. Before
+  dispatch, record a concise specialty such as `Stage Schema Compatibility`,
+  `Editor Selection UX`, `Asset Resolution Pipeline`, `CI/Ops`, or
+  `Security/Permissions`, then apply that domain lens without changing the
+  canonical role name.
 
-- Name roles from the reviewed change, not from a fixed list.
-- Prefer concrete consumer roles over generic roles.
-- Include one role for the highest-risk technical boundary.
-- In `single` mode, choose the one role that best covers the highest-risk
-  boundary and primary consumer.
-- In `triad` mode, include one role for the primary consumer and one role for
-  verification, maintainability, migration, security, or docs depending on the
-  changed surface.
-- Use a generic balanced set only when no specialized consumer dominates.
-
-Example fallback roles:
-
-- Runtime/Contract Engineer.
-- QA/Test Automation Engineer.
-- Maintainer/Product Engineer.
-
-Example specialized role names:
-
-- Editor Selection UX Engineer.
-- Stage Schema Compatibility Engineer.
-- Asset Resolver Pipeline Engineer.
-- Docs/Spec Consumer Engineer.
-- CI/Ops Reviewer.
-- Security/Permissions Reviewer.
+Do not rename, replace, or add triad roles. The third role's specialty is
+dynamic; the three role identities are fixed. Assign every review-required
+surface to at least one role under the canonical coverage rules.
 
 Mandatory output before dispatch:
 
 ```markdown
 ## Role selection
 - mode: single|triad
-- <role> - <why this role matches the target and consumer>
-- <role> - <why this role matches the target and consumer>
-- <role> - <why this role matches the target and consumer>
+- Adversarial Reviewer - <highest-value assumptions and failure boundaries>
+- Cold-Start Reviewer - <first-time consumer and comprehension boundary>
+- Target-Matched Expert Reviewer - specialty: <derived specialty>; <why it matches the primary consumer and highest-risk boundary>
 ```
 
-In `single` mode, print only the selected role row.
+In `single` mode, print only the `Target-Matched Expert Reviewer` row.
 
 ## Agent Model Routing
 
 Resolve the Core-owned agent profile before dispatching each role subagent:
 
 - In `single` mode, use `review-deep-readonly`.
-- In `triad` mode, use `review-deep-readonly` for the role covering the
-  highest-risk technical boundary.
-- In `triad` mode, use `scan-fast-readonly` for the other two roles.
+- In `triad` mode, use `review-deep-readonly` for
+  `Target-Matched Expert Reviewer`.
+- In `triad` mode, use `scan-fast-readonly` for `Adversarial Reviewer` and
+  `Cold-Start Reviewer`.
 
-When multiple triad roles have equal technical risk, assign
-`review-deep-readonly` to the primary-consumer role. Resolve each selected
-profile through `knitten-path agent-profile <profile-id>` and apply its returned
-model, reasoning, sandbox, and fallback policy as one tuple. Record the
-requested profile and effective settings in each role report `Notes`.
+Resolve each selected profile through
+`knitten-path agent-profile <profile-id>` and apply its returned model,
+reasoning, sandbox, and fallback policy as one tuple. Record the requested
+profile and effective settings in each role report `Notes`.
 
 If profile resolution fails, do not spawn role subagents. Run the same role
 lenses sequentially in the primary read-only review workflow and report that
@@ -213,6 +209,8 @@ Every role receives:
 - finding schema,
 - known constraints and non-goals,
 - role name, role scope, primary consumer, and explicit out-of-scope boundary.
+- the derived specialty for `Target-Matched Expert Reviewer`; use
+  `not applicable` for the other fixed roles.
 - assigned changed-surface IDs from the pre-dispatch coverage manifest.
 - scope-control lens: check whether the diff adds avoidable abstraction,
   dependency, public surface, or duplicated helper logic when existing code,
@@ -251,7 +249,8 @@ Read the caller-provided review packet.
 Read the shared packet first, then read only base documents selected for this
 role or justified as full-shared.
 Review the target as Role: <role>.
-Use the shared packet first, then apply this role lens: <role lens>.
+Use the shared packet first, then apply this fixed role lens: <role lens>.
+For Target-Matched Expert Reviewer, apply this derived specialty: <specialty>.
 Use the Review Brief as a navigation index, not finding evidence.
 Follow the canonical navigation order within the assigned surfaces and check
 every human-written changed line in scope.
@@ -272,6 +271,8 @@ Review is read-only.
 ### Applicability
 - Primary consumer: <consumer>
 - Role scope: <scope>
+- Fixed lens: <adversarial|cold-start|target-matched expert>
+- Expert specialty: <derived specialty or not applicable>
 - Files/artifacts checked: <paths or ids>
 - Context checked: <review docs, specs, contracts, schemas, or none>
 

@@ -50,7 +50,7 @@ Do not read detailed references until Step 0 passes.
 Read the canonical [`references/code-review-principles.md`](references/code-review-principles.md)
 first, then [`references/triad.md`](references/triad.md). Run the selected
 read-only `single` or `triad` review using the canonical approval, navigation,
-complexity, comment, and description-handoff sections plus Triad's local role,
+complexity, comment, and description-handoff sections plus Triad's fixed-role,
 packet, output, merge, and coverage rules. Read only caller-supplied inline
 content and readable paths. Print findings for the caller to capture; do not
 write durable artifacts.

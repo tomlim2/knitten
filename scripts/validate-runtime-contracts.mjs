@@ -447,6 +447,10 @@ function validateCoreSkillSafetyContracts() {
   assert.match(reviewTriad, /review-deep-readonly/);
   assert.match(reviewTriad, /scan-fast-readonly/);
   assert.match(reviewTriad, /knitten-path agent-profile <profile-id>/);
+  assert.match(reviewTriad, /`Adversarial Reviewer`/);
+  assert.match(reviewTriad, /`Cold-Start Reviewer`/);
+  assert.match(reviewTriad, /`Target-Matched Expert Reviewer`/);
+  assert.doesNotMatch(reviewTriad, /Name roles from the reviewed change/);
   const principlesLoadIndex = review.indexOf("references/code-review-principles.md");
   const triadLoadIndex = review.indexOf("references/triad.md");
   const reviewAfterMatchIndex = review.indexOf("## After Match");
